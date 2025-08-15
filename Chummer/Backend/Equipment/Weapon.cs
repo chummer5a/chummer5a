@@ -7081,7 +7081,7 @@ namespace Chummer.Backend.Equipment
                     strImprovedName: Name, blnIncludeNonImproved: true, token: token).ConfigureAwait(false);
             }
 
-            if (await _objCharacter.Settings.GetUnarmedImprovementsApplyToWeaponsAsync(token).ConfigureAwait(false))
+            if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetUnarmedImprovementsApplyToWeaponsAsync(token).ConfigureAwait(false))
             {
                 Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
                 string strSkillDictionaryKey = objSkill != null
@@ -9064,7 +9064,7 @@ namespace Chummer.Backend.Equipment
 
                         if (WirelessOn && HasWirelessSmartgun)
                         {
-                            if (await _objCharacter.Settings.BookEnabledAsync("R5", token).ConfigureAwait(false))
+                            if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookEnabledAsync("R5", token).ConfigureAwait(false))
                             {
                                 if (await ParentVehicle.GearChildren.DeepAnyAsync(
                                             async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Name == "Smartsoft" && x.Equipped, token)
@@ -10618,7 +10618,7 @@ namespace Chummer.Backend.Equipment
                             if (ParentVehicle != null)
                             {
                                 string strBonusName = string.Empty;
-                                if (await _objCharacter.Settings.BookEnabledAsync("R5", token).ConfigureAwait(false))
+                                if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookEnabledAsync("R5", token).ConfigureAwait(false))
                                 {
                                     Gear objSmartsoft = await ParentVehicle.GearChildren.DeepFirstOrDefaultAsync(
                                             async x => await x.Children.ToListAsync(y => y.Equipped, token: token)
@@ -11822,7 +11822,7 @@ namespace Chummer.Backend.Equipment
                 if (!objTotalAvail.AddToParent)
                 {
                     int intAvailInt = await objTotalAvail.GetValueAsync(token).ConfigureAwait(false);
-                    if (intAvailInt > await _objCharacter.Settings.GetMaximumAvailabilityAsync(token).ConfigureAwait(false))
+                    if (intAvailInt > await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaximumAvailabilityAsync(token).ConfigureAwait(false))
                     {
                         int intLowestValidRestrictedGearAvail = -1;
                         foreach (int intValidAvail in dicRestrictedGearLimits.Keys)
@@ -12358,7 +12358,8 @@ namespace Chummer.Backend.Equipment
         public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if ((Cyberware || Category == "Gear" || Category.StartsWith("Quality", StringComparison.Ordinal) || !string.IsNullOrEmpty(ParentID)) && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
+            if ((Cyberware || Category == "Gear" || Category.StartsWith("Quality", StringComparison.Ordinal) || !string.IsNullOrEmpty(ParentID)) && !string.IsNullOrEmpty(Source)
+                && !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookEnabledAsync(Source, token).ConfigureAwait(false))
                 return null;
 
             TreeNode objNode = new TreeNode

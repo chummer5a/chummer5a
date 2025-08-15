@@ -1077,7 +1077,7 @@ namespace Chummer
                                         await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                                     if (objNode?.SelectSingleNodeAndCacheExpression("initiativedice", token: token) == null)
                                     {
-                                        _intInitiativeDice = await Settings.GetMinInitiativeDiceAsync(token).ConfigureAwait(false);
+                                        _intInitiativeDice = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetMinInitiativeDiceAsync(token).ConfigureAwait(false);
                                         setPropertiesToRefresh.Add(nameof(InitiativeDice));
                                     }
                                 }
@@ -1132,22 +1132,22 @@ namespace Chummer
                             break;
 
                         case nameof(CharacterSettings.EncumbrancePenaltyPhysicalLimit):
-                            if (await Settings.GetDoEncumbrancePenaltyPhysicalLimitAsync(token).ConfigureAwait(false))
+                            if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetDoEncumbrancePenaltyPhysicalLimitAsync(token).ConfigureAwait(false))
                                 setPropertiesToRefresh.Add(nameof(Encumbrance));
                             break;
 
                         case nameof(CharacterSettings.EncumbrancePenaltyMovementSpeed):
-                            if (await Settings.GetDoEncumbrancePenaltyMovementSpeedAsync(token).ConfigureAwait(false))
+                            if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetDoEncumbrancePenaltyMovementSpeedAsync(token).ConfigureAwait(false))
                                 setPropertiesToRefresh.Add(nameof(Encumbrance));
                             break;
 
                         case nameof(CharacterSettings.EncumbrancePenaltyAgility):
-                            if (await Settings.GetDoEncumbrancePenaltyAgilityAsync(token).ConfigureAwait(false))
+                            if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetDoEncumbrancePenaltyAgilityAsync(token).ConfigureAwait(false))
                                 setPropertiesToRefresh.Add(nameof(Encumbrance));
                             break;
 
                         case nameof(CharacterSettings.EncumbrancePenaltyReaction):
-                            if (await Settings.GetDoEncumbrancePenaltyReactionAsync(token).ConfigureAwait(false))
+                            if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetDoEncumbrancePenaltyReactionAsync(token).ConfigureAwait(false))
                                 setPropertiesToRefresh.Add(nameof(Encumbrance));
                             break;
 
@@ -1157,7 +1157,7 @@ namespace Chummer
                             break;
 
                         case nameof(CharacterSettings.EncumbrancePenaltyWoundModifier):
-                            if (await Settings.GetDoEncumbrancePenaltyWoundModifierAsync(token).ConfigureAwait(false))
+                            if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetDoEncumbrancePenaltyWoundModifierAsync(token).ConfigureAwait(false))
                             {
                                 setPropertiesToRefresh.Add(nameof(WoundModifier));
                                 setPropertiesToRefresh.Add(nameof(Encumbrance));
@@ -2448,6 +2448,7 @@ namespace Chummer
                         {
                             case NotifyCollectionChangedAction.Add:
                                 {
+                                    CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
                                     foreach (Cyberware objNewItem in e.NewItems)
                                     {
                                         token.ThrowIfCancellationRequested();
@@ -2485,11 +2486,11 @@ namespace Chummer
                                         }
 
                                         if (!blnDoCyberlimbAttributesRefresh
-                                            && !await Settings.GetDontUseCyberlimbCalculationAsync(token)
+                                            && !await objSettings.GetDontUseCyberlimbCalculationAsync(token)
                                                 .ConfigureAwait(false) && await objNewItem.GetParentAsync(token).ConfigureAwait(false) == null
                                             && await objNewItem.GetParentVehicleAsync(token).ConfigureAwait(false) == null
                                             && await objNewItem.GetIsLimbAsync(token).ConfigureAwait(false)
-                                            && !(await Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                            && !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
                                                 await objNewItem.GetLimbSlotAsync(token).ConfigureAwait(false)))
                                         {
                                             blnDoCyberlimbAttributesRefresh = true;
@@ -2500,6 +2501,7 @@ namespace Chummer
                                 }
                             case NotifyCollectionChangedAction.Remove:
                                 {
+                                    CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
                                     foreach (Cyberware objOldItem in e.OldItems)
                                     {
                                         token.ThrowIfCancellationRequested();
@@ -2508,11 +2510,11 @@ namespace Chummer
                                             blnDoEncumbranceRefresh = true;
                                         dicChangedProperties[this].Add(await objOldItem.GetEssencePropertyNameAsync(token).ConfigureAwait(false));
                                         if (!blnDoCyberlimbAttributesRefresh
-                                            && !await Settings.GetDontUseCyberlimbCalculationAsync(token)
+                                            && !await objSettings.GetDontUseCyberlimbCalculationAsync(token)
                                                 .ConfigureAwait(false) && await objOldItem.GetParentAsync(token).ConfigureAwait(false) == null
                                             && await objOldItem.GetParentVehicleAsync(token).ConfigureAwait(false) == null
                                             && await objOldItem.GetIsLimbAsync(token).ConfigureAwait(false)
-                                            && !(await Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                            && !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
                                                 await objOldItem.GetLimbSlotAsync(token).ConfigureAwait(false)))
                                         {
                                             blnDoCyberlimbAttributesRefresh = true;
@@ -2523,7 +2525,8 @@ namespace Chummer
                                 }
                             case NotifyCollectionChangedAction.Replace:
                                 {
-                                    if (!await Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false))
+                                    CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
+                                    if (!await objSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false))
                                     {
                                         foreach (Cyberware objOldItem in e.OldItems)
                                         {
@@ -2534,11 +2537,11 @@ namespace Chummer
                                             dicChangedProperties[this]
                                                 .Add(await objOldItem.GetEssencePropertyNameAsync(token).ConfigureAwait(false));
                                             if (!blnDoCyberlimbAttributesRefresh
-                                                && !await Settings.GetDontUseCyberlimbCalculationAsync(token)
+                                                && !await objSettings.GetDontUseCyberlimbCalculationAsync(token)
                                                     .ConfigureAwait(false) && await objOldItem.GetParentAsync(token).ConfigureAwait(false) == null
                                                 && await objOldItem.GetParentVehicleAsync(token).ConfigureAwait(false) == null
                                                 && await objOldItem.GetIsLimbAsync(token).ConfigureAwait(false)
-                                                && !(await Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                && !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
                                                     await objOldItem.GetLimbSlotAsync(token).ConfigureAwait(false)))
                                             {
                                                 blnDoCyberlimbAttributesRefresh = true;
@@ -2554,11 +2557,11 @@ namespace Chummer
                                             dicChangedProperties[this]
                                                 .Add(await objNewItem.GetEssencePropertyNameAsync(token).ConfigureAwait(false));
                                             if (!blnDoCyberlimbAttributesRefresh
-                                                && !await Settings.GetDontUseCyberlimbCalculationAsync(token)
+                                                && !await objSettings.GetDontUseCyberlimbCalculationAsync(token)
                                                     .ConfigureAwait(false) && await objNewItem.GetParentAsync(token).ConfigureAwait(false) == null
                                                 && await objNewItem.GetParentVehicleAsync(token).ConfigureAwait(false) == null
                                                 && await objNewItem.GetIsLimbAsync(token).ConfigureAwait(false)
-                                                && !(await Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                && !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
                                                     await objNewItem.GetLimbSlotAsync(token).ConfigureAwait(false)))
                                             {
                                                 blnDoCyberlimbAttributesRefresh = true;
@@ -2572,7 +2575,7 @@ namespace Chummer
                                 {
                                     blnDoEncumbranceRefresh = true;
                                     blnDoCyberlimbAttributesRefresh =
-                                        !await Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false);
+                                        !await (await GetSettingsAsync(token).ConfigureAwait(false)).GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false);
 
                                     if (!dicChangedProperties.TryGetValue(this,
                                             out HashSet<string> setChangedProperties))
@@ -3456,7 +3459,7 @@ namespace Chummer
                 Page = charNode["page"]?.InnerText ?? "0";
                 _intMetatypeBP = 0;
                 charNode.TryGetInt32FieldQuickly("karma", ref _intMetatypeBP);
-                _intInitiativeDice = Settings.MinInitiativeDice;
+                _intInitiativeDice = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetMinInitiativeDiceAsync(token).ConfigureAwait(false);
                 charNode.TryGetInt32FieldQuickly("initiativedice", ref _intInitiativeDice);
 
                 Movement = objXmlMetatype["movement"]?.InnerText ?? string.Empty;
@@ -7585,7 +7588,7 @@ namespace Chummer
                                             // Cyberadept in these versions was an echo. It is no longer an echo, and so needs a more complicated reapplication
                                             if (blnSync
                                                     ? Settings.SpecialKarmaCostBasedOnShownValue
-                                                    : await Settings.GetSpecialKarmaCostBasedOnShownValueAsync(token).ConfigureAwait(false))
+                                                    : await (await GetSettingsAsync(token).ConfigureAwait(false)).GetSpecialKarmaCostBasedOnShownValueAsync(token).ConfigureAwait(false))
                                             {
                                                 if (blnSync)
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -10796,7 +10799,7 @@ namespace Chummer
                             token: token).ConfigureAwait(false);
                     // <buildmethod />
                     await objWriter
-                        .WriteElementStringAsync("buildmethod", Settings.BuildMethod.ToString(), token: token)
+                        .WriteElementStringAsync("buildmethod", (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetBuildMethodAsync(token).ConfigureAwait(false)).ToString(), token: token)
                         .ConfigureAwait(false);
                     // <imageformat />
                     await objWriter.WriteElementStringAsync("imageformat",
@@ -22645,7 +22648,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (strAttribute == "MAGAdept" && !blnExplicit && (!await GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)))
+                if (strAttribute == "MAGAdept" && !blnExplicit && (!await GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await (await GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)))
                     strAttribute = "MAG";
                 return await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).GetAttributeByNameAsync(strAttribute, token).ConfigureAwait(false);
             }
@@ -23624,7 +23627,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (_intBoundSpiritLimit == int.MinValue)
                 {
-                    string strExpression = await Settings.GetBoundSpiritExpressionAsync(token).ConfigureAwait(false);
+                    string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetBoundSpiritExpressionAsync(token).ConfigureAwait(false);
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
                         strExpression = await ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
@@ -23726,7 +23729,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (_intRegisteredSpriteLimit == int.MinValue)
                 {
-                    string strExpression = await Settings.GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false);
+                    string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false);
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
                         strExpression = await ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
@@ -26958,7 +26961,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return (await GetCyberwareEssenceAsync(token).ConfigureAwait(false)).ToString(
-                    await Settings.GetEssenceFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo);
+                    await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEssenceFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo);
             }
             finally
             {
@@ -26983,7 +26986,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return (await GetBiowareEssenceAsync(token).ConfigureAwait(false)).ToString(
-                    await Settings.GetEssenceFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo);
+                    await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEssenceFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo);
             }
             finally
             {
@@ -27008,7 +27011,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return (await GetEssenceHoleAsync(token).ConfigureAwait(false)).ToString(
-                    await Settings.GetEssenceFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo);
+                    await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEssenceFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo);
             }
             finally
             {
@@ -27039,13 +27042,12 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
+                string strEssenceFormat = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEssenceFormatAsync(token).ConfigureAwait(false);
                 return (await GetPrototypeTranshumanEssenceUsedAsync(token).ConfigureAwait(false)).ToString(
-                           await Settings.GetEssenceFormatAsync(token).ConfigureAwait(false),
-                           GlobalSettings.CultureInfo) +
+                           strEssenceFormat, GlobalSettings.CultureInfo) +
                        strSpace + '/' + strSpace +
                        (await GetPrototypeTranshumanAsync(token).ConfigureAwait(false)).ToString(
-                           await Settings.GetEssenceFormatAsync(token).ConfigureAwait(false),
-                           GlobalSettings.CultureInfo);
+                           strEssenceFormat, GlobalSettings.CultureInfo);
             }
             finally
             {
@@ -30236,7 +30238,7 @@ namespace Chummer
                     (await ImprovementManager
                         .ValueOfAsync(this, Improvement.ImprovementType.PublicAwareness, token: token)
                         .ConfigureAwait(false)).StandardRound();
-                if (await Settings.GetUseCalculatedPublicAwarenessAsync(token).ConfigureAwait(false))
+                if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetUseCalculatedPublicAwarenessAsync(token).ConfigureAwait(false))
                 {
                     // Public Awareness is calculated as (Street Cred + Notoriety) / 3, rounded down.
                     intReturn += (await GetTotalStreetCredAsync(token).ConfigureAwait(false) +
@@ -30428,7 +30430,7 @@ namespace Chummer
                             .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
                     }
 
-                    if (await Settings.GetUseCalculatedPublicAwarenessAsync(token).ConfigureAwait(false))
+                    if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetUseCalculatedPublicAwarenessAsync(token).ConfigureAwait(false))
                     {
                         sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append('[')
                             .Append(await LanguageManager.GetStringAsync("String_StreetCred", token: token)
@@ -31785,7 +31787,7 @@ namespace Chummer
                     }
                 }
 
-                int intAverageStrength = Settings.UncappedArmorAccessoryBonuses
+                int intAverageStrength = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetUncappedArmorAccessoryBonusesAsync(token).ConfigureAwait(false)
                     ? int.MaxValue
                     : await (await GetAttributeAsync("STR", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
 
@@ -36136,7 +36138,7 @@ namespace Chummer
                 }
 
                 // Run through list of Armor again to cap off any whose stacking bonuses are greater than STR
-                if (!await Settings.GetUncappedArmorAccessoryBonusesAsync(token).ConfigureAwait(false))
+                if (!await (await GetSettingsAsync(token).ConfigureAwait(false)).GetUncappedArmorAccessoryBonusesAsync(token).ConfigureAwait(false))
                 {
                     foreach (Armor objArmor in lstArmorsToConsider)
                     {
@@ -37333,7 +37335,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return '=' + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) +
-                       (await GetTotalStartingNuyenAsync(token).ConfigureAwait(false)).ToString(await Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
+                       (await GetTotalStartingNuyenAsync(token).ConfigureAwait(false)).ToString(await (await GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false),
                            GlobalSettings.CultureInfo) +
                        await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
             }
@@ -40115,7 +40117,7 @@ namespace Chummer
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            return strReturn + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
+            return strReturn + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -47135,10 +47137,11 @@ namespace Chummer
                             await GetPhysicalCMThresholdOffsetAsync(token).ConfigureAwait(false) -
                             intPhysicalCMFilled) / intCMThreshold;
                 int intWoundModifier = intPhysicalCMPenalty + intStunCMPenalty;
-                if (await Settings.GetDoEncumbrancePenaltyWoundModifierAsync(token).ConfigureAwait(false))
+                CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
+                if (await objSettings.GetDoEncumbrancePenaltyWoundModifierAsync(token).ConfigureAwait(false))
                 {
                     intWoundModifier += await GetEncumbranceAsync(token).ConfigureAwait(false)
-                        * await Settings.GetEncumbrancePenaltyWoundModifierAsync(token).ConfigureAwait(false);
+                        * await objSettings.GetEncumbrancePenaltyWoundModifierAsync(token).ConfigureAwait(false);
                 }
                 _intWoundModifier = intWoundModifier;
             }
@@ -47258,7 +47261,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
 
-                int intDicePenaltySustainedSpell = Settings.DicePenaltySustaining;
+                int intDicePenaltySustainedSpell = (await GetSettingsAsync(token).ConfigureAwait(false)).DicePenaltySustaining;
 
                 //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
                 List<SustainedObject> lstSustainedSpells =
@@ -52345,24 +52348,25 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (_intCachedPositiveQualityLimitKarma != int.MinValue)
                     return _intCachedPositiveQualityLimitKarma;
+                CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
                 int intNewValue
                     = await Qualities.SumAsync(
                         async objQuality => await objQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Positive && objQuality.ContributeToLimit,
-                        objQuality => objQuality.GetBPAsync(token), token).ConfigureAwait(false) * await Settings.GetKarmaQualityAsync(token).ConfigureAwait(false);
+                        objQuality => objQuality.GetBPAsync(token), token).ConfigureAwait(false) * await objSettings.GetKarmaQualityAsync(token).ConfigureAwait(false);
                 // Group contacts are counted as positive qualities
                 intNewValue += await Contacts.SumAsync(async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Contact && await x.GetIsGroupAsync(token).ConfigureAwait(false) && !await x.GetFreeAsync(token).ConfigureAwait(false),
                                                        x => x.GetContactPointsAsync(token), token).ConfigureAwait(false)
-                    * await Settings.GetKarmaContactAsync(token).ConfigureAwait(false);
+                    * await objSettings.GetKarmaContactAsync(token).ConfigureAwait(false);
 
                 // Deduct the amount for free Qualities.
                 intNewValue -=
                     (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.FreePositiveQualities, token: token).ConfigureAwait(false) *
-                     await Settings.GetKarmaQualityAsync(token).ConfigureAwait(false)).StandardRound();
+                     await objSettings.GetKarmaQualityAsync(token).ConfigureAwait(false)).StandardRound();
 
                 // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
-                if (await Settings.GetExceedPositiveQualitiesCostDoubledAsync(token).ConfigureAwait(false))
+                if (await objSettings.GetExceedPositiveQualitiesCostDoubledAsync(token).ConfigureAwait(false))
                 {
-                    int intPositiveQualityExcess = intNewValue - await Settings.GetQualityKarmaLimitAsync(token).ConfigureAwait(false);
+                    int intPositiveQualityExcess = intNewValue - await objSettings.GetQualityKarmaLimitAsync(token).ConfigureAwait(false);
                     if (intPositiveQualityExcess > 0)
                     {
                         intNewValue += intPositiveQualityExcess;

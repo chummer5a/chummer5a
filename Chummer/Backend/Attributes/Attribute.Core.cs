@@ -1844,7 +1844,7 @@ namespace Chummer.Backend.Attributes
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CharacterObject.Settings.UnclampAttributeMinimum
+                    return _objCharacter.Settings.UnclampAttributeMinimum
                         ? MetatypeMinimum + MinimumModifiers
                         : Math.Max(MetatypeMinimum + MinimumModifiers, 0);
             }
@@ -1861,7 +1861,7 @@ namespace Chummer.Backend.Attributes
                 token.ThrowIfCancellationRequested();
                 int intReturn = await GetMetatypeMinimumAsync(token).ConfigureAwait(false) +
                                 await GetMinimumModifiersAsync(token).ConfigureAwait(false);
-                if (!CharacterObject.Settings.UnclampAttributeMinimum && intReturn < 0)
+                if (!(await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).UnclampAttributeMinimum && intReturn < 0)
                     intReturn = 0;
                 return intReturn;
             }
@@ -2826,7 +2826,7 @@ namespace Chummer.Backend.Attributes
                         }
 
                         //// If this is AGI or STR, factor in any Cyberlimbs.
-                        if (!await _objCharacter.Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) &&
+                        if (!await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) &&
                             Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                         {
                             await _objCharacter.Cyberware.ForEachAsync(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace), token: token).ConfigureAwait(false);
@@ -3148,8 +3148,9 @@ namespace Chummer.Backend.Attributes
                     return -1;
                 }
 
+                CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
                 int intUpgradeCost;
-                int intOptionsCost = await _objCharacter.Settings.GetKarmaAttributeAsync(token).ConfigureAwait(false);
+                int intOptionsCost = await objSettings.GetKarmaAttributeAsync(token).ConfigureAwait(false);
                 if (intValue == 0)
                 {
                     intUpgradeCost = intOptionsCost;
@@ -3159,7 +3160,7 @@ namespace Chummer.Backend.Attributes
                     intUpgradeCost = (intValue + 1) * intOptionsCost;
                 }
 
-                if (await _objCharacter.Settings.GetAlternateMetatypeAttributeKarmaAsync(token).ConfigureAwait(false)
+                if (await objSettings.GetAlternateMetatypeAttributeKarmaAsync(token).ConfigureAwait(false)
                     && !s_SetAlternateMetatypeAttributeKarmaExceptions.Contains(Abbrev))
                     intUpgradeCost -= (await GetMetatypeMinimumAsync(token).ConfigureAwait(false) - 1) *
                                       intOptionsCost;
@@ -4173,7 +4174,7 @@ namespace Chummer.Backend.Attributes
                         }
                     }
 
-                    CharacterSettings objSettings = _objCharacter.Settings;
+                    CharacterSettings objSettings = await _objCharacter.GetSettingsAsync().ConfigureAwait(false);
                     if (objSettings?.IsDisposed == false)
                     {
                         try

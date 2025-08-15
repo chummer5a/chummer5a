@@ -2369,7 +2369,7 @@ namespace Chummer
                      eOriginSource == QualitySource.MetatypeRemovedAtChargen ||
                      eOriginSource == QualitySource.Heritage)
                      && !string.IsNullOrEmpty(Source)
-                     && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
+                     && !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookEnabledAsync(Source, token).ConfigureAwait(false))
                     return null;
 
                 TreeNode objNode = new TreeNode
@@ -2745,11 +2745,12 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
+                        CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
                         bool blnAddItem = true;
                         intKarmaCost = (await GetBPAsync(token).ConfigureAwait(false) * intNewQualityRating -
                                         await objOldQuality.GetBPAsync(token).ConfigureAwait(false) *
                                         await objOldQuality.GetLevelsAsync(token).ConfigureAwait(false))
-                                       * await _objCharacter.Settings.GetKarmaQualityAsync(token).ConfigureAwait(false);
+                                       * await objSettings.GetKarmaQualityAsync(token).ConfigureAwait(false);
 
                         string strOldQualityName = await objOldQuality.GetCurrentDisplayNameShortAsync(token)
                             .ConfigureAwait(false);
@@ -2758,7 +2759,7 @@ namespace Chummer
                         if (Type == QualityType.Positive)
                         {
                             if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
-                                && !_objCharacter.Settings.DontDoubleQualityPurchases)
+                                && !await objSettings.GetDontDoubleQualityPurchasesAsync(token).ConfigureAwait(false))
                             {
                                 intKarmaCost *= 2;
                             }
@@ -2791,7 +2792,7 @@ namespace Chummer
                         }
                         else
                         {
-                            if (!_objCharacter.Settings.DontDoubleQualityRefunds)
+                            if (!await objSettings.GetDontDoubleQualityRefundsAsync(token).ConfigureAwait(false))
                             {
                                 intKarmaCost *= 2;
                             }

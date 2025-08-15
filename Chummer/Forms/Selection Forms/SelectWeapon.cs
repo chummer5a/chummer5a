@@ -110,10 +110,11 @@ namespace Chummer
                 try
                 {
                     _objGenericToken.ThrowIfCancellationRequested();
+                    CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false);
                     DataGridViewCellStyle dataGridViewNuyenCellStyle = new DataGridViewCellStyle
                     {
                         Alignment = DataGridViewContentAlignment.TopRight,
-                        Format = await _objCharacter.Settings.GetNuyenFormatAsync(_objGenericToken).ConfigureAwait(false)
+                        Format = await objSettings.GetNuyenFormatAsync(_objGenericToken).ConfigureAwait(false)
                             + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: _objGenericToken).ConfigureAwait(false),
                         NullValue = null
                     };
@@ -122,7 +123,7 @@ namespace Chummer
                     // Populate the Weapon Category list.
                     // Populate the Category list.
                     string strFilterPrefix = "/chummer/weapons/weapon[(" +
-                                             await _objCharacter.Settings.BookXPathAsync(token: _objGenericToken)
+                                             await objSettings.BookXPathAsync(token: _objGenericToken)
                                                  .ConfigureAwait(false) + ") and category = ";
                     using (XmlNodeList xmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
                     {
@@ -181,7 +182,7 @@ namespace Chummer
                         await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
                         await nudMarkup.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
                         await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
-                        int intMaxAvail = await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).GetMaximumAvailabilityAsync(_objGenericToken).ConfigureAwait(false);
+                        int intMaxAvail = await objSettings.GetMaximumAvailabilityAsync(_objGenericToken).ConfigureAwait(false);
                         await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                         {
                             x.Text = string.Format(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
@@ -420,7 +421,7 @@ namespace Chummer
                         if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                         {
                             strWeaponCost
-                                = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                                = 0.0m.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
                                     + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
                                                             .ConfigureAwait(false);
                         }
@@ -1027,7 +1028,7 @@ namespace Chummer
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
                         sbdFilter.Append('(')
-                            .Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
+                            .Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false))
                             .Append(')');
                         if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                                && (GlobalSettings.SearchInCategoryOnly

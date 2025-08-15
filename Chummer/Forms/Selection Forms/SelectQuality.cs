@@ -434,7 +434,8 @@ namespace Chummer
                             }
                         }
 
-                        if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) && !await _objCharacter.Settings.GetDontDoubleQualityPurchasesAsync(token).ConfigureAwait(false))
+                        CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
+                        if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) && !await objSettings.GetDontDoubleQualityPurchasesAsync(token).ConfigureAwait(false))
                         {
                             string strDoubleCostCareer = xmlQuality.SelectSingleNodeAndCacheExpression("doublecareer", token)?.Value;
                             if (string.IsNullOrEmpty(strDoubleCostCareer) || strDoubleCostCareer != bool.FalseString)
@@ -445,7 +446,7 @@ namespace Chummer
 
                         intBP *= await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
 
-                        int intKarmaCost = intBP * await _objCharacter.Settings.GetKarmaQualityAsync(token).ConfigureAwait(false);
+                        int intKarmaCost = intBP * await objSettings.GetKarmaQualityAsync(token).ConfigureAwait(false);
                         await lblBP.DoThreadSafeAsync(x => x.Text = intKarmaCost.ToString(GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
                         if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                         {
@@ -502,10 +503,11 @@ namespace Chummer
             string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
                                                   .ConfigureAwait(false) ?? string.Empty;
             string strFilter = string.Empty;
+            CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
                 sbdFilter.Append('(')
-                    .Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
+                    .Append(await objSettings.BookXPathAsync(token: token).ConfigureAwait(false))
                     .Append(')');
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                        && (GlobalSettings.SearchInCategoryOnly
@@ -551,7 +553,7 @@ namespace Chummer
                 {
                     string strValueBP = decValueBP.ToString(GlobalSettings.InvariantCultureInfo);
                     if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
-                        && !await _objCharacter.Settings.GetDontDoubleQualityPurchasesAsync(token).ConfigureAwait(false)
+                        && !await objSettings.GetDontDoubleQualityPurchasesAsync(token).ConfigureAwait(false)
                         && decValueBP > 0)
                     {
                         string strValueBPHalved = (decValueBP / 2).ToString(GlobalSettings.InvariantCultureInfo);
@@ -604,7 +606,7 @@ namespace Chummer
                                 = (intMax > 0 ? intMax - intMin : intMin - intMax).ToString(
                                     GlobalSettings.InvariantCultureInfo);
                             if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
-                                && !await _objCharacter.Settings.GetDontDoubleQualityPurchasesAsync(token)
+                                && !await objSettings.GetDontDoubleQualityPurchasesAsync(token)
                                     .ConfigureAwait(false))
                             {
                                 return "((doublecareer = 'False' or karma < 0) and ((karma >= " + strMin

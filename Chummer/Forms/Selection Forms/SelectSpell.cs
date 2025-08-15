@@ -296,7 +296,7 @@ namespace Chummer
                     string strFilter = string.Empty;
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
-                        sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
+                        sbdFilter.Append('(').Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
                         if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                                && (GlobalSettings.SearchInCategoryOnly
                                                                    || !blnHasSearch))
@@ -650,7 +650,7 @@ namespace Chummer
                     }, token: token).ConfigureAwait(false);
                 }
                 else if (xmlSpell.SelectSingleNodeAndCacheExpression("category", token)?.Value == "Detection"
-                         && await _objCharacter.Settings.GetExtendAnyDetectionSpellAsync(token).ConfigureAwait(false))
+                         && await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetExtendAnyDetectionSpellAsync(token).ConfigureAwait(false))
                 {
                     // If Extended Area was not found and the Extended checkbox is checked, add Extended Area to the list of Descriptors.
                     if (await chkExtended.DoThreadSafeFuncAsync(x =>

@@ -133,7 +133,7 @@ namespace Chummer.Backend.Skills
 
                     try
                     {
-                        CharacterSettings objSettings = _objCharacter.Settings;
+                        CharacterSettings objSettings = await _objCharacter.GetSettingsAsync().ConfigureAwait(false);
                         if (objSettings?.IsDisposed == false)
                             objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
                     }
@@ -2099,7 +2099,7 @@ namespace Chummer.Backend.Skills
                 lstProperties.Add(nameof(UpgradeKarmaCost));
             }
             else if (e.PropertyNames.Contains(nameof(Skill.Specializations)) &&
-                     await CharacterObject.Settings.GetSpecializationsBreakSkillGroupsAsync(token)
+                     await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetSpecializationsBreakSkillGroupsAsync(token)
                          .ConfigureAwait(false) && SkillList.Count > 1)
             {
                 Skill objFirstEnabledSkill = await SkillList

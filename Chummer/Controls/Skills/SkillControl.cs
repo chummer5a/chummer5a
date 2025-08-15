@@ -572,7 +572,7 @@ namespace Chummer.UI.Skills
                     {
                         if (strLoopAttribute == "MAGAdept")
                         {
-                            if (!await _objSkill.CharacterObject.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
+                            if (!await (await _objSkill.CharacterObject.GetSettingsAsync(_objMyToken).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
                                 continue;
                             lstAttributeItems.Add(new ListItem(strLoopAttribute,
                                                                await LanguageManager

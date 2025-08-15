@@ -670,7 +670,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
                            .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
-                                        await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)
+                                        await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false)
                                         + ')'
                                         + SkillFilter(eFilterOption, strName) + ']'))
                 {
@@ -1358,7 +1358,7 @@ namespace Chummer.Backend.Skills
                                                                            // ReSharper disable once MethodHasAsyncOverload
                                                                            ? _objCharacter.Settings.BookXPath(
                                                                                token: token)
-                                                                           : await _objCharacter.Settings
+                                                                           : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
                                                                                .BookXPathAsync(token: token)
                                                                                .ConfigureAwait(false)) + ')'
                                                                        + SkillFilter(FilterOption.NonSpecial) +
@@ -1867,7 +1867,7 @@ namespace Chummer.Backend.Skills
                                                + (blnSync
                                                    // ReSharper disable once MethodHasAsyncOverload
                                                    ? _objCharacter.Settings.BookXPath(token: token)
-                                                   : await _objCharacter.Settings.BookXPathAsync(token: token)
+                                                   : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token)
                                                        .ConfigureAwait(false)) + ')'
                                                + SkillFilter(FilterOption.NonSpecial) + ']'))
                                     {

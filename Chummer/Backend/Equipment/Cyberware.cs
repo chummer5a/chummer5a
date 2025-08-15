@@ -5626,27 +5626,30 @@ namespace Chummer.Backend.Equipment
                                                        && (await _objParent.GetParentAsync(token).ConfigureAwait(false) == null || await
                                                            (await _objParent.GetParentAsync(token).ConfigureAwait(false))
                                                            .GetInheritAttributesAsync(token).ConfigureAwait(false))
-                                                       && await _objParent.GetParentVehicleAsync(token).ConfigureAwait(false) == null
-                                                       && !await _objCharacter.Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false)
-                                                       && !(await _objCharacter.Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(await _objParent
-                                                           .GetLimbSlotAsync(token).ConfigureAwait(false)))
+                                                       && await _objParent.GetParentVehicleAsync(token).ConfigureAwait(false) == null)
                                 {
-                                    foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
-                                             s_AttributeAffectingCyberwares)
+                                    CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
+                                    if (!await objSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false)
+                                        && !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false))
+                                                .Contains(await _objParent.GetLimbSlotAsync(token).ConfigureAwait(false)))
                                     {
-                                        if (!kvpToCheck.Value.Contains(Name))
-                                            continue;
-                                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(
-                                                     kvpToCheck.Key, token: token))
+                                        foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
+                                                 s_AttributeAffectingCyberwares)
                                         {
-                                            if (!dicChangedProperties.TryGetValue(
-                                                    objCharacterAttrib, out HashSet<string> setChangedProperties))
+                                            if (!kvpToCheck.Value.Contains(Name))
+                                                continue;
+                                            foreach (CharacterAttrib objCharacterAttrib in await _objCharacter.GetAllAttributesAsync(
+                                                         kvpToCheck.Key, token: token).ConfigureAwait(false))
                                             {
-                                                setChangedProperties = Utils.StringHashSetPool.Get();
-                                                dicChangedProperties.Add(objCharacterAttrib, setChangedProperties);
-                                            }
+                                                if (!dicChangedProperties.TryGetValue(
+                                                        objCharacterAttrib, out HashSet<string> setChangedProperties))
+                                                {
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objCharacterAttrib, setChangedProperties);
+                                                }
 
-                                            setChangedProperties.Add(nameof(CharacterAttrib.TotalValue));
+                                                setChangedProperties.Add(nameof(CharacterAttrib.TotalValue));
+                                            }
                                         }
                                     }
                                 }
@@ -9017,13 +9020,13 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
+                CharacterSettings objSettings = blnSync ? _objCharacter.Settings : await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
                 decimal decTotalModifier = Math.Max(0, decESSMultiplier * decTotalESSMultiplier);
                 if (_objCharacter != null)
                 {
                     string strPostModifierExpression = blnSync
-                        ? _objCharacter.Settings.EssenceModifierPostExpression
-                        : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
-                            .GetEssenceModifierPostExpressionAsync(token).ConfigureAwait(false);
+                        ? objSettings.EssenceModifierPostExpression
+                        : await objSettings.GetEssenceModifierPostExpressionAsync(token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strPostModifierExpression) && strPostModifierExpression != "{Modifier}")
                     {
                         strPostModifierExpression = strPostModifierExpression.Replace("{Modifier}",
@@ -9071,13 +9074,13 @@ namespace Chummer.Backend.Equipment
                 decReturn *= decTotalModifier;
 
                 if (_objCharacter != null && !(blnSync
-                        ? _objCharacter.Settings.DontRoundEssenceInternally
-                        : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetDontRoundEssenceInternallyAsync(token).ConfigureAwait(false)))
+                        ? objSettings.DontRoundEssenceInternally
+                        : await objSettings.GetDontRoundEssenceInternallyAsync(token).ConfigureAwait(false)))
                 {
                     decReturn = decimal.Round(decReturn,
                         blnSync
-                            ? _objCharacter.Settings.EssenceDecimals
-                            : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetEssenceDecimalsAsync(token).ConfigureAwait(false),
+                            ? objSettings.EssenceDecimals
+                            : await objSettings.GetEssenceDecimalsAsync(token).ConfigureAwait(false),
                         MidpointRounding.AwayFromZero);
                 }
 
@@ -11714,7 +11717,8 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(ParentID))
                 {
                     Grade objGrade = Grade;
-                    if (_objCharacter.Settings.BannedWareGrades.Any(s => objGrade.Name.Contains(s)))
+                    HashSet<string> setBannedWareGrades = _objCharacter.Settings.BannedWareGrades;
+                    if (setBannedWareGrades.Contains(objGrade.Name) || objGrade.Name.ContainsAny(setBannedWareGrades))
                     {
                         sbdBannedItems.AppendLine().Append("\t\t").Append(CurrentDisplayName);
                     }
@@ -11741,8 +11745,8 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(ParentID))
                 {
                     Grade objGrade = await GetGradeAsync(token).ConfigureAwait(false);
-                    if ((await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BannedWareGrades.Any(
-                            s => objGrade.Name.Contains(s)))
+                    HashSet<string> setBannedWareGrades = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetBannedWareGradesAsync(token).ConfigureAwait(false);
+                    if (setBannedWareGrades.Contains(objGrade.Name) || objGrade.Name.ContainsAny(setBannedWareGrades))
                     {
                         sbdBannedItems.AppendLine().Append("\t\t")
                             .Append(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));

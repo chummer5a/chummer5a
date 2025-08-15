@@ -1216,14 +1216,18 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false)
-                       && (SkillGroupObject == null
-                           || await SkillGroupObject.GetBaseAsync(token).ConfigureAwait(false) <= 0
-                           || (CharacterObject.Settings.UsePointsOnBrokenGroups
-                               && (!await CharacterObject.Settings.GetStrictSkillGroupsInCreateModeAsync(token)
+                if (await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false))
+                {
+                    if (SkillGroupObject == null || await SkillGroupObject.GetBaseAsync(token).ConfigureAwait(false) <= 0)
+                        return true;
+                    CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                    return (await objSettings.GetUsePointsOnBrokenGroupsAsync(token).ConfigureAwait(false)
+                               && (!await objSettings.GetStrictSkillGroupsInCreateModeAsync(token)
                                        .ConfigureAwait(false)
                                    || await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
-                                   || await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))));
+                                   || await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false)));
+                }
+                return false;
             }
             finally
             {
@@ -1260,7 +1264,7 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (await CharacterObject.Settings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
+                if (await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
                     && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
                     && !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                 {
@@ -5355,8 +5359,8 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 int intPrice = IsKnowledgeSkill
-                    ? await CharacterObject.Settings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
-                    : await CharacterObject.Settings.GetKarmaSpecializationAsync(token).ConfigureAwait(false);
+                    ? await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
+                    : await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaSpecializationAsync(token).ConfigureAwait(false);
 
                 int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
                 decimal decSpecCostMultiplier = 1.0m;
@@ -7058,7 +7062,7 @@ namespace Chummer.Backend.Skills
                         (e.PropertyNames.Contains(nameof(CharacterSettings.CompensateSkillGroupKarmaDifference))
                          || ((e.PropertyNames.Contains(nameof(CharacterSettings.KarmaNewSkillGroup))
                               || e.PropertyNames.Contains(nameof(CharacterSettings.KarmaImproveSkillGroup)))
-                             && await CharacterObject.Settings.GetCompensateSkillGroupKarmaDifferenceAsync(token)
+                             && await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetCompensateSkillGroupKarmaDifferenceAsync(token)
                                  .ConfigureAwait(false))))
                     {
                         lstProperties.Add(nameof(RangeCost));
@@ -7883,8 +7887,8 @@ namespace Chummer.Backend.Skills
                     else
                     {
                         int intPrice = IsKnowledgeSkill
-                            ? await CharacterObject.Settings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
-                            : await CharacterObject.Settings.GetKarmaSpecializationAsync(token).ConfigureAwait(false);
+                            ? await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
+                            : await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaSpecializationAsync(token).ConfigureAwait(false);
 
                         int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
                         decimal decSpecCostMultiplier = 1.0m;
@@ -7946,8 +7950,8 @@ namespace Chummer.Backend.Skills
                 if (blnCreated)
                 {
                     int intPrice = IsKnowledgeSkill
-                        ? await CharacterObject.Settings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
-                        : await CharacterObject.Settings.GetKarmaSpecializationAsync(token).ConfigureAwait(false);
+                        ? await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
+                        : await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaSpecializationAsync(token).ConfigureAwait(false);
 
                     decimal decExtraSpecCost = 0;
                     int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);

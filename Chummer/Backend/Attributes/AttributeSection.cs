@@ -1378,7 +1378,7 @@ namespace Chummer.Backend.Attributes
                                     Math.Min(intOldMAGKarma,
                                         await objMag.GetKarmaMaximumAsync(token).ConfigureAwait(false)), token)
                                 .ConfigureAwait(false);
-                            if (await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync(token)
+                            if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token)
                                     .ConfigureAwait(false)
                                 && await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false))
                             {
@@ -3559,7 +3559,7 @@ namespace Chummer.Backend.Attributes
                     return true;
                 AttributeCategory eCategory = objAttribute.MetatypeCategory;
                 if (eCategory == AttributeCategory.Special
-                    || await _objCharacter.Settings.GetMaxNumberMaxAttributesCreateAsync(token).ConfigureAwait(false)
+                    || await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNumberMaxAttributesCreateAsync(token).ConfigureAwait(false)
                     >= await AttributeList.GetCountAsync(token).ConfigureAwait(false))
                     return true;
                 return await AttributeList.CountAsync(async x => x.MetatypeCategory == eCategory
@@ -3567,7 +3567,7 @@ namespace Chummer.Backend.Attributes
                                                                  && await x.GetAtMetatypeMaximumAsync(token)
                                                                            .ConfigureAwait(false), token)
                                           .ConfigureAwait(false)
-                       < await _objCharacter.Settings.GetMaxNumberMaxAttributesCreateAsync(token).ConfigureAwait(false);
+                       < await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNumberMaxAttributesCreateAsync(token).ConfigureAwait(false);
             }
             finally
             {

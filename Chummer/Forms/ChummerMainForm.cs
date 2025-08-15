@@ -1582,13 +1582,11 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                 try
                 {
+                    Character objSelectedCharacter = (tabForms.SelectedTab?.Tag as IHasCharacterObject)?.CharacterObject;
+                    CharacterSettings objSeletedSettings = objSelectedCharacter != null ? await objSelectedCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false) : null;
                     using (ThreadSafeForm<EditCharacterSettings> frmCharacterOptions =
                            await ThreadSafeForm<EditCharacterSettings>.GetAsync(() =>
-                               new EditCharacterSettings(
-                                   (tabForms.SelectedTab?.Tag as
-                                       CharacterShared)
-                                   ?.CharacterObject
-                                   ?.Settings), _objGenericToken).ConfigureAwait(false))
+                               new EditCharacterSettings(objSeletedSettings), _objGenericToken).ConfigureAwait(false))
                         await frmCharacterOptions.ShowDialogSafeAsync(this, _objGenericToken).ConfigureAwait(false);
                 }
                 finally

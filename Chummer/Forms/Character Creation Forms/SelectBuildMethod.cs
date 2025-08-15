@@ -31,8 +31,8 @@ namespace Chummer
     public sealed partial class SelectBuildMethod : Form, IHasCharacterObject
     {
         private readonly Character _objCharacter;
-        private readonly CharacterBuildMethod _eStartingBuildMethod;
         private readonly bool _blnForExistingCharacter;
+        private CharacterBuildMethod _eStartingBuildMethod;
         private int _intLoading = 1;
 
         private CancellationTokenSource _objProcessCharacterSettingIndexChangedCancellationTokenSource;
@@ -64,7 +64,6 @@ namespace Chummer
                 }
                 _objGenericCancellationTokenSource.Dispose();
             };
-            _eStartingBuildMethod = _objCharacter.Settings.BuildMethod;
             _blnForExistingCharacter = blnUseCurrentValues;
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -207,6 +206,7 @@ namespace Chummer
                         CharacterSettings objSelectSettings = null;
                         if (_blnForExistingCharacter)
                         {
+                            _eStartingBuildMethod = await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).GetBuildMethodAsync(_objGenericToken).ConfigureAwait(false);
                             IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
                                 = await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken).ConfigureAwait(false);
                             if (dicCharacterSettings.TryGetValue(

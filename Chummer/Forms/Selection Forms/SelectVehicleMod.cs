@@ -112,7 +112,7 @@ namespace Chummer
                 // Populate the Category list.
                 string strFilterPrefix = (VehicleMountMods
                     ? "weaponmountmods/mod[("
-                    : "mods/mod[(") + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and category = ";
+                    : "mods/mod[(") + await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false) + ") and category = ";
                 foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.SelectAndCacheExpression("modcategories/category"))
                 {
                     string strInnerText = objXmlCategory.Value;
@@ -296,7 +296,7 @@ namespace Chummer
         private async Task RefreshList(CancellationToken token = default)
         {
             string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
-            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false) + ')';
+            string strFilter = '(' + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + ')';
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (string.IsNullOrWhiteSpace(strSearch) || GlobalSettings.SearchInCategoryOnly))
                 strFilter += " and category = " + strCategory.CleanXPath();
@@ -698,8 +698,8 @@ namespace Chummer
                     decimal decItemCost = 0;
                     if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                     {
-                        string strCost = 0.0m.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
-                            GlobalSettings.CultureInfo) + strNuyen;
+                        string strCost = 0.0m.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
+                            + strNuyen;
                         await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token: token).ConfigureAwait(false);
                     }
                     else
@@ -731,11 +731,11 @@ namespace Chummer
                                                            GlobalSettings.InvariantCultureInfo);
                             }
 
+                            string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                             if (decMax == decimal.MaxValue)
                             {
                                 string strText =
-                                    decMin.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
-                                        GlobalSettings.CultureInfo) + strNuyen + '+';
+                                    decMin.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyen + '+';
                                 await lblCost.DoThreadSafeAsync(x => x.Text = strText, token: token)
                                     .ConfigureAwait(false);
                             }
@@ -744,10 +744,8 @@ namespace Chummer
                                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                     .ConfigureAwait(false);
                                 string strText =
-                                    decMin.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
-                                        GlobalSettings.CultureInfo) + strSpace + '-' + strSpace +
-                                    decMax.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
-                                        GlobalSettings.CultureInfo) + strNuyen;
+                                    decMin.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strSpace + '-' + strSpace +
+                                    decMax.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyen;
                                 await lblCost.DoThreadSafeAsync(x => x.Text = strText, token: token)
                                     .ConfigureAwait(false);
                             }
@@ -767,7 +765,7 @@ namespace Chummer
                             decItemCost *= 0.9m;
                         }
 
-                        string strText2 = decItemCost.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
+                        string strText2 = decItemCost.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false),
                                                                      GlobalSettings.CultureInfo)
                                                 + strNuyen;
                         await lblCost

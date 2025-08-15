@@ -915,7 +915,7 @@ namespace Chummer
                             lstAbbrevs.Remove("MAG");
                             lstAbbrevs.Remove("MAGAdept");
                         }
-                        else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
+                        else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
                             lstAbbrevs.Remove("MAGAdept");
 
                         if (!await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
@@ -1076,7 +1076,7 @@ namespace Chummer
                 lstAbbrevs.Remove("MAG");
                 lstAbbrevs.Remove("MAGAdept");
             }
-            else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
+            else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
                 lstAbbrevs.Remove("MAGAdept");
 
             if (!await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
@@ -1315,7 +1315,7 @@ namespace Chummer
                 lstAbbrevs.Remove("MAG");
                 lstAbbrevs.Remove("MAGAdept");
             }
-            else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
+            else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
                 lstAbbrevs.Remove("MAGAdept");
 
             if (!await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
@@ -1453,7 +1453,7 @@ namespace Chummer
                 lstAbbrevs.Remove("MAG");
                 lstAbbrevs.Remove("MAGAdept");
             }
-            else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
+            else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
                 lstAbbrevs.Remove("MAGAdept");
 
             if (!await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
@@ -2257,7 +2257,7 @@ namespace Chummer
                     lstAbbrevs.Remove("MAG");
                     lstAbbrevs.Remove("MAGAdept");
                 }
-                else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
+                else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
                     lstAbbrevs.Remove("MAGAdept");
 
                 if (!await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))

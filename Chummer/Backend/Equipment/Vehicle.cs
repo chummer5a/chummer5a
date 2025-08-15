@@ -3073,7 +3073,7 @@ namespace Chummer.Backend.Equipment
                 int intTotalSpeed = Speed;
                 int intBaseOffroadSpeed = OffroadSpeed;
                 int intTotalArmor = Armor;
-
+                CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
                 // First check for mods that overwrite the speed value or add to armor
                 await Mods.ForEachAsync(async objMod =>
                 {
@@ -3100,7 +3100,7 @@ namespace Chummer.Backend.Equipment
                                         "OffroadSpeed", false, token)
                                     .ConfigureAwait(false),
                                 intTotalSpeed);
-                    if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
+                    if (IsDrone && await objSettings.GetDroneModsAsync(token).ConfigureAwait(false))
                     {
                         strBonus = objMod.Bonus?["armor"]?.InnerText;
                         if (!string.IsNullOrEmpty(strBonus))
@@ -3137,7 +3137,7 @@ namespace Chummer.Backend.Equipment
                         intTotalBonusOffroadSpeed += await ParseBonusAsync(objMod.Bonus["offroadspeed"]?.InnerText,
                                 objMod, intTotalSpeed, "OffroadSpeed", token: token)
                             .ConfigureAwait(false);
-                        if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
+                        if (IsDrone && await objSettings.GetDroneModsAsync(token).ConfigureAwait(false))
                             intTemp += await ParseBonusAsync(objMod.Bonus["armor"]?.InnerText,
                                 objMod, intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
@@ -3150,7 +3150,7 @@ namespace Chummer.Backend.Equipment
                                 objMod.WirelessBonus["offroadspeed"]?.InnerText,
                                 objMod, intTotalSpeed, "OffroadSpeed", token: token)
                             .ConfigureAwait(false);
-                        if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
+                        if (IsDrone && await objSettings.GetDroneModsAsync(token).ConfigureAwait(false))
                             intTemp += await ParseBonusAsync(objMod.WirelessBonus["armor"]?.InnerText,
                                 objMod, intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
@@ -3300,7 +3300,7 @@ namespace Chummer.Backend.Equipment
                 int intTotalAccel = Accel;
                 int intBaseOffroadAccel = OffroadAccel;
                 int intTotalArmor = Armor;
-
+                CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
                 // First check for mods that overwrite the accel value or add to armor
                 await Mods.ForEachAsync(async objMod =>
                 {
@@ -3325,7 +3325,7 @@ namespace Chummer.Backend.Equipment
                                         token)
                                     .ConfigureAwait(false),
                                 intTotalAccel);
-                    if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
+                    if (IsDrone && await objSettings.GetDroneModsAsync(token).ConfigureAwait(false))
                     {
                         strBonus = objMod.Bonus?["armor"]?.InnerText;
                         if (!string.IsNullOrEmpty(strBonus))
@@ -3360,7 +3360,7 @@ namespace Chummer.Backend.Equipment
                             intTotalAccel, "Accel", token: token).ConfigureAwait(false);
                         intTotalBonusOffroadAccel += await ParseBonusAsync(objMod.Bonus["offroadaccel"]?.InnerText,
                             objMod, intTotalAccel, "OffroadAccel", token: token).ConfigureAwait(false);
-                        if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
+                        if (IsDrone && await objSettings.GetDroneModsAsync(token).ConfigureAwait(false))
                             intTemp += await ParseBonusAsync(objMod.Bonus["armor"]?.InnerText, objMod,
                                 intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
@@ -3373,7 +3373,7 @@ namespace Chummer.Backend.Equipment
                         intTotalBonusOffroadAccel += await ParseBonusAsync(
                             objMod.WirelessBonus["offroadaccel"]?.InnerText,
                             objMod, intTotalAccel, "OffroadAccel", token: token).ConfigureAwait(false);
-                        if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
+                        if (IsDrone && await objSettings.GetDroneModsAsync(token).ConfigureAwait(false))
                             intTemp += await ParseBonusAsync(objMod.WirelessBonus["armor"]?.InnerText, objMod,
                                 intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
@@ -3595,7 +3595,7 @@ namespace Chummer.Backend.Equipment
                 int intBaseHandling = Handling;
                 int intBaseOffroadHandling = OffroadHandling;
                 int intTotalArmor = Armor;
-
+                CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
                 // First check for mods that overwrite the handling value or add to armor
                 await Mods.ForEachAsync(async objMod =>
                 {
@@ -3621,7 +3621,7 @@ namespace Chummer.Backend.Equipment
                                 await ParseBonusAsync(strBonus, objMod, OffroadHandling, "OffroadHandling",
                                     false,
                                     token).ConfigureAwait(false), intBaseOffroadHandling);
-                    if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
+                    if (IsDrone && await objSettings.GetDroneModsAsync(token).ConfigureAwait(false))
                     {
                         strBonus = objMod.Bonus?["armor"]?.InnerText;
                         if (!string.IsNullOrEmpty(strBonus))
@@ -3658,7 +3658,7 @@ namespace Chummer.Backend.Equipment
                                 objMod.Bonus["offroadhandling"]?.InnerText,
                                 objMod, intBaseOffroadHandling, "OffroadHandling", token: token)
                             .ConfigureAwait(false);
-                        if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
+                        if (IsDrone && await objSettings.GetDroneModsAsync(token).ConfigureAwait(false))
                             intTemp += await ParseBonusAsync(objMod.Bonus["armor"]?.InnerText, objMod,
                                 intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
@@ -3670,7 +3670,7 @@ namespace Chummer.Backend.Equipment
                         intTotalBonusOffroadHandling += await ParseBonusAsync(
                             objMod.WirelessBonus["offroadhandling"]?.InnerText, objMod, intBaseOffroadHandling,
                             "OffroadHandling", token: token).ConfigureAwait(false);
-                        if (IsDrone && await _objCharacter.Settings.GetDroneModsAsync(token).ConfigureAwait(false))
+                        if (IsDrone && await objSettings.GetDroneModsAsync(token).ConfigureAwait(false))
                             intTemp += await ParseBonusAsync(objMod.WirelessBonus["armor"]?.InnerText, objMod,
                                 intTotalArmor, "Armor", token: token).ConfigureAwait(false);
                     }
@@ -4765,7 +4765,7 @@ namespace Chummer.Backend.Equipment
         public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
+            if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookEnabledAsync(Source, token).ConfigureAwait(false))
                 return null;
 
             TreeNode objNode = new TreeNode

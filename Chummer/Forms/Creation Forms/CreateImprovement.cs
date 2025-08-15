@@ -267,7 +267,7 @@ namespace Chummer
                             lstAbbrevs.Remove("MAG");
                             lstAbbrevs.Remove("MAGAdept");
                         }
-                        else if (!await _objCharacter.GetIsMysticAdeptAsync().ConfigureAwait(false) || !await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync().ConfigureAwait(false))
+                        else if (!await _objCharacter.GetIsMysticAdeptAsync().ConfigureAwait(false) || !await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync().ConfigureAwait(false))
                             lstAbbrevs.Remove("MAGAdept");
                         if (!await _objCharacter.GetRESEnabledAsync().ConfigureAwait(false))
                             lstAbbrevs.Remove("RES");

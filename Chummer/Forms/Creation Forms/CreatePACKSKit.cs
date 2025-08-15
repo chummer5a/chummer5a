@@ -219,7 +219,7 @@ namespace Chummer
                             await objWriter
                                 .WriteElementStringAsync("mag", intMAG.ToString(GlobalSettings.InvariantCultureInfo))
                                 .ConfigureAwait(false);
-                            if (await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync()
+                            if (await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync()
                                     .ConfigureAwait(false) &&
                                 await _objCharacter.GetIsMysticAdeptAsync().ConfigureAwait(false))
                                 await objWriter.WriteElementStringAsync("magadept",
@@ -661,38 +661,35 @@ namespace Chummer
                         {
                             // <lifestyle>
                             await objWriter.WriteStartElementAsync("lifestyle").ConfigureAwait(false);
-                            await objWriter.WriteElementStringAsync("name", objLifestyle.Name).ConfigureAwait(false);
+                            await objWriter.WriteElementStringAsync("name", await objLifestyle.GetNameAsync().ConfigureAwait(false)).ConfigureAwait(false);
                             await objWriter
                                 .WriteElementStringAsync(
                                     "months",
                                     (await objLifestyle.GetIncrementsAsync().ConfigureAwait(false)).ToString(
                                         GlobalSettings.InvariantCultureInfo))
                                 .ConfigureAwait(false);
-                            if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
+                            if (!string.IsNullOrEmpty(await objLifestyle.GetBaseLifestyleAsync().ConfigureAwait(false)))
                             {
                                 // This is an Advanced Lifestyle, so write out its properties.
                                 await objWriter
                                     .WriteElementStringAsync(
                                         "cost",
-                                        objLifestyle.Cost.ToString(_objCharacter.Settings.NuyenFormat,
-                                            GlobalSettings.CultureInfo)).ConfigureAwait(false);
+                                        (await objLifestyle.GetCostAsync().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                                 await objWriter
                                     .WriteElementStringAsync(
-                                        "dice", objLifestyle.Dice.ToString(GlobalSettings.InvariantCultureInfo))
+                                        "dice", (await objLifestyle.GetDiceAsync().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo))
                                     .ConfigureAwait(false);
                                 await objWriter
                                     .WriteElementStringAsync("multiplier",
-                                        objLifestyle.Multiplier.ToString(
-                                            _objCharacter.Settings.NuyenFormat,
-                                            GlobalSettings.CultureInfo)).ConfigureAwait(false);
-                                await objWriter.WriteElementStringAsync("baselifestyle", objLifestyle.BaseLifestyle)
+                                        (await objLifestyle.GetMultiplierAsync().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                                await objWriter.WriteElementStringAsync("baselifestyle", await objLifestyle.GetBaseLifestyleAsync().ConfigureAwait(false))
                                     .ConfigureAwait(false);
                                 if (await objLifestyle.LifestyleQualities.GetCountAsync().ConfigureAwait(false) > 0)
                                 {
                                     // <qualities>
                                     await objWriter.WriteStartElementAsync("qualities").ConfigureAwait(false);
-                                    foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
-                                        await objWriter.WriteElementStringAsync("quality", objQuality.Name)
+                                    await objLifestyle.LifestyleQualities.ForEachAsync(async objQuality =>
+                                        await objWriter.WriteElementStringAsync("quality", await objQuality.GetNameAsync().ConfigureAwait(false)).ConfigureAwait(false))
                                             .ConfigureAwait(false);
                                     // </qualities>
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);

@@ -3591,7 +3591,7 @@ namespace Chummer
             if (e.PropertyName == nameof(Character.IsMysticAdept))
             {
                 await SetMAGAttributeObjectAsync(
-                    await CharacterObject.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
+                    await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
                     && await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false)
                         ? await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false)
                         : await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -3605,7 +3605,7 @@ namespace Chummer
                 || e.PropertyNames.Contains(nameof(CharacterSettings.IncreasedImprovedAbilityMultiplier)))
             {
                 await SetMAGAttributeObjectAsync(
-                        await CharacterObject.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
+                        await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
                         && await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false)
                             ? await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false)
                             : await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false), token)

@@ -108,7 +108,7 @@ namespace Chummer
                 string strFilter = string.Empty;
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
-                    sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
+                    sbdFilter.Append('(').Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false))
                              .Append(
                                  ") and (mount = \"\"");
                     foreach (string strAllowedMount in _lstAllowedMounts.Where(
@@ -564,10 +564,11 @@ namespace Chummer
                                          out decMin);
                     }
 
+                    string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                     if (decMax == decimal.MaxValue)
                     {
                         await lblCost.DoThreadSafeAsync(
-                                         x => x.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat,
+                                         x => x.Text = decMin.ToString(strNuyenFormat,
                                                                        GlobalSettings.CultureInfo)
                                                        + strNuyen + '+',
                                          token: token)
@@ -578,9 +579,9 @@ namespace Chummer
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                .ConfigureAwait(false);
                         await lblCost.DoThreadSafeAsync(
-                                         x => x.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat,
+                                         x => x.Text = decMin.ToString(strNuyenFormat,
                                                                        GlobalSettings.CultureInfo) + strSpace + '-'
-                                                       + strSpace + decMax.ToString(_objCharacter.Settings.NuyenFormat,
+                                                       + strSpace + decMax.ToString(strNuyenFormat,
                                                            GlobalSettings.CultureInfo)
                                                        + strNuyen, token: token)
                                      .ConfigureAwait(false);
@@ -620,11 +621,11 @@ namespace Chummer
                         }
                     }
 
+                    string strCostText = decCost.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
+                                        + strNuyen;
                     await lblCost
                           .DoThreadSafeAsync(
-                              x => x.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat,
-                                                             GlobalSettings.CultureInfo)
-                                            + strNuyen, token: token)
+                              x => x.Text = strCostText, token: token)
                           .ConfigureAwait(false);
                     string strTest = await _objCharacter.AvailTestAsync(decCost, strAvail, token: token)
                                                         .ConfigureAwait(false);
@@ -633,10 +634,11 @@ namespace Chummer
             }
             else
             {
+                string strCostText = 0.0m.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
+                                        + strNuyen;
                 await lblCost
                       .DoThreadSafeAsync(
-                          x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                        + strNuyen, token: token)
+                          x => x.Text = strCostText, token: token)
                       .ConfigureAwait(false);
                 string strTest = await _objCharacter.AvailTestAsync(0, strAvail, token: token).ConfigureAwait(false);
                 await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token).ConfigureAwait(false);

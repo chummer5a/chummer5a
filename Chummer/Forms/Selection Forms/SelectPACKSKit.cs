@@ -185,6 +185,7 @@ namespace Chummer
                 return;
 
             string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
+            string strBookXPath = await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false);
             foreach (XPathNavigator objXmlItem in objXmlPack.SelectChildren(XPathNodeType.Element))
             {
                 if (objXmlItem.SelectSingleNodeAndCacheExpression("hide") != null)
@@ -214,7 +215,7 @@ namespace Chummer
                         {
                             if (objXmlQuality.SelectSingleNodeAndCacheExpression("hide") != null)
                                 continue;
-                            XPathNavigator objNode = _xmlQualitiesBaseQualitiesNode.SelectSingleNode("quality[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + objXmlQuality.Value.CleanXPath() + ']');
+                            XPathNavigator objNode = _xmlQualitiesBaseQualitiesNode.SelectSingleNode("quality[(" + strBookXPath + ") and name = " + objXmlQuality.Value.CleanXPath() + ']');
                             if (objNode == null)
                                 continue;
                             string strText = objNode.SelectSingleNodeAndCacheExpression("translate")?.Value
@@ -234,7 +235,7 @@ namespace Chummer
                         {
                             if (objXmlQuality.SelectSingleNodeAndCacheExpression("hide") != null)
                                 continue;
-                            XPathNavigator objNode = _xmlQualitiesBaseQualitiesNode.SelectSingleNode("quality[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + objXmlQuality.Value.CleanXPath() + ']');
+                            XPathNavigator objNode = _xmlQualitiesBaseQualitiesNode.SelectSingleNode("quality[(" + strBookXPath + ") and name = " + objXmlQuality.Value.CleanXPath() + ']');
                             if (objNode == null)
                                 continue;
                             string strText = objNode.SelectSingleNodeAndCacheExpression("translate")?.Value
@@ -357,7 +358,7 @@ namespace Chummer
                             if (objXmlArt.SelectSingleNodeAndCacheExpression("hide") != null)
                                 continue;
                             string strName = objXmlArt.SelectSingleNodeAndCacheExpression("name").Value;
-                            XPathNavigator objNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("martialarts/martialart[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strName.CleanXPath() + ']');
+                            XPathNavigator objNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("martialarts/martialart[(" + strBookXPath + ") and name = " + strName.CleanXPath() + ']');
                             if (objNode == null)
                                 continue;
                             string strText = (objNode != null
@@ -376,7 +377,7 @@ namespace Chummer
                                 if (xmlTechnique.SelectSingleNodeAndCacheExpression("hide") != null)
                                     continue;
                                 string strTechniqueName = xmlTechnique.SelectSingleNodeAndCacheExpression("name").Value;
-                                XPathNavigator objChildNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("techniques/technique[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strTechniqueName.CleanXPath() + ']');
+                                XPathNavigator objChildNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("techniques/technique[(" + strBookXPath + ") and name = " + strTechniqueName.CleanXPath() + ']');
                                 if (objNode == null)
                                     continue;
                                 TreeNode objChildChild = new TreeNode
@@ -397,7 +398,7 @@ namespace Chummer
                                 if (objXmlPower.SelectSingleNodeAndCacheExpression("hide") != null)
                                     continue;
                                 string strName = objXmlPower.SelectSingleNodeAndCacheExpression("name").Value;
-                                XPathNavigator objNode = _xmlPowersBasePowersNode.SelectSingleNode("power[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strName.CleanXPath() + ']');
+                                XPathNavigator objNode = _xmlPowersBasePowersNode.SelectSingleNode("power[(" + strBookXPath + ") and name = " + strName.CleanXPath() + ']');
                                 if (objNode == null)
                                     continue;
                                 string strText = objNode.SelectSingleNodeAndCacheExpression("translate")?.Value
@@ -423,7 +424,7 @@ namespace Chummer
                             if (objXmlProgram.SelectSingleNodeAndCacheExpression("hide") != null)
                                 continue;
                             string strName = objXmlProgram.SelectSingleNodeAndCacheExpression("name").Value;
-                            XPathNavigator objNode = _xmlComplexFormsBaseChummerNode.SelectSingleNode("complexforms/complexform[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strName.CleanXPath() + ']');
+                            XPathNavigator objNode = _xmlComplexFormsBaseChummerNode.SelectSingleNode("complexforms/complexform[(" + strBookXPath + ") and name = " + strName.CleanXPath() + ']');
                             if (objNode == null)
                                 continue;
                             string strText = (objNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName)
@@ -439,7 +440,7 @@ namespace Chummer
                                 if (objXmlOption.SelectSingleNodeAndCacheExpression("hide") != null)
                                     continue;
                                 string strOptionName = objXmlOption.SelectSingleNodeAndCacheExpression("name").Value;
-                                XPathNavigator objChildNode = _xmlComplexFormsBaseChummerNode.SelectSingleNode("options/option[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strOptionName.CleanXPath() + ']');
+                                XPathNavigator objChildNode = _xmlComplexFormsBaseChummerNode.SelectSingleNode("options/option[(" + strBookXPath + ") and name = " + strOptionName.CleanXPath() + ']');
                                 if (objNode == null)
                                     continue;
                                 string strInnerText = objChildNode.SelectSingleNodeAndCacheExpression("translate")?.Value
@@ -464,7 +465,7 @@ namespace Chummer
                             if (objXmlSpell.SelectSingleNodeAndCacheExpression("hide") != null)
                                 continue;
                             string strName = objXmlSpell.Value;
-                            XPathNavigator objNode = _xmlSpellsBaseSpellsNode.SelectSingleNode("spell[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strName.CleanXPath() + ']');
+                            XPathNavigator objNode = _xmlSpellsBaseSpellsNode.SelectSingleNode("spell[(" + strBookXPath + ") and name = " + strName.CleanXPath() + ']');
                             if (objNode.SelectSingleNodeAndCacheExpression("hide") == null)
                                 continue;
                             string strText = (objNode != null
@@ -558,7 +559,7 @@ namespace Chummer
                             if (objXmlCyberware.SelectSingleNodeAndCacheExpression("hide") != null)
                                 continue;
                             string strName = objXmlCyberware.SelectSingleNodeAndCacheExpression("name").Value;
-                            XPathNavigator objNode = _xmlCyberwareBaseChummerNode.SelectSingleNode("cyberwares/cyberware[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strName.CleanXPath() + ']');
+                            XPathNavigator objNode = _xmlCyberwareBaseChummerNode.SelectSingleNode("cyberwares/cyberware[(" + strBookXPath + ") and name = " + strName.CleanXPath() + ']');
                             if (objNode == null)
                                 continue;
                             string strText = objNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName;
@@ -576,7 +577,7 @@ namespace Chummer
                                 if (objXmlChild.SelectSingleNodeAndCacheExpression("hide") != null)
                                     continue;
                                 string strChildName = objXmlChild.SelectSingleNodeAndCacheExpression("name").Value;
-                                XPathNavigator objChildNode = _xmlCyberwareBaseChummerNode.SelectSingleNode("cyberwares/cyberware[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strChildName.CleanXPath() + ']');
+                                XPathNavigator objChildNode = _xmlCyberwareBaseChummerNode.SelectSingleNode("cyberwares/cyberware[(" + strBookXPath + ") and name = " + strChildName.CleanXPath() + ']');
                                 if (objChildNode == null)
                                     continue;
                                 string strInnerText
@@ -606,7 +607,7 @@ namespace Chummer
                             if (objXmlBioware.SelectSingleNodeAndCacheExpression("hide") != null)
                                 continue;
                             string strName = objXmlBioware.SelectSingleNodeAndCacheExpression("name").Value;
-                            XPathNavigator objNode = _xmlBiowareBaseChummerNode.SelectSingleNode("biowares/bioware[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strName.CleanXPath() + ']');
+                            XPathNavigator objNode = _xmlBiowareBaseChummerNode.SelectSingleNode("biowares/bioware[(" + strBookXPath + ") and name = " + strName.CleanXPath() + ']');
                             if (objNode == null)
                                 continue;
                             string strText = objNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName;
@@ -624,7 +625,7 @@ namespace Chummer
                                 if (objXmlChild.SelectSingleNodeAndCacheExpression("hide") != null)
                                     continue;
                                 string strChildName = objXmlChild.SelectSingleNodeAndCacheExpression("name").Value;
-                                XPathNavigator objChildNode = _xmlBiowareBaseChummerNode.SelectSingleNode("biowares/bioware[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strChildName.CleanXPath() + ']');
+                                XPathNavigator objChildNode = _xmlBiowareBaseChummerNode.SelectSingleNode("biowares/bioware[(" + strBookXPath + ") and name = " + strChildName.CleanXPath() + ']');
                                 if (objChildNode == null)
                                     continue;
                                 string strInnerText
@@ -660,7 +661,7 @@ namespace Chummer
                             if (objXmlArmor.SelectSingleNodeAndCacheExpression("hide") != null)
                                 continue;
                             string strName = objXmlArmor.SelectSingleNodeAndCacheExpression("name").Value;
-                            XPathNavigator objNode = _xmlArmorBaseChummerNode.SelectSingleNode("armors/armor[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strName.CleanXPath() + ']');
+                            XPathNavigator objNode = _xmlArmorBaseChummerNode.SelectSingleNode("armors/armor[(" + strBookXPath + ") and name = " + strName.CleanXPath() + ']');
                             if (objNode == null)
                                 continue;
                             TreeNode objChild = new TreeNode
@@ -673,7 +674,7 @@ namespace Chummer
                                 if (objXmlChild.SelectSingleNodeAndCacheExpression("hide") != null)
                                     continue;
                                 string strChildName = objXmlChild.SelectSingleNodeAndCacheExpression("name").Value;
-                                XPathNavigator objChildNode = _xmlArmorBaseChummerNode.SelectSingleNode("mods/mod[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strChildName.CleanXPath() + ']');
+                                XPathNavigator objChildNode = _xmlArmorBaseChummerNode.SelectSingleNode("mods/mod[(" + strBookXPath + ") and name = " + strChildName.CleanXPath() + ']');
                                 if (objChildNode == null)
                                     continue;
                                 string strText = objChildNode.SelectSingleNodeAndCacheExpression("translate")?.Value
@@ -702,7 +703,7 @@ namespace Chummer
                             if (objXmlWeapon.SelectSingleNodeAndCacheExpression("hide") != null)
                                 continue;
                             string strName = objXmlWeapon.SelectSingleNodeAndCacheExpression("name").Value;
-                            XPathNavigator objNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strName.CleanXPath() + ']');
+                            XPathNavigator objNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + strBookXPath + ") and name = " + strName.CleanXPath() + ']');
                             if (objNode == null)
                                 continue;
                             TreeNode objChild = new TreeNode
@@ -715,7 +716,7 @@ namespace Chummer
                                 if (objXmlAccessory.SelectSingleNodeAndCacheExpression("hide") != null)
                                     continue;
                                 strName = objXmlAccessory.SelectSingleNodeAndCacheExpression("name").Value;
-                                XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("accessories/accessory[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strName.CleanXPath() + ']');
+                                XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("accessories/accessory[(" + strBookXPath + ") and name = " + strName.CleanXPath() + ']');
                                 if (objChildNode == null)
                                     continue;
                                 string strText = objChildNode.SelectSingleNodeAndCacheExpression("translate")?.Value
@@ -738,7 +739,7 @@ namespace Chummer
                                 if (objXmlWeapon.SelectSingleNodeAndCacheExpression("hide") != null)
                                     continue;
 
-                                XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strName.CleanXPath() + ']');
+                                XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + strBookXPath + ") and name = " + strName.CleanXPath() + ']');
                                 if (objChildNode == null)
                                     continue;
                                 TreeNode objChildChild = new TreeNode
@@ -768,7 +769,7 @@ namespace Chummer
                             if (objXmlVehicle.SelectSingleNodeAndCacheExpression("hide") != null)
                                 continue;
                             string strName = objXmlVehicle.SelectSingleNodeAndCacheExpression("name").Value;
-                            XPathNavigator objNode = _xmlVehiclesBaseChummerNode.SelectSingleNode("vehicles/vehicle[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strName.CleanXPath() + ']');
+                            XPathNavigator objNode = _xmlVehiclesBaseChummerNode.SelectSingleNode("vehicles/vehicle[(" + strBookXPath + ") and name = " + strName.CleanXPath() + ']');
                             if (objNode == null)
                                 continue;
                             TreeNode objChild = new TreeNode
@@ -781,7 +782,7 @@ namespace Chummer
                                 if (objXmlMod.SelectSingleNodeAndCacheExpression("hide") != null)
                                     continue;
                                 strName = objXmlMod.SelectSingleNodeAndCacheExpression("name").Value;
-                                XPathNavigator objChildNode = _xmlVehiclesBaseChummerNode.SelectSingleNode("mods/mod[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strName.CleanXPath() + ']');
+                                XPathNavigator objChildNode = _xmlVehiclesBaseChummerNode.SelectSingleNode("mods/mod[(" + strBookXPath + ") and name = " + strName.CleanXPath() + ']');
                                 if (objChildNode == null)
                                     continue;
                                 string strText = objChildNode.SelectSingleNodeAndCacheExpression("translate")?.Value
@@ -808,7 +809,7 @@ namespace Chummer
                                 if (objXmlWeapon.SelectSingleNodeAndCacheExpression("hide") != null)
                                     continue;
                                 strName = objXmlWeapon.SelectSingleNodeAndCacheExpression("name").Value;
-                                XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strName.CleanXPath() + ']');
+                                XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + strBookXPath + ") and name = " + strName.CleanXPath() + ']');
                                 if (objChildNode == null)
                                     continue;
                                 TreeNode objChildChild = new TreeNode
@@ -968,49 +969,51 @@ namespace Chummer
             Close();
         }
 
-        private async Task WriteGear(XPathNavigator objXmlGear, TreeNode objParent)
+        private async Task WriteGear(XPathNavigator objXmlGear, TreeNode objParent, CancellationToken token = default)
         {
-            XPathNavigator xmlNameNode = objXmlGear.SelectSingleNodeAndCacheExpression("name");
+            token.ThrowIfCancellationRequested();
+            XPathNavigator xmlNameNode = objXmlGear.SelectSingleNodeAndCacheExpression("name", token);
             string strName = xmlNameNode?.Value ?? string.Empty;
-            string strCategory = objXmlGear.SelectSingleNodeAndCacheExpression("category")?.Value;
+            string strCategory = objXmlGear.SelectSingleNodeAndCacheExpression("category", token)?.Value;
+            string strFilter = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false);
             XPathNavigator objNode = !string.IsNullOrEmpty(strCategory)
-                ? _xmlGearsBaseGearsNode.SelectSingleNode("gear[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strName.CleanXPath() + " and category = " + strCategory.CleanXPath() + ']')
-                : _xmlGearsBaseGearsNode.SelectSingleNode("gear[(" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and name = " + strName.CleanXPath() + ']');
+                ? _xmlGearsBaseGearsNode.SelectSingleNode("gear[(" + strFilter + ") and name = " + strName.CleanXPath() + " and category = " + strCategory.CleanXPath() + ']')
+                : _xmlGearsBaseGearsNode.SelectSingleNode("gear[(" + strFilter + ") and name = " + strName.CleanXPath() + ']');
 
             if (objNode != null)
             {
                 TreeNode objChild = new TreeNode
                 {
-                    Text = objNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName
+                    Text = objNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? strName
                 };
 
-                string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
 
                 string strExtra = xmlNameNode != null
-                    ? xmlNameNode.SelectSingleNodeAndCacheExpression("@select")?.Value
+                    ? xmlNameNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
                     : string.Empty;
                 if (!string.IsNullOrEmpty(strExtra))
                     objChild.Text += strSpace + '(' + strExtra + ')';
-                strExtra = objXmlGear.SelectSingleNodeAndCacheExpression("rating")?.Value;
+                strExtra = objXmlGear.SelectSingleNodeAndCacheExpression("rating", token)?.Value;
                 if (!string.IsNullOrEmpty(strExtra))
-                    objChild.Text += strSpace + await LanguageManager.GetStringAsync("String_Rating").ConfigureAwait(false) + strSpace + strExtra;
-                strExtra = objXmlGear.SelectSingleNodeAndCacheExpression("qty")?.Value;
+                    objChild.Text += strSpace + await LanguageManager.GetStringAsync("String_Rating", token: token).ConfigureAwait(false) + strSpace + strExtra;
+                strExtra = objXmlGear.SelectSingleNodeAndCacheExpression("qty", token)?.Value;
                 if (!string.IsNullOrEmpty(strExtra))
                     objChild.Text += strSpace + '×' + strExtra;
 
                 if (objParent.TreeView != null)
-                    await objParent.TreeView.DoThreadSafeAsync(() => objParent.Nodes.Add(objChild)).ConfigureAwait(false);
+                    await objParent.TreeView.DoThreadSafeAsync(() => objParent.Nodes.Add(objChild), token).ConfigureAwait(false);
                 else
                     objParent.Nodes.Add(objChild);
 
                 // Check for children.
-                foreach (XPathNavigator objXmlChild in objXmlGear.SelectAndCacheExpression("gears/gear"))
+                foreach (XPathNavigator objXmlChild in objXmlGear.SelectAndCacheExpression("gears/gear", token))
                 {
-                    await WriteGear(objXmlChild, objChild).ConfigureAwait(false);
+                    await WriteGear(objXmlChild, objChild, token).ConfigureAwait(false);
                 }
 
                 if (objChild.TreeView != null)
-                    await objChild.TreeView.DoThreadSafeAsync(() => objChild.Expand()).ConfigureAwait(false);
+                    await objChild.TreeView.DoThreadSafeAsync(() => objChild.Expand(), token).ConfigureAwait(false);
                 else
                     objChild.Expand();
             }

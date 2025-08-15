@@ -143,12 +143,13 @@ namespace Chummer
             string strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
             if (string.IsNullOrEmpty(strSelectedCategory))
                 return;
+            CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
             XPathNodeIterator xmlWeaponList = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false))
                                                            .Select("/chummer/weapons/weapon[(category = "
                                                                    + (strSelectedCategory + 's').CleanXPath()
                                                                    + " or useskill = "
                                                                    + strSelectedCategory.CleanXPath() + ") and ("
-                                                                   + await _objCharacter.Settings.BookXPathAsync(false, token).ConfigureAwait(false) + ")]");
+                                                                   + await objSettings.BookXPathAsync(false, token).ConfigureAwait(false) + ")]");
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkillSpecializations))
             {
                 if (xmlWeaponList.Count > 0)
@@ -169,7 +170,7 @@ namespace Chummer
                 foreach (XPathNavigator xmlSpec in (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
                                                                 .Select("/chummer/skills/skill[name = "
                                                                         + strSelectedCategory.CleanXPath() + " and ("
-                                                                        + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)
+                                                                        + await objSettings.BookXPathAsync(token: token).ConfigureAwait(false)
                                                                         + ")]/specs/spec"))
                 {
                     string strName = xmlSpec.Value;

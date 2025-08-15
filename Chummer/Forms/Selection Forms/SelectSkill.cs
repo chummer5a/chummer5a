@@ -79,7 +79,7 @@ namespace Chummer
                         objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill[name = "
                                                                  + strForcedExoticSkillName.CleanXPath()
                                                                  + " and exotic = 'True' and ("
-                                                                 + await _objCharacter.Settings.BookXPathAsync()
+                                                                 + await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync()
                                                                      .ConfigureAwait(false) + ")]");
                     }
                     else
@@ -87,7 +87,7 @@ namespace Chummer
                         objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill[name = "
                                                                  + _strForceSkill.CleanXPath()
                                                                  + " and not(exotic = 'True') and ("
-                                                                 + await _objCharacter.Settings.BookXPathAsync()
+                                                                 + await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync()
                                                                      .ConfigureAwait(false) + ")]");
                     }
                 }
@@ -96,7 +96,7 @@ namespace Chummer
                     objXmlSkillList = _objXmlDocument.Select(
                         "/chummer/skills/skill["
                         + _strLimitToCategories + " and ("
-                        + await _objCharacter.Settings.BookXPathAsync()
+                        + await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync()
                                              .ConfigureAwait(false) + ")]");
                 }
                 else
@@ -108,7 +108,7 @@ namespace Chummer
                         if (_intMinimumRating > 0)
                             sbdFilter.Append("not(exotic = 'True') and ");
                         sbdFilter.Append('(')
-                                 .Append(await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false))
+                                 .Append(await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false))
                                  .Append(')');
                         if (!string.IsNullOrEmpty(_strIncludeCategory))
                         {
@@ -561,12 +561,13 @@ namespace Chummer
             {
                 if (_intMinimumRating <= 0)
                 {
+                    CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
                     XPathNodeIterator xmlWeaponList = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false))
                         .Select("/chummer/weapons/weapon[(category = "
                                 + (strSelectedCategory + 's').CleanXPath()
                                 + " or useskill = "
                                 + strSelectedCategory.CleanXPath() + ") and ("
-                                + await _objCharacter.Settings.BookXPathAsync(false, token).ConfigureAwait(false) + ")]");
+                                + await objSettings.BookXPathAsync(false, token).ConfigureAwait(false) + ")]");
                     if (xmlWeaponList.Count > 0)
                     {
                         foreach (XPathNavigator xmlWeapon in xmlWeaponList)
@@ -587,7 +588,7 @@ namespace Chummer
                                                               .ConfigureAwait(false))
                              .Select("/chummer/skills/skill[name = "
                                      + strSelectedCategory.CleanXPath() + " and ("
-                                     + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)
+                                     + await objSettings.BookXPathAsync(token: token).ConfigureAwait(false)
                                      + ")]/specs/spec"))
                     {
                         string strName = xmlSpec.Value;

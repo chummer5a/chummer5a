@@ -22186,8 +22186,9 @@ namespace Chummer
                                                .ConfigureAwait(false);
                             await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                      .ConfigureAwait(false);
+                            string strSlotsText;
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdSlotsText))
+                                                                        out StringBuilder sbdSlotsText))
                             {
                                 sbdSlotsText.Append(objSelectedAccessory.Mount);
                                 if (sbdSlotsText.Length > 0
@@ -22242,12 +22243,13 @@ namespace Chummer
                                 }
     
                                 token.ThrowIfCancellationRequested();
-                                await lblWeaponSlots.DoThreadSafeAsync(x =>
-                                {
-                                    x.Text = sbdSlotsText.ToString();
-                                    x.Visible = true;
-                                }, token).ConfigureAwait(false);
+                                strSlotsText = sbdSlotsText.ToString();
                             }
+                            await lblWeaponSlots.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = strSlotsText;
+                                x.Visible = true;
+                            }, token).ConfigureAwait(false);
 
                             token.ThrowIfCancellationRequested();
                             decimal decConceal = await objSelectedAccessory.GetTotalConcealabilityAsync(token).ConfigureAwait(false);
@@ -25928,6 +25930,9 @@ namespace Chummer
                                                  "String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                                 .ConfigureAwait(false);
+                            await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
+                                                    .ConfigureAwait(false);
+                            string strMountText;
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdMount))
                             {
@@ -25975,17 +25980,16 @@ namespace Chummer
                                                                             .ConfigureAwait(false)).Append(')');
                                 }
 
-                                await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                        .ConfigureAwait(false);
-                                await lblVehicleSlots.DoThreadSafeAsync(x =>
-                                {
-                                    x.Visible = true;
-                                    x.Text = sbdMount.ToString();
-                                }, token).ConfigureAwait(false);
+                                strMountText = sbdMount.ToString();
                             }
+                            await lblVehicleSlots.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = strMountText;
+                                x.Visible = true;
+                            }, token).ConfigureAwait(false);
 
                             await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                           .ConfigureAwait(false);
+                                                        .ConfigureAwait(false);
                             await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false, token)
                                                                 .ConfigureAwait(false);
                             await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x =>

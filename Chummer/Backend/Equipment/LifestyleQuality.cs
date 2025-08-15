@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -648,7 +649,7 @@ namespace Chummer.Backend.Equipment
                     await objWriter.WriteElementStringAsync("lp", (await GetLPCostAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
-                            "cost", (await GetCostAsync(token).ConfigureAwait(false)).ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), objCulture), token)
+                            "cost", (await GetCostAsync(token).ConfigureAwait(false)).ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false), objCulture), token)
                         .ConfigureAwait(false);
                     string strLifestyleQualityType = Type.ToString();
                     if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -1426,26 +1427,30 @@ namespace Chummer.Backend.Equipment
             {
                 if (CostFree)
                     return LanguageManager.GetString("Checkbox_Free", strLanguage);
-                string strReturn = string.Empty;
                 if (objCulture == null)
                     objCulture = GlobalSettings.CultureInfo;
-                int intMultiplier = Multiplier;
-                if (intMultiplier != 0)
+                string strReturn;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
-                    if (intMultiplier > 0)
-                        strReturn = "+";
-                    strReturn += intMultiplier.ToString(objCulture) + '%';
-                }
+                    int intMultiplier = Multiplier;
+                    if (intMultiplier != 0)
+                    {
+                        if (intMultiplier > 0)
+                            sbdReturn.Append('+');
+                        sbdReturn.Append(intMultiplier.ToString(objCulture)).Append('%');
+                    }
 
-                decimal decCost = Cost;
-                if (decCost != 0)
-                {
-                    if (!string.IsNullOrEmpty(strReturn))
-                        strReturn += ',' + LanguageManager.GetString("String_Space", strLanguage);
-                    if (decCost > 0)
-                        strReturn = "+";
-                    strReturn += decCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)
-                                 + LanguageManager.GetString("String_NuyenSymbol", strLanguage);
+                    decimal decCost = Cost;
+                    if (decCost != 0)
+                    {
+                        if (sbdReturn.Length > 0)
+                            sbdReturn.Append(',').Append(LanguageManager.GetString("String_Space", strLanguage));
+                        if (decCost > 0)
+                            sbdReturn.Insert(0, '+');
+                        sbdReturn.Append(decCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture))
+                            .Append(LanguageManager.GetString("String_NuyenSymbol", strLanguage));
+                    }
+                    strReturn = sbdReturn.ToString();
                 }
 
                 return string.IsNullOrEmpty(strReturn) ? LanguageManager.GetString("String_None") : strReturn;
@@ -1460,26 +1465,30 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 if (await GetCostFreeAsync(token).ConfigureAwait(false))
                     return await LanguageManager.GetStringAsync("Checkbox_Free", strLanguage, token: token).ConfigureAwait(false);
-                string strReturn = string.Empty;
                 if (objCulture == null)
                     objCulture = GlobalSettings.CultureInfo;
-                int intMultiplier = await GetMultiplierAsync(token).ConfigureAwait(false);
-                if (intMultiplier != 0)
+                string strReturn;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
-                    if (intMultiplier > 0)
-                        strReturn = "+";
-                    strReturn += intMultiplier.ToString(objCulture) + '%';
-                }
+                    int intMultiplier = await GetMultiplierAsync(token).ConfigureAwait(false);
+                    if (intMultiplier != 0)
+                    {
+                        if (intMultiplier > 0)
+                            sbdReturn.Append('+');
+                        sbdReturn.Append(intMultiplier.ToString(objCulture)).Append('%');
+                    }
 
-                decimal decCost = await GetCostAsync(token).ConfigureAwait(false);
-                if (decCost != 0)
-                {
-                    if (!string.IsNullOrEmpty(strReturn))
-                        strReturn += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
-                    if (decCost > 0)
-                        strReturn = "+";
-                    strReturn += decCost.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token: token).ConfigureAwait(false), objCulture)
-                                 + await LanguageManager.GetStringAsync("String_NuyenSymbol", strLanguage, token: token).ConfigureAwait(false);
+                    decimal decCost = await GetCostAsync(token).ConfigureAwait(false);
+                    if (decCost != 0)
+                    {
+                        if (sbdReturn.Length > 0)
+                            sbdReturn.Append(',').Append(await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false));
+                        if (decCost > 0)
+                            sbdReturn.Insert(0, '+');
+                        sbdReturn.Append(decCost.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token: token).ConfigureAwait(false), objCulture))
+                            .Append(await LanguageManager.GetStringAsync("String_NuyenSymbol", strLanguage, token: token).ConfigureAwait(false));
+                    }
+                    strReturn = sbdReturn.ToString();
                 }
 
                 return string.IsNullOrEmpty(strReturn)
@@ -2230,7 +2239,7 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 if (await GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.BuiltIn
                     && !string.IsNullOrEmpty(Source)
-                    && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
+                    && !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookEnabledAsync(Source, token).ConfigureAwait(false))
                     return null;
 
                 TreeNode objNode = new TreeNode
