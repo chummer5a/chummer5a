@@ -485,7 +485,7 @@ namespace Chummer
                             // Make sure the default language has been loaded before attempting to open the Main Form.
                             blnRestoreDefaultLanguage = !LanguageManager.LoadLanguage(GlobalSettings.Language);
                         }
-                        // This to catch and handle an extremely strange issue where Chummer tries to load a language it shouldn't and ends up
+                        // This is to catch and handle an extremely strange issue where Chummer tries to load a language it shouldn't and ends up
                         // dereferencing a null value that should be impossible by static code analysis. This code here is a failsafe so that
                         // it at least keeps working in English instead of crashing.
                         catch (NullReferenceException)

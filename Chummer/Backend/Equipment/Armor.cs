@@ -1382,7 +1382,7 @@ namespace Chummer.Backend.Equipment
                 return;
             if (Equipped && _objCharacter != null)
             {
-                if (Weight.ContainsAny("FixedValues", "Rating") || GearChildren.Any(x => x.Equipped && x.Weight.Contains("Parent Rating"), token))
+                if (Weight.ContainsAny("FixedValues", "Rating") || await GearChildren.AnyAsync(x => x.Equipped && x.Weight.Contains("Parent Rating"), token).ConfigureAwait(false))
                 {
                     if (ArmorValue.ContainsAny("FixedValues", "Rating") || ArmorOverrideValue.ContainsAny("FixedValues", "Rating"))
                     {

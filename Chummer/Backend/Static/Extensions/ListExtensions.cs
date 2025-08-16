@@ -264,6 +264,88 @@ namespace Chummer
             }
         }
 
+        public static async Task AddWithSortAsync<T>(this IList<T> lstCollection, T objNewItem, Func<T, T, Task<int>> funcComparison,
+            Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            if (funcComparison == null)
+                throw new ArgumentNullException(nameof(funcComparison));
+            IAsyncDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLock)
+                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            else
+                objHasLock = null;
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // Binary search for the place where item should be inserted
+                int intIntervalEnd = lstCollection.Count - 1;
+                int intTargetIndex = intIntervalEnd / 2;
+                for (int intIntervalStart = 0;
+                     intIntervalStart <= intIntervalEnd;
+                     intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
+                {
+                    token.ThrowIfCancellationRequested();
+                    T objLoopExistingItem = lstCollection[intTargetIndex];
+                    int intCompareResult = await funcComparison.Invoke(objLoopExistingItem, objNewItem).ConfigureAwait(false);
+                    if (intCompareResult == 0)
+                    {
+                        // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
+                        for (int i = intTargetIndex + 1; i < lstCollection.Count; ++i)
+                        {
+                            T objInnerLoopExistingItem = lstCollection[i];
+                            if (await funcComparison.Invoke(objInnerLoopExistingItem, objNewItem).ConfigureAwait(false) == 0)
+                            {
+                                ++intTargetIndex;
+                                objLoopExistingItem = objInnerLoopExistingItem;
+                            }
+                            else
+                                break;
+                        }
+
+                        if (funcOverrideIfEquals != null)
+                        {
+                            funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
+                            return;
+                        }
+
+                        break;
+                    }
+
+                    if (intIntervalStart == intIntervalEnd)
+                    {
+                        if (intCompareResult > 0)
+                            ++intTargetIndex;
+                        break;
+                    }
+
+                    if (intCompareResult > 0)
+                        intIntervalStart = intTargetIndex + 1;
+                    else
+                        intIntervalEnd = intTargetIndex - 1;
+                }
+
+                IAsyncDisposable objLocker2 = objHasLock != null ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false) : null;
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    lstCollection.Insert(intTargetIndex, objNewItem);
+                }
+                finally
+                {
+                    if (objLocker2 != null)
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd,
             Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default) where T : IComparable
         {
@@ -299,6 +381,20 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(funcComparison));
             foreach (T objItem in lstToAdd)
                 AddWithSort(lstCollection, objItem, funcComparison, funcOverrideIfEquals, token);
+        }
+
+        public static async Task AddRangeWithSortAsync<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd,
+            Func<T, T, Task<int>> funcComparison, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            if (lstToAdd == null)
+                throw new ArgumentNullException(nameof(lstToAdd));
+            if (funcComparison == null)
+                throw new ArgumentNullException(nameof(funcComparison));
+            foreach (T objItem in lstToAdd)
+                await AddWithSortAsync(lstCollection, objItem, funcComparison, funcOverrideIfEquals, token).ConfigureAwait(false);
         }
 
         public static void RemoveRange<T>(this IList<T> lstCollection, int index, int count,

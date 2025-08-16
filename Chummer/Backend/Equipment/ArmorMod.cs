@@ -914,7 +914,7 @@ namespace Chummer.Backend.Equipment
             if (Interlocked.Exchange(ref _intRating, value) == value)
                 return;
             if (Equipped && Parent.Equipped && _objCharacter != null
-                && (Weight.ContainsAny("FixedValues", "Rating") || GearChildren.Any(x => x.Equipped && x.Weight.Contains("Parent Rating"), token)))
+                && (Weight.ContainsAny("FixedValues", "Rating") || await GearChildren.AnyAsync(x => x.Equipped && x.Weight.Contains("Parent Rating"), token).ConfigureAwait(false)))
             {
                 await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
             }

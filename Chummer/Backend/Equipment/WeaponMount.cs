@@ -762,7 +762,7 @@ namespace Chummer.Backend.Equipment
                         WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
                         await objWeaponMountOption.CreateAsync(xmlDataNode, token).ConfigureAwait(false);
                         objWeaponMountOption.IncludedInParent = true;
-                        WeaponMountOptions.Add(objWeaponMountOption);
+                        await WeaponMountOptions.AddAsync(objWeaponMountOption, token).ConfigureAwait(false);
                     }
                 }
 
@@ -775,7 +775,7 @@ namespace Chummer.Backend.Equipment
                         WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
                         await objWeaponMountOption.CreateAsync(xmlDataNode, token).ConfigureAwait(false);
                         objWeaponMountOption.IncludedInParent = true;
-                        WeaponMountOptions.Add(objWeaponMountOption);
+                        await WeaponMountOptions.AddAsync(objWeaponMountOption, token).ConfigureAwait(false);
                     }
                 }
 
@@ -788,7 +788,7 @@ namespace Chummer.Backend.Equipment
                         WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
                         await objWeaponMountOption.CreateAsync(xmlDataNode, token).ConfigureAwait(false);
                         objWeaponMountOption.IncludedInParent = true;
-                        WeaponMountOptions.Add(objWeaponMountOption);
+                        await WeaponMountOptions.AddAsync(objWeaponMountOption, token).ConfigureAwait(false);
                     }
                 }
 

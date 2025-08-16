@@ -2537,14 +2537,14 @@ namespace Chummer.Backend.Equipment
                                 await sbdValue.CheapReplaceAsync(strExpression, "Gear Cost",
                                     async () => (await objParentGear.GetCalculatedCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 Lazy<decimal> decParentWeight = new Lazy<decimal>(() => objParentGear.OwnWeight);
-                                sbdValue.CheapReplace(strExpression, "{Parent Weight}",
-                                                      () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo));
-                                sbdValue.CheapReplace(strExpression, "Parent Weight",
-                                                      () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo));
-                                sbdValue.CheapReplace(strExpression, "{Gear Weight}",
-                                                      () => (decParentWeight.Value * objParentGear.Quantity).ToString(GlobalSettings.InvariantCultureInfo));
-                                sbdValue.CheapReplace(strExpression, "Gear Weight",
-                                                      () => (decParentWeight.Value * objParentGear.Quantity).ToString(GlobalSettings.InvariantCultureInfo));
+                                await sbdValue.CheapReplaceAsync(strExpression, "{Parent Weight}",
+                                    () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                await sbdValue.CheapReplaceAsync(strExpression, "Parent Weight",
+                                    () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                await sbdValue.CheapReplaceAsync(strExpression, "{Gear Weight}",
+                                    () => (decParentWeight.Value * objParentGear.Quantity).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                await sbdValue.CheapReplaceAsync(strExpression, "Gear Weight",
+                                    () => (decParentWeight.Value * objParentGear.Quantity).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             }
                             else
                             {

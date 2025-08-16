@@ -1474,11 +1474,11 @@ namespace Chummer.Backend.Equipment
                                 async () => (await decParentTotalCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             Lazy<decimal> decParentWeight = new Lazy<decimal>(() => objParent.OwnWeight);
-                            sbdValue.CheapReplace(strExpression, "{Weapon Weight}", () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.CheapReplace(strExpression, "Weapon Weight", () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Weight}", () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Weapon Weight", () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             Lazy<decimal> decParentTotalWeight = new Lazy<decimal>(() => objParent.MultipliableWeight(this));
-                            sbdValue.CheapReplace(strExpression, "{Weapon Total Weight}", () => decParentTotalWeight.Value.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.CheapReplace(strExpression, "Weapon Total Weight", () => decParentTotalWeight.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Total Weight}", () => decParentTotalWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Weapon Total Weight", () => decParentTotalWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             await objParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                             if (blnGetPhysicalLimitString)
                             {

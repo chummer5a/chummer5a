@@ -1658,7 +1658,7 @@ namespace Chummer.Backend.Equipment
                         Augmented = kvpAttribute.Value,
                         ImprovedName = kvpAttribute.Key,
                         CustomName =
-                        strNamePrefix + LanguageManager.GetString("String_Attribute" + kvpAttribute.Key + "Short", token: token)
+                        strNamePrefix + await LanguageManager.GetStringAsync("String_Attribute" + kvpAttribute.Key + "Short", token: token).ConfigureAwait(false)
                                       + strSpace +
                                       kvpAttribute.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo)
                     });

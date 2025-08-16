@@ -4126,9 +4126,10 @@ namespace Chummer.Backend.Equipment
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decAmount * -1,
                         await LanguageManager.GetStringAsync("String_ExpenseLifestyle", token: token).ConfigureAwait(false) + ' ' +
-                        CurrentDisplayNameShort,
+                        await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
                         ExpenseType.Nuyen, DateTime.Now);
-                    _objCharacter.ExpenseEntries.AddWithSort(objExpense, token: token);
+                    await (await _objCharacter.GetExpenseEntriesAsync(token).ConfigureAwait(false))
+                        .AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
                     await _objCharacter.ModifyNuyenAsync(-decAmount, token).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();

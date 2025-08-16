@@ -6738,7 +6738,7 @@ namespace Chummer.Backend.Equipment
                                 }
                                 else
                                 {
-                                    sbdRCTip.Append(objAccessory.DisplayName(strLanguage))
+                                    sbdRCTip.Append(await objAccessory.DisplayNameAsync(strLanguage, token).ConfigureAwait(false))
                                         .Append(strSpace)
                                         .Append(await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false));
                                 }
@@ -13039,10 +13039,10 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(ParentID))
                 return null;
-            IHasMatrixAttributes objReturn = await _objCharacter.Gear.DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
+            IHasMatrixAttributes objReturn = await (await _objCharacter.GetGearAsync(token).ConfigureAwait(false)).DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
             if (objReturn != null)
                 return objReturn;
-            await _objCharacter.Armor.ForEachWithBreakAsync(async objArmor =>
+            await (await _objCharacter.GetArmorAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(async objArmor =>
             {
                 if (objArmor.InternalId == ParentID)
                 {
@@ -13064,7 +13064,7 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null)
                 return objReturn;
 
-            foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children, token))
+            foreach (Weapon objWeapon in await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
             {
                 if (objWeapon.InternalId == ParentID)
                     return objWeapon;
@@ -13077,7 +13077,7 @@ namespace Chummer.Backend.Equipment
                     return objReturn;
             }
 
-            foreach (Cyberware objCyberware in _objCharacter.Cyberware.GetAllDescendants(x => x.Children, token))
+            foreach (Cyberware objCyberware in await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
             {
                 if (objCyberware.InternalId == ParentID)
                     return objCyberware;
@@ -13086,7 +13086,7 @@ namespace Chummer.Backend.Equipment
                     return objReturn;
             }
 
-            await _objCharacter.Vehicles.ForEachWithBreakAsync(async objVehicle =>
+            await (await _objCharacter.GetVehiclesAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(async objVehicle =>
             {
                 if (objVehicle.InternalId == ParentID)
                 {
@@ -13097,7 +13097,7 @@ namespace Chummer.Backend.Equipment
                 objReturn = await objVehicle.GearChildren.DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
                 if (objReturn != null)
                     return false;
-                foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children, token))
+                foreach (Weapon objWeapon in await objVehicle.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                 {
                     if (objWeapon.InternalId == ParentID)
                     {
@@ -13116,7 +13116,7 @@ namespace Chummer.Backend.Equipment
 
                 await objVehicle.Mods.ForEachWithBreakAsync(async objMod =>
                 {
-                    foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children, token))
+                    foreach (Weapon objWeapon in await objMod.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                     {
                         if (objWeapon.InternalId == ParentID)
                         {
@@ -13133,7 +13133,7 @@ namespace Chummer.Backend.Equipment
                             return false;
                     }
 
-                    foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children, token))
+                    foreach (Cyberware objCyberware in await objMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                     {
                         if (objCyberware.InternalId == ParentID)
                         {
@@ -13151,7 +13151,7 @@ namespace Chummer.Backend.Equipment
 
                 await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objMount =>
                 {
-                    foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children, token))
+                    foreach (Weapon objWeapon in await objMount.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                     {
                         if (objWeapon.InternalId == ParentID)
                         {
@@ -13170,7 +13170,7 @@ namespace Chummer.Backend.Equipment
 
                     await objMount.Mods.ForEachWithBreakAsync(async objMod =>
                     {
-                        foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children, token))
+                        foreach (Weapon objWeapon in await objMod.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                         {
                             if (objWeapon.InternalId == ParentID)
                             {
@@ -13187,7 +13187,7 @@ namespace Chummer.Backend.Equipment
                                 return false;
                         }
 
-                        foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children, token))
+                        foreach (Cyberware objCyberware in await objMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                         {
                             if (objCyberware.InternalId == ParentID)
                             {

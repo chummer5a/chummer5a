@@ -1169,9 +1169,19 @@ namespace Chummer.Backend.Equipment
                         string strWeaponId = blnSync ? Parent?.WeaponID : (await GetParentAsync(token).ConfigureAwait(false))?.WeaponID;
                         if (!string.IsNullOrEmpty(strWeaponId) && !strWeaponId.IsEmptyGuid())
                         {
-                            Weapon objWeapon = ParentVehicle != null
-                                ? ParentVehicle.Weapons.FindById(strWeaponId)
-                                : _objCharacter.Weapons.FindById(strWeaponId);
+                            Weapon objWeapon;
+                            if (blnSync)
+                            {
+                                objWeapon = ParentVehicle != null
+                                    ? ParentVehicle.Weapons.FindById(strWeaponId)
+                                    : _objCharacter.Weapons.FindById(strWeaponId);
+                            }
+                            else
+                            {
+                                objWeapon = ParentVehicle != null
+                                    ? await ParentVehicle.Weapons.FindByIdAsync(strWeaponId, token).ConfigureAwait(false)
+                                    : await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).FindByIdAsync(strWeaponId, token).ConfigureAwait(false);
+                            }
 
                             if (objWeapon != null)
                             {

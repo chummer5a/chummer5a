@@ -1631,15 +1631,20 @@ namespace Chummer.Backend.Skills
                                                     {
                                                         if (blnSync)
                                                         {
+                                                            ThreadSafeBindingList<KnowledgeSkill> lstKnowledgeSkills = KnowledgeSkills;
                                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                            if (!KnowledgeSkills.Contains(objSkill))
+                                                            if (!lstKnowledgeSkills.Contains(objSkill))
                                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                                KnowledgeSkills.Add(objSkill);
+                                                                lstKnowledgeSkills.Add(objSkill);
                                                         }
-                                                        else if (!await KnowledgeSkills.ContainsAsync(objSkill, token)
+                                                        else
+                                                        {
+                                                            ThreadSafeBindingList<KnowledgeSkill> lstKnowledgeSkills = await GetKnowledgeSkillsAsync(token).ConfigureAwait(false);
+                                                            if (!await lstKnowledgeSkills.ContainsAsync(objSkill, token)
                                                                      .ConfigureAwait(false))
-                                                            await KnowledgeSkills.AddAsync(objSkill, token)
-                                                                .ConfigureAwait(false);
+                                                                await lstKnowledgeSkills.AddAsync(objSkill, token)
+                                                                    .ConfigureAwait(false);
+                                                        }
                                                     }
                                                     else
                                                     {
@@ -1661,33 +1666,39 @@ namespace Chummer.Backend.Skills
                                         {
                                             if (blnSync)
                                             {
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                if (_objCharacter.Created &&
-                                                    !KnowledgeSkills.Any(x => x.IsNativeLanguage, token))
+                                                if (_objCharacter.Created)
                                                 {
-                                                    KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter)
+                                                    ThreadSafeBindingList<KnowledgeSkill> lstKnowledgeSkills = KnowledgeSkills;
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    if (!lstKnowledgeSkills.Any(x => x.IsNativeLanguage, token))
                                                     {
-                                                        WritableName = "English",
-                                                        IsNativeLanguage = true
-                                                    };
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    KnowledgeSkills.Add(objEnglishSkill);
+                                                        KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter)
+                                                        {
+                                                            WritableName = "English",
+                                                            IsNativeLanguage = true
+                                                        };
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        lstKnowledgeSkills.Add(objEnglishSkill);
+                                                    }
                                                 }
                                             }
-                                            else if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
-                                                     && !await KnowledgeSkills
+                                            else if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                                            {
+                                                ThreadSafeBindingList<KnowledgeSkill> lstKnowledgeSkills = await GetKnowledgeSkillsAsync(token).ConfigureAwait(false);
+                                                if (!await lstKnowledgeSkills
                                                          .AnyAsync(x => x.GetIsNativeLanguageAsync(token),
                                                              token)
                                                          .ConfigureAwait(false))
-                                            {
-                                                KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter, false);
-                                                await objEnglishSkill.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
-                                                await objEnglishSkill.SetWritableNameAsync("English", token)
-                                                    .ConfigureAwait(false);
-                                                await objEnglishSkill.SetIsNativeLanguageAsync(true, token)
-                                                    .ConfigureAwait(false);
-                                                await KnowledgeSkills.AddAsync(objEnglishSkill, token)
-                                                    .ConfigureAwait(false);
+                                                {
+                                                    KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter, false);
+                                                    await objEnglishSkill.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
+                                                    await objEnglishSkill.SetWritableNameAsync("English", token)
+                                                        .ConfigureAwait(false);
+                                                    await objEnglishSkill.SetIsNativeLanguageAsync(true, token)
+                                                        .ConfigureAwait(false);
+                                                    await lstKnowledgeSkills.AddAsync(objEnglishSkill, token)
+                                                        .ConfigureAwait(false);
+                                                }
                                             }
                                         }
                                         //Timekeeper.Finish("load_char_skills_kno");
@@ -1786,7 +1797,7 @@ namespace Chummer.Backend.Skills
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 KnowledgeSkills.Add(objKnoSkill);
                                             else
-                                                await KnowledgeSkills.AddAsync(objKnoSkill, token)
+                                                await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddAsync(objKnoSkill, token)
                                                     .ConfigureAwait(false);
                                         }
                                         else if (blnSync)
@@ -1824,7 +1835,7 @@ namespace Chummer.Backend.Skills
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             Skills.Add(objSkill);
                                         else
-                                            await Skills.AddAsync(objSkill, token).ConfigureAwait(false);
+                                            await (await GetSkillsAsync(token).ConfigureAwait(false)).AddAsync(objSkill, token).ConfigureAwait(false);
                                     }
 
                                     if (blnSync)
@@ -3570,8 +3581,8 @@ namespace Chummer.Backend.Skills
                     await objExistingSkill.GetNotesAsync(token).ConfigureAwait(false)
                     + await objNewSkill.GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objExistingSkill.SetNotesColorAsync(await objNewSkill.GetNotesColorAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
-                await objExistingSkill.Specializations
-                    .AddAsyncRangeWithSortAsync(objNewSkill.Specializations,
+                await (await objExistingSkill.GetSpecializationsAsync(token).ConfigureAwait(false))
+                    .AddAsyncRangeWithSortAsync(await objNewSkill.GetSpecializationsAsync(token).ConfigureAwait(false),
                         (x, y) => CompareSpecializationsAsync(x, y, token)
                         ,
                         token: token).ConfigureAwait(false);

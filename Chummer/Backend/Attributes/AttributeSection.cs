@@ -1471,8 +1471,8 @@ namespace Chummer.Backend.Attributes
                     }
                     else
                     {
-                        await AttributeList.ClearAsync(token).ConfigureAwait(false);
-                        await SpecialAttributeList.ClearAsync(token).ConfigureAwait(false);
+                        await (await GetAttributeListAsync(token).ConfigureAwait(false)).ClearAsync(token).ConfigureAwait(false);
+                        await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ClearAsync(token).ConfigureAwait(false);
                     }
 
                     XPathNavigator xmlCharNode = blnSync
@@ -1513,7 +1513,7 @@ namespace Chummer.Backend.Attributes
                                     else
                                     {
                                         objAttribute = await RemakeAttributeAsync(objAttribute, xmlCharNode, token).ConfigureAwait(false);
-                                        await SpecialAttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                        await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
                                     }
 
                                     break;
@@ -1531,7 +1531,7 @@ namespace Chummer.Backend.Attributes
                                     else
                                     {
                                         objAttribute = await RemakeAttributeAsync(objAttribute, xmlCharNode, token).ConfigureAwait(false);
-                                        await AttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                        await (await GetAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
                                     }
 
                                     break;
@@ -1555,7 +1555,7 @@ namespace Chummer.Backend.Attributes
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         SpecialAttributeList.Add(objAttribute);
                                     else
-                                        await SpecialAttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                        await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
                                     break;
 
                                 case AttributeCategory.Standard:
@@ -1563,7 +1563,7 @@ namespace Chummer.Backend.Attributes
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         AttributeList.Add(objAttribute);
                                     else
-                                        await AttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                        await (await GetAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
                                     break;
 
                                 default:
@@ -1585,7 +1585,7 @@ namespace Chummer.Backend.Attributes
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             SpecialAttributeList.Add(objAttribute);
                                         else
-                                            await SpecialAttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                            await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
                                         break;
 
                                     case AttributeCategory.Standard:
@@ -1596,7 +1596,7 @@ namespace Chummer.Backend.Attributes
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             AttributeList.Add(objAttribute);
                                         else
-                                            await AttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                            await (await GetAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
                                         break;
 
                                     default:

@@ -3033,12 +3033,13 @@ namespace Chummer
                             }
                             else if (blnSync)
                             {
-                                decimal decValue = ImprovementManager.ValueToDec(objCharacter, strImprovedName, objImprovement.Rating);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                decimal decValue = ValueToDec(objCharacter, strImprovedName, objImprovement.Rating);
                                 objCharacter.PrototypeTranshuman += decValue;
                             }
                             else
                             {
-                                decimal decValue = await ImprovementManager.ValueToDecAsync(objCharacter, strImprovedName, objImprovement.Rating, token).ConfigureAwait(false);
+                                decimal decValue = await ValueToDecAsync(objCharacter, strImprovedName, objImprovement.Rating, token).ConfigureAwait(false);
                                 await objCharacter.ModifyPrototypeTranshumanAsync(decValue, token).ConfigureAwait(false);
                             }
                             break;
@@ -3593,8 +3594,9 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    await objCharacter.SkillsSection.KnowsoftSkills.RemoveAllAsync(
-                                        x => x.InternalId == strImprovedName, token: token).ConfigureAwait(false);
+                                    await (await (await objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                        .GetKnowsoftSkillsAsync(token).ConfigureAwait(false))
+                                        .RemoveAllAsync(x => x.InternalId == strImprovedName, token: token).ConfigureAwait(false);
                                 }
                             }
 
@@ -3716,12 +3718,13 @@ namespace Chummer
                             }
                             else if (blnSync)
                             {
-                                decimal decValue = ImprovementManager.ValueToDec(objCharacter, strImprovedName, objImprovement.Rating);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                decimal decValue = ValueToDec(objCharacter, strImprovedName, objImprovement.Rating);
                                 objCharacter.PrototypeTranshuman -= decValue;
                             }
                             else
                             {
-                                decimal decValue = await ImprovementManager.ValueToDecAsync(objCharacter, strImprovedName, objImprovement.Rating, token).ConfigureAwait(false);
+                                decimal decValue = await ValueToDecAsync(objCharacter, strImprovedName, objImprovement.Rating, token).ConfigureAwait(false);
                                 await objCharacter.ModifyPrototypeTranshumanAsync(-decValue, token).ConfigureAwait(false);
                             }
 
@@ -4924,20 +4927,22 @@ namespace Chummer
                             {
                                 if (blnSync)
                                 {
+                                    SkillsSection objSkillsSection = objCharacter.SkillsSection;
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strImprovedName, token: token);
+                                    Skill objSkill = objSkillsSection.GetActiveSkill(strImprovedName, token: token);
                                     if (objSkill?.IsExoticSkill == true)
                                     {
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        objCharacter.SkillsSection.Skills.Remove(objSkill);
+                                        objSkillsSection.Skills.Remove(objSkill);
                                     }
                                 }
                                 else
                                 {
-                                    Skill objSkill = await objCharacter.SkillsSection.GetActiveSkillAsync(strImprovedName, token).ConfigureAwait(false);
+                                    SkillsSection objSkillsSection = await objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                                    Skill objSkill = await objSkillsSection.GetActiveSkillAsync(strImprovedName, token).ConfigureAwait(false);
                                     if (objSkill?.IsExoticSkill == true)
                                     {
-                                        await objCharacter.SkillsSection.Skills.RemoveAsync(objSkill, token).ConfigureAwait(false);
+                                        await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).RemoveAsync(objSkill, token).ConfigureAwait(false);
                                     }
                                 }
                             }
@@ -4947,36 +4952,38 @@ namespace Chummer
                         case Improvement.ImprovementType.Skillsoft:
                             if (!blnHasDuplicate && !blnReapplyImprovements)
                             {
-                                objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(
-                                    x => x.InternalId == strImprovedName, token: token);
                                 if (blnSync)
                                 {
-                                    for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count - 1; i >= 0; --i)
+                                    SkillsSection objSkillsSection = objCharacter.SkillsSection;
+                                    ThreadSafeBindingList<KnowledgeSkill> lstKnowledgeSkills = objSkillsSection.KnowledgeSkills;
+                                    lstKnowledgeSkills.RemoveAll(x => x.InternalId == strImprovedName, token: token);
+                                    ThreadSafeBindingList<KnowledgeSkill> lstKnowsoftSkills = objSkillsSection.KnowsoftSkills;
+                                    for (int i = lstKnowsoftSkills.Count - 1; i >= 0; --i)
                                     {
-                                        KnowledgeSkill objSkill = objCharacter.SkillsSection.KnowsoftSkills[i];
+                                        KnowledgeSkill objSkill = lstKnowsoftSkills[i];
                                         if (objSkill.InternalId == strImprovedName)
                                         {
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objCharacter.SkillsSection.KnowledgeSkills.Remove(objSkill);
+                                            lstKnowledgeSkills.Remove(objSkill);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objCharacter.SkillsSection.KnowsoftSkills.RemoveAt(i);
+                                            lstKnowsoftSkills.RemoveAt(i);
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    for (int i = await objCharacter.SkillsSection.KnowsoftSkills.GetCountAsync(token)
-                                                                   .ConfigureAwait(false) - 1;
-                                         i >= 0;
-                                         --i)
+                                    SkillsSection objSkillsSection = await objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                                    ThreadSafeBindingList<KnowledgeSkill> lstKnowledgeSkills = await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false);
+                                    await lstKnowledgeSkills.RemoveAllAsync(x => x.InternalId == strImprovedName, token: token).ConfigureAwait(false);
+                                    ThreadSafeBindingList<KnowledgeSkill> lstKnowsoftSkills = await objSkillsSection.GetKnowsoftSkillsAsync(token).ConfigureAwait(false);
+                                    for (int i = await lstKnowsoftSkills.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                                     {
-                                        KnowledgeSkill objSkill = await objCharacter.SkillsSection.KnowsoftSkills
-                                            .GetValueAtAsync(i, token).ConfigureAwait(false);
+                                        KnowledgeSkill objSkill = await lstKnowsoftSkills.GetValueAtAsync(i, token).ConfigureAwait(false);
                                         if (objSkill.InternalId == strImprovedName)
                                         {
                                             await Task.WhenAll(
-                                                objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objSkill, token),
-                                                objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i, token)).ConfigureAwait(false);
+                                                lstKnowledgeSkills.RemoveAsync(objSkill, token),
+                                                lstKnowsoftSkills.RemoveAtAsync(i, token)).ConfigureAwait(false);
                                         }
                                     }
                                 }
@@ -4989,21 +4996,23 @@ namespace Chummer
                             {
                                 if (blnSync)
                                 {
+                                    SkillsSection objSkillsSection = objCharacter.SkillsSection;
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strImprovedName, token: token);
+                                    Skill objSkill = objSkillsSection.GetActiveSkill(strImprovedName, token: token);
                                     if (objSkill == null)
                                     {
-                                        objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(
-                                            x => x.InternalId == strImprovedName, token: token);
-                                        for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count - 1; i >= 0; --i)
+                                        ThreadSafeBindingList<KnowledgeSkill> lstKnowledgeSkills = objSkillsSection.KnowledgeSkills;
+                                        lstKnowledgeSkills.RemoveAll(x => x.InternalId == strImprovedName, token: token);
+                                        ThreadSafeBindingList<KnowledgeSkill> lstKnowsoftSkills = objSkillsSection.KnowsoftSkills;
+                                        for (int i = lstKnowsoftSkills.Count - 1; i >= 0; --i)
                                         {
-                                            KnowledgeSkill objKnoSkill = objCharacter.SkillsSection.KnowsoftSkills[i];
+                                            KnowledgeSkill objKnoSkill = lstKnowsoftSkills[i];
                                             if (objKnoSkill.InternalId == strImprovedName)
                                             {
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnoSkill);
+                                                lstKnowledgeSkills.Remove(objKnoSkill);
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                objCharacter.SkillsSection.KnowsoftSkills.RemoveAt(i);
+                                                lstKnowsoftSkills.RemoveAt(i);
                                             }
                                         }
                                     }
@@ -5015,23 +5024,21 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    Skill objSkill = await objCharacter.SkillsSection.GetActiveSkillAsync(strImprovedName, token).ConfigureAwait(false);
+                                    SkillsSection objSkillsSection = await objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                                    Skill objSkill = await objSkillsSection.GetActiveSkillAsync(strImprovedName, token).ConfigureAwait(false);
                                     if (objSkill == null)
                                     {
-                                        objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(
-                                            x => x.InternalId == strImprovedName, token: token);
-                                        for (int i = await objCharacter.SkillsSection.KnowsoftSkills.GetCountAsync(token)
-                                                                       .ConfigureAwait(false) - 1;
-                                             i >= 0;
-                                             --i)
+                                        ThreadSafeBindingList<KnowledgeSkill> lstKnowledgeSkills = await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false);
+                                        await lstKnowledgeSkills.RemoveAllAsync(x => x.InternalId == strImprovedName, token: token).ConfigureAwait(false);
+                                        ThreadSafeBindingList<KnowledgeSkill> lstKnowsoftSkills = await objSkillsSection.GetKnowsoftSkillsAsync(token).ConfigureAwait(false);
+                                        for (int i = await lstKnowsoftSkills.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                                         {
-                                            KnowledgeSkill objKnoSkill = await objCharacter.SkillsSection.KnowsoftSkills
-                                                .GetValueAtAsync(i, token).ConfigureAwait(false);
+                                            KnowledgeSkill objKnoSkill = await lstKnowsoftSkills.GetValueAtAsync(i, token).ConfigureAwait(false);
                                             if (objKnoSkill.InternalId == strImprovedName)
                                             {
                                                 await Task.WhenAll(
-                                                    objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objKnoSkill, token),
-                                                    objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i, token)).ConfigureAwait(false);
+                                                    lstKnowledgeSkills.RemoveAsync(objKnoSkill, token),
+                                                    lstKnowsoftSkills.RemoveAtAsync(i, token)).ConfigureAwait(false);
                                             }
                                         }
                                     }
@@ -5152,12 +5159,12 @@ namespace Chummer
                             }
                             else if (blnSync)
                             {
-                                decimal decValue = ImprovementManager.ValueToDec(objCharacter, strImprovedName, objImprovement.Rating);
+                                decimal decValue = ValueToDec(objCharacter, strImprovedName, objImprovement.Rating);
                                 objCharacter.PrototypeTranshuman -= decValue;
                             }
                             else
                             {
-                                decimal decValue = await ImprovementManager.ValueToDecAsync(objCharacter, strImprovedName, objImprovement.Rating, token).ConfigureAwait(false);
+                                decimal decValue = await ValueToDecAsync(objCharacter, strImprovedName, objImprovement.Rating, token).ConfigureAwait(false);
                                 await objCharacter.ModifyPrototypeTranshumanAsync(-decValue, token).ConfigureAwait(false);
                             }
 
@@ -5611,13 +5618,19 @@ namespace Chummer
                             // Specific to AddWare of an essence hole or antihole: because these can be created or destroyed after the improvement has been added, the name that is saved will be the source ID of the hole or antihole instead of the internal id
                             if (strImprovedName == Cyberware.EssenceHoleGuidString)
                             {
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                objCharacter.DecreaseEssenceHole(objImprovement.Rating);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    objCharacter.DecreaseEssenceHole(objImprovement.Rating);
+                                else
+                                    await objCharacter.DecreaseEssenceHoleAsync(objImprovement.Rating, token: token).ConfigureAwait(false);
                             }
                             else if (strImprovedName == Cyberware.EssenceAntiHoleGuidString)
                             {
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                objCharacter.IncreaseEssenceHole(objImprovement.Rating);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    objCharacter.IncreaseEssenceHole(objImprovement.Rating);
+                                else
+                                    await objCharacter.IncreaseEssenceHoleAsync(objImprovement.Rating, token: token).ConfigureAwait(false);
                             }
                             else
                             {

@@ -47288,7 +47288,7 @@ namespace Chummer
 
                 //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
                 List<SustainedObject> lstSustainedSpells =
-                    await SustainedCollection.ToListAsync(x => x.GetHasSustainingPenaltyAsync(token), token: token)
+                    await (await GetSustainedCollectionAsync(token).ConfigureAwait(false)).ToListAsync(x => x.GetHasSustainingPenaltyAsync(token), token: token)
                         .ConfigureAwait(false);
                 List<Improvement> lstUsedImprovements
                     = await ImprovementManager
@@ -47345,8 +47345,8 @@ namespace Chummer
                                     lstSupportedObjects.RemoveAt(lstSupportedObjects.Count - 1);
                                 }
 
-                                lstSupportedObjects.AddWithSort(objLoopObject, (x, y) => y.Force.CompareTo(x.Force),
-                                    token: token);
+                                await lstSupportedObjects.AddWithSortAsync(objLoopObject, async (x, y) => (await y.GetForceAsync(token).ConfigureAwait(false))
+                                    .CompareTo(await x.GetForceAsync(token).ConfigureAwait(false)), token: token).ConfigureAwait(false);
                             }
                         }
 
@@ -47495,7 +47495,7 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     _blnLoadAsDirty = value;
-                    OnPropertyChanged(nameof(LoadAsDirty));
+                    await OnPropertyChangedAsync(nameof(LoadAsDirty), token).ConfigureAwait(false);
                 }
                 finally
                 {
