@@ -1324,118 +1324,158 @@ namespace Chummer.Backend.Equipment
         {
             if (objGear == null)
                 return;
-            // Pass object properties into a DTO to avoid grabbing additional file locks while copying to new object. For example, setting the Rating directly can cause a request for upgradeable file lock. 
-            #pragma warning disable IDE0037 // Use inferred member name
-            var data = new
+            using (_objCharacter.LockObject.EnterUpgradeableReadLock())
             {
-                CachedMyXmlNode = objGear.GetNode(),
-                CachedMyXPathNode = objGear.GetNodeXPath(),
-                SourceID = objGear.SourceID,
-                AllowRename = objGear.AllowRename,
-                Name = objGear.Name,
-                Category = objGear.Category,
-                MaxRating = objGear.MaxRating,
-                MinRating = objGear.MinRating,
-                Rating = objGear.Rating,
-                Quantity = objGear.Quantity,
-                Capacity = objGear.Capacity,
-                ArmorCapacity = objGear.ArmorCapacity,
-                Avail = objGear.Avail,
-                CostFor = objGear.CostFor,
-                DeviceRating = objGear.DeviceRating,
-                Cost = objGear.Cost,
-                Weight = objGear.Weight,
-                Source = objGear.Source,
-                Page = objGear.Page,
-                CanFormPersona = objGear.CanFormPersona,
-                AmmoForWeaponType = objGear.AmmoForWeaponType,
-                Extra = objGear.Extra,
-                Bonded = objGear.Bonded,
-                Equipped = objGear.Equipped,
-                WirelessOn = objGear.WirelessOn,
-                Bonus = objGear.Bonus,
-                WirelessBonus = objGear.WirelessBonus,
-                WeaponBonus = objGear.WeaponBonus,
-                FlechetteWeaponBonus = objGear.FlechetteWeaponBonus,
-                WeaponID = objGear.WeaponID,
-                Notes = objGear.Notes,
-                Location = objGear.Location,
-                ChildAvailModifier = objGear.ChildAvailModifier,
-                ChildCostMultiplier = objGear.ChildCostMultiplier,
-                GearName = objGear.GearName,
-                ForcedValue = objGear._strForcedValue,
-                IsFlechetteAmmo = objGear._blnIsFlechetteAmmo,
-                Overclocked = objGear.Overclocked,
-                Attack = objGear.Attack,
-                Sleaze = objGear.Sleaze,
-                DataProcessing = objGear.DataProcessing,
-                Firewall = objGear.Firewall,
-                AttributeArray = objGear.AttributeArray,
-                ModAttack = objGear.ModAttack,
-                ModSleaze = objGear.ModSleaze,
-                ModDataProcessing = objGear.ModDataProcessing,
-                ModFirewall = objGear.ModFirewall,
-                ModAttributeArray = objGear.ModAttributeArray
-            };
-            #pragma warning restore IDE0037 // Use inferred member name
+                _objCachedMyXmlNode = objGear.GetNode();
+                _objCachedMyXPathNode = objGear.GetNodeXPath();
+                SourceID = objGear.SourceID;
+                _blnAllowRename = objGear.AllowRename;
+                _strName = objGear.Name;
+                _strCategory = objGear.Category;
+                _strMaxRating = objGear.MaxRating;
+                _strMinRating = objGear.MinRating;
+                Rating = objGear.Rating;
+                _decQty = objGear.Quantity;
+                _strCapacity = objGear.Capacity;
+                _strArmorCapacity = objGear.ArmorCapacity;
+                _strAvail = objGear.Avail;
+                _decCostFor = objGear.CostFor;
+                _strDeviceRating = objGear.DeviceRating;
+                _strCost = objGear.Cost;
+                _strWeight = objGear.Weight;
+                _strSource = objGear.Source;
+                _strPage = objGear.Page;
+                _strCanFormPersona = objGear.CanFormPersona;
+                _strAmmoForWeaponType = objGear.AmmoForWeaponType;
+                _strExtra = objGear.Extra;
+                _blnBonded = objGear.Bonded;
+                _blnEquipped = objGear.Equipped;
+                _blnWirelessOn = objGear.WirelessOn;
+                _nodBonus = objGear.Bonus;
+                _nodWirelessBonus = objGear.WirelessBonus;
+                _nodWeaponBonus = objGear.WeaponBonus;
+                _nodFlechetteWeaponBonus = objGear.FlechetteWeaponBonus;
+                if (!Guid.TryParse(objGear.WeaponID, out _guiWeaponID))
+                    _guiWeaponID = Guid.Empty;
+                _strNotes = objGear.Notes;
+                _objLocation = objGear.Location;
+                _intChildAvailModifier = objGear.ChildAvailModifier;
+                _intChildCostMultiplier = objGear.ChildCostMultiplier;
+                _strGearName = objGear.GearName;
+                _strForcedValue = objGear._strForcedValue;
+                _blnIsFlechetteAmmo = objGear._blnIsFlechetteAmmo;
+                _objLoadedIntoClip = null;
 
-            _objCachedMyXmlNode = data.CachedMyXmlNode;
-            _objCachedMyXPathNode = data.CachedMyXPathNode;
-            SourceID = data.SourceID;
-            _blnAllowRename = data.AllowRename;
-            _strName = data.Name;
-            _strCategory = data.Category;
-            _strMaxRating = data.MaxRating;
-            _strMinRating = data.MinRating;
-            Rating = data.Rating;
-            _decQty = data.Quantity;
-            _strCapacity = data.Capacity;
-            _strArmorCapacity = data.ArmorCapacity;
-            _strAvail = data.Avail;
-            _decCostFor = data.CostFor;
-            _strDeviceRating = data.DeviceRating;
-            _strCost = data.Cost;
-            _strWeight = data.Weight;
-            _strSource = data.Source;
-            _strPage = data.Page;
-            _strCanFormPersona = data.CanFormPersona;
-            _strAmmoForWeaponType = data.AmmoForWeaponType;
-            _strExtra = data.Extra;
-            _blnBonded = data.Bonded;
-            _blnEquipped = data.Equipped;
-            _blnWirelessOn = data.WirelessOn;
-            _nodBonus = data.Bonus;
-            _nodWirelessBonus = data.WirelessBonus;
-            _nodWeaponBonus = data.WeaponBonus;
-            _nodFlechetteWeaponBonus = data.FlechetteWeaponBonus;
-            if (!Guid.TryParse(data.WeaponID, out _guiWeaponID))
-                _guiWeaponID = Guid.Empty;
-            _strNotes = data.Notes;
-            _objLocation = data.Location;
-            _intChildAvailModifier = data.ChildAvailModifier;
-            _intChildCostMultiplier = data.ChildCostMultiplier;
-            _strGearName = data.GearName;
-            _strForcedValue = data.ForcedValue;
-            _blnIsFlechetteAmmo = data.IsFlechetteAmmo;
-            _objLoadedIntoClip = null;
-            _strOverclocked = data.Overclocked;
-            _strAttack = data.Attack;
-            _strSleaze = data.Sleaze;
-            _strDataProcessing = data.DataProcessing;
-            _strFirewall = data.Firewall;
-            _strAttributeArray = data.AttributeArray;
-            _strModAttack = data.ModAttack;
-            _strModSleaze = data.ModSleaze;
-            _strModDataProcessing = data.ModDataProcessing;
-            _strModFirewall = data.ModFirewall;
-            _strModAttributeArray = data.ModAttributeArray;
+                int intChildrenCount = objGear.Children.Count;
+                if (intChildrenCount > 0)
+                {
+                    List<Gear> lstToAdd = new List<Gear>(intChildrenCount);
+                    foreach (Gear objGearChild in objGear.Children)
+                    {
+                        Gear objChild = new Gear(_objCharacter);
+                        objChild.Copy(objGearChild);
+                        lstToAdd.Add(objChild);
+                    }
+                    _lstChildren.Clear();
+                    _lstChildren.AddRange(lstToAdd);
+                }
 
-            _lstChildren.Clear();
-            foreach (Gear objGearChild in objGear.Children)
+                _strOverclocked = objGear.Overclocked;
+                _strAttack = objGear.Attack;
+                _strSleaze = objGear.Sleaze;
+                _strDataProcessing = objGear.DataProcessing;
+                _strFirewall = objGear.Firewall;
+                _strAttributeArray = objGear.AttributeArray;
+                _strModAttack = objGear.ModAttack;
+                _strModSleaze = objGear.ModSleaze;
+                _strModDataProcessing = objGear.ModDataProcessing;
+                _strModFirewall = objGear.ModFirewall;
+                _strModAttributeArray = objGear.ModAttributeArray;
+            }
+        }
+
+        /// <summary>
+        /// Copy a piece of Gear.
+        /// </summary>
+        /// <param name="objGear">Gear object to copy.</param>
+        public async Task CopyAsync(Gear objGear, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objGear == null)
+                return;
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token);
+            try
             {
-                Gear objChild = new Gear(_objCharacter);
-                objChild.Copy(objGearChild);
-                _lstChildren.Add(objChild);
+                token.ThrowIfCancellationRequested();
+                _objCachedMyXmlNode = await objGear.GetNodeAsync(token).ConfigureAwait(false);
+                _objCachedMyXPathNode = await objGear.GetNodeXPathAsync(token).ConfigureAwait(false);
+                SourceID = objGear.SourceID;
+                _blnAllowRename = objGear.AllowRename;
+                _strName = objGear.Name;
+                _strCategory = objGear.Category;
+                _strMaxRating = objGear.MaxRating;
+                _strMinRating = objGear.MinRating;
+                await SetRatingAsync(await objGear.GetRatingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                _decQty = objGear.Quantity;
+                _strCapacity = objGear.Capacity;
+                _strArmorCapacity = objGear.ArmorCapacity;
+                _strAvail = objGear.Avail;
+                _decCostFor = objGear.CostFor;
+                _strDeviceRating = objGear.DeviceRating;
+                _strCost = objGear.Cost;
+                _strWeight = objGear.Weight;
+                _strSource = objGear.Source;
+                _strPage = objGear.Page;
+                _strCanFormPersona = objGear.CanFormPersona;
+                _strAmmoForWeaponType = objGear.AmmoForWeaponType;
+                _strExtra = objGear.Extra;
+                _blnBonded = objGear.Bonded;
+                _blnEquipped = objGear.Equipped;
+                _blnWirelessOn = objGear.WirelessOn;
+                _nodBonus = objGear.Bonus;
+                _nodWirelessBonus = objGear.WirelessBonus;
+                _nodWeaponBonus = objGear.WeaponBonus;
+                _nodFlechetteWeaponBonus = objGear.FlechetteWeaponBonus;
+                if (!Guid.TryParse(objGear.WeaponID, out _guiWeaponID))
+                    _guiWeaponID = Guid.Empty;
+                _strNotes = objGear.Notes;
+                _objLocation = objGear.Location;
+                _intChildAvailModifier = objGear.ChildAvailModifier;
+                _intChildCostMultiplier = objGear.ChildCostMultiplier;
+                _strGearName = objGear.GearName;
+                _strForcedValue = objGear._strForcedValue;
+                _blnIsFlechetteAmmo = objGear._blnIsFlechetteAmmo;
+                _objLoadedIntoClip = null;
+
+                int intChildrenCount = await objGear.Children.GetCountAsync(token).ConfigureAwait(false);
+                if (intChildrenCount > 0)
+                {
+                    List<Gear> lstToAdd = new List<Gear>(intChildrenCount);
+                    await objGear.Children.ForEachAsync(async objGearChild =>
+                    {
+                        Gear objChild = new Gear(_objCharacter);
+                        await objChild.CopyAsync(objGearChild, token).ConfigureAwait(false);
+                        lstToAdd.Add(objChild);
+                    }, token).ConfigureAwait(false);
+                    await _lstChildren.ClearAsync(token).ConfigureAwait(false);
+                    await _lstChildren.AddRangeAsync(lstToAdd, token).ConfigureAwait(false);
+                }
+
+                _strOverclocked = objGear.Overclocked;
+                _strAttack = objGear.Attack;
+                _strSleaze = objGear.Sleaze;
+                _strDataProcessing = objGear.DataProcessing;
+                _strFirewall = objGear.Firewall;
+                _strAttributeArray = objGear.AttributeArray;
+                _strModAttack = objGear.ModAttack;
+                _strModSleaze = objGear.ModSleaze;
+                _strModDataProcessing = objGear.ModDataProcessing;
+                _strModFirewall = objGear.ModFirewall;
+                _strModAttributeArray = objGear.ModAttributeArray;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
