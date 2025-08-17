@@ -42,19 +42,13 @@ namespace Chummer
         public ThreadSafeBindingList(AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
             LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
-            _lstData = new CachedBindingList<T>
-            {
-                BindingListLock = LockObject
-            };
+            _lstData = new CachedBindingList<T>(LockObject);
         }
 
         public ThreadSafeBindingList(IList<T> list, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
             LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
-            _lstData = new CachedBindingList<T>(list)
-            {
-                BindingListLock = LockObject
-            };
+            _lstData = new CachedBindingList<T>(LockObject, list);
         }
 
         /// <inheritdoc cref="List{T}.Count" />

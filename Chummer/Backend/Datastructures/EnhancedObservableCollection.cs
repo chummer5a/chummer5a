@@ -75,6 +75,24 @@ namespace Chummer
         {
         }
 
+        /// <inheritdoc />
+        public EnhancedObservableCollection(AsyncFriendlyReaderWriterLock objCollectionChangedLock)
+        {
+            CollectionChangedLock = objCollectionChangedLock;
+        }
+
+        /// <inheritdoc />
+        public EnhancedObservableCollection(AsyncFriendlyReaderWriterLock objCollectionChangedLock, List<T> list) : base(list)
+        {
+            CollectionChangedLock = objCollectionChangedLock;
+        }
+
+        /// <inheritdoc />
+        public EnhancedObservableCollection(AsyncFriendlyReaderWriterLock objCollectionChangedLock, IEnumerable<T> collection) : base(collection)
+        {
+            CollectionChangedLock = objCollectionChangedLock;
+        }
+
         protected override event PropertyChangedEventHandler PropertyChanged;
 
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
@@ -511,7 +529,7 @@ namespace Chummer
             }
         }
 
-        public AsyncFriendlyReaderWriterLock CollectionChangedLock { get; set; }
+        public AsyncFriendlyReaderWriterLock CollectionChangedLock { get; }
 
         private readonly ConcurrentHashSet<AsyncNotifyCollectionChangedEventHandler> _setCollectionChangedAsync =
             new ConcurrentHashSet<AsyncNotifyCollectionChangedEventHandler>();
