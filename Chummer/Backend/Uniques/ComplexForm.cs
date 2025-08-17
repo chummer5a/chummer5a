@@ -1592,6 +1592,7 @@ namespace Chummer
 
         public bool Remove(bool blnConfirmDelete = true)
         {
+            bool blnReturn;
             using (LockObject.EnterUpgradeableReadLock())
             {
                 if (Grade < 0)
@@ -1603,17 +1604,18 @@ namespace Chummer
 
                 using (LockObject.EnterWriteLock())
                 {
-                    _objCharacter.ComplexForms.Remove(this);
                     ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ComplexForm,
                         InternalId);
+                    blnReturn = _objCharacter.ComplexForms.Remove(this);
                 }
             }
             Dispose();
-            return true;
+            return blnReturn;
         }
 
         public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
+            bool blnReturn;
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
@@ -1633,10 +1635,10 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    await _objCharacter.ComplexForms.RemoveAsync(this, token).ConfigureAwait(false);
                     await ImprovementManager
                         .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.ComplexForm, InternalId, token)
                         .ConfigureAwait(false);
+                    blnReturn = await (await _objCharacter.GetComplexFormsAsync(token).ConfigureAwait(false)).RemoveAsync(this, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -1649,7 +1651,7 @@ namespace Chummer
             }
 
             await DisposeAsync().ConfigureAwait(false);
-            return true;
+            return blnReturn;
         }
 
         public void SetSourceDetail(Control sourceControl)

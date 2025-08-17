@@ -2351,6 +2351,7 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete = true)
         {
+            bool blnReturn;
             using (LockObject.EnterUpgradeableReadLock())
             {
                 if (blnConfirmDelete &&
@@ -2359,17 +2360,17 @@ namespace Chummer.Backend.Equipment
 
                 ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, InternalId);
 
-                if (ParentLifestyle.LifestyleQualities.Remove(this))
-                    return true;
+                blnReturn = ParentLifestyle.LifestyleQualities.Remove(this);
             }
 
             Dispose();
-            return false;
+            return blnReturn;
         }
 
         public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            bool blnReturn;
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -2385,8 +2386,7 @@ namespace Chummer.Backend.Equipment
                     .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Quality, InternalId, token)
                     .ConfigureAwait(false);
 
-                if (await ParentLifestyle.LifestyleQualities.RemoveAsync(this, token).ConfigureAwait(false))
-                    return true;
+                blnReturn = await ParentLifestyle.LifestyleQualities.RemoveAsync(this, token).ConfigureAwait(false);
             }
             finally
             {
@@ -2394,7 +2394,7 @@ namespace Chummer.Backend.Equipment
             }
 
             await DisposeAsync().ConfigureAwait(false);
-            return false;
+            return blnReturn;
         }
 
         private static readonly PropertyDependencyGraph<LifestyleQuality> s_LifestyleQualityDependencyGraph =

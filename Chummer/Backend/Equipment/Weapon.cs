@@ -13639,7 +13639,7 @@ namespace Chummer.Backend.Equipment
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon")))
                 return false;
             DeleteWeapon();
-            return false;
+            return true;
         }
 
         public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
@@ -13653,7 +13653,7 @@ namespace Chummer.Backend.Equipment
                             .ConfigureAwait(false), token: token).ConfigureAwait(false))
                 return false;
             await DeleteWeaponAsync(token: token).ConfigureAwait(false);
-            return false;
+            return true;
         }
 
         /// <summary>

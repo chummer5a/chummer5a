@@ -2883,6 +2883,7 @@ namespace Chummer
 
         public bool Remove(bool blnConfirmDelete = true)
         {
+            bool blnReturn;
             using (LockObject.EnterUpgradeableReadLock())
             {
                 if (Grade < 0)
@@ -2894,19 +2895,20 @@ namespace Chummer
 
                 using (LockObject.EnterWriteLock())
                 {
-                    _objCharacter.Spells.Remove(this);
                     ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Spell,
                         InternalId);
+                    blnReturn = _objCharacter.Spells.Remove(this);
                 }
             }
 
             Dispose();
-            return true;
+            return blnReturn;
         }
 
         public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            bool blnReturn;
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -2925,10 +2927,10 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    await _objCharacter.Spells.RemoveAsync(this, token).ConfigureAwait(false);
                     await ImprovementManager
                         .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Spell, InternalId, token)
                         .ConfigureAwait(false);
+                    blnReturn = await (await _objCharacter.GetSpellsAsync(token).ConfigureAwait(false)).RemoveAsync(this, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -2941,7 +2943,7 @@ namespace Chummer
             }
 
             await DisposeAsync().ConfigureAwait(false);
-            return true;
+            return blnReturn;
         }
 
         public void SetSourceDetail(Control sourceControl)

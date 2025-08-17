@@ -650,7 +650,7 @@ namespace Chummer
 
             await ImprovementManager.RemoveImprovementsAsync(_objCharacter, _objImprovementSource, InternalId, token)
                                     .ConfigureAwait(false);
-            return await _objCharacter.Arts.RemoveAsync(this, token).ConfigureAwait(false);
+            return await (await _objCharacter.GetArtsAsync(token).ConfigureAwait(false)).RemoveAsync(this, token).ConfigureAwait(false);
         }
 
         public void SetSourceDetail(Control sourceControl)

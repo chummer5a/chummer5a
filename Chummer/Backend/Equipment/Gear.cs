@@ -1461,7 +1461,7 @@ namespace Chummer.Backend.Equipment
                     await _lstChildren.AddRangeAsync(lstToAdd, token).ConfigureAwait(false);
                 }
 
-                _strOverclocked = objGear.Overclocked;
+                _strOverclocked = await objGear.GetOverclockedAsync(token).ConfigureAwait(false);
                 _strAttack = objGear.Attack;
                 _strSleaze = objGear.Sleaze;
                 _strDataProcessing = objGear.DataProcessing;
