@@ -9680,12 +9680,17 @@ namespace Chummer
                                 foreach (XmlNode objXmlWeapon in objXmlNodeList)
                                 {
                                     Weapon objWeapon = new Weapon(this);
-                                    objWeapon.Load(objXmlWeapon);
                                     if (blnSync)
+                                    {
+                                        objWeapon.Load(objXmlWeapon);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstWeapons.Add(objWeapon);
+                                    }
                                     else
+                                    {
+                                        await objWeapon.LoadAsync(objXmlWeapon, token: token).ConfigureAwait(false);
                                         await _lstWeapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                                    }
                                 }
 
                                 //Timekeeper.Finish("load_char_weapons");

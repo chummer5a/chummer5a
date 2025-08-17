@@ -8275,7 +8275,7 @@ namespace Chummer
                     // Create a new piece of Gear.
                     Gear objGear = new Gear(CharacterObject);
 
-                    objGear.Copy(objSelectedGear);
+                    await objGear.CopyAsync(objSelectedGear, GenericToken).ConfigureAwait(false);
 
                     await objGear.SetQuantityAsync(frmPickNumber.MyForm.SelectedValue, GenericToken).ConfigureAwait(false);
                     await objGear.SetEquippedAsync(objSelectedGear.Equipped, GenericToken).ConfigureAwait(false);
@@ -8482,7 +8482,7 @@ namespace Chummer
                     // Create a new piece of Gear.
                     Gear objGear = new Gear(CharacterObject);
 
-                    objGear.Copy(objSelectedGear);
+                    await objGear.CopyAsync(objSelectedGear, GenericToken).ConfigureAwait(false);
 
                     await objGear.SetQuantityAsync(decMove, GenericToken).ConfigureAwait(false);
                     objGear.Location = null;
@@ -8641,7 +8641,7 @@ namespace Chummer
                             // Create a new piece of Gear.
                             Gear objGear = new Gear(CharacterObject);
 
-                            objGear.Copy(objSelectedGear);
+                            await objGear.CopyAsync(objSelectedGear, GenericToken).ConfigureAwait(false);
 
                             await objGear.SetQuantityAsync(decMove, GenericToken).ConfigureAwait(false);
 

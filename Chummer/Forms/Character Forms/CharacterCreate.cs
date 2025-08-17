@@ -4878,7 +4878,7 @@ namespace Chummer
 
                                     case Weapon objWeaponParent:
                                         objWeapon = new Weapon(CharacterObject);
-                                        objWeapon.Load(objXmlNode, true);
+                                        await objWeapon.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
                                         await objWeaponParent.Children.AddAsync(objWeapon, GenericToken)
                                             .ConfigureAwait(false);
                                         break;
@@ -4889,7 +4889,7 @@ namespace Chummer
 
                                     case WeaponMount objWeaponMount:
                                         objWeapon = new Weapon(CharacterObject);
-                                        objWeapon.Load(objXmlNode, true);
+                                        await objWeapon.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
                                         await objWeaponMount.Weapons.AddAsync(objWeapon, GenericToken)
                                             .ConfigureAwait(false);
                                         break;
@@ -4900,13 +4900,13 @@ namespace Chummer
 
                                     case VehicleMod objMod:
                                         objWeapon = new Weapon(CharacterObject);
-                                        objWeapon.Load(objXmlNode, true);
+                                        await objWeapon.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
                                         await objMod.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
                                         break;
 
                                     default:
                                         objWeapon = new Weapon(CharacterObject);
-                                        objWeapon.Load(objXmlNode, true);
+                                        await objWeapon.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
                                         await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken)
                                             .ConfigureAwait(false);
                                         break;
@@ -4952,7 +4952,7 @@ namespace Chummer
                         foreach (XmlNode objLoopNode in objXmlNodeList)
                         {
                             Weapon objWeapon = new Weapon(CharacterObject);
-                            objWeapon.Load(objLoopNode, true);
+                            await objWeapon.LoadAsync(objLoopNode, true, GenericToken).ConfigureAwait(false);
                             await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
                             objWeapon.ParentID = parentId;
                         }
