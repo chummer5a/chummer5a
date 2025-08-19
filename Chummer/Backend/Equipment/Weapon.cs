@@ -5925,7 +5925,7 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             string strSlots = ModificationSlots;
-            if (string.IsNullOrEmpty(strSlots))
+            if (string.IsNullOrEmpty(strSlots) && !(WeaponAccessories.Any(objAccessory => objAccessory.AddMount != string.Empty)))
             {
                 return blnWithInternalAndNone
                     ? new List<string>(1)
