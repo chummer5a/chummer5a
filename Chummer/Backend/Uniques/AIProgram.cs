@@ -675,11 +675,9 @@ namespace Chummer
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteAIProgram")))
                 return false;
 
-            _objCharacter.AIPrograms.Remove(this);
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.AIProgram,
                 InternalId);
-
-            return true;
+            return _objCharacter.AIPrograms.Remove(this);
         }
 
         public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
@@ -693,11 +691,9 @@ namespace Chummer
                             .ConfigureAwait(false), token: token).ConfigureAwait(false))
                 return false;
 
-            await _objCharacter.AIPrograms.RemoveAsync(this, token).ConfigureAwait(false);
             await ImprovementManager.RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.AIProgram,
                 InternalId, token).ConfigureAwait(false);
-
-            return true;
+            return await (await _objCharacter.GetAIProgramsAsync(token).ConfigureAwait(false)).RemoveAsync(this, token).ConfigureAwait(false);
         }
 
         public void SetSourceDetail(Control sourceControl)

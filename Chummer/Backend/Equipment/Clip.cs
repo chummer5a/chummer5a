@@ -190,6 +190,46 @@ namespace Chummer.Backend.Equipment
             return null;
         }
 
+        internal static async Task<Clip> LoadAsync(XmlNode node, Character objCharacter, Weapon objWeapon, WeaponAccessory objOwnerAccessory, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (node == null)
+                return null;
+            string strAmmoGuid = string.Empty;
+            int intCount = 0;
+            if (node.TryGetStringFieldQuickly("id", ref strAmmoGuid)
+                && !string.IsNullOrEmpty(strAmmoGuid)
+                && node.TryGetInt32FieldQuickly("count", ref intCount)
+                && Guid.TryParse(strAmmoGuid, out Guid guiClipId))
+            {
+                Gear objGear = null;
+                if (guiClipId != Guid.Empty)
+                {
+                    objGear = objWeapon.ParentVehicle != null
+                        ? (await objWeapon.ParentVehicle.FindVehicleGearAsync(strAmmoGuid, token).ConfigureAwait(false)).Item1
+                        : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).DeepFindByIdAsync(strAmmoGuid, token).ConfigureAwait(false);
+                }
+                //Fix for older versions where ammo loaded into clips was separate from ammo lying around in the inventory
+                if (objCharacter.LastSavedVersion <= new ValueVersion(5, 222, 61) && objGear != null)
+                {
+                    Gear objNewGear = new Gear(objCharacter);
+                    await objNewGear.CopyAsync(objGear, token).ConfigureAwait(false);
+                    await objNewGear.SetQuantityAsync(intCount, token).ConfigureAwait(false);
+                    if (objWeapon.ParentVehicle != null)
+                        await objWeapon.ParentVehicle.GearChildren.AddAsync(objNewGear, token).ConfigureAwait(false);
+                    else
+                        await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).AddAsync(objNewGear, token).ConfigureAwait(false);
+                    objGear = objNewGear;
+                }
+                Clip objReturn = new Clip(objCharacter, objOwnerAccessory, objWeapon, objGear, intCount);
+                string strTemp = string.Empty;
+                if (node.TryGetStringFieldQuickly("location", ref strTemp))
+                    objReturn.AmmoLocation = strTemp;
+                return objReturn;
+            }
+            return null;
+        }
+
         internal void Save(XmlWriter writer)
         {
             if (AmmoGear == null && Ammo == 0) //Don't save empty clips, we are recreating them anyway. Save those kb

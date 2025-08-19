@@ -1026,7 +1026,7 @@ namespace Chummer
                 .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.CritterPower, InternalId, token)
                 .ConfigureAwait(false);
 
-            return await _objCharacter.CritterPowers.RemoveAsync(this, token).ConfigureAwait(false);
+            return await (await _objCharacter.GetCritterPowersAsync(token).ConfigureAwait(false)).RemoveAsync(this, token).ConfigureAwait(false);
         }
 
         public void SetSourceDetail(Control sourceControl)

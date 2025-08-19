@@ -637,16 +637,14 @@ namespace Chummer
                 return false;
             }
 
-            _objCharacter.Enhancements.Remove(this);
+            ImprovementManager.RemoveImprovements(_objCharacter, _objImprovementSource, InternalId);
+
             _objCharacter.Powers.ForEach(objPower =>
             {
                 if (objPower.Enhancements.Contains(this))
                     objPower.Enhancements.Remove(this);
             });
-
-            ImprovementManager.RemoveImprovements(_objCharacter, _objImprovementSource, InternalId);
-
-            return true;
+            return _objCharacter.Enhancements.Remove(this);
         }
 
         public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
@@ -662,17 +660,15 @@ namespace Chummer
                     return false;
             }
 
-            await _objCharacter.Enhancements.RemoveAsync(this, token).ConfigureAwait(false);
-            await _objCharacter.Powers.ForEachAsync(async objPower =>
+            await ImprovementManager.RemoveImprovementsAsync(_objCharacter, _objImprovementSource, InternalId, token)
+                                    .ConfigureAwait(false);
+            await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).ForEachAsync(async objPower =>
             {
                 if (await objPower.Enhancements.ContainsAsync(this, token).ConfigureAwait(false))
                     await objPower.Enhancements.RemoveAsync(this, token).ConfigureAwait(false);
             }, token).ConfigureAwait(false);
 
-            await ImprovementManager.RemoveImprovementsAsync(_objCharacter, _objImprovementSource, InternalId, token)
-                                    .ConfigureAwait(false);
-
-            return true;
+            return await (await _objCharacter.GetEnhancementsAsync(token).ConfigureAwait(false)).RemoveAsync(this, token).ConfigureAwait(false); ;
         }
 
         public void SetSourceDetail(Control sourceControl)
