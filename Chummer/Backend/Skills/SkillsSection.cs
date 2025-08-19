@@ -1533,13 +1533,19 @@ namespace Chummer.Backend.Skills
                                                                     x => x.Name == strName, token: token)
                                                                 .ConfigureAwait(false);
                                                     if (objGroup != null)
-                                                        objGroup.Load(xmlNode, token: token);
+                                                    {
+                                                        if (blnSync)
+                                                            objGroup.Load(xmlNode, token);
+                                                        else
+                                                            await objGroup.LoadAsync(xmlNode, token).ConfigureAwait(false);
+                                                    }
                                                     else
                                                     {
                                                         objGroup = new SkillGroup(_objCharacter, strName);
-                                                        objGroup.Load(xmlNode, token: token);
                                                         if (blnSync)
                                                         {
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            objGroup.Load(xmlNode, token);
                                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                             _lstSkillGroups.Add(objGroup);
                                                             // ReSharper disable once MethodHasAsyncOverload
@@ -1547,6 +1553,7 @@ namespace Chummer.Backend.Skills
                                                         }
                                                         else
                                                         {
+                                                            await objGroup.LoadAsync(xmlNode, token).ConfigureAwait(false);
                                                             await _lstSkillGroups.AddAsync(objGroup, token)
                                                                 .ConfigureAwait(false);
                                                             await objGroup.LockObject.SetParentAsync(_objCharacter.LockObject, token: token).ConfigureAwait(false);

@@ -455,24 +455,58 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        ///     Load the CharacterAttribute from the XmlNode.
+        /// Load the Lifestyle quality from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="objParentLifestyle">Lifestyle object to which this LifestyleQuality belongs.</param>
         public void Load(XmlNode objNode, Lifestyle objParentLifestyle)
         {
-            using (LockObject.EnterWriteLock())
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, objParentLifestyle));
+        }
+
+        /// <summary>
+        /// Load the Lifestyle quality from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="objParentLifestyle">Lifestyle object to which this LifestyleQuality belongs.</param>
+        public Task LoadAsync(XmlNode objNode, Lifestyle objParentLifestyle, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, objParentLifestyle, token);
+        }
+
+        /// <summary>
+        /// Load the Lifestyle quality from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="objParentLifestyle">Lifestyle object to which this LifestyleQuality belongs.</param>
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, Lifestyle objParentLifestyle, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterWriteLock(token);
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 _objParentLifestyle = objParentLifestyle;
                 if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                     _guiID = Guid.NewGuid();
                 objNode.TryGetStringFieldQuickly("name", ref _strName);
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
-                Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+                Lazy<XmlNode> objMyNode = null;
+                Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode> objMyNodeAsync = null;
+                if (blnSync)
+                    objMyNode = new Lazy<XmlNode>(() => this.GetNode());
+                else
+                    objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode>(() => this.GetNodeAsync(token), Utils.JoinableTaskFactory);
                 if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
                 {
-                    objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
                 objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
@@ -483,24 +517,24 @@ namespace Chummer.Backend.Equipment
                 if (!objNode.TryGetBoolFieldQuickly("uselpcost", ref _blnUseLPCost))
                     objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnUseLPCost);
                 if (!objNode.TryGetInt32FieldQuickly("areamaximum", ref _intAreaMaximum))
-                    objMyNode.Value?.TryGetInt32FieldQuickly("areamaximum", ref _intAreaMaximum);
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetInt32FieldQuickly("areamaximum", ref _intAreaMaximum);
                 if (!objNode.TryGetInt32FieldQuickly("area", ref _intArea))
-                    objMyNode.Value?.TryGetInt32FieldQuickly("area", ref _intArea);
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetInt32FieldQuickly("area", ref _intArea);
                 if (!objNode.TryGetInt32FieldQuickly("securitymaximum", ref _intSecurityMaximum))
-                    objMyNode.Value?.TryGetInt32FieldQuickly("securitymaximum", ref _intSecurityMaximum);
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetInt32FieldQuickly("securitymaximum", ref _intSecurityMaximum);
                 if (!objNode.TryGetInt32FieldQuickly("security", ref _intSecurity))
-                    objMyNode.Value?.TryGetInt32FieldQuickly("security", ref _intSecurity);
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetInt32FieldQuickly("security", ref _intSecurity);
                 if (!objNode.TryGetInt32FieldQuickly("comforts", ref _intComforts))
-                    objMyNode.Value?.TryGetInt32FieldQuickly("comforts", ref _intComforts);
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetInt32FieldQuickly("comforts", ref _intComforts);
                 if (!objNode.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortsMaximum))
-                    objMyNode.Value?.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortsMaximum);
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortsMaximum);
                 objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
                 if (objNode["lifestylequalitytype"] != null)
                     _eType = ConvertToLifestyleQualityType(objNode["lifestylequalitytype"].InnerText);
                 if (objNode["lifestylequalitysource"] != null)
                     OriginSource = ConvertToLifestyleQualitySource(objNode["lifestylequalitysource"].InnerText);
                 if (!objNode.TryGetStringFieldQuickly("category", ref _strCategory)
-                    && objMyNode.Value?.TryGetStringFieldQuickly("category", ref _strCategory) != true)
+                    && (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("category", ref _strCategory) != true)
                     _strCategory = string.Empty;
                 objNode.TryGetBoolFieldQuickly("free", ref _blnFree);
                 objNode.TryGetBoolFieldQuickly("isfreegrid", ref _blnIsFreeGrid);
@@ -508,20 +542,34 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetStringFieldQuickly("page", ref _strPage);
                 string strAllowedFreeLifestyles = string.Empty;
                 if (!objNode.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles)
-                    && objMyNode.Value?.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles) != true)
+                    && (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles) != true)
                     strAllowedFreeLifestyles = string.Empty;
                 _setAllowedFreeLifestyles.Clear();
                 foreach (string strLoopLifestyle in strAllowedFreeLifestyles.SplitNoAlloc(
                              ',', StringSplitOptions.RemoveEmptyEntries))
                     _setAllowedFreeLifestyles.Add(strLoopLifestyle);
-                Bonus = objNode["bonus"];
+                if (blnSync)
+                    Bonus = objNode["bonus"];
+                else
+                    await SetBonusAsync(objNode["bonus"], token).ConfigureAwait(false);
                 objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
                 string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
                 objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-                LegacyShim();
+                if (blnSync)
+                    LegacyShim();
+                else
+                    await LegacyShimAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -535,9 +583,9 @@ namespace Chummer.Backend.Equipment
             //Unstored Cost and LP values prior to 5.190.2 nightlies.
             if (_objCharacter.LastSavedVersion > new ValueVersion(5, 190, 0))
                 return;
+            XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
             using (LockObject.EnterWriteLock())
             {
-                XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
                 XPathNavigator objLifestyleQualityNode = this.GetNodeXPath()
                                                          ?? objXmlDocument.SelectSingleNode(
                                                              "/chummer/qualities/quality[name = " + Name.CleanXPath()
@@ -601,6 +649,92 @@ namespace Chummer.Backend.Equipment
                     Multiplier = intTemp;
                 if (objLifestyleQualityNode.TryGetInt32FieldQuickly("multiplierbaseonly", ref intTemp))
                     BaseMultiplier = intTemp;
+            }
+        }
+
+        /// <summary>
+        ///     Performs actions based on the character's last loaded AppVersion attribute.
+        /// </summary>
+        private async Task LegacyShimAsync(CancellationToken token = default)
+        {
+            if (Utils.IsUnitTest)
+                return;
+            //Unstored Cost and LP values prior to 5.190.2 nightlies.
+            if (_objCharacter.LastSavedVersion > new ValueVersion(5, 190, 0))
+                return;
+            XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("lifestyles.xml", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                XPathNavigator objLifestyleQualityNode = await this.GetNodeXPathAsync(token).ConfigureAwait(false)
+                                                         ?? objXmlDocument.SelectSingleNode(
+                                                             "/chummer/qualities/quality[name = " + (await GetNameAsync(token).ConfigureAwait(false)).CleanXPath()
+                                                             + ']');
+                if (objLifestyleQualityNode == null)
+                {
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                   out List<ListItem> lstQualities))
+                    {
+                        foreach (XPathNavigator xmlNode in objXmlDocument.SelectAndCacheExpression(
+                                     "/chummer/qualities/quality", token))
+                        {
+                            lstQualities.Add(new ListItem(xmlNode.SelectSingleNodeAndCacheExpression("id", token)?.Value,
+                                                          xmlNode.SelectSingleNodeAndCacheExpression("translate", token)?.Value
+                                                          ?? xmlNode.SelectSingleNodeAndCacheExpression("name", token)
+                                                                    ?.Value));
+                        }
+
+                        string strDescription = string.Format(GlobalSettings.CultureInfo,
+                                                                   await LanguageManager.GetStringAsync(
+                                                                       "String_intCannotFindLifestyleQuality", token: token).ConfigureAwait(false),
+                                                                   _strName);
+                        using (ThreadSafeForm<SelectItem> frmSelect = await ThreadSafeForm<SelectItem>.GetAsync(
+                                   () => new SelectItem
+                                   {
+                                       Description = strDescription
+                                   }, token).ConfigureAwait(false))
+                        {
+                            frmSelect.MyForm.SetGeneralItemsMode(lstQualities);
+                            if (await frmSelect.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
+
+                            objLifestyleQualityNode =
+                                objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality",
+                                    frmSelect.MyForm.SelectedItem);
+                        }
+                    }
+                }
+
+                int intTemp = 0;
+                string strTemp = string.Empty;
+                if (objLifestyleQualityNode.TryGetStringFieldQuickly("cost", ref strTemp))
+                    CostString = strTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("lp", ref intTemp))
+                    LPCost = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("areamaximum", ref intTemp))
+                    AreaMaximum = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("comfortsmaximum", ref intTemp))
+                    ComfortsMaximum = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("securitymaximum", ref intTemp))
+                    SecurityMaximum = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("area", ref intTemp))
+                    Area = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("comforts", ref intTemp))
+                    Comforts = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("security", ref intTemp))
+                    Security = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("multiplier", ref intTemp))
+                    Multiplier = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("multiplierbaseonly", ref intTemp))
+                    BaseMultiplier = intTemp;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -933,13 +1067,29 @@ namespace Chummer.Backend.Equipment
                 using (LockObject.EnterReadLock())
                     return _xmlBonus;
             }
-            set
+            private set
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _xmlBonus, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        private async Task SetBonusAsync(XmlNode value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _xmlBonus, value) != value)
+                    await OnPropertyChangedAsync(nameof(Bonus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

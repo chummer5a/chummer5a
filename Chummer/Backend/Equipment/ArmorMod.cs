@@ -498,31 +498,52 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Load the CharacterAttribute from the XmlNode.
+        /// Load the Armor mod from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        /// <param name="blnCopy">Whether we are copying an existing node.</param>
+        /// <param name="blnCopy">Whether we are loading a copy of an existing armor mod.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+        }
+
+        /// <summary>
+        /// Load the Armor mod from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="blnCopy">Whether we are loading a copy of an existing armor mod.</param>
+        public Task LoadAsync(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, blnCopy, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objNode == null)
                 return;
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             _objCachedMyXmlNode = null;
             _objCachedMyXPathNode = null;
-            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+            Lazy<XPathNavigator> objMyNode = null;
+            Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator> objMyNodeAsync = null;
+            if (blnSync)
+                objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+            else
+                objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator>(() => this.GetNodeXPathAsync(token), Utils.JoinableTaskFactory);
             if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
                 _guiID = Guid.NewGuid();
             }
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             if (!objNode.TryGetStringFieldQuickly("category", ref _strCategory)
                 || (_strCategory.EndsWith("Liners") && _objCharacter.LastSavedVersion < new ValueVersion(5, 255, 949)))
             {
                 // Legacy shim for liners
-                objMyNode.Value?.TryGetStringFieldQuickly("category", ref _strCategory);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("category", ref _strCategory);
             }
             objNode.TryGetInt32FieldQuickly("armor", ref _intArmorValue);
             objNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
@@ -530,11 +551,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
             objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
-            _intRating = Math.Min(_intRating, MaxRatingValue);
+            _intRating = Math.Min(_intRating, blnSync ? MaxRatingValue : await GetMaxRatingValueAsync(token).ConfigureAwait(false));
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             if (!objNode.TryGetStringFieldQuickly("weight", ref _strWeight))
-                objMyNode.Value?.TryGetStringFieldQuickly("weight", ref _strWeight);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("weight", ref _strWeight);
             _nodBonus = objNode["bonus"];
             _nodWirelessBonus = objNode["wirelessbonus"];
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -563,11 +584,23 @@ namespace Chummer.Backend.Equipment
                 {
                     if (nodGears != null)
                     {
-                        foreach (XmlNode nodGear in nodGears)
+                        if (blnSync)
                         {
-                            Gear objGear = new Gear(_objCharacter);
-                            objGear.Load(nodGear, blnCopy);
-                            _lstGear.Add(objGear);
+                            foreach (XmlNode nodGear in nodGears)
+                            {
+                                Gear objGear = new Gear(_objCharacter);
+                                objGear.Load(nodGear, blnCopy);
+                                _lstGear.Add(objGear);
+                            }
+                        }
+                        else
+                        {
+                            foreach (XmlNode nodGear in nodGears)
+                            {
+                                Gear objGear = new Gear(_objCharacter);
+                                await objGear.LoadAsync(nodGear, blnCopy, token).ConfigureAwait(false);
+                                await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
@@ -577,19 +610,38 @@ namespace Chummer.Backend.Equipment
                 return;
             if (!string.IsNullOrEmpty(Extra))
                 ImprovementManager.SetForcedValue(Extra, _objCharacter);
-            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, 1, CurrentDisplayNameShort);
-            string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
-            if (!string.IsNullOrEmpty(strSelectedValue))
+            if (blnSync)
             {
-                Extra = strSelectedValue;
-            }
+                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, Rating, CurrentDisplayNameShort, token: token);
+                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                if (!string.IsNullOrEmpty(strSelectedValue))
+                {
+                    Extra = strSelectedValue;
+                }
 
-            if (!_blnEquipped)
-            {
-                _blnEquipped = true;
-                Equipped = false;
+                if (!_blnEquipped)
+                {
+                    _blnEquipped = true;
+                    Equipped = false;
+                }
+                RefreshWirelessBonuses();
             }
-            RefreshWirelessBonuses();
+            else
+            {
+                await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, await GetRatingAsync(token).ConfigureAwait(false), await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                if (!string.IsNullOrEmpty(strSelectedValue))
+                {
+                    Extra = strSelectedValue;
+                }
+
+                if (!_blnEquipped)
+                {
+                    _blnEquipped = true;
+                    await SetEquippedAsync(false, token).ConfigureAwait(false);
+                }
+                await RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+            }
         }
 
         /// <summary>

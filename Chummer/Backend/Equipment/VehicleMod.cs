@@ -470,12 +470,29 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Load the VehicleMod from the XmlNode.
+        /// Load the Vehicle Mod from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        /// <param name="blnCopy">Indicates whether a new item will be created as a copy of this one.</param>
+        /// <param name="blnCopy">Are we loading a copy of an existing Vehicle Mod?</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+        }
+
+        /// <summary>
+        /// Load the Vehicle Mod from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="blnCopy">Are we loading a copy of an existing Vehicle Mod?</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task LoadAsync(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
+        {
+            return LoadCoreAsync(true, objNode, blnCopy, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, bool blnCopy, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objNode == null)
                 return;
             if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
@@ -486,10 +503,15 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             _objCachedMyXmlNode = null;
             _objCachedMyXPathNode = null;
-            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+            Lazy<XPathNavigator> objMyNode = null;
+            Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator> objMyNodeAsync = null;
+            if (blnSync)
+                objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+            else
+                objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator>(() => this.GetNodeXPathAsync(token), Utils.JoinableTaskFactory);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("limit", ref _strLimit);
@@ -519,7 +541,7 @@ namespace Chummer.Backend.Equipment
             if (Name.StartsWith("Gecko Tips (Bod", StringComparison.Ordinal))
             {
                 Name = "Gecko Tips";
-                XPathNavigator objNewNode = objMyNode.Value;
+                XPathNavigator objNewNode = blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
                 if (objNewNode != null)
                 {
                     objNewNode.TryGetStringFieldQuickly("cost", ref _strCost);
@@ -529,7 +551,7 @@ namespace Chummer.Backend.Equipment
             if (Name.StartsWith("Gliding System (Bod", StringComparison.Ordinal))
             {
                 Name = "Gliding System";
-                XPathNavigator objNewNode = objMyNode.Value;
+                XPathNavigator objNewNode = blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
                 if (objNewNode != null)
                 {
                     objNewNode.TryGetStringFieldQuickly("cost", ref _strCost);
@@ -543,15 +565,29 @@ namespace Chummer.Backend.Equipment
             {
                 if (xmlNodeList?.Count > 0)
                 {
-                    foreach (XmlNode nodChild in xmlNodeList)
+                    if (blnSync)
                     {
-                        Weapon objWeapon = new Weapon(_objCharacter)
+                        foreach (XmlNode nodChild in xmlNodeList)
                         {
-                            ParentVehicle = Parent,
-                            ParentVehicleMod = this
-                        };
-                        objWeapon.Load(nodChild, blnCopy);
-                        _lstVehicleWeapons.Add(objWeapon);
+                            Weapon objWeapon = new Weapon(_objCharacter)
+                            {
+                                ParentVehicle = Parent,
+                                ParentVehicleMod = this
+                            };
+                            objWeapon.Load(nodChild, blnCopy);
+                            _lstVehicleWeapons.Add(objWeapon);
+                        }
+                    }
+                    else
+                    {
+                        foreach (XmlNode nodChild in xmlNodeList)
+                        {
+                            Weapon objWeapon = new Weapon(_objCharacter);
+                            await objWeapon.SetParentVehicleAsync(Parent, token).ConfigureAwait(false);
+                            await objWeapon.SetParentVehicleModAsync(this, token).ConfigureAwait(false);
+                            await objWeapon.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
+                            await _lstVehicleWeapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                        }
                     }
                 }
             }
@@ -561,14 +597,27 @@ namespace Chummer.Backend.Equipment
             {
                 if (xmlNodeList?.Count > 0)
                 {
-                    foreach (XmlNode nodChild in xmlNodeList)
+                    if (blnSync)
                     {
-                        Cyberware objCyberware = new Cyberware(_objCharacter)
+                        foreach (XmlNode nodChild in xmlNodeList)
                         {
-                            ParentVehicle = Parent
-                        };
-                        objCyberware.Load(nodChild, blnCopy);
-                        _lstCyberware.Add(objCyberware);
+                            Cyberware objCyberware = new Cyberware(_objCharacter)
+                            {
+                                ParentVehicle = Parent
+                            };
+                            objCyberware.Load(nodChild, blnCopy, token);
+                            _lstCyberware.Add(objCyberware);
+                        }
+                    }
+                    else
+                    {
+                        foreach (XmlNode nodChild in xmlNodeList)
+                        {
+                            Cyberware objCyberware = new Cyberware(_objCharacter);
+                            await objCyberware.SetParentVehicleAsync(Parent, token).ConfigureAwait(false);
+                            await objCyberware.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
+                            await _lstCyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
+                        }
                     }
                 }
             }

@@ -497,7 +497,7 @@ namespace Chummer.Backend.Equipment
                     {
                         // ReSharper disable once MethodHasAsyncOverload
                         if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor,
-                                _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, 1,
+                                _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, Rating,
                                 CurrentDisplayNameShort, token: token))
                         {
                             _guiID = Guid.Empty;
@@ -505,7 +505,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                     else if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Armor,
-                                 _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, 1,
+                                 _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, await GetRatingAsync(token),
                                  await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                     {
                         _guiID = Guid.Empty;
@@ -911,18 +911,39 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Load the CharacterAttribute from the XmlNode.
+        /// Load the Armor from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        /// <param name="blnCopy">Check if we are copying an existing item.</param>
+        /// <param name="blnCopy">Whether we are loading a copy of an existing armor.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+        }
+
+        /// <summary>
+        /// Load the Armor from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="blnCopy">Whether we are loading a copy of an existing armor.</param>
+        public Task LoadAsync(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, blnCopy, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objNode == null)
                 return;
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             _objCachedMyXmlNode = null;
             _objCachedMyXPathNode = null;
-            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+            Lazy<XPathNavigator> objMyNode = null;
+            Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator> objMyNodeAsync = null;
+            if (blnSync)
+                objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+            else
+                objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator>(() => this.GetNodeXPathAsync(token), Utils.JoinableTaskFactory);
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
@@ -937,28 +958,51 @@ namespace Chummer.Backend.Equipment
                 string strLocation = objNode["location"]?.InnerText;
                 if (!string.IsNullOrEmpty(strLocation))
                 {
-                    if (Guid.TryParse(strLocation, out Guid temp))
+                    if (blnSync)
                     {
-                        string strLocationId = temp.ToString();
-                        // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
-                        Location =
-                            _objCharacter.ArmorLocations.FirstOrDefault(location =>
-                                location.InternalId == strLocationId);
+                        if (Guid.TryParse(strLocation, out Guid temp))
+                        {
+                            string strLocationId = temp.ToString();
+                            // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
+                            Location =
+                                _objCharacter.ArmorLocations.FirstOrDefault(location =>
+                                    location.InternalId == strLocationId);
+                        }
+                        else
+                        {
+                            //Legacy. Location is a string.
+                            Location =
+                                _objCharacter.ArmorLocations.FirstOrDefault(location =>
+                                    location.Name == strLocation);
+                        }
+                        _objLocation?.Children.Add(this);
                     }
                     else
                     {
-                        //Legacy. Location is a string.
-                        Location =
-                            _objCharacter.ArmorLocations.FirstOrDefault(location =>
-                                location.Name == strLocation);
+                        if (Guid.TryParse(strLocation, out Guid temp))
+                        {
+                            string strLocationId = temp.ToString();
+                            // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
+                            Location =
+                                await (await _objCharacter.GetArmorLocationsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(location =>
+                                    location.InternalId == strLocationId, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            //Legacy. Location is a string.
+                            Location =
+                                await (await _objCharacter.GetArmorLocationsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(location =>
+                                    location.Name == strLocation, token).ConfigureAwait(false);
+                        }
+                        if (_objLocation != null)
+                            await _objLocation.Children.AddAsync(this, token).ConfigureAwait(false);
                     }
-                    _objLocation?.Children.Add(this);
                 }
             }
 
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
             if (!objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance))
@@ -969,7 +1013,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             if (!objNode.TryGetStringFieldQuickly("weight", ref _strWeight))
-                objMyNode.Value?.TryGetStringFieldQuickly("weight", ref _strWeight);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("weight", ref _strWeight);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             if (objNode.TryGetStringFieldQuickly("armoroverride", ref _strArmorOverrideValue) && _strArmorOverrideValue == "0")
                 _strArmorOverrideValue = string.Empty;
@@ -997,50 +1041,70 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
                 _blnWirelessOn = false;
             bool blnIsActive = false;
-            if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
-                this.SetActiveCommlink(_objCharacter, true);
-            if (blnCopy)
+            if (blnSync)
             {
-                this.SetHomeNode(_objCharacter, false);
+                if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
+                    this.SetActiveCommlink(_objCharacter, true);
+                if (blnCopy)
+                {
+                    this.SetHomeNode(_objCharacter, false);
+                }
+                else
+                {
+                    bool blnIsHomeNode = false;
+                    if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
+                    {
+                        this.SetHomeNode(_objCharacter, true);
+                    }
+                }
             }
             else
             {
-                bool blnIsHomeNode = false;
-                if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
+                if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
+                    await this.SetActiveCommlinkAsync(_objCharacter, true, token).ConfigureAwait(false);
+                if (blnCopy)
                 {
-                    this.SetHomeNode(_objCharacter, true);
+                    await this.SetHomeNodeAsync(_objCharacter, false, token).ConfigureAwait(false);
+                }
+                else
+                {
+                    bool blnIsHomeNode = false;
+                    if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
+                    {
+                        await this.SetHomeNodeAsync(_objCharacter, true, token).ConfigureAwait(false);
+                    }
                 }
             }
 
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
-                objMyNode.Value?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
-                objMyNode.Value?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
             objNode.TryGetStringFieldQuickly("overclocked", ref _strOverclocked);
             if (!objNode.TryGetStringFieldQuickly("attack", ref _strAttack))
-                objMyNode.Value?.TryGetStringFieldQuickly("attack", ref _strAttack);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("attack", ref _strAttack);
             if (!objNode.TryGetStringFieldQuickly("sleaze", ref _strSleaze))
-                objMyNode.Value?.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
             if (!objNode.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing))
-                objMyNode.Value?.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
             if (!objNode.TryGetStringFieldQuickly("firewall", ref _strFirewall))
-                objMyNode.Value?.TryGetStringFieldQuickly("firewall", ref _strFirewall);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("firewall", ref _strFirewall);
             if (!objNode.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
-                objMyNode.Value?.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray);
             if (!objNode.TryGetStringFieldQuickly("modattack", ref _strModAttack))
-                objMyNode.Value?.TryGetStringFieldQuickly("modattack", ref _strModAttack);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("modattack", ref _strModAttack);
             if (!objNode.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze))
-                objMyNode.Value?.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
             if (!objNode.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing))
-                objMyNode.Value?.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
             if (!objNode.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall))
-                objMyNode.Value?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
-                objMyNode.Value?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetInt32FieldQuickly("matrixcmbonus", ref _intMatrixCMBonus);
             if (!objNode.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona))
-                objMyNode.Value?.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
             XmlElement xmlChildrenNode = objNode["armormods"];
             if (xmlChildrenNode != null)
             {
@@ -1048,11 +1112,23 @@ namespace Chummer.Backend.Equipment
                 {
                     if (nodMods != null)
                     {
-                        foreach (XmlNode nodMod in nodMods)
+                        if (blnSync)
                         {
-                            ArmorMod objMod = new ArmorMod(_objCharacter);
-                            objMod.Load(nodMod, blnCopy);
-                            _lstArmorMods.Add(objMod);
+                            foreach (XmlNode nodMod in nodMods)
+                            {
+                                ArmorMod objMod = new ArmorMod(_objCharacter);
+                                objMod.Load(nodMod, blnCopy);
+                                _lstArmorMods.Add(objMod);
+                            }
+                        }
+                        else
+                        {
+                            foreach (XmlNode nodMod in nodMods)
+                            {
+                                ArmorMod objMod = new ArmorMod(_objCharacter);
+                                await objMod.LoadAsync(nodMod, blnCopy, token).ConfigureAwait(false);
+                                await _lstArmorMods.AddAsync(objMod, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
@@ -1064,23 +1140,37 @@ namespace Chummer.Backend.Equipment
                 {
                     if (nodGears != null)
                     {
-                        foreach (XmlNode nodGear in nodGears)
+                        if (blnSync)
                         {
-                            Gear objGear = new Gear(_objCharacter);
-                            objGear.Load(nodGear, blnCopy);
-                            _lstGear.Add(objGear);
+                            foreach (XmlNode nodGear in nodGears)
+                            {
+                                Gear objGear = new Gear(_objCharacter);
+                                objGear.Load(nodGear, blnCopy);
+                                _lstGear.Add(objGear);
+                            }
+                        }
+                        {
+                            foreach (XmlNode nodGear in nodGears)
+                            {
+                                Gear objGear = new Gear(_objCharacter);
+                                await objGear.LoadAsync(nodGear, blnCopy, token).ConfigureAwait(false);
+                                await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
             }
 
-            if (blnCopy)
+            if (!blnCopy)
+                return;
+
+            if (blnSync)
             {
                 if (Bonus != null)
                 {
                     if (!string.IsNullOrEmpty(Extra))
                         ImprovementManager.SetForcedValue(Extra, _objCharacter);
-                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, 1, CurrentDisplayNameShort);
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, Rating, CurrentDisplayNameShort, token: token);
                     string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                     if (!string.IsNullOrEmpty(strSelectedValue))
                     {
@@ -1092,7 +1182,7 @@ namespace Chummer.Backend.Equipment
                 {
                     ImprovementManager.SetForcedValue(Extra, _objCharacter);
 
-                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), WirelessBonus, 1, CurrentDisplayNameShort))
+                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), WirelessBonus, Rating, CurrentDisplayNameShort, token: token))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -1106,6 +1196,39 @@ namespace Chummer.Backend.Equipment
                 }
 
                 RefreshWirelessBonuses();
+            }
+            else
+            {
+                if (Bonus != null)
+                {
+                    if (!string.IsNullOrEmpty(Extra))
+                        ImprovementManager.SetForcedValue(Extra, _objCharacter);
+                    await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, await GetRatingAsync(token), await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    if (!string.IsNullOrEmpty(strSelectedValue))
+                    {
+                        Extra = strSelectedValue;
+                    }
+                }
+
+                if (WirelessOn && WirelessBonus != null)
+                {
+                    ImprovementManager.SetForcedValue(Extra, _objCharacter);
+
+                    if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), WirelessBonus, await GetRatingAsync(token), await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                    {
+                        _guiID = Guid.Empty;
+                        return;
+                    }
+                }
+
+                if (!_blnEquipped)
+                {
+                    _blnEquipped = true;
+                    await SetEquippedAsync(false, token).ConfigureAwait(false);
+                }
+
+                await RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
             }
         }
 

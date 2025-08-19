@@ -333,14 +333,38 @@ namespace Chummer
             {
                 objNode.TryGetField("guid", Guid.TryParse, out _guiID);
                 if (objNode.TryGetInt32FieldQuickly("year", ref _intYear))
-                {
                     _blnIsLongYear = _intYear.IsYearLongYear(out _blnIsLeapYear);
-                }
                 objNode.TryGetInt32FieldQuickly("week", ref _intWeek);
                 objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
                 string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
                 objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
+            }
+        }
+
+        /// <summary>
+        /// Load the Calendar Week from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        public async Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+                if (objNode.TryGetInt32FieldQuickly("year", ref _intYear))
+                    _blnIsLongYear = _intYear.IsYearLongYear(out _blnIsLeapYear);
+                objNode.TryGetInt32FieldQuickly("week", ref _intWeek);
+                objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

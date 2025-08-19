@@ -1225,7 +1225,10 @@ namespace Chummer.Backend.Equipment
                                             blnSkipSelectForms, true, blnCreateImprovements, token).ConfigureAwait(false);
                                     objGearWeapon.Cost = "0";
                                     objGearWeapon.ParentID = InternalId;
-                                    objGearWeapon.Parent = objWeapon;
+                                    if (blnSync)
+                                        objGearWeapon.Parent = objWeapon;
+                                    else
+                                        await objGearWeapon.SetParentAsync(objWeapon, token).ConfigureAwait(false);
 
                                     if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponAccessoryID))
                                     {
@@ -2360,10 +2363,15 @@ namespace Chummer.Backend.Equipment
 
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
-                    Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(() => this.GetNode());
+                    Lazy<XmlNode> objMyNode = null;
+                    Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode> objMyNodeAsync = null;
+                    if (blnSync)
+                        objMyNode = new Lazy<XmlNode>(() => this.GetNode());
+                    else
+                        objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode>(() => this.GetNodeAsync(token), Utils.JoinableTaskFactory);
                     if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
                     {
-                        objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                        (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                     }
 
                     if (blnCopy)
@@ -2406,17 +2414,17 @@ namespace Chummer.Backend.Equipment
                     objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
                     objNode.TryGetStringFieldQuickly("cost", ref _strCost);
                     if (!objNode.TryGetStringFieldQuickly("weight", ref _strWeight))
-                        objMyNode.Value?.TryGetStringFieldQuickly("weight", ref _strWeight);
+                        (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("weight", ref _strWeight);
                     objNode.TryGetStringFieldQuickly("source", ref _strSource);
                     objNode.TryGetStringFieldQuickly("page", ref _strPage);
                     objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
                     if (!objNode.TryGetStringFieldQuickly("hasmodularmount", ref _strHasModularMount))
-                        _strHasModularMount = objMyNode.Value?["hasmodularmount"]?.InnerText ?? string.Empty;
+                        _strHasModularMount = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["hasmodularmount"]?.InnerText ?? string.Empty;
                     if (!objNode.TryGetStringFieldQuickly("plugsintomodularmount", ref _strPlugsIntoModularMount))
                         _strPlugsIntoModularMount
-                            = objMyNode.Value?["plugsintomodularmount"]?.InnerText ?? string.Empty;
+                            = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["plugsintomodularmount"]?.InnerText ?? string.Empty;
                     if (!objNode.TryGetStringFieldQuickly("blocksmounts", ref _strBlocksMounts))
-                        _strBlocksMounts = objMyNode.Value?["blocksmounts"]?.InnerText ?? string.Empty;
+                        _strBlocksMounts = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["blocksmounts"]?.InnerText ?? string.Empty;
                     objNode.TryGetStringFieldQuickly("forced", ref _strForced);
                     objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
                     objNode.TryGetInt32FieldQuickly("minstrength", ref _intMinStrength);
@@ -2429,7 +2437,7 @@ namespace Chummer.Backend.Equipment
                     if (s_AttributeAffectingCyberwares.Values.Any(x => x.Contains(Name)) &&
                         int.TryParse(MaxRatingString, out int _))
                     {
-                        XmlNode objMyXmlNode = objMyNode.Value;
+                        XmlNode objMyXmlNode = blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
                         if (objMyXmlNode != null)
                         {
                             objMyXmlNode.TryGetStringFieldQuickly("minrating", ref _strMinRating);
@@ -2484,12 +2492,12 @@ namespace Chummer.Backend.Equipment
                         SourceType == Improvement.ImprovementSource.Bioware)
                         objNode.TryGetBoolFieldQuickly("prototypetranshuman", ref _blnPrototypeTranshuman);
 
-                    _nodBonus = objNode["bonus"] ?? objMyNode.Value?["bonus"];
-                    _nodPairBonus = objNode["pairbonus"] ?? objMyNode.Value?["pairbonus"];
+                    _nodBonus = objNode["bonus"] ?? (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["bonus"];
+                    _nodPairBonus = objNode["pairbonus"] ?? (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["pairbonus"];
                     XmlElement xmlPairIncludeNode = objNode["pairinclude"];
                     if (xmlPairIncludeNode == null)
                     {
-                        xmlPairIncludeNode = objMyNode.Value?["pairinclude"];
+                        xmlPairIncludeNode = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["pairinclude"];
                         _lstIncludeInPairBonus.Add(Name);
                     }
 
@@ -2505,12 +2513,12 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    _nodWirelessBonus = objNode["wirelessbonus"] ?? objMyNode.Value?["wirelessbonus"];
-                    _nodWirelessPairBonus = objNode["wirelesspairbonus"] ?? objMyNode.Value?["wirelesspairbonus"];
+                    _nodWirelessBonus = objNode["wirelessbonus"] ?? (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["wirelessbonus"];
+                    _nodWirelessPairBonus = objNode["wirelesspairbonus"] ?? (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["wirelesspairbonus"];
                     xmlPairIncludeNode = objNode["wirelesspairinclude"];
                     if (xmlPairIncludeNode == null)
                     {
-                        xmlPairIncludeNode = objMyNode.Value?["wirelesspairinclude"];
+                        xmlPairIncludeNode = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["wirelesspairinclude"];
                         _lstIncludeInWirelessPairBonus.Add(Name);
                     }
 
@@ -2535,7 +2543,7 @@ namespace Chummer.Backend.Equipment
                     // Legacy Sweep
                     if (_strForceGrade != "None" && IsGeneware)
                     {
-                        _strForceGrade = objMyNode.Value?["forcegrade"]?.InnerText;
+                        _strForceGrade = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["forcegrade"]?.InnerText;
                         if (!string.IsNullOrEmpty(_strForceGrade))
                             _objGrade = blnSync
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -2584,12 +2592,17 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode nodChild in nodChildren)
                         {
                             Gear objGear = new Gear(_objCharacter);
-                            objGear.Load(nodChild, blnCopy);
                             if (blnSync)
+                            {
+                                objGear.Load(nodChild, blnCopy);
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 _lstGear.Add(objGear);
+                            }
                             else
+                            {
+                                await objGear.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
                                 await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                            }
                         }
                     }
 
@@ -2608,7 +2621,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                     else
-                        _blnAddToParentESS = objMyNode.Value?["addtoparentess"] != null;
+                        _blnAddToParentESS = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["addtoparentess"] != null;
 
                     if (objNode["addtoparentcapacity"] != null)
                     {
@@ -2618,7 +2631,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                     else
-                        _blnAddToParentCapacity = objMyNode.Value?["addtoparentcapacity"] != null;
+                        _blnAddToParentCapacity = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["addtoparentcapacity"] != null;
 
                     if (objNode["geneware"] != null)
                     {
@@ -2629,8 +2642,8 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        _blnIsGeneware = objMyNode.Value?["geneware"] != null;
-                        _strCategory = objMyNode.Value?["category"]?.InnerText ?? _strCategory;
+                        _blnIsGeneware = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["geneware"] != null;
+                        _strCategory = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["category"]?.InnerText ?? _strCategory;
                     }
 
                     bool blnIsActive = false;
@@ -2665,30 +2678,30 @@ namespace Chummer.Backend.Equipment
                     }
 
                     if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
-                        objMyNode.Value?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
+                        (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
                     if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
-                        objMyNode.Value?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
+                        (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
                     objNode.TryGetStringFieldQuickly("overclocked", ref _strOverclocked);
                     if (!objNode.TryGetStringFieldQuickly("attack", ref _strAttack))
-                        objMyNode.Value?.TryGetStringFieldQuickly("attack", ref _strAttack);
+                        (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("attack", ref _strAttack);
                     if (!objNode.TryGetStringFieldQuickly("sleaze", ref _strSleaze))
-                        objMyNode.Value?.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
+                        (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
                     if (!objNode.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing))
-                        objMyNode.Value?.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
+                        (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
                     if (!objNode.TryGetStringFieldQuickly("firewall", ref _strFirewall))
-                        objMyNode.Value?.TryGetStringFieldQuickly("firewall", ref _strFirewall);
+                        (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("firewall", ref _strFirewall);
                     if (!objNode.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
-                        objMyNode.Value?.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray);
+                        (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray);
                     if (!objNode.TryGetStringFieldQuickly("modattack", ref _strModAttack))
-                        objMyNode.Value?.TryGetStringFieldQuickly("modattack", ref _strModAttack);
+                        (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("modattack", ref _strModAttack);
                     if (!objNode.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze))
-                        objMyNode.Value?.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
+                        (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
                     if (!objNode.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing))
-                        objMyNode.Value?.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
+                        (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
                     if (!objNode.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall))
-                        objMyNode.Value?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
+                        (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
                     if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
-                        objMyNode.Value?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
+                        (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
                     objNode.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
 
                     if (blnCopy)

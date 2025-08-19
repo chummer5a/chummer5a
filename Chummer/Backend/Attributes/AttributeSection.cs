@@ -1580,23 +1580,35 @@ namespace Chummer.Backend.Attributes
                                     case AttributeCategory.Special:
                                         objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                            AttributeCategory.Special);
-                                        objAttribute.Load(xmlAttributeNode);
                                         if (blnSync)
+                                        {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            objAttribute.Load(xmlAttributeNode);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             SpecialAttributeList.Add(objAttribute);
+                                        }
                                         else
+                                        {
+                                            await objAttribute.LoadAsync(xmlAttributeNode, token).ConfigureAwait(false);
                                             await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
+                                        }
                                         break;
 
                                     case AttributeCategory.Standard:
                                         objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                            AttributeCategory.Standard);
-                                        objAttribute.Load(xmlAttributeNode);
                                         if (blnSync)
+                                        {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            objAttribute.Load(xmlAttributeNode);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             AttributeList.Add(objAttribute);
+                                        }
                                         else
+                                        {
+                                            await objAttribute.LoadAsync(xmlAttributeNode, token).ConfigureAwait(false);
                                             await (await GetAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
+                                        }
                                         break;
 
                                     default:

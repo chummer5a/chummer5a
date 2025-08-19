@@ -600,6 +600,186 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
+        /// Load a skill from a xml node from a saved .chum5 file
+        /// </summary>
+        /// <param name="objCharacter">The character this skill belongs to</param>
+        /// <param name="xmlSkillNode">The XML node describing the skill</param>
+        /// <param name="objLoadingSkill">Pre-existing skill object into which to load (if it exists)</param>
+        /// <returns></returns>
+        public static async Task<Skill> LoadAsync(Character objCharacter, XmlNode xmlSkillNode, Skill objLoadingSkill = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!xmlSkillNode.TryGetField("suid", Guid.TryParse, out Guid suid))
+            {
+                return null;
+            }
+
+            Guid guidSkillId = xmlSkillNode.TryGetField("id", Guid.TryParse, out Guid guiTemp) ? guiTemp : suid;
+
+            SkillsSection objSkillsSection = await objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+            bool blnIsKnowledgeSkill = false;
+            if (xmlSkillNode.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
+            {
+                if (!(objLoadingSkill is KnowledgeSkill objKnowledgeSkill))
+                {
+                    objKnowledgeSkill = null;
+                    if (guidSkillId != Guid.Empty)
+                        objKnowledgeSkill =
+                            await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false))
+                                .FirstOrDefaultAsync(async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) == guidSkillId, token).ConfigureAwait(false);
+                    if (objKnowledgeSkill == null)
+                    {
+                        if (xmlSkillNode["forced"] != null)
+                            objKnowledgeSkill = new KnowledgeSkill(objCharacter,
+                                xmlSkillNode["name"]?.InnerText ?? string.Empty,
+                                !Convert.ToBoolean(
+                                    xmlSkillNode["disableupgrades"]?.InnerText,
+                                    GlobalSettings.InvariantCultureInfo));
+                        else
+                        {
+                            objKnowledgeSkill = new KnowledgeSkill(objCharacter);
+                        }
+
+                        objKnowledgeSkill.IsLoading = true;
+                    }
+                }
+
+                await objKnowledgeSkill.LoadAsync(xmlSkillNode, token).ConfigureAwait(false);
+                objLoadingSkill = objKnowledgeSkill;
+            }
+            else if (objLoadingSkill == null && suid != Guid.Empty)
+            {
+                if (guidSkillId != Guid.Empty)
+                {
+                    ThreadSafeBindingList<Skill> lstSkills = await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false);
+                    objLoadingSkill
+                        = await lstSkills.FirstOrDefaultAsync(async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) == guidSkillId, token).ConfigureAwait(false);
+                    if (objLoadingSkill?.IsExoticSkill == true)
+                    {
+                        objLoadingSkill = null;
+                        string strSpecific = string.Empty;
+                        if (xmlSkillNode.TryGetStringFieldQuickly("specific", ref strSpecific))
+                        {
+                            objLoadingSkill
+                                = await lstSkills.FirstOrDefaultAsync(async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) == guidSkillId
+                                    && x is ExoticSkill y
+                                    && await y.GetSpecificAsync(token).ConfigureAwait(false) == strSpecific, token).ConfigureAwait(false);
+                            if (objLoadingSkill is ExoticSkill objLoadingExoticSkill)
+                            {
+                                await objLoadingExoticSkill.LoadAsync(xmlSkillNode, token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                }
+
+                if (objLoadingSkill == null)
+                {
+                    XmlNode xmlSkillDataNode = (await objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false))
+                        .TryGetNodeById("/chummer/skills/skill", suid);
+
+                    if (xmlSkillDataNode == null)
+                        return null;
+
+                    bool blnExotic = false;
+                    xmlSkillDataNode.TryGetBoolFieldQuickly("exotic", ref blnExotic);
+                    if (blnExotic)
+                    {
+                        ExoticSkill exotic = await FromDataAsync(xmlSkillDataNode, objCharacter, false, token).ConfigureAwait(false) as ExoticSkill
+                                             ?? throw new ArgumentException(
+                                                 "Attempted to load non-exotic skill as exotic skill");
+                        exotic.IsLoading = true;
+                        await exotic.LoadAsync(xmlSkillNode, token).ConfigureAwait(false);
+                        objLoadingSkill = exotic;
+                    }
+                    else
+                    {
+                        objLoadingSkill = new Skill(objCharacter, xmlSkillDataNode)
+                        {
+                            IsLoading = true
+                        };
+                    }
+                }
+            }
+
+            /*
+            else //This is ugly but i'm not sure how to make it pretty
+            {
+                if (n["forced"] != null && n["name"] != null)
+                {
+                    skill = new KnowledgeSkill(character, n["name"].InnerText);
+                }
+                else
+                {
+                    KnowledgeSkill knoSkill = new KnowledgeSkill(character);
+                    knoSkill.Load(n);
+                    skill = knoSkill;
+                }
+            }
+            */
+            // Legacy shim
+            if (objLoadingSkill == null)
+            {
+                if (xmlSkillNode["forced"] != null)
+                {
+                    objLoadingSkill = new KnowledgeSkill(objCharacter,
+                        xmlSkillNode["name"]?.InnerText ?? string.Empty,
+                        !Convert.ToBoolean(
+                            xmlSkillNode["disableupgrades"]?.InnerText,
+                            GlobalSettings.InvariantCultureInfo))
+                    {
+                        IsLoading = true
+                    };
+                }
+                else
+                {
+                    KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter)
+                    {
+                        IsLoading = true
+                    };
+                    await objKnowledgeSkill.LoadAsync(xmlSkillNode, token).ConfigureAwait(false);
+                    objLoadingSkill = objKnowledgeSkill;
+                }
+            }
+
+            try
+            {
+                if (xmlSkillNode.TryGetField("guid", Guid.TryParse, out guiTemp))
+                    objLoadingSkill.Id = guiTemp;
+
+                if (!xmlSkillNode.TryGetMultiLineStringFieldQuickly("altnotes", ref objLoadingSkill._strNotes))
+                    xmlSkillNode.TryGetMultiLineStringFieldQuickly("notes", ref objLoadingSkill._strNotes);
+
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                xmlSkillNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                objLoadingSkill._colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+                if (!await objLoadingSkill.GetIsNativeLanguageAsync(token).ConfigureAwait(false))
+                {
+                    xmlSkillNode.TryGetInt32FieldQuickly("karma", ref objLoadingSkill._intKarma);
+                    xmlSkillNode.TryGetInt32FieldQuickly("base", ref objLoadingSkill._intBase);
+                    xmlSkillNode.TryGetBoolFieldQuickly("buywithkarma", ref objLoadingSkill._blnBuyWithKarma);
+                    using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("specs/spec"))
+                    {
+                        if (xmlSpecList == null)
+                            return objLoadingSkill;
+                        foreach (XmlNode xmlSpec in xmlSpecList)
+                        {
+                            SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
+                            if (objSpec != null)
+                                await objLoadingSkill._lstSpecializations.AddAsync(objSpec, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+
+                return objLoadingSkill;
+            }
+            finally
+            {
+                objLoadingSkill.IsLoading = false;
+            }
+        }
+
+        /// <summary>
         /// Loads skill saved in legacy format
         /// </summary>
         /// <param name="objCharacter"></param>

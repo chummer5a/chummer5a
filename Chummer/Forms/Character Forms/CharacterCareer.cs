@@ -8647,7 +8647,7 @@ namespace Chummer
 
                             await CharacterObject.Gear.AddAsync(objGear, GenericToken).ConfigureAwait(false);
 
-                            objGear.AddGearImprovements();
+                            await objGear.AddGearImprovements(GenericToken).ConfigureAwait(false);
                         }
                         else
                         {
@@ -10811,7 +10811,7 @@ namespace Chummer
                         WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
                         await objAccessory.CreateAsync(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount,
                             frmPickWeaponAccessory.MyForm.SelectedRating, token: GenericToken).ConfigureAwait(false);
-                        objAccessory.Parent = objWeapon;
+                        await objAccessory.SetParentAsync(objWeapon, GenericToken).ConfigureAwait(false);
                         objAccessory.DiscountCost = frmPickWeaponAccessory.MyForm.BlackMarketDiscount;
 
                         // Check the item's Cost and make sure the character can afford it.
@@ -11741,7 +11741,7 @@ namespace Chummer
                         WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
                         await objAccessory.CreateAsync(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount,
                             frmPickWeaponAccessory.MyForm.SelectedRating, token: GenericToken).ConfigureAwait(false);
-                        objAccessory.Parent = objWeapon;
+                        await objAccessory.SetParentAsync(objWeapon, GenericToken).ConfigureAwait(false);
 
                         // Check the item's Cost and make sure the character can afford it.
                         decimal intOriginalCost = await objWeapon.GetTotalCostAsync(GenericToken).ConfigureAwait(false);

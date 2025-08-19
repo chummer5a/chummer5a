@@ -1461,5 +1461,68 @@ namespace Chummer.Backend.Skills
                 _intIsNativeLanguage = blnTemp.ToInt32();
             }
         }
+
+        public async Task LoadAsync(XmlNode xmlNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (xmlNode == null)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strTemp = await GetNameAsync(token).ConfigureAwait(false);
+                if (xmlNode.TryGetStringFieldQuickly("name", ref strTemp))
+                    await SetNameAsync(strTemp, token).ConfigureAwait(false);
+                if (xmlNode.TryGetField("id", Guid.TryParse, out Guid guiTemp))
+                    await SetSkillIdAsync(guiTemp, token).ConfigureAwait(false);
+                else if (xmlNode.TryGetField("suid", Guid.TryParse, out Guid guiTemp2))
+                    await SetSkillIdAsync(guiTemp2, token).ConfigureAwait(false);
+
+                bool blnTemp = false;
+                if (xmlNode.TryGetBoolFieldQuickly("disableupgrades", ref blnTemp))
+                    _blnAllowUpgrade = !blnTemp;
+
+                // Legacy shim
+                if (SkillId.Equals(Guid.Empty))
+                {
+                    XPathNavigator objDataNode = (await CharacterObject.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
+                        .TryGetNodeByNameOrId("/chummer/knowledgeskills/skill", await GetNameAsync(token).ConfigureAwait(false));
+                    if (objDataNode.TryGetField("id", Guid.TryParse, out Guid guidTemp))
+                        await SetSkillIdAsync(guidTemp, token).ConfigureAwait(false);
+                }
+
+                string strCategoryString = string.Empty;
+                if ((xmlNode.TryGetStringFieldQuickly("type", ref strCategoryString) &&
+                     !string.IsNullOrEmpty(strCategoryString))
+                    || (xmlNode.TryGetStringFieldQuickly("skillcategory", ref strCategoryString) &&
+                        !string.IsNullOrEmpty(strCategoryString)))
+                {
+                    await SetTypeAsync(strCategoryString, token).ConfigureAwait(false);
+                }
+
+                // Legacy sweep for native language skills
+                blnTemp = false;
+                if (!xmlNode.TryGetBoolFieldQuickly("isnativelanguage", ref blnTemp) && await GetIsLanguageAsync(token).ConfigureAwait(false) &&
+                    CharacterObject.LastSavedVersion <= new ValueVersion(5, 212, 72))
+                {
+                    int intKarma = 0;
+                    int intBase = 0;
+                    xmlNode.TryGetInt32FieldQuickly("karma", ref intKarma);
+                    xmlNode.TryGetInt32FieldQuickly("base", ref intBase);
+                    if (intKarma == 0 && intBase == 0 &&
+                        await (await (await CharacterObject.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowledgeSkillsAsync(token).ConfigureAwait(false))
+                            .CountAsync(x => x.GetIsNativeLanguageAsync(token), token).ConfigureAwait(false) < 1 +
+                        await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.NativeLanguageLimit, token: token).ConfigureAwait(false))
+                        blnTemp = true;
+                }
+
+                _intIsNativeLanguage = blnTemp.ToInt32();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
     }
 }

@@ -35,19 +35,49 @@ namespace Chummer.Backend.Skills
 
         public void Load(XmlNode node)
         {
-            if (node.TryGetStringFieldQuickly("specific", ref _strSpecific)
-                && _strSpecific.StartsWith("Elektro-") && CharacterObject.LastSavedVersion < new ValueVersion(5, 255, 949))
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, node));
+        }
+
+        public Task LoadAsync(XmlNode node, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, node, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode node, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (node == null)
+                return;
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                objLocker = LockObject.EnterWriteLock(token);
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
-                // Legacy shim
-                switch (_strSpecific)
+                token.ThrowIfCancellationRequested();
+                if (node.TryGetStringFieldQuickly("specific", ref _strSpecific)
+                    && _strSpecific.StartsWith("Elektro-") && CharacterObject.LastSavedVersion < new ValueVersion(5, 255, 949))
                 {
-                    case "Elektro-Netz":
-                        _strSpecific = "Electro-Net";
-                        break;
-                    case "Elektro-Angel":
-                        _strSpecific = "Electro-Fishing Rod";
-                        break;
+                    // Legacy shim
+                    switch (_strSpecific)
+                    {
+                        case "Elektro-Netz":
+                            _strSpecific = "Electro-Net";
+                            break;
+                        case "Elektro-Angel":
+                            _strSpecific = "Electro-Fishing Rod";
+                            break;
+                    }
                 }
+            }
+            finally
+            {
+                if (blnSync)
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 

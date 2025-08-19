@@ -102,6 +102,37 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Load the Stacked Focus from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        public async Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+                objNode.TryGetField("gearid", Guid.TryParse, out _guiGearId);
+                _blnBonded = objNode["bonded"]?.InnerText == bool.TrueString;
+                using (XmlNodeList nodGearList = objNode.SelectNodes("gears/gear"))
+                {
+                    if (nodGearList == null)
+                        return;
+                    foreach (XmlNode nodGear in nodGearList)
+                    {
+                        Gear objGear = new Gear(_objCharacter);
+                        await objGear.LoadAsync(nodGear, token: token).ConfigureAwait(false);
+                        await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         #endregion Constructor, Create, Save, and Load Methods
 
         #region Properties
