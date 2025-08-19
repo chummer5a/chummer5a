@@ -57,12 +57,20 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (lstToAdd == null)
                 throw new ArgumentNullException(nameof(lstToAdd));
-            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
                     await lstCollection.AddAsync(objEnumerator.Current, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
             }
         }
     }
