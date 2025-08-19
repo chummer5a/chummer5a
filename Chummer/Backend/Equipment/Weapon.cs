@@ -6020,7 +6020,7 @@ namespace Chummer.Backend.Equipment
         public IEnumerable<string> GetAccessoryMounts(bool blnWithInternalAndNone = true)
         {
             string strSlots = ModificationSlots;
-            if (string.IsNullOrEmpty(strSlots))
+            if (string.IsNullOrEmpty(strSlots) && WeaponAccessories.All(x => !x.Equipped || string.IsNullOrEmpty(x.AddMount)))
             {
                 if (blnWithInternalAndNone)
                     yield return "None";
@@ -6099,7 +6099,7 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             string strSlots = ModificationSlots;
-            if (string.IsNullOrEmpty(strSlots) && !(WeaponAccessories.Any(objAccessory => objAccessory.AddMount != string.Empty)))
+            if (string.IsNullOrEmpty(strSlots) && await WeaponAccessories.AllAsync(x => !x.Equipped || string.IsNullOrEmpty(x.AddMount), token).ConfigureAwait(false))
             {
                 return blnWithInternalAndNone
                     ? new List<string>(1)
