@@ -241,7 +241,7 @@ namespace Chummer
         private ConcurrentBag<string> _lstInternalIdsNeedingReapplyImprovements = new ConcurrentBag<string>();
 
         // Character Version
-        private string _strVersionCreated = Application.ProductVersion.FastEscapeOnceFromStart("0.0.");
+        private string _strVersionCreated = Utils.CurrentChummerVersion.ToString(3);
 
         private ValueVersion _verSavedVersion;
 
@@ -4827,8 +4827,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                             // <appversion />
                             await objWriter.WriteElementStringAsync("appversion",
-                                    Application.ProductVersion.FastEscapeOnceFromStart(
-                                        "0.0."), token: token)
+                                    Utils.CurrentChummerVersion.ToString(3), token: token)
                                 .ConfigureAwait(false);
                             // <gameedition />
                             await objWriter.WriteElementStringAsync("gameedition", "SR5", token: token)
@@ -6323,7 +6322,10 @@ namespace Chummer
                                     !string.IsNullOrEmpty(strVersion))
                                 {
                                     strVersion = strVersion.TrimStartOnce("0.");
-
+                                    // Sweep for saves where the saved version includes a long alphanumeric string after the version (because of Application.ProductVersion weirdness)
+                                    int intPlusSignIndex = strVersion.IndexOf('+');
+                                    if (intPlusSignIndex >= 0)
+                                        strVersion = strVersion.Substring(0, intPlusSignIndex);
                                     if (!ValueVersion.TryParse(strVersion, out _verSavedVersion))
                                     {
                                         _verSavedVersion = Utils.IsUnitTest
@@ -7001,7 +7003,7 @@ namespace Chummer
                                         else if (blnHashCodeSuccess
                                                  && !objProspectiveSettings.BuiltInOption
                                                  // Need to make sure that the save was made in the same version of Chummer, otherwise we can get a hash code mismatch from settings themselves changing
-                                                 && LastSavedVersion == new ValueVersion(Application.ProductVersion.FastEscapeOnceFromStart("0.0."))
+                                                 && LastSavedVersion == Utils.CurrentChummerVersion
                                                  && (blnSync
                                                      // ReSharper disable once MethodHasAsyncOverload
                                                      ? objProspectiveSettings.GetEquatableHashCode(token)
