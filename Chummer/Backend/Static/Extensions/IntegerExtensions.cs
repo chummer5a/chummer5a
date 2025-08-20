@@ -79,7 +79,7 @@ namespace Chummer
         {
             if (intYear == 0)
                 throw new ArgumentOutOfRangeException(nameof(intYear));
-            return intYear % 4 == 0 && (intYear % 100 != 0 || intYear % 400 == 0);
+            return (intYear & 0x10) == 0 && (intYear % 100 != 0 || intYear % 400 == 0);
         }
 
         /// <summary>

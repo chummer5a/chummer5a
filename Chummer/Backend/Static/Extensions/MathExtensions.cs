@@ -415,7 +415,7 @@ namespace Chummer
         {
             if (n <= 0)
                 throw new ArgumentOutOfRangeException(nameof(n));
-            return FloorLog2(n) + n % 2;
+            return FloorLog2(n) + (n & 1);
         }
 
         /// <summary>
@@ -1095,7 +1095,7 @@ namespace Chummer
                 for (int i = 1; i <= TaylorSeriesNumTerms_Ln_x; ++i)
                 {
                     decimal decOldValue = decReturn;
-                    if (i % 2 == 1)
+                    if ((i & 1) == 1)
                         decReturn += (d / 4m - 0.5m).Pow(i) / i;
                     else
                         decReturn -= (d / 4m - 0.5m).Pow(i) / i;
@@ -1109,7 +1109,7 @@ namespace Chummer
                 for (int i = 1; i <= TaylorSeriesNumTerms_Ln_x; ++i)
                 {
                     decimal decOldValue = decReturn;
-                    if (i % 2 == 1)
+                    if ((i & 1) == 1)
                         decReturn += (d - 1m).Pow(i) / i;
                     else
                         decReturn -= (d - 1m).Pow(i) / i;
@@ -1176,7 +1176,7 @@ namespace Chummer
                 for (int i = 1; i <= TaylorSeriesNumTerms_Ln_x; ++i)
                 {
                     decimal decOldValue = decReturnFraction;
-                    if (i % 2 == 1)
+                    if ((i & 1) == 1)
                         decReturnFraction += (d / 4m - 0.5m).Pow(i) / i;
                     else
                         decReturnFraction -= (d / 4m - 0.5m).Pow(i) / i;
@@ -1190,7 +1190,7 @@ namespace Chummer
                 for (int i = 1; i <= TaylorSeriesNumTerms_Ln_x; ++i)
                 {
                     decimal decOldValue = decReturnFraction;
-                    if (i % 2 == 1)
+                    if ((i & 1) == 1)
                         decReturnFraction += (d - 1m).Pow(i) / i;
                     else
                         decReturnFraction -= (d - 1m).Pow(i) / i;

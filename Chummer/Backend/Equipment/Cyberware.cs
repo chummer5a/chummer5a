@@ -4414,7 +4414,7 @@ namespace Chummer.Backend.Equipment
 
                             string strSourceNameToUse = InternalId + "WirelessPair";
                             ImprovementManager.RemoveImprovements(_objCharacter, SourceType, strSourceNameToUse);
-                            if (intCount % 2 == 1)
+                            if ((intCount & 1) == 1)
                             {
                                 if (WirelessPairBonus?.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                                 {
@@ -4513,7 +4513,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId + "WirelessPair");
-                            if (intCount % 2 == 1 && WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
+                            if ((intCount & 1) == 1 && WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                             {
                                 ImprovementManager.EnableImprovements(_objCharacter,
                                                                           _objCharacter.Improvements
