@@ -19,6 +19,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer.Backend.Skills
 {
@@ -111,6 +113,109 @@ namespace Chummer.Backend.Skills
                 intReturn = SkillsSection.CompareSkillGroups(x?.SkillGroupObject, y?.SkillGroupObject);
                 if (intReturn == 0)
                     intReturn = SkillsSection.CompareSkills(x, y);
+            }
+
+            return intReturn;
+        }
+    }
+
+    public sealed class AsyncSkillSorter : IAsyncComparer<Skill>
+    {
+        private readonly Func<Skill, Skill, CancellationToken, Task<int>> _comparison;
+
+        public AsyncSkillSorter(Func<Skill, Skill, CancellationToken, Task<int>> comparison)
+        {
+            _comparison = comparison ?? throw new ArgumentNullException(nameof(comparison));
+        }
+
+        /// <summary>
+        /// Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.
+        /// </summary>
+        /// <returns>
+        /// A signed integer that indicates the relative values of <paramref name="x"/> and <paramref name="y"/>, as shown in the following table.Value Meaning Less than zero<paramref name="x"/> is less than <paramref name="y"/>.Zero<paramref name="x"/> equals <paramref name="y"/>.Greater than zero<paramref name="x"/> is greater than <paramref name="y"/>.
+        /// </returns>
+        /// <param name="x">The first object to compare.</param><param name="y">The second object to compare.</param>
+        public Task<int> CompareAsync(Skill x, Skill y, CancellationToken token = default)
+        {
+            return _comparison(x, y, token);
+        }
+    }
+
+    public sealed class AsyncKnowledgeSkillSorter : IAsyncComparer<KnowledgeSkill>
+    {
+        private readonly Func<KnowledgeSkill, KnowledgeSkill, CancellationToken, Task<int>> _comparison;
+
+        public AsyncKnowledgeSkillSorter(Func<KnowledgeSkill, KnowledgeSkill, CancellationToken, Task<int>> comparison)
+        {
+            _comparison = comparison ?? throw new ArgumentNullException(nameof(comparison));
+        }
+
+        /// <summary>
+        /// Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.
+        /// </summary>
+        /// <returns>
+        /// A signed integer that indicates the relative values of <paramref name="x"/> and <paramref name="y"/>, as shown in the following table.Value Meaning Less than zero<paramref name="x"/> is less than <paramref name="y"/>.Zero<paramref name="x"/> equals <paramref name="y"/>.Greater than zero<paramref name="x"/> is greater than <paramref name="y"/>.
+        /// </returns>
+        /// <param name="x">The first object to compare.</param><param name="y">The second object to compare.</param>
+        public Task<int> CompareAsync(KnowledgeSkill x, KnowledgeSkill y, CancellationToken token = default)
+        {
+            return _comparison(x, y, token);
+        }
+    }
+
+    public sealed class AsyncSkillGroupSorter : IAsyncComparer<SkillGroup>
+    {
+        private readonly Func<SkillGroup, SkillGroup, CancellationToken, Task<int>> _comparison;
+
+        public AsyncSkillGroupSorter(Func<SkillGroup, SkillGroup, CancellationToken, Task<int>> comparison)
+        {
+            _comparison = comparison ?? throw new ArgumentNullException(nameof(comparison));
+        }
+
+        /// <summary>
+        /// Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.
+        /// </summary>
+        /// <returns>
+        /// A signed integer that indicates the relative values of <paramref name="x"/> and <paramref name="y"/>, as shown in the following table.Value Meaning Less than zero<paramref name="x"/> is less than <paramref name="y"/>.Zero<paramref name="x"/> equals <paramref name="y"/>.Greater than zero<paramref name="x"/> is greater than <paramref name="y"/>.
+        /// </returns>
+        /// <param name="x">The first object to compare.</param><param name="y">The second object to compare.</param>
+        public Task<int> CompareAsync(SkillGroup x, SkillGroup y, CancellationToken token = default)
+        {
+            return _comparison(x, y, token);
+        }
+    }
+
+    public sealed class AsyncSkillSortBySkillGroup : IAsyncComparer<Skill>
+    {
+        /// <summary>
+        /// Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.
+        /// </summary>
+        /// <returns>
+        /// A signed integer that indicates the relative values of <paramref name="x"/> and <paramref name="y"/>, as shown in the following table.Value Meaning Less than zero<paramref name="x"/> is less than <paramref name="y"/>.Zero<paramref name="x"/> equals <paramref name="y"/>.Greater than zero<paramref name="x"/> is greater than <paramref name="y"/>.
+        /// </returns>
+        /// <param name="x">The first object to compare.</param><param name="y">The second object to compare.</param>
+        public async Task<int> CompareAsync(Skill x, Skill y, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn;
+            SkillGroup objLeftGroup = x?.SkillGroupObject;
+            SkillGroup objRightGroup = y?.SkillGroupObject;
+            if (objLeftGroup != null)
+            {
+                if (objRightGroup != null)
+                    intReturn = (await objRightGroup.GetRatingAsync(token).ConfigureAwait(false)).CompareTo(await objLeftGroup.GetRatingAsync(token).ConfigureAwait(false));
+                else
+                    intReturn = -1;
+            }
+            else if (objRightGroup != null)
+                intReturn = 1;
+            else
+                intReturn = 0;
+            if (intReturn == 0)
+            {
+                intReturn = await SkillsSection.CompareSkillGroupsAsync(objLeftGroup, objRightGroup, token).ConfigureAwait(false);
+                if (intReturn == 0)
+                    intReturn = await SkillsSection.CompareSkillsAsync(x, y, token).ConfigureAwait(false);
             }
 
             return intReturn;

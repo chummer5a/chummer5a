@@ -166,7 +166,7 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strAttributeString = DefaultAttribute;
+                string strAttributeString = await GetDefaultAttributeAsync(token).ConfigureAwait(false);
                 if (!IsLoading)
                 {
                     string strDictionaryKey = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
@@ -2161,7 +2161,7 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                return !await GetIsLanguageAsync(token).ConfigureAwait(false) && await GetEnabledAsync(token).ConfigureAwait(false) && await GetAttributeModifiers(token).ConfigureAwait(false) > 0;
+                return !await GetIsLanguageAsync(token).ConfigureAwait(false) && await GetEnabledAsync(token).ConfigureAwait(false) && await GetAttributeModifiersAsync(token).ConfigureAwait(false) > 0;
             }
             finally
             {
@@ -6074,7 +6074,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public async Task<int> GetAttributeModifiers(CancellationToken token = default)
+        public async Task<int> GetAttributeModifiersAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
