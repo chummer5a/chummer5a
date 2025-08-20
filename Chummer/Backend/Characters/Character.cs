@@ -10041,9 +10041,17 @@ namespace Chummer
                                     foreach (XmlNode objXmlExpense in objXmlExpenseList)
                                     {
                                         ExpenseLogEntry objExpenseLogEntry = new ExpenseLogEntry(this);
-                                        objExpenseLogEntry.Load(objXmlExpense);
-                                        await _lstExpenseLog.AddWithSortAsync(objExpenseLogEntry, token: token)
-                                                            .ConfigureAwait(false);
+                                        if (blnSync)
+                                        {
+                                            objExpenseLogEntry.Load(objXmlExpense);
+                                            _lstExpenseLog.AddWithSort(objExpenseLogEntry, token: token);
+                                        }
+                                        else
+                                        {
+                                            await objExpenseLogEntry.LoadAsync(objXmlExpense, token).ConfigureAwait(false);
+                                            await _lstExpenseLog.AddWithSortAsync(objExpenseLogEntry, token: token)
+                                                                .ConfigureAwait(false);
+                                        }
                                     }
 
                                     //Timekeeper.Finish("load_char_elog");

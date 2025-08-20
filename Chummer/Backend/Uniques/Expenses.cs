@@ -321,13 +321,28 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+        }
+
+        /// <summary>
+        /// Load the KarmaLogEntry from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        public Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, token);
+        }
+
+        public async Task LoadCoreAsync(bool blnSync, XmlNode objNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objNode == null)
                 return;
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             DateTime.TryParse(objNode["date"]?.InnerText, GlobalSettings.InvariantCultureInfo, DateTimeStyles.None, out _datDate);
             objNode.TryGetDecFieldQuickly("amount", ref _decAmount);
             if (objNode.TryGetStringFieldQuickly("reason", ref _strReason))
-                _strReason = _strReason.TrimEndOnce(" (" + LanguageManager.GetString("String_Expense_Refund") + ')').Replace("🡒", "->");
+                _strReason = _strReason.TrimEndOnce(" (" + (blnSync ? LanguageManager.GetString("String_Expense_Refund", token: token) : await LanguageManager.GetStringAsync("String_Expense_Refund", token: token).ConfigureAwait(false)) + ')').Replace("🡒", "->");
             if (objNode["type"] != null)
                 _eExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
             objNode.TryGetBoolFieldQuickly("refund", ref _blnRefund);
