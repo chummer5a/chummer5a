@@ -98,7 +98,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(strName))
                             {
                                 string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
-                                if (string.IsNullOrEmpty(strGrade))
+                                if (!string.IsNullOrEmpty(strGrade))
                                 {
                                     if (lstGrades.TrueForAll(x => x.Name != strGrade))
                                         continue;

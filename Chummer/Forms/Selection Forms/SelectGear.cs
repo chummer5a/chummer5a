@@ -195,12 +195,15 @@ namespace Chummer
                 foreach (XPathNavigator objXmlCategory in objXmlCategoryList)
                 {
                     string strCategory = objXmlCategory.Value;
+                    if (string.IsNullOrEmpty(strCategory))
+                        continue;
                     // Make sure the Category isn't in the exclusion list.
                     if (!_setAllowedCategories.Contains(strCategory) && objXmlCategory.SelectSingleNodeAndCacheExpression("@show", _objGenericToken)?.Value == bool.FalseString)
                     {
                         continue;
                     }
-                    if (_lstCategory.TrueForAll(x => x.Value.ToString() != strCategory) && await AnyItemInList(strCategory, _objGenericToken).ConfigureAwait(false))
+                    if ((_lstCategory.Count == 0 || _lstCategory.TrueForAll(x => x.Value?.ToString() != strCategory))
+                        && await AnyItemInList(strCategory, _objGenericToken).ConfigureAwait(false))
                     {
                         _lstCategory.Add(new ListItem(strCategory, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate", _objGenericToken)?.Value ?? strCategory));
                     }

@@ -3546,9 +3546,9 @@ namespace Chummer
                             string strInnerText = objXmlCategory.Value;
 
                             // Make sure the Category isn't in the exclusion list.
-                            if (!setRemoveCategories.Contains(strInnerText) &&
+                            if (!string.IsNullOrEmpty(strInnerText) && !setRemoveCategories.Contains(strInnerText) &&
                                 // Also make sure it is not already in the Category list.
-                                lstCategory.TrueForAll(objItem => objItem.Value.ToString() != strInnerText))
+                                (lstCategory.Count == 0 || lstCategory.TrueForAll(objItem => objItem.Value?.ToString() != strInnerText)))
                             {
                                 lstCategory.Add(new ListItem(strInnerText,
                                                              objXmlCategory
