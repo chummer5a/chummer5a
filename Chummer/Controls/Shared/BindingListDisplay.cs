@@ -91,12 +91,12 @@ namespace Chummer.Controls.Shared
                 _indexComparer = new IndexComparer(Contents);
                 _comparison = _comparison ?? _indexComparer;
                 _comparisonAsync = _comparisonAsync ?? ((x, y, z) => DefaultCompareAsync(_indexComparer, x, y, z));
-                Contents.ListChanged += ContentsChanged;
+                Contents.ListChangedAsync += ContentsChanged;
                 Disposed += (sender, args) =>
                 {
                     try
                     {
-                        Contents.ListChanged -= ContentsChanged;
+                        Contents.ListChangedAsync -= ContentsChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -546,8 +546,9 @@ namespace Chummer.Controls.Shared
             }
         }
 
-        private void ContentsChanged(object sender, ListChangedEventArgs eventArgs)
+        private async Task ContentsChanged(object sender, ListChangedEventArgs eventArgs, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             int intNewIndex = eventArgs?.NewIndex ?? 0;
             IEnumerable<ControlWithMetaData> lstToRedraw;
             switch (eventArgs?.ListChangedType)
@@ -557,40 +558,40 @@ namespace Chummer.Controls.Shared
 
                 case ListChangedType.Reset:
                     if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
-                        pnlDisplay.DoThreadSafe(x => x.SuspendLayout());
+                        await pnlDisplay.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
                     {
                         foreach (ControlWithMetaData objLoopControl in _lstContentList)
                         {
-                            objLoopControl.Cleanup();
+                            await objLoopControl.CleanupAsync(token).ConfigureAwait(false);
                         }
                         _lstContentList.Clear();
-                        foreach (TType objLoopTType in Contents.AsEnumerableWithSideEffects())
+                        await Contents.ForEachWithSideEffectsAsync(async objLoopTType =>
                         {
-                            _lstContentList.Add(new ControlWithMetaData(objLoopTType, this, false));
-                        }
+                            _lstContentList.Add(await ControlWithMetaData.GetNewAsync(objLoopTType, this, false, token).ConfigureAwait(false));
+                        }, token).ConfigureAwait(false);
                         Control[] aobjControls = _lstContentList.Select(y => y.Control).ToArray();
-                        pnlDisplay.DoThreadSafe(x => x.Controls.AddRange(aobjControls));
+                        await pnlDisplay.DoThreadSafeAsync(x => x.Controls.AddRange(aobjControls), token).ConfigureAwait(false);
                     }
                     finally
                     {
                         if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
-                            pnlDisplay.DoThreadSafe(x => x.ResumeLayout());
+                            await pnlDisplay.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                     }
-                    _indexComparer.Reset(Contents);
+                    await _indexComparer.ResetAsync(Contents, token).ConfigureAwait(false);
                     lstToRedraw = _lstContentList;
                     break;
 
                 case ListChangedType.ItemAdded:
-                    _lstContentList.Insert(intNewIndex, new ControlWithMetaData(Contents[intNewIndex], this, true));
-                    _indexComparer.Reset(Contents);
+                    _lstContentList.Insert(intNewIndex, await ControlWithMetaData.GetNewAsync(await Contents.GetValueAtAsync(intNewIndex, token).ConfigureAwait(false), this, true, token).ConfigureAwait(false));
+                    await _indexComparer.ResetAsync(Contents, token).ConfigureAwait(false);
                     lstToRedraw = intNewIndex == 0 ? _lstContentList : _lstContentList.Skip(intNewIndex);
                     break;
 
                 case ListChangedType.ItemDeleted:
-                    _lstContentList[intNewIndex].Cleanup();
+                    await _lstContentList[intNewIndex].CleanupAsync(token).ConfigureAwait(false);
                     _lstContentList.RemoveAt(intNewIndex);
-                    _indexComparer.Reset(Contents);
+                    await _indexComparer.ResetAsync(Contents, token).ConfigureAwait(false);
                     lstToRedraw = intNewIndex == 0 ? _lstContentList : _lstContentList.Skip(intNewIndex);
                     break;
 
@@ -641,25 +642,34 @@ namespace Chummer.Controls.Shared
             if (lstToRedraw != null)
             {
                 if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
-                    pnlDisplay.DoThreadSafe(x => x.SuspendLayout());
+                    await pnlDisplay.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                 try
                 {
                     PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(nameof(Contents));
                     if (_setChildPropertyChangedAsync.Count > 0)
                     {
-                        List<Func<Task>> lstFuncs = new List<Func<Task>>(_setChildPropertyChangedAsync.Count);
+                        List<Task> lstTasks =
+                        new List<Task>(Math.Min(_setChildPropertyChangedAsync.Count, Utils.MaxParallelBatchSize));
+                        int i = 0;
                         foreach (PropertyChangedAsyncEventHandler objEvent in _setChildPropertyChangedAsync)
-                            lstFuncs.Add(() => objEvent.Invoke(this, objArgs));
-                        Utils.RunWithoutThreadLock(lstFuncs);
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
                     }
                     if (ChildPropertyChanged != null)
-                        Utils.RunOnMainThread(() => ChildPropertyChanged?.Invoke(this, objArgs));
-                    RedrawControls(lstToRedraw);
+                        await Utils.RunOnMainThreadAsync(() => ChildPropertyChanged?.Invoke(this, objArgs), token).ConfigureAwait(false);
+                    await RedrawControlsAsync(lstToRedraw, token).ConfigureAwait(false);
                 }
                 finally
                 {
                     if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
-                        pnlDisplay.DoThreadSafe(x => x.ResumeLayout());
+                        await pnlDisplay.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                 }
             }
         }
