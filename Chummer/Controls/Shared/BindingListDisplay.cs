@@ -1270,6 +1270,16 @@ namespace Chummer.Controls.Shared
                     _dicIndeces.Add(source[i], i);
                 }
             }
+
+            public async Task ResetAsync(IAsyncReadOnlyList<TType> source, CancellationToken token = default)
+            {
+                token.ThrowIfCancellationRequested();
+                _dicIndeces.Clear();
+                for (int i = 0; i < await source.GetCountAsync(token).ConfigureAwait(false); i++)
+                {
+                    _dicIndeces.Add(await source.GetValueAtAsync(i, token).ConfigureAwait(false), i);
+                }
+            }
         }
 
         private static Task<int> DefaultCompareAsync(IComparer<TType> objComparer, TType x, TType y, CancellationToken token = default)

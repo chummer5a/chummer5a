@@ -558,7 +558,7 @@ namespace Chummer.Controls.Shared
                         int intIndex = e.NewStartingIndex;
                         foreach (TType objNewItem in e.NewItems)
                             _lstContentList.Insert(intIndex++, await ControlWithMetaData.GetNewAsync(objNewItem, this, token: token).ConfigureAwait(false));
-                        _indexComparer.Reset(Contents);
+                        await _indexComparer.ResetAsync(Contents, token).ConfigureAwait(false);
                         lstToRedraw = _lstContentList.Skip(e.NewStartingIndex);
                         break;
                     }
@@ -570,7 +570,7 @@ namespace Chummer.Controls.Shared
                             await _lstContentList[intIndex].CleanupAsync(token).ConfigureAwait(false);
                             _lstContentList.RemoveAt(intIndex);
                         }
-                        _indexComparer.Reset(Contents);
+                        await _indexComparer.ResetAsync(Contents, token).ConfigureAwait(false);
                         lstToRedraw = _lstContentList.Skip(e.OldStartingIndex);
                         break;
                     }
@@ -584,7 +584,7 @@ namespace Chummer.Controls.Shared
                         }
                         foreach (TType objNewItem in e.NewItems)
                             _lstContentList.Insert(intIndex++, await ControlWithMetaData.GetNewAsync(objNewItem, this, token: token).ConfigureAwait(false));
-                        _indexComparer.Reset(Contents);
+                        await _indexComparer.ResetAsync(Contents, token).ConfigureAwait(false);
                         lstToRedraw = _lstContentList.Skip(e.OldStartingIndex);
                         break;
                     }
@@ -656,7 +656,7 @@ namespace Chummer.Controls.Shared
                                 await pnlDisplay.DoThreadSafeAsync(x => x.ResumeLayout(), token: token).ConfigureAwait(false);
                         }
 
-                        _indexComparer.Reset(Contents);
+                        await _indexComparer.ResetAsync(Contents, token).ConfigureAwait(false);
                         lstToRedraw = _lstContentList;
                         break;
                     }
@@ -1299,6 +1299,16 @@ namespace Chummer.Controls.Shared
                 for (int i = 0; i < source.Count; i++)
                 {
                     _dicIndeces.AddOrUpdate(source[i], i, (x, y) => i);
+                }
+            }
+
+            public async Task ResetAsync(IAsyncReadOnlyList<TType> source, CancellationToken token = default)
+            {
+                token.ThrowIfCancellationRequested();
+                _dicIndeces.Clear();
+                for (int i = 0; i < await source.GetCountAsync(token).ConfigureAwait(false); i++)
+                {
+                    _dicIndeces.AddOrUpdate(await source.GetValueAtAsync(i, token).ConfigureAwait(false), i, (x, y) => i);
                 }
             }
         }
