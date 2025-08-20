@@ -1149,6 +1149,7 @@ namespace Chummer.Backend.Equipment
                                 _lstGear.Add(objGear);
                             }
                         }
+                        else
                         {
                             foreach (XmlNode nodGear in nodGears)
                             {
