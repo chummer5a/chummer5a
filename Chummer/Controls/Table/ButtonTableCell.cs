@@ -61,7 +61,7 @@ namespace Chummer.UI.Table
                     await _objUpdateSemaphore.WaitAsync(_objMyToken).ConfigureAwait(false);
                     try
                     {
-                        await ClickHandler.Invoke(Value as T).ConfigureAwait(false);
+                        await ClickHandler.Invoke(Value as T, _objMyToken).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -112,7 +112,7 @@ namespace Chummer.UI.Table
             }
         }
 
-        public Func<T, Task> ClickHandler { get; set; }
+        public Func<T, CancellationToken, Task> ClickHandler { get; set; }
 
         public Func<T, CancellationToken, Task<bool>> EnabledExtractor { get; set; }
     }

@@ -221,11 +221,11 @@ namespace Chummer.UI.Table
             }
         }
 
-        private readonly Func<T, Task<bool>> _funcDefaultFilter;
+        private readonly Func<T, CancellationToken, Task<bool>> _funcDefaultFilter;
         private TableColumn<T> _sortColumn;
         private ThreadSafeBindingList<T> _lstItems;
         private readonly AsyncFriendlyReaderWriterLock _objItemsLocker = new AsyncFriendlyReaderWriterLock();
-        private Func<T, Task<bool>> _funcFilter;
+        private Func<T, CancellationToken, Task<bool>> _funcFilter;
         private readonly TableColumnCollection<T> _columns;
         private TableLayoutEngine _layoutEngine;
         private readonly List<ColumnHolder> _lstCells = new List<ColumnHolder>();
@@ -239,7 +239,7 @@ namespace Chummer.UI.Table
         public TableView()
         {
             _columns = new TableColumnCollection<T>(this);
-            _funcDefaultFilter = x => Task.FromResult(true);
+            _funcDefaultFilter = (x, t) => Task.FromResult(true);
             _funcFilter = _funcDefaultFilter;
             InitializeComponent();
             Disposed += (sender, args) => DisposeAll();
@@ -321,12 +321,12 @@ namespace Chummer.UI.Table
             }
             else
             {
-                Func<T, T, Task<int>> comparison = _sortColumn.CreateSorter();
+                Func<T, T, CancellationToken, Task<int>> comparison = _sortColumn.CreateSorter();
 
                 _lstPermutation.Sort((i1, i2) => Utils.SafelyRunSynchronously(
                                          async () => await comparison(
                                                  await Items.GetValueAtAsync(i1, token).ConfigureAwait(false),
-                                                 await Items.GetValueAtAsync(i2, token).ConfigureAwait(false))
+                                                 await Items.GetValueAtAsync(i2, token).ConfigureAwait(false), token)
                                              .ConfigureAwait(false), token));
                 if (_eSortType == SortOrder.Descending)
                 {
@@ -351,11 +351,11 @@ namespace Chummer.UI.Table
             }
             else
             {
-                Func<T, T, Task<int>> comparison = _sortColumn.CreateSorter();
+                Func<T, T, CancellationToken, Task<int>> comparison = _sortColumn.CreateSorter();
 
                 await _lstPermutation.SortAsync(async (i1, i2) => await comparison(
                         await Items.GetValueAtAsync(i1, token).ConfigureAwait(false),
-                        await Items.GetValueAtAsync(i2, token).ConfigureAwait(false))
+                        await Items.GetValueAtAsync(i2, token).ConfigureAwait(false), token)
                     .ConfigureAwait(false), token: token).ConfigureAwait(false);
                 if (_eSortType == SortOrder.Descending)
                 {
@@ -370,14 +370,14 @@ namespace Chummer.UI.Table
 
         private async Task UpdateCell(TableColumn<T> column, TableCell cell, T item, CancellationToken token = default)
         {
-            Func<T, Task<object>> funcExtractor = column.Extractor;
-            object objNewValue = funcExtractor == null ? item : await funcExtractor(item).ConfigureAwait(false);
+            Func<T, CancellationToken, Task<object>> funcExtractor = column.Extractor;
+            object objNewValue = funcExtractor == null ? item : await funcExtractor(item, token).ConfigureAwait(false);
             await cell.UpdateValueAsync(objNewValue, token).ConfigureAwait(false);
-            Func<T, Task<string>> funcTooltipExtractor = column.ToolTipExtractor;
+            Func<T, CancellationToken, Task<string>> funcTooltipExtractor = column.ToolTipExtractor;
             if (funcTooltipExtractor != null)
             {
                 Control content = await cell.DoThreadSafeFuncAsync(x => x.Content, token: token).ConfigureAwait(false);
-                string strText = await funcTooltipExtractor(item).ConfigureAwait(false);
+                string strText = await funcTooltipExtractor(item, token).ConfigureAwait(false);
                 await (content ?? cell).SetToolTipAsync(strText, token).ConfigureAwait(false);
             }
         }
@@ -419,7 +419,7 @@ namespace Chummer.UI.Table
                         {
                             TableCell cell = await CreateCell(item, column, token).ConfigureAwait(false);
                             cells.Add(cell);
-                            if (await Filter(item).ConfigureAwait(false))
+                            if (await Filter(item, token).ConfigureAwait(false))
                             {
                                 TableRow row = _lstRowCells[i++];
                                 await row.DoThreadSafeAsync(x =>
@@ -551,7 +551,7 @@ namespace Chummer.UI.Table
                         await row.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                         try
                         {
-                            if (await Filter(objItem).ConfigureAwait(false))
+                            if (await Filter(objItem, token).ConfigureAwait(false))
                             {
                                 if (await row.DoThreadSafeFuncAsync(x => x.Parent, token: token).ConfigureAwait(false)
                                     == null)
@@ -590,11 +590,11 @@ namespace Chummer.UI.Table
         /// <summary>
         /// Predicate for filtering the items.
         /// </summary>
-        public Func<T, Task<bool>> Filter => _funcFilter;
+        public Func<T, CancellationToken, Task<bool>> Filter => _funcFilter;
 
-        public Task SetFilterAsync(Func<T, Task<bool>> value, CancellationToken token = default)
+        public Task SetFilterAsync(Func<T, CancellationToken, Task<bool>> value, CancellationToken token = default)
         {
-            Func<T, Task<bool>> objNewValue = value ?? _funcDefaultFilter;
+            Func<T, CancellationToken, Task<bool>> objNewValue = value ?? _funcDefaultFilter;
             if (Interlocked.Exchange(ref _funcFilter, objNewValue) == objNewValue)
                 return Task.CompletedTask;
             return DoFilter(token: token);
@@ -617,7 +617,7 @@ namespace Chummer.UI.Table
                             try
                             {
                                 TableRow row = _lstRowCells[e.NewIndex];
-                                if (await Filter(item).ConfigureAwait(false))
+                                if (await Filter(item, token).ConfigureAwait(false))
                                 {
                                     if (row.Parent == null)
                                     {
@@ -671,7 +671,7 @@ namespace Chummer.UI.Table
                         await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                         try
                         {
-                            if (await Filter(item).ConfigureAwait(false))
+                            if (await Filter(item, token).ConfigureAwait(false))
                             {
                                 await this.DoThreadSafeAsync(x => x.Controls.Add(row), token: token).ConfigureAwait(false);
                             }

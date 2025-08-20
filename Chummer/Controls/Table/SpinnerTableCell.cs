@@ -232,7 +232,7 @@ namespace Chummer.UI.Table
         /// <summary>
         /// The extractor for the property displayed in the spinner.
         /// </summary>
-        public Func<T, decimal, Task> ValueUpdater { get; set; }
+        public Func<T, decimal, CancellationToken, Task> ValueUpdater { get; set; }
 
         private readonly DebuggableSemaphoreSlim _objUpdateSemaphore = new DebuggableSemaphoreSlim();
 
@@ -255,7 +255,7 @@ namespace Chummer.UI.Table
                     try
                     {
                         await ValueUpdater(Value as T,
-                                await _spinner.DoThreadSafeFuncAsync(x => x.Value, _objMyToken).ConfigureAwait(false))
+                                await _spinner.DoThreadSafeFuncAsync(x => x.Value, _objMyToken).ConfigureAwait(false), _objMyToken)
                             .ConfigureAwait(false);
                     }
                     finally

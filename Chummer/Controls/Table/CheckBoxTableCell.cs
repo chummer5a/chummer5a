@@ -167,7 +167,7 @@ namespace Chummer.UI.Table
         /// Updater handling the change of the checked state
         /// of the checkbox.
         /// </summary>
-        public Func<T, bool, Task> ValueUpdater { get; set; }
+        public Func<T, bool, CancellationToken, Task> ValueUpdater { get; set; }
 
         private readonly DebuggableSemaphoreSlim _objUpdateSemaphore = new DebuggableSemaphoreSlim();
 
@@ -186,7 +186,7 @@ namespace Chummer.UI.Table
                     {
                         await ValueUpdater(Value as T,
                                 await _checkBox.DoThreadSafeFuncAsync(x => x.Checked, _objMyToken)
-                                    .ConfigureAwait(false))
+                                    .ConfigureAwait(false), _objMyToken)
                             .ConfigureAwait(false);
                     }
                     finally
