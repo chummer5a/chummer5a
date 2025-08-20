@@ -20370,18 +20370,18 @@ namespace Chummer
 
                         if (intCurrentBoxTag <= intConditionMax)
                         {
+                            string strText = " "; // Non-breaking space to help with DPI stuff
+                            if (intCurrentBoxTag > intThresholdOffset)
+                            {
+                                int intModifiers = (intThresholdOffset - intCurrentBoxTag).DivRem(intThreshold, out int intModulo);
+                                if (intModulo == 0)
+                                    strText = intModifiers.ToString(GlobalSettings.CultureInfo);
+                            }
                             await chkCmBox.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
                                 x.BatchSetImages(null, null, null, null, null, null);
-                                if (intCurrentBoxTag > intThresholdOffset
-                                    && (intCurrentBoxTag - intThresholdOffset) % intThreshold == 0)
-                                {
-                                    int intModifiers = (intThresholdOffset - intCurrentBoxTag) / intThreshold;
-                                    x.Text = intModifiers.ToString(GlobalSettings.CultureInfo);
-                                }
-                                else
-                                    x.Text = " "; // Non-breaking space to help with DPI stuff
+                                x.Text = strText;
                             }, token).ConfigureAwait(false);
                         }
                         else if (intOverflow != 0 && intCurrentBoxTag <= intConditionMax + intOverflow)
