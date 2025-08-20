@@ -3411,7 +3411,7 @@ namespace Chummer.Backend.Equipment
                 return Task.CompletedTask;
             if (token.IsCancellationRequested)
                 return Task.FromCanceled(token);
-            decimal decNewQuantity = objGear.Quantity - value - intCurrentAmmo;
+            decimal decNewQuantity = objGear.Quantity + value - intCurrentAmmo;
             if (decNewQuantity > 0)
                 return objGear.SetQuantityAsync(decNewQuantity, token);
             else
@@ -12313,7 +12313,7 @@ namespace Chummer.Backend.Equipment
                         await objNewSelectedAmmo.CopyAsync(objSelectedAmmo, token).ConfigureAwait(false);
                         await objNewSelectedAmmo.SetQuantityAsync(decQty, token).ConfigureAwait(false);
                         await lstGears.AddAsync(objNewSelectedAmmo, token).ConfigureAwait(false);
-                        await objSelectedAmmo.SetQuantityAsync(objSelectedAmmo.Quantity + decQty, token).ConfigureAwait(false);
+                        await objSelectedAmmo.SetQuantityAsync(objSelectedAmmo.Quantity - decQty, token).ConfigureAwait(false);
                         string strId2 = objSelectedAmmo.InternalId;
                         string strText2 = await objSelectedAmmo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         await treGearView.DoThreadSafeAsync(x =>
