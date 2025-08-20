@@ -18463,7 +18463,7 @@ namespace Chummer
                             }
                             case StackedFocus objStackedFocus:
                             {
-                                intFociTotal = objStackedFocus.TotalForce;
+                                intFociTotal = await objStackedFocus.GetTotalForceAsync(GenericToken).ConfigureAwait(false);
                                 break;
                             }
                         }
@@ -18493,7 +18493,7 @@ namespace Chummer
                                 intFociTotal += await objFocus.GetTotalForceAsync(GenericToken).ConfigureAwait(false);
                         }
 
-                        if (!CharacterObject.IgnoreRules)
+                        if (!await CharacterObject.GetIgnoreRulesAsync(GenericToken).ConfigureAwait(false))
                         {
                             if (intFociTotal > await (await CharacterObject
                                         .GetAttributeAsync("MAG", token: GenericToken)
