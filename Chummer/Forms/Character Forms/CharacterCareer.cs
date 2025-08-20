@@ -24361,19 +24361,17 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    Gear objSelectedGear = null;
-                    Armor objSelectedArmor = await CharacterObject.Armor.FindByIdAsync(strSelectedId, token)
-                        .ConfigureAwait(false);
-                    ArmorMod objSelectedMod = null;
-
-                    if (objSelectedArmor == null)
+                    (Gear objSelectedGear, Armor objSelectedArmor, ArmorMod objSelectedMod)
+                        = await CharacterObject.Armor.FindArmorGearAsync(strSelectedId, token)
+                            .ConfigureAwait(false);
+                    if (objSelectedGear == null)
                     {
-                        (objSelectedGear, objSelectedArmor, objSelectedMod)
-                            = await CharacterObject.Armor.FindArmorGearAsync(strSelectedId, token)
-                                .ConfigureAwait(false);
-                        if (objSelectedGear == null)
-                            objSelectedMod = await CharacterObject.Armor.FindArmorModAsync(strSelectedId, token)
-                                .ConfigureAwait(false);
+                        objSelectedMod = await CharacterObject.Armor.FindArmorModAsync(strSelectedId, token)
+                            .ConfigureAwait(false);
+                        if (objSelectedMod == null)
+                            objSelectedArmor = await CharacterObject.Armor.FindByIdAsync(strSelectedId, token).ConfigureAwait(false);
+                        else
+                            objSelectedArmor = objSelectedMod.Parent;
                     }
 
                     // Open the Gear XML file and locate the selected Gear.
@@ -24497,9 +24495,11 @@ namespace Chummer
                         // If this is Ammunition, see if the character already has it on them.
                         if (objGear.Category == "Ammunition" || !string.IsNullOrEmpty(objGear.AmmoForWeaponType))
                         {
-                            TaggedObservableCollection<Gear> lstToSearch = string.IsNullOrEmpty(objSelectedGear?.Name)
-                                ? objSelectedArmor.GearChildren
-                                : objSelectedGear.Children;
+                            TaggedObservableCollection<Gear> lstToSearch = !string.IsNullOrEmpty(objSelectedGear?.Name)
+                                ? objSelectedGear.Children
+                                : !string.IsNullOrEmpty(objSelectedMod?.Name)
+                                    ? objSelectedMod.GearChildren
+                                    : objSelectedArmor.GearChildren;
                             objMatchingGear = lstToSearch.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
                         }
 
