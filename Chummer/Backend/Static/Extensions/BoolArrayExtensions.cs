@@ -25,7 +25,7 @@ namespace Chummer
     public static class BoolArrayExtensions
     {
         /// <summary>
-        /// Get the first element in a BitArray that matches <paramref name="blnValue"/>.
+        /// Get the first element in a bool array that matches <paramref name="blnValue"/>.
         /// </summary>
         /// <param name="ablnArray">Array to search.</param>
         /// <param name="blnValue">Value for which to look.</param>

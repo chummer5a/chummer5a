@@ -57,7 +57,7 @@ namespace Chummer
             _lstChildren = new ThreadSafeObservableCollection<IHasLocation>(LockObject);
             _strName = strName;
             Parent = objParent;
-            Children.CollectionChanged += ChildrenOnCollectionChanged;
+            Children.CollectionChangedAsync += ChildrenOnCollectionChanged;
             Children.BeforeClearCollectionChanged += ChildrenOnBeforeClearCollectionChanged;
         }
 
@@ -526,8 +526,10 @@ namespace Chummer
                 objOldItem.Location = null;
         }
 
-        private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private Task ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -552,10 +554,9 @@ namespace Chummer
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    foreach (IHasLocation objItem in Children.AsEnumerableWithSideEffects())
-                        objItem.Location = this;
-                    break;
+                    return Children.ForEachWithSideEffectsAsync(x => x.Location = this, token);
             }
+            return Task.CompletedTask;
         }
 
         public bool Remove(bool blnConfirmDelete = true)
