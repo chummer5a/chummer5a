@@ -280,9 +280,9 @@ namespace Chummer.Backend.Skills
                 {
                     int intPool = await GetPoolAsync(token).ConfigureAwait(false);
                     int intSpecPool = intPool + await GetSpecializationBonusAsync(token: token).ConfigureAwait(false);
-
-                    int intRatingModifiers = await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
-                    int intDicePoolModifiers = await PoolModifiersAsync(Attribute, token: token).ConfigureAwait(false);
+                    string strAttribute = await GetAttributeAsync(token).ConfigureAwait(false);
+                    int intRatingModifiers = await RatingModifiersAsync(strAttribute, token: token).ConfigureAwait(false);
+                    int intDicePoolModifiers = await PoolModifiersAsync(strAttribute, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("suid",
                         SkillId.ToString("D", GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
@@ -361,7 +361,7 @@ namespace Chummer.Backend.Skills
                             await DisplaySpecializationAsync(strLanguageToPrint, token).ConfigureAwait(false),
                             token: token)
                         .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("attribute", Attribute, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("attribute", strAttribute, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("displayattribute",
                         await DisplayAttributeMethodAsync(strLanguageToPrint, token).ConfigureAwait(false),
                         token: token).ConfigureAwait(false);
@@ -374,7 +374,7 @@ namespace Chummer.Backend.Skills
                             await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("attributemod",
-                        (await (await CharacterObject.GetAttributeAsync(Attribute,
+                        (await (await CharacterObject.GetAttributeAsync(strAttribute,
                             token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false))
                         .ToString(objCulture), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("ratingmod",
@@ -1070,6 +1070,8 @@ namespace Chummer.Backend.Skills
             _objCachedCyberwareRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedTotalBaseRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedLearnedRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            _objCachedPoolModifiersLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            _objCachedRatingModifiersLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedSuggestedSpecializationsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _lstSpecializations = new ThreadSafeObservableCollection<SkillSpecialization>(LockObject);
             _objAttribute = CharacterObject.GetAttribute(DefaultAttribute);
@@ -1101,7 +1103,8 @@ namespace Chummer.Backend.Skills
                 {
                     case NotifyCollectionChangedAction.Add:
                     {
-                        if (e.NewItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
+                        string strAttribute = await GetAttributeAsync(token).ConfigureAwait(false);
+                        if (e.NewItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == strAttribute))
                         {
                             await RecacheAttributeAsync(token).ConfigureAwait(false);
                         }
@@ -1110,7 +1113,8 @@ namespace Chummer.Backend.Skills
                     }
                     case NotifyCollectionChangedAction.Remove:
                     {
-                        if (e.OldItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
+                        string strAttribute = await GetAttributeAsync(token).ConfigureAwait(false);
+                        if (e.OldItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == strAttribute))
                         {
                             await RecacheAttributeAsync(token).ConfigureAwait(false);
                         }
@@ -1119,8 +1123,9 @@ namespace Chummer.Backend.Skills
                     }
                     case NotifyCollectionChangedAction.Replace:
                     {
-                        if (e.OldItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute)
-                            || e.NewItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
+                        string strAttribute = await GetAttributeAsync(token).ConfigureAwait(false);
+                        if (e.OldItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == strAttribute)
+                            || e.NewItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == strAttribute))
                         {
                             await RecacheAttributeAsync(token).ConfigureAwait(false);
                         }
@@ -1608,7 +1613,7 @@ namespace Chummer.Backend.Skills
                 //Calculate how far above maximum we are.
                 int intOverMax = value + await GetKarmaAsync(token).ConfigureAwait(false) -
                                  await GetRatingMaximumAsync(token).ConfigureAwait(false)
-                                 + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
+                                 + await RatingModifiersAsync(await GetAttributeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -1728,7 +1733,7 @@ namespace Chummer.Backend.Skills
                 //Calculate how far above maximum we are.
                 int intOverMax = value + await GetBaseAsync(token).ConfigureAwait(false)
                                  - await GetRatingMaximumAsync(token).ConfigureAwait(false)
-                                 + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
+                                 + await RatingModifiersAsync(await GetAttributeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -1881,7 +1886,8 @@ namespace Chummer.Backend.Skills
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    return _intCachedTotalBaseRating = await GetLearnedRatingAsync(token).ConfigureAwait(false) + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
+                    return _intCachedTotalBaseRating = await GetLearnedRatingAsync(token).ConfigureAwait(false)
+                        + await RatingModifiersAsync(await GetAttributeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -2369,36 +2375,238 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        // ReSharper disable once InconsistentNaming
+        private int _intCachedPoolModifiers = int.MinValue;
+
+        [CLSCompliant(false)]
+        protected readonly AsyncFriendlyReaderWriterLock _objCachedPoolModifiersLock;
+
+        protected virtual void ResetCachedPoolModifiers()
+        {
+            using (_objCachedPoolModifiersLock.EnterWriteLock())
+                _intCachedPoolModifiers = int.MinValue;
+        }
+
+        protected virtual async Task ResetCachedPoolModifiersAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker =
+                await _objCachedPoolModifiersLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _intCachedPoolModifiers = int.MinValue;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        // ReSharper disable once InconsistentNaming
+        private int _intCachedRatingModifiers = int.MinValue;
+
+        [CLSCompliant(false)]
+        protected readonly AsyncFriendlyReaderWriterLock _objCachedRatingModifiersLock;
+
+        protected virtual void ResetCachedRatingModifiers()
+        {
+            using (_objCachedRatingModifiersLock.EnterWriteLock())
+                _intCachedRatingModifiers = int.MinValue;
+        }
+
+        protected virtual async Task ResetCachedRatingModifiersAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker =
+                await _objCachedRatingModifiersLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _intCachedRatingModifiers = int.MinValue;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Things that modify the dicepool of the skill
         /// </summary>
         public int PoolModifiers(string strUseAttribute, bool blnIncludeConditionals = false)
         {
+            if (!blnIncludeConditionals)
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    if (strUseAttribute == Attribute)
+                    {
+                        using (_objCachedPoolModifiersLock.EnterReadLock())
+                        {
+                            if (_intCachedPoolModifiers != int.MinValue)
+                                return _intCachedPoolModifiers;
+                        }
+
+                        using (_objCachedPoolModifiersLock.EnterUpgradeableReadLock())
+                        {
+                            if (_intCachedPoolModifiers != int.MinValue)
+                                return _intCachedPoolModifiers;
+                            using (_objCachedPoolModifiersLock.EnterWriteLock())
+                            {
+                                return _intCachedPoolModifiers = Bonus(false, strUseAttribute, blnIncludeConditionals);
+                            }
+                        }
+                    }
+                }
+            }
             return Bonus(false, strUseAttribute, blnIncludeConditionals);
         }
 
         /// <summary>
         /// Things that modify the dicepool of the skill
         /// </summary>
-        public Task<int> PoolModifiersAsync(string strUseAttribute, bool blnIncludeConditionals = false, CancellationToken token = default)
+        public async Task<int> PoolModifiersAsync(string strUseAttribute, bool blnIncludeConditionals = false, CancellationToken token = default)
         {
-            return BonusAsync(false, strUseAttribute, blnIncludeConditionals, token);
+            token.ThrowIfCancellationRequested();
+            if (!blnIncludeConditionals)
+            {
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (strUseAttribute == await GetAttributeAsync(token).ConfigureAwait(false))
+                    {
+                        IAsyncDisposable objLocker2 = await _objCachedPoolModifiersLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (_intCachedPoolModifiers != int.MinValue)
+                                return _intCachedPoolModifiers;
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+
+                        objLocker2 = await _objCachedPoolModifiersLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (_intCachedPoolModifiers != int.MinValue)
+                                return _intCachedPoolModifiers;
+                            IAsyncDisposable objLocker3 = await _objCachedPoolModifiersLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                return _intCachedPoolModifiers = await BonusAsync(false, strUseAttribute, blnIncludeConditionals, token).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objLocker3.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            return await BonusAsync(false, strUseAttribute, blnIncludeConditionals, token).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Things that modify the dicepool of the skill
+        /// Things that modify the rating of the skill
         /// </summary>
         public int RatingModifiers(string strUseAttribute, bool blnIncludeConditionals = false)
         {
+            if (!blnIncludeConditionals)
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    if (strUseAttribute == Attribute)
+                    {
+                        using (_objCachedRatingModifiersLock.EnterReadLock())
+                        {
+                            if (_intCachedRatingModifiers != int.MinValue)
+                                return _intCachedRatingModifiers;
+                        }
+
+                        using (_objCachedRatingModifiersLock.EnterUpgradeableReadLock())
+                        {
+                            if (_intCachedRatingModifiers != int.MinValue)
+                                return _intCachedRatingModifiers;
+                            using (_objCachedRatingModifiersLock.EnterWriteLock())
+                            {
+                                return _intCachedRatingModifiers = Bonus(true, strUseAttribute, blnIncludeConditionals);
+                            }
+                        }
+                    }
+                }
+            }
             return Bonus(true, strUseAttribute, blnIncludeConditionals);
         }
 
         /// <summary>
-        /// Things that modify the dicepool of the skill
+        /// Things that modify the rating of the skill
         /// </summary>
-        public Task<int> RatingModifiersAsync(string strUseAttribute, bool blnIncludeConditionals = false, CancellationToken token = default)
+        public async Task<int> RatingModifiersAsync(string strUseAttribute, bool blnIncludeConditionals = false, CancellationToken token = default)
         {
-            return BonusAsync(true, strUseAttribute, blnIncludeConditionals, token);
+            token.ThrowIfCancellationRequested();
+            if (!blnIncludeConditionals)
+            {
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (strUseAttribute == await GetAttributeAsync(token).ConfigureAwait(false))
+                    {
+                        IAsyncDisposable objLocker2 = await _objCachedRatingModifiersLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (_intCachedRatingModifiers != int.MinValue)
+                                return _intCachedRatingModifiers;
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+
+                        objLocker2 = await _objCachedRatingModifiersLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (_intCachedRatingModifiers != int.MinValue)
+                                return _intCachedRatingModifiers;
+                            IAsyncDisposable objLocker3 = await _objCachedRatingModifiersLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                return _intCachedRatingModifiers = await BonusAsync(true, strUseAttribute, blnIncludeConditionals, token).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objLocker3.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            return await BonusAsync(true, strUseAttribute, blnIncludeConditionals, token).ConfigureAwait(false);
         }
 
         protected int Bonus(bool blnAddToRating, string strUseAttribute, bool blnIncludeConditionals = false)
@@ -2624,11 +2832,11 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 string strNameToUse = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strUseAttribute))
-                    strUseAttribute = Attribute;
+                    strUseAttribute = await GetAttributeAsync(token).ConfigureAwait(false);
                 ThreadSafeObservableCollection<Improvement> lstImprovements = await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false);
                 List<Improvement> lstReturn = new List<Improvement>(await lstImprovements.GetCountAsync(token).ConfigureAwait(false));
                 await lstImprovements.ForEachWithBreakAsync(
-                    objImprovement =>
+                    async objImprovement =>
                     {
                         if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false)
                             return true;
@@ -2706,7 +2914,7 @@ namespace Chummer.Backend.Skills
                                 break;
 
                             case Improvement.ImprovementType.SkillLinkedAttribute:
-                                if (objImprovement.ImprovedName == Attribute &&
+                                if (objImprovement.ImprovedName == await GetAttributeAsync(token).ConfigureAwait(false) &&
                                     !objImprovement.Exclude.Contains(strNameToUse))
                                 {
                                     lstReturn.Add(objImprovement);
@@ -2738,7 +2946,7 @@ namespace Chummer.Backend.Skills
 
                             case Improvement.ImprovementType.EnhancedArticulation:
                                 if (SkillCategory == "Physical Active" &&
-                                    AttributeSection.PhysicalAttributes.Contains(Attribute))
+                                    AttributeSection.PhysicalAttributes.Contains(await GetAttributeAsync(token).ConfigureAwait(false)))
                                 {
                                     lstReturn.Add(objImprovement);
                                     if (blnExitAfterFirst)
@@ -3037,7 +3245,7 @@ namespace Chummer.Backend.Skills
                                                         async x => await x.GetBaseAsync(token).ConfigureAwait(false) +
                                                                    await x.GetKarmaAsync(token).ConfigureAwait(false)
                                                                    + await x.RatingModifiersAsync(
-                                                                       x.Attribute, token: token).ConfigureAwait(false),
+                                                                       await x.GetAttributeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false),
                                                         token: token)
                                                     .ConfigureAwait(false);
                         int intGroupLower =
@@ -3045,7 +3253,7 @@ namespace Chummer.Backend.Skills
 
                         intLower = await GetBaseAsync(token).ConfigureAwait(false) +
                                    await GetFreeKarmaAsync(token).ConfigureAwait(false) +
-                                   await RatingModifiersAsync(Attribute, token: token)
+                                   await RatingModifiersAsync(await GetAttributeAsync(token).ConfigureAwait(false), token: token)
                                        .ConfigureAwait(false); //Might be an error here
 
                         intCost = await RangeCostAsync(intLower, intGroupLower, blnForceOffSkillGroupKarmaCompensation, token).ConfigureAwait(false) +
@@ -3055,7 +3263,7 @@ namespace Chummer.Backend.Skills
                     {
                         intLower = await GetBaseAsync(token).ConfigureAwait(false) +
                                    await GetFreeKarmaAsync(token).ConfigureAwait(false) +
-                                   await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
+                                   await RatingModifiersAsync(await GetAttributeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
 
                         intCost = await RangeCostAsync(intLower, intTotalBaseRating, blnForceOffSkillGroupKarmaCompensation, token).ConfigureAwait(false);
                     }
@@ -3064,7 +3272,7 @@ namespace Chummer.Backend.Skills
                 {
                     intLower = await GetBaseAsync(token).ConfigureAwait(false) +
                                await GetFreeKarmaAsync(token).ConfigureAwait(false) +
-                               await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
+                               await RatingModifiersAsync(await GetAttributeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
 
                     intCost = await RangeCostAsync(intLower, intTotalBaseRating, token: token).ConfigureAwait(false);
                 }
@@ -3140,9 +3348,18 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public Task<int> GetPoolAsync(CancellationToken token = default)
+        public async Task<int> GetPoolAsync(CancellationToken token = default)
         {
-            return PoolOtherAttributeAsync(Attribute, token: token);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await PoolOtherAttributeAsync(await GetAttributeAsync(token).ConfigureAwait(false), token: token);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         public bool Leveled
@@ -3381,7 +3598,7 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await LanguageManager.GetStringAsync("String_Attribute" + Attribute + "Short", strLanguage,
+                return await LanguageManager.GetStringAsync("String_Attribute" + await GetAttributeAsync(token).ConfigureAwait(false) + "Short", strLanguage,
                     token: token).ConfigureAwait(false);
             }
             finally
@@ -3580,7 +3797,7 @@ namespace Chummer.Backend.Skills
                 }
 
                 //TODO: This is a temporary workaround until proper support for selectively enabling or disabling skills works, as above.
-                switch (Attribute)
+                switch (await GetAttributeAsync(token).ConfigureAwait(false))
                 {
                     case "MAG":
                     case "MAGAdept":
@@ -5068,11 +5285,11 @@ namespace Chummer.Backend.Skills
                 bool blnShowSwapSkillAttribute = false;
                 if (string.IsNullOrEmpty(abbrev))
                 {
-                    abbrev = Attribute;
-                    blnShowSwapSkillAttribute = Attribute == DefaultAttribute;
+                    abbrev = await GetAttributeAsync(token).ConfigureAwait(false);
+                    blnShowSwapSkillAttribute = abbrev == await GetDefaultAttributeAsync(token).ConfigureAwait(false);
                 }
 
-                CharacterAttrib att = await CharacterObject.AttributeSection.GetAttributeByNameAsync(abbrev, token)
+                CharacterAttrib att = await (await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false)).GetAttributeByNameAsync(abbrev, token)
                     .ConfigureAwait(false);
                 int intAttTotalValue = await att.GetTotalValueAsync(token).ConfigureAwait(false);
                 if (intAttTotalValue <= 0)
@@ -5313,7 +5530,7 @@ namespace Chummer.Backend.Skills
                         }
                     }
 
-                    if (att.Abbrev != Attribute)
+                    if (att.Abbrev != await GetAttributeAsync(token).ConfigureAwait(false))
                         return sbdReturn.ToString();
 
                     foreach (Improvement objSwapSkillAttribute in lstRelevantImprovements)
@@ -5969,7 +6186,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 return await GetIsNativeLanguageAsync(token).ConfigureAwait(false)
                     ? await LanguageManager.GetStringAsync("Skill_NativeLanguageShort", token: token).ConfigureAwait(false)
-                    : await DisplayOtherAttributeAsync(Attribute, token).ConfigureAwait(false);
+                    : await DisplayOtherAttributeAsync(await GetAttributeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
             finally
             {
@@ -6736,6 +6953,18 @@ namespace Chummer.Backend.Skills
                                 ResetCachedTotalBaseRating();
                             if (setNamesOfChangedProperties.Contains(nameof(LearnedRating)))
                                 ResetCachedLearnedRating();
+                            if (setNamesOfChangedProperties.Contains(nameof(Attribute)))
+                            {
+                                ResetCachedPoolModifiers();
+                                ResetCachedRatingModifiers();
+                            }
+                            else
+                            {
+                                if (setNamesOfChangedProperties.Contains(nameof(PoolModifiers)))
+                                    ResetCachedPoolModifiers();
+                                if (setNamesOfChangedProperties.Contains(nameof(RatingModifiers)))
+                                    ResetCachedRatingModifiers();
+                            }
                             if (setNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
                                 _blnRecalculateCachedSuggestedSpecializations = true;
                             if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
@@ -6898,6 +7127,18 @@ namespace Chummer.Backend.Skills
                                 await ResetCachedTotalBaseRatingAsync(token).ConfigureAwait(false);
                             if (setNamesOfChangedProperties.Contains(nameof(LearnedRating)))
                                 await ResetCachedLearnedRatingAsync(token).ConfigureAwait(false);
+                            if (setNamesOfChangedProperties.Contains(nameof(Attribute)))
+                            {
+                                await ResetCachedPoolModifiersAsync(token).ConfigureAwait(false);
+                                await ResetCachedRatingModifiersAsync(token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                if (setNamesOfChangedProperties.Contains(nameof(PoolModifiers)))
+                                    await ResetCachedPoolModifiersAsync(token).ConfigureAwait(false);
+                                if (setNamesOfChangedProperties.Contains(nameof(RatingModifiers)))
+                                    await ResetCachedRatingModifiersAsync(token).ConfigureAwait(false);
+                            }
                             if (setNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
                                 _blnRecalculateCachedSuggestedSpecializations = true;
                             if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
@@ -8615,6 +8856,8 @@ namespace Chummer.Backend.Skills
                 _objCachedCyberwareRatingLock.Dispose();
                 _objCachedTotalBaseRatingLock.Dispose();
                 _objCachedLearnedRatingLock.Dispose();
+                _objCachedPoolModifiersLock.Dispose();
+                _objCachedRatingModifiersLock.Dispose();
                 _objCachedSuggestedSpecializationsLock.Dispose();
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(ref _lstCachedSuggestedSpecializations);
@@ -8714,6 +8957,8 @@ namespace Chummer.Backend.Skills
                 await _objCachedCyberwareRatingLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedTotalBaseRatingLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedLearnedRatingLock.DisposeAsync().ConfigureAwait(false);
+                await _objCachedPoolModifiersLock.DisposeAsync().ConfigureAwait(false);
+                await _objCachedRatingModifiersLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedSuggestedSpecializationsLock.DisposeAsync().ConfigureAwait(false);
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(ref _lstCachedSuggestedSpecializations);

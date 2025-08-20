@@ -47,7 +47,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 return (!ForcedName || await GetFreeBaseAsync(token).ConfigureAwait(false)
                            + await GetFreeKarmaAsync(token).ConfigureAwait(false)
-                           + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false) <= 0)
+                           + await RatingModifiersAsync(await GetAttributeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false) <= 0)
                        && !await GetIsNativeLanguageAsync(token).ConfigureAwait(false);
             }
             finally
@@ -969,7 +969,7 @@ namespace Chummer.Backend.Skills
                 decimal decCost = intTotalBaseRating * (intTotalBaseRating + 1);
                 int intLower = await GetBaseAsync(token).ConfigureAwait(false) +
                                await GetFreeKarmaAsync(token).ConfigureAwait(false) +
-                               await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
+                               await RatingModifiersAsync(await GetAttributeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 decCost -= intLower * (intLower + 1);
 
                 decCost /= 2;

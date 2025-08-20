@@ -123,7 +123,7 @@ namespace Chummer
             if (!objNode.TryGetBoolFieldQuickly("candelete", ref _blnCanDelete))
             {
                 _blnCanDelete = blnSync
-                    ? _objCharacter.Improvements.All(x => x.ImproveType != Improvement.ImprovementType.LimitModifier || x.ImprovedName != InternalId)
+                    ? _objCharacter.Improvements.All(x => x.ImproveType != Improvement.ImprovementType.LimitModifier || x.ImprovedName != InternalId, token)
                     : await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false))
                         .AllAsync(x => x.ImproveType != Improvement.ImprovementType.LimitModifier || x.ImprovedName != InternalId, token).ConfigureAwait(false);
             }

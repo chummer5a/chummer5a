@@ -9313,25 +9313,29 @@ namespace Chummer.Backend.Equipment
                 case FiringMode.GunneryCommandDevice:
                 case FiringMode.ManualOperation:
                 {
-                    Skill objSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync("Gunnery", token)
+                    Skill objSkill = await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetActiveSkillAsync("Gunnery", token)
                         .ConfigureAwait(false);
-                    if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute)
-                                  && _objMountedVehicle == null)
+                    if (Cyberware && _objMountedVehicle == null)
                     {
-                        Cyberware objAttributeSource = await _objCharacter.Cyberware
-                            .DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
-                        while (objAttributeSource != null
-                               && await objAttributeSource.GetAttributeTotalValueAsync(objSkill.Attribute, token)
-                                   .ConfigureAwait(false) == 0)
+                        string strAttribute = await objSkill.GetAttributeAsync(token).ConfigureAwait(false);
+                        if (Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(strAttribute))
                         {
-                            objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
-                        }
+                            Cyberware objAttributeSource = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
+                            while (objAttributeSource != null
+                                    && await objAttributeSource.GetAttributeTotalValueAsync(strAttribute, token)
+                                        .ConfigureAwait(false) == 0)
+                            {
+                                objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
+                            }
 
-                        if (objAttributeSource != null)
-                            intDicePool = await objSkill.PoolOtherAttributeAsync(
-                                objSkill.Attribute, false,
-                                await objAttributeSource.GetAttributeTotalValueAsync(objSkill.Attribute, token)
-                                    .ConfigureAwait(false), token).ConfigureAwait(false);
+                            if (objAttributeSource != null)
+                                intDicePool = await objSkill.PoolOtherAttributeAsync(
+                                    strAttribute, false,
+                                    await objAttributeSource.GetAttributeTotalValueAsync(strAttribute, token)
+                                        .ConfigureAwait(false), token).ConfigureAwait(false);
+                            else
+                                intDicePool = await objSkill.GetPoolAsync(token).ConfigureAwait(false);
+                        }
                         else
                             intDicePool = await objSkill.GetPoolAsync(token).ConfigureAwait(false);
                     }
@@ -9357,28 +9361,32 @@ namespace Chummer.Backend.Equipment
                     Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
                     if (objSkill != null)
                     {
-                        if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute))
+                        if (Cyberware)
                         {
-                            Cyberware objAttributeSource = _objMountedVehicle != null
-                                ? (await _objCharacter.Vehicles
-                                    .FindVehicleCyberwareAsync(x => x.InternalId == ParentID, token)
-                                    .ConfigureAwait(false)).Item1
-                                : await _objCharacter.Cyberware.DeepFindByIdAsync(ParentID, token)
-                                    .ConfigureAwait(false);
-                            while (objAttributeSource != null
-                                   && await objAttributeSource.GetAttributeTotalValueAsync(objSkill.Attribute, token)
-                                       .ConfigureAwait(false) == 0)
+                            string strAttribute = await objSkill.GetAttributeAsync(token).ConfigureAwait(false);
+                            if (Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(strAttribute))
                             {
-                                objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
-                            }
+                                Cyberware objAttributeSource = _objMountedVehicle != null
+                                    ? (await (await _objCharacter.GetVehiclesAsync(token).ConfigureAwait(false))
+                                        .FindVehicleCyberwareAsync(x => x.InternalId == ParentID, token)
+                                        .ConfigureAwait(false)).Item1
+                                    : await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepFindByIdAsync(ParentID, token)
+                                        .ConfigureAwait(false);
+                                while (objAttributeSource != null
+                                        && await objAttributeSource.GetAttributeTotalValueAsync(strAttribute, token)
+                                            .ConfigureAwait(false) == 0)
+                                {
+                                    objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
+                                }
 
-                            if (objAttributeSource != null)
-                                intDicePool = await objSkill.PoolOtherAttributeAsync(
-                                    objSkill.Attribute, false,
-                                    await objAttributeSource.GetAttributeTotalValueAsync(objSkill.Attribute, token)
-                                        .ConfigureAwait(false), token).ConfigureAwait(false);
-                            else
-                                intDicePool = await objSkill.GetPoolAsync(token).ConfigureAwait(false);
+                                if (objAttributeSource != null)
+                                    intDicePool = await objSkill.PoolOtherAttributeAsync(
+                                        strAttribute, false,
+                                        await objAttributeSource.GetAttributeTotalValueAsync(strAttribute, token)
+                                            .ConfigureAwait(false), token).ConfigureAwait(false);
+                                else
+                                    intDicePool = await objSkill.GetPoolAsync(token).ConfigureAwait(false);
+                            }
                         }
                         else
                             intDicePool = await objSkill.GetPoolAsync(token).ConfigureAwait(false);

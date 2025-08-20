@@ -178,7 +178,7 @@ namespace Chummer.Backend.Skills
                 return !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
                        && await GetFreeBaseAsync(token).ConfigureAwait(false)
                        + await GetFreeKarmaAsync(token).ConfigureAwait(false)
-                       + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false) <= 0;
+                       + await RatingModifiersAsync(await GetAttributeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false) <= 0;
             }
             finally
             {
