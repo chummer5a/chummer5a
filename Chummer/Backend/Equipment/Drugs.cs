@@ -126,24 +126,49 @@ namespace Chummer.Backend.Equipment
 
         public void Load(XmlNode objXmlData)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objXmlData));
+        }
+
+        public Task LoadAsync(XmlNode objXmlData, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objXmlData, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objXmlData, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             objXmlData.TryGetStringFieldQuickly("name", ref _strName);
             _objCachedMyXmlNode = null;
             _objCachedMyXPathNode = null;
             if (!objXmlData.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                this.GetNodeXPath()?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                (blnSync ? this.GetNodeXPath(token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
-            Grade = Grade.ConvertToCyberwareGrade(objXmlData["grade"]?.InnerText, Improvement.ImprovementSource.Drug, _objCharacter);
+            Grade = blnSync
+                ? Grade.ConvertToCyberwareGrade(objXmlData["grade"]?.InnerText, Improvement.ImprovementSource.Drug, _objCharacter)
+                : await Grade.ConvertToCyberwareGradeAsync(objXmlData["grade"]?.InnerText, Improvement.ImprovementSource.Drug, _objCharacter, token).ConfigureAwait(false);
 
             XmlNodeList xmlComponentsNodeList = objXmlData.SelectNodes("drugcomponents/drugcomponent");
             if (xmlComponentsNodeList?.Count > 0)
             {
-                foreach (XmlNode objXmlLevel in xmlComponentsNodeList)
+                if (blnSync)
                 {
-                    DrugComponent c = new DrugComponent(_objCharacter);
-                    c.Load(objXmlLevel);
-                    Components.Add(c);
+                    foreach (XmlNode objXmlLevel in xmlComponentsNodeList)
+                    {
+                        DrugComponent c = new DrugComponent(_objCharacter);
+                        c.Load(objXmlLevel);
+                        Components.Add(c);
+                    }
+                }
+                else
+                {
+                    foreach (XmlNode objXmlLevel in xmlComponentsNodeList)
+                    {
+                        DrugComponent c = new DrugComponent(_objCharacter);
+                        await c.LoadAsync(objXmlLevel, token).ConfigureAwait(false);
+                        await Components.AddAsync(c, token).ConfigureAwait(false);
+                    }
                 }
             }
 
@@ -1954,12 +1979,23 @@ namespace Chummer.Backend.Equipment
 
         public void Load(XmlNode objXmlData)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objXmlData));
+        }
+
+        public Task LoadAsync(XmlNode objXmlData, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objXmlData, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objXmlData, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             objXmlData.TryGetStringFieldQuickly("name", ref _strName);
             _objCachedMyXmlNode = null;
             _objCachedMyXPathNode = null;
             if (!objXmlData.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                this.GetNodeXPath()?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                (blnSync ? this.GetNodeXPath(token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objXmlData.TryGetField("internalid", Guid.TryParse, out _guidId);
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);

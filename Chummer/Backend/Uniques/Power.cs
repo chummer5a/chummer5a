@@ -230,9 +230,11 @@ namespace Chummer
                         {
                             foreach (XmlNode nodEnhancement in xmlEnhancementList)
                             {
-                                Enhancement objEnhancement = new Enhancement(CharacterObject);
+                                Enhancement objEnhancement = new Enhancement(CharacterObject)
+                                {
+                                    Parent = this
+                                };
                                 objEnhancement.Load(nodEnhancement);
-                                objEnhancement.Parent = this;
                                 Enhancements.Add(objEnhancement);
                             }
                         }
@@ -328,9 +330,11 @@ namespace Chummer
                         {
                             foreach (XmlNode nodEnhancement in xmlEnhancementList)
                             {
-                                Enhancement objEnhancement = new Enhancement(CharacterObject);
-                                objEnhancement.Load(nodEnhancement);
-                                objEnhancement.Parent = this;
+                                Enhancement objEnhancement = new Enhancement(CharacterObject)
+                                {
+                                    Parent = this
+                                };
+                                await objEnhancement.LoadAsync(nodEnhancement, token).ConfigureAwait(false);
                                 await Enhancements.AddAsync(objEnhancement, token).ConfigureAwait(false);
                             }
                         }
@@ -587,14 +591,21 @@ namespace Chummer
                     {
                         foreach (XmlNode nodEnhancement in nodEnhancements)
                         {
-                            Enhancement objEnhancement = new Enhancement(CharacterObject);
-                            objEnhancement.Load(nodEnhancement);
-                            objEnhancement.Parent = this;
+                            Enhancement objEnhancement = new Enhancement(CharacterObject)
+                            {
+                                Parent = this
+                            };
                             if (blnSync)
+                            {
+                                objEnhancement.Load(nodEnhancement);
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 Enhancements.Add(objEnhancement);
+                            }
                             else
+                            {
+                                await objEnhancement.LoadAsync(nodEnhancement, token).ConfigureAwait(false);
                                 await Enhancements.AddAsync(objEnhancement, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }

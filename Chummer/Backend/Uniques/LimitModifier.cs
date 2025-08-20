@@ -98,6 +98,22 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+        }
+
+        /// <summary>
+        /// Load the Limit Modifier from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 _guiID = Guid.NewGuid();
             objNode.TryGetStringFieldQuickly("name", ref _strName);
@@ -106,7 +122,10 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("condition", ref _strCondition);
             if (!objNode.TryGetBoolFieldQuickly("candelete", ref _blnCanDelete))
             {
-                _blnCanDelete = _objCharacter.Improvements.All(x => x.ImproveType != Improvement.ImprovementType.LimitModifier || x.ImprovedName != InternalId);
+                _blnCanDelete = blnSync
+                    ? _objCharacter.Improvements.All(x => x.ImproveType != Improvement.ImprovementType.LimitModifier || x.ImprovedName != InternalId)
+                    : await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false))
+                        .AllAsync(x => x.ImproveType != Improvement.ImprovementType.LimitModifier || x.ImprovedName != InternalId, token).ConfigureAwait(false);
             }
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);

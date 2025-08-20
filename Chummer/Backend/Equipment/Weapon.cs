@@ -1372,7 +1372,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="token">Cancellation token to listen to.</param>
         public Task LoadAsync(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
         {
-            return LoadCoreAsync(true, objNode, blnCopy, token);
+            return LoadCoreAsync(false, objNode, blnCopy, token);
         }
 
         private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, bool blnCopy, CancellationToken token = default)
