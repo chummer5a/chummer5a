@@ -465,7 +465,7 @@ namespace Chummer
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
 
-            Grade objTestGrade = _objCharacter.GetGrades(objSource, true).FirstOrDefault(x => x.Name == "Standard");
+            Grade objTestGrade = _objCharacter.GetGradeByName(objSource, "Standard", true);
 
             using (XmlNodeList xmlGearList = objXmlDocument.SelectNodes("/chummer/" + strPrefix + "s/" + strPrefix))
             {

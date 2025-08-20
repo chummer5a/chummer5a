@@ -10764,8 +10764,7 @@ namespace Chummer
                                         .ConfigureAwait(false) is Cyberware objCyberware))
                     return;
                 // Locate the selected piece of Cyberware.
-                Grade objNewGrade = CharacterObject.GetGrades(await objCyberware.GetSourceTypeAsync(GenericToken).ConfigureAwait(false), token: GenericToken)
-                                                   .FirstOrDefault(x => x.Name == strSelectedGrade);
+                Grade objNewGrade = await CharacterObject.GetGradeByNameAsync(await objCyberware.GetSourceTypeAsync(GenericToken).ConfigureAwait(false), strSelectedGrade, token: GenericToken).ConfigureAwait(false);
                 if (objNewGrade == null)
                     return;
                 // Updated the selected Cyberware Grade.

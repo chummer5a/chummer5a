@@ -146,7 +146,7 @@ namespace Chummer.Backend.Equipment
             }
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
             Grade = blnSync
-                ? Grade.ConvertToCyberwareGrade(objXmlData["grade"]?.InnerText, Improvement.ImprovementSource.Drug, _objCharacter)
+                ? Grade.ConvertToCyberwareGrade(objXmlData["grade"]?.InnerText, Improvement.ImprovementSource.Drug, _objCharacter, token)
                 : await Grade.ConvertToCyberwareGradeAsync(objXmlData["grade"]?.InnerText, Improvement.ImprovementSource.Drug, _objCharacter, token).ConfigureAwait(false);
 
             XmlNodeList xmlComponentsNodeList = objXmlData.SelectNodes("drugcomponents/drugcomponent");

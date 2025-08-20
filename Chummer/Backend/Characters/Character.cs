@@ -3120,8 +3120,8 @@ namespace Chummer
                         CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0, token);
 
                     objWare.Create(objXmlCyberwareNode,
-                        GetGrades(Improvement.ImprovementSource.Cyberware, true, token)
-                            .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
+                        GetGradeByName(Improvement.ImprovementSource.Cyberware, "None", true, token),
+                        Improvement.ImprovementSource.Metatype, intRating,
                         Weapons, Vehicles, true, true, strForcedValue, token: token);
                     Cyberware.Add(objWare);
                     try
@@ -3154,8 +3154,8 @@ namespace Chummer
                         CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0, token);
 
                     objWare.Create(objXmlCyberwareNode,
-                        GetGrades(Improvement.ImprovementSource.Bioware, true, token)
-                            .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
+                        GetGradeByName(Improvement.ImprovementSource.Bioware, "None", true, token),
+                        Improvement.ImprovementSource.Metatype, intRating,
                         Weapons, Vehicles, true, true, strForcedValue, token: token);
                     Cyberware.Add(objWare);
                     try
@@ -3842,8 +3842,8 @@ namespace Chummer
                             .ConfigureAwait(false);
 
                     await objWare.CreateAsync(objXmlCyberwareNode,
-                            GetGrades(Improvement.ImprovementSource.Cyberware, true, token)
-                                .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype,
+                            await GetGradeByNameAsync(Improvement.ImprovementSource.Cyberware, "None", true, token).ConfigureAwait(false),
+                            Improvement.ImprovementSource.Metatype,
                             intRating,
                             await GetWeaponsAsync(token).ConfigureAwait(false),
                             await GetVehiclesAsync(token).ConfigureAwait(false), true, true, strForcedValue,
@@ -3883,8 +3883,8 @@ namespace Chummer
                             .ConfigureAwait(false);
 
                     await objWare.CreateAsync(objXmlCyberwareNode,
-                            GetGrades(Improvement.ImprovementSource.Bioware, true, token)
-                                .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype,
+                            await GetGradeByNameAsync(Improvement.ImprovementSource.Bioware, "None", true, token).ConfigureAwait(false),
+                            Improvement.ImprovementSource.Metatype,
                             intRating,
                             await GetWeaponsAsync(token).ConfigureAwait(false),
                             await GetVehiclesAsync(token).ConfigureAwait(false), true, true, strForcedValue,
@@ -14691,6 +14691,28 @@ namespace Chummer
         /// <param name="strName">Name of the grade to fetch.</param>
         /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
         /// <param name="token">CancellationToken to listen to.</param>
+        public Grade GetGradeByName(Improvement.ImprovementSource objSource, string strName, bool blnIgnoreBannedGrades = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            Grade objStandardGrade = null;
+            foreach (Grade objGrade in GetGrades(objSource, blnIgnoreBannedGrades, token))
+            {
+                string strGradeName = objGrade.Name;
+                if (strGradeName == strName)
+                    return objGrade;
+                if (strGradeName == "Standard")
+                    objStandardGrade = objGrade;
+            }
+            return objStandardGrade;
+        }
+
+        /// <summary>
+        /// Return a specific Cyberware grade based on its name.
+        /// </summary>
+        /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
+        /// <param name="strName">Name of the grade to fetch.</param>
+        /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
         public async Task<Grade> GetGradeByNameAsync(Improvement.ImprovementSource objSource, string strName, bool blnIgnoreBannedGrades = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -14734,10 +14756,11 @@ namespace Chummer
                         foreach (XmlNode objNode in xmlGradeList)
                         {
                             Grade objGrade = new Grade(this, objSource);
-                            objGrade.Load(objNode);
-                            if (objGrade.Name == strName)
+                            await objGrade.LoadAsync(objNode, token).ConfigureAwait(false);
+                            string strGradeName = objGrade.Name;
+                            if (strGradeName == strName)
                                 return objGrade;
-                            else if (objGrade.Name == "Standard")
+                            if (strGradeName == "Standard")
                                 objStandardGrade = objGrade;
                         }
                     }
@@ -14756,9 +14779,9 @@ namespace Chummer
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
         /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
-        public List<Grade> GetGradesList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
+        public List<Grade> GetGradesList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false, CancellationToken token = default)
         {
-            return GetGrades(objSource, blnIgnoreBannedGrades).ToList();
+            return GetGrades(objSource, blnIgnoreBannedGrades, token).ToList();
         }
 
         /// <summary>
@@ -14808,7 +14831,7 @@ namespace Chummer
                         foreach (XmlNode objNode in xmlGradeList)
                         {
                             Grade objGrade = new Grade(this, objSource);
-                            objGrade.Load(objNode);
+                            await objGrade.LoadAsync(objNode, token).ConfigureAwait(false);
                             lstReturn.Add(objGrade);
                         }
                     }
@@ -26706,8 +26729,8 @@ namespace Chummer
                         List<Vehicle> lstVehicles = new List<Vehicle>(1);
                         objHole.Create(
                             xmlEssHole,
-                            GetGrades(Improvement.ImprovementSource.Cyberware, true)
-                                .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware,
+                            GetGradeByName(Improvement.ImprovementSource.Cyberware, "None", true),
+                            Improvement.ImprovementSource.Cyberware,
                             intCentiessence, lstWeapons,
                             lstVehicles);
 
@@ -26795,8 +26818,8 @@ namespace Chummer
                         List<Vehicle> lstVehicles = new List<Vehicle>(1);
                         await objHole.CreateAsync(
                             xmlEssHole,
-                            GetGrades(Improvement.ImprovementSource.Cyberware, true, token)
-                                .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware,
+                            await GetGradeByNameAsync(Improvement.ImprovementSource.Cyberware, "None", true, token).ConfigureAwait(false),
+                            Improvement.ImprovementSource.Cyberware,
                             intCentiessence, lstWeapons,
                             lstVehicles, token: token).ConfigureAwait(false);
 
@@ -26883,8 +26906,7 @@ namespace Chummer
                         List<Weapon> lstWeapons = new List<Weapon>(1);
                         List<Vehicle> lstVehicles = new List<Vehicle>(1);
                         objAntiHole.Create(xmlEssAntiHole,
-                                           GetGrades(Improvement.ImprovementSource.Cyberware, true)
-                                               .FirstOrDefault(x => x.Name == "None"),
+                                           GetGradeByName(Improvement.ImprovementSource.Cyberware, "None", true),
                                            Improvement.ImprovementSource.Cyberware, intCentiessence, lstWeapons,
                                            lstVehicles);
 
@@ -26972,8 +26994,7 @@ namespace Chummer
                         List<Weapon> lstWeapons = new List<Weapon>(1);
                         List<Vehicle> lstVehicles = new List<Vehicle>(1);
                         await objAntiHole.CreateAsync(xmlEssAntiHole,
-                            GetGrades(Improvement.ImprovementSource.Cyberware, true, token)
-                                .FirstOrDefault(x => x.Name == "None"),
+                            await GetGradeByNameAsync(Improvement.ImprovementSource.Cyberware, "None", true, token).ConfigureAwait(false),
                             Improvement.ImprovementSource.Cyberware, intCentiessence, lstWeapons,
                             lstVehicles, token: token).ConfigureAwait(false);
 

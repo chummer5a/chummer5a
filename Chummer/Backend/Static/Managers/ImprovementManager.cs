@@ -5186,12 +5186,12 @@ namespace Chummer
                                         string strNewName = objOldGrade.Name.FastEscapeOnceFromEnd("(Adapsin)")
                                             .Trim();
                                         // Determine which GradeList to use for the Cyberware.
-                                        Grade objNewGrade = objCharacter.GetGrades(objCyberware.SourceType, true, token)
-                                            .FirstOrDefault(x => x.Name == strNewName);
                                         if (blnSync)
-                                            objCyberware.Grade = objNewGrade;
+                                        {
+                                            objCyberware.Grade = objCharacter.GetGradeByName(objCyberware.SourceType, strNewName, true, token);
+                                        }
                                         else
-                                            await objCyberware.SetGradeAsync(objNewGrade, token).ConfigureAwait(false);
+                                            await objCyberware.SetGradeAsync(await objCharacter.GetGradeByNameAsync(objCyberware.SourceType, strNewName, true, token).ConfigureAwait(false), token).ConfigureAwait(false);
                                     }
                                 }
                             }

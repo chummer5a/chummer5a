@@ -144,7 +144,7 @@ namespace Chummer
                     strGrade = CyberwareGradeName(strSuiteGradeEntry);
                     if (!string.IsNullOrEmpty(strGrade))
                     {
-                        objGrade = _objCharacter.GetGrades(_eSource).FirstOrDefault(x => x.Name == strGrade);
+                        objGrade = await _objCharacter.GetGradeByNameAsync(_eSource, strGrade).ConfigureAwait(false);
                     }
                 }
             }
