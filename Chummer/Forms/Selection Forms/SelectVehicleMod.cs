@@ -341,7 +341,7 @@ namespace Chummer
                     if (!await _objVehicle.CheckModRequirementsAsync(objXmlMod, token).ConfigureAwait(false))
                         continue;
 
-                    int intMinRating = int.MaxValue;
+                    int intMinRating = 0;
                     string strMinRating = objXmlMod.SelectSingleNodeAndCacheExpression("minrating", token: token)?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strMinRating))
                     {
@@ -369,7 +369,6 @@ namespace Chummer
                         else
                         {
                             int intMaxRating = int.MaxValue;
-                            intMinRating = 1;
                             if (!string.IsNullOrEmpty(strRating))
                                 intMaxRating = (await ProcessInvariantXPathExpression(strRating, intMinRating, 0, token).ConfigureAwait(false)).Item1.StandardRound();
                             if (intMaxRating > 0 && intMaxRating != int.MaxValue)
