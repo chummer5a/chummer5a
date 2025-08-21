@@ -6408,6 +6408,7 @@ namespace Chummer
                                                     .ConfigureAwait(false),
                                                 () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
                                                 token: token).ConfigureAwait(false);
+                                            objNode.Checked = objGear.Bonded;
                                             await AddToTree(objNode, false).ConfigureAwait(false);
                                         }
                                             break;
@@ -6418,47 +6419,17 @@ namespace Chummer
                                             {
                                                 if (objStack.GearId == objGear.InternalId)
                                                 {
-                                                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                            Improvement.ImprovementSource.StackedFocus,
-                                                            objStack.InternalId, token)
-                                                        .ConfigureAwait(false);
-
-                                                    if (objStack.Bonded)
-                                                    {
-                                                        await objStack.Gear.ForEachAsync(async objFociGear =>
-                                                        {
-                                                            if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                                                ImprovementManager.SetForcedValue(objFociGear.Extra, CharacterObject);
-                                                            await ImprovementManager.CreateImprovementsAsync(
-                                                                CharacterObject,
-                                                                Improvement.ImprovementSource.StackedFocus,
-                                                                objStack.InternalId,
-                                                                objFociGear.Bonus,
-                                                                await objFociGear.GetRatingAsync(token)
-                                                                    .ConfigureAwait(false),
-                                                                await objFociGear.DisplayNameShortAsync(
-                                                                        GlobalSettings.Language, token)
-                                                                    .ConfigureAwait(false),
-                                                                token: token).ConfigureAwait(false);
-                                                            if (objFociGear.WirelessOn)
-                                                                await ImprovementManager.CreateImprovementsAsync(
-                                                                    CharacterObject,
-                                                                    Improvement.ImprovementSource.StackedFocus,
-                                                                    objStack.InternalId,
-                                                                    objFociGear.WirelessBonus,
-                                                                    await objFociGear.GetRatingAsync(token)
-                                                                        .ConfigureAwait(false),
-                                                                    await objFociGear.DisplayNameShortAsync(
-                                                                            GlobalSettings.Language, token)
-                                                                        .ConfigureAwait(false),
-                                                                    token: token).ConfigureAwait(false);
-                                                        }, token).ConfigureAwait(false);
-                                                    }
-
-                                                    await AddToTree(
-                                                            await objStack.CreateTreeNode(objGear, cmsFocus, token)
-                                                                .ConfigureAwait(false), false)
-                                                        .ConfigureAwait(false);
+                                                    TreeNode objNode = await objStack.CreateTreeNode(objGear, cmsFocus, token)
+                                                                .ConfigureAwait(false);
+                                                    if (objNode == null)
+                                                        return;
+                                                    objNode.Text = await objNode.Text.CheapReplaceAsync(
+                                                        await LanguageManager.GetStringAsync("String_Rating", token: token)
+                                                            .ConfigureAwait(false),
+                                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
+                                                        token: token).ConfigureAwait(false);
+                                                    objNode.Checked = objStack.Bonded;
+                                                    await AddToTree(objNode, false).ConfigureAwait(false);
                                                 }
                                             }, token).ConfigureAwait(false);
                                         }
@@ -6496,6 +6467,7 @@ namespace Chummer
                                                     .ConfigureAwait(false),
                                                 () => LanguageManager.GetStringAsync("String_Force", token: token),
                                                 token: token).ConfigureAwait(false);
+                                            objNode.Checked = objGear.Bonded;
                                             await AddToTree(objNode).ConfigureAwait(false);
                                         }
                                             break;
@@ -6506,44 +6478,17 @@ namespace Chummer
                                             {
                                                 if (objStack.GearId == objGear.InternalId)
                                                 {
-                                                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                        Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
-                                                        token).ConfigureAwait(false);
-
-                                                    if (objStack.Bonded)
-                                                    {
-                                                        await objStack.Gear.ForEachAsync(async objFociGear =>
-                                                        {
-                                                            if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                                                ImprovementManager.SetForcedValue(objFociGear.Extra, CharacterObject);
-                                                            await ImprovementManager.CreateImprovementsAsync(
-                                                                CharacterObject,
-                                                                Improvement.ImprovementSource.StackedFocus,
-                                                                objStack.InternalId, objFociGear.Bonus,
-                                                                await objFociGear.GetRatingAsync(token)
-                                                                    .ConfigureAwait(false),
-                                                                await objFociGear.DisplayNameShortAsync(
-                                                                        GlobalSettings.Language, token)
-                                                                    .ConfigureAwait(false),
-                                                                token: token).ConfigureAwait(false);
-                                                            if (objFociGear.WirelessOn)
-                                                                await ImprovementManager.CreateImprovementsAsync(
-                                                                        CharacterObject,
-                                                                        Improvement.ImprovementSource.StackedFocus,
-                                                                        objStack.InternalId, objFociGear.WirelessBonus,
-                                                                        await objFociGear.GetRatingAsync(token)
-                                                                            .ConfigureAwait(false),
-                                                                        await objFociGear.DisplayNameShortAsync(
-                                                                                GlobalSettings.Language, token)
-                                                                            .ConfigureAwait(false), token: token)
-                                                                    .ConfigureAwait(false);
-                                                        }, token).ConfigureAwait(false);
-                                                    }
-
-                                                    await AddToTree(await objStack
-                                                            .CreateTreeNode(objGear, cmsFocus, token)
-                                                            .ConfigureAwait(false))
-                                                        .ConfigureAwait(false);
+                                                    TreeNode objNode = await objStack.CreateTreeNode(objGear, cmsFocus, token)
+                                                                .ConfigureAwait(false);
+                                                    if (objNode == null)
+                                                        return;
+                                                    objNode.Text = await objNode.Text.CheapReplaceAsync(
+                                                        await LanguageManager.GetStringAsync("String_Rating", token: token)
+                                                            .ConfigureAwait(false),
+                                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
+                                                        token: token).ConfigureAwait(false);
+                                                    objNode.Checked = objStack.Bonded;
+                                                    await AddToTree(objNode, false).ConfigureAwait(false);
                                                 }
                                             }, token).ConfigureAwait(false);
                                         }
@@ -6675,6 +6620,7 @@ namespace Chummer
                                                     .ConfigureAwait(false),
                                                 () => LanguageManager.GetString("String_Force", token: token),
                                                 token: token).ConfigureAwait(false);
+                                            objNode.Checked = objGear.Bonded;
                                             await AddToTree(objNode).ConfigureAwait(false);
                                         }
                                             break;
@@ -6685,44 +6631,17 @@ namespace Chummer
                                             {
                                                 if (objStack.GearId == objGear.InternalId)
                                                 {
-                                                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                        Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
-                                                        token).ConfigureAwait(false);
-
-                                                    if (objStack.Bonded)
-                                                    {
-                                                        await objStack.Gear.ForEachAsync(async objFociGear =>
-                                                        {
-                                                            if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                                                ImprovementManager.SetForcedValue(objFociGear.Extra, CharacterObject);
-                                                            await ImprovementManager.CreateImprovementsAsync(
-                                                                CharacterObject,
-                                                                Improvement.ImprovementSource.StackedFocus,
-                                                                objStack.InternalId, objFociGear.Bonus,
-                                                                await objFociGear.GetRatingAsync(token)
-                                                                    .ConfigureAwait(false),
-                                                                await objFociGear.DisplayNameShortAsync(
-                                                                        GlobalSettings.Language, token)
-                                                                    .ConfigureAwait(false),
-                                                                token: token).ConfigureAwait(false);
-                                                            if (objFociGear.WirelessOn)
-                                                                await ImprovementManager.CreateImprovementsAsync(
-                                                                        CharacterObject,
-                                                                        Improvement.ImprovementSource.StackedFocus,
-                                                                        objStack.InternalId, objFociGear.WirelessBonus,
-                                                                        await objFociGear.GetRatingAsync(token)
-                                                                            .ConfigureAwait(false),
-                                                                        await objFociGear.DisplayNameShortAsync(
-                                                                                GlobalSettings.Language, token)
-                                                                            .ConfigureAwait(false), token: token)
-                                                                    .ConfigureAwait(false);
-                                                        }, token).ConfigureAwait(false);
-                                                    }
-
-                                                    await AddToTree(await objStack
-                                                            .CreateTreeNode(objGear, cmsFocus, token)
-                                                            .ConfigureAwait(false))
-                                                        .ConfigureAwait(false);
+                                                    TreeNode objNode = await objStack.CreateTreeNode(objGear, cmsFocus, token)
+                                                                .ConfigureAwait(false);
+                                                    if (objNode == null)
+                                                        return;
+                                                    objNode.Text = await objNode.Text.CheapReplaceAsync(
+                                                        await LanguageManager.GetStringAsync("String_Rating", token: token)
+                                                            .ConfigureAwait(false),
+                                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
+                                                        token: token).ConfigureAwait(false);
+                                                    objNode.Checked = objStack.Bonded;
+                                                    await AddToTree(objNode, false).ConfigureAwait(false);
                                                 }
                                             }, token).ConfigureAwait(false);
                                         }

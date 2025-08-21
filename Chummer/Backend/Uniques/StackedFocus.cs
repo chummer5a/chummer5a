@@ -117,13 +117,14 @@ namespace Chummer
                 _blnBonded = objNode["bonded"]?.InnerText == bool.TrueString;
                 using (XmlNodeList nodGearList = objNode.SelectNodes("gears/gear"))
                 {
-                    if (nodGearList == null)
-                        return;
-                    foreach (XmlNode nodGear in nodGearList)
+                    if (nodGearList != null)
                     {
-                        Gear objGear = new Gear(_objCharacter);
-                        await objGear.LoadAsync(nodGear, token: token).ConfigureAwait(false);
-                        await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                        foreach (XmlNode nodGear in nodGearList)
+                        {
+                            Gear objGear = new Gear(_objCharacter);
+                            await objGear.LoadAsync(nodGear, token: token).ConfigureAwait(false);
+                            await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                        }
                     }
                 }
             }
