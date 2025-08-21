@@ -257,8 +257,51 @@ namespace Chummer
         public static int DivRem(this int a, int b, out int result)
         {
             // This version is faster than .NET Framework 4.8's implementation, but still slower than if the register storing the division remainder could be fetched directly
-            int div = a / b;
-            result = a - (div * b);
+            int div;
+            if ((a & 0xFF) == a)
+            {
+                switch (b)
+                {
+                    // Common powers of two
+                    case 2:
+                        div = a >> 1;
+                        result = a & 1;
+                        break;
+                    case 4:
+                        div = a >> 2;
+                        result = a & 0x3;
+                        break;
+                    case 8:
+                        div = a >> 3;
+                        result = a & 0x7;
+                        break;
+                    case 16:
+                        div = a >> 4;
+                        result = a & 0xF;
+                        break;
+                    case 32:
+                        div = a >> 5;
+                        result = a & 0x1F;
+                        break;
+                    case 64:
+                        div = a >> 6;
+                        result = a & 0x3F;
+                        break;
+                    case 128:
+                        div = a >> 7;
+                        result = a & 0x7F;
+                        break;
+                    default:
+                        div = a / b;
+                        result = a - (div * b);
+                        break;
+                }
+            }
+            else
+            {
+                div = a / b;
+                result = a - (div * b);
+            }
             return div;
         }
 
@@ -267,8 +310,52 @@ namespace Chummer
         public static Tuple<int, int> DivRem(this int a, int b)
         {
             // This version is faster than .NET Framework 4.8's implementation, but still slower than if the register storing the division remainder could be fetched directly
-            int div = a / b;
-            int result = a - (div * b);
+            int div;
+            int result;
+            if ((a & 0xFF) == a)
+            {
+                switch (b)
+                {
+                    // Common powers of two
+                    case 2:
+                        div = a >> 1;
+                        result = a & 1;
+                        break;
+                    case 4:
+                        div = a >> 2;
+                        result = a & 0x3;
+                        break;
+                    case 8:
+                        div = a >> 3;
+                        result = a & 0x7;
+                        break;
+                    case 16:
+                        div = a >> 4;
+                        result = a & 0xF;
+                        break;
+                    case 32:
+                        div = a >> 5;
+                        result = a & 0x1F;
+                        break;
+                    case 64:
+                        div = a >> 6;
+                        result = a & 0x3F;
+                        break;
+                    case 128:
+                        div = a >> 7;
+                        result = a & 0x7F;
+                        break;
+                    default:
+                        div = a / b;
+                        result = a - (div * b);
+                        break;
+                }
+            }
+            else
+            {
+                div = a / b;
+                result = a - (div * b);
+            }
             return new Tuple<int, int>(div, result);
         }
 
@@ -277,8 +364,51 @@ namespace Chummer
         public static long DivRem(this long a, long b, out long result)
         {
             // This version is faster than .NET Framework 4.8's implementation, but still slower than if the register storing the division remainder could be fetched directly
-            long div = a / b;
-            result = a - (div * b);
+            long div;
+            if ((a & 0xFF) == a)
+            {
+                switch (b)
+                {
+                    // Common powers of two
+                    case 2:
+                        div = a >> 1;
+                        result = a & 1;
+                        break;
+                    case 4:
+                        div = a >> 2;
+                        result = a & 0x3;
+                        break;
+                    case 8:
+                        div = a >> 3;
+                        result = a & 0x7;
+                        break;
+                    case 16:
+                        div = a >> 4;
+                        result = a & 0xF;
+                        break;
+                    case 32:
+                        div = a >> 5;
+                        result = a & 0x1F;
+                        break;
+                    case 64:
+                        div = a >> 6;
+                        result = a & 0x3F;
+                        break;
+                    case 128:
+                        div = a >> 7;
+                        result = a & 0x7F;
+                        break;
+                    default:
+                        div = a / b;
+                        result = a - (div * b);
+                        break;
+                }
+            }
+            else
+            {
+                div = a / b;
+                result = a - (div * b);
+            }
             return div;
         }
 
@@ -287,8 +417,52 @@ namespace Chummer
         public static Tuple<long, long> DivRem(this long a, long b)
         {
             // This version is faster than .NET Framework 4.8's implementation, but still slower than if the register storing the division remainder could be fetched directly
-            long div = a / b;
-            long result = a - (div * b);
+            long div;
+            long result;
+            if ((a & 0xFF) == a)
+            {
+                switch (b)
+                {
+                    // Common powers of two
+                    case 2:
+                        div = a >> 1;
+                        result = a & 1;
+                        break;
+                    case 4:
+                        div = a >> 2;
+                        result = a & 0x3;
+                        break;
+                    case 8:
+                        div = a >> 3;
+                        result = a & 0x7;
+                        break;
+                    case 16:
+                        div = a >> 4;
+                        result = a & 0xF;
+                        break;
+                    case 32:
+                        div = a >> 5;
+                        result = a & 0x1F;
+                        break;
+                    case 64:
+                        div = a >> 6;
+                        result = a & 0x3F;
+                        break;
+                    case 128:
+                        div = a >> 7;
+                        result = a & 0x7F;
+                        break;
+                    default:
+                        div = a / b;
+                        result = a - (div * b);
+                        break;
+                }
+            }
+            else
+            {
+                div = a / b;
+                result = a - (div * b);
+            }
             return new Tuple<long, long>(div, result);
         }
 
@@ -415,7 +589,7 @@ namespace Chummer
         {
             if (n <= 0)
                 throw new ArgumentOutOfRangeException(nameof(n));
-            return FloorLog2(n) + n % 2;
+            return FloorLog2(n) + (n & 1);
         }
 
         /// <summary>
@@ -1095,7 +1269,7 @@ namespace Chummer
                 for (int i = 1; i <= TaylorSeriesNumTerms_Ln_x; ++i)
                 {
                     decimal decOldValue = decReturn;
-                    if (i % 2 == 1)
+                    if ((i & 1) == 1)
                         decReturn += (d / 4m - 0.5m).Pow(i) / i;
                     else
                         decReturn -= (d / 4m - 0.5m).Pow(i) / i;
@@ -1109,7 +1283,7 @@ namespace Chummer
                 for (int i = 1; i <= TaylorSeriesNumTerms_Ln_x; ++i)
                 {
                     decimal decOldValue = decReturn;
-                    if (i % 2 == 1)
+                    if ((i & 1) == 1)
                         decReturn += (d - 1m).Pow(i) / i;
                     else
                         decReturn -= (d - 1m).Pow(i) / i;
@@ -1176,7 +1350,7 @@ namespace Chummer
                 for (int i = 1; i <= TaylorSeriesNumTerms_Ln_x; ++i)
                 {
                     decimal decOldValue = decReturnFraction;
-                    if (i % 2 == 1)
+                    if ((i & 1) == 1)
                         decReturnFraction += (d / 4m - 0.5m).Pow(i) / i;
                     else
                         decReturnFraction -= (d / 4m - 0.5m).Pow(i) / i;
@@ -1190,7 +1364,7 @@ namespace Chummer
                 for (int i = 1; i <= TaylorSeriesNumTerms_Ln_x; ++i)
                 {
                     decimal decOldValue = decReturnFraction;
-                    if (i % 2 == 1)
+                    if ((i & 1) == 1)
                         decReturnFraction += (d - 1m).Pow(i) / i;
                     else
                         decReturnFraction -= (d - 1m).Pow(i) / i;

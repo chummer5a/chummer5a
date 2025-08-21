@@ -500,14 +500,38 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Load the CharacterAttribute from the XmlNode.
+        /// Load the Lifestyle from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        /// <param name="blnCopy"></param>
+        /// <param name="blnCopy">Whether we are loading a copy of an existing lifestyle.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            using (LockObject.EnterWriteLock())
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+        }
+
+        /// <summary>
+        /// Load the Lifestyle from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="blnCopy">Whether we are loading a copy of an existing lifestyle.</param>
+        public Task LoadAsync(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, blnCopy, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterWriteLock(token);
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 {
                     _guiID = Guid.NewGuid();
@@ -516,10 +540,15 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetStringFieldQuickly("name", ref _strName);
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
-                Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(() => this.GetNode());
+                Lazy<XmlNode> objMyNode = null;
+                Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode> objMyNodeAsync = null;
+                if (blnSync)
+                    objMyNode = new Lazy<XmlNode>(() => this.GetNode());
+                else
+                    objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode>(() => this.GetNodeAsync(token), Utils.JoinableTaskFactory);
                 if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
                 {
-                    objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
                 if (blnCopy)
@@ -553,7 +582,9 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetDecFieldQuickly("percentage", ref _decPercentage);
                 objNode.TryGetStringFieldQuickly("baselifestyle", ref _strBaseLifestyle);
                 objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
-                XPathNavigator xmlLifestyles = _objCharacter.LoadDataXPath("lifestyles.xml");
+                XPathNavigator xmlLifestyles = blnSync
+                    ? _objCharacter.LoadDataXPath("lifestyles.xml", token: token)
+                    : await _objCharacter.LoadDataXPathAsync("lifestyles.xml", token: token).ConfigureAwait(false);
                 if (xmlLifestyles.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", BaseLifestyle) == null
                     && xmlLifestyles.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", Name) != null)
                 {
@@ -569,28 +600,37 @@ namespace Chummer.Backend.Equipment
                                                                        out List<ListItem> lstQualities))
                         {
                             foreach (XPathNavigator xmlLifestyle in xmlLifestyles.SelectAndCacheExpression(
-                                         "/chummer/lifestyles/lifestyle"))
+                                         "/chummer/lifestyles/lifestyle", token))
                             {
-                                string strName = xmlLifestyle.SelectSingleNodeAndCacheExpression("name")?.Value
-                                                 ?? LanguageManager.GetString("String_Error");
+                                string strName = xmlLifestyle.SelectSingleNodeAndCacheExpression("name", token)?.Value
+                                                 ?? (blnSync
+                                                    ? LanguageManager.GetString("String_Error", token: token)
+                                                    : await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false));
                                 lstQualities.Add(
                                     new ListItem(
                                         strName,
-                                        xmlLifestyle.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                        xmlLifestyle.SelectSingleNodeAndCacheExpression("translate", token)?.Value
                                         ?? strName));
                             }
 
-                            using (ThreadSafeForm<SelectItem> frmSelect = ThreadSafeForm<SelectItem>.Get(
+                            string strDescription = string.Format(GlobalSettings.CultureInfo, blnSync
+                                ? LanguageManager.GetString("String_CannotFindLifestyle", token: token)
+                                : await LanguageManager.GetStringAsync("String_CannotFindLifestyle", token: token).ConfigureAwait(false), _strName);
+                            using (ThreadSafeForm<SelectItem> frmSelect = blnSync
+                                ? ThreadSafeForm<SelectItem>.Get(
                                        () => new SelectItem
                                        {
-                                           Description = string.Format(GlobalSettings.CultureInfo,
-                                                                       LanguageManager.GetString(
-                                                                           "String_CannotFindLifestyle"),
-                                                                       _strName)
-                                       }))
+                                           Description = strDescription
+                                       })
+                                : await ThreadSafeForm<SelectItem>.GetAsync(
+                                       () => new SelectItem
+                                       {
+                                           Description = strDescription
+                                       }, token).ConfigureAwait(false))
                             {
                                 frmSelect.MyForm.SetGeneralItemsMode(lstQualities);
-                                if (frmSelect.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                                if ((blnSync ? frmSelect.ShowDialogSafe(_objCharacter, token) : await frmSelect.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false))
+                                        == DialogResult.Cancel)
                                 {
                                     _guiID = Guid.Empty;
                                     return;
@@ -609,7 +649,7 @@ namespace Chummer.Backend.Equipment
                     && _strBaseLifestyle != "Street"
                     && (_decCostForArea != 0 || _decCostForComforts != 0 || _decCostForSecurity != 0))
                 {
-                    XmlNode xmlDataNode = objMyNode.Value;
+                    XmlNode xmlDataNode = blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
                     if (xmlDataNode != null)
                     {
                         xmlDataNode.TryGetDecFieldQuickly("costforarea", ref _decCostForArea);
@@ -619,9 +659,9 @@ namespace Chummer.Backend.Equipment
                 }
 
                 if (!objNode.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP))
-                    objMyNode.Value?.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
                 if (!objNode.TryGetInt32FieldQuickly("bonuslp", ref _intBonusLP) && _strBaseLifestyle == "Traveler")
-                    _intBonusLP = GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
+                    _intBonusLP = blnSync ? GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved() : await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync(token).ConfigureAwait(false);
 
                 if (!objNode.TryGetInt32FieldQuickly("lp", ref _intLP))
                 {
@@ -673,11 +713,23 @@ namespace Chummer.Backend.Equipment
                 {
                     if (xmlQualityList != null)
                     {
-                        foreach (XmlNode xmlQuality in xmlQualityList)
+                        if (blnSync)
                         {
-                            LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                            objQuality.Load(xmlQuality, this);
-                            LifestyleQualities.Add(objQuality);
+                            foreach (XmlNode xmlQuality in xmlQualityList)
+                            {
+                                LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                                objQuality.Load(xmlQuality, this);
+                                LifestyleQualities.Add(objQuality);
+                            }
+                        }
+                        else
+                        {
+                            foreach (XmlNode xmlQuality in xmlQualityList)
+                            {
+                                LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                                await objQuality.LoadAsync(xmlQuality, this, token).ConfigureAwait(false);
+                                await LifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
@@ -688,12 +740,25 @@ namespace Chummer.Backend.Equipment
                 {
                     if (xmlQualityList != null)
                     {
-                        foreach (XmlNode xmlQuality in xmlQualityList)
+                        if (blnSync)
                         {
-                            LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                            objQuality.Load(xmlQuality, this);
-                            objQuality.IsFreeGrid = true;
-                            LifestyleQualities.Add(objQuality);
+                            foreach (XmlNode xmlQuality in xmlQualityList)
+                            {
+                                LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                                objQuality.Load(xmlQuality, this);
+                                objQuality.IsFreeGrid = true;
+                                LifestyleQualities.Add(objQuality);
+                            }
+                        }
+                        else
+                        {
+                            foreach (XmlNode xmlQuality in xmlQualityList)
+                            {
+                                LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                                await objQuality.LoadAsync(xmlQuality, this, token).ConfigureAwait(false);
+                                await objQuality.SetIsFreeGridAsync(true, token).ConfigureAwait(false);
+                                await LifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
@@ -716,10 +781,21 @@ namespace Chummer.Backend.Equipment
                 }
                 else if (_eType == LifestyleType.Safehouse)
                     _eIncrement = LifestyleIncrement.Week;
-                else if (objMyNode.Value?.TryGetStringFieldQuickly("increment", ref strTemp) == true)
+                else if ((blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("increment", ref strTemp) == true)
                     _eIncrement = ConvertToLifestyleIncrement(strTemp);
 
-                LegacyShim(objNode);
+                if (blnSync)
+                    LegacyShim(objNode);
+                else
+                    await LegacyShimAsync(objNode, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -728,12 +804,12 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         private void LegacyShim(XmlNode xmlLifestyleNode)
         {
+            //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property.
+            if (_objCharacter.LastSavedVersion > new ValueVersion(5, 197, 0) || xmlLifestyleNode["costforarea"] != null)
+                return;
+            XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
             using (LockObject.EnterWriteLock())
             {
-                //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property.
-                if (_objCharacter.LastSavedVersion > new ValueVersion(5, 197, 0) ||
-                    xmlLifestyleNode["costforarea"] != null) return;
-                XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
                 XPathNavigator objLifestyleQualityNode
                     = objXmlDocument.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", BaseLifestyle);
                 if (objLifestyleQualityNode != null)
@@ -793,6 +869,88 @@ namespace Chummer.Backend.Equipment
                 Area = Math.Max(intMinArea - BaseArea, 0);
                 Comforts = Math.Max(intMinComfort - BaseComforts, 0);
                 Security = Math.Max(intMinSec - BaseSecurity, 0);
+            }
+        }
+
+        /// <summary>
+        /// Converts old lifestyle structures to new standards.
+        /// </summary>
+        private async Task LegacyShimAsync(XmlNode xmlLifestyleNode, CancellationToken token = default)
+        {
+            //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property.
+            if (_objCharacter.LastSavedVersion > new ValueVersion(5, 197, 0) || xmlLifestyleNode["costforarea"] != null)
+                return;
+            XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("lifestyles.xml", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strBaseLifestyle = await GetBaseLifestyleAsync(token).ConfigureAwait(false);
+                XPathNavigator objLifestyleQualityNode
+                    = objXmlDocument.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", strBaseLifestyle);
+                if (objLifestyleQualityNode != null)
+                {
+                    decimal decTemp = 0.0m;
+                    if (objLifestyleQualityNode.TryGetDecFieldQuickly("cost", ref decTemp))
+                        await SetCostAsync(decTemp, token).ConfigureAwait(false);
+                    if (objLifestyleQualityNode.TryGetDecFieldQuickly("costforarea", ref decTemp))
+                        CostForArea = decTemp;
+                    if (objLifestyleQualityNode.TryGetDecFieldQuickly("costforcomforts", ref decTemp))
+                        CostForComforts = decTemp;
+                    if (objLifestyleQualityNode.TryGetDecFieldQuickly("costforsecurity", ref decTemp))
+                        CostForSecurity = decTemp;
+                }
+
+                int intMinArea = 0;
+                int intMinComfort = 0;
+                int intMinSec = 0;
+                int intMaxArea = 0;
+                int intMaxComfort = 0;
+                int intMaxSec = 0;
+
+                // Calculate the limits of the 3 aspects.
+                // Area.
+                XPathNavigator objXmlNode
+                    = objXmlDocument.TryGetNodeByNameOrId("/chummer/neighborhoods/neighborhood", strBaseLifestyle);
+                objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinArea);
+                objXmlNode.TryGetInt32FieldQuickly("limit", ref intMaxArea);
+                BaseArea = intMinArea;
+                AreaMaximum = Math.Max(intMaxArea, intMinArea);
+                // Comforts.
+                objXmlNode = objXmlDocument.TryGetNodeByNameOrId("/chummer/comforts/comfort", strBaseLifestyle);
+                objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinComfort);
+                objXmlNode.TryGetInt32FieldQuickly("limit", ref intMaxComfort);
+                BaseComforts = intMinComfort;
+                ComfortsMaximum = Math.Max(intMaxComfort, intMinComfort);
+                // Security.
+                objXmlNode = objXmlDocument.TryGetNodeByNameOrId("/chummer/securities/security", strBaseLifestyle);
+                objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinSec);
+                objXmlNode.TryGetInt32FieldQuickly("limit", ref intMaxSec);
+                BaseSecurity = intMinSec;
+                SecurityMaximum = Math.Max(intMaxSec, intMinSec);
+
+                xmlLifestyleNode.TryGetInt32FieldQuickly("area", ref intMinArea);
+                xmlLifestyleNode.TryGetInt32FieldQuickly("comforts", ref intMinComfort);
+                xmlLifestyleNode.TryGetInt32FieldQuickly("security", ref intMinSec);
+
+                // Calculate the cost of Positive Qualities.
+                await LifestyleQualities.ForEachAsync(async objQuality =>
+                {
+                    if (await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn)
+                    {
+                        intMinArea -= objQuality.Area;
+                        intMinComfort -= objQuality.Comforts;
+                        intMinSec -= objQuality.Security;
+                    }
+                }, token).ConfigureAwait(false);
+
+                await SetAreaAsync(Math.Max(intMinArea - BaseArea, 0), token).ConfigureAwait(false);
+                await SetComfortsAsync(Math.Max(intMinComfort - BaseComforts, 0), token).ConfigureAwait(false);
+                await SetSecurityAsync(Math.Max(intMinSec - BaseSecurity, 0), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

@@ -764,8 +764,8 @@ namespace Chummer
                                                                 GenericToken)
                                                             ?.Value;
                                                     if (!string.IsNullOrEmpty(strName)
-                                                        && lstDrainAttributes.TrueForAll(x =>
-                                                            x.Value.ToString() != strName))
+                                                        && (lstDrainAttributes.Count == 0 || lstDrainAttributes.TrueForAll(x =>
+                                                            x.Value?.ToString() != strName)))
                                                     {
                                                         string strTranslatedName = xmlDrain
                                                             .SelectSingleNodeAndCacheExpression(
@@ -3949,7 +3949,8 @@ namespace Chummer
                                                     "name", token)
                                                 ?.Value;
                                         if (!string.IsNullOrEmpty(strName)
-                                            && lstDrainAttributes.TrueForAll(x => x.Value.ToString() != strName))
+                                            && (lstDrainAttributes.Count == 0 || lstDrainAttributes.TrueForAll(x =>
+                                                            x.Value?.ToString() != strName)))
                                         {
                                             string strTranslatedName = xmlDrain
                                                 .SelectSingleNodeAndCacheExpression(
@@ -8647,7 +8648,7 @@ namespace Chummer
 
                             await CharacterObject.Gear.AddAsync(objGear, GenericToken).ConfigureAwait(false);
 
-                            objGear.AddGearImprovements();
+                            await objGear.AddGearImprovements(GenericToken).ConfigureAwait(false);
                         }
                         else
                         {
@@ -10811,7 +10812,7 @@ namespace Chummer
                         WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
                         await objAccessory.CreateAsync(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount,
                             frmPickWeaponAccessory.MyForm.SelectedRating, token: GenericToken).ConfigureAwait(false);
-                        objAccessory.Parent = objWeapon;
+                        await objAccessory.SetParentAsync(objWeapon, GenericToken).ConfigureAwait(false);
                         objAccessory.DiscountCost = frmPickWeaponAccessory.MyForm.BlackMarketDiscount;
 
                         // Check the item's Cost and make sure the character can afford it.
@@ -11741,7 +11742,7 @@ namespace Chummer
                         WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
                         await objAccessory.CreateAsync(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount,
                             frmPickWeaponAccessory.MyForm.SelectedRating, token: GenericToken).ConfigureAwait(false);
-                        objAccessory.Parent = objWeapon;
+                        await objAccessory.SetParentAsync(objWeapon, GenericToken).ConfigureAwait(false);
 
                         // Check the item's Cost and make sure the character can afford it.
                         decimal intOriginalCost = await objWeapon.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
@@ -18463,7 +18464,7 @@ namespace Chummer
                             }
                             case StackedFocus objStackedFocus:
                             {
-                                intFociTotal = objStackedFocus.TotalForce;
+                                intFociTotal = await objStackedFocus.GetTotalForceAsync(GenericToken).ConfigureAwait(false);
                                 break;
                             }
                         }
@@ -18493,7 +18494,7 @@ namespace Chummer
                                 intFociTotal += await objFocus.GetTotalForceAsync(GenericToken).ConfigureAwait(false);
                         }
 
-                        if (!CharacterObject.IgnoreRules)
+                        if (!await CharacterObject.GetIgnoreRulesAsync(GenericToken).ConfigureAwait(false))
                         {
                             if (intFociTotal > await (await CharacterObject
                                         .GetAttributeAsync("MAG", token: GenericToken)
@@ -20370,18 +20371,18 @@ namespace Chummer
 
                         if (intCurrentBoxTag <= intConditionMax)
                         {
+                            string strText = " "; // Non-breaking space to help with DPI stuff
+                            if (intCurrentBoxTag > intThresholdOffset)
+                            {
+                                int intModifiers = (intThresholdOffset - intCurrentBoxTag).DivRem(intThreshold, out int intModulo);
+                                if (intModulo == 0)
+                                    strText = intModifiers.ToString(GlobalSettings.CultureInfo);
+                            }
                             await chkCmBox.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
                                 x.BatchSetImages(null, null, null, null, null, null);
-                                if (intCurrentBoxTag > intThresholdOffset
-                                    && (intCurrentBoxTag - intThresholdOffset) % intThreshold == 0)
-                                {
-                                    int intModifiers = (intThresholdOffset - intCurrentBoxTag) / intThreshold;
-                                    x.Text = intModifiers.ToString(GlobalSettings.CultureInfo);
-                                }
-                                else
-                                    x.Text = " "; // Non-breaking space to help with DPI stuff
+                                x.Text = strText;
                             }, token).ConfigureAwait(false);
                         }
                         else if (intOverflow != 0 && intCurrentBoxTag <= intConditionMax + intOverflow)
@@ -24361,19 +24362,17 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    Gear objSelectedGear = null;
-                    Armor objSelectedArmor = await CharacterObject.Armor.FindByIdAsync(strSelectedId, token)
-                        .ConfigureAwait(false);
-                    ArmorMod objSelectedMod = null;
-
-                    if (objSelectedArmor == null)
+                    (Gear objSelectedGear, Armor objSelectedArmor, ArmorMod objSelectedMod)
+                        = await CharacterObject.Armor.FindArmorGearAsync(strSelectedId, token)
+                            .ConfigureAwait(false);
+                    if (objSelectedGear == null)
                     {
-                        (objSelectedGear, objSelectedArmor, objSelectedMod)
-                            = await CharacterObject.Armor.FindArmorGearAsync(strSelectedId, token)
-                                .ConfigureAwait(false);
-                        if (objSelectedGear == null)
-                            objSelectedMod = await CharacterObject.Armor.FindArmorModAsync(strSelectedId, token)
-                                .ConfigureAwait(false);
+                        objSelectedMod = await CharacterObject.Armor.FindArmorModAsync(strSelectedId, token)
+                            .ConfigureAwait(false);
+                        if (objSelectedMod == null)
+                            objSelectedArmor = await CharacterObject.Armor.FindByIdAsync(strSelectedId, token).ConfigureAwait(false);
+                        else
+                            objSelectedArmor = objSelectedMod.Parent;
                     }
 
                     // Open the Gear XML file and locate the selected Gear.
@@ -24497,9 +24496,11 @@ namespace Chummer
                         // If this is Ammunition, see if the character already has it on them.
                         if (objGear.Category == "Ammunition" || !string.IsNullOrEmpty(objGear.AmmoForWeaponType))
                         {
-                            TaggedObservableCollection<Gear> lstToSearch = string.IsNullOrEmpty(objSelectedGear?.Name)
-                                ? objSelectedArmor.GearChildren
-                                : objSelectedGear.Children;
+                            TaggedObservableCollection<Gear> lstToSearch = !string.IsNullOrEmpty(objSelectedGear?.Name)
+                                ? objSelectedGear.Children
+                                : !string.IsNullOrEmpty(objSelectedMod?.Name)
+                                    ? objSelectedMod.GearChildren
+                                    : objSelectedArmor.GearChildren;
                             objMatchingGear = lstToSearch.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
                         }
 
@@ -28876,8 +28877,8 @@ namespace Chummer
                         //Unmounted cyberware requires that a valid mount be present.
                         if (!await objModularCyberware.GetIsModularCurrentlyEquippedAsync(GenericToken)
                                 .ConfigureAwait(false)
-                            && lstModularMounts.TrueForAll(
-                                x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
+                            && (lstModularMounts.Count == 0 || lstModularMounts.TrueForAll(
+                                x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase))))
                         {
                             await Program.ShowScrollableMessageBoxAsync(this,
                                 await LanguageManager.GetStringAsync("Message_NoValidModularMount", token: GenericToken)
@@ -29016,8 +29017,8 @@ namespace Chummer
                         //Unmounted cyberware requires that a valid mount be present.
                         if (!await objModularCyberware.GetIsModularCurrentlyEquippedAsync(GenericToken)
                                 .ConfigureAwait(false)
-                            && lstModularMounts.TrueForAll(
-                                x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
+                            && (lstModularMounts.Count == 0 || lstModularMounts.TrueForAll(
+                                x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase))))
                         {
                             await Program.ShowScrollableMessageBoxAsync(this,
                                 await LanguageManager.GetStringAsync("Message_NoValidModularMount", token: GenericToken)

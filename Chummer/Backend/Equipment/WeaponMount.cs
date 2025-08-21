@@ -451,12 +451,29 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Load the VehicleMod from the XmlNode, returning true if load was successful.
+        /// Load the Weapon Mount from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        /// <param name="blnCopy">Indicates whether a new item will be created as a copy of this one.</param>
+        /// <param name="blnCopy">Are we loading a copy of an existing Weapon Mount?</param>
         public bool Load(XmlNode objNode, bool blnCopy = false)
         {
+            return Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+        }
+
+        /// <summary>
+        /// Load the Weapon Mount from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="blnCopy">Are we loading a copy of an existing Weapon Mount?</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task<bool> LoadAsync(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
+        {
+            return LoadCoreAsync(true, objNode, blnCopy, token);
+        }
+
+        private async Task<bool> LoadCoreAsync(bool blnSync, XmlNode objNode, bool blnCopy, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objNode == null)
                 return false;
             if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
@@ -468,7 +485,7 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXPathNode = null;
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XPathNavigator node = this.GetNodeXPath();
+                XPathNavigator node = blnSync ? this.GetNodeXPath(token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false);
                 if (node != null)
                     node.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 else if (string.IsNullOrEmpty(Name))
@@ -500,11 +517,23 @@ namespace Chummer.Backend.Equipment
             {
                 if (xmlWeaponMountOptionList != null)
                 {
-                    foreach (XmlNode xmlWeaponMountOptionNode in xmlWeaponMountOptionList)
+                    if (blnSync)
                     {
-                        WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
-                        objWeaponMountOption.Load(xmlWeaponMountOptionNode);
-                        WeaponMountOptions.Add(objWeaponMountOption);
+                        foreach (XmlNode xmlWeaponMountOptionNode in xmlWeaponMountOptionList)
+                        {
+                            WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
+                            objWeaponMountOption.Load(xmlWeaponMountOptionNode);
+                            WeaponMountOptions.Add(objWeaponMountOption);
+                        }
+                    }
+                    else
+                    {
+                        foreach (XmlNode xmlWeaponMountOptionNode in xmlWeaponMountOptionList)
+                        {
+                            WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
+                            await objWeaponMountOption.LoadAsync(xmlWeaponMountOptionNode, token).ConfigureAwait(false);
+                            await WeaponMountOptions.AddAsync(objWeaponMountOption, token).ConfigureAwait(false);
+                        }
                     }
                 }
             }
@@ -514,11 +543,23 @@ namespace Chummer.Backend.Equipment
             {
                 if (xmlModList != null)
                 {
-                    foreach (XmlNode xmlModNode in xmlModList)
+                    if (blnSync)
                     {
-                        VehicleMod objMod = new VehicleMod(_objCharacter);
-                        objMod.Load(xmlModNode);
-                        Mods.Add(objMod);
+                        foreach (XmlNode xmlModNode in xmlModList)
+                        {
+                            VehicleMod objMod = new VehicleMod(_objCharacter);
+                            objMod.Load(xmlModNode, blnCopy);
+                            Mods.Add(objMod);
+                        }
+                    }
+                    else
+                    {
+                        foreach (XmlNode xmlModNode in xmlModList)
+                        {
+                            VehicleMod objMod = new VehicleMod(_objCharacter);
+                            await objMod.LoadAsync(xmlModNode, blnCopy, token).ConfigureAwait(false);
+                            await Mods.AddAsync(objMod, token).ConfigureAwait(false);
+                        }
                     }
                 }
             }
@@ -528,23 +569,42 @@ namespace Chummer.Backend.Equipment
             {
                 if (xmlWeaponList != null)
                 {
-                    foreach (XmlNode xmlWeaponNode in xmlWeaponList)
+                    if (blnSync)
                     {
-                        if (Weapons.Count >= WeaponCapacity)
+                        foreach (XmlNode xmlWeaponNode in xmlWeaponList)
                         {
-                            // Stop loading more weapons than we can actually mount and dump the rest into the character's basic inventory
                             Weapon objWeapon = new Weapon(_objCharacter);
-                            objWeapon.Load(xmlWeaponNode, blnCopy);
-                            _objCharacter.Weapons.Add(objWeapon);
-                        }
-                        else
-                        {
-                            Weapon objWeapon = new Weapon(_objCharacter)
+                            if (Weapons.Count >= WeaponCapacity)
                             {
-                                ParentMount = this
-                            };
-                            objWeapon.Load(xmlWeaponNode, blnCopy);
-                            Weapons.Add(objWeapon);
+                                // Stop loading more weapons than we can actually mount and dump the rest into the character's basic inventory
+                                objWeapon.Load(xmlWeaponNode, blnCopy);
+                                _objCharacter.Weapons.Add(objWeapon);
+                            }
+                            else
+                            {
+                                objWeapon.ParentMount = this;
+                                objWeapon.Load(xmlWeaponNode, blnCopy);
+                                Weapons.Add(objWeapon);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (XmlNode xmlWeaponNode in xmlWeaponList)
+                        {
+                            Weapon objWeapon = new Weapon(_objCharacter);
+                            if (await Weapons.GetCountAsync(token).ConfigureAwait(false) >= WeaponCapacity)
+                            {
+                                // Stop loading more weapons than we can actually mount and dump the rest into the character's basic inventory
+                                await objWeapon.LoadAsync(xmlWeaponNode, blnCopy, token).ConfigureAwait(false);
+                                await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).AddAsync(objWeapon, token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                await objWeapon.SetParentMountAsync(this, token).ConfigureAwait(false);
+                                await objWeapon.LoadAsync(xmlWeaponNode, blnCopy, token).ConfigureAwait(false);
+                                await Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
@@ -806,7 +866,7 @@ namespace Chummer.Backend.Equipment
                             VehicleMod objMod = new VehicleMod(_objCharacter);
                             await objMod.SetIncludedInVehicleAsync(true, token).ConfigureAwait(false);
                             xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmountmods/mod", xmlModNode.InnerText);
-                            objMod.Load(xmlDataNode);
+                            await objMod.LoadAsync(xmlDataNode, token: token).ConfigureAwait(false);
                             await Mods.AddAsync(objMod, token).ConfigureAwait(false);
                         }
                     }
@@ -2356,6 +2416,37 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 this.GetNodeXPath()?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
+            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            objNode.TryGetInt32FieldQuickly("slots", ref _intSlots);
+            objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strAllowedWeaponCategories);
+            objNode.TryGetStringFieldQuickly("allowedweapons", ref _strAllowedWeapons);
+            objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
+            objNode.TryGetStringFieldQuickly("cost", ref _strCost);
+            objNode.TryGetBoolFieldQuickly("includedinparent", ref _blnIncludedInParent);
+        }
+
+        /// <summary>
+        /// Load the Weapon Mount Option from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        public async Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objNode == null)
+                return;
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            {
+                _guiID = Guid.NewGuid();
+            }
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                (await this.GetNodeXPathAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetInt32FieldQuickly("slots", ref _intSlots);

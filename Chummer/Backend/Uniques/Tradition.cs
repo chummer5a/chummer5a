@@ -479,8 +479,32 @@ namespace Chummer.Backend.Uniques
         /// <param name="xmlNode">XmlNode to load.</param>
         public void Load(XmlNode xmlNode)
         {
-            using (LockObject.EnterWriteLock())
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, xmlNode));
+        }
+
+        /// <summary>
+        /// Load the Tradition from the XmlNode.
+        /// </summary>
+        /// <param name="xmlNode">XmlNode to load.</param>
+        public Task LoadAsync(XmlNode xmlNode, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, xmlNode, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode xmlNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (xmlNode == null)
+                return;
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                objLocker = LockObject.EnterWriteLock(token);
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 string strTemp = string.Empty;
                 if (!xmlNode.TryGetStringFieldQuickly("traditiontype", ref strTemp)
                     || !Enum.TryParse(strTemp, out _eTraditionType))
@@ -495,17 +519,22 @@ namespace Chummer.Backend.Uniques
                 }
 
                 xmlNode.TryGetStringFieldQuickly("name", ref _strName);
-                Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+                Lazy<XPathNavigator> objMyNode = null;
+                Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator> objMyNodeAsync = null;
+                if (blnSync)
+                    objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+                else
+                    objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator>(() => this.GetNodeXPathAsync(token), Utils.JoinableTaskFactory);
                 if (!xmlNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID)
                     && !xmlNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
                 {
-                    objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
                 xmlNode.TryGetStringFieldQuickly("extra", ref _strExtra);
                 xmlNode.TryGetStringFieldQuickly("spiritform", ref _strSpiritForm);
                 if (!xmlNode.TryGetStringFieldQuickly("drain", ref _strDrainExpression))
-                    objMyNode.Value?.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
                 // Legacy catch for if a drain expression is not empty but has no attributes associated with it.
                 if (_objCharacter.LastSavedVersion < new ValueVersion(5, 214, 77) &&
                     !string.IsNullOrEmpty(_strDrainExpression) && !_strDrainExpression.Contains('{') &&
@@ -518,7 +547,7 @@ namespace Chummer.Backend.Uniques
                         _strDrainExpression = _strDrainExpression.Replace("{MAG}Adept", "{MAGAdept}");
                     }
                     else
-                        objMyNode.Value?.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
+                        (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
                 }
 
                 xmlNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -540,6 +569,13 @@ namespace Chummer.Backend.Uniques
                 }
 
                 _nodBonus = xmlNode["bonus"];
+            }
+            finally
+            {
+                if (blnSync)
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 

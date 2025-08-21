@@ -557,15 +557,37 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Load the CharacterAttribute from the XmlNode.
+        /// Load the Quality from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+        }
+
+        /// <summary>
+        /// Load the Quality from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        public Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objNode == null)
                 return;
-            using (LockObject.EnterWriteLock())
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                objLocker = LockObject.EnterWriteLock(token);
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 {
                     _guiID = Guid.NewGuid();
@@ -574,10 +596,15 @@ namespace Chummer
                 objNode.TryGetStringFieldQuickly("name", ref _strName);
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
-                Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(() => this.GetNode());
+                Lazy<XmlNode> objMyNode = null;
+                Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode> objMyNodeAsync = null;
+                if (blnSync)
+                    objMyNode = new Lazy<XmlNode>(() => this.GetNode());
+                else
+                    objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode>(() => this.GetNodeAsync(token), Utils.JoinableTaskFactory);
                 if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
                 {
-                    objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
                 objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
@@ -608,9 +635,9 @@ namespace Chummer
                 objNode.TryGetStringFieldQuickly("page", ref _strPage);
                 objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
                 _nodBonus = objNode["bonus"];
-                _nodFirstLevelBonus = objNode["firstlevelbonus"] ?? objMyNode.Value?["firstlevelbonus"];
-                _nodNaturalWeaponsNode = objNode["naturalweapons"] ?? objMyNode.Value?["naturalweapons"];
-                _nodDiscounts = objNode.SelectSingleNodeAndCacheExpressionAsNavigator("costdiscount");
+                _nodFirstLevelBonus = objNode["firstlevelbonus"] ?? (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["firstlevelbonus"];
+                _nodNaturalWeaponsNode = objNode["naturalweapons"] ?? (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["naturalweapons"];
+                _nodDiscounts = objNode.SelectSingleNodeAndCacheExpressionAsNavigator("costdiscount", token);
                 objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
                 objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
@@ -629,20 +656,27 @@ namespace Chummer
                                                      && string.IsNullOrEmpty(_nodFirstLevelBonus?.InnerText)
                                                      && string.IsNullOrEmpty(_nodNaturalWeaponsNode?.InnerText)
                                                      && (_eQualityType == QualityType.Positive
-                                                         || _eQualityType == QualityType.Negative)
-                                                     && objMyNode.Value != null
-                                                     && ConvertToQualityType(objMyNode.Value["category"]?.InnerText)
-                                                     != _eQualityType:
-                        _eQualitySource = QualitySource.MetatypeRemovedAtChargen;
+                                                         || _eQualityType == QualityType.Negative):
+                        XmlNode objTemp = blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
+                        if (objTemp != null && ConvertToQualityType(objTemp["category"]?.InnerText) != _eQualityType)
+                            _eQualitySource = QualitySource.MetatypeRemovedAtChargen;
                         break;
                     // Legacy shim for priority-given qualities
                     case QualitySource.Metatype when _objCharacter.LastSavedVersion <= new ValueVersion(5, 212, 71)
-                                                     && _objCharacter.EffectiveBuildMethodUsesPriorityTables
-                                                     && objMyNode.Value != null
-                                                     && objMyNode.Value["onlyprioritygiven"] != null:
-                        _eQualitySource = QualitySource.Heritage;
+                                                     && (blnSync
+                                                        ? _objCharacter.EffectiveBuildMethodUsesPriorityTables
+                                                        : await _objCharacter.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false)):
+                        if ((blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["onlyprioritygiven"] != null)
+                            _eQualitySource = QualitySource.Heritage;
                         break;
                 }
+            }
+            finally
+            {
+                if (blnSync)
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 

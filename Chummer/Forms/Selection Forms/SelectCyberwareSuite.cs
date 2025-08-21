@@ -98,7 +98,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(strName))
                             {
                                 string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
-                                if (string.IsNullOrEmpty(strGrade))
+                                if (!string.IsNullOrEmpty(strGrade))
                                 {
                                     if (lstGrades.TrueForAll(x => x.Name != strGrade))
                                         continue;
@@ -144,7 +144,7 @@ namespace Chummer
                     strGrade = CyberwareGradeName(strSuiteGradeEntry);
                     if (!string.IsNullOrEmpty(strGrade))
                     {
-                        objGrade = _objCharacter.GetGrades(_eSource).FirstOrDefault(x => x.Name == strGrade);
+                        objGrade = await _objCharacter.GetGradeByNameAsync(_eSource, strGrade).ConfigureAwait(false);
                     }
                 }
             }

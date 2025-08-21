@@ -6391,20 +6391,6 @@ namespace Chummer
                         try
                         {
                             await treFoci.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
-
-                            int intFociTotal = 0;
-
-                            int intMaxFocusTotal = await (await CharacterObject.GetAttributeAsync("MAG", token: token)
-                                    .ConfigureAwait(false))
-                                .GetTotalValueAsync(token).ConfigureAwait(false) * 5;
-                            if (await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false) &&
-                                await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token)
-                                    .ConfigureAwait(false))
-                                intMaxFocusTotal = Math.Min(intMaxFocusTotal,
-                                    await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token)
-                                            .ConfigureAwait(false))
-                                        .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
-
                             await (await CharacterObject.GetGearAsync(token).ConfigureAwait(false)).ForEachAsync(
                                 async objGear =>
                                 {
@@ -6422,29 +6408,7 @@ namespace Chummer
                                                     .ConfigureAwait(false),
                                                 () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
                                                 token: token).ConfigureAwait(false);
-                                            for (int i = await CharacterObject.Foci.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
-                                            {
-                                                if (i < await CharacterObject.Foci.GetCountAsync(token).ConfigureAwait(false))
-                                                {
-                                                    Focus objFocus = await CharacterObject.Foci.GetValueAtAsync(i, token).ConfigureAwait(false);
-                                                    if (objFocus.GearObject == objGear)
-                                                    {
-                                                        intFociTotal += await objFocus.GetRatingAsync(token).ConfigureAwait(false);
-                                                        // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
-                                                        if (intFociTotal > intMaxFocusTotal &&
-                                                            !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
-                                                        {
-                                                            objGear.Bonded = false;
-                                                            await CharacterObject.Foci.RemoveAtAsync(i, token: token)
-                                                                .ConfigureAwait(false);
-                                                            objNode.Checked = false;
-                                                        }
-                                                        else
-                                                            objNode.Checked = true;
-                                                    }
-                                                }
-                                            }
-
+                                            objNode.Checked = objGear.Bonded;
                                             await AddToTree(objNode, false).ConfigureAwait(false);
                                         }
                                             break;
@@ -6455,47 +6419,17 @@ namespace Chummer
                                             {
                                                 if (objStack.GearId == objGear.InternalId)
                                                 {
-                                                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                            Improvement.ImprovementSource.StackedFocus,
-                                                            objStack.InternalId, token)
-                                                        .ConfigureAwait(false);
-
-                                                    if (objStack.Bonded)
-                                                    {
-                                                        await objStack.Gear.ForEachAsync(async objFociGear =>
-                                                        {
-                                                            if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                                                ImprovementManager.SetForcedValue(objFociGear.Extra, CharacterObject);
-                                                            await ImprovementManager.CreateImprovementsAsync(
-                                                                CharacterObject,
-                                                                Improvement.ImprovementSource.StackedFocus,
-                                                                objStack.InternalId,
-                                                                objFociGear.Bonus,
-                                                                await objFociGear.GetRatingAsync(token)
-                                                                    .ConfigureAwait(false),
-                                                                await objFociGear.DisplayNameShortAsync(
-                                                                        GlobalSettings.Language, token)
-                                                                    .ConfigureAwait(false),
-                                                                token: token).ConfigureAwait(false);
-                                                            if (objFociGear.WirelessOn)
-                                                                await ImprovementManager.CreateImprovementsAsync(
-                                                                    CharacterObject,
-                                                                    Improvement.ImprovementSource.StackedFocus,
-                                                                    objStack.InternalId,
-                                                                    objFociGear.WirelessBonus,
-                                                                    await objFociGear.GetRatingAsync(token)
-                                                                        .ConfigureAwait(false),
-                                                                    await objFociGear.DisplayNameShortAsync(
-                                                                            GlobalSettings.Language, token)
-                                                                        .ConfigureAwait(false),
-                                                                    token: token).ConfigureAwait(false);
-                                                        }, token).ConfigureAwait(false);
-                                                    }
-
-                                                    await AddToTree(
-                                                            await objStack.CreateTreeNode(objGear, cmsFocus, token)
-                                                                .ConfigureAwait(false), false)
-                                                        .ConfigureAwait(false);
+                                                    TreeNode objNode = await objStack.CreateTreeNode(objGear, cmsFocus, token)
+                                                                .ConfigureAwait(false);
+                                                    if (objNode == null)
+                                                        return;
+                                                    objNode.Text = await objNode.Text.CheapReplaceAsync(
+                                                        await LanguageManager.GetStringAsync("String_Rating", token: token)
+                                                            .ConfigureAwait(false),
+                                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
+                                                        token: token).ConfigureAwait(false);
+                                                    objNode.Checked = objStack.Bonded;
+                                                    await AddToTree(objNode, false).ConfigureAwait(false);
                                                 }
                                             }, token).ConfigureAwait(false);
                                         }
@@ -6517,26 +6451,6 @@ namespace Chummer
                         {
                             case NotifyCollectionChangedAction.Add:
                             {
-                                bool blnWarned = false;
-                                int intMaxFocusTotal = await (await CharacterObject
-                                        .GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
-                                    .GetTotalValueAsync(token).ConfigureAwait(false) * 5;
-                                if (await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false) &&
-                                    await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token)
-                                        .ConfigureAwait(false))
-                                    intMaxFocusTotal = Math.Min(intMaxFocusTotal,
-                                        await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token)
-                                                .ConfigureAwait(false))
-                                            .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
-
-                                HashSet<Gear> setNewGears = new HashSet<Gear>();
-                                foreach (Gear objGear in e.NewItems)
-                                    setNewGears.Add(objGear);
-
-                                int intFociTotal = await CharacterObject.Foci
-                                    .SumAsync(x => !setNewGears.Contains(x.GearObject), x => x.GetRatingAsync(token), token)
-                                    .ConfigureAwait(false);
-
                                 foreach (Gear objGear in e.NewItems)
                                 {
                                     switch (objGear.Category)
@@ -6553,44 +6467,7 @@ namespace Chummer
                                                     .ConfigureAwait(false),
                                                 () => LanguageManager.GetStringAsync("String_Force", token: token),
                                                 token: token).ConfigureAwait(false);
-                                            for (int i = await CharacterObject.Foci.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
-                                            {
-                                                if (i < await CharacterObject.Foci.GetCountAsync(token).ConfigureAwait(false))
-                                                {
-                                                    Focus objFocus = await CharacterObject.Foci.GetValueAtAsync(i, token).ConfigureAwait(false);
-                                                    if (objFocus.GearObject == objGear)
-                                                    {
-                                                        intFociTotal += await objFocus.GetRatingAsync(token).ConfigureAwait(false);
-                                                        // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
-                                                        if (intFociTotal > intMaxFocusTotal &&
-                                                            !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
-                                                        {
-                                                            // Mark the Gear a Bonded.
-                                                            objGear.Bonded = false;
-                                                            await CharacterObject.Foci.RemoveAtAsync(i, token: token)
-                                                                .ConfigureAwait(false);
-                                                            objNode.Checked = false;
-                                                            if (!blnWarned)
-                                                            {
-                                                                await Program.ShowScrollableMessageBoxAsync(this,
-                                                                    await LanguageManager.GetStringAsync(
-                                                                            "Message_FocusMaximumForce", token: token)
-                                                                        .ConfigureAwait(false),
-                                                                    await LanguageManager.GetStringAsync(
-                                                                            "MessageTitle_FocusMaximum", token: token)
-                                                                        .ConfigureAwait(false),
-                                                                    MessageBoxButtons.OK, MessageBoxIcon.Information,
-                                                                    token: token).ConfigureAwait(false);
-                                                                blnWarned = true;
-                                                                break;
-                                                            }
-                                                        }
-                                                        else
-                                                            objNode.Checked = true;
-                                                    }
-                                                }
-                                            }
-
+                                            objNode.Checked = objGear.Bonded;
                                             await AddToTree(objNode).ConfigureAwait(false);
                                         }
                                             break;
@@ -6601,44 +6478,17 @@ namespace Chummer
                                             {
                                                 if (objStack.GearId == objGear.InternalId)
                                                 {
-                                                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                        Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
-                                                        token).ConfigureAwait(false);
-
-                                                    if (objStack.Bonded)
-                                                    {
-                                                        await objStack.Gear.ForEachAsync(async objFociGear =>
-                                                        {
-                                                            if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                                                ImprovementManager.SetForcedValue(objFociGear.Extra, CharacterObject);
-                                                            await ImprovementManager.CreateImprovementsAsync(
-                                                                CharacterObject,
-                                                                Improvement.ImprovementSource.StackedFocus,
-                                                                objStack.InternalId, objFociGear.Bonus,
-                                                                await objFociGear.GetRatingAsync(token)
-                                                                    .ConfigureAwait(false),
-                                                                await objFociGear.DisplayNameShortAsync(
-                                                                        GlobalSettings.Language, token)
-                                                                    .ConfigureAwait(false),
-                                                                token: token).ConfigureAwait(false);
-                                                            if (objFociGear.WirelessOn)
-                                                                await ImprovementManager.CreateImprovementsAsync(
-                                                                        CharacterObject,
-                                                                        Improvement.ImprovementSource.StackedFocus,
-                                                                        objStack.InternalId, objFociGear.WirelessBonus,
-                                                                        await objFociGear.GetRatingAsync(token)
-                                                                            .ConfigureAwait(false),
-                                                                        await objFociGear.DisplayNameShortAsync(
-                                                                                GlobalSettings.Language, token)
-                                                                            .ConfigureAwait(false), token: token)
-                                                                    .ConfigureAwait(false);
-                                                        }, token).ConfigureAwait(false);
-                                                    }
-
-                                                    await AddToTree(await objStack
-                                                            .CreateTreeNode(objGear, cmsFocus, token)
-                                                            .ConfigureAwait(false))
-                                                        .ConfigureAwait(false);
+                                                    TreeNode objNode = await objStack.CreateTreeNode(objGear, cmsFocus, token)
+                                                                .ConfigureAwait(false);
+                                                    if (objNode == null)
+                                                        return;
+                                                    objNode.Text = await objNode.Text.CheapReplaceAsync(
+                                                        await LanguageManager.GetStringAsync("String_Rating", token: token)
+                                                            .ConfigureAwait(false),
+                                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
+                                                        token: token).ConfigureAwait(false);
+                                                    objNode.Checked = objStack.Bonded;
+                                                    await AddToTree(objNode, false).ConfigureAwait(false);
                                                 }
                                             }, token).ConfigureAwait(false);
                                         }
@@ -6754,26 +6604,6 @@ namespace Chummer
                                     }
                                 }
 
-                                bool blnWarned = false;
-                                int intMaxFocusTotal = await (await CharacterObject
-                                        .GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
-                                    .GetTotalValueAsync(token).ConfigureAwait(false) * 5;
-                                if (await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false) &&
-                                    await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token)
-                                        .ConfigureAwait(false))
-                                    intMaxFocusTotal = Math.Min(intMaxFocusTotal,
-                                        await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token)
-                                                .ConfigureAwait(false))
-                                            .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
-
-                                HashSet<Gear> setNewGears = new HashSet<Gear>();
-                                foreach (Gear objGear in e.NewItems)
-                                    setNewGears.Add(objGear);
-
-                                int intFociTotal = await CharacterObject.Foci
-                                    .SumAsync(x => !setNewGears.Contains(x.GearObject), x => x.GetRatingAsync(token), token)
-                                    .ConfigureAwait(false);
-
                                 foreach (Gear objGear in e.NewItems)
                                 {
                                     switch (objGear.Category)
@@ -6790,44 +6620,7 @@ namespace Chummer
                                                     .ConfigureAwait(false),
                                                 () => LanguageManager.GetString("String_Force", token: token),
                                                 token: token).ConfigureAwait(false);
-                                            for (int i = await CharacterObject.Foci.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
-                                            {
-                                                if (i < await CharacterObject.Foci.GetCountAsync(token).ConfigureAwait(false))
-                                                {
-                                                    Focus objFocus = await CharacterObject.Foci.GetValueAtAsync(i, token).ConfigureAwait(false);
-                                                    if (objFocus.GearObject == objGear)
-                                                    {
-                                                        intFociTotal += await objFocus.GetRatingAsync(token).ConfigureAwait(false);
-                                                        // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
-                                                        if (intFociTotal > intMaxFocusTotal &&
-                                                            !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
-                                                        {
-                                                            // Mark the Gear a Bonded.
-                                                            objGear.Bonded = false;
-                                                            await CharacterObject.Foci.RemoveAtAsync(i, token: token)
-                                                                .ConfigureAwait(false);
-                                                            objNode.Checked = false;
-                                                            if (!blnWarned)
-                                                            {
-                                                                await Program.ShowScrollableMessageBoxAsync(this,
-                                                                    await LanguageManager.GetStringAsync(
-                                                                            "Message_FocusMaximumForce", token: token)
-                                                                        .ConfigureAwait(false),
-                                                                    await LanguageManager.GetStringAsync(
-                                                                            "MessageTitle_FocusMaximum", token: token)
-                                                                        .ConfigureAwait(false),
-                                                                    MessageBoxButtons.OK, MessageBoxIcon.Information,
-                                                                    token: token).ConfigureAwait(false);
-                                                                blnWarned = true;
-                                                                break;
-                                                            }
-                                                        }
-                                                        else
-                                                            objNode.Checked = true;
-                                                    }
-                                                }
-                                            }
-
+                                            objNode.Checked = objGear.Bonded;
                                             await AddToTree(objNode).ConfigureAwait(false);
                                         }
                                             break;
@@ -6838,44 +6631,17 @@ namespace Chummer
                                             {
                                                 if (objStack.GearId == objGear.InternalId)
                                                 {
-                                                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                        Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
-                                                        token).ConfigureAwait(false);
-
-                                                    if (objStack.Bonded)
-                                                    {
-                                                        await objStack.Gear.ForEachAsync(async objFociGear =>
-                                                        {
-                                                            if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                                                ImprovementManager.SetForcedValue(objFociGear.Extra, CharacterObject);
-                                                            await ImprovementManager.CreateImprovementsAsync(
-                                                                CharacterObject,
-                                                                Improvement.ImprovementSource.StackedFocus,
-                                                                objStack.InternalId, objFociGear.Bonus,
-                                                                await objFociGear.GetRatingAsync(token)
-                                                                    .ConfigureAwait(false),
-                                                                await objFociGear.DisplayNameShortAsync(
-                                                                        GlobalSettings.Language, token)
-                                                                    .ConfigureAwait(false),
-                                                                token: token).ConfigureAwait(false);
-                                                            if (objFociGear.WirelessOn)
-                                                                await ImprovementManager.CreateImprovementsAsync(
-                                                                        CharacterObject,
-                                                                        Improvement.ImprovementSource.StackedFocus,
-                                                                        objStack.InternalId, objFociGear.WirelessBonus,
-                                                                        await objFociGear.GetRatingAsync(token)
-                                                                            .ConfigureAwait(false),
-                                                                        await objFociGear.DisplayNameShortAsync(
-                                                                                GlobalSettings.Language, token)
-                                                                            .ConfigureAwait(false), token: token)
-                                                                    .ConfigureAwait(false);
-                                                        }, token).ConfigureAwait(false);
-                                                    }
-
-                                                    await AddToTree(await objStack
-                                                            .CreateTreeNode(objGear, cmsFocus, token)
-                                                            .ConfigureAwait(false))
-                                                        .ConfigureAwait(false);
+                                                    TreeNode objNode = await objStack.CreateTreeNode(objGear, cmsFocus, token)
+                                                                .ConfigureAwait(false);
+                                                    if (objNode == null)
+                                                        return;
+                                                    objNode.Text = await objNode.Text.CheapReplaceAsync(
+                                                        await LanguageManager.GetStringAsync("String_Rating", token: token)
+                                                            .ConfigureAwait(false),
+                                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
+                                                        token: token).ConfigureAwait(false);
+                                                    objNode.Checked = objStack.Bonded;
+                                                    await AddToTree(objNode, false).ConfigureAwait(false);
                                                 }
                                             }, token).ConfigureAwait(false);
                                         }

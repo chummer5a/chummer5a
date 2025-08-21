@@ -46,24 +46,44 @@ namespace Chummer
                 return false;
             IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator
                 = await dicLeft.GetEnumeratorAsync(token).ConfigureAwait(false);
-            while (objLeftEnumerator.MoveNext())
+            try
             {
-                object objKey = objLeftEnumerator.Current.Key;
-                if (!await dicRight.ContainsKeyAsync(objKey, token).ConfigureAwait(false))
-                    return false;
+                while (objLeftEnumerator.MoveNext())
+                {
+                    object objKey = objLeftEnumerator.Current.Key;
+                    if (!await dicRight.ContainsKeyAsync(objKey, token).ConfigureAwait(false))
+                        return false;
+                }
+            }
+            finally
+            {
+                if (objLeftEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objLeftEnumerator.Dispose();
             }
 
             IEnumerator<KeyValuePair<object, IComparable>> objRightEnumerator
                 = await dicRight.GetEnumeratorAsync(token).ConfigureAwait(false);
-            while (objRightEnumerator.MoveNext())
+            try
             {
-                object objKey = objRightEnumerator.Current.Key;
-                (bool blnContains, IComparable objValue)
-                    = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
-                if (!blnContains)
-                    return false;
-                if (!objValue.Equals(objRightEnumerator.Current.Value))
-                    return false;
+                while (objRightEnumerator.MoveNext())
+                {
+                    object objKey = objRightEnumerator.Current.Key;
+                    (bool blnContains, IComparable objValue)
+                        = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
+                    if (!blnContains)
+                        return false;
+                    if (!objValue.Equals(objRightEnumerator.Current.Value))
+                        return false;
+                }
+            }
+            finally
+            {
+                if (objRightEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objRightEnumerator.Dispose();
             }
 
             return true;
@@ -78,24 +98,44 @@ namespace Chummer
                 return false;
             IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator
                 = await dicLeft.GetEnumeratorAsync(token).ConfigureAwait(false);
-            while (objLeftEnumerator.MoveNext())
+            try
             {
-                object objKey = objLeftEnumerator.Current.Key;
-                if (!await dicRight.ContainsKeyAsync(objKey, token).ConfigureAwait(false))
-                    return false;
+                while (objLeftEnumerator.MoveNext())
+                {
+                    object objKey = objLeftEnumerator.Current.Key;
+                    if (!await dicRight.ContainsKeyAsync(objKey, token).ConfigureAwait(false))
+                        return false;
+                }
+            }
+            finally
+            {
+                if (objLeftEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objLeftEnumerator.Dispose();
             }
 
             IEnumerator<KeyValuePair<object, IComparable>> objRightEnumerator
                 = await dicRight.GetEnumeratorAsync(token).ConfigureAwait(false);
-            while (objRightEnumerator.MoveNext())
+            try
             {
-                object objKey = objRightEnumerator.Current.Key;
-                (bool blnContains, IComparable objValue)
-                    = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
-                if (!blnContains)
-                    return false;
-                if (!objValue.Equals(objRightEnumerator.Current.Value))
-                    return false;
+                while (objRightEnumerator.MoveNext())
+                {
+                    object objKey = objRightEnumerator.Current.Key;
+                    (bool blnContains, IComparable objValue)
+                        = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
+                    if (!blnContains)
+                        return false;
+                    if (!objValue.Equals(objRightEnumerator.Current.Value))
+                        return false;
+                }
+            }
+            finally
+            {
+                if (objRightEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objRightEnumerator.Dispose();
             }
 
             return true;
@@ -109,11 +149,21 @@ namespace Chummer
                 return false;
             IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator
                 = await dicLeft.GetEnumeratorAsync(token).ConfigureAwait(false);
-            while (objLeftEnumerator.MoveNext())
+            try
             {
-                object objKey = objLeftEnumerator.Current.Key;
-                if (!dicRight.ContainsKey(objKey))
-                    return false;
+                while (objLeftEnumerator.MoveNext())
+                {
+                    object objKey = objLeftEnumerator.Current.Key;
+                    if (!dicRight.ContainsKey(objKey))
+                        return false;
+                }
+            }
+            finally
+            {
+                if (objLeftEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objLeftEnumerator.Dispose();
             }
 
             foreach (KeyValuePair<object, IComparable> kvpRight in dicRight)
@@ -138,11 +188,21 @@ namespace Chummer
                 return false;
             IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator
                 = await dicLeft.GetEnumeratorAsync(token).ConfigureAwait(false);
-            while (objLeftEnumerator.MoveNext())
+            try
             {
-                object objKey = objLeftEnumerator.Current.Key;
-                if (!dicRight.ContainsKey(objKey))
-                    return false;
+                while (objLeftEnumerator.MoveNext())
+                {
+                    object objKey = objLeftEnumerator.Current.Key;
+                    if (!dicRight.ContainsKey(objKey))
+                        return false;
+                }
+            }
+            finally
+            {
+                if (objLeftEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objLeftEnumerator.Dispose();
             }
 
             foreach (KeyValuePair<object, IComparable> kvpRight in dicRight)

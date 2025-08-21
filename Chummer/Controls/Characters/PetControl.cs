@@ -404,9 +404,10 @@ namespace Chummer
                             string strMetavariantName
                                 = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                   ?? string.Empty;
-                            if (lstMetatypes.TrueForAll(
-                                    x => strMetavariantName.Equals(x.Value.ToString(),
-                                                                   StringComparison.OrdinalIgnoreCase)))
+                            if (!string.IsNullOrEmpty(strMetavariantName) &&
+                                (lstMetatypes.Count == 0 || lstMetatypes.TrueForAll(
+                                    x => !strMetavariantName.Equals(x.Value?.ToString(),
+                                                                   StringComparison.OrdinalIgnoreCase))))
                                 lstMetatypes.Add(new ListItem(strMetavariantName,
                                                               string.Format(
                                                                   GlobalSettings.CultureInfo, strMetavariantFormat,

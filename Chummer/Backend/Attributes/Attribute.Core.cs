@@ -122,30 +122,57 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
-        /// Load the CharacterAttribute from the XmlNode.
+        /// Load the Character Attribute from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            using (LockObject.EnterWriteLock())
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+        }
+
+        /// <summary>
+        /// Load the Character Attribute from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        public Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objNode == null)
+                return;
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                objLocker = LockObject.EnterWriteLock(token);
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 objNode.TryGetStringFieldQuickly("name", ref _strAbbrev);
                 objNode.TryGetInt32FieldQuickly("metatypemin", ref _intMetatypeMin);
                 objNode.TryGetInt32FieldQuickly("metatypemax", ref _intMetatypeMax);
                 objNode.TryGetInt32FieldQuickly("metatypeaugmax", ref _intMetatypeAugMax);
                 objNode.TryGetInt32FieldQuickly("base", ref _intBase);
                 objNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
-                if (!BaseUnlocked && !_objCharacter.Created)
+                if (blnSync)
                 {
-                    _intBase = 0;
+                    if (!BaseUnlocked && !_objCharacter.Created)
+                        _intBase = 0;
                 }
+                else if (!await GetBaseUnlockedAsync(token).ConfigureAwait(false) && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                    _intBase = 0;
 
                 //Converts old attributes to split metatype minimum and base. Saves recalculating Base - TotalMinimum all the time.
                 int i = 0;
                 if (objNode.TryGetInt32FieldQuickly("value", ref i))
                 {
                     i -= _intMetatypeMin;
-                    if (BaseUnlocked)
+                    if (blnSync ? BaseUnlocked : await GetBaseUnlockedAsync(token).ConfigureAwait(false))
                     {
                         _intBase = Math.Max(_intBase - _intMetatypeMin, 0);
                         i -= _intBase;
@@ -177,6 +204,13 @@ namespace Chummer.Backend.Attributes
                     _eMetatypeCategory =
                         ConvertToMetatypeAttributeCategory(objNode["metatypecategory"]?.InnerText ?? "Standard");
                 }
+            }
+            finally
+            {
+                if (blnSync)
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 

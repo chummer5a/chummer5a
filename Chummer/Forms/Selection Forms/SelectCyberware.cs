@@ -1893,7 +1893,6 @@ namespace Chummer
                     HashSet<string> setBannedWareGrades = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetBannedWareGradesAsync(token).ConfigureAwait(false);
                     foreach (Grade objWareGrade in _lstGrades)
                     {
-                        string strGradeName = objWareGrade.Name;
                         if (!blnSkipCheck && objWareGrade.SourceIDString == _strNoneGradeId)
                             continue;
                         if (string.IsNullOrEmpty(strForceGrade))
@@ -1929,6 +1928,7 @@ namespace Chummer
                                 !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) &&
                                 !await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                             {
+                                string strGradeName = objWareGrade.Name;
                                 if (setBannedWareGrades.Contains(strGradeName) || strGradeName.ContainsAny(setBannedWareGrades))
                                     continue;
                             }
@@ -1939,13 +1939,18 @@ namespace Chummer
                             continue;
                         }
 
-                        if ((blnHideBannedGrades && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) && !await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false) && setBannedWareGrades.Contains(strGradeName)) || strGradeName.ContainsAny(setBannedWareGrades))
+                        string strGradeDisplayName = await objWareGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                        if (blnHideBannedGrades && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) && !await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                         {
-                            lstGrade.Add(new ListItem(objWareGrade.SourceIDString, '*' + await objWareGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
+                            string strGradeName = objWareGrade.Name;
+                            if (setBannedWareGrades.Contains(strGradeName) || strGradeName.ContainsAny(setBannedWareGrades))
+                                lstGrade.Add(new ListItem(objWareGrade.SourceIDString, '*' + strGradeDisplayName));
+                            else
+                                lstGrade.Add(new ListItem(objWareGrade.SourceIDString, strGradeDisplayName));
                         }
                         else
                         {
-                            lstGrade.Add(new ListItem(objWareGrade.SourceIDString, await objWareGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
+                            lstGrade.Add(new ListItem(objWareGrade.SourceIDString, strGradeDisplayName));
                         }
                     }
 

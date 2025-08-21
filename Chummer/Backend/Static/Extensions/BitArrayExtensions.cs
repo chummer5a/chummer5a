@@ -27,13 +27,27 @@ namespace Chummer
     public static class BitArrayExtensions
     {
         /// <summary>
+        /// Syntactic sugar for getting a copy of a BitArray's internal integer array (that is normally not accessible due to protection levels).
+        /// </summary>
+        /// <param name="ablnArray">Array from which to copy.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int[] ToIntArray(this BitArray ablnArray)
+        {
+            if (ablnArray == null)
+                throw new ArgumentNullException(nameof(ablnArray));
+            int intReturnLength = ((ablnArray.Count - 1) >> 4) + 1;
+            int[] aintReturn = new int[intReturnLength];
+            ablnArray.CopyTo(aintReturn, 0);
+            return aintReturn;
+        }
+
+        /// <summary>
         /// Get the first element in a BitArray that matches <paramref name="blnValue"/>.
         /// </summary>
         /// <param name="ablnArray">Array to search.</param>
         /// <param name="blnValue">Value for which to look.</param>
         /// <param name="intFrom">Index from which to start search (inclusive).</param>
         /// <param name="intTo">Index at which to end search (exclusive).</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FirstMatching(this BitArray ablnArray, bool blnValue, int intFrom = 0, int intTo = int.MaxValue)
         {

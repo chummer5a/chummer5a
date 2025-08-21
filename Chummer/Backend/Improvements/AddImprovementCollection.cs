@@ -5494,7 +5494,7 @@ namespace Chummer
                         foreach (XmlNode objNode in objXmlList)
                         {
                             string strText = objNode.InnerText;
-                            if (ImprovementManager
+                            if (!string.IsNullOrEmpty(strText) && ImprovementManager
                                 .GetCachedImprovementListForValueOf(_objCharacter,
                                                                     Improvement.ImprovementType.DealerConnection)
                                 .TrueForAll(x => x.UniqueName != strText))

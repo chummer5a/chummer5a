@@ -978,9 +978,26 @@ namespace Chummer.Backend.Equipment
         /// Load the Vehicle from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        /// <param name="blnCopy">Whether we are copying an existing vehicle.</param>
+        /// <param name="blnCopy">Are we loading a copy of an existing Vehicle?</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+        }
+
+        /// <summary>
+        /// Load the Vehicle from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="blnCopy">Are we loading a copy of an existing Vehicle?</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task LoadAsync(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, blnCopy, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, bool blnCopy, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objNode == null)
                 return;
             if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
@@ -990,27 +1007,53 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             _objCachedMyXmlNode = null;
             _objCachedMyXPathNode = null;
-            Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(() => this.GetNode());
+            Lazy<XmlNode> objMyNode = null;
+            Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode> objMyNodeAsync = null;
+            if (blnSync)
+                objMyNode = new Lazy<XmlNode>(() => this.GetNode());
+            else
+                objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode>(() => this.GetNodeAsync(token), Utils.JoinableTaskFactory);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
-            if (blnCopy)
+            if (blnSync)
             {
-                this.SetHomeNode(_objCharacter, false);
+                if (blnCopy)
+                {
+                    this.SetHomeNode(_objCharacter, false);
+                }
+                else
+                {
+                    bool blnIsHomeNode = false;
+                    if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
+                    {
+                        this.SetHomeNode(_objCharacter, true);
+                    }
+                }
+                bool blnIsActive = false;
+                if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
+                    this.SetActiveCommlink(_objCharacter, true);
             }
             else
             {
-                bool blnIsHomeNode = false;
-                if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
+                if (blnCopy)
                 {
-                    this.SetHomeNode(_objCharacter, true);
+                    await this.SetHomeNodeAsync(_objCharacter, false, token).ConfigureAwait(false);
                 }
+                else
+                {
+                    bool blnIsHomeNode = false;
+                    if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
+                    {
+                        await this.SetHomeNodeAsync(_objCharacter, true, token).ConfigureAwait(false);
+                    }
+                }
+                bool blnIsActive = false;
+                if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
+                    await this.SetActiveCommlinkAsync(_objCharacter, true, token).ConfigureAwait(false);
             }
-            bool blnIsActive = false;
-            if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
-                this.SetActiveCommlink(_objCharacter, true);
 
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             string strTemp = objNode["handling"]?.InnerText;
@@ -1121,26 +1164,58 @@ namespace Chummer.Backend.Equipment
             if (strNodeInnerXml.Contains("<gears>"))
             {
                 XmlNodeList nodChildren = objNode.SelectNodes("gears/gear");
-                foreach (XmlNode nodChild in nodChildren)
+                if (nodChildren.Count > 0)
                 {
-                    Gear objGear = new Gear(_objCharacter);
-                    objGear.Load(nodChild, blnCopy);
-                    _lstGear.Add(objGear);
-                    objGear.Parent = this;
+                    if (blnSync)
+                    {
+                        foreach (XmlNode nodChild in nodChildren)
+                        {
+                            Gear objGear = new Gear(_objCharacter);
+                            objGear.Load(nodChild, blnCopy);
+                            _lstGear.Add(objGear);
+                            objGear.Parent = this;
+                        }
+                    }
+                    else
+                    {
+                        foreach (XmlNode nodChild in nodChildren)
+                        {
+                            Gear objGear = new Gear(_objCharacter);
+                            await objGear.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
+                            await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                            await objGear.SetParentAsync(this, token).ConfigureAwait(false);
+                        }
+                    }
                 }
             }
 
             if (strNodeInnerXml.Contains("<mods>"))
             {
                 XmlNodeList nodChildren = objNode.SelectNodes("mods/mod");
-                foreach (XmlNode nodChild in nodChildren)
+                if (nodChildren.Count > 0)
                 {
-                    VehicleMod objMod = new VehicleMod(_objCharacter)
+                    if (blnSync)
                     {
-                        Parent = this
-                    };
-                    objMod.Load(nodChild, blnCopy);
-                    _lstVehicleMods.Add(objMod);
+                        foreach (XmlNode nodChild in nodChildren)
+                        {
+                            VehicleMod objMod = new VehicleMod(_objCharacter)
+                            {
+                                Parent = this
+                            };
+                            objMod.Load(nodChild, blnCopy);
+                            _lstVehicleMods.Add(objMod);
+                        }
+                    }
+                    else
+                    {
+                        foreach (XmlNode nodChild in nodChildren)
+                        {
+                            VehicleMod objMod = new VehicleMod(_objCharacter);
+                            await objMod.SetParentAsync(this, token).ConfigureAwait(false);
+                            await objMod.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
+                            await _lstVehicleMods.AddAsync(objMod, token).ConfigureAwait(false);
+                        }
+                    }
                 }
             }
 
@@ -1151,8 +1226,136 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode nodChild in nodChildren)
                 {
                     WeaponMount wm = new WeaponMount(_objCharacter, this);
-                    if (wm.Load(nodChild, blnCopy))
-                        WeaponMounts.Add(wm);
+                    if (blnSync)
+                    {
+                        if (wm.Load(nodChild, blnCopy))
+                            WeaponMounts.Add(wm);
+                        else
+                        {
+                            // Compatibility sweep for malformed weapon mount on Proteus Krake
+                            Guid guidDummy = Guid.Empty;
+                            if (Name.StartsWith("Proteus Krake", StringComparison.Ordinal)
+                                && !blnKrakePassDone
+                                && _objCharacter.LastSavedVersion < new ValueVersion(5, 213, 28)
+                                && (!nodChild.TryGetGuidFieldQuickly("sourceid", ref guidDummy) || guidDummy == Guid.Empty))
+                            {
+                                blnKrakePassDone = true;
+                                // If there are any Weapon Mounts that come with the Vehicle, add them.
+                                XmlNode xmlVehicleDataNode = objMyNode.Value;
+                                if (xmlVehicleDataNode != null)
+                                {
+                                    XmlElement xmlDataNodesForMissingKrakeStuff = xmlVehicleDataNode["weaponmounts"];
+                                    if (xmlDataNodesForMissingKrakeStuff != null)
+                                    {
+                                        foreach (XmlNode objXmlVehicleMod in xmlDataNodesForMissingKrakeStuff.SelectNodes("weaponmount"))
+                                        {
+                                            WeaponMount objWeaponMount = new WeaponMount(_objCharacter, this);
+                                            objWeaponMount.CreateByName(objXmlVehicleMod);
+                                            objWeaponMount.IncludedInVehicle = true;
+                                            WeaponMounts.Add(objWeaponMount);
+                                        }
+                                    }
+
+                                    xmlDataNodesForMissingKrakeStuff = xmlVehicleDataNode["weapons"];
+                                    if (xmlDataNodesForMissingKrakeStuff != null)
+                                    {
+                                        XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml", token: token);
+
+                                        foreach (XmlNode objXmlWeapon in xmlDataNodesForMissingKrakeStuff.SelectNodes("weapon"))
+                                        {
+                                            string strWeaponName = objXmlWeapon["name"]?.InnerText;
+                                            if (string.IsNullOrEmpty(strWeaponName))
+                                                continue;
+                                            bool blnAttached = false;
+                                            Weapon objWeapon = new Weapon(_objCharacter);
+
+                                            List<Weapon> lstSubWeapons = new List<Weapon>(1);
+                                            XmlNode objXmlWeaponNode = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strWeaponName);
+                                            objWeapon.ParentVehicle = this;
+                                            objWeapon.Create(objXmlWeaponNode, lstSubWeapons, token: token);
+                                            objWeapon.ParentID = InternalId;
+                                            objWeapon.Cost = "0";
+
+                                            // Find the first free Weapon Mount in the Vehicle.
+                                            foreach (WeaponMount objWeaponMount in WeaponMounts)
+                                            {
+                                                if (objWeaponMount.IsWeaponsFull)
+                                                    continue;
+                                                if (!objWeaponMount.AllowedWeaponCategories
+                                                        .Contains(objWeapon.SizeCategory) &&
+                                                    !objWeaponMount.AllowedWeapons.Contains(objWeapon.Name) &&
+                                                    !string.IsNullOrEmpty(objWeaponMount.AllowedWeaponCategories))
+                                                    continue;
+                                                blnAttached = true;
+                                                objWeaponMount.Weapons.Add(objWeapon);
+                                                foreach (Weapon objSubWeapon in lstSubWeapons)
+                                                    objWeaponMount.Weapons.Add(objSubWeapon);
+                                                break;
+                                            }
+
+                                            // If a free Weapon Mount could not be found, just attach it to the first one found and let the player deal with it.
+                                            if (!blnAttached)
+                                            {
+                                                foreach (VehicleMod objMod in _lstVehicleMods)
+                                                {
+                                                    if (objMod.Name.Contains("Weapon Mount") ||
+                                                        !string.IsNullOrEmpty(objMod.WeaponMountCategories) &&
+                                                        objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory) &&
+                                                        objMod.Weapons.Count == 0)
+                                                    {
+                                                        blnAttached = true;
+                                                        objMod.Weapons.Add(objWeapon);
+                                                        foreach (Weapon objSubWeapon in lstSubWeapons)
+                                                            objMod.Weapons.Add(objSubWeapon);
+                                                        break;
+                                                    }
+                                                }
+                                                if (!blnAttached)
+                                                {
+                                                    foreach (VehicleMod objMod in _lstVehicleMods)
+                                                    {
+                                                        if (objMod.Name.Contains("Weapon Mount") ||
+                                                            !string.IsNullOrEmpty(objMod.WeaponMountCategories) &&
+                                                            objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory))
+                                                        {
+                                                            blnAttached = true;
+                                                            objMod.Weapons.Add(objWeapon);
+                                                            foreach (Weapon objSubWeapon in lstSubWeapons)
+                                                                objMod.Weapons.Add(objSubWeapon);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            // Look for Weapon Accessories.
+                                            XmlElement xmlAccessories = objXmlWeapon["accessories"];
+                                            if (xmlAccessories != null)
+                                            {
+                                                foreach (XmlNode objXmlAccessory in xmlAccessories.SelectNodes("accessory"))
+                                                {
+                                                    string strAccessoryName = objXmlWeapon["name"]?.InnerText;
+                                                    if (string.IsNullOrEmpty(strAccessoryName))
+                                                        continue;
+                                                    XmlNode objXmlAccessoryNode = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory", strAccessoryName);
+                                                    WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
+                                                    string strMount = "Internal";
+                                                    objXmlAccessory.TryGetStringFieldQuickly("mount", ref strMount);
+                                                    string strExtraMount = "None";
+                                                    objXmlAccessory.TryGetStringFieldQuickly("extramount", ref strExtraMount);
+                                                    objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, token: token);
+                                                    objMod.Cost = "0";
+                                                    objWeapon.WeaponAccessories.Add(objMod);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (await wm.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false))
+                        await WeaponMounts.AddAsync(wm, token).ConfigureAwait(false);
                     else
                     {
                         // Compatibility sweep for malformed weapon mount on Proteus Krake
@@ -1164,7 +1367,7 @@ namespace Chummer.Backend.Equipment
                         {
                             blnKrakePassDone = true;
                             // If there are any Weapon Mounts that come with the Vehicle, add them.
-                            XmlNode xmlVehicleDataNode = objMyNode.Value;
+                            XmlNode xmlVehicleDataNode = await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
                             if (xmlVehicleDataNode != null)
                             {
                                 XmlElement xmlDataNodesForMissingKrakeStuff = xmlVehicleDataNode["weaponmounts"];
@@ -1172,20 +1375,22 @@ namespace Chummer.Backend.Equipment
                                 {
                                     foreach (XmlNode objXmlVehicleMod in xmlDataNodesForMissingKrakeStuff.SelectNodes("weaponmount"))
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         WeaponMount objWeaponMount = new WeaponMount(_objCharacter, this);
-                                        objWeaponMount.CreateByName(objXmlVehicleMod);
+                                        await objWeaponMount.CreateByNameAsync(objXmlVehicleMod, token: token).ConfigureAwait(false);
                                         objWeaponMount.IncludedInVehicle = true;
-                                        WeaponMounts.Add(objWeaponMount);
+                                        await WeaponMounts.AddAsync(objWeaponMount, token).ConfigureAwait(false);
                                     }
                                 }
 
                                 xmlDataNodesForMissingKrakeStuff = xmlVehicleDataNode["weapons"];
                                 if (xmlDataNodesForMissingKrakeStuff != null)
                                 {
-                                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                                    XmlDocument objXmlWeaponDocument = await XmlManager.LoadAsync("weapons.xml", token: token).ConfigureAwait(false);
 
                                     foreach (XmlNode objXmlWeapon in xmlDataNodesForMissingKrakeStuff.SelectNodes("weapon"))
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         string strWeaponName = objXmlWeapon["name"]?.InnerText;
                                         if (string.IsNullOrEmpty(strWeaponName))
                                             continue;
@@ -1194,13 +1399,13 @@ namespace Chummer.Backend.Equipment
 
                                         List<Weapon> lstSubWeapons = new List<Weapon>(1);
                                         XmlNode objXmlWeaponNode = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strWeaponName);
-                                        objWeapon.ParentVehicle = this;
-                                        objWeapon.Create(objXmlWeaponNode, lstSubWeapons);
+                                        await objWeapon.SetParentVehicleAsync(this, token).ConfigureAwait(false);
+                                        await objWeapon.CreateAsync(objXmlWeaponNode, lstSubWeapons, token: token).ConfigureAwait(false);
                                         objWeapon.ParentID = InternalId;
                                         objWeapon.Cost = "0";
 
                                         // Find the first free Weapon Mount in the Vehicle.
-                                        WeaponMounts.ForEachWithBreak(objWeaponMount =>
+                                        await WeaponMounts.ForEachWithBreakAsync(async objWeaponMount =>
                                         {
                                             if (objWeaponMount.IsWeaponsFull)
                                                 return true;
@@ -1209,47 +1414,49 @@ namespace Chummer.Backend.Equipment
                                                 !objWeaponMount.AllowedWeapons.Contains(objWeapon.Name) &&
                                                 !string.IsNullOrEmpty(objWeaponMount.AllowedWeaponCategories))
                                                 return true;
-                                            objWeaponMount.Weapons.Add(objWeapon);
                                             blnAttached = true;
+                                            await objWeaponMount.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
                                             foreach (Weapon objSubWeapon in lstSubWeapons)
-                                                objWeaponMount.Weapons.Add(objSubWeapon);
+                                                await objWeaponMount.Weapons.AddAsync(objSubWeapon, token).ConfigureAwait(false);
                                             return false;
-                                        });
+                                        }, token).ConfigureAwait(false);
 
                                         // If a free Weapon Mount could not be found, just attach it to the first one found and let the player deal with it.
                                         if (!blnAttached)
                                         {
-                                            _lstVehicleMods.ForEachWithBreak(objMod =>
+                                            await _lstVehicleMods.ForEachWithBreakAsync(async objMod =>
                                             {
                                                 if (objMod.Name.Contains("Weapon Mount") ||
                                                     !string.IsNullOrEmpty(objMod.WeaponMountCategories) &&
                                                     objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory) &&
                                                     objMod.Weapons.Count == 0)
                                                 {
-                                                    objMod.Weapons.Add(objWeapon);
+                                                    blnAttached = true;
+                                                    await objMod.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
                                                     foreach (Weapon objSubWeapon in lstSubWeapons)
-                                                        objMod.Weapons.Add(objSubWeapon);
+                                                        await objMod.Weapons.AddAsync(objSubWeapon, token).ConfigureAwait(false);
                                                     return false;
                                                 }
 
                                                 return true;
-                                            });
+                                            }, token).ConfigureAwait(false);
                                             if (!blnAttached)
                                             {
-                                                _lstVehicleMods.ForEachWithBreak(objMod =>
+                                                await _lstVehicleMods.ForEachWithBreakAsync(async objMod =>
                                                 {
                                                     if (objMod.Name.Contains("Weapon Mount") ||
                                                         !string.IsNullOrEmpty(objMod.WeaponMountCategories) &&
                                                         objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory))
                                                     {
-                                                        objMod.Weapons.Add(objWeapon);
+                                                        blnAttached = true;
+                                                        await objMod.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
                                                         foreach (Weapon objSubWeapon in lstSubWeapons)
-                                                            objMod.Weapons.Add(objSubWeapon);
+                                                            await objMod.Weapons.AddAsync(objSubWeapon, token).ConfigureAwait(false);
                                                         return false;
                                                     }
 
                                                     return true;
-                                                });
+                                                }, token).ConfigureAwait(false);
                                             }
                                         }
 
@@ -1259,6 +1466,7 @@ namespace Chummer.Backend.Equipment
                                         {
                                             foreach (XmlNode objXmlAccessory in xmlAccessories.SelectNodes("accessory"))
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 string strAccessoryName = objXmlWeapon["name"]?.InnerText;
                                                 if (string.IsNullOrEmpty(strAccessoryName))
                                                     continue;
@@ -1268,9 +1476,9 @@ namespace Chummer.Backend.Equipment
                                                 objXmlAccessory.TryGetStringFieldQuickly("mount", ref strMount);
                                                 string strExtraMount = "None";
                                                 objXmlAccessory.TryGetStringFieldQuickly("extramount", ref strExtraMount);
-                                                objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0);
+                                                await objMod.CreateAsync(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, token: token).ConfigureAwait(false);
                                                 objMod.Cost = "0";
-                                                objWeapon.WeaponAccessories.Add(objMod);
+                                                await objWeapon.WeaponAccessories.AddAsync(objMod, token).ConfigureAwait(false);
                                             }
                                         }
                                     }
@@ -1284,35 +1492,71 @@ namespace Chummer.Backend.Equipment
             if (strNodeInnerXml.Contains("<weapons>"))
             {
                 XmlNodeList nodChildren = objNode.SelectNodes("weapons/weapon");
-                foreach (XmlNode nodChild in nodChildren)
+                if (blnSync)
                 {
-                    Weapon objWeapon = new Weapon(_objCharacter)
+                    foreach (XmlNode nodChild in nodChildren)
                     {
-                        ParentVehicle = this
-                    };
-                    objWeapon.Load(nodChild, blnCopy);
-                    _lstWeapons.Add(objWeapon);
+                        Weapon objWeapon = new Weapon(_objCharacter)
+                        {
+                            ParentVehicle = this
+                        };
+                        objWeapon.Load(nodChild, blnCopy);
+                        _lstWeapons.Add(objWeapon);
+                    }
+                }
+                else
+                {
+                    foreach (XmlNode nodChild in nodChildren)
+                    {
+                        Weapon objWeapon = new Weapon(_objCharacter);
+                        await objWeapon.SetParentVehicleAsync(this, token).ConfigureAwait(false);
+                        await objWeapon.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
+                        await _lstWeapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                    }
                 }
             }
 
             string strLocation = objNode["location"]?.InnerText;
             if (!string.IsNullOrEmpty(strLocation))
             {
-                if (Guid.TryParse(strLocation, out Guid temp))
+                if (blnSync)
                 {
-                    // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
-                    _objLocation =
-                        _objCharacter.VehicleLocations.FirstOrDefault(location =>
-                            location.InternalId == temp.ToString());
+                    if (Guid.TryParse(strLocation, out Guid temp))
+                    {
+                        // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
+                        _objLocation =
+                            _objCharacter.VehicleLocations.FirstOrDefault(location =>
+                                location.InternalId == temp.ToString());
+                    }
+                    else
+                    {
+                        //Legacy. Location is a string.
+                        _objLocation =
+                            _objCharacter.VehicleLocations.FirstOrDefault(location =>
+                                location.Name == strLocation);
+                    }
+                    _objLocation?.Children.Add(this);
                 }
                 else
                 {
-                    //Legacy. Location is a string.
-                    _objLocation =
-                        _objCharacter.VehicleLocations.FirstOrDefault(location =>
-                            location.Name == strLocation);
+                    if (Guid.TryParse(strLocation, out Guid temp))
+                    {
+                        // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
+                        _objLocation =
+                            await (await _objCharacter.GetVehicleLocationsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(location =>
+                                location.InternalId == temp.ToString(), token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        //Legacy. Location is a string.
+                        _objLocation =
+                            await (await _objCharacter.GetVehicleLocationsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(location =>
+                                location.Name == strLocation, token).ConfigureAwait(false);
+                    }
+
+                    if (_objLocation != null)
+                        await _objLocation.Children.AddAsync(this, token).ConfigureAwait(false);
                 }
-                _objLocation?.Children.Add(this);
             }
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
@@ -1323,42 +1567,53 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             if (!objNode.TryGetBoolFieldQuickly("dealerconnection", ref _blnDealerConnectionDiscount))
             {
-                _blnDealerConnectionDiscount = DoesDealerConnectionCurrentlyApply();
+                _blnDealerConnectionDiscount = blnSync ? DoesDealerConnectionCurrentlyApply() : await DoesDealerConnectionCurrentlyApplyAsync(token).ConfigureAwait(false);
             }
 
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
-                objMyNode.Value?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
-                objMyNode.Value?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
             objNode.TryGetStringFieldQuickly("overclocked", ref _strOverclocked);
             if (!objNode.TryGetStringFieldQuickly("attack", ref _strAttack))
-                objMyNode.Value?.TryGetStringFieldQuickly("attack", ref _strAttack);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("attack", ref _strAttack);
             if (!objNode.TryGetStringFieldQuickly("sleaze", ref _strSleaze))
-                objMyNode.Value?.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
             if (!objNode.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing))
-                objMyNode.Value?.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
             if (!objNode.TryGetStringFieldQuickly("firewall", ref _strFirewall))
-                objMyNode.Value?.TryGetStringFieldQuickly("firewall", ref _strFirewall);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("firewall", ref _strFirewall);
             if (!objNode.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
-                objMyNode.Value?.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray);
             if (!objNode.TryGetStringFieldQuickly("modattack", ref _strModAttack))
-                objMyNode.Value?.TryGetStringFieldQuickly("modattack", ref _strModAttack);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("modattack", ref _strModAttack);
             if (!objNode.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze))
-                objMyNode.Value?.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
             if (!objNode.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing))
-                objMyNode.Value?.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
             if (!objNode.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall))
-                objMyNode.Value?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
-                objMyNode.Value?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
 
             if (objNode["locations"] != null)
             {
                 // Locations.
-                foreach (XmlNode objXmlLocation in objNode.SelectNodes("locations/location"))
+                if (blnSync)
                 {
-                    Location objLocation = new Location(_objCharacter, _lstLocations);
-                    objLocation.Load(objXmlLocation);
+                    foreach (XmlNode objXmlLocation in objNode.SelectNodes("locations/location"))
+                    {
+                        Location objLocation = new Location(_objCharacter, _lstLocations);
+                        objLocation.Load(objXmlLocation);
+                    }
+                }
+                else
+                {
+                    foreach (XmlNode objXmlLocation in objNode.SelectNodes("locations/location"))
+                    {
+                        Location objLocation = new Location(_objCharacter, _lstLocations);
+                        await objLocation.LoadAsync(objXmlLocation, token).ConfigureAwait(false);
+                    }
                 }
             }
         }

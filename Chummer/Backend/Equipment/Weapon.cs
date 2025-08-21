@@ -958,12 +958,17 @@ namespace Chummer.Backend.Equipment
                         }
 
                         objAccessory.IncludedInWeapon = true;
-                        objAccessory.Parent = this;
                         if (blnSync)
+                        {
+                            objAccessory.Parent = this;
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             _lstAccessories.Add(objAccessory);
+                        }
                         else
+                        {
+                            await objAccessory.SetParentAsync(this, token).ConfigureAwait(false);
                             await _lstAccessories.AddAsync(objAccessory, token).ConfigureAwait(false);
+                        }
                     }
                 }
             }
@@ -1356,7 +1361,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCopy">Are we loading a copy of an existing weapon?</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            Utils.SafelyRunSynchronously(() => LoadCore(true, objNode, blnCopy));
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
         }
 
         /// <summary>
@@ -1367,10 +1372,10 @@ namespace Chummer.Backend.Equipment
         /// <param name="token">Cancellation token to listen to.</param>
         public Task LoadAsync(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
         {
-            return LoadCore(true, objNode, blnCopy, token);
+            return LoadCoreAsync(false, objNode, blnCopy, token);
         }
 
-        private async Task LoadCore(bool blnSync, XmlNode objNode, bool blnCopy, CancellationToken token = default)
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, bool blnCopy, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
@@ -1381,10 +1386,15 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             _objCachedMyXmlNode = null;
             _objCachedMyXPathNode = null;
-            Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(() => this.GetNode());
+            Lazy<XmlNode> objMyNode = null;
+            Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode> objMyNodeAsync = null;
+            if (blnSync)
+                objMyNode = new Lazy<XmlNode>(() => this.GetNode());
+            else
+                objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode>(() => this.GetNodeAsync(token), Utils.JoinableTaskFactory);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -1409,7 +1419,7 @@ namespace Chummer.Backend.Equipment
             if (_objCharacter.LastSavedVersion < new ValueVersion(5, 214, 98) && !string.IsNullOrEmpty(_strDamage) &&
                 !_strDamage.Contains('{') && AttributeSection.AttributeStrings.Any(x => _strDamage.Contains(x)))
             {
-                objMyNode.Value?.TryGetStringFieldQuickly("damage", ref _strDamage);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("damage", ref _strDamage);
             }
 
             objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
@@ -1417,7 +1427,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             // Needed for legacy reasons
-            _intRating = Math.Max(Math.Min(_intRating, MaxRatingValue), MinRatingValue);
+            _intRating = blnSync
+                ? Math.Max(Math.Min(_intRating, MaxRatingValue), MinRatingValue)
+                : Math.Max(Math.Min(_intRating, await GetMaxRatingValueAsync(token).ConfigureAwait(false)), await GetMinRatingValueAsync(token).ConfigureAwait(false));
             if (objNode["firingmode"] != null)
                 _eFiringMode = ConvertToFiringMode(objNode["firingmode"].InnerText);
             // Legacy shim
@@ -1448,7 +1460,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             if (!objNode.TryGetStringFieldQuickly("weight", ref _strWeight))
-                objMyNode.Value?.TryGetStringFieldQuickly("weight", ref _strWeight);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("weight", ref _strWeight);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             objNode.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
             objNode.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
@@ -1458,7 +1470,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
             if (!objNode.TryGetBoolFieldQuickly("allowaccessory", ref _blnAllowAccessory))
-                _blnAllowAccessory = objMyNode.Value?["allowaccessory"]?.InnerText != bool.FalseString;
+                _blnAllowAccessory = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["allowaccessory"]?.InnerText != bool.FalseString;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("weaponname", ref _strWeaponName);
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
@@ -1472,7 +1484,7 @@ namespace Chummer.Backend.Equipment
 
             if (!objNode.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange))
             {
-                string strAlternateRange = objMyNode.Value?["alternaterange"]?.InnerText;
+                string strAlternateRange = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["alternaterange"]?.InnerText;
                 if (!string.IsNullOrEmpty(strAlternateRange))
                 {
                     _strAlternateRange = strAlternateRange;
@@ -1493,7 +1505,7 @@ namespace Chummer.Backend.Equipment
 
             objNode.TryGetBoolFieldQuickly("requireammo", ref _blnRequireAmmo);
             if (!objNode.TryGetStringFieldQuickly("weapontype", ref _strWeaponType))
-                _strWeaponType = objMyNode.Value?["weapontype"]?.InnerText
+                _strWeaponType = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["weapontype"]?.InnerText
                                  ?? (blnSync ? _objCharacter.LoadDataXPath("weapons.xml", token: token) : await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false))
                                      .SelectSingleNodeAndCacheExpression(
                                          "/chummer/categories/category[. = " + Category.CleanXPath()
@@ -1522,8 +1534,8 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode nodChild in nodChildren)
                             {
                                 WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-                                objAccessory.Load(nodChild, blnCopy);
-                                objAccessory.Parent = this;
+                                await objAccessory.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
+                                await objAccessory.SetParentAsync(this, token).ConfigureAwait(false);
                                 await _lstAccessories.AddAsync(objAccessory, token).ConfigureAwait(false);
                             }
                         }
@@ -1752,7 +1764,7 @@ namespace Chummer.Backend.Equipment
             // Legacy sweep
             if (_objCharacter.LastSavedVersion < new ValueVersion(5, 225, 933) && _nodWirelessWeaponBonus == null)
             {
-                _nodWirelessWeaponBonus = objMyNode.Value?["wirelessweaponbonus"];
+                _nodWirelessWeaponBonus = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["wirelessweaponbonus"];
             }
             objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn);
 
@@ -1845,7 +1857,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             if (!objNode.TryGetStringFieldQuickly("weaponslots", ref _strWeaponSlots))
             {
-                XmlNode objXmlWeapon = objMyNode.Value;
+                XmlNode objXmlWeapon = blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
                 if (objXmlWeapon?["accessorymounts"] != null)
                 {
                     XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
@@ -1869,7 +1881,7 @@ namespace Chummer.Backend.Equipment
 
             if (!objNode.TryGetStringFieldQuickly("doubledcostweaponslots", ref _strDoubledCostWeaponSlots))
             {
-                XmlNode objXmlWeapon = objMyNode.Value;
+                XmlNode objXmlWeapon = blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
                 if (objXmlWeapon?["doubledcostaccessorymounts"] != null)
                 {
                     XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("doubledcostaccessorymounts/mount");
@@ -1928,30 +1940,30 @@ namespace Chummer.Backend.Equipment
             }
 
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
-                objMyNode.Value?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
-                objMyNode.Value?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
             objNode.TryGetStringFieldQuickly("overclocked", ref _strOverclocked);
             if (!objNode.TryGetStringFieldQuickly("attack", ref _strAttack))
-                objMyNode.Value?.TryGetStringFieldQuickly("attack", ref _strAttack);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("attack", ref _strAttack);
             if (!objNode.TryGetStringFieldQuickly("sleaze", ref _strSleaze))
-                objMyNode.Value?.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
             if (!objNode.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing))
-                objMyNode.Value?.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
             if (!objNode.TryGetStringFieldQuickly("firewall", ref _strFirewall))
-                objMyNode.Value?.TryGetStringFieldQuickly("firewall", ref _strFirewall);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("firewall", ref _strFirewall);
             if (!objNode.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
-                objMyNode.Value?.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray);
             if (!objNode.TryGetStringFieldQuickly("modattack", ref _strModAttack))
-                objMyNode.Value?.TryGetStringFieldQuickly("modattack", ref _strModAttack);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("modattack", ref _strModAttack);
             if (!objNode.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze))
-                objMyNode.Value?.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
             if (!objNode.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing))
-                objMyNode.Value?.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
             if (!objNode.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall))
-                objMyNode.Value?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
-                objMyNode.Value?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
         }
 
@@ -3399,7 +3411,7 @@ namespace Chummer.Backend.Equipment
                 return Task.CompletedTask;
             if (token.IsCancellationRequested)
                 return Task.FromCanceled(token);
-            decimal decNewQuantity = objGear.Quantity - value - intCurrentAmmo;
+            decimal decNewQuantity = objGear.Quantity + value - intCurrentAmmo;
             if (decNewQuantity > 0)
                 return objGear.SetQuantityAsync(decNewQuantity, token);
             else
@@ -6020,7 +6032,7 @@ namespace Chummer.Backend.Equipment
         public IEnumerable<string> GetAccessoryMounts(bool blnWithInternalAndNone = true)
         {
             string strSlots = ModificationSlots;
-            if (string.IsNullOrEmpty(strSlots))
+            if (string.IsNullOrEmpty(strSlots) && WeaponAccessories.All(x => !x.Equipped || string.IsNullOrEmpty(x.AddMount)))
             {
                 if (blnWithInternalAndNone)
                     yield return "None";
@@ -6099,7 +6111,7 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             string strSlots = ModificationSlots;
-            if (string.IsNullOrEmpty(strSlots) && !(WeaponAccessories.Any(objAccessory => objAccessory.AddMount != string.Empty)))
+            if (string.IsNullOrEmpty(strSlots) && await WeaponAccessories.AllAsync(x => !x.Equipped || string.IsNullOrEmpty(x.AddMount), token).ConfigureAwait(false))
             {
                 return blnWithInternalAndNone
                     ? new List<string>(1)
@@ -9301,25 +9313,29 @@ namespace Chummer.Backend.Equipment
                 case FiringMode.GunneryCommandDevice:
                 case FiringMode.ManualOperation:
                 {
-                    Skill objSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync("Gunnery", token)
+                    Skill objSkill = await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetActiveSkillAsync("Gunnery", token)
                         .ConfigureAwait(false);
-                    if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute)
-                                  && _objMountedVehicle == null)
+                    if (Cyberware && _objMountedVehicle == null)
                     {
-                        Cyberware objAttributeSource = await _objCharacter.Cyberware
-                            .DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
-                        while (objAttributeSource != null
-                               && await objAttributeSource.GetAttributeTotalValueAsync(objSkill.Attribute, token)
-                                   .ConfigureAwait(false) == 0)
+                        string strAttribute = await objSkill.GetAttributeAsync(token).ConfigureAwait(false);
+                        if (Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(strAttribute))
                         {
-                            objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
-                        }
+                            Cyberware objAttributeSource = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
+                            while (objAttributeSource != null
+                                    && await objAttributeSource.GetAttributeTotalValueAsync(strAttribute, token)
+                                        .ConfigureAwait(false) == 0)
+                            {
+                                objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
+                            }
 
-                        if (objAttributeSource != null)
-                            intDicePool = await objSkill.PoolOtherAttributeAsync(
-                                objSkill.Attribute, false,
-                                await objAttributeSource.GetAttributeTotalValueAsync(objSkill.Attribute, token)
-                                    .ConfigureAwait(false), token).ConfigureAwait(false);
+                            if (objAttributeSource != null)
+                                intDicePool = await objSkill.PoolOtherAttributeAsync(
+                                    strAttribute, false,
+                                    await objAttributeSource.GetAttributeTotalValueAsync(strAttribute, token)
+                                        .ConfigureAwait(false), token).ConfigureAwait(false);
+                            else
+                                intDicePool = await objSkill.GetPoolAsync(token).ConfigureAwait(false);
+                        }
                         else
                             intDicePool = await objSkill.GetPoolAsync(token).ConfigureAwait(false);
                     }
@@ -9345,28 +9361,32 @@ namespace Chummer.Backend.Equipment
                     Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
                     if (objSkill != null)
                     {
-                        if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute))
+                        if (Cyberware)
                         {
-                            Cyberware objAttributeSource = _objMountedVehicle != null
-                                ? (await _objCharacter.Vehicles
-                                    .FindVehicleCyberwareAsync(x => x.InternalId == ParentID, token)
-                                    .ConfigureAwait(false)).Item1
-                                : await _objCharacter.Cyberware.DeepFindByIdAsync(ParentID, token)
-                                    .ConfigureAwait(false);
-                            while (objAttributeSource != null
-                                   && await objAttributeSource.GetAttributeTotalValueAsync(objSkill.Attribute, token)
-                                       .ConfigureAwait(false) == 0)
+                            string strAttribute = await objSkill.GetAttributeAsync(token).ConfigureAwait(false);
+                            if (Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(strAttribute))
                             {
-                                objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
-                            }
+                                Cyberware objAttributeSource = _objMountedVehicle != null
+                                    ? (await (await _objCharacter.GetVehiclesAsync(token).ConfigureAwait(false))
+                                        .FindVehicleCyberwareAsync(x => x.InternalId == ParentID, token)
+                                        .ConfigureAwait(false)).Item1
+                                    : await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepFindByIdAsync(ParentID, token)
+                                        .ConfigureAwait(false);
+                                while (objAttributeSource != null
+                                        && await objAttributeSource.GetAttributeTotalValueAsync(strAttribute, token)
+                                            .ConfigureAwait(false) == 0)
+                                {
+                                    objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
+                                }
 
-                            if (objAttributeSource != null)
-                                intDicePool = await objSkill.PoolOtherAttributeAsync(
-                                    objSkill.Attribute, false,
-                                    await objAttributeSource.GetAttributeTotalValueAsync(objSkill.Attribute, token)
-                                        .ConfigureAwait(false), token).ConfigureAwait(false);
-                            else
-                                intDicePool = await objSkill.GetPoolAsync(token).ConfigureAwait(false);
+                                if (objAttributeSource != null)
+                                    intDicePool = await objSkill.PoolOtherAttributeAsync(
+                                        strAttribute, false,
+                                        await objAttributeSource.GetAttributeTotalValueAsync(strAttribute, token)
+                                            .ConfigureAwait(false), token).ConfigureAwait(false);
+                                else
+                                    intDicePool = await objSkill.GetPoolAsync(token).ConfigureAwait(false);
+                            }
                         }
                         else
                             intDicePool = await objSkill.GetPoolAsync(token).ConfigureAwait(false);
@@ -11771,7 +11791,7 @@ namespace Chummer.Backend.Equipment
                                 x.SourceName == InternalId));
                     }
 
-                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Weapon, InternalId + "Wireless", WirelessBonus, 1, CurrentDisplayNameShort);
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Weapon, InternalId + "Wireless", WirelessBonus, Rating, CurrentDisplayNameShort);
                 }
                 else
                 {
@@ -11817,7 +11837,7 @@ namespace Chummer.Backend.Equipment
 
                     await ImprovementManager.CreateImprovementsAsync(_objCharacter,
                                                                      Improvement.ImprovementSource.ArmorMod,
-                                                                     InternalId + "Wireless", WirelessBonus, 1,
+                                                                     InternalId + "Wireless", WirelessBonus, await GetRatingAsync(token).ConfigureAwait(false),
                                                                      await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
                                                                      token: token).ConfigureAwait(false);
                 }
@@ -12301,7 +12321,7 @@ namespace Chummer.Backend.Equipment
                         await objNewSelectedAmmo.CopyAsync(objSelectedAmmo, token).ConfigureAwait(false);
                         await objNewSelectedAmmo.SetQuantityAsync(decQty, token).ConfigureAwait(false);
                         await lstGears.AddAsync(objNewSelectedAmmo, token).ConfigureAwait(false);
-                        await objSelectedAmmo.SetQuantityAsync(objSelectedAmmo.Quantity + decQty, token).ConfigureAwait(false);
+                        await objSelectedAmmo.SetQuantityAsync(objSelectedAmmo.Quantity - decQty, token).ConfigureAwait(false);
                         string strId2 = objSelectedAmmo.InternalId;
                         string strText2 = await objSelectedAmmo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         await treGearView.DoThreadSafeAsync(x =>

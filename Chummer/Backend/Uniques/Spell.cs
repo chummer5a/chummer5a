@@ -356,10 +356,32 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+        }
+
+        /// <summary>
+        /// Load the Spell from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        public Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, token);
+        }
+
+        public async Task LoadCoreAsync(bool blnSync, XmlNode objNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objNode == null)
                 return;
-            using (LockObject.EnterWriteLock())
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                objLocker = LockObject.EnterWriteLock(token);
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 {
                     _guiID = Guid.NewGuid();
@@ -368,14 +390,24 @@ namespace Chummer
                 objNode.TryGetStringFieldQuickly("name", ref _strName);
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
-                Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+                Lazy<XPathNavigator> objMyNode = null;
+                Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator> objMyNodeAsync = null;
+                if (blnSync)
+                    objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+                else
+                    objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator>(() => this.GetNodeXPathAsync(token), Utils.JoinableTaskFactory);
                 if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
                 {
-                    objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
                 if (objNode.TryGetStringFieldQuickly("descriptors", ref _strDescriptors))
-                    UpdateHashDescriptors();
+                {
+                    if (blnSync)
+                        UpdateHashDescriptors();
+                    else
+                        await UpdateHashDescriptorsAsync(token).ConfigureAwait(false);
+                }
                 objNode.TryGetStringFieldQuickly("category", ref _strCategory);
                 objNode.TryGetStringFieldQuickly("type", ref _strType);
                 objNode.TryGetStringFieldQuickly("range", ref _strRange);
@@ -394,7 +426,7 @@ namespace Chummer
                                                                                && _objCharacter.LastSavedVersion
                                                                                <= new ValueVersion(5, 197, 30))
                 {
-                    objMyNode.Value?.TryGetStringFieldQuickly("dv", ref _strDV);
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("dv", ref _strDV);
                 }
 
                 objNode.TryGetBoolFieldQuickly("extended", ref _blnExtended);
@@ -424,6 +456,13 @@ namespace Chummer
                 string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
                 objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
+            }
+            finally
+            {
+                if (blnSync)
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 

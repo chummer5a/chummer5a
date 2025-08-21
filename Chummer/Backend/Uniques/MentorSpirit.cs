@@ -543,10 +543,32 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+        }
+
+        /// <summary>
+        /// Load the Mentor Spirit from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        public Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objNode == null)
                 return;
-            using (LockObject.EnterWriteLock())
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                objLocker = LockObject.EnterWriteLock(token);
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 {
                     _guiID = Guid.NewGuid();
@@ -565,11 +587,18 @@ namespace Chummer
                     _objCachedMyXPathNode = null;
                 }
 
-                Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+                Lazy<XPathNavigator> objMyNode = null;
+                Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator> objMyNodeAsync = null;
+                if (blnSync)
+                    objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+                else
+                    objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator>(() => this.GetNodeXPathAsync(token), Utils.JoinableTaskFactory);
                 if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID)
-                    && objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
+                    && (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
                 {
-                    _objCharacter.LoadDataXPath("qualities.xml")
+                    (blnSync
+                        ? _objCharacter.LoadDataXPath("qualities.xml", token: token)
+                        : await _objCharacter.LoadDataXPathAsync("qualities.xml", token: token).ConfigureAwait(false))
                                  .TryGetNodeByNameOrId("/chummer/mentors/mentor", Name)
                                  ?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
@@ -582,7 +611,7 @@ namespace Chummer
                 if (_objCharacter.LastSavedVersion <= new ValueVersion(5, 217, 31))
                 {
                     // Cache advantages from data file because localized version used to be cached directly.
-                    XPathNavigator node = objMyNode.Value;
+                    XPathNavigator node = blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
                     if (node != null)
                     {
                         if (!node.TryGetMultiLineStringFieldQuickly("advantage", ref _strAdvantage))
@@ -611,6 +640,13 @@ namespace Chummer
                 string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
                 objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
+            }
+            finally
+            {
+                if (blnSync)
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 

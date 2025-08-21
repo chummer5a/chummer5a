@@ -238,6 +238,21 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+        }
+
+        /// <summary>
+        /// Load the Program from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        public Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, token);
+        }
+
+        public async Task LoadCoreAsync(bool blnSync, XmlNode objNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objNode == null)
                 return;
             if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
@@ -250,15 +265,15 @@ namespace Chummer
             _objCachedMyXPathNode = null;
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                this.GetNodeXPath()?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                (blnSync ? this.GetNodeXPath(token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
             objNode.TryGetBoolFieldQuickly("candelete", ref _blnCanDelete);
             objNode.TryGetBoolFieldQuickly("isadvancedprogram", ref _blnIsAdvancedProgram);
             objNode.TryGetStringFieldQuickly("requiresprogram", ref _strRequiresProgram);
             // Legacy fix for weird, old way of storing this value
-            if (_strRequiresProgram == LanguageManager.GetString("String_None")
-                || _strRequiresProgram == LanguageManager.GetString("String_None", GlobalSettings.DefaultLanguage))
+            if (_strRequiresProgram == "None"
+                || _strRequiresProgram == (blnSync ? LanguageManager.GetString("String_None", token: token) : await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false)))
                 _strRequiresProgram = string.Empty;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);

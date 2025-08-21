@@ -349,12 +349,20 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (lstToAdd == null)
                 throw new ArgumentNullException(nameof(lstToAdd));
-            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
                     await AddWithSortAsync(lstCollection, objEnumerator.Current, funcOverrideIfEquals, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
             }
         }
 
@@ -368,12 +376,20 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstToAdd));
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
-            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
                     await AddWithSortAsync(lstCollection, objEnumerator.Current, comparer, funcOverrideIfEquals, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
             }
         }
 
@@ -388,12 +404,20 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstToAdd));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
                     await AddWithSortAsync(lstCollection, objEnumerator.Current, funcComparison, funcOverrideIfEquals, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
             }
         }
 
@@ -909,12 +933,20 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (lstToAdd == null)
                 throw new ArgumentNullException(nameof(lstToAdd));
-            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
                     await AddWithSortAsync(lstCollection, objEnumerator.Current, funcOverrideIfEquals, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
             }
         }
 
@@ -928,12 +960,20 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstToAdd));
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
-            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
                     await AddWithSortAsync(lstCollection, objEnumerator.Current, comparer, funcOverrideIfEquals, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
             }
         }
 
@@ -948,12 +988,20 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstToAdd));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
                     await AddWithSortAsync(lstCollection, objEnumerator.Current, funcComparison, funcOverrideIfEquals, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
             }
         }
 
@@ -968,12 +1016,20 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstToAdd));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
                     await AddWithSortAsync(lstCollection, objEnumerator.Current, funcComparison, funcOverrideIfEquals, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
             }
         }
 
@@ -988,12 +1044,20 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstToAdd));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
                     await AddWithSortAsync(lstCollection, objEnumerator.Current, funcComparison, funcOverrideIfEquals, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
             }
         }
 

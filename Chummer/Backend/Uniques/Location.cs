@@ -57,7 +57,7 @@ namespace Chummer
             _lstChildren = new ThreadSafeObservableCollection<IHasLocation>(LockObject);
             _strName = strName;
             Parent = objParent;
-            Children.CollectionChanged += ChildrenOnCollectionChanged;
+            Children.CollectionChangedAsync += ChildrenOnCollectionChanged;
             Children.BeforeClearCollectionChanged += ChildrenOnBeforeClearCollectionChanged;
         }
 
@@ -82,7 +82,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Load the Metamagic from the XmlNode.
+        /// Load the Location from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
@@ -108,6 +108,50 @@ namespace Chummer
 
                 if (Parent?.Contains(this) == false)
                     Parent.Add(this);
+            }
+        }
+
+        /// <summary>
+        /// Load the Location from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        public async Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+                {
+                    _guiID = Guid.NewGuid();
+                    _strName = objNode.InnerText;
+                }
+                else
+                {
+                    objNode.TryGetStringFieldQuickly("name", ref _strName);
+                    objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                    string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                    objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                    _colNotes = ColorTranslator.FromHtml(sNotesColor);
+                }
+
+                objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+
+                if (Parent != null)
+                {
+                    if (Parent is IAsyncCollection<Location> objParentAsync)
+                    {
+                        if (!await objParentAsync.ContainsAsync(this, token).ConfigureAwait(false))
+                            await objParentAsync.AddAsync(this, token).ConfigureAwait(false);
+                    }
+                    else if (!Parent.Contains(this))
+                        Parent.Add(this);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -482,8 +526,10 @@ namespace Chummer
                 objOldItem.Location = null;
         }
 
-        private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private Task ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -508,10 +554,9 @@ namespace Chummer
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    foreach (IHasLocation objItem in Children.AsEnumerableWithSideEffects())
-                        objItem.Location = this;
-                    break;
+                    return Children.ForEachWithSideEffectsAsync(x => x.Location = this, token);
             }
+            return Task.CompletedTask;
         }
 
         public bool Remove(bool blnConfirmDelete = true)
