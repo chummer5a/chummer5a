@@ -505,9 +505,12 @@ namespace Chummer
                     Extra = objNode["extra"]?.InnerText ?? string.Empty;
                 else
                     await SetExtraAsync(objNode["extra"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
-                _strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
-                objNode.TryGetStringFieldQuickly("action", ref _strAction);
-                _strAdeptWayDiscount = objNode["adeptway"]?.InnerText;
+                if (!objNode.TryGetStringFieldQuickly("pointsperlevel", ref _strPointsPerLevel))
+                    _strPointsPerLevel = "0";
+                if (!objNode.TryGetStringFieldQuickly("action", ref _strAction))
+                    _strAction = string.Empty;
+                if (!objNode.TryGetStringFieldQuickly("adeptway", ref _strAdeptWayDiscount))
+                    _strAdeptWayDiscount = string.Empty;
                 if (string.IsNullOrEmpty(_strAdeptWayDiscount))
                 {
                     string strPowerName = Name;
@@ -525,18 +528,23 @@ namespace Chummer
                                            ?? string.Empty;
                 }
 
-                objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
-                objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);
-                if (!objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevels))
-                {
-                    objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevels);
-                }
+                if (!objNode.TryGetInt32FieldQuickly("rating", ref _intRating))
+                    _intRating = 1;
+                if (!objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled))
+                    _blnLevelsEnabled = false;
+                if (!objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevels) && !objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevels))
+                    _intMaxLevels = 0;
 
-                objNode.TryGetBoolFieldQuickly("discounted", ref _blnDiscountedAdeptWay);
-                objNode.TryGetBoolFieldQuickly("discountedgeas", ref _blnDiscountedGeas);
-                objNode.TryGetStringFieldQuickly("bonussource", ref _strBonusSource);
-                objNode.TryGetDecFieldQuickly("freepoints", ref _decFreePoints);
-                objNode.TryGetDecFieldQuickly("extrapointcost", ref _decExtraPointCost);
+                if (!objNode.TryGetBoolFieldQuickly("discounted", ref _blnDiscountedAdeptWay))
+                    _blnDiscountedAdeptWay = false;
+                if (!objNode.TryGetBoolFieldQuickly("discountedgeas", ref _blnDiscountedGeas))
+                    _blnDiscountedGeas = false;
+                if (!objNode.TryGetStringFieldQuickly("bonussource", ref _strBonusSource))
+                    _strBonusSource = string.Empty;
+                if (!objNode.TryGetDecFieldQuickly("freepoints", ref _decFreePoints))
+                    _decFreePoints = 0;
+                if (!objNode.TryGetDecFieldQuickly("extrapointcost", ref _decExtraPointCost))
+                    _decExtraPointCost = 0;
                 objNode.TryGetStringFieldQuickly("source", ref _strSource);
                 objNode.TryGetStringFieldQuickly("page", ref _strPage);
                 objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
@@ -558,6 +566,8 @@ namespace Chummer
                             objWayRequirements?.SelectSingleNodeAndCacheExpression("adeptwayrequires", token);
                     }
                 }
+                else
+                    _nodAdeptWayRequirements = null;
 
                 string strName = blnSync ? Name : await GetNameAsync(token).ConfigureAwait(false);
                 if (strName != "Improved Reflexes" && strName.StartsWith("Improved Reflexes", StringComparison.Ordinal))
