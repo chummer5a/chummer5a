@@ -4147,83 +4147,93 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Capacity of the Gear.
         /// </summary>
-        public string CalculatedCapacity
+        public string CalculatedCapacity => GetCalculatedCapacity(GlobalSettings.CultureInfo);
+
+        /// <summary>
+        /// Calculated Capacity of the Gear.
+        /// </summary>
+        public string GetCalculatedCapacity(CultureInfo objCulture)
         {
-            get
+            string strReturn = Capacity;
+            if (string.IsNullOrEmpty(strReturn))
+                return 0.0m.ToString("#,0.##", objCulture);
+            strReturn = strReturn.ProcessFixedValuesString(() => Rating);
+
+            int intPos = strReturn.IndexOf("/[", StringComparison.Ordinal);
+            if (intPos != -1)
             {
-                string strReturn = Capacity;
-                if (string.IsNullOrEmpty(strReturn))
-                    return 0.0m.ToString("#,0.##", GlobalSettings.CultureInfo);
-                strReturn = strReturn.ProcessFixedValuesString(() => Rating);
+                string strFirstHalf = strReturn.Substring(0, intPos).ProcessFixedValuesString(() => Rating);
+                string strSecondHalf = strReturn.Substring(intPos + 1);
+                bool blnSquareBrackets = strFirstHalf.StartsWith('[');
+                if (blnSquareBrackets && strFirstHalf.Length > 2)
+                    strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
 
-                int intPos = strReturn.IndexOf("/[", StringComparison.Ordinal);
-                if (intPos != -1)
+                if (strFirstHalf == "[*]")
+                    strReturn = "*";
+                else
                 {
-                    string strFirstHalf = strReturn.Substring(0, intPos).ProcessFixedValuesString(() => Rating);
-                    string strSecondHalf = strReturn.Substring(intPos + 1);
-                    bool blnSquareBrackets = strFirstHalf.StartsWith('[');
-                    if (blnSquareBrackets && strFirstHalf.Length > 2)
-                        strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
+                    strFirstHalf = strFirstHalf.ProcessFixedValuesString(() => Rating);
 
-                    if (strFirstHalf == "[*]")
-                        strReturn = "*";
-                    else
+                    if (strFirstHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        strFirstHalf = strFirstHalf.ProcessFixedValuesString(() => Rating);
-
-                        if (strFirstHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                        {
-                            decValue = ProcessRatingStringAsDec(strFirstHalf, () => Rating, out bool blnIsSuccess);
-                            strReturn = blnIsSuccess
-                                ? decValue.ToString("#,0.##", GlobalSettings.CultureInfo)
-                                : strFirstHalf;
-                        }
-                        else
-                            strReturn = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
+                        decValue = ProcessRatingStringAsDec(strFirstHalf, () => Rating, out bool blnIsSuccess);
+                        strReturn = blnIsSuccess
+                            ? decValue.ToString("#,0.##", objCulture)
+                            : strFirstHalf;
                     }
+                    else
+                        strReturn = decValue.ToString("#,0.##", objCulture);
+                }
 
-                    if (blnSquareBrackets)
-                        strReturn = '[' + strReturn + ']';
-                    if (!string.IsNullOrEmpty(strSecondHalf))
-                        strReturn += '/' + strSecondHalf;
+                if (blnSquareBrackets)
+                    strReturn = '[' + strReturn + ']';
+                if (!string.IsNullOrEmpty(strSecondHalf))
+                    strReturn += '/' + strSecondHalf;
+            }
+            else
+            {
+                // If the Capacity is determined by the Rating, evaluate the expression.
+                // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+                bool blnSquareBrackets = strReturn.StartsWith('[');
+                if (blnSquareBrackets)
+                    strReturn = strReturn.Substring(1, strReturn.Length - 2);
+
+                if (strReturn.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
+                {
+                    decReturn = ProcessRatingStringAsDec(strReturn, () => Rating, out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                        strReturn = Math.Max(decReturn, 1.0m).ToString("#,0.##", objCulture);
                 }
                 else
                 {
-                    // If the Capacity is determined by the Rating, evaluate the expression.
-                    // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                    bool blnSquareBrackets = strReturn.StartsWith('[');
-                    if (blnSquareBrackets)
-                        strReturn = strReturn.Substring(1, strReturn.Length - 2);
-
-                    if (strReturn.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
-                    {
-                        decReturn = ProcessRatingStringAsDec(strReturn, () => Rating, out bool blnIsSuccess);
-                        if (blnIsSuccess)
-                            strReturn = Math.Max(decReturn, 1.0m).ToString("#,0.##", GlobalSettings.CultureInfo);
-                    }
-                    else
-                    {
-                        // Just a straight Capacity, so return the value.
-                        strReturn = decReturn.ToString("#,0.##", GlobalSettings.CultureInfo);
-                    }
-
-                    if (blnSquareBrackets)
-                        strReturn = '[' + strReturn + ']';
+                    // Just a straight Capacity, so return the value.
+                    strReturn = decReturn.ToString("#,0.##", objCulture);
                 }
 
-                return strReturn;
+                if (blnSquareBrackets)
+                    strReturn = '[' + strReturn + ']';
             }
+
+            return strReturn;
         }
 
         /// <summary>
         /// Calculated Capacity of the Gear.
         /// </summary>
-        public async Task<string> GetCalculatedCapacityAsync(CancellationToken token = default)
+        public Task<string> GetCalculatedCapacityAsync(CancellationToken token = default)
+        {
+            return GetCalculatedCapacityAsync(GlobalSettings.CultureInfo, token);
+        }
+
+        /// <summary>
+        /// Calculated Capacity of the Gear.
+        /// </summary>
+        public async Task<string> GetCalculatedCapacityAsync(CultureInfo objCulture, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strReturn = Capacity;
             if (string.IsNullOrEmpty(strReturn))
-                return 0.0m.ToString("#,0.##", GlobalSettings.CultureInfo);
+                return 0.0m.ToString("#,0.##", objCulture);
             strReturn = await strReturn.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
 
             int intPos = strReturn.IndexOf("/[", StringComparison.Ordinal);
@@ -4246,11 +4256,11 @@ namespace Chummer.Backend.Equipment
                         bool blnIsSuccess;
                         (decValue, blnIsSuccess) = await ProcessRatingStringAsDecAsync(strFirstHalf, () => GetRatingAsync(token), token).ConfigureAwait(false);
                         strReturn = blnIsSuccess
-                            ? decValue.ToString("#,0.##", GlobalSettings.CultureInfo)
+                            ? decValue.ToString("#,0.##", objCulture)
                             : strFirstHalf;
                     }
                     else
-                        strReturn = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
+                        strReturn = decValue.ToString("#,0.##", objCulture);
                 }
 
                 if (blnSquareBrackets)
@@ -4271,12 +4281,12 @@ namespace Chummer.Backend.Equipment
                     bool blnIsSuccess;
                     (decReturn, blnIsSuccess) = await ProcessRatingStringAsDecAsync(strReturn, () => GetRatingAsync(token), token).ConfigureAwait(false);
                     if (blnIsSuccess)
-                        strReturn = Math.Max(decReturn, 1.0m).ToString("#,0.##", GlobalSettings.CultureInfo);
+                        strReturn = Math.Max(decReturn, 1.0m).ToString("#,0.##", objCulture);
                 }
                 else
                 {
                     // Just a straight Capacity, so return the value.
-                    strReturn = decReturn.ToString("#,0.##", GlobalSettings.CultureInfo);
+                    strReturn = decReturn.ToString("#,0.##", objCulture);
                 }
 
                 if (blnSquareBrackets)
@@ -4289,76 +4299,83 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Capacity of the Gear when attached to Armor.
         /// </summary>
-        public string CalculatedArmorCapacity
+        public string CalculatedArmorCapacity => GetCalculatedArmorCapacity(GlobalSettings.CultureInfo);
+
+        public string GetCalculatedArmorCapacity(CultureInfo objCulture)
         {
-            get
+            string strReturn = ArmorCapacity;
+            if (string.IsNullOrEmpty(strReturn))
+                return 0.ToString(objCulture);
+            int intPos = strReturn.IndexOf("/[", StringComparison.Ordinal);
+            if (intPos != -1)
             {
-                string strReturn = ArmorCapacity;
-                if (string.IsNullOrEmpty(strReturn))
-                    return 0.ToString(GlobalSettings.CultureInfo);
-                int intPos = strReturn.IndexOf("/[", StringComparison.Ordinal);
-                if (intPos != -1)
-                {
-                    string strFirstHalf = strReturn.Substring(0, intPos);
-                    string strSecondHalf = strReturn.Substring(intPos + 1);
-                    bool blnSquareBrackets = strFirstHalf.StartsWith('[');
-                    if (blnSquareBrackets && strFirstHalf.Length > 2)
-                        strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
+                string strFirstHalf = strReturn.Substring(0, intPos);
+                string strSecondHalf = strReturn.Substring(intPos + 1);
+                bool blnSquareBrackets = strFirstHalf.StartsWith('[');
+                if (blnSquareBrackets && strFirstHalf.Length > 2)
+                    strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
 
-                    if (strFirstHalf == "[*]")
-                        strReturn = "*";
-                    else
-                    {
-                        strFirstHalf = strFirstHalf.ProcessFixedValuesString(() => Rating);
-
-                        if (strFirstHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-                        {
-                            decValue = ProcessRatingStringAsDec(strFirstHalf, () => Rating, out bool blnIsSuccess);
-                            strReturn = blnIsSuccess
-                                ? decValue.ToString("#,0.##", GlobalSettings.CultureInfo)
-                                : strFirstHalf;
-                        }
-                        else
-                            strReturn = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
-                    }
-
-                    if (blnSquareBrackets)
-                        strReturn = '[' + strReturn + ']';
-                    strReturn += '/' + strSecondHalf;
-                }
-                else if (strReturn.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
-                {
-                    // If the Capacity is determined by the Rating, evaluate the expression.
-                    // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                    bool blnSquareBrackets = strReturn.StartsWith('[');
-                    if (blnSquareBrackets)
-                        strReturn = strReturn.Substring(1, strReturn.Length - 2);
-
-                    decReturn = ProcessRatingStringAsDec(strReturn, () => Rating, out bool blnIsSuccess);
-                    if (blnIsSuccess)
-                        strReturn = decReturn.ToString("#,0.##", GlobalSettings.CultureInfo);
-                    if (blnSquareBrackets)
-                        strReturn = '[' + strReturn + ']';
-                }
+                if (strFirstHalf == "[*]")
+                    strReturn = "*";
                 else
                 {
-                    // Just a straight Capacity, so return the value.
-                    strReturn = decReturn.ToString("#,0.##", GlobalSettings.CultureInfo);
+                    strFirstHalf = strFirstHalf.ProcessFixedValuesString(() => Rating);
+
+                    if (strFirstHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                    {
+                        decValue = ProcessRatingStringAsDec(strFirstHalf, () => Rating, out bool blnIsSuccess);
+                        strReturn = blnIsSuccess
+                            ? decValue.ToString("#,0.##", objCulture)
+                            : strFirstHalf;
+                    }
+                    else
+                        strReturn = decValue.ToString("#,0.##", objCulture);
                 }
 
-                return strReturn;
+                if (blnSquareBrackets)
+                    strReturn = '[' + strReturn + ']';
+                strReturn += '/' + strSecondHalf;
             }
+            else if (strReturn.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
+            {
+                // If the Capacity is determined by the Rating, evaluate the expression.
+                // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+                bool blnSquareBrackets = strReturn.StartsWith('[');
+                if (blnSquareBrackets)
+                    strReturn = strReturn.Substring(1, strReturn.Length - 2);
+
+                decReturn = ProcessRatingStringAsDec(strReturn, () => Rating, out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    strReturn = decReturn.ToString("#,0.##", objCulture);
+                if (blnSquareBrackets)
+                    strReturn = '[' + strReturn + ']';
+            }
+            else
+            {
+                // Just a straight Capacity, so return the value.
+                strReturn = decReturn.ToString("#,0.##", objCulture);
+            }
+
+            return strReturn;
         }
 
         /// <summary>
         /// Calculated Capacity of the Gear when attached to Armor.
         /// </summary>
-        public async Task<string> GetCalculatedArmorCapacityAsync(CancellationToken token = default)
+        public Task<string> GetCalculatedArmorCapacityAsync(CancellationToken token = default)
+        {
+            return GetCalculatedArmorCapacityAsync(GlobalSettings.CultureInfo, token);
+        }
+
+        /// <summary>
+        /// Calculated Capacity of the Gear when attached to Armor.
+        /// </summary>
+        public async Task<string> GetCalculatedArmorCapacityAsync(CultureInfo objCulture, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strReturn = ArmorCapacity;
             if (string.IsNullOrEmpty(strReturn))
-                return 0.ToString(GlobalSettings.CultureInfo);
+                return 0.ToString(objCulture);
             strReturn = await strReturn.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
             int intPos = strReturn.IndexOf("/[", StringComparison.Ordinal);
             if (intPos != -1)
@@ -4380,11 +4397,11 @@ namespace Chummer.Backend.Equipment
                         bool blnIsSuccess;
                         (decValue, blnIsSuccess) = await ProcessRatingStringAsDecAsync(strFirstHalf, () => GetRatingAsync(token), token).ConfigureAwait(false);
                         strReturn = blnIsSuccess
-                            ? decValue.ToString("#,0.##", GlobalSettings.CultureInfo)
+                            ? decValue.ToString("#,0.##", objCulture)
                             : strFirstHalf;
                     }
                     else
-                        strReturn = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
+                        strReturn = decValue.ToString("#,0.##", objCulture);
                 }
 
                 if (blnSquareBrackets)
@@ -4401,14 +4418,14 @@ namespace Chummer.Backend.Equipment
                 bool blnIsSuccess;
                 (decReturn, blnIsSuccess) = await ProcessRatingStringAsDecAsync(strReturn, () => GetRatingAsync(token), token).ConfigureAwait(false);
                 if (blnIsSuccess)
-                    strReturn = decReturn.ToString("#,0.##", GlobalSettings.CultureInfo);
+                    strReturn = decReturn.ToString("#,0.##", objCulture);
                 if (blnSquareBrackets)
                     strReturn = '[' + strReturn + ']';
             }
             else
             {
                 // Just a straight Capacity, so return the value.
-                strReturn = decReturn.ToString("#,0.##", GlobalSettings.CultureInfo);
+                strReturn = decReturn.ToString("#,0.##", objCulture);
             }
 
             return strReturn;
@@ -4569,7 +4586,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strCapacity = CalculatedCapacity;
+                string strCapacity = GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo);
                 // If this is a multiple-capacity item, use only the second half.
                 int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                 if (intPos != -1)
@@ -4579,7 +4596,7 @@ namespace Chummer.Backend.Equipment
 
                 // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
                 strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
-                return decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decReturn)
+                return decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn)
                     ? decReturn
                     : 0;
             }
@@ -4591,7 +4608,7 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetPluginCapacityAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strCapacity = await GetCalculatedCapacityAsync(token).ConfigureAwait(false);
+            string strCapacity = await GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false);
             // If this is a multiple-capacity item, use only the second half.
             int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
             if (intPos != -1)
@@ -4601,7 +4618,7 @@ namespace Chummer.Backend.Equipment
 
             // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
             strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
-            return decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decReturn)
+            return decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn)
                 ? decReturn
                 : 0;
         }
@@ -4613,7 +4630,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strCapacity = CalculatedArmorCapacity;
+                string strCapacity = GetCalculatedArmorCapacity(GlobalSettings.InvariantCultureInfo);
                 // If this is a multiple-capacity item, use only the second half.
                 int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                 if (intPos != -1)
@@ -4623,7 +4640,10 @@ namespace Chummer.Backend.Equipment
 
                 // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
                 strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
-                return strCapacity == "*" ? 0 : Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                if (strCapacity == "*")
+                    return 0;
+                decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
+                return decReturn;
             }
         }
 
@@ -4633,7 +4653,7 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetPluginArmorCapacityAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strCapacity = await GetCalculatedArmorCapacityAsync(token).ConfigureAwait(false);
+            string strCapacity = await GetCalculatedArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false);
             // If this is a multiple-capacity item, use only the second half.
             int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
             if (intPos != -1)
@@ -4643,7 +4663,10 @@ namespace Chummer.Backend.Equipment
 
             // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
             strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
-            return strCapacity == "*" ? 0 : Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+            if (strCapacity == "*")
+                return 0;
+            decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
+            return decReturn;
         }
 
         /// <summary>
@@ -4654,7 +4677,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal decCapacity = 0;
-                string strMyCapacity = CalculatedCapacity;
+                string strMyCapacity = GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo);
                 int intPos = strMyCapacity.IndexOf("/[", StringComparison.Ordinal);
                 if (intPos != -1 || !strMyCapacity.Contains('['))
                 {
@@ -4663,11 +4686,11 @@ namespace Chummer.Backend.Equipment
                     {
                         // If this is a multiple-capacity item, use only the first half.
                         strMyCapacity = strMyCapacity.Substring(0, intPos);
-                        if (!decimal.TryParse(strMyCapacity, NumberStyles.Any, GlobalSettings.CultureInfo,
+                        if (!decimal.TryParse(strMyCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                             out decCapacity))
                             decCapacity = 0;
                     }
-                    else if (!decimal.TryParse(strMyCapacity, NumberStyles.Any, GlobalSettings.CultureInfo,
+                    else if (!decimal.TryParse(strMyCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                         out decCapacity))
                         decCapacity = 0;
 
@@ -4689,7 +4712,7 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             decimal decCapacity = 0;
-            string strMyCapacity = await GetCalculatedCapacityAsync(token).ConfigureAwait(false);
+            string strMyCapacity = await GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false);
             int intPos = strMyCapacity.IndexOf("/[", StringComparison.Ordinal);
             if (intPos != -1 || !strMyCapacity.Contains('['))
             {
@@ -4698,11 +4721,11 @@ namespace Chummer.Backend.Equipment
                 {
                     // If this is a multiple-capacity item, use only the first half.
                     strMyCapacity = strMyCapacity.Substring(0, intPos);
-                    if (!decimal.TryParse(strMyCapacity, NumberStyles.Any, GlobalSettings.CultureInfo,
+                    if (!decimal.TryParse(strMyCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                             out decCapacity))
                         decCapacity = 0;
                 }
-                else if (!decimal.TryParse(strMyCapacity, NumberStyles.Any, GlobalSettings.CultureInfo,
+                else if (!decimal.TryParse(strMyCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                              out decCapacity))
                     decCapacity = 0;
 

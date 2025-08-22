@@ -1032,7 +1032,8 @@ namespace Chummer
             _objLifestyle.Source = objXmlLifestyle["source"]?.InnerText;
             _objLifestyle.Page = objXmlLifestyle["page"]?.InnerText;
             await _objLifestyle.SetNameAsync(strLifestyleName, token).ConfigureAwait(false);
-            await _objLifestyle.SetCostAsync(Convert.ToDecimal(objXmlLifestyle["cost"]?.InnerText, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+            decimal.TryParse(objXmlLifestyle["cost"]?.InnerText, System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCost);
+            await _objLifestyle.SetCostAsync(decCost, token).ConfigureAwait(false);
             await _objLifestyle.SetPercentageAsync(await nudPercentage.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false), token).ConfigureAwait(false);
             await _objLifestyle.SetBaseLifestyleAsync(strBaseLifestyle, token).ConfigureAwait(false);
             if (await _objLifestyle.GetStyleTypeAsync(token).ConfigureAwait(false) != LifestyleType.Standard)
@@ -1059,7 +1060,8 @@ namespace Chummer
             // Get the starting Nuyen information.
             if (int.TryParse(objXmlLifestyle["dice"]?.InnerText, System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intDice))
                 await _objLifestyle.SetDiceAsync(intDice, token).ConfigureAwait(false);
-            await _objLifestyle.SetMultiplierAsync(Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+            decimal.TryParse(objXmlLifestyle["multiplier"]?.InnerText, System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decMultiplier);
+            await _objLifestyle.SetMultiplierAsync(decMultiplier, token).ConfigureAwait(false);
             SelectedLifestyle = _objLifestyle;
             await this.DoThreadSafeAsync(x =>
             {

@@ -1621,9 +1621,8 @@ namespace Chummer
                                                       token: token).ConfigureAwait(false), strNodeInnerText,
                                               strEssNodeGradeAttributeText,
                                               decGrade.ToString(GlobalSettings.CultureInfo));
-                            return new Tuple<bool, string>(decGrade
-                                                           < Convert.ToDecimal(strNodeInnerText.TrimStart('-'),
-                                                               GlobalSettings.InvariantCultureInfo), strName);
+                            decimal.TryParse(strNodeInnerText.TrimStart('-'), System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decThreshold1);
+                            return new Tuple<bool, string>(decGrade < decThreshold1, strName);
                         }
 
                         // Essence must be equal to or greater than the value.
@@ -1638,9 +1637,8 @@ namespace Chummer
                                                   "Message_SelectQuality_RequireESSAbove",
                                                   token: token).ConfigureAwait(false), strNodeInnerText,
                                           strEssNodeGradeAttributeText, decGrade.ToString(GlobalSettings.CultureInfo));
-                        return new Tuple<bool, string>(
-                            decGrade >= Convert.ToDecimal(strNodeInnerText, GlobalSettings.InvariantCultureInfo),
-                            strName);
+                        decimal.TryParse(strNodeInnerText, System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decThreshold2);
+                        return new Tuple<bool, string>(decGrade >= decThreshold2, strName);
                     }
 
                     decimal decEssence = blnSync
@@ -1663,9 +1661,8 @@ namespace Chummer
                                                   "Message_SelectQuality_RequireESSBelow",
                                                   token: token).ConfigureAwait(false), strNodeInnerText,
                                           decEssence.ToString(GlobalSettings.CultureInfo));
-                        return new Tuple<bool, string>(decEssence
-                                                       < Convert.ToDecimal(strNodeInnerText.TrimStart('-'),
-                                                           GlobalSettings.InvariantCultureInfo), strName);
+                        decimal.TryParse(strNodeInnerText.TrimStart('-'), System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decThreshold3);
+                        return new Tuple<bool, string>(decEssence < decThreshold3, strName);
                     }
 
                     // Essence must be equal to or greater than the value.
@@ -1680,9 +1677,8 @@ namespace Chummer
                                               "Message_SelectQuality_RequireESSAbove",
                                               token: token).ConfigureAwait(false), strNodeInnerText,
                                       decEssence.ToString(GlobalSettings.CultureInfo));
-                    return new Tuple<bool, string>(decEssence
-                                                   >= Convert.ToDecimal(strNodeInnerText,
-                                                       GlobalSettings.InvariantCultureInfo), strName);
+                    decimal.TryParse(strNodeInnerText, System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decThreshold4);
+                    return new Tuple<bool, string>(decEssence >= decThreshold4, strName);
                 }
                 case "echo":
                 {

@@ -8331,79 +8331,155 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Capacity of the Cyberware.
         /// </summary>
-        public string CalculatedCapacity
+        public string CalculatedCapacity => GetCalculatedCapacity(GlobalSettings.CultureInfo);
+
+        /// <summary>
+        /// Calculated Capacity of the Cyberware.
+        /// </summary>
+        public string GetCalculatedCapacity(CultureInfo objCulture)
         {
-            get
+            using (LockObject.EnterReadLock())
             {
-                using (LockObject.EnterReadLock())
+                string strCapacity = Capacity;
+                if (string.IsNullOrEmpty(strCapacity))
+                    return 0.0m.ToString("#,0.##", objCulture);
+                strCapacity = strCapacity.ProcessFixedValuesString(() => Rating);
+                if (strCapacity == "[*]")
+                    return "*";
+                string strReturn;
+                int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
+                if (intPos != -1)
                 {
-                    string strCapacity = Capacity;
-                    if (string.IsNullOrEmpty(strCapacity))
-                        return 0.0m.ToString("#,0.##", GlobalSettings.CultureInfo);
-                    strCapacity = strCapacity.ProcessFixedValuesString(() => Rating);
-                    if (strCapacity == "[*]")
-                        return "*";
-                    string strReturn;
-                    int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
-                    if (intPos != -1)
+                    string strFirstHalf = strCapacity.Substring(0, intPos).ProcessFixedValuesString(() => Rating);
+                    string strSecondHalf = strCapacity.Substring(intPos + 1).ProcessFixedValuesString(() => Rating);
+                    bool blnSquareBrackets = strFirstHalf.StartsWith('[');
+                    if (blnSquareBrackets && strFirstHalf.Length > 2)
+                        strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
+                    if (strFirstHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        string strFirstHalf = strCapacity.Substring(0, intPos).ProcessFixedValuesString(() => Rating);
-                        string strSecondHalf = strCapacity.Substring(intPos + 1).ProcessFixedValuesString(() => Rating);
-                        bool blnSquareBrackets = strFirstHalf.StartsWith('[');
-                        if (blnSquareBrackets && strFirstHalf.Length > 2)
-                            strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
-                        if (strFirstHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                        strFirstHalf = strFirstHalf.CheapReplace("{MinRating}",
+                                                () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                        strFirstHalf = strFirstHalf.CheapReplace("MinRating",
+                                                    () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                        strFirstHalf = strFirstHalf.CheapReplace("{Rating}",
+                                                () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        strFirstHalf = strFirstHalf.CheapReplace("Rating",
+                                                () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        strFirstHalf = ProcessAttributesInXPath(strFirstHalf);
+                        try
                         {
-                            strFirstHalf = strFirstHalf.CheapReplace("{MinRating}",
-                                                  () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
-                            strFirstHalf = strFirstHalf.CheapReplace("MinRating",
-                                                      () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
-                            strFirstHalf = strFirstHalf.CheapReplace("{Rating}",
-                                                  () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                            strFirstHalf = strFirstHalf.CheapReplace("Rating",
-                                                  () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                            strFirstHalf = ProcessAttributesInXPath(strFirstHalf);
-                            try
-                            {
-                                (bool blnIsSuccess, object objProcess) =
-                                    CommonFunctions.EvaluateInvariantXPath(
-                                        strFirstHalf.CheapReplace(
-                                            "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
-                                strReturn = blnIsSuccess
-                                    ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
-                                    : strFirstHalf;
-                            }
-                            catch (OverflowException) // Result is text and not a double
-                            {
-                                strReturn = strFirstHalf;
-                            }
-                            catch (InvalidCastException) // Result is text and not a double
-                            {
-                                strReturn = strFirstHalf;
-                            }
+                            (bool blnIsSuccess, object objProcess) =
+                                CommonFunctions.EvaluateInvariantXPath(
+                                    strFirstHalf.CheapReplace(
+                                        "Rating", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)));
+                            strReturn = blnIsSuccess
+                                ? ((double)objProcess).ToString("#,0.##", objCulture)
+                                : strFirstHalf;
                         }
-                        else
-                            strReturn = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
+                        catch (OverflowException) // Result is text and not a double
+                        {
+                            strReturn = strFirstHalf;
+                        }
+                        catch (InvalidCastException) // Result is text and not a double
+                        {
+                            strReturn = strFirstHalf;
+                        }
+                    }
+                    else
+                        strReturn = decValue.ToString("#,0.##", objCulture);
 
-                        if (blnSquareBrackets)
-                            strReturn = '[' + strCapacity + ']';
+                    if (blnSquareBrackets)
+                        strReturn = '[' + strCapacity + ']';
 
-                        strSecondHalf = strSecondHalf.Trim('[', ']');
+                    strSecondHalf = strSecondHalf.Trim('[', ']');
+                    if (Children.Any(x => x.AddToParentCapacity))
+                    {
+                        // Run through its Children and deduct the Capacity costs.
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                        out StringBuilder sbdSecondHalf))
+                        {
+                            foreach (Cyberware objChildCyberware in Children.Where(
+                                            objChild => objChild.AddToParentCapacity))
+                            {
+                                if (objChildCyberware.ParentID == InternalId)
+                                {
+                                    continue;
+                                }
+
+                                string strLoopCapacity = objChildCyberware.GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo);
+                                int intLoopPos = strLoopCapacity.IndexOf("/[", StringComparison.Ordinal);
+                                if (intLoopPos != -1)
+                                    strLoopCapacity = strLoopCapacity.Substring(intLoopPos + 2,
+                                        strLoopCapacity.LastIndexOf(']') - intLoopPos - 2);
+                                else if (strLoopCapacity.StartsWith('['))
+                                    strLoopCapacity = strLoopCapacity.Substring(1, strLoopCapacity.Length - 2);
+                                if (strLoopCapacity == "*")
+                                    strLoopCapacity = "0";
+                                sbdSecondHalf.Append("+(").Append(strLoopCapacity).Append(')');
+                            }
+
+                            strSecondHalf += sbdSecondHalf.ToString();
+                        }
+                    }
+
+                    if (strSecondHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
+                    {
+                        strSecondHalf = strSecondHalf.CheapReplace("{MinRating}",
+                                                () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                        strSecondHalf = strSecondHalf.CheapReplace("MinRating",
+                                                    () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                        strSecondHalf = strSecondHalf.CheapReplace("{Rating}",
+                                                () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        strSecondHalf = strSecondHalf.CheapReplace("Rating",
+                                                () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                        strSecondHalf = ProcessAttributesInXPath(strSecondHalf);
+                        try
+                        {
+                            (bool blnIsSuccess, object objProcess) =
+                                CommonFunctions.EvaluateInvariantXPath(strSecondHalf);
+                            strSecondHalf =
+                                '[' + (blnIsSuccess
+                                    ? ((double)objProcess).ToString("#,0.##", objCulture)
+                                    : strSecondHalf) + ']';
+                        }
+                        catch (OverflowException) // Result is text and not a double
+                        {
+                            strSecondHalf = '[' + strSecondHalf + ']';
+                        }
+                        catch (InvalidCastException) // Result is text and not a double
+                        {
+                            strSecondHalf = '[' + strSecondHalf + ']';
+                        }
+                    }
+                    else
+                        strSecondHalf = decValue.ToString("#,0.##", objCulture);
+
+                    strReturn += '/' + strSecondHalf;
+                }
+                else if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue) ||
+                            (strCapacity.StartsWith('[') && Children.Any(x => x.AddToParentCapacity)))
+                {
+                    // If the Capacity is determined by the Rating, evaluate the expression.
+                    // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+                    bool blnSquareBrackets = strCapacity.StartsWith('[');
+                    if (blnSquareBrackets)
+                    {
+                        strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (Children.Any(x => x.AddToParentCapacity))
                         {
                             // Run through its Children and deduct the Capacity costs.
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdSecondHalf))
+                                                                            out StringBuilder sbdCapacity))
                             {
-                                foreach (Cyberware objChildCyberware in Children.Where(
-                                             objChild => objChild.AddToParentCapacity))
+                                foreach (Cyberware objChildCyberware in Children.Where(objChild =>
+                                                objChild.AddToParentCapacity))
                                 {
                                     if (objChildCyberware.ParentID == InternalId)
                                     {
                                         continue;
                                     }
 
-                                    string strLoopCapacity = objChildCyberware.CalculatedCapacity;
+                                    string strLoopCapacity = objChildCyberware.GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo);
                                     int intLoopPos = strLoopCapacity.IndexOf("/[", StringComparison.Ordinal);
                                     if (intLoopPos != -1)
                                         strLoopCapacity = strLoopCapacity.Substring(intLoopPos + 2,
@@ -8412,117 +8488,51 @@ namespace Chummer.Backend.Equipment
                                         strLoopCapacity = strLoopCapacity.Substring(1, strLoopCapacity.Length - 2);
                                     if (strLoopCapacity == "*")
                                         strLoopCapacity = "0";
-                                    sbdSecondHalf.Append("+(").Append(strLoopCapacity).Append(')');
+                                    sbdCapacity.Append("+(").Append(strLoopCapacity).Append(')');
                                 }
 
-                                strSecondHalf += sbdSecondHalf.ToString();
+                                strCapacity += sbdCapacity.ToString();
                             }
                         }
-
-                        if (strSecondHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
-                        {
-                            strSecondHalf = strSecondHalf.CheapReplace("{MinRating}",
-                                                  () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
-                            strSecondHalf = strSecondHalf.CheapReplace("MinRating",
-                                                      () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
-                            strSecondHalf = strSecondHalf.CheapReplace("{Rating}",
-                                                  () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                            strSecondHalf = strSecondHalf.CheapReplace("Rating",
-                                                  () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                            strSecondHalf = ProcessAttributesInXPath(strSecondHalf);
-                            try
-                            {
-                                (bool blnIsSuccess, object objProcess) =
-                                    CommonFunctions.EvaluateInvariantXPath(strSecondHalf);
-                                strSecondHalf =
-                                    '[' + (blnIsSuccess
-                                        ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
-                                        : strSecondHalf) + ']';
-                            }
-                            catch (OverflowException) // Result is text and not a double
-                            {
-                                strSecondHalf = '[' + strSecondHalf + ']';
-                            }
-                            catch (InvalidCastException) // Result is text and not a double
-                            {
-                                strSecondHalf = '[' + strSecondHalf + ']';
-                            }
-                        }
-                        else
-                            strSecondHalf = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
-
-                        strReturn += '/' + strSecondHalf;
                     }
-                    else if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue) ||
-                             (strCapacity.StartsWith('[') && Children.Any(x => x.AddToParentCapacity)))
-                    {
-                        // If the Capacity is determined by the Rating, evaluate the expression.
-                        // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                        bool blnSquareBrackets = strCapacity.StartsWith('[');
-                        if (blnSquareBrackets)
-                        {
-                            strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                            if (Children.Any(x => x.AddToParentCapacity))
-                            {
-                                // Run through its Children and deduct the Capacity costs.
-                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                              out StringBuilder sbdCapacity))
-                                {
-                                    foreach (Cyberware objChildCyberware in Children.Where(objChild =>
-                                                 objChild.AddToParentCapacity))
-                                    {
-                                        if (objChildCyberware.ParentID == InternalId)
-                                        {
-                                            continue;
-                                        }
 
-                                        string strLoopCapacity = objChildCyberware.CalculatedCapacity;
-                                        int intLoopPos = strLoopCapacity.IndexOf("/[", StringComparison.Ordinal);
-                                        if (intLoopPos != -1)
-                                            strLoopCapacity = strLoopCapacity.Substring(intLoopPos + 2,
-                                                strLoopCapacity.LastIndexOf(']') - intLoopPos - 2);
-                                        else if (strLoopCapacity.StartsWith('['))
-                                            strLoopCapacity = strLoopCapacity.Substring(1, strLoopCapacity.Length - 2);
-                                        if (strLoopCapacity == "*")
-                                            strLoopCapacity = "0";
-                                        sbdCapacity.Append("+(").Append(strLoopCapacity).Append(')');
-                                    }
+                    strCapacity = strCapacity.CheapReplace("{MinRating}",
+                                                () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                    strCapacity = strCapacity.CheapReplace("MinRating",
+                                                () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                    strCapacity = strCapacity.CheapReplace("{Rating}",
+                                            () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    strCapacity = strCapacity.CheapReplace("Rating",
+                                            () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    strCapacity = ProcessAttributesInXPath(strCapacity);
 
-                                    strCapacity += sbdCapacity.ToString();
-                                }
-                            }
-                        }
-
-                        strCapacity = strCapacity.CheapReplace("{MinRating}",
-                                                  () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
-                        strCapacity = strCapacity.CheapReplace("MinRating",
-                                                  () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
-                        strCapacity = strCapacity.CheapReplace("{Rating}",
-                                              () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        strCapacity = strCapacity.CheapReplace("Rating",
-                                              () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        strCapacity = ProcessAttributesInXPath(strCapacity);
-
-                        (bool blnIsSuccess, object objProcess) =
-                            CommonFunctions.EvaluateInvariantXPath(strCapacity);
-                        strReturn = blnIsSuccess
-                            ? ((double) objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
-                            : strCapacity;
-                        if (blnSquareBrackets)
-                            strReturn = '[' + strReturn + ']';
-                    }
-                    else
-                        return decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
-
-                    return strReturn;
+                    (bool blnIsSuccess, object objProcess) =
+                        CommonFunctions.EvaluateInvariantXPath(strCapacity);
+                    strReturn = blnIsSuccess
+                        ? ((double) objProcess).ToString("#,0.##", objCulture)
+                        : strCapacity;
+                    if (blnSquareBrackets)
+                        strReturn = '[' + strReturn + ']';
                 }
+                else
+                    return decValue.ToString("#,0.##", objCulture);
+
+                return strReturn;
             }
         }
 
         /// <summary>
         /// Calculated Capacity of the Cyberware.
         /// </summary>
-        public async Task<string> GetCalculatedCapacityAsync(CancellationToken token = default)
+        public Task<string> GetCalculatedCapacityAsync(CancellationToken token = default)
+        {
+            return GetCalculatedCapacityAsync(GlobalSettings.CultureInfo, token);
+        }
+
+        /// <summary>
+        /// Calculated Capacity of the Cyberware.
+        /// </summary>
+        public async Task<string> GetCalculatedCapacityAsync(CultureInfo objCulture, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -8531,7 +8541,7 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 string strCapacity = Capacity;
                 if (string.IsNullOrEmpty(strCapacity))
-                    return 0.0m.ToString("#,0.##", GlobalSettings.CultureInfo);
+                    return 0.0m.ToString("#,0.##", objCulture);
                 strCapacity = await strCapacity.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
 
                 if (strCapacity == "[*]")
@@ -8561,7 +8571,7 @@ namespace Chummer.Backend.Equipment
                             (bool blnIsSuccess, object objProcess) =
                                 await CommonFunctions.EvaluateInvariantXPathAsync(strFirstHalf, token).ConfigureAwait(false);
                             strReturn = blnIsSuccess
-                                ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
+                                ? ((double)objProcess).ToString("#,0.##", objCulture)
                                 : strFirstHalf;
                         }
                         catch (OverflowException) // Result is text and not a double
@@ -8574,7 +8584,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                     else
-                        strReturn = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
+                        strReturn = decValue.ToString("#,0.##", objCulture);
 
                     if (blnSquareBrackets)
                         strReturn = '[' + strCapacity + ']';
@@ -8593,7 +8603,7 @@ namespace Chummer.Backend.Equipment
                                 if (objChildCyberware.ParentID == InternalId)
                                     return;
 
-                                string strLoopCapacity = await objChildCyberware.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
+                                string strLoopCapacity = await objChildCyberware.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false);
                                 int intLoopPos = strLoopCapacity.IndexOf("/[", StringComparison.Ordinal);
                                 if (intLoopPos != -1)
                                     strLoopCapacity = strLoopCapacity.Substring(intLoopPos + 2,
@@ -8625,7 +8635,7 @@ namespace Chummer.Backend.Equipment
                                 await CommonFunctions.EvaluateInvariantXPathAsync(strSecondHalf, token).ConfigureAwait(false);
                             strSecondHalf =
                                 '[' + (blnIsSuccess
-                                    ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
+                                    ? ((double)objProcess).ToString("#,0.##", objCulture)
                                     : strSecondHalf) + ']';
                         }
                         catch (OverflowException) // Result is text and not a double
@@ -8638,7 +8648,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                     else
-                        strSecondHalf = decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
+                        strSecondHalf = decValue.ToString("#,0.##", objCulture);
 
                     strReturn += '/' + strSecondHalf;
                 }
@@ -8664,7 +8674,7 @@ namespace Chummer.Backend.Equipment
                                     if (objChildCyberware.ParentID == InternalId)
                                         return;
 
-                                    string strLoopCapacity = await objChildCyberware.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
+                                    string strLoopCapacity = await objChildCyberware.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false);
                                     int intLoopPos = strLoopCapacity.IndexOf("/[", StringComparison.Ordinal);
                                     if (intLoopPos != -1)
                                         strLoopCapacity = strLoopCapacity.Substring(intLoopPos + 2,
@@ -8692,13 +8702,13 @@ namespace Chummer.Backend.Equipment
                     (bool blnIsSuccess, object objProcess) =
                         await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token).ConfigureAwait(false);
                     strReturn = blnIsSuccess
-                        ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
+                        ? ((double)objProcess).ToString("#,0.##", objCulture)
                         : strCapacity;
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
                 }
                 else
-                    return decValue.ToString("#,0.##", GlobalSettings.CultureInfo);
+                    return decValue.ToString("#,0.##", objCulture);
                 return strReturn;
             }
             finally
@@ -10061,10 +10071,12 @@ namespace Chummer.Backend.Equipment
                     // If the child cost starts with "*", multiply the item's base cost.
                     if (objChild.Weight.StartsWith('*'))
                     {
-                        decimal decPluginWeight =
-                            decWeight * (Convert.ToDecimal(objChild.Cost.TrimStart('*'),
-                                                           GlobalSettings.InvariantCultureInfo) - 1);
-                        decReturn += decPluginWeight;
+                        if (decimal.TryParse(objChild.Weight.TrimStart('*'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decPluginWeight))
+                        {
+                            decPluginWeight -= 1;
+                            decPluginWeight *= decWeight;
+                            decReturn += decPluginWeight;
+                        }
                     }
                     else
                         decReturn += objChild.CalculatedTotalWeight(() => objChild.Rating);
@@ -10108,17 +10120,17 @@ namespace Chummer.Backend.Equipment
                     if (Capacity.Contains("/["))
                     {
                         // Get the Cyberware base Capacity.
-                        string strBaseCapacity = CalculatedCapacity;
+                        string strBaseCapacity = GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo);
                         strBaseCapacity = strBaseCapacity.Substring(0, strBaseCapacity.IndexOf('/'));
-                        decCapacity = Convert.ToDecimal(strBaseCapacity, GlobalSettings.CultureInfo)
-                                      // Run through its Children and deduct the Capacity costs.
-                                      - Children.Sum(objChildCyberware =>
+                        decimal.TryParse(strBaseCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decCapacity);
+                        // Run through its Children and deduct the Capacity costs.
+                        decCapacity -= Children.Sum(objChildCyberware =>
                                       {
                                           // Children that are built into the parent
                                           if (objChildCyberware.PlugsIntoTargetCyberware(this)
                                               || objChildCyberware.ParentID == InternalId)
                                               return 0;
-                                          string strCapacity = objChildCyberware.CalculatedCapacity;
+                                          string strCapacity = objChildCyberware.GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo);
                                           int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                                           if (intPos != -1)
                                               strCapacity = strCapacity.Substring(intPos + 2,
@@ -10127,15 +10139,16 @@ namespace Chummer.Backend.Equipment
                                               strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                                           if (strCapacity == "*")
                                               strCapacity = "0";
-                                          return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                                          decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp);
+                                          return decTemp;
                                       })
                                       // Run through its Children and deduct the Capacity costs.
-                                      - GearChildren.Sum(objChildGear =>
+                                      + GearChildren.Sum(objChildGear =>
                                       {
                                           if (objChildGear.IncludedInParent)
                                               return 0;
 
-                                          string strCapacity = objChildGear.CalculatedCapacity;
+                                          string strCapacity = objChildGear.GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo);
                                           int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                                           if (intPos != -1)
                                               strCapacity = strCapacity.Substring(
@@ -10144,20 +10157,21 @@ namespace Chummer.Backend.Equipment
                                               strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                                           if (strCapacity == "*")
                                               strCapacity = "0";
-                                          return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                                          decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp);
+                                          return decTemp;
                                       });
                     }
                     else if (!Capacity.Contains('['))
                     {
                         // Get the Cyberware base Capacity.
-                        decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalSettings.CultureInfo)
-                                      // Run through its Children and deduct the Capacity costs.
-                                      - Children.Sum(objChildCyberware =>
+                        decimal.TryParse(GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decCapacity);
+                        // Run through its Children and deduct the Capacity costs.
+                        decCapacity -= Children.Sum(objChildCyberware =>
                                       {
                                           if (objChildCyberware.PlugsIntoTargetCyberware(this)
                                               || objChildCyberware.ParentID == InternalId)
                                               return 0;
-                                          string strCapacity = objChildCyberware.CalculatedCapacity;
+                                          string strCapacity = objChildCyberware.GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo);
                                           int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                                           if (intPos != -1)
                                               strCapacity = strCapacity.Substring(
@@ -10166,15 +10180,16 @@ namespace Chummer.Backend.Equipment
                                               strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                                           if (strCapacity == "*")
                                               strCapacity = "0";
-                                          return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                                          decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp);
+                                          return decTemp;
                                       })
                                       // Run through its Children and deduct the Capacity costs.
-                                      - GearChildren.Sum(objChildGear =>
+                                      + GearChildren.Sum(objChildGear =>
                                       {
                                           if (objChildGear.IncludedInParent)
                                               return 0;
 
-                                          string strCapacity = objChildGear.CalculatedCapacity;
+                                          string strCapacity = objChildGear.GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo);
                                           int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                                           if (intPos != -1)
                                               strCapacity = strCapacity.Substring(
@@ -10183,7 +10198,8 @@ namespace Chummer.Backend.Equipment
                                               strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                                           if (strCapacity == "*")
                                               strCapacity = "0";
-                                          return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                                          decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp);
+                                          return decTemp;
                                       });
                     }
                 }
@@ -10206,17 +10222,17 @@ namespace Chummer.Backend.Equipment
                 if (Capacity.Contains("/["))
                 {
                     // Get the Cyberware base Capacity.
-                    string strBaseCapacity = await GetCalculatedCapacityAsync(token).ConfigureAwait(false);
+                    string strBaseCapacity = await GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false);
                     strBaseCapacity = strBaseCapacity.Substring(0, strBaseCapacity.IndexOf('/'));
-                    decCapacity = Convert.ToDecimal(strBaseCapacity, GlobalSettings.CultureInfo)
-                                  // Run through its Children and deduct the Capacity costs.
-                                  - await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(async objChildCyberware =>
+                    decimal.TryParse(strBaseCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decCapacity);
+                    // Run through its Children and deduct the Capacity costs.
+                    decCapacity -= await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(async objChildCyberware =>
                                   {
                                       // Skip children that are built into the parent
                                       return !await objChildCyberware.PlugsIntoTargetCyberwareAsync(this, token).ConfigureAwait(false) && objChildCyberware.ParentID != InternalId;
                                   }, async objChildCyberware =>
                                   {
-                                      string strCapacity = await objChildCyberware.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
+                                      string strCapacity = await objChildCyberware.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false);
                                       int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                                       if (intPos != -1)
                                           strCapacity = strCapacity.Substring(intPos + 2,
@@ -10225,12 +10241,13 @@ namespace Chummer.Backend.Equipment
                                           strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                                       if (strCapacity == "*")
                                           strCapacity = "0";
-                                      return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                                      decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp);
+                                      return decTemp;
                                   }, token).ConfigureAwait(false)
                                   // Run through its Children and deduct the Capacity costs.
-                                  - await (await GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(x => !x.IncludedInParent, async objChildGear =>
+                                  + await (await GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(x => !x.IncludedInParent, async objChildGear =>
                                   {
-                                      string strCapacity = await objChildGear.GetCalculatedArmorCapacityAsync(token).ConfigureAwait(false);
+                                      string strCapacity = await objChildGear.GetCalculatedArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false);
                                       int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                                       if (intPos != -1)
                                           strCapacity = strCapacity.Substring(
@@ -10239,21 +10256,22 @@ namespace Chummer.Backend.Equipment
                                           strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                                       if (strCapacity == "*")
                                           strCapacity = "0";
-                                      return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                                      decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp);
+                                      return decTemp;
                                   }, token).ConfigureAwait(false);
                 }
                 else if (!Capacity.Contains('['))
                 {
                     // Get the Cyberware base Capacity.
-                    decCapacity = Convert.ToDecimal(await GetCalculatedCapacityAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
-                                  // Run through its Children and deduct the Capacity costs.
-                                  - await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(async objChildCyberware =>
+                    decimal.TryParse(await GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decCapacity);
+                    // Run through its Children and deduct the Capacity costs.
+                    decCapacity -= await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(async objChildCyberware =>
                                   {
                                       // Skip children that are built into the parent
                                       return !await objChildCyberware.PlugsIntoTargetCyberwareAsync(this, token).ConfigureAwait(false) && objChildCyberware.ParentID != InternalId;
                                   }, async objChildCyberware =>
                                   {
-                                      string strCapacity = await objChildCyberware.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
+                                      string strCapacity = await objChildCyberware.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false);
                                       int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                                       if (intPos != -1)
                                           strCapacity = strCapacity.Substring(
@@ -10262,12 +10280,13 @@ namespace Chummer.Backend.Equipment
                                           strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                                       if (strCapacity == "*")
                                           strCapacity = "0";
-                                      return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                                      decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp);
+                                      return decTemp;
                                   }, token).ConfigureAwait(false)
                                   // Run through its Children and deduct the Capacity costs.
-                                  - await (await GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(x => !x.IncludedInParent, async objChildGear =>
+                                  + await (await GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(x => !x.IncludedInParent, async objChildGear =>
                                   {
-                                      string strCapacity = await objChildGear.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
+                                      string strCapacity = await objChildGear.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false);
                                       int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                                       if (intPos != -1)
                                           strCapacity = strCapacity.Substring(
@@ -10276,7 +10295,8 @@ namespace Chummer.Backend.Equipment
                                           strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                                       if (strCapacity == "*")
                                           strCapacity = "0";
-                                      return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                                      decimal.TryParse(strCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp);
+                                      return decTemp;
                                   }, token).ConfigureAwait(false);
                 }
             }
