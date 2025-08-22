@@ -890,24 +890,15 @@ namespace Chummer
                     if (token.IsCancellationRequested)
                         return Task.FromCanceled(token);
                     // Special case here, we do not want to get caught up on escaped quotation marks inside of the text
-                    int intSnipEndIndex = strDisplayText.IndexOfAny(intSnipStartIndex, "\",", "\\\"");
+                    int intSnipEndIndex = strDisplayText.IndexOfAny(intSnipStartIndex, "\\\"", "\"");
+                    if (intSnipEndIndex >= 0 && strDisplayText[intSnipEndIndex] != '\"')
+                        ++intSnipEndIndex;
                     if (intSnipEndIndex > intSnipStartIndex)
                     {
-                        while (strDisplayText[intSnipEndIndex] != '\"')
-                        {
-                            if (token.IsCancellationRequested)
-                                return Task.FromCanceled(token);
-                            intSnipEndIndex = strDisplayText.IndexOfAny(intSnipEndIndex + 2, "\",", "\\\"");
-                        }
-                        if (intSnipEndIndex > intSnipStartIndex)
-                        {
-                            string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 10);
-                            string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
-                            strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
-                            intSnipStartIndex = strDisplayText.IndexOf("base64\": \"", intSnipStartIndex + 18);
-                        }
-                        else
-                            intSnipStartIndex = -1;
+                        string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 10);
+                        string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
+                        strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
+                        intSnipStartIndex = strDisplayText.IndexOf("base64\": \"", intSnipStartIndex + 17);
                     }
                     else
                         intSnipStartIndex = -1;
