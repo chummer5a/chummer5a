@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -237,9 +238,7 @@ namespace Chummer
             {
                 foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power[" + strFilter + ']'))
                 {
-                    decimal decPoints
-                        = Convert.ToDecimal(objXmlPower.SelectSingleNodeAndCacheExpression("points", token: token)?.Value,
-                                            GlobalSettings.InvariantCultureInfo);
+                    decimal.TryParse(objXmlPower.SelectSingleNodeAndCacheExpression("points", token: token)?.Value, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decPoints);
                     string strExtraPointCost = objXmlPower.SelectSingleNodeAndCacheExpression("extrapointcost", token: token)?.Value;
                     string strName = objXmlPower.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                      ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
