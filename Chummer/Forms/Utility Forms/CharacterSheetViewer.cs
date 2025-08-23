@@ -923,7 +923,7 @@ namespace Chummer
             }
         }
 
-        private string GetRandomTempFilePath() => Path.Combine(Utils.GetTempPath(), Path.GetRandomFileName() + ".htm");
+        private static string GetRandomTempFilePath() => Path.Combine(Utils.GetTempPath(), Path.GetRandomFileName() + ".htm");
 
         /// <summary>
         /// Run the generated XML file through the XSL transformation engine to create the file output.
