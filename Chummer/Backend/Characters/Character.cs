@@ -30930,7 +30930,7 @@ namespace Chummer
                     {
                         foreach (Focus objFocus in lstPowerFoci)
                             setPowerFociIds.Add(objFocus.GearObject.InternalId);
-                        for (int i = lstRelevantImprovements.Count; i >= 0; --i)
+                        for (int i = lstRelevantImprovements.Count - 1; i >= 0; --i)
                         {
                             if (!setPowerFociIds.Contains(lstRelevantImprovements[i].SourceName))
                                 lstRelevantImprovements.RemoveAt(i);
@@ -31006,7 +31006,7 @@ namespace Chummer
                     {
                         foreach (Focus objFocus in lstPowerFoci)
                             setPowerFociIds.Add(objFocus.GearObject.InternalId);
-                        for (int i = lstRelevantImprovements.Count; i >= 0; --i)
+                        for (int i = lstRelevantImprovements.Count - 1; i >= 0; --i)
                         {
                             if (!setPowerFociIds.Contains(lstRelevantImprovements[i].SourceName))
                                 lstRelevantImprovements.RemoveAt(i);
