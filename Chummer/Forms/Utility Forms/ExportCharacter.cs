@@ -48,7 +48,7 @@ namespace Chummer
         private readonly ConcurrentDictionary<Tuple<string, string>, Tuple<string, string>> _dicCache = new ConcurrentDictionary<Tuple<string, string>, Tuple<string, string>>();
         private CancellationTokenSource _objCharacterXmlGeneratorCancellationTokenSource;
         private CancellationTokenSource _objXmlGeneratorCancellationTokenSource;
-        private CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource _objGenericFormClosingCancellationTokenSource;
         private readonly CancellationToken _objGenericToken;
         private Task _tskCharacterXmlGenerator;
         private Task _tskXmlGenerator;
@@ -67,7 +67,13 @@ namespace Chummer
 
         public ExportCharacter(Character objCharacter)
         {
+            _objCharacter = objCharacter;
+            InitializeComponent();
+            this.UpdateLightDarkMode();
+            this.TranslateWinForm();
+            _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
+            Program.MainForm.OpenCharacterExportForms?.Add(this);
             Disposed += (sender, args) =>
             {
                 CancellationTokenSource objSource = Interlocked.Exchange(ref _objGenericFormClosingCancellationTokenSource, null);
@@ -76,15 +82,20 @@ namespace Chummer
                     objSource.Cancel(false);
                     objSource.Dispose();
                 }
-                Interlocked.Exchange(ref _objXmlGeneratorCancellationTokenSource, null)?.Dispose();
-                Interlocked.Exchange(ref _objCharacterXmlGeneratorCancellationTokenSource, null)?.Dispose();
+                objSource = Interlocked.Exchange(ref _objXmlGeneratorCancellationTokenSource, null);
+                if (objSource != null)
+                {
+                    objSource.Cancel(false);
+                    objSource.Dispose();
+                }
+                objSource = Interlocked.Exchange(ref _objCharacterXmlGeneratorCancellationTokenSource, null);
+                if (objSource != null)
+                {
+                    objSource.Cancel(false);
+                    objSource.Dispose();
+                }
                 dlgSaveFile?.Dispose();
             };
-            _objCharacter = objCharacter;
-            Program.MainForm.OpenCharacterExportForms?.Add(this);
-            InitializeComponent();
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
         }
 
         private async void ExportCharacter_Load(object sender, EventArgs e)
@@ -638,11 +649,11 @@ namespace Chummer
 
         #region XML
 
-        private async Task ExportNormal(string destination = null, CancellationToken token = default)
+        private async Task ExportNormal(string strDestination = "", CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strSaveFile = destination;
-            if (string.IsNullOrEmpty(destination))
+            string strSaveFile = strDestination;
+            if (string.IsNullOrEmpty(strDestination))
             {
                 // Look for the file extension information.
                 string strExtension = "xml";
@@ -690,12 +701,14 @@ namespace Chummer
             }
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
+            if (File.Exists(strSaveFile) && !await FileExtensions.SafeDeleteAsync(strSaveFile, true, token: token).ConfigureAwait(false))
+                return;
 
-            File.WriteAllText(strSaveFile, // Change this to a proper path.
+            await FileExtensions.WriteAllTextAsync(strSaveFile, // Change this to a proper path.
                 _dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt), out Tuple<string, string> strBoxText)
                                   ? strBoxText.Item1
                                   : await txtText.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false),
-                              Encoding.UTF8);
+                              Encoding.UTF8, token).ConfigureAwait(false);
         }
 
         private async Task GenerateXml(CancellationToken token = default)
@@ -920,10 +933,10 @@ namespace Chummer
 
         #region JSON
 
-        private async Task ExportJson(string destination = null, CancellationToken token = default)
+        private async Task ExportJson(string strDestination = "", CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strSaveFile = destination;
+            string strSaveFile = strDestination;
             if (string.IsNullOrEmpty(strSaveFile))
             {
                 dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json", token: token).ConfigureAwait(false) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
@@ -937,6 +950,8 @@ namespace Chummer
                     strSaveFile += ".json";
             }
             if (string.IsNullOrWhiteSpace(strSaveFile))
+                return;
+            if (File.Exists(strSaveFile) && !await FileExtensions.SafeDeleteAsync(strSaveFile, true, token: token).ConfigureAwait(false))
                 return;
 
             // Change this to a proper path.

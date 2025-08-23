@@ -58,7 +58,6 @@ namespace Chummer
         private bool _blnCanPrint;
         private Task _tskRefresher;
         private Task _tskOutputGenerator;
-        private readonly string _strTempSheetFilePath = Path.Combine(Utils.GetTempPath(), Path.GetRandomFileName() + ".htm");
 
         public IEnumerable<Character> CharacterObjects => _lstCharacters;
 
@@ -924,6 +923,8 @@ namespace Chummer
             }
         }
 
+        private string GetRandomTempFilePath() => Path.Combine(Utils.GetTempPath(), Path.GetRandomFileName() + ".htm");
+
         /// <summary>
         /// Run the generated XML file through the XSL transformation engine to create the file output.
         /// </summary>
@@ -1036,16 +1037,21 @@ namespace Chummer
                     objSettings.ConformanceLevel = ConformanceLevel.Fragment;
                 }
 
-                // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
-                // Delete any old versions of the file
-                if (GlobalSettings.PrintToFileFirst && !await FileExtensions.SafeDeleteAsync(
-                                                                                _strTempSheetFilePath, true, token: token)
-                                                                            .ConfigureAwait(false))
+                string strTempSheetFilePath = string.Empty;
+
+                if (GlobalSettings.PrintToFileFirst)
                 {
-                    await SetDocumentText(
-                        await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
-                                             .ConfigureAwait(false), token).ConfigureAwait(false);
-                    return;
+                    strTempSheetFilePath = GetRandomTempFilePath();
+                    // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
+                    // Delete any old versions of the file
+                    if (File.Exists(strTempSheetFilePath)
+                        && !await FileExtensions.SafeDeleteAsync(strTempSheetFilePath, true, token: token).ConfigureAwait(false))
+                    {
+                        await SetDocumentText(
+                            await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
+                                                 .ConfigureAwait(false), token).ConfigureAwait(false);
+                        return;
+                    }
                 }
 
                 string strOutput = await Task.Run(async () =>
@@ -1099,11 +1105,11 @@ namespace Chummer
                     // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
 
                     // Read in the resulting code and pass it to the browser.
-                    File.WriteAllText(_strTempSheetFilePath, strOutput);
+                    await FileExtensions.WriteAllTextAsync(strTempSheetFilePath, strOutput, token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, token).ConfigureAwait(false);
                     await webViewer.DoThreadSafeAsync(
-                        x => x.Url = new Uri("file:///" + _strTempSheetFilePath), token).ConfigureAwait(false);
+                        x => x.Url = new Uri("file:///" + strTempSheetFilePath), token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                 }
                 else

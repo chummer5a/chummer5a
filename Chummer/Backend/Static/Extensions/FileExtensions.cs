@@ -337,7 +337,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strPath))
                 return;
             using (FileStream objFileStream
-                   = new FileStream(strPath, FileMode.Append, FileAccess.Write, FileShare.Write, 4096, true))
+                   = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.Write, 4096, true))
             using (StreamWriter objWriter = new StreamWriter(objFileStream, eEncoding))
             {
                 token.ThrowIfCancellationRequested();
