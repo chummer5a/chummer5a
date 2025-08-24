@@ -301,13 +301,21 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             List<Vehicle> lstVehicles = new List<Vehicle>(1);
                             Cyberware objCyberware = new Cyberware(_objCharacter);
-                            await objCyberware.CreateAsync(objXmlCyberware, objGrade, _eSource, intRating, lstWeapons,
-                                lstVehicles, false, false, token: token).ConfigureAwait(false);
-                            objCyberware.Suite = true;
+                            try
+                            {
+                                await objCyberware.CreateAsync(objXmlCyberware, objGrade, _eSource, intRating, lstWeapons,
+                                    lstVehicles, false, false, token: token).ConfigureAwait(false);
+                                objCyberware.Suite = true;
 
-                            lstChildren.Add(objCyberware);
+                                lstChildren.Add(objCyberware);
 
-                            await ParseNode(xmlChildItem, objGrade, await objCyberware.GetChildrenAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                                await ParseNode(xmlChildItem, objGrade, await objCyberware.GetChildrenAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objCyberware.DeleteCyberwareAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     }
                 }

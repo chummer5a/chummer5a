@@ -237,16 +237,24 @@ namespace Chummer.Backend.Equipment
                             XmlNode xmlQuality
                                 = xmlLifestyleDocument.TryGetNodeByNameOrId(
                                     "/chummer/qualities/quality", xmlNode.InnerText);
-                            LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                             string strPush = xmlNode.SelectSingleNodeAndCacheExpressionAsNavigator("@select")?.Value;
                             if (!string.IsNullOrWhiteSpace(strPush))
                             {
                                 _objCharacter.PushText.Push(strPush);
                             }
 
-                            objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
-                            objQuality.IsFreeGrid = true;
-                            LifestyleQualities.Add(objQuality);
+                            LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                            try
+                            {
+                                objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
+                                objQuality.IsFreeGrid = true;
+                                LifestyleQualities.Add(objQuality);
+                            }
+                            catch
+                            {
+                                objQuality.Remove(false);
+                                throw;
+                            }
                         }
                     }
                 }
@@ -348,7 +356,6 @@ namespace Chummer.Backend.Equipment
                             XmlNode xmlQuality
                                 = xmlLifestyleDocument.TryGetNodeByNameOrId(
                                     "/chummer/qualities/quality", xmlNode.InnerText);
-                            LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                             string strPush = xmlNode.SelectSingleNodeAndCacheExpressionAsNavigator("@select", token)
                                 ?.Value;
                             if (!string.IsNullOrWhiteSpace(strPush))
@@ -356,10 +363,19 @@ namespace Chummer.Backend.Equipment
                                 (await _objCharacter.GetPushTextAsync(token).ConfigureAwait(false)).Push(strPush);
                             }
 
-                            await objQuality.CreateAsync(xmlQuality, this, _objCharacter, QualitySource.BuiltIn,
-                                token: token).ConfigureAwait(false);
-                            await objQuality.SetIsFreeGridAsync(true, token).ConfigureAwait(false);
-                            await _lstLifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                            LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                            try
+                            {
+                                await objQuality.CreateAsync(xmlQuality, this, _objCharacter, QualitySource.BuiltIn,
+                                    token: token).ConfigureAwait(false);
+                                await objQuality.SetIsFreeGridAsync(true, token).ConfigureAwait(false);
+                                await _lstLifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objQuality.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     }
                 }
@@ -718,8 +734,16 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode xmlQuality in xmlQualityList)
                             {
                                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                                objQuality.Load(xmlQuality, this);
-                                LifestyleQualities.Add(objQuality);
+                                try
+                                {
+                                    objQuality.Load(xmlQuality, this);
+                                    LifestyleQualities.Add(objQuality);
+                                }
+                                catch
+                                {
+                                    objQuality.Remove(false);
+                                    throw;
+                                }
                             }
                         }
                         else
@@ -727,8 +751,16 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode xmlQuality in xmlQualityList)
                             {
                                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                                await objQuality.LoadAsync(xmlQuality, this, token).ConfigureAwait(false);
-                                await LifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                                try
+                                {
+                                    await objQuality.LoadAsync(xmlQuality, this, token).ConfigureAwait(false);
+                                    await LifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await objQuality.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
                             }
                         }
                     }
@@ -745,9 +777,17 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode xmlQuality in xmlQualityList)
                             {
                                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                                objQuality.Load(xmlQuality, this);
-                                objQuality.IsFreeGrid = true;
-                                LifestyleQualities.Add(objQuality);
+                                try
+                                {
+                                    objQuality.Load(xmlQuality, this);
+                                    objQuality.IsFreeGrid = true;
+                                    LifestyleQualities.Add(objQuality);
+                                }
+                                catch
+                                {
+                                    objQuality.Remove(false);
+                                    throw;
+                                }
                             }
                         }
                         else
@@ -755,9 +795,17 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode xmlQuality in xmlQualityList)
                             {
                                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                                await objQuality.LoadAsync(xmlQuality, this, token).ConfigureAwait(false);
-                                await objQuality.SetIsFreeGridAsync(true, token).ConfigureAwait(false);
-                                await LifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                                try
+                                {
+                                    await objQuality.LoadAsync(xmlQuality, this, token).ConfigureAwait(false);
+                                    await objQuality.SetIsFreeGridAsync(true, token).ConfigureAwait(false);
+                                    await LifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await objQuality.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
                             }
                         }
                     }
@@ -1761,8 +1809,16 @@ namespace Chummer.Backend.Equipment
                                     = xmlLifestyleDocument.SelectSingleNode(
                                         "/chummer/qualities/quality[name = \"Not a Home\"]");
                                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                                objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
-                                LifestyleQualities.Add(objQuality);
+                                try
+                                {
+                                    objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
+                                    LifestyleQualities.Add(objQuality);
+                                }
+                                catch
+                                {
+                                    objQuality.Remove(false);
+                                    throw;
+                                }
                             }
                             else if (objNotAHomeQuality.OriginSource != QualitySource.BuiltIn)
                                 objNotAHomeQuality.OriginSource = QualitySource.BuiltIn;
@@ -1878,10 +1934,18 @@ namespace Chummer.Backend.Equipment
                                 = xmlLifestyleDocument.SelectSingleNode(
                                     "/chummer/qualities/quality[name = \"Not a Home\"]");
                             LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                            await objQuality
-                                .CreateAsync(xmlQuality, this, _objCharacter, QualitySource.BuiltIn, token: token)
-                                .ConfigureAwait(false);
-                            await LifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                            try
+                            {
+                                await objQuality
+                                    .CreateAsync(xmlQuality, this, _objCharacter, QualitySource.BuiltIn, token: token)
+                                    .ConfigureAwait(false);
+                                await LifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objQuality.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                         else if (await objNotAHomeQuality.GetOriginSourceAsync(token).ConfigureAwait(false) !=
                                  QualitySource.BuiltIn)

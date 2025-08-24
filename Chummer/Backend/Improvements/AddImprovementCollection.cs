@@ -20,8 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -1562,18 +1562,23 @@ namespace Chummer
             }
 
             Spell spell = new Spell(_objCharacter);
-            spell.Create(node, strExtra);
-            if (spell.InternalId.IsEmptyGuid())
+            try
             {
-                spell.Dispose();
-                throw new AbortedException();
-            }
-            spell.Grade = -1;
-            _objCharacter.Spells.Add(spell);
+                spell.Create(node, strExtra);
+                if (spell.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+                spell.Grade = -1;
+                _objCharacter.Spells.Add(spell);
 
-            CreateImprovement(spell.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.Spell,
-                _strUnique);
+                CreateImprovement(spell.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.Spell,
+                    _strUnique);
+            }
+            catch
+            {
+                spell.Remove(false);
+                throw;
+            }
         }
 
         // Add a specific Spell to the Character.
@@ -1608,22 +1613,27 @@ namespace Chummer
             }
 
             Spell spell = new Spell(_objCharacter);
-            spell.Create(node, strExtra);
-            if (spell.InternalId.IsEmptyGuid())
+            try
             {
-                spell.Dispose();
-                throw new AbortedException();
-            }
-            spell.Alchemical = bonusNode.Attributes?["alchemical"]?.InnerText == bool.TrueString;
-            spell.Extended = bonusNode.Attributes?["extended"]?.InnerText == bool.TrueString;
-            spell.Limited = bonusNode.Attributes?["limited"]?.InnerText == bool.TrueString;
-            spell.BarehandedAdept = bonusNode.Attributes?["barehandedadept"]?.InnerText == bool.TrueString || bonusNode.Attributes?["usesunarmed"]?.InnerText == bool.TrueString;
-            spell.Grade = -1;
-            _objCharacter.Spells.Add(spell);
+                spell.Create(node, strExtra);
+                if (spell.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+                spell.Alchemical = bonusNode.Attributes?["alchemical"]?.InnerText == bool.TrueString;
+                spell.Extended = bonusNode.Attributes?["extended"]?.InnerText == bool.TrueString;
+                spell.Limited = bonusNode.Attributes?["limited"]?.InnerText == bool.TrueString;
+                spell.BarehandedAdept = bonusNode.Attributes?["barehandedadept"]?.InnerText == bool.TrueString || bonusNode.Attributes?["usesunarmed"]?.InnerText == bool.TrueString;
+                spell.Grade = -1;
+                _objCharacter.Spells.Add(spell);
 
-            CreateImprovement(spell.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.Spell,
-                _strUnique);
+                CreateImprovement(spell.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.Spell,
+                    _strUnique);
+            }
+            catch
+            {
+                spell.Remove(false);
+                throw;
+            }
         }
 
         // Select a Complex Form.
@@ -1658,19 +1668,24 @@ namespace Chummer
             SelectedValue = node["name"]?.InnerText;
 
             ComplexForm objComplexform = new ComplexForm(_objCharacter);
-            objComplexform.Create(node);
-            if (objComplexform.InternalId.IsEmptyGuid())
+            try
             {
-                objComplexform.Dispose();
-                throw new AbortedException();
+                objComplexform.Create(node);
+                if (objComplexform.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+                objComplexform.Grade = -1;
+
+                _objCharacter.ComplexForms.Add(objComplexform);
+
+                CreateImprovement(objComplexform.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.ComplexForm,
+                    _strUnique);
             }
-            objComplexform.Grade = -1;
-
-            _objCharacter.ComplexForms.Add(objComplexform);
-
-            CreateImprovement(objComplexform.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.ComplexForm,
-                _strUnique);
+            catch
+            {
+                objComplexform.Remove(false);
+                throw;
+            }
         }
 
         // Add a specific ComplexForm to the Character.
@@ -1684,19 +1699,24 @@ namespace Chummer
             XmlNode node = objXmlComplexFormDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexform", bonusNode.InnerText) ?? throw new AbortedException();
 
             ComplexForm objComplexform = new ComplexForm(_objCharacter);
-            objComplexform.Create(node);
-            if (objComplexform.InternalId.IsEmptyGuid())
+            try
             {
-                objComplexform.Dispose();
-                throw new AbortedException();
+                objComplexform.Create(node);
+                if (objComplexform.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+                objComplexform.Grade = -1;
+
+                _objCharacter.ComplexForms.Add(objComplexform);
+
+                CreateImprovement(objComplexform.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.ComplexForm,
+                    _strUnique);
             }
-            objComplexform.Grade = -1;
-
-            _objCharacter.ComplexForms.Add(objComplexform);
-
-            CreateImprovement(objComplexform.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.ComplexForm,
-                _strUnique);
+            catch
+            {
+                objComplexform.Remove(false);
+                throw;
+            }
         }
 
         // Add a specific Gear to the Character.
@@ -1749,40 +1769,48 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>(1);
 
                 Gear objNewGearToCreate = new Gear(_objCharacter);
-                objNewGearToCreate.Create(xmlGearDataNode, intRating, lstWeapons, ForcedValue);
-
-                if (objNewGearToCreate.InternalId.IsEmptyGuid())
-                    throw new AbortedException();
-
-                objNewGearToCreate.Quantity = decQty;
-
-                // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
-                if (_objCharacter.ActiveCommlink == null && objNewGearToCreate.IsCommlink)
+                try
                 {
-                    objNewGearToCreate.SetActiveCommlink(_objCharacter, true);
+                    objNewGearToCreate.Create(xmlGearDataNode, intRating, lstWeapons, ForcedValue);
+
+                    if (objNewGearToCreate.InternalId.IsEmptyGuid())
+                        throw new AbortedException();
+
+                    objNewGearToCreate.Quantity = decQty;
+
+                    // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
+                    if (_objCharacter.ActiveCommlink == null && objNewGearToCreate.IsCommlink)
+                    {
+                        objNewGearToCreate.SetActiveCommlink(_objCharacter, true);
+                    }
+
+                    if (xmlGearNode["fullcost"] == null)
+                        objNewGearToCreate.Cost = "0";
+                    // Create any Weapons that came with this Gear.
+                    foreach (Weapon objWeapon in lstWeapons)
+                        _objCharacter.Weapons.Add(objWeapon);
+
+                    objNewGearToCreate.ParentID = SourceName;
+                    if (objParent != null)
+                    {
+                        objParent.Children.Add(objNewGearToCreate);
+                        objNewGearToCreate.Parent = objParent;
+                    }
+                    else
+                    {
+                        _objCharacter.Gear.Add(objNewGearToCreate);
+                    }
+
+                    CreateImprovement(objNewGearToCreate.InternalId, _objImprovementSource, SourceName,
+                        Improvement.ImprovementType.Gear,
+                        _strUnique);
+                    return objNewGearToCreate;
                 }
-
-                if (xmlGearNode["fullcost"] == null)
-                    objNewGearToCreate.Cost = "0";
-                // Create any Weapons that came with this Gear.
-                foreach (Weapon objWeapon in lstWeapons)
-                    _objCharacter.Weapons.Add(objWeapon);
-
-                objNewGearToCreate.ParentID = SourceName;
-                if (objParent != null)
+                catch
                 {
-                    objParent.Children.Add(objNewGearToCreate);
-                    objNewGearToCreate.Parent = objParent;
+                    objNewGearToCreate.DeleteGear();
+                    throw;
                 }
-                else
-                {
-                    _objCharacter.Gear.Add(objNewGearToCreate);
-                }
-
-                CreateImprovement(objNewGearToCreate.InternalId, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.Gear,
-                    _strUnique);
-                return objNewGearToCreate;
             }
         }
 
@@ -1799,31 +1827,39 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>(1);
 
             Weapon objNewWeapon = new Weapon(_objCharacter);
-            objNewWeapon.Create(node, lstWeapons);
-
-            if (objNewWeapon.InternalId.IsEmptyGuid())
-                throw new AbortedException();
-
-            // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
-            if (_objCharacter.ActiveCommlink == null && objNewWeapon.IsCommlink)
+            try
             {
-                objNewWeapon.SetActiveCommlink(_objCharacter, true);
+                objNewWeapon.Create(node, lstWeapons);
+
+                if (objNewWeapon.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+
+                // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
+                if (_objCharacter.ActiveCommlink == null && objNewWeapon.IsCommlink)
+                {
+                    objNewWeapon.SetActiveCommlink(_objCharacter, true);
+                }
+
+                if (bonusNode["fullcost"] == null)
+                    objNewWeapon.Cost = "0";
+
+                // Create any Weapons that came with this Gear.
+                foreach (Weapon objWeapon in lstWeapons)
+                    _objCharacter.Weapons.Add(objWeapon);
+
+                objNewWeapon.ParentID = SourceName;
+
+                _objCharacter.Weapons.Add(objNewWeapon);
+
+                CreateImprovement(objNewWeapon.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.Weapon,
+                    _strUnique);
             }
-
-            if (bonusNode["fullcost"] == null)
-                objNewWeapon.Cost = "0";
-
-            // Create any Weapons that came with this Gear.
-            foreach (Weapon objWeapon in lstWeapons)
-                _objCharacter.Weapons.Add(objWeapon);
-
-            objNewWeapon.ParentID = SourceName;
-
-            _objCharacter.Weapons.Add(objNewWeapon);
-
-            CreateImprovement(objNewWeapon.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.Weapon,
-                _strUnique);
+            catch
+            {
+                objNewWeapon.DeleteWeapon();
+                throw;
+            }
         }
 
         // Add a specific Gear to the Character.
@@ -1832,33 +1868,39 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
 
-            Weapon objWeapon = new Weapon(_objCharacter)
+            Weapon objWeapon = new Weapon(_objCharacter);
+            try
             {
-                Name = bonusNode["name"]?.InnerText ?? _strFriendlyName,
-                Category = LanguageManager.GetString("Tab_Critter", GlobalSettings.DefaultLanguage),
-                RangeType = "Melee",
-                Reach = bonusNode["reach"]?.InnerText ?? "0",
-                Accuracy = bonusNode["accuracy"]?.InnerText ?? "Physical",
-                Damage = bonusNode["damage"]?.InnerText ?? "({STR})S",
-                AP = bonusNode["ap"]?.InnerText ?? "0",
-                Mode = "0",
-                RC = "0",
-                Concealability = "0",
-                Avail = "0",
-                Cost = "0",
-                Ammo = "0",
-                UseSkill = bonusNode["useskill"]?.InnerText ?? string.Empty,
-                Source = bonusNode["source"]?.InnerText ?? "SR5",
-                Page = bonusNode["page"]?.InnerText ?? "0",
-                ParentID = SourceName
-            };
-            objWeapon.CreateClips();
+                objWeapon.Name = bonusNode["name"]?.InnerText ?? _strFriendlyName;
+                objWeapon.Category = LanguageManager.GetString("Tab_Critter", GlobalSettings.DefaultLanguage);
+                objWeapon.RangeType = "Melee";
+                objWeapon.Reach = bonusNode["reach"]?.InnerText ?? "0";
+                objWeapon.Accuracy = bonusNode["accuracy"]?.InnerText ?? "Physical";
+                objWeapon.Damage = bonusNode["damage"]?.InnerText ?? "({STR})S";
+                objWeapon.AP = bonusNode["ap"]?.InnerText ?? "0";
+                objWeapon.Mode = "0";
+                objWeapon.RC = "0";
+                objWeapon.Concealability = "0";
+                objWeapon.Avail = "0";
+                objWeapon.Cost = "0";
+                objWeapon.Ammo = "0";
+                objWeapon.UseSkill = bonusNode["useskill"]?.InnerText ?? string.Empty;
+                objWeapon.Source = bonusNode["source"]?.InnerText ?? "SR5";
+                objWeapon.Page = bonusNode["page"]?.InnerText ?? "0";
+                objWeapon.ParentID = SourceName;
+                objWeapon.CreateClips();
 
-            _objCharacter.Weapons.Add(objWeapon);
+                _objCharacter.Weapons.Add(objWeapon);
 
-            CreateImprovement(objWeapon.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.Weapon,
-                _strUnique);
+                CreateImprovement(objWeapon.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.Weapon,
+                    _strUnique);
+            }
+            catch
+            {
+                objWeapon.DeleteWeapon();
+                throw;
+            }
         }
 
         // Select an AI program.
@@ -2682,13 +2724,21 @@ namespace Chummer
             XmlNode objXmlArt = _objCharacter.LoadData("martialarts.xml").TryGetNodeByNameOrId("/chummer/martialarts/martialart", bonusNode.InnerText);
 
             MartialArt objMartialArt = new MartialArt(_objCharacter);
-            objMartialArt.Create(objXmlArt);
-            objMartialArt.IsQuality = true;
-            _objCharacter.MartialArts.Add(objMartialArt);
+            try
+            {
+                objMartialArt.Create(objXmlArt);
+                objMartialArt.IsQuality = true;
+                _objCharacter.MartialArts.Add(objMartialArt);
 
-            CreateImprovement(objMartialArt.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.MartialArt,
-                _strUnique);
+                CreateImprovement(objMartialArt.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.MartialArt,
+                    _strUnique);
+            }
+            catch
+            {
+                objMartialArt.DeleteMartialArt();
+                throw;
+            }
         }
 
         // The Improvement adds a limit modifier
@@ -3644,9 +3694,7 @@ namespace Chummer
                     objMentor.Create(xmlMentor, Improvement.ImprovementType.MentorSpirit, string.Empty,
                                      frmPickMentorSpirit.MyForm.Choice1, frmPickMentorSpirit.MyForm.Choice2);
                     if (objMentor.InternalId.IsEmptyGuid())
-                    {
                         throw new AbortedException();
-                    }
 
                     _objCharacter.MentorSpirits.Add(objMentor);
                 }
@@ -3693,9 +3741,7 @@ namespace Chummer
                     objMentor.Create(xmlMentor, Improvement.ImprovementType.Paragon, string.Empty,
                                      frmPickMentorSpirit.MyForm.Choice1, frmPickMentorSpirit.MyForm.Choice2);
                     if (objMentor.InternalId.IsEmptyGuid())
-                    {
                         throw new AbortedException();
-                    }
                     _objCharacter.MentorSpirits.Add(objMentor);
                 }
                 catch
@@ -3903,29 +3949,37 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(strPowerName))
                 {
-                    // Check if the character already has this power
-                    Power objNewPower = new Power(_objCharacter);
+                    Power objBoostedPower;
                     XmlNode objXmlPower = _objCharacter.LoadData("powers.xml").TryGetNodeByNameOrId("/chummer/powers/power", strPowerName);
-                    if (!objNewPower.Create(objXmlPower, 0, bonusNode["bonusoverride"]))
+                    Power objNewPower = new Power(_objCharacter);
+                    try
+                    {
+                        if (!objNewPower.Create(objXmlPower, 0, bonusNode["bonusoverride"]))
+                            throw new AbortedException();
+
+                        // Check if the character already has this power
+                        objBoostedPower = _objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
+                    }
+                    catch
                     {
                         objNewPower.DeletePower();
-                        throw new AbortedException();
+                        throw;
                     }
-
-                    Power objBoostedPower = _objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
                     if (objBoostedPower == null)
                     {
                         _objCharacter.Powers.Add(objNewPower);
                         objBoostedPower = objNewPower;
                     }
+                    else
+                        objNewPower.DeletePower();
 
                     int.TryParse(bonusNode["val"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intLevels);
                     if (!objBoostedPower.LevelsEnabled)
                         intLevels = 1;
-                    CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName,
+                    CreateImprovement(objBoostedPower.Name, _objImprovementSource, SourceName,
                         !string.IsNullOrWhiteSpace(bonusNode["pointsperlevel"]?.InnerText)
                             ? Improvement.ImprovementType.AdeptPowerFreePoints
-                            : Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0,
+                            : Improvement.ImprovementType.AdeptPowerFreeLevels, objBoostedPower.Extra, 0,
                         intLevels);
 
                     // fix: refund power points, if bonus would make power exceed maximum
@@ -3974,26 +4028,33 @@ namespace Chummer
 
                                 // Make sure the dialogue window was not canceled.
                                 if (frmPickPower.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
-                                {
                                     throw new AbortedException();
-                                }
 
                                 objXmlPower = xmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", frmPickPower.MyForm.SelectedPower)
                                               ?? throw new AbortedException();
                             }
 
+                            bool blnHasPower;
+                            string strName;
+                            string strExtra;
                             // If no, add the power and mark it free or give it free levels
                             Power objNewPower = new Power(_objCharacter);
-                            if (!objNewPower.Create(objXmlPower))
+                            try
+                            {
+                                if (!objNewPower.Create(objXmlPower))
+                                    throw new AbortedException();
+
+                                SelectedValue = objNewPower.CurrentDisplayName;
+                                strName = objNewPower.Name;
+                                strExtra = objNewPower.Extra;
+                                blnHasPower = _objCharacter.Powers.Any(
+                                    objPower => objPower.Name == strName && objPower.Extra == strExtra);
+                            }
+                            catch
                             {
                                 objNewPower.DeletePower();
-                                throw new AbortedException();
+                                throw;
                             }
-
-                            SelectedValue = objNewPower.CurrentDisplayName;
-
-                            bool blnHasPower = _objCharacter.Powers.Any(
-                                objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
 
                             if (!blnHasPower)
                             {
@@ -4005,11 +4066,11 @@ namespace Chummer
                                 objNewPower.DeletePower();
                             }
 
-                            CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName,
-                                !string.IsNullOrWhiteSpace(strPointsPerLevel)
-                                    ? Improvement.ImprovementType.AdeptPowerFreePoints
-                                    : Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0,
-                                intLevels);
+                            CreateImprovement(strName, _objImprovementSource, SourceName,
+                                    !string.IsNullOrWhiteSpace(strPointsPerLevel)
+                                        ? Improvement.ImprovementType.AdeptPowerFreePoints
+                                        : Improvement.ImprovementType.AdeptPowerFreeLevels, strExtra, 0,
+                                    intLevels);
                         }
                     }
                 }
@@ -5728,12 +5789,10 @@ namespace Chummer
                             intQualityDiscount
                                 = ImprovementManager.ValueToInt(_objCharacter, objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@discount")?.Value, _intRating);
                             List<Weapon> lstWeapons = new List<Weapon>(1);
-                            Quality discountQuality = new Quality(_objCharacter)
-                            {
-                                BP = 0
-                            };
+                            Quality discountQuality = new Quality(_objCharacter);
                             try
                             {
+                                discountQuality.BP = 0;
                                 strForceDiscountValue = objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@select")?.Value;
                                 discountQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
                                     strForceDiscountValue, _strFriendlyName);
@@ -5742,7 +5801,7 @@ namespace Chummer
                             }
                             catch
                             {
-                                discountQuality.Dispose();
+                                discountQuality.DeleteQuality();
                                 throw;
                             }
 
@@ -6644,33 +6703,52 @@ namespace Chummer
             else
             {
                 // Create the new piece of ware.
-                Cyberware objCyberware = new Cyberware(_objCharacter);
-                List<Weapon> lstWeapons = new List<Weapon>(1);
-                List<Vehicle> lstVehicles = new List<Vehicle>(1);
-
                 Grade objGrade = Grade.ConvertToCyberwareGrade(bonusNode["grade"]?.InnerText, _objImprovementSource,
                     _objCharacter);
-                objCyberware.Create(node, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true,
-                    ForcedValue);
-
-                if (objCyberware.InternalId.IsEmptyGuid())
+                List<Weapon> lstWeapons = new List<Weapon>(1);
+                List<Vehicle> lstVehicles = new List<Vehicle>(1);
+                Cyberware objCyberware = new Cyberware(_objCharacter);
+                try
                 {
-                    objCyberware.Dispose();
-                    throw new AbortedException();
+                    objCyberware.Create(node, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true,
+                        ForcedValue);
+
+                    if (objCyberware.InternalId.IsEmptyGuid())
+                        throw new AbortedException();
+
+                    objCyberware.Cost = "0";
+                    // Create any Weapons that came with this ware.
+                    foreach (Weapon objWeapon in lstWeapons)
+                        _objCharacter.Weapons.Add(objWeapon);
+                    // Create any Vehicles that came with this ware.
+                    foreach (Vehicle objVehicle in lstVehicles)
+                        _objCharacter.Vehicles.Add(objVehicle);
+
+                    objCyberware.ParentID = SourceName;
+
+                    _objCharacter.Cyberware.Add(objCyberware);
+                    strImprovedName = objCyberware.InternalId;
                 }
+                catch
+                {
+                    if (lstWeapons.Count > 0)
+                    {
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            objWeapon.DeleteWeapon();
+                        }
+                    }
 
-                objCyberware.Cost = "0";
-                // Create any Weapons that came with this ware.
-                foreach (Weapon objWeapon in lstWeapons)
-                    _objCharacter.Weapons.Add(objWeapon);
-                // Create any Vehicles that came with this ware.
-                foreach (Vehicle objVehicle in lstVehicles)
-                    _objCharacter.Vehicles.Add(objVehicle);
-
-                objCyberware.ParentID = SourceName;
-
-                _objCharacter.Cyberware.Add(objCyberware);
-                strImprovedName = objCyberware.InternalId;
+                    if (lstVehicles.Count > 0)
+                    {
+                        foreach (Vehicle objVehicle in lstVehicles)
+                        {
+                            objVehicle.DeleteVehicle();
+                        }
+                    }
+                    objCyberware.DeleteCyberware();
+                    throw;
+                }
             }
 
             CreateImprovement(strImprovedName, _objImprovementSource, SourceName,
@@ -7023,7 +7101,7 @@ namespace Chummer
                     }
                     catch
                     {
-                        objAddQuality.Dispose();
+                        objAddQuality.DeleteQuality();
                         throw;
                     }
                 }

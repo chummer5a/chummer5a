@@ -740,26 +740,37 @@ namespace Chummer.Backend.Equipment
                 {
                     foreach (XmlNode objXmlUnderbarrel in xmlUnderbarrelsList)
                     {
-                        Weapon objUnderbarrelWeapon = new Weapon(_objCharacter);
                         XmlNode objXmlWeaponNode =
                             objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", objXmlUnderbarrel.InnerText);
-                        if (blnSync)
-                            // ReSharper disable once MethodHasAsyncOverload
-                            objUnderbarrelWeapon.Create(objXmlWeaponNode, lstWeapons, true, blnCreateImprovements,
-                                blnSkipCost, blnForSelectForm: blnForSelectForm, token: token);
-                        else
-                            await objUnderbarrelWeapon.CreateAsync(objXmlWeaponNode, lstWeapons, true,
-                                blnCreateImprovements, blnSkipCost, blnForSelectForm: blnForSelectForm, token: token).ConfigureAwait(false);
-                        if (!AllowAccessory)
-                            objUnderbarrelWeapon.AllowAccessory = false;
-                        objUnderbarrelWeapon.ParentID = InternalId;
-                        objUnderbarrelWeapon.Cost = "0";
-                        objUnderbarrelWeapon.IncludedInWeapon = true;
-                        if (blnSync)
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            _lstUnderbarrel.Add(objUnderbarrelWeapon);
-                        else
-                            await _lstUnderbarrel.AddAsync(objUnderbarrelWeapon, token).ConfigureAwait(false);
+                        Weapon objUnderbarrelWeapon = new Weapon(_objCharacter);
+                        try
+                        {
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                objUnderbarrelWeapon.Create(objXmlWeaponNode, lstWeapons, true, blnCreateImprovements,
+                                    blnSkipCost, blnForSelectForm: blnForSelectForm, token: token);
+                            else
+                                await objUnderbarrelWeapon.CreateAsync(objXmlWeaponNode, lstWeapons, true,
+                                    blnCreateImprovements, blnSkipCost, blnForSelectForm: blnForSelectForm, token: token).ConfigureAwait(false);
+                            if (!AllowAccessory)
+                                objUnderbarrelWeapon.AllowAccessory = false;
+                            objUnderbarrelWeapon.ParentID = InternalId;
+                            objUnderbarrelWeapon.Cost = "0";
+                            objUnderbarrelWeapon.IncludedInWeapon = true;
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                _lstUnderbarrel.Add(objUnderbarrelWeapon);
+                            else
+                                await _lstUnderbarrel.AddAsync(objUnderbarrelWeapon, token).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            if (blnSync)
+                                objUnderbarrelWeapon.DeleteWeapon();
+                            else
+                                await objUnderbarrelWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
                     }
                 }
             }
@@ -822,7 +833,6 @@ namespace Chummer.Backend.Equipment
                             objXmlDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory", strName);
                         if (objXmlAccessory == null)
                             continue;
-                        WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
                         int intAccessoryRating = 0;
                         if (objXmlWeaponAccessory["rating"] != null)
                         {
@@ -830,144 +840,166 @@ namespace Chummer.Backend.Equipment
                                 GlobalSettings.InvariantCultureInfo, out intAccessoryRating);
                         }
 
-                        if (blnSync)
+                        WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
+                        try
                         {
-                            if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
+                            if (blnSync)
                             {
-                                // ReSharper disable once MethodHasAsyncOverload
-                                objAccessory.Create(objXmlAccessory,
-                                    objXmlWeaponAccessory.InnerXml.Contains("<extramount>")
-                                        ? new Tuple<string, string>(objXmlAccessory["mount"].InnerText,
-                                            objXmlAccessory["extramount"].InnerText)
-                                        : new Tuple<string, string>(objXmlAccessory["mount"].InnerText, "None"),
-                                    intAccessoryRating, false, blnCreateChildren, blnCreateImprovements, token);
+                                if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objAccessory.Create(objXmlAccessory,
+                                        objXmlWeaponAccessory.InnerXml.Contains("<extramount>")
+                                            ? new Tuple<string, string>(objXmlAccessory["mount"].InnerText,
+                                                objXmlAccessory["extramount"].InnerText)
+                                            : new Tuple<string, string>(objXmlAccessory["mount"].InnerText, "None"),
+                                        intAccessoryRating, false, blnCreateChildren, blnCreateImprovements, token);
+                                }
+                                else
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objAccessory.Create(objXmlAccessory, new Tuple<string, string>("Internal", "None"),
+                                        intAccessoryRating, false, blnCreateChildren, blnCreateImprovements, token);
+                                }
+                            }
+                            else if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
+                            {
+                                await objAccessory.CreateAsync(objXmlAccessory,
+                                        objXmlWeaponAccessory.InnerXml.Contains("<extramount>")
+                                            ? new Tuple<string, string>(objXmlAccessory["mount"].InnerText,
+                                                objXmlAccessory["extramount"].InnerText)
+                                            : new Tuple<string, string>(objXmlAccessory["mount"].InnerText, "None"),
+                                        intAccessoryRating, false, blnCreateChildren, blnCreateImprovements, token)
+                                    .ConfigureAwait(false);
                             }
                             else
                             {
-                                // ReSharper disable once MethodHasAsyncOverload
-                                objAccessory.Create(objXmlAccessory, new Tuple<string, string>("Internal", "None"),
-                                    intAccessoryRating, false, blnCreateChildren, blnCreateImprovements, token);
+                                await objAccessory.CreateAsync(objXmlAccessory,
+                                        new Tuple<string, string>("Internal", "None"),
+                                        intAccessoryRating, false, blnCreateChildren, blnCreateImprovements, token)
+                                    .ConfigureAwait(false);
                             }
-                        }
-                        else if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
-                        {
-                            await objAccessory.CreateAsync(objXmlAccessory,
-                                    objXmlWeaponAccessory.InnerXml.Contains("<extramount>")
-                                        ? new Tuple<string, string>(objXmlAccessory["mount"].InnerText,
-                                            objXmlAccessory["extramount"].InnerText)
-                                        : new Tuple<string, string>(objXmlAccessory["mount"].InnerText, "None"),
-                                    intAccessoryRating, false, blnCreateChildren, blnCreateImprovements, token)
-                                .ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            await objAccessory.CreateAsync(objXmlAccessory,
-                                    new Tuple<string, string>("Internal", "None"),
-                                    intAccessoryRating, false, blnCreateChildren, blnCreateImprovements, token)
-                                .ConfigureAwait(false);
-                        }
 
-                        // Add any extra Gear that comes with the Weapon Accessory.
-                        XmlElement xmlGearsNode = objXmlWeaponAccessory["gears"];
-                        if (xmlGearsNode != null)
-                        {
-                            XmlDocument objXmlGearDocument = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? _objCharacter.LoadData("gear.xml", token: token)
-                                : await _objCharacter.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
-                            foreach (XmlNode objXmlAccessoryGear in xmlGearsNode.SelectNodes("usegear"))
+                            // Add any extra Gear that comes with the Weapon Accessory.
+                            XmlElement xmlGearsNode = objXmlWeaponAccessory["gears"];
+                            if (xmlGearsNode != null)
                             {
-                                XmlElement objXmlAccessoryGearName = objXmlAccessoryGear["name"];
-                                XmlElement objXmlAccessoryGearCategory = objXmlAccessoryGear["category"];
-                                XmlAttributeCollection objXmlAccessoryGearNameAttributes =
-                                    objXmlAccessoryGearName.Attributes;
-                                
-                                string strChildForceSource = objXmlAccessoryGear["source"]?.InnerText ?? string.Empty;
-                                string strChildForcePage = objXmlAccessoryGear["page"]?.InnerText ?? string.Empty;
-                                string strChildForceValue = objXmlAccessoryGearNameAttributes?["select"]?.InnerText ??
-                                                            string.Empty;
-                                bool blnChildCreateChildren =
-                                    objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != bool.FalseString;
-                                bool blnAddChildImprovements = blnCreateImprovements &&
-                                                               objXmlAccessoryGearNameAttributes?["addimprovements"]
-                                                                   ?.InnerText != bool.FalseString;
-                                int intGearRating = 0;
-                                if (objXmlAccessoryGear["rating"] != null
-                                    && !int.TryParse(objXmlAccessoryGear["rating"].InnerText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intGearRating))
-                                {
-                                    intGearRating = 0;
-                                }
-                                decimal decGearQty = 1;
-                                if (objXmlAccessoryGearNameAttributes?["qty"] != null
-                                    && !decimal.TryParse(objXmlAccessoryGearNameAttributes["qty"].InnerText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decGearQty))
-                                {
-                                    decGearQty = 1;
-                                }
-                                string strFilter = "/chummer/gears/gear";
-                                if (objXmlAccessoryGearName != null || objXmlAccessoryGearCategory != null)
-                                {
-                                    strFilter += '[';
-                                    if (objXmlAccessoryGearName != null)
-                                    {
-                                        strFilter += "name = " + objXmlAccessoryGearName.InnerText.CleanXPath();
-                                        if (objXmlAccessoryGearCategory != null)
-                                            strFilter += " and category = " +
-                                                         objXmlAccessoryGearCategory.InnerText.CleanXPath();
-                                    }
-                                    else
-                                        strFilter += "category = " + objXmlAccessoryGearCategory.InnerText.CleanXPath();
-
-                                    strFilter += ']';
-                                }
-
-                                XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode(strFilter);
-                                Gear objGear = new Gear(_objCharacter);
-
-                                if (blnSync)
-                                {
+                                XmlDocument objXmlGearDocument = blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
-                                        blnAddChildImprovements, blnChildCreateChildren, token: token);
-                                    objGear.Quantity = decGearQty;
-                                }
-                                else
+                                    ? _objCharacter.LoadData("gear.xml", token: token)
+                                    : await _objCharacter.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
+                                foreach (XmlNode objXmlAccessoryGear in xmlGearsNode.SelectNodes("usegear"))
                                 {
-                                    await objGear.CreateAsync(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
-                                            blnAddChildImprovements, blnChildCreateChildren, token: token)
-                                        .ConfigureAwait(false);
-                                    await objGear.SetQuantityAsync(decGearQty, token).ConfigureAwait(false);
+                                    XmlElement objXmlAccessoryGearName = objXmlAccessoryGear["name"];
+                                    XmlElement objXmlAccessoryGearCategory = objXmlAccessoryGear["category"];
+                                    XmlAttributeCollection objXmlAccessoryGearNameAttributes =
+                                        objXmlAccessoryGearName.Attributes;
+
+                                    string strChildForceSource = objXmlAccessoryGear["source"]?.InnerText ?? string.Empty;
+                                    string strChildForcePage = objXmlAccessoryGear["page"]?.InnerText ?? string.Empty;
+                                    string strChildForceValue = objXmlAccessoryGearNameAttributes?["select"]?.InnerText ??
+                                                                string.Empty;
+                                    bool blnChildCreateChildren =
+                                        objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != bool.FalseString;
+                                    bool blnAddChildImprovements = blnCreateImprovements &&
+                                                                   objXmlAccessoryGearNameAttributes?["addimprovements"]
+                                                                       ?.InnerText != bool.FalseString;
+                                    int intGearRating = 0;
+                                    if (objXmlAccessoryGear["rating"] != null
+                                        && !int.TryParse(objXmlAccessoryGear["rating"].InnerText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intGearRating))
+                                    {
+                                        intGearRating = 0;
+                                    }
+                                    decimal decGearQty = 1;
+                                    if (objXmlAccessoryGearNameAttributes?["qty"] != null
+                                        && !decimal.TryParse(objXmlAccessoryGearNameAttributes["qty"].InnerText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decGearQty))
+                                    {
+                                        decGearQty = 1;
+                                    }
+                                    string strFilter = "/chummer/gears/gear";
+                                    if (objXmlAccessoryGearName != null || objXmlAccessoryGearCategory != null)
+                                    {
+                                        strFilter += '[';
+                                        if (objXmlAccessoryGearName != null)
+                                        {
+                                            strFilter += "name = " + objXmlAccessoryGearName.InnerText.CleanXPath();
+                                            if (objXmlAccessoryGearCategory != null)
+                                                strFilter += " and category = " +
+                                                             objXmlAccessoryGearCategory.InnerText.CleanXPath();
+                                        }
+                                        else
+                                            strFilter += "category = " + objXmlAccessoryGearCategory.InnerText.CleanXPath();
+
+                                        strFilter += ']';
+                                    }
+
+                                    XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode(strFilter);
+                                    Gear objGear = new Gear(_objCharacter);
+                                    try
+                                    {
+                                        if (blnSync)
+                                        {
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
+                                                blnAddChildImprovements, blnChildCreateChildren, token: token);
+                                            objGear.Quantity = decGearQty;
+                                        }
+                                        else
+                                        {
+                                            await objGear.CreateAsync(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
+                                                    blnAddChildImprovements, blnChildCreateChildren, token: token)
+                                                .ConfigureAwait(false);
+                                            await objGear.SetQuantityAsync(decGearQty, token).ConfigureAwait(false);
+                                        }
+
+                                        objGear.Cost = "0";
+                                        objGear.ParentID = InternalId;
+
+                                        if (!string.IsNullOrEmpty(strChildForceSource))
+                                            objGear.Source = strChildForceSource;
+                                        if (!string.IsNullOrEmpty(strChildForcePage))
+                                            objGear.Page = strChildForcePage;
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            objAccessory.GearChildren.Add(objGear);
+                                        else
+                                            await objAccessory.GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
+
+                                        // Change the Capacity of the child if necessary.
+                                        if (objXmlAccessoryGear["capacity"] != null)
+                                            objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
+                                    }
+                                    catch
+                                    {
+                                        if (blnSync)
+                                            objGear.DeleteGear();
+                                        else
+                                            await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                        throw;
+                                    }
                                 }
+                            }
 
-                                objGear.Cost = "0";
-                                objGear.ParentID = InternalId;
-
-                                if (!string.IsNullOrEmpty(strChildForceSource))
-                                    objGear.Source = strChildForceSource;
-                                if (!string.IsNullOrEmpty(strChildForcePage))
-                                    objGear.Page = strChildForcePage;
-                                if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    objAccessory.GearChildren.Add(objGear);
-                                else
-                                    await objAccessory.GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
-
-                                // Change the Capacity of the child if necessary.
-                                if (objXmlAccessoryGear["capacity"] != null)
-                                    objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
+                            objAccessory.IncludedInWeapon = true;
+                            if (blnSync)
+                            {
+                                objAccessory.Parent = this;
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                _lstAccessories.Add(objAccessory);
+                            }
+                            else
+                            {
+                                await objAccessory.SetParentAsync(this, token).ConfigureAwait(false);
+                                await _lstAccessories.AddAsync(objAccessory, token).ConfigureAwait(false);
                             }
                         }
-
-                        objAccessory.IncludedInWeapon = true;
-                        if (blnSync)
+                        catch
                         {
-                            objAccessory.Parent = this;
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            _lstAccessories.Add(objAccessory);
-                        }
-                        else
-                        {
-                            await objAccessory.SetParentAsync(this, token).ConfigureAwait(false);
-                            await _lstAccessories.AddAsync(objAccessory, token).ConfigureAwait(false);
+                            if (blnSync)
+                                objAccessory.DeleteWeaponAccessory();
+                            else
+                                await objAccessory.DeleteWeaponAccessoryAsync(token: CancellationToken.None).ConfigureAwait(false);
+                            throw;
                         }
                     }
                 }
@@ -995,7 +1027,6 @@ namespace Chummer.Backend.Equipment
 
                 if (objXmlSubWeapon != null)
                 {
-                    Weapon objSubWeapon = new Weapon(_objCharacter);
                     int intAddWeaponRating = 0;
                     string strRating = objXmlAddWeapon.Attributes["rating"]?.InnerText;
                     if (!string.IsNullOrEmpty(strRating))
@@ -1005,17 +1036,29 @@ namespace Chummer.Backend.Equipment
                                 : await ProcessRatingStringAsync(strRating, () => GetRatingAsync(token), token: token).ConfigureAwait(false);
                     }
 
-                    if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverload
-                        objSubWeapon.Create(objXmlSubWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements,
-                            blnSkipCost, intAddWeaponRating, blnForSelectForm, token);
-                    else
-                        await objSubWeapon.CreateAsync(objXmlSubWeapon, lstWeapons, blnCreateChildren,
-                            blnCreateImprovements,
-                            blnSkipCost, intAddWeaponRating, blnForSelectForm, token).ConfigureAwait(false);
-                    objSubWeapon.ParentID = InternalId;
-                    objSubWeapon.Cost = "0";
-                    lstWeapons.Add(objSubWeapon);
+                    Weapon objSubWeapon = new Weapon(_objCharacter);
+                    try
+                    {
+                        if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverload
+                            objSubWeapon.Create(objXmlSubWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements,
+                                blnSkipCost, intAddWeaponRating, blnForSelectForm, token);
+                        else
+                            await objSubWeapon.CreateAsync(objXmlSubWeapon, lstWeapons, blnCreateChildren,
+                                blnCreateImprovements,
+                                blnSkipCost, intAddWeaponRating, blnForSelectForm, token).ConfigureAwait(false);
+                        objSubWeapon.ParentID = InternalId;
+                        objSubWeapon.Cost = "0";
+                        lstWeapons.Add(objSubWeapon);
+                    }
+                    catch
+                    {
+                        if (blnSync)
+                            objSubWeapon.DeleteWeapon();
+                        else
+                            await objSubWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
                 }
             }
 
@@ -1524,9 +1567,17 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode nodChild in nodChildren)
                             {
                                 WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-                                objAccessory.Load(nodChild, blnCopy);
-                                objAccessory.Parent = this;
-                                _lstAccessories.Add(objAccessory);
+                                try
+                                {
+                                    objAccessory.Load(nodChild, blnCopy);
+                                    objAccessory.Parent = this;
+                                    _lstAccessories.Add(objAccessory);
+                                }
+                                catch
+                                {
+                                    objAccessory.DeleteWeaponAccessory();
+                                    throw;
+                                }
                             }
                         }
                         else
@@ -1534,9 +1585,17 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode nodChild in nodChildren)
                             {
                                 WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-                                await objAccessory.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
-                                await objAccessory.SetParentAsync(this, token).ConfigureAwait(false);
-                                await _lstAccessories.AddAsync(objAccessory, token).ConfigureAwait(false);
+                                try
+                                {
+                                    await objAccessory.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
+                                    await objAccessory.SetParentAsync(this, token).ConfigureAwait(false);
+                                    await _lstAccessories.AddAsync(objAccessory, token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await objAccessory.DeleteWeaponAccessoryAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
                             }
                         }
                     }
@@ -1784,19 +1843,28 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (XmlNode nodWeapon in nodChildren)
                         {
-                            Weapon objUnderbarrel = new Weapon(_objCharacter)
+                            Weapon objUnderbarrel = new Weapon(_objCharacter);
+                            try
                             {
-                                ParentVehicle = ParentVehicle
-                            };
-                            if (blnSync)
-                            {
-                                objUnderbarrel.Load(nodWeapon, blnCopy);
-                                _lstUnderbarrel.Add(objUnderbarrel);
+                                objUnderbarrel.ParentVehicle = ParentVehicle;
+                                if (blnSync)
+                                {
+                                    objUnderbarrel.Load(nodWeapon, blnCopy);
+                                    _lstUnderbarrel.Add(objUnderbarrel);
+                                }
+                                else
+                                {
+                                    await objUnderbarrel.LoadAsync(nodWeapon, blnCopy, token).ConfigureAwait(false);
+                                    await _lstUnderbarrel.AddAsync(objUnderbarrel, token).ConfigureAwait(false);
+                                }
                             }
-                            else
+                            catch
                             {
-                                await objUnderbarrel.LoadAsync(nodWeapon, blnCopy, token).ConfigureAwait(false);
-                                await _lstUnderbarrel.AddAsync(objUnderbarrel, token).ConfigureAwait(false);
+                                if (blnSync)
+                                    objUnderbarrel.DeleteWeapon();
+                                else
+                                    await objUnderbarrel.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
                             }
                         }
                     }
@@ -12189,12 +12257,18 @@ namespace Chummer.Backend.Equipment
             {
                 lstCount.Add(await LanguageManager.GetStringAsync("String_ExternalSource", token: token)
                                                   .ConfigureAwait(false));
-                objExternalSource = new Gear(_objCharacter)
+                objExternalSource = new Gear(_objCharacter);
+                try
                 {
-                    Name = await LanguageManager.GetStringAsync("String_ExternalSource", token: token)
-                                                .ConfigureAwait(false),
-                    SourceID = Guid.Empty
-                };
+                    objExternalSource.Name = await LanguageManager.GetStringAsync("String_ExternalSource", token: token)
+                                                .ConfigureAwait(false);
+                    objExternalSource.SourceID = Guid.Empty;
+                }
+                catch
+                {
+                    await objExternalSource.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                    throw;
+                }
             }
 
             if (RequireAmmo)
@@ -12248,21 +12322,37 @@ namespace Chummer.Backend.Equipment
                         {
                             // Duplicate the clip into a new entry where we can directly deduct from the quantity as we fire
                             Gear objDuplicatedParent = new Gear(_objCharacter);
-                            await objDuplicatedParent.CopyAsync(objParent, token).ConfigureAwait(false);
-                            await objDuplicatedParent.SetQuantityAsync(1, token).ConfigureAwait(false);
-                            await lstGears.AddAsync(objDuplicatedParent, token).ConfigureAwait(false);
-                            await objParent.SetQuantityAsync(objParent.Quantity - 1, token).ConfigureAwait(false);
-                            Gear objNewSelectedAmmo
-                                = await objDuplicatedParent.Children.DeepFindByIdAsync(strSelectedAmmo, token: token).ConfigureAwait(false);
-                            if (objNewSelectedAmmo == null)
+                            try
                             {
-                                objNewSelectedAmmo = new Gear(_objCharacter);
-                                await objNewSelectedAmmo.CopyAsync(objSelectedAmmo, token).ConfigureAwait(false);
-                                await objDuplicatedParent.Children.AddAsync(objNewSelectedAmmo, token)
-                                                         .ConfigureAwait(false);
-                            }
+                                await objDuplicatedParent.CopyAsync(objParent, token).ConfigureAwait(false);
+                                await objDuplicatedParent.SetQuantityAsync(1, token).ConfigureAwait(false);
+                                await lstGears.AddAsync(objDuplicatedParent, token).ConfigureAwait(false);
+                                await objParent.SetQuantityAsync(objParent.Quantity - 1, token).ConfigureAwait(false);
+                                Gear objNewSelectedAmmo
+                                    = await objDuplicatedParent.Children.DeepFindByIdAsync(strSelectedAmmo, token: token).ConfigureAwait(false);
+                                if (objNewSelectedAmmo == null)
+                                {
+                                    objNewSelectedAmmo = new Gear(_objCharacter);
+                                    try
+                                    {
+                                        await objNewSelectedAmmo.CopyAsync(objSelectedAmmo, token).ConfigureAwait(false);
+                                        await objDuplicatedParent.Children.AddAsync(objNewSelectedAmmo, token)
+                                                                 .ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        await objNewSelectedAmmo.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                        throw;
+                                    }
+                                }
 
-                            objSelectedAmmo = objNewSelectedAmmo;
+                                objSelectedAmmo = objNewSelectedAmmo;
+                            }
+                            catch
+                            {
+                                await objDuplicatedParent.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
 
                         string strParentText = await objParent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
@@ -12318,20 +12408,28 @@ namespace Chummer.Backend.Equipment
                     {
                         // Duplicate the ammo into a new entry where we can directly deduct from the quantity as we fire
                         Gear objNewSelectedAmmo = new Gear(_objCharacter);
-                        await objNewSelectedAmmo.CopyAsync(objSelectedAmmo, token).ConfigureAwait(false);
-                        await objNewSelectedAmmo.SetQuantityAsync(decQty, token).ConfigureAwait(false);
-                        await lstGears.AddAsync(objNewSelectedAmmo, token).ConfigureAwait(false);
-                        await objSelectedAmmo.SetQuantityAsync(objSelectedAmmo.Quantity - decQty, token).ConfigureAwait(false);
-                        string strId2 = objSelectedAmmo.InternalId;
-                        string strText2 = await objSelectedAmmo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                        await treGearView.DoThreadSafeAsync(x =>
+                        try
                         {
-                            // Refresh the Gear tree.
-                            TreeNode objSelectedNode = x.FindNode(strId2);
-                            if (objSelectedNode != null)
-                                objSelectedNode.Text = strText2;
-                        }, token: token).ConfigureAwait(false);
-                        objSelectedAmmo = objNewSelectedAmmo;
+                            await objNewSelectedAmmo.CopyAsync(objSelectedAmmo, token).ConfigureAwait(false);
+                            await objNewSelectedAmmo.SetQuantityAsync(decQty, token).ConfigureAwait(false);
+                            await lstGears.AddAsync(objNewSelectedAmmo, token).ConfigureAwait(false);
+                            await objSelectedAmmo.SetQuantityAsync(objSelectedAmmo.Quantity - decQty, token).ConfigureAwait(false);
+                            string strId2 = objSelectedAmmo.InternalId;
+                            string strText2 = await objSelectedAmmo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                            await treGearView.DoThreadSafeAsync(x =>
+                            {
+                                // Refresh the Gear tree.
+                                TreeNode objSelectedNode = x.FindNode(strId2);
+                                if (objSelectedNode != null)
+                                    objSelectedNode.Text = strText2;
+                            }, token: token).ConfigureAwait(false);
+                            objSelectedAmmo = objNewSelectedAmmo;
+                        }
+                        catch
+                        {
+                            await objNewSelectedAmmo.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
                     }
                     else if (decQty > objSelectedAmmo.Quantity)
                     {
@@ -12826,123 +12924,155 @@ namespace Chummer.Backend.Equipment
                 foreach (XPathNavigator xmlWeaponAccessoryToImport in xmlWeaponImportNode.Select(strName + "/item[@useradded != \"no\"]"))
                 {
                     Weapon objUnderbarrel = new Weapon(_objCharacter);
-                    if (objUnderbarrel.ImportHeroLabWeapon(xmlWeaponAccessoryToImport, lstWeapons))
+                    try
                     {
-                        objUnderbarrel.Parent = this;
-                        UnderbarrelWeapons.Add(objUnderbarrel);
-                    }
-                    else
-                    {
-                        string strWeaponAccessoryName = xmlWeaponImportNode.SelectSingleNodeAndCacheExpression("@name")?.Value;
-                        if (!string.IsNullOrEmpty(strWeaponAccessoryName))
+                        if (objUnderbarrel.ImportHeroLabWeapon(xmlWeaponAccessoryToImport, lstWeapons))
                         {
-                            XmlDocument xmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
-                            XmlNode xmlWeaponAccessoryData = null;
-                            foreach (XmlNode xmlLoopNode in xmlWeaponDocument.SelectNodes("chummer/accessories/accessory[contains(name, " + strWeaponAccessoryName.CleanXPath() + ")]"))
+                            objUnderbarrel.Parent = this;
+                            UnderbarrelWeapons.Add(objUnderbarrel);
+                        }
+                        else
+                        {
+                            string strWeaponAccessoryName = xmlWeaponImportNode.SelectSingleNodeAndCacheExpression("@name")?.Value;
+                            if (!string.IsNullOrEmpty(strWeaponAccessoryName))
                             {
-                                XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/weapondetails");
-                                if (xmlTestNode != null && xmlWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                XmlDocument xmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
+                                XmlNode xmlWeaponAccessoryData = null;
+                                foreach (XmlNode xmlLoopNode in xmlWeaponDocument.SelectNodes("chummer/accessories/accessory[contains(name, " + strWeaponAccessoryName.CleanXPath() + ")]"))
                                 {
-                                    // Assumes topmost parent is an AND node
-                                    continue;
-                                }
-                                xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/weapondetails");
-                                if (xmlTestNode != null && !xmlWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                {
-                                    // Assumes topmost parent is an AND node
-                                    continue;
-                                }
-
-                                xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/oneof");
-                                if (xmlTestNode != null)
-                                {
-                                    //Add to set for O(N log M) runtime instead of O(N * M)
-
-                                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
-                                               out HashSet<string> setForbiddenAccessory))
+                                    XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/weapondetails");
+                                    if (xmlTestNode != null && xmlWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
-                                        foreach (XPathNavigator node in xmlTestNode.Select("accessory"))
-                                        {
-                                            setForbiddenAccessory.Add(node.Value);
-                                        }
-
-                                        if (WeaponAccessories.Any(objAccessory =>
-                                                                      setForbiddenAccessory
-                                                                          .Contains(objAccessory.Name)))
-                                        {
-                                            continue;
-                                        }
+                                        // Assumes topmost parent is an AND node
+                                        continue;
                                     }
-                                }
-
-                                xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/oneof");
-                                if (xmlTestNode != null)
-                                {
-                                    //Add to set for O(N log M) runtime instead of O(N * M)
-
-                                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
-                                               out HashSet<string> setRequiredAccessory))
+                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/weapondetails");
+                                    if (xmlTestNode != null && !xmlWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
-                                        foreach (XPathNavigator node in xmlTestNode.Select("accessory"))
-                                        {
-                                            setRequiredAccessory.Add(node.Value);
-                                        }
-
-                                        if (!WeaponAccessories.Any(objAccessory =>
-                                                                       setRequiredAccessory
-                                                                           .Contains(objAccessory.Name)))
-                                        {
-                                            continue;
-                                        }
+                                        // Assumes topmost parent is an AND node
+                                        continue;
                                     }
-                                }
-                                xmlWeaponAccessoryData = xmlLoopNode;
-                                break;
-                            }
-                            if (xmlWeaponAccessoryData != null)
-                            {
-                                WeaponAccessory objWeaponAccessory = new WeaponAccessory(_objCharacter);
-                                string strMainMount = xmlWeaponAccessoryData["mount"]?.InnerText.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
-                                    .FirstOrDefault() ?? string.Empty;
-                                string strExtraMount = xmlWeaponAccessoryData["extramount"]?.InnerText.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
-                                    .FirstOrDefault(x => x != strMainMount) ?? string.Empty;
 
-                                objWeaponAccessory.Create(xmlWeaponAccessoryData, new Tuple<string, string>(strMainMount, strExtraMount), xmlWeaponAccessoryToImport.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt ?? 0);
-                                objWeaponAccessory.Notes = xmlWeaponAccessoryToImport.SelectSingleNodeAndCacheExpression("description")?.Value;
-                                objWeaponAccessory.Parent = this;
-                                WeaponAccessories.Add(objWeaponAccessory);
+                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/oneof");
+                                    if (xmlTestNode != null)
+                                    {
+                                        //Add to set for O(N log M) runtime instead of O(N * M)
 
-                                foreach (string strPluginName in Character.HeroLabPluginNodeNames)
-                                {
-                                    foreach (XPathNavigator xmlPluginToAdd in xmlWeaponAccessoryToImport.Select(strPluginName + "/item[@useradded != \"no\"]"))
-                                    {
-                                        Gear objPlugin = new Gear(_objCharacter);
-                                        if (objPlugin.ImportHeroLabGear(xmlPluginToAdd, xmlWeaponAccessoryData, lstWeapons))
-                                            objWeaponAccessory.GearChildren.Add(objPlugin);
-                                    }
-                                    foreach (XPathNavigator xmlPluginToAdd in xmlWeaponAccessoryToImport.Select(strPluginName + "/item[@useradded = \"no\"]"))
-                                    {
-                                        string strGearName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name")?.Value;
-                                        if (!string.IsNullOrEmpty(strGearName))
+                                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                   out HashSet<string> setForbiddenAccessory))
                                         {
-                                            Gear objPlugin = objWeaponAccessory.GearChildren.FirstOrDefault(x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strGearName) || strGearName.Contains(x.Name)));
-                                            if (objPlugin != null)
+                                            foreach (XPathNavigator node in xmlTestNode.Select("accessory"))
                                             {
-                                                objPlugin.Quantity = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@quantity")?.ValueAsInt ?? 1;
-                                                objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
-                                                objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
+                                                setForbiddenAccessory.Add(node.Value);
+                                            }
+
+                                            if (WeaponAccessories.Any(objAccessory =>
+                                                                          setForbiddenAccessory
+                                                                              .Contains(objAccessory.Name)))
+                                            {
+                                                continue;
                                             }
                                         }
                                     }
+
+                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/oneof");
+                                    if (xmlTestNode != null)
+                                    {
+                                        //Add to set for O(N log M) runtime instead of O(N * M)
+
+                                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                   out HashSet<string> setRequiredAccessory))
+                                        {
+                                            foreach (XPathNavigator node in xmlTestNode.Select("accessory"))
+                                            {
+                                                setRequiredAccessory.Add(node.Value);
+                                            }
+
+                                            if (!WeaponAccessories.Any(objAccessory =>
+                                                                           setRequiredAccessory
+                                                                               .Contains(objAccessory.Name)))
+                                            {
+                                                continue;
+                                            }
+                                        }
+                                    }
+                                    xmlWeaponAccessoryData = xmlLoopNode;
+                                    break;
+                                }
+                                if (xmlWeaponAccessoryData != null)
+                                {
+                                    string strMainMount = xmlWeaponAccessoryData["mount"]?.InnerText.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
+                                            .FirstOrDefault() ?? string.Empty;
+                                    string strExtraMount = xmlWeaponAccessoryData["extramount"]?.InnerText.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
+                                        .FirstOrDefault(x => x != strMainMount) ?? string.Empty;
+
+                                    WeaponAccessory objWeaponAccessory = new WeaponAccessory(_objCharacter);
+                                    try
+                                    {
+                                        objWeaponAccessory.Create(xmlWeaponAccessoryData, new Tuple<string, string>(strMainMount, strExtraMount), xmlWeaponAccessoryToImport.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt ?? 0);
+                                        objWeaponAccessory.Notes = xmlWeaponAccessoryToImport.SelectSingleNodeAndCacheExpression("description")?.Value;
+                                        objWeaponAccessory.Parent = this;
+                                        WeaponAccessories.Add(objWeaponAccessory);
+
+                                        foreach (string strPluginName in Character.HeroLabPluginNodeNames)
+                                        {
+                                            foreach (XPathNavigator xmlPluginToAdd in xmlWeaponAccessoryToImport.Select(strPluginName + "/item[@useradded != \"no\"]"))
+                                            {
+                                                Gear objPlugin = new Gear(_objCharacter);
+                                                try
+                                                {
+                                                    if (objPlugin.ImportHeroLabGear(xmlPluginToAdd, xmlWeaponAccessoryData, lstWeapons))
+                                                        objWeaponAccessory.GearChildren.Add(objPlugin);
+                                                }
+                                                catch
+                                                {
+                                                    objPlugin.DeleteGear();
+                                                    throw;
+                                                }
+                                            }
+                                            foreach (XPathNavigator xmlPluginToAdd in xmlWeaponAccessoryToImport.Select(strPluginName + "/item[@useradded = \"no\"]"))
+                                            {
+                                                string strGearName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name")?.Value;
+                                                if (!string.IsNullOrEmpty(strGearName))
+                                                {
+                                                    Gear objPlugin = objWeaponAccessory.GearChildren.FirstOrDefault(x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strGearName) || strGearName.Contains(x.Name)));
+                                                    if (objPlugin != null)
+                                                    {
+                                                        objPlugin.Quantity = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@quantity")?.ValueAsInt ?? 1;
+                                                        objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
+                                                        objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        objWeaponAccessory.DeleteWeaponAccessory();
+                                        throw;
+                                    }
+                                }
+                                else
+                                {
+                                    Gear objPlugin = new Gear(_objCharacter);
+                                    try
+                                    {
+                                        if (objPlugin.ImportHeroLabGear(xmlWeaponAccessoryToImport, null, lstWeapons))
+                                            _objCharacter.Gear.Add(objPlugin);
+                                    }
+                                    catch
+                                    {
+                                        objPlugin.DeleteGear();
+                                        throw;
+                                    }
                                 }
                             }
-                            else
-                            {
-                                Gear objPlugin = new Gear(_objCharacter);
-                                if (objPlugin.ImportHeroLabGear(xmlWeaponAccessoryToImport, null, lstWeapons))
-                                    _objCharacter.Gear.Add(objPlugin);
-                            }
                         }
+                    }
+                    catch
+                    {
+                        objUnderbarrel.DeleteWeapon();
+                        throw;
                     }
                 }
                 foreach (XPathNavigator xmlPluginToAdd in xmlWeaponImportNode.Select(strName + "/item[@useradded = \"no\"]"))
@@ -12968,8 +13098,16 @@ namespace Chummer.Backend.Equipment
                                     foreach (XPathNavigator xmlSubPluginToAdd in xmlPluginToAdd.Select(strPluginNodeName + "/item[@useradded != \"no\"]"))
                                     {
                                         Gear objPlugin = new Gear(_objCharacter);
-                                        if (objPlugin.ImportHeroLabGear(xmlSubPluginToAdd, objWeaponAccessory.GetNode(), lstWeapons))
-                                            objWeaponAccessory.GearChildren.Add(objPlugin);
+                                        try
+                                        {
+                                            if (objPlugin.ImportHeroLabGear(xmlSubPluginToAdd, objWeaponAccessory.GetNode(), lstWeapons))
+                                                objWeaponAccessory.GearChildren.Add(objPlugin);
+                                        }
+                                        catch
+                                        {
+                                            objPlugin.DeleteGear();
+                                            throw;
+                                        }
                                     }
                                     foreach (XPathNavigator xmlSubPluginToAdd in xmlPluginToAdd.Select(strPluginNodeName + "/item[@useradded = \"no\"]"))
                                     {

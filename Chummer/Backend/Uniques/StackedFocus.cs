@@ -95,8 +95,16 @@ namespace Chummer
                     foreach (XmlNode nodGear in nodGearList)
                     {
                         Gear objGear = new Gear(_objCharacter);
-                        objGear.Load(nodGear);
-                        _lstGear.Add(objGear);
+                        try
+                        {
+                            objGear.Load(nodGear);
+                            _lstGear.Add(objGear);
+                        }
+                        catch
+                        {
+                            objGear.DeleteGear();
+                            throw;
+                        }
                     }
                 }
             }
@@ -122,8 +130,16 @@ namespace Chummer
                         foreach (XmlNode nodGear in nodGearList)
                         {
                             Gear objGear = new Gear(_objCharacter);
-                            await objGear.LoadAsync(nodGear, token: token).ConfigureAwait(false);
-                            await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                            try
+                            {
+                                await objGear.LoadAsync(nodGear, token: token).ConfigureAwait(false);
+                                await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     }
                 }

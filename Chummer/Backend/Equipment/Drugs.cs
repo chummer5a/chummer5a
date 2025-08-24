@@ -1822,7 +1822,7 @@ namespace Chummer.Backend.Equipment
                             }
                             catch
                             {
-                                await objAddQuality.DisposeAsync().ConfigureAwait(false);
+                                await objAddQuality.DeleteQualityAsync(token: CancellationToken.None).ConfigureAwait(false);
                                 throw;
                             }
                         }

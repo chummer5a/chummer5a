@@ -86,7 +86,7 @@ namespace Chummer.Backend.Uniques
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                if (_objCharacter != null)
+                if (_objCharacter?.IsDisposed == false)
                 {
                     try
                     {
@@ -109,7 +109,7 @@ namespace Chummer.Backend.Uniques
         {
             using (LockObject.EnterWriteLock())
             {
-                if (_objCharacter != null)
+                if (_objCharacter?.IsDisposed == false)
                 {
                     try
                     {

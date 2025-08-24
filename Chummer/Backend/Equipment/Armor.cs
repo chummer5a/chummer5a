@@ -558,47 +558,55 @@ namespace Chummer.Backend.Equipment
                             XmlNode objXmlMod = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod",
                                 frmPickArmorMod.MyForm.SelectedArmorMod);
 
-                            ArmorMod objMod;
-                            if (objXmlMod != null)
+                            ArmorMod objMod = new ArmorMod(_objCharacter);
+                            try
                             {
-                                objMod = new ArmorMod(_objCharacter);
-                                // ReSharper disable once AccessToModifiedClosure
-                                if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms, blnForSelectForm, token);
-                                else
-                                    await objMod.CreateAsync(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms, blnForSelectForm, token).ConfigureAwait(false);
-                                objMod.IncludedInArmor = true;
-                                objMod.ArmorCapacity = "[0]";
-                                objMod.Cost = "0";
-                                objMod.MaxRating = (blnSync ? objMod.Rating : await objMod.GetRatingAsync(token).ConfigureAwait(false))
-                                    .ToString(GlobalSettings.InvariantCultureInfo);
-                            }
-                            else
-                            {
-                                objMod = new ArmorMod(_objCharacter)
+                                if (objXmlMod != null)
                                 {
-                                    Name = _strName,
-                                    Category = "Features",
-                                    Avail = "0",
-                                    Source = _strSource,
-                                    Page = _strPage,
-                                    IncludedInArmor = true,
-                                    ArmorCapacity = "[0]",
-                                    Cost = "0",
-                                    MaxRating = "0"
-                                };
-                                if (blnSync)
-                                    Rating = 0;
-                                else
-                                    await SetRatingAsync(0, token).ConfigureAwait(false);
-                            }
 
-                            if (blnSync)
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                _lstArmorMods.Add(objMod);
-                            else
-                                await _lstArmorMods.AddAsync(objMod, token).ConfigureAwait(false);
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms, blnForSelectForm, token);
+                                    else
+                                        await objMod.CreateAsync(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms, blnForSelectForm, token).ConfigureAwait(false);
+                                    objMod.IncludedInArmor = true;
+                                    objMod.ArmorCapacity = "[0]";
+                                    objMod.Cost = "0";
+                                    objMod.MaxRating = (blnSync ? objMod.Rating : await objMod.GetRatingAsync(token).ConfigureAwait(false))
+                                        .ToString(GlobalSettings.InvariantCultureInfo);
+                                }
+                                else
+                                {
+                                    objMod.Name = _strName;
+                                    objMod.Category = "Features";
+                                    objMod.Avail = "0";
+                                    objMod.Source = _strSource;
+                                    objMod.Page = _strPage;
+                                    objMod.IncludedInArmor = true;
+                                    objMod.ArmorCapacity = "[0]";
+                                    objMod.Cost = "0";
+                                    objMod.MaxRating = "0";
+                                    if (blnSync)
+                                        Rating = 0;
+                                    else
+                                        await SetRatingAsync(0, token).ConfigureAwait(false);
+                                }
+
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    _lstArmorMods.Add(objMod);
+                                else
+                                    await _lstArmorMods.AddAsync(objMod, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                if (blnSync)
+                                    objMod.DeleteArmorMod();
+                                else
+                                    await objMod.DeleteArmorModAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     }
                 }
@@ -626,78 +634,85 @@ namespace Chummer.Backend.Equipment
                         }
 
                         XmlNode objXmlMod = objXmlArmorDocument.TryGetNodeByNameOrId("/chummer/mods/mod", objXmlArmorMod.InnerText);
-                        ArmorMod objMod;
-                        if (objXmlMod != null)
+                        ArmorMod objMod = new ArmorMod(_objCharacter);
+                        try
                         {
-                            objMod = new ArmorMod(_objCharacter);
-                            if (blnSync)
-                                // ReSharper disable once MethodHasAsyncOverload
-                                objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms, blnForSelectForm, token);
-                            else
-                                await objMod.CreateAsync(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms, blnForSelectForm, token).ConfigureAwait(false);
-                            if (string.IsNullOrWhiteSpace(objMod.Extra))
+                            if (objXmlMod != null)
                             {
-                                objMod.Extra = strForceValue;
-                            }
-
-                            objMod.IncludedInArmor = true;
-                            objMod.ArmorCapacity = "[0]";
-                            objMod.Cost = "0";
-                            string strMaxRating = objXmlAttributes?["maxrating"]?.InnerText;
-                            //If maxrating is being specified, we're intentionally bypassing the normal maximum rating. Set the maxrating first, then the rating again.
-                            if (!string.IsNullOrEmpty(strMaxRating))
-                            {
-                                objMod.MaxRating = strMaxRating;
-                                int intDummy = intRating;
-                                string strOverrideRating = objXmlAttributes["rating"]?.InnerText;
-                                if (!string.IsNullOrEmpty(strOverrideRating))
-                                    int.TryParse(strOverrideRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                        out intDummy);
                                 if (blnSync)
-                                    objMod.Rating = intDummy;
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms, blnForSelectForm, token);
                                 else
-                                    await objMod.SetRatingAsync(intDummy, token).ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                objMod.MaxRating = (blnSync ? objMod.Rating : await objMod.GetRatingAsync(token).ConfigureAwait(false))
-                                    .ToString(GlobalSettings.InvariantCultureInfo);
-                            }
-                        }
-                        else
-                        {
-                            int intLoopRating = 0;
-                            string strLoopMaximumRating = string.Empty;
-                            if (objXmlAttributes != null)
-                            {
-                                int.TryParse(objXmlAttributes["rating"]?.InnerText, NumberStyles.Any,
-                                    GlobalSettings.InvariantCultureInfo, out intLoopRating);
-                                strLoopMaximumRating = objXmlAttributes["maxrating"]?.InnerText ?? string.Empty;
-                            }
-                            objMod = new ArmorMod(_objCharacter)
-                            {
-                                Name = _strName,
-                                Category = "Features",
-                                Avail = "0",
-                                Source = _strSource,
-                                Page = _strPage,
-                                IncludedInArmor = true,
-                                ArmorCapacity = "[0]",
-                                Cost = "0",
-                                MaxRating = strLoopMaximumRating,
-                                Extra = strForceValue
-                            };
-                            if (blnSync)
-                                Rating = intLoopRating;
-                            else
-                                await SetRatingAsync(intLoopRating, token).ConfigureAwait(false);
-                        }
+                                    await objMod.CreateAsync(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms, blnForSelectForm, token).ConfigureAwait(false);
+                                if (string.IsNullOrWhiteSpace(objMod.Extra))
+                                {
+                                    objMod.Extra = strForceValue;
+                                }
 
-                        if (blnSync)
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            _lstArmorMods.Add(objMod);
-                        else
-                            await _lstArmorMods.AddAsync(objMod, token).ConfigureAwait(false);
+                                objMod.IncludedInArmor = true;
+                                objMod.ArmorCapacity = "[0]";
+                                objMod.Cost = "0";
+                                string strMaxRating = objXmlAttributes?["maxrating"]?.InnerText;
+                                //If maxrating is being specified, we're intentionally bypassing the normal maximum rating. Set the maxrating first, then the rating again.
+                                if (!string.IsNullOrEmpty(strMaxRating))
+                                {
+                                    objMod.MaxRating = strMaxRating;
+                                    int intDummy = intRating;
+                                    string strOverrideRating = objXmlAttributes["rating"]?.InnerText;
+                                    if (!string.IsNullOrEmpty(strOverrideRating))
+                                        int.TryParse(strOverrideRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                            out intDummy);
+                                    if (blnSync)
+                                        objMod.Rating = intDummy;
+                                    else
+                                        await objMod.SetRatingAsync(intDummy, token).ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    objMod.MaxRating = (blnSync ? objMod.Rating : await objMod.GetRatingAsync(token).ConfigureAwait(false))
+                                        .ToString(GlobalSettings.InvariantCultureInfo);
+                                }
+                            }
+                            else
+                            {
+                                int intLoopRating = 0;
+                                string strLoopMaximumRating = string.Empty;
+                                if (objXmlAttributes != null)
+                                {
+                                    int.TryParse(objXmlAttributes["rating"]?.InnerText, NumberStyles.Any,
+                                        GlobalSettings.InvariantCultureInfo, out intLoopRating);
+                                    strLoopMaximumRating = objXmlAttributes["maxrating"]?.InnerText ?? string.Empty;
+                                }
+                                objMod.Name = _strName;
+                                objMod.Category = "Features";
+                                objMod.Avail = "0";
+                                objMod.Source = _strSource;
+                                objMod.Page = _strPage;
+                                objMod.IncludedInArmor = true;
+                                objMod.ArmorCapacity = "[0]";
+                                objMod.Cost = "0";
+                                objMod.MaxRating = strLoopMaximumRating;
+                                objMod.Extra = strForceValue;
+                                if (blnSync)
+                                    Rating = intLoopRating;
+                                else
+                                    await SetRatingAsync(intLoopRating, token).ConfigureAwait(false);
+                            }
+
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                _lstArmorMods.Add(objMod);
+                            else
+                                await _lstArmorMods.AddAsync(objMod, token).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            if (blnSync)
+                                objMod.DeleteArmorMod();
+                            else
+                                await objMod.DeleteArmorModAsync(token: CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
                     }
                 }
             }
@@ -715,28 +730,45 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objXmlArmorGear in objXmlGearList)
                 {
                     Gear objGear = new Gear(_objCharacter);
-                    if (blnSync)
+                    try
                     {
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        if (!objGear.CreateFromNode(objXmlGearDocument, objXmlArmorGear, lstChildWeapons, !blnSkipSelectForms))
+                        if (blnSync)
+                        {
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            if (!objGear.CreateFromNode(objXmlGearDocument, objXmlArmorGear, lstChildWeapons, !blnSkipSelectForms))
+                            {
+                                objGear.DeleteGear();
+                                continue;
+                            }
+                        }
+                        else if (!await objGear.CreateFromNodeAsync(objXmlGearDocument, objXmlArmorGear, lstChildWeapons, !blnSkipSelectForms, token: token).ConfigureAwait(false))
+                        {
+                            await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
                             continue;
+                        }
+                        foreach (Weapon objWeapon in lstChildWeapons)
+                        {
+                            objWeapon.ParentID = InternalId;
+                        }
+                        if (blnSync)
+                            objGear.Parent = this;
+                        else
+                            await objGear.SetParentAsync(this, token).ConfigureAwait(false);
+                        objGear.ParentID = InternalId;
+                        if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            GearChildren.Add(objGear);
+                        else
+                            await GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
                     }
-                    else if (!await objGear.CreateFromNodeAsync(objXmlGearDocument, objXmlArmorGear, lstChildWeapons, !blnSkipSelectForms, token: token).ConfigureAwait(false))
-                        continue;
-                    foreach (Weapon objWeapon in lstChildWeapons)
+                    catch
                     {
-                        objWeapon.ParentID = InternalId;
+                        if (blnSync)
+                            objGear.DeleteGear();
+                        else
+                            await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        throw;
                     }
-                    if (blnSync)
-                        objGear.Parent = this;
-                    else
-                        await objGear.SetParentAsync(this, token).ConfigureAwait(false);
-                    objGear.ParentID = InternalId;
-                    if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        GearChildren.Add(objGear);
-                    else
-                        await GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
                 }
                 lstWeapons?.AddRange(lstChildWeapons);
             }
@@ -807,21 +839,32 @@ namespace Chummer.Backend.Equipment
                     }
 
                     Weapon objGearWeapon = new Weapon(_objCharacter);
-                    if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverload
-                        objGearWeapon.Create(objXmlWeapon, lstWeapons, true,
-                            !blnSkipSelectForms,
-                            blnSkipSelectForms, intAddWeaponRating, blnForSelectForm, token);
-                    else
-                        await objGearWeapon.CreateAsync(objXmlWeapon, lstWeapons, true,
-                            !blnSkipSelectForms,
-                            blnSkipSelectForms, intAddWeaponRating, blnForSelectForm, token).ConfigureAwait(false);
-                    objGearWeapon.ParentID = InternalId;
-                    objGearWeapon.Cost = "0";
-                    if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID))
-                        lstWeapons.Add(objGearWeapon);
-                    else
-                        _guiWeaponID = Guid.Empty;
+                    try
+                    {
+                        if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverload
+                            objGearWeapon.Create(objXmlWeapon, lstWeapons, true,
+                                !blnSkipSelectForms,
+                                blnSkipSelectForms, intAddWeaponRating, blnForSelectForm, token);
+                        else
+                            await objGearWeapon.CreateAsync(objXmlWeapon, lstWeapons, true,
+                                !blnSkipSelectForms,
+                                blnSkipSelectForms, intAddWeaponRating, blnForSelectForm, token).ConfigureAwait(false);
+                        objGearWeapon.ParentID = InternalId;
+                        objGearWeapon.Cost = "0";
+                        if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID))
+                            lstWeapons.Add(objGearWeapon);
+                        else
+                            _guiWeaponID = Guid.Empty;
+                    }
+                    catch
+                    {
+                        if (blnSync)
+                            objGearWeapon.DeleteWeapon();
+                        else
+                            await objGearWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
                 }
             }
         }
@@ -1117,8 +1160,16 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode nodMod in nodMods)
                             {
                                 ArmorMod objMod = new ArmorMod(_objCharacter);
-                                objMod.Load(nodMod, blnCopy);
-                                _lstArmorMods.Add(objMod);
+                                try
+                                {
+                                    objMod.Load(nodMod, blnCopy);
+                                    _lstArmorMods.Add(objMod);
+                                }
+                                catch
+                                {
+                                    objMod.DeleteArmorMod();
+                                    throw;
+                                }
                             }
                         }
                         else
@@ -1126,8 +1177,16 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode nodMod in nodMods)
                             {
                                 ArmorMod objMod = new ArmorMod(_objCharacter);
-                                await objMod.LoadAsync(nodMod, blnCopy, token).ConfigureAwait(false);
-                                await _lstArmorMods.AddAsync(objMod, token).ConfigureAwait(false);
+                                try
+                                {
+                                    await objMod.LoadAsync(nodMod, blnCopy, token).ConfigureAwait(false);
+                                    await _lstArmorMods.AddAsync(objMod, token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await objMod.DeleteArmorModAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
                             }
                         }
                     }
@@ -1145,8 +1204,16 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode nodGear in nodGears)
                             {
                                 Gear objGear = new Gear(_objCharacter);
-                                objGear.Load(nodGear, blnCopy);
-                                _lstGear.Add(objGear);
+                                try
+                                {
+                                    objGear.Load(nodGear, blnCopy);
+                                    _lstGear.Add(objGear);
+                                }
+                                catch
+                                {
+                                    objGear.DeleteGear();
+                                    throw;
+                                }
                             }
                         }
                         else
@@ -1154,8 +1221,16 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode nodGear in nodGears)
                             {
                                 Gear objGear = new Gear(_objCharacter);
-                                await objGear.LoadAsync(nodGear, blnCopy, token).ConfigureAwait(false);
-                                await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                                try
+                                {
+                                    await objGear.LoadAsync(nodGear, blnCopy, token).ConfigureAwait(false);
+                                    await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
                             }
                         }
                     }

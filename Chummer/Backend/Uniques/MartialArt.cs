@@ -1141,7 +1141,7 @@ namespace Chummer
                         }
                         catch
                         {
-                            await objMartialArt.DisposeAsync().ConfigureAwait(false);
+                            await objMartialArt.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
                             throw;
                         }
 

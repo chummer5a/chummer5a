@@ -573,17 +573,25 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode xmlWeaponNode in xmlWeaponList)
                         {
                             Weapon objWeapon = new Weapon(_objCharacter);
-                            if (Weapons.Count >= WeaponCapacity)
+                            try
                             {
-                                // Stop loading more weapons than we can actually mount and dump the rest into the character's basic inventory
-                                objWeapon.Load(xmlWeaponNode, blnCopy);
-                                _objCharacter.Weapons.Add(objWeapon);
+                                if (Weapons.Count >= WeaponCapacity)
+                                {
+                                    // Stop loading more weapons than we can actually mount and dump the rest into the character's basic inventory
+                                    objWeapon.Load(xmlWeaponNode, blnCopy);
+                                    _objCharacter.Weapons.Add(objWeapon);
+                                }
+                                else
+                                {
+                                    objWeapon.ParentMount = this;
+                                    objWeapon.Load(xmlWeaponNode, blnCopy);
+                                    Weapons.Add(objWeapon);
+                                }
                             }
-                            else
+                            catch
                             {
-                                objWeapon.ParentMount = this;
-                                objWeapon.Load(xmlWeaponNode, blnCopy);
-                                Weapons.Add(objWeapon);
+                                objWeapon.DeleteWeapon();
+                                throw;
                             }
                         }
                     }
@@ -592,17 +600,25 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode xmlWeaponNode in xmlWeaponList)
                         {
                             Weapon objWeapon = new Weapon(_objCharacter);
-                            if (await Weapons.GetCountAsync(token).ConfigureAwait(false) >= WeaponCapacity)
+                            try
                             {
-                                // Stop loading more weapons than we can actually mount and dump the rest into the character's basic inventory
-                                await objWeapon.LoadAsync(xmlWeaponNode, blnCopy, token).ConfigureAwait(false);
-                                await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).AddAsync(objWeapon, token).ConfigureAwait(false);
+                                if (await Weapons.GetCountAsync(token).ConfigureAwait(false) >= WeaponCapacity)
+                                {
+                                    // Stop loading more weapons than we can actually mount and dump the rest into the character's basic inventory
+                                    await objWeapon.LoadAsync(xmlWeaponNode, blnCopy, token).ConfigureAwait(false);
+                                    await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).AddAsync(objWeapon, token).ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    await objWeapon.SetParentMountAsync(this, token).ConfigureAwait(false);
+                                    await objWeapon.LoadAsync(xmlWeaponNode, blnCopy, token).ConfigureAwait(false);
+                                    await Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                                }
                             }
-                            else
+                            catch
                             {
-                                await objWeapon.SetParentMountAsync(this, token).ConfigureAwait(false);
-                                await objWeapon.LoadAsync(xmlWeaponNode, blnCopy, token).ConfigureAwait(false);
-                                await Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                                await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
                             }
                         }
                     }

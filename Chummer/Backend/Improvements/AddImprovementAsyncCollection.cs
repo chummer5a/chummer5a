@@ -1622,18 +1622,23 @@ namespace Chummer
             }
 
             Spell spell = new Spell(_objCharacter);
-            await spell.CreateAsync(node, strExtra, token: token).ConfigureAwait(false);
-            if (spell.InternalId.IsEmptyGuid())
+            try
             {
-                await spell.DisposeAsync().ConfigureAwait(false);
-                throw new AbortedException();
-            }
-            spell.Grade = -1;
-            await _objCharacter.Spells.AddAsync(spell, token).ConfigureAwait(false);
+                await spell.CreateAsync(node, strExtra, token: token).ConfigureAwait(false);
+                if (spell.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+                spell.Grade = -1;
+                await _objCharacter.Spells.AddAsync(spell, token).ConfigureAwait(false);
 
-            await CreateImprovementAsync(spell.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.Spell,
-                _strUnique, token: token).ConfigureAwait(false);
+                await CreateImprovementAsync(spell.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.Spell,
+                    _strUnique, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                await spell.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         // Add a specific Spell to the Character.
@@ -1670,22 +1675,27 @@ namespace Chummer
             }
 
             Spell spell = new Spell(_objCharacter);
-            await spell.CreateAsync(node, strExtra, token: token).ConfigureAwait(false);
-            if (spell.InternalId.IsEmptyGuid())
+            try
             {
-                await spell.DisposeAsync().ConfigureAwait(false);
-                throw new AbortedException();
-            }
-            spell.Alchemical = bonusNode.Attributes?["alchemical"]?.InnerText == bool.TrueString;
-            spell.Extended = bonusNode.Attributes?["extended"]?.InnerText == bool.TrueString;
-            spell.Limited = bonusNode.Attributes?["limited"]?.InnerText == bool.TrueString;
-            spell.BarehandedAdept = bonusNode.Attributes?["barehandedadept"]?.InnerText == bool.TrueString || bonusNode.Attributes?["usesunarmed"]?.InnerText == bool.TrueString;
-            spell.Grade = -1;
-            await _objCharacter.Spells.AddAsync(spell, token).ConfigureAwait(false);
+                await spell.CreateAsync(node, strExtra, token: token).ConfigureAwait(false);
+                if (spell.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+                spell.Alchemical = bonusNode.Attributes?["alchemical"]?.InnerText == bool.TrueString;
+                spell.Extended = bonusNode.Attributes?["extended"]?.InnerText == bool.TrueString;
+                spell.Limited = bonusNode.Attributes?["limited"]?.InnerText == bool.TrueString;
+                spell.BarehandedAdept = bonusNode.Attributes?["barehandedadept"]?.InnerText == bool.TrueString || bonusNode.Attributes?["usesunarmed"]?.InnerText == bool.TrueString;
+                spell.Grade = -1;
+                await _objCharacter.Spells.AddAsync(spell, token).ConfigureAwait(false);
 
-            await CreateImprovementAsync(spell.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.Spell,
-                _strUnique, token: token).ConfigureAwait(false);
+                await CreateImprovementAsync(spell.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.Spell,
+                    _strUnique, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                await spell.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         // Select a Complex Form.
@@ -1721,19 +1731,24 @@ namespace Chummer
             SelectedValue = node["name"]?.InnerText;
 
             ComplexForm objComplexform = new ComplexForm(_objCharacter);
-            await objComplexform.CreateAsync(node, token: token).ConfigureAwait(false);
-            if (objComplexform.InternalId.IsEmptyGuid())
+            try
             {
-                await objComplexform.DisposeAsync().ConfigureAwait(false);
-                throw new AbortedException();
+                await objComplexform.CreateAsync(node, token: token).ConfigureAwait(false);
+                if (objComplexform.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+                objComplexform.Grade = -1;
+
+                await _objCharacter.ComplexForms.AddAsync(objComplexform, token).ConfigureAwait(false);
+
+                await CreateImprovementAsync(objComplexform.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.ComplexForm,
+                    _strUnique, token: token).ConfigureAwait(false);
             }
-            objComplexform.Grade = -1;
-
-            await _objCharacter.ComplexForms.AddAsync(objComplexform, token).ConfigureAwait(false);
-
-            await CreateImprovementAsync(objComplexform.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.ComplexForm,
-                _strUnique, token: token).ConfigureAwait(false);
+            catch
+            {
+                await objComplexform.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         // Add a specific ComplexForm to the Character.
@@ -1748,19 +1763,24 @@ namespace Chummer
             XmlNode node = objXmlComplexFormDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexform", bonusNode.InnerText) ?? throw new AbortedException();
 
             ComplexForm objComplexForm = new ComplexForm(_objCharacter);
-            await objComplexForm.CreateAsync(node, token: token).ConfigureAwait(false);
-            if (objComplexForm.InternalId.IsEmptyGuid())
+            try
             {
-                await objComplexForm.DisposeAsync().ConfigureAwait(false);
-                throw new AbortedException();
+                await objComplexForm.CreateAsync(node, token: token).ConfigureAwait(false);
+                if (objComplexForm.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+                objComplexForm.Grade = -1;
+
+                await _objCharacter.ComplexForms.AddAsync(objComplexForm, token).ConfigureAwait(false);
+
+                await CreateImprovementAsync(objComplexForm.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.ComplexForm,
+                    _strUnique, token: token).ConfigureAwait(false);
             }
-            objComplexForm.Grade = -1;
-
-            await _objCharacter.ComplexForms.AddAsync(objComplexForm, token).ConfigureAwait(false);
-
-            await CreateImprovementAsync(objComplexForm.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.ComplexForm,
-                _strUnique, token: token).ConfigureAwait(false);
+            catch
+            {
+                await objComplexForm.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         // Add a specific Gear to the Character.
@@ -1814,40 +1834,48 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>(1);
 
                 Gear objNewGearToCreate = new Gear(_objCharacter);
-                await objNewGearToCreate.CreateAsync(xmlGearDataNode, intRating, lstWeapons, ForcedValue, token: token).ConfigureAwait(false);
-
-                if (objNewGearToCreate.InternalId.IsEmptyGuid())
-                    throw new AbortedException();
-
-                await objNewGearToCreate.SetQuantityAsync(decQty, token).ConfigureAwait(false);
-
-                // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
-                if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) == null && await objNewGearToCreate.GetIsCommlinkAsync(token).ConfigureAwait(false))
+                try
                 {
-                    await objNewGearToCreate.SetActiveCommlinkAsync(_objCharacter, true, token).ConfigureAwait(false);
+                    await objNewGearToCreate.CreateAsync(xmlGearDataNode, intRating, lstWeapons, ForcedValue, token: token).ConfigureAwait(false);
+
+                    if (objNewGearToCreate.InternalId.IsEmptyGuid())
+                        throw new AbortedException();
+
+                    await objNewGearToCreate.SetQuantityAsync(decQty, token).ConfigureAwait(false);
+
+                    // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
+                    if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) == null && await objNewGearToCreate.GetIsCommlinkAsync(token).ConfigureAwait(false))
+                    {
+                        await objNewGearToCreate.SetActiveCommlinkAsync(_objCharacter, true, token).ConfigureAwait(false);
+                    }
+
+                    if (xmlGearNode["fullcost"] == null)
+                        objNewGearToCreate.Cost = "0";
+                    // Create any Weapons that came with this Gear.
+                    foreach (Weapon objWeapon in lstWeapons)
+                        await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+
+                    objNewGearToCreate.ParentID = SourceName;
+                    if (objParent != null)
+                    {
+                        await objParent.Children.AddAsync(objNewGearToCreate, token).ConfigureAwait(false);
+                        await objNewGearToCreate.SetParentAsync(objParent, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await _objCharacter.Gear.AddAsync(objNewGearToCreate, token).ConfigureAwait(false);
+                    }
+
+                    await CreateImprovementAsync(objNewGearToCreate.InternalId, _objImprovementSource, SourceName,
+                        Improvement.ImprovementType.Gear,
+                        _strUnique, token: token).ConfigureAwait(false);
+                    return objNewGearToCreate;
                 }
-
-                if (xmlGearNode["fullcost"] == null)
-                    objNewGearToCreate.Cost = "0";
-                // Create any Weapons that came with this Gear.
-                foreach (Weapon objWeapon in lstWeapons)
-                    await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-
-                objNewGearToCreate.ParentID = SourceName;
-                if (objParent != null)
+                catch
                 {
-                    await objParent.Children.AddAsync(objNewGearToCreate, token).ConfigureAwait(false);
-                    await objNewGearToCreate.SetParentAsync(objParent, token).ConfigureAwait(false);
+                    await objNewGearToCreate.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                    throw;
                 }
-                else
-                {
-                    await _objCharacter.Gear.AddAsync(objNewGearToCreate, token).ConfigureAwait(false);
-                }
-
-                await CreateImprovementAsync(objNewGearToCreate.InternalId, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.Gear,
-                    _strUnique, token: token).ConfigureAwait(false);
-                return objNewGearToCreate;
             }
         }
 
@@ -1865,31 +1893,39 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>(1);
 
             Weapon objNewWeapon = new Weapon(_objCharacter);
-            await objNewWeapon.CreateAsync(node, lstWeapons, token: token).ConfigureAwait(false);
-
-            if (objNewWeapon.InternalId.IsEmptyGuid())
-                throw new AbortedException();
-
-            // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
-            if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) == null && await objNewWeapon.GetIsCommlinkAsync(token).ConfigureAwait(false))
+            try
             {
-                await objNewWeapon.SetActiveCommlinkAsync(_objCharacter, true, token).ConfigureAwait(false);
+                await objNewWeapon.CreateAsync(node, lstWeapons, token: token).ConfigureAwait(false);
+
+                if (objNewWeapon.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+
+                // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
+                if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) == null && await objNewWeapon.GetIsCommlinkAsync(token).ConfigureAwait(false))
+                {
+                    await objNewWeapon.SetActiveCommlinkAsync(_objCharacter, true, token).ConfigureAwait(false);
+                }
+
+                if (bonusNode["fullcost"] == null)
+                    objNewWeapon.Cost = "0";
+
+                // Create any Weapons that came with this Gear.
+                foreach (Weapon objWeapon in lstWeapons)
+                    await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+
+                objNewWeapon.ParentID = SourceName;
+
+                await _objCharacter.Weapons.AddAsync(objNewWeapon, token).ConfigureAwait(false);
+
+                await CreateImprovementAsync(objNewWeapon.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.Weapon,
+                    _strUnique, token: token).ConfigureAwait(false);
             }
-
-            if (bonusNode["fullcost"] == null)
-                objNewWeapon.Cost = "0";
-
-            // Create any Weapons that came with this Gear.
-            foreach (Weapon objWeapon in lstWeapons)
-                await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-
-            objNewWeapon.ParentID = SourceName;
-
-            await _objCharacter.Weapons.AddAsync(objNewWeapon, token).ConfigureAwait(false);
-
-            await CreateImprovementAsync(objNewWeapon.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.Weapon,
-                _strUnique, token: token).ConfigureAwait(false);
+            catch
+            {
+                await objNewWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         // Add a specific Gear to the Character.
@@ -1899,33 +1935,39 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
 
-            Weapon objWeapon = new Weapon(_objCharacter)
+            Weapon objWeapon = new Weapon(_objCharacter);
+            try
             {
-                Name = bonusNode["name"]?.InnerText ?? _strFriendlyName,
-                Category = await LanguageManager.GetStringAsync("Tab_Critter", GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false),
-                RangeType = "Melee",
-                Reach = bonusNode["reach"]?.InnerText ?? "0",
-                Accuracy = bonusNode["accuracy"]?.InnerText ?? "Physical",
-                Damage = bonusNode["damage"]?.InnerText ?? "({STR})S",
-                AP = bonusNode["ap"]?.InnerText ?? "0",
-                Mode = "0",
-                RC = "0",
-                Concealability = "0",
-                Avail = "0",
-                Cost = "0",
-                Ammo = "0",
-                UseSkill = bonusNode["useskill"]?.InnerText ?? string.Empty,
-                Source = bonusNode["source"]?.InnerText ?? "SR5",
-                Page = bonusNode["page"]?.InnerText ?? "0",
-                ParentID = SourceName
-            };
-            objWeapon.CreateClips();
+                objWeapon.Name = bonusNode["name"]?.InnerText ?? _strFriendlyName;
+                objWeapon.Category = await LanguageManager.GetStringAsync("Tab_Critter", GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false);
+                objWeapon.RangeType = "Melee";
+                objWeapon.Reach = bonusNode["reach"]?.InnerText ?? "0";
+                objWeapon.Accuracy = bonusNode["accuracy"]?.InnerText ?? "Physical";
+                objWeapon.Damage = bonusNode["damage"]?.InnerText ?? "({STR})S";
+                objWeapon.AP = bonusNode["ap"]?.InnerText ?? "0";
+                objWeapon.Mode = "0";
+                objWeapon.RC = "0";
+                objWeapon.Concealability = "0";
+                objWeapon.Avail = "0";
+                objWeapon.Cost = "0";
+                objWeapon.Ammo = "0";
+                objWeapon.UseSkill = bonusNode["useskill"]?.InnerText ?? string.Empty;
+                objWeapon.Source = bonusNode["source"]?.InnerText ?? "SR5";
+                objWeapon.Page = bonusNode["page"]?.InnerText ?? "0";
+                objWeapon.ParentID = SourceName;
+                await objWeapon.CreateClipsAsync(token).ConfigureAwait(false);
 
-            await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
 
-            await CreateImprovementAsync(objWeapon.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.Weapon,
-                _strUnique, token: token).ConfigureAwait(false);
+                await CreateImprovementAsync(objWeapon.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.Weapon,
+                    _strUnique, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         // Select an AI program.
@@ -2782,13 +2824,21 @@ namespace Chummer
             XmlNode objXmlArt = (await _objCharacter.LoadDataAsync("martialarts.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/martialarts/martialart", bonusNode.InnerText);
 
             MartialArt objMartialArt = new MartialArt(_objCharacter);
-            await objMartialArt.CreateAsync(objXmlArt, token).ConfigureAwait(false);
-            objMartialArt.IsQuality = true;
-            await (await _objCharacter.GetMartialArtsAsync(token).ConfigureAwait(false)).AddAsync(objMartialArt, token).ConfigureAwait(false);
+            try
+            {
+                await objMartialArt.CreateAsync(objXmlArt, token).ConfigureAwait(false);
+                objMartialArt.IsQuality = true;
+                await (await _objCharacter.GetMartialArtsAsync(token).ConfigureAwait(false)).AddAsync(objMartialArt, token).ConfigureAwait(false);
 
-            await CreateImprovementAsync(objMartialArt.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.MartialArt,
-                _strUnique, token: token).ConfigureAwait(false);
+                await CreateImprovementAsync(objMartialArt.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.MartialArt,
+                    _strUnique, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                await objMartialArt.DeleteMartialArtAsync(token: CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         // The Improvement adds a limit modifier
@@ -3799,9 +3849,7 @@ namespace Chummer
                     await objMentor.CreateAsync(xmlMentor, Improvement.ImprovementType.MentorSpirit, string.Empty,
                         frmPickMentorSpirit.MyForm.Choice1, frmPickMentorSpirit.MyForm.Choice2, token).ConfigureAwait(false);
                     if (objMentor.InternalId.IsEmptyGuid())
-                    {
                         throw new AbortedException();
-                    }
 
                     await _objCharacter.MentorSpirits.AddAsync(objMentor, token).ConfigureAwait(false);
                 }
@@ -3849,9 +3897,7 @@ namespace Chummer
                     await objMentor.CreateAsync(xmlMentor, Improvement.ImprovementType.Paragon, string.Empty,
                         frmPickMentorSpirit.MyForm.Choice1, frmPickMentorSpirit.MyForm.Choice2, token).ConfigureAwait(false);
                     if (objMentor.InternalId.IsEmptyGuid())
-                    {
                         throw new AbortedException();
-                    }
                     await _objCharacter.MentorSpirits.AddAsync(objMentor, token).ConfigureAwait(false);
                 }
                 catch
@@ -4082,16 +4128,22 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(strPowerName))
                 {
+                    Power objBoostedPower;
+                    XmlNode objXmlPower = (await _objCharacter.LoadDataAsync("powers.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/powers/power", strPowerName);
                     // Check if the character already has this power
                     Power objNewPower = new Power(_objCharacter);
-                    XmlNode objXmlPower = (await _objCharacter.LoadDataAsync("powers.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/powers/power", strPowerName);
-                    if (!await objNewPower.CreateAsync(objXmlPower, 0, bonusNode["bonusoverride"], token: token).ConfigureAwait(false))
+                    try
+                    {
+                        if (!await objNewPower.CreateAsync(objXmlPower, 0, bonusNode["bonusoverride"], token: token).ConfigureAwait(false))
+                            throw new AbortedException();
+
+                        objBoostedPower = await _objCharacter.Powers.FirstOrDefaultAsync(async objPower => await objPower.GetNameAsync(token).ConfigureAwait(false) == await objNewPower.GetNameAsync(token).ConfigureAwait(false) && await objPower.GetExtraAsync(token).ConfigureAwait(false) == await objNewPower.GetExtraAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    }
+                    catch
                     {
                         await objNewPower.DeletePowerAsync(token).ConfigureAwait(false);
-                        throw new AbortedException();
+                        throw;
                     }
-
-                    Power objBoostedPower = await _objCharacter.Powers.FirstOrDefaultAsync(async objPower => await objPower.GetNameAsync(token).ConfigureAwait(false) == await objNewPower.GetNameAsync(token).ConfigureAwait(false) && await objPower.GetExtraAsync(token).ConfigureAwait(false) == await objNewPower.GetExtraAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     if (objBoostedPower == null)
                     {
                         await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).AddAsync(objNewPower, token).ConfigureAwait(false);
@@ -4163,18 +4215,27 @@ namespace Chummer
                                               ?? throw new AbortedException();
                             }
 
+                            bool blnHasPower;
+                            string strName;
+                            string strExtra;
                             // If no, add the power and mark it free or give it free levels
                             Power objNewPower = new Power(_objCharacter);
-                            if (!await objNewPower.CreateAsync(objXmlPower, token: token).ConfigureAwait(false))
+                            try
                             {
-                                await objNewPower.DeletePowerAsync(token).ConfigureAwait(false);
-                                throw new AbortedException();
+                                if (!await objNewPower.CreateAsync(objXmlPower, token: token).ConfigureAwait(false))
+                                    throw new AbortedException();
+
+                                SelectedValue = await objNewPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                strName = await objNewPower.GetNameAsync(token).ConfigureAwait(false);
+                                strExtra = await objNewPower.GetExtraAsync(token).ConfigureAwait(false);
+                                blnHasPower = await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).AnyAsync(
+                                    async objPower => await objPower.GetNameAsync(token).ConfigureAwait(false) == strName && await objPower.GetExtraAsync(token).ConfigureAwait(false) == strExtra, token: token).ConfigureAwait(false);
                             }
-
-                            SelectedValue = await objNewPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-
-                            bool blnHasPower = await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).AnyAsync(
-                                async objPower => await objPower.GetNameAsync(token).ConfigureAwait(false) == await objNewPower.GetNameAsync(token).ConfigureAwait(false) && await objPower.GetExtraAsync(token).ConfigureAwait(false) == await objNewPower.GetExtraAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                            catch
+                            {
+                                await objNewPower.DeletePowerAsync(CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
 
                             if (!blnHasPower)
                             {
@@ -4186,10 +4247,10 @@ namespace Chummer
                                 await objNewPower.DeletePowerAsync(token).ConfigureAwait(false);
                             }
 
-                            await CreateImprovementAsync(objNewPower.Name, _objImprovementSource, SourceName,
+                            await CreateImprovementAsync(strName, _objImprovementSource, SourceName,
                                 !string.IsNullOrWhiteSpace(strPointsPerLevel)
                                     ? Improvement.ImprovementType.AdeptPowerFreePoints
-                                    : Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0,
+                                    : Improvement.ImprovementType.AdeptPowerFreeLevels, strExtra, 0,
                                 intLevels, token: token).ConfigureAwait(false);
                         }
                     }
@@ -6013,27 +6074,26 @@ namespace Chummer
                                                              + strSelected.CleanXPath() + ']');
                             intQualityDiscount
                                 = await ImprovementManager.ValueToIntAsync(_objCharacter, objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@discount", token)?.Value, _intRating, token).ConfigureAwait(false);
+                            strForceDiscountValue = objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@select", token)?.Value;
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality discountQuality = new Quality(_objCharacter);
-                            await discountQuality.SetBPAsync(0, token).ConfigureAwait(false);
                             try
                             {
-                                strForceDiscountValue = objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@select", token)?.Value;
+                                await discountQuality.SetBPAsync(0, token).ConfigureAwait(false);
                                 await discountQuality.CreateAsync(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
                                     strForceDiscountValue, _strFriendlyName, token).ConfigureAwait(false);
                                 await CreateImprovementAsync(discountQuality.InternalId, _objImprovementSource, SourceName,
                                     Improvement.ImprovementType.SpecificQuality, _strUnique, token: token).ConfigureAwait(false);
+                                await (await _objCharacter.GetQualitiesAsync(token).ConfigureAwait(false)).AddAsync(discountQuality, token).ConfigureAwait(false);
+                                // Create any Weapons that came with this ware.
+                                foreach (Weapon objWeapon in lstWeapons)
+                                    await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).AddAsync(objWeapon, token).ConfigureAwait(false);
                             }
                             catch
                             {
-                                await discountQuality.DisposeAsync().ConfigureAwait(false);
+                                await discountQuality.DeleteQualityAsync(token: CancellationToken.None).ConfigureAwait(false);
                                 throw;
                             }
-
-                            await (await _objCharacter.GetQualitiesAsync(token).ConfigureAwait(false)).AddAsync(discountQuality, token).ConfigureAwait(false);
-                            // Create any Weapons that came with this ware.
-                            foreach (Weapon objWeapon in lstWeapons)
-                                await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).AddAsync(objWeapon, token).ConfigureAwait(false);
                         }
                     }
                 }
@@ -7052,33 +7112,52 @@ namespace Chummer
             }
             else
             {
+                Grade objGrade = await Grade.ConvertToCyberwareGradeAsync(bonusNode["grade"]?.InnerText, _objImprovementSource,
+                        _objCharacter, token).ConfigureAwait(false);
                 // Create the new piece of ware.
-                Cyberware objCyberware = new Cyberware(_objCharacter);
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 List<Vehicle> lstVehicles = new List<Vehicle>(1);
-
-                Grade objGrade = await Grade.ConvertToCyberwareGradeAsync(bonusNode["grade"]?.InnerText, _objImprovementSource,
-                    _objCharacter, token).ConfigureAwait(false);
-                await objCyberware.CreateAsync(node, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true,
-                    ForcedValue, token: token).ConfigureAwait(false);
-
-                if (objCyberware.InternalId.IsEmptyGuid())
+                Cyberware objCyberware = new Cyberware(_objCharacter);
+                try
                 {
-                    await objCyberware.DisposeAsync().ConfigureAwait(false);
-                    throw new AbortedException();
+                    await objCyberware.CreateAsync(node, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true,
+                        ForcedValue, token: token).ConfigureAwait(false);
+
+                    if (objCyberware.InternalId.IsEmptyGuid())
+                        throw new AbortedException();
+
+                    objCyberware.Cost = "0";
+                    objCyberware.ParentID = SourceName;
+
+                    await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).AddAsync(objCyberware, token).ConfigureAwait(false);
+                    // Create any Weapons that came with this ware.
+                    foreach (Weapon objWeapon in lstWeapons)
+                        await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).AddAsync(objWeapon, token).ConfigureAwait(false);
+                    // Create any Vehicles that came with this ware.
+                    foreach (Vehicle objVehicle in lstVehicles)
+                        await (await _objCharacter.GetVehiclesAsync(token).ConfigureAwait(false)).AddAsync(objVehicle, token).ConfigureAwait(false);
+                    strImprovedName = objCyberware.InternalId;
                 }
+                catch
+                {
+                    if (lstWeapons.Count > 0)
+                    {
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        }
+                    }
 
-                objCyberware.Cost = "0";
-                objCyberware.ParentID = SourceName;
-
-                await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).AddAsync(objCyberware, token).ConfigureAwait(false);
-                // Create any Weapons that came with this ware.
-                foreach (Weapon objWeapon in lstWeapons)
-                    await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).AddAsync(objWeapon, token).ConfigureAwait(false);
-                // Create any Vehicles that came with this ware.
-                foreach (Vehicle objVehicle in lstVehicles)
-                    await (await _objCharacter.GetVehiclesAsync(token).ConfigureAwait(false)).AddAsync(objVehicle, token).ConfigureAwait(false);
-                strImprovedName = objCyberware.InternalId;
+                    if (lstVehicles.Count > 0)
+                    {
+                        foreach (Vehicle objVehicle in lstVehicles)
+                        {
+                            await objVehicle.DeleteVehicleAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        }
+                    }
+                    await objCyberware.DeleteCyberwareAsync(token: CancellationToken.None).ConfigureAwait(false);
+                    throw;
+                }
             }
 
             await CreateImprovementAsync(strImprovedName, _objImprovementSource, SourceName,
@@ -7462,7 +7541,7 @@ namespace Chummer
                     }
                     catch
                     {
-                        await objAddQuality.DisposeAsync().ConfigureAwait(false);
+                        await objAddQuality.DeleteQualityAsync(token: CancellationToken.None).ConfigureAwait(false);
                         throw;
                     }
                 }

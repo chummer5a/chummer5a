@@ -1103,42 +1103,53 @@ namespace Chummer.Backend.Equipment
                             if (objXmlWeapon != null)
                             {
                                 Weapon objGearWeapon = new Weapon(_objCharacter);
-                                if (blnSync)
-                                    objGearWeapon.ParentVehicle = ParentVehicle;
-                                else
-                                    await objGearWeapon.SetParentVehicleAsync(await GetParentVehicleAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
-                                int intAddWeaponRating = 0;
-                                string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerText;
-                                if (!string.IsNullOrEmpty(strLoopRating))
+                                try
                                 {
-                                    strLoopRating = blnSync
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        ? strLoopRating.CheapReplace("{Rating}",
-                                            () => Rating.ToString(
-                                                GlobalSettings
-                                                    .InvariantCultureInfo))
-                                        : await strLoopRating.CheapReplaceAsync("{Rating}",
-                                            async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(
-                                                GlobalSettings
-                                                    .InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                    int.TryParse(strLoopRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                        out intAddWeaponRating);
+                                    if (blnSync)
+                                        objGearWeapon.ParentVehicle = ParentVehicle;
+                                    else
+                                        await objGearWeapon.SetParentVehicleAsync(await GetParentVehicleAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                                    int intAddWeaponRating = 0;
+                                    string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerText;
+                                    if (!string.IsNullOrEmpty(strLoopRating))
+                                    {
+                                        strLoopRating = blnSync
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            ? strLoopRating.CheapReplace("{Rating}",
+                                                () => Rating.ToString(
+                                                    GlobalSettings
+                                                        .InvariantCultureInfo))
+                                            : await strLoopRating.CheapReplaceAsync("{Rating}",
+                                                async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(
+                                                    GlobalSettings
+                                                        .InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                        int.TryParse(strLoopRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                            out intAddWeaponRating);
+                                    }
+
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        objGearWeapon.Create(objXmlWeapon, lstWeapons, blnCreateChildren,
+                                            blnCreateImprovements,
+                                            blnSkipSelectForms, intAddWeaponRating, token: token);
+                                    else
+                                        await objGearWeapon.CreateAsync(objXmlWeapon, lstWeapons, blnCreateChildren,
+                                            blnCreateImprovements,
+                                            blnSkipSelectForms, intAddWeaponRating, token: token).ConfigureAwait(false);
+                                    objGearWeapon.ParentID = InternalId;
+                                    objGearWeapon.Cost = "0";
+
+                                    if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID))
+                                        lstWeapons.Add(objGearWeapon);
                                 }
-
-                                if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    objGearWeapon.Create(objXmlWeapon, lstWeapons, blnCreateChildren,
-                                        blnCreateImprovements,
-                                        blnSkipSelectForms, intAddWeaponRating, token: token);
-                                else
-                                    await objGearWeapon.CreateAsync(objXmlWeapon, lstWeapons, blnCreateChildren,
-                                        blnCreateImprovements,
-                                        blnSkipSelectForms, intAddWeaponRating, token: token).ConfigureAwait(false);
-                                objGearWeapon.ParentID = InternalId;
-                                objGearWeapon.Cost = "0";
-
-                                if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID))
-                                    lstWeapons.Add(objGearWeapon);
+                                catch
+                                {
+                                    if (blnSync)
+                                        objGearWeapon.DeleteWeapon();
+                                    else
+                                        await objGearWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
                             }
                         }
 
@@ -1167,8 +1178,8 @@ namespace Chummer.Backend.Equipment
                                         "/chummer/accessories/accessory",
                                         objXml.InnerText);
 
-                                    if (objXmlAccessory == null) continue;
-                                    WeaponAccessory objGearWeapon = new WeaponAccessory(_objCharacter);
+                                    if (objXmlAccessory == null)
+                                        continue;
                                     int intAddWeaponRating = 0;
                                     string strLoopRating = objXml.Attributes["rating"]?.InnerText;
                                     if (!string.IsNullOrEmpty(strLoopRating))
@@ -1187,32 +1198,43 @@ namespace Chummer.Backend.Equipment
                                             GlobalSettings.InvariantCultureInfo,
                                             out intAddWeaponRating);
                                     }
-
-                                    if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        objGearWeapon.Create(objXmlAccessory,
-                                            new Tuple<string, string>(string.Empty, string.Empty),
-                                            intAddWeaponRating,
-                                            blnSkipSelectForms, true, blnCreateImprovements, token);
-                                    else
-                                        await objGearWeapon.CreateAsync(objXmlAccessory,
-                                            new Tuple<string, string>(string.Empty, string.Empty),
-                                            intAddWeaponRating,
-                                            blnSkipSelectForms, true, blnCreateImprovements, token).ConfigureAwait(false);
-                                    objGearWeapon.Cost = "0";
-                                    objGearWeapon.ParentID = InternalId;
-                                    if (blnSync)
-                                        objGearWeapon.Parent = objWeapon;
-                                    else
-                                        await objGearWeapon.SetParentAsync(objWeapon, token).ConfigureAwait(false);
-
-                                    if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponAccessoryID))
+                                    WeaponAccessory objGearWeapon = new WeaponAccessory(_objCharacter);
+                                    try
                                     {
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objWeapon.WeaponAccessories.Add(objGearWeapon);
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objGearWeapon.Create(objXmlAccessory,
+                                                new Tuple<string, string>(string.Empty, string.Empty),
+                                                intAddWeaponRating,
+                                                blnSkipSelectForms, true, blnCreateImprovements, token);
                                         else
-                                            await objWeapon.WeaponAccessories.AddAsync(objGearWeapon, token).ConfigureAwait(false);
+                                            await objGearWeapon.CreateAsync(objXmlAccessory,
+                                                new Tuple<string, string>(string.Empty, string.Empty),
+                                                intAddWeaponRating,
+                                                blnSkipSelectForms, true, blnCreateImprovements, token).ConfigureAwait(false);
+                                        objGearWeapon.Cost = "0";
+                                        objGearWeapon.ParentID = InternalId;
+                                        if (blnSync)
+                                            objGearWeapon.Parent = objWeapon;
+                                        else
+                                            await objGearWeapon.SetParentAsync(objWeapon, token).ConfigureAwait(false);
+
+                                        if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponAccessoryID))
+                                        {
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                objWeapon.WeaponAccessories.Add(objGearWeapon);
+                                            else
+                                                await objWeapon.WeaponAccessories.AddAsync(objGearWeapon, token).ConfigureAwait(false);
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        if (blnSync)
+                                            objGearWeapon.DeleteWeaponAccessory();
+                                        else
+                                            await objGearWeapon.DeleteWeaponAccessoryAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                        throw;
                                     }
                                 }
                             }
@@ -1823,20 +1845,28 @@ namespace Chummer.Backend.Equipment
 
                                 if (objXmlSubsystem != null)
                                 {
-                                    Cyberware objSubsystem = new Cyberware(_objCharacter);
                                     int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
                                         GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
-                                    objSubsystem.Create(objXmlSubsystem, objGrade,
-                                        Improvement.ImprovementSource.Cyberware,
-                                        intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
-                                        objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
-                                    objSubsystem.ParentID = InternalId;
-                                    objSubsystem.Cost = "0";
-                                    // If the <subsystem> tag itself contains extra children, add those, too
-                                    objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles,
-                                        blnCreateImprovements);
+                                    Cyberware objSubsystem = new Cyberware(_objCharacter);
+                                    try
+                                    {
+                                        objSubsystem.Create(objXmlSubsystem, objGrade,
+                                            Improvement.ImprovementSource.Cyberware,
+                                            intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                            objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
+                                        objSubsystem.ParentID = InternalId;
+                                        objSubsystem.Cost = "0";
+                                        // If the <subsystem> tag itself contains extra children, add those, too
+                                        objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles,
+                                            blnCreateImprovements);
 
-                                    _lstChildren.Add(objSubsystem);
+                                        _lstChildren.Add(objSubsystem);
+                                    }
+                                    catch
+                                    {
+                                        objSubsystem.DeleteCyberware();
+                                        throw;
+                                    }
                                 }
                             }
                         }
@@ -1858,20 +1888,28 @@ namespace Chummer.Backend.Equipment
 
                                 if (objXmlSubsystem != null)
                                 {
-                                    Cyberware objSubsystem = new Cyberware(_objCharacter);
                                     int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
                                         GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
-                                    objSubsystem.Create(objXmlSubsystem, objGrade,
-                                        Improvement.ImprovementSource.Bioware,
-                                        intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
-                                        objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
-                                    objSubsystem.ParentID = InternalId;
-                                    objSubsystem.Cost = "0";
-                                    // If the <subsystem> tag itself contains extra children, add those, too
-                                    objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles,
-                                        blnCreateImprovements);
+                                    Cyberware objSubsystem = new Cyberware(_objCharacter);
+                                    try
+                                    {
+                                        objSubsystem.Create(objXmlSubsystem, objGrade,
+                                            Improvement.ImprovementSource.Bioware,
+                                            intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                            objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
+                                        objSubsystem.ParentID = InternalId;
+                                        objSubsystem.Cost = "0";
+                                        // If the <subsystem> tag itself contains extra children, add those, too
+                                        objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles,
+                                            blnCreateImprovements);
 
-                                    _lstChildren.Add(objSubsystem);
+                                        _lstChildren.Add(objSubsystem);
+                                    }
+                                    catch
+                                    {
+                                        objSubsystem.DeleteCyberware();
+                                        throw;
+                                    }
                                 }
                             }
                         }
@@ -1890,18 +1928,29 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                             {
                                 Gear objGear = new Gear(_objCharacter);
-                                if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons,
-                                        blnCreateImprovements))
-                                    continue;
-                                foreach (Weapon objWeapon in lstChildWeapons)
+                                try
                                 {
-                                    objWeapon.ParentID = InternalId;
-                                }
+                                    if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons,
+                                            blnCreateImprovements))
+                                    {
+                                        objGear.DeleteGear();
+                                        continue;
+                                    }
+                                    foreach (Weapon objWeapon in lstChildWeapons)
+                                    {
+                                        objWeapon.ParentID = InternalId;
+                                    }
 
-                                objGear.Parent = this;
-                                objGear.ParentID = InternalId;
-                                GearChildren.Add(objGear);
-                                lstChildWeapons.AddRange(lstWeapons);
+                                    objGear.Parent = this;
+                                    objGear.ParentID = InternalId;
+                                    GearChildren.Add(objGear);
+                                    lstChildWeapons.AddRange(lstWeapons);
+                                }
+                                catch
+                                {
+                                    objGear.DeleteGear();
+                                    throw;
+                                }
                             }
 
                             lstWeapons.AddRange(lstChildWeapons);
@@ -1941,23 +1990,31 @@ namespace Chummer.Backend.Equipment
 
                                 if (objXmlSubsystem != null)
                                 {
-                                    Cyberware objSubsystem = new Cyberware(_objCharacter);
                                     int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
                                         GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
-                                    await objSubsystem.CreateAsync(objXmlSubsystem, objGrade,
-                                            Improvement.ImprovementSource.Cyberware,
-                                            intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
-                                            objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this,
-                                            token: token)
-                                        .ConfigureAwait(false);
-                                    objSubsystem.ParentID = InternalId;
-                                    objSubsystem.Cost = "0";
-                                    // If the <subsystem> tag itself contains extra children, add those, too
-                                    await objSubsystem.CreateChildrenAsync(objXmlSubsystemNode, objGrade, lstWeapons,
-                                        objVehicles,
-                                        blnCreateImprovements, token).ConfigureAwait(false);
+                                    Cyberware objSubsystem = new Cyberware(_objCharacter);
+                                    try
+                                    {
+                                        await objSubsystem.CreateAsync(objXmlSubsystem, objGrade,
+                                                Improvement.ImprovementSource.Cyberware,
+                                                intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                                objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this,
+                                                token: token)
+                                            .ConfigureAwait(false);
+                                        objSubsystem.ParentID = InternalId;
+                                        objSubsystem.Cost = "0";
+                                        // If the <subsystem> tag itself contains extra children, add those, too
+                                        await objSubsystem.CreateChildrenAsync(objXmlSubsystemNode, objGrade, lstWeapons,
+                                            objVehicles,
+                                            blnCreateImprovements, token).ConfigureAwait(false);
 
-                                    await _lstChildren.AddAsync(objSubsystem, token).ConfigureAwait(false);
+                                        await _lstChildren.AddAsync(objSubsystem, token).ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        await objSubsystem.DeleteCyberwareAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                        throw;
+                                    }
                                 }
                             }
                         }
@@ -1980,23 +2037,31 @@ namespace Chummer.Backend.Equipment
 
                                 if (objXmlSubsystem != null)
                                 {
-                                    Cyberware objSubsystem = new Cyberware(_objCharacter);
                                     int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
                                         GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
-                                    await objSubsystem.CreateAsync(objXmlSubsystem, objGrade,
-                                            Improvement.ImprovementSource.Bioware,
-                                            intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
-                                            objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this,
-                                            token: token)
-                                        .ConfigureAwait(false);
-                                    objSubsystem.ParentID = InternalId;
-                                    objSubsystem.Cost = "0";
-                                    // If the <subsystem> tag itself contains extra children, add those, too
-                                    await objSubsystem.CreateChildrenAsync(objXmlSubsystemNode, objGrade, lstWeapons,
-                                        objVehicles,
-                                        blnCreateImprovements, token).ConfigureAwait(false);
+                                    Cyberware objSubsystem = new Cyberware(_objCharacter);
+                                    try
+                                    {
+                                        await objSubsystem.CreateAsync(objXmlSubsystem, objGrade,
+                                                Improvement.ImprovementSource.Bioware,
+                                                intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                                objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this,
+                                                token: token)
+                                            .ConfigureAwait(false);
+                                        objSubsystem.ParentID = InternalId;
+                                        objSubsystem.Cost = "0";
+                                        // If the <subsystem> tag itself contains extra children, add those, too
+                                        await objSubsystem.CreateChildrenAsync(objXmlSubsystemNode, objGrade, lstWeapons,
+                                            objVehicles,
+                                            blnCreateImprovements, token).ConfigureAwait(false);
 
-                                    await _lstChildren.AddAsync(objSubsystem, token).ConfigureAwait(false);
+                                        await _lstChildren.AddAsync(objSubsystem, token).ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        await objSubsystem.DeleteCyberwareAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                        throw;
+                                    }
                                 }
                             }
                         }
@@ -2016,19 +2081,30 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                             {
                                 Gear objGear = new Gear(_objCharacter);
-                                if (!await objGear.CreateFromNodeAsync(objXmlGearDocument, objXmlVehicleGear,
-                                        lstChildWeapons,
-                                        blnCreateImprovements, token: token).ConfigureAwait(false))
-                                    continue;
-                                foreach (Weapon objWeapon in lstChildWeapons)
+                                try
                                 {
-                                    objWeapon.ParentID = InternalId;
-                                }
+                                    if (!await objGear.CreateFromNodeAsync(objXmlGearDocument, objXmlVehicleGear,
+                                            lstChildWeapons,
+                                            blnCreateImprovements, token: token).ConfigureAwait(false))
+                                    {
+                                        await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
+                                        continue;
+                                    }
+                                    foreach (Weapon objWeapon in lstChildWeapons)
+                                    {
+                                        objWeapon.ParentID = InternalId;
+                                    }
 
-                                await objGear.SetParentAsync(this, token).ConfigureAwait(false);
-                                objGear.ParentID = InternalId;
-                                await GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
-                                lstChildWeapons.AddRange(lstWeapons);
+                                    await objGear.SetParentAsync(this, token).ConfigureAwait(false);
+                                    objGear.ParentID = InternalId;
+                                    await GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
+                                    lstChildWeapons.AddRange(lstWeapons);
+                                }
+                                catch
+                                {
+                                    await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
                             }
 
                             lstWeapons.AddRange(lstChildWeapons);
@@ -2549,15 +2625,31 @@ namespace Chummer.Backend.Equipment
                             Cyberware objChild = new Cyberware(_objCharacter);
                             if (blnSync)
                             {
-                                // ReSharper disable once MethodHasAsyncOverload
-                                objChild.Load(nodChild, blnCopy, token);
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                _lstChildren.Add(objChild);
+                                try
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objChild.Load(nodChild, blnCopy, token);
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    _lstChildren.Add(objChild);
+                                }
+                                catch
+                                {
+                                    objChild.DeleteCyberware();
+                                    throw;
+                                }
                             }
                             else
                             {
-                                await objChild.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
-                                await _lstChildren.AddAsync(objChild, token).ConfigureAwait(false);
+                                try
+                                {
+                                    await objChild.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
+                                    await _lstChildren.AddAsync(objChild, token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await objChild.DeleteCyberwareAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
                             }
                         }
                     }
@@ -2570,14 +2662,30 @@ namespace Chummer.Backend.Equipment
                             Gear objGear = new Gear(_objCharacter);
                             if (blnSync)
                             {
-                                objGear.Load(nodChild, blnCopy);
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                _lstGear.Add(objGear);
+                                try
+                                {
+                                    objGear.Load(nodChild, blnCopy);
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    _lstGear.Add(objGear);
+                                }
+                                catch
+                                {
+                                    objGear.DeleteGear();
+                                    throw;
+                                }
                             }
                             else
                             {
-                                await objGear.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
-                                await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                                try
+                                {
+                                    await objGear.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
+                                    await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
                             }
                         }
                     }
@@ -12355,18 +12463,18 @@ namespace Chummer.Backend.Equipment
                                 }
                                 catch
                                 {
-                                    objPluginGear.Dispose();
+                                    objPluginGear.DeleteGear();
                                     throw;
                                 }
                             }
                         }
                         catch
                         {
-                            objPlugin.Dispose();
+                            objPlugin.DeleteCyberware();
                             throw;
                         }
                         if (!blnSuccess)
-                            objPlugin.Dispose();
+                            objPlugin.DeleteCyberware();
                     }
 
                     foreach (XPathNavigator xmlPluginToAdd in xmlGearImportNode.Select(
@@ -13045,9 +13153,15 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        private int _intIsDisposed;
+
+        public bool IsDisposed => _intIsDisposed > 0;
+
         /// <inheritdoc />
         public void Dispose()
         {
+            if (IsDisposed)
+                return;
             using (LockObject.EnterWriteLock())
             {
                 _lstChildren.EnumerateWithSideEffects().ForEach(x => x.Dispose());
@@ -13059,6 +13173,8 @@ namespace Chummer.Backend.Equipment
 
         private void DisposeSelf()
         {
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                return;
             using (LockObject.EnterWriteLock())
             {
                 _lstChildren.Dispose();
@@ -13071,6 +13187,8 @@ namespace Chummer.Backend.Equipment
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
+            if (IsDisposed)
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
@@ -13087,6 +13205,8 @@ namespace Chummer.Backend.Equipment
 
         private async ValueTask DisposeSelfAsync()
         {
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {

@@ -173,13 +173,21 @@ namespace Chummer.Backend.Equipment
                 if (objCharacter.LastSavedVersion <= new ValueVersion(5, 222, 61) && objGear != null)
                 {
                     Gear objNewGear = new Gear(objCharacter);
-                    objNewGear.Copy(objGear);
-                    objNewGear.Quantity = intCount;
-                    if (objWeapon.ParentVehicle != null)
-                        objWeapon.ParentVehicle.GearChildren.Add(objNewGear);
-                    else
-                        objCharacter.Gear.Add(objNewGear);
-                    objGear = objNewGear;
+                    try
+                    {
+                        objNewGear.Copy(objGear);
+                        objNewGear.Quantity = intCount;
+                        if (objWeapon.ParentVehicle != null)
+                            objWeapon.ParentVehicle.GearChildren.Add(objNewGear);
+                        else
+                            objCharacter.Gear.Add(objNewGear);
+                        objGear = objNewGear;
+                    }
+                    catch
+                    {
+                        objNewGear.DeleteGear();
+                        throw;
+                    }
                 }
                 Clip objReturn = new Clip(objCharacter, objOwnerAccessory, objWeapon, objGear, intCount);
                 string strTemp = string.Empty;
@@ -213,13 +221,21 @@ namespace Chummer.Backend.Equipment
                 if (objCharacter.LastSavedVersion <= new ValueVersion(5, 222, 61) && objGear != null)
                 {
                     Gear objNewGear = new Gear(objCharacter);
-                    await objNewGear.CopyAsync(objGear, token).ConfigureAwait(false);
-                    await objNewGear.SetQuantityAsync(intCount, token).ConfigureAwait(false);
-                    if (objWeapon.ParentVehicle != null)
-                        await objWeapon.ParentVehicle.GearChildren.AddAsync(objNewGear, token).ConfigureAwait(false);
-                    else
-                        await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).AddAsync(objNewGear, token).ConfigureAwait(false);
-                    objGear = objNewGear;
+                    try
+                    {
+                        await objNewGear.CopyAsync(objGear, token).ConfigureAwait(false);
+                        await objNewGear.SetQuantityAsync(intCount, token).ConfigureAwait(false);
+                        if (objWeapon.ParentVehicle != null)
+                            await objWeapon.ParentVehicle.GearChildren.AddAsync(objNewGear, token).ConfigureAwait(false);
+                        else
+                            await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).AddAsync(objNewGear, token).ConfigureAwait(false);
+                        objGear = objNewGear;
+                    }
+                    catch
+                    {
+                        await objNewGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
                 }
                 Clip objReturn = new Clip(objCharacter, objOwnerAccessory, objWeapon, objGear, intCount);
                 string strTemp = string.Empty;

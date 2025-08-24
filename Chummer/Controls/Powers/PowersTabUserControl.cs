@@ -451,16 +451,23 @@ namespace Chummer.UI.Powers
 
                             blnAddAgain = frmPickPower.MyForm.AddAgain;
 
-                            Power objPower = new Power(_objCharacter);
-
                             XmlNode objXmlPower = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power",
-                                                      frmPickPower.MyForm.SelectedPower)
-                                                  ?? throw new AbortedException();
+                                                          frmPickPower.MyForm.SelectedPower)
+                                                      ?? throw new AbortedException();
 
-                            if (await objPower.CreateAsync(objXmlPower, token: MyToken).ConfigureAwait(false))
-                                await _objCharacter.Powers.AddAsync(objPower, MyToken).ConfigureAwait(false);
-                            else
-                                await objPower.DeletePowerAsync(MyToken).ConfigureAwait(false);
+                            Power objPower = new Power(_objCharacter);
+                            try
+                            {
+                                if (await objPower.CreateAsync(objXmlPower, token: MyToken).ConfigureAwait(false))
+                                    await _objCharacter.Powers.AddAsync(objPower, MyToken).ConfigureAwait(false);
+                                else
+                                    await objPower.DeletePowerAsync(MyToken).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objPower.DeletePowerAsync(CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     } while (blnAddAgain);
                 }

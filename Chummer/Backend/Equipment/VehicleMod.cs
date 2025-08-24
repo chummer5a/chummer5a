@@ -569,13 +569,19 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (XmlNode nodChild in xmlNodeList)
                         {
-                            Weapon objWeapon = new Weapon(_objCharacter)
+                            Weapon objWeapon = new Weapon(_objCharacter);
+                            try
                             {
-                                ParentVehicle = Parent,
-                                ParentVehicleMod = this
-                            };
-                            objWeapon.Load(nodChild, blnCopy);
-                            _lstVehicleWeapons.Add(objWeapon);
+                                objWeapon.ParentVehicle = Parent;
+                                objWeapon.ParentVehicleMod = this;
+                                objWeapon.Load(nodChild, blnCopy);
+                                _lstVehicleWeapons.Add(objWeapon);
+                            }
+                            catch
+                            {
+                                objWeapon.DeleteWeapon();
+                                throw;
+                            }
                         }
                     }
                     else
@@ -583,10 +589,18 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode nodChild in xmlNodeList)
                         {
                             Weapon objWeapon = new Weapon(_objCharacter);
-                            await objWeapon.SetParentVehicleAsync(Parent, token).ConfigureAwait(false);
-                            await objWeapon.SetParentVehicleModAsync(this, token).ConfigureAwait(false);
-                            await objWeapon.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
-                            await _lstVehicleWeapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                            try
+                            {
+                                await objWeapon.SetParentVehicleAsync(Parent, token).ConfigureAwait(false);
+                                await objWeapon.SetParentVehicleModAsync(this, token).ConfigureAwait(false);
+                                await objWeapon.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
+                                await _lstVehicleWeapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     }
                 }
@@ -601,12 +615,18 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (XmlNode nodChild in xmlNodeList)
                         {
-                            Cyberware objCyberware = new Cyberware(_objCharacter)
+                            Cyberware objCyberware = new Cyberware(_objCharacter);
+                            try
                             {
-                                ParentVehicle = Parent
-                            };
-                            objCyberware.Load(nodChild, blnCopy, token);
-                            _lstCyberware.Add(objCyberware);
+                                objCyberware.ParentVehicle = Parent;
+                                objCyberware.Load(nodChild, blnCopy, token);
+                                _lstCyberware.Add(objCyberware);
+                            }
+                            catch
+                            {
+                                objCyberware.DeleteCyberware();
+                                throw;
+                            }
                         }
                     }
                     else
@@ -614,9 +634,17 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode nodChild in xmlNodeList)
                         {
                             Cyberware objCyberware = new Cyberware(_objCharacter);
-                            await objCyberware.SetParentVehicleAsync(Parent, token).ConfigureAwait(false);
-                            await objCyberware.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
-                            await _lstCyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
+                            try
+                            {
+                                await objCyberware.SetParentVehicleAsync(Parent, token).ConfigureAwait(false);
+                                await objCyberware.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
+                                await _lstCyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objCyberware.DeleteCyberwareAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     }
                 }

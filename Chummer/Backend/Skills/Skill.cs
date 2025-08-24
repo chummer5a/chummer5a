@@ -586,7 +586,17 @@ namespace Chummer.Backend.Skills
                         {
                             SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
                             if (objSpec != null)
-                                objLoadingSkill._lstSpecializations.Add(objSpec);
+                            {
+                                try
+                                {
+                                    objLoadingSkill._lstSpecializations.Add(objSpec);
+                                }
+                                catch
+                                {
+                                    objSpec.Dispose();
+                                    throw;
+                                }
+                            }
                         }
                     }
                 }
@@ -766,7 +776,17 @@ namespace Chummer.Backend.Skills
                         {
                             SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
                             if (objSpec != null)
-                                await objLoadingSkill._lstSpecializations.AddAsync(objSpec, token).ConfigureAwait(false);
+                            {
+                                try
+                                {
+                                    await objLoadingSkill._lstSpecializations.AddAsync(objSpec, token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await objSpec.DisposeAsync().ConfigureAwait(false);
+                                    throw;
+                                }
+                            }
                         }
                     }
                 }
@@ -845,7 +865,17 @@ namespace Chummer.Backend.Skills
                     {
                         SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
                         if (objSpec != null)
-                            objSkill.Specializations.Add(objSpec);
+                        {
+                            try
+                            {
+                                objSkill.Specializations.Add(objSpec);
+                            }
+                            catch
+                            {
+                                objSkill.Dispose();
+                                throw;
+                            }
+                        }
                     }
                 }
             }
@@ -921,7 +951,16 @@ namespace Chummer.Backend.Skills
                 int intLastPlus = strSpecializationName.LastIndexOf('+');
                 if (intLastPlus > strSpecializationName.Length)
                     strSpecializationName = strSpecializationName.Substring(0, intLastPlus - 1);
-                objSkill.Specializations.Add(new SkillSpecialization(objCharacter, strSpecializationName));
+                SkillSpecialization objSpec = new SkillSpecialization(objCharacter, strSpecializationName);
+                try
+                {
+                    objSkill.Specializations.Add(objSpec);
+                }
+                catch
+                {
+                    objSpec.Dispose();
+                    throw;
+                }
             }
 
             return objSkill;
@@ -4704,29 +4743,40 @@ namespace Chummer.Backend.Skills
                 using (Specializations.LockObject.EnterWriteLock())
                 {
                     int intIndexToReplace = Specializations.FindIndex(x => !x.Free);
-                    if (intIndexToReplace < 0)
+                    SkillSpecialization objNewSpec = new SkillSpecialization(CharacterObject, value);
+                    try
                     {
-                        Specializations.AddWithSort(new SkillSpecialization(CharacterObject, value), (x, y) =>
+                        if (intIndexToReplace < 0)
                         {
-                            bool blnLhsFree = x.Free;
-                            if (blnLhsFree != y.Free)
-                                return blnLhsFree ? 1 : -1;
-                            bool blnLhsExpertise = x.Expertise;
-                            if (blnLhsExpertise != y.Expertise)
-                                return blnLhsExpertise ? 1 : -1;
-                            return 0;
-                        });
-                        return;
-                    }
+                            Specializations.AddWithSort(objNewSpec, (x, y) =>
+                            {
+                                bool blnLhsFree = x.Free;
+                                if (blnLhsFree != y.Free)
+                                    return blnLhsFree ? 1 : -1;
+                                bool blnLhsExpertise = x.Expertise;
+                                if (blnLhsExpertise != y.Expertise)
+                                    return blnLhsExpertise ? 1 : -1;
+                                return 0;
+                            });
+                            return;
+                        }
 
-                    Specializations[intIndexToReplace] = new SkillSpecialization(CharacterObject, value);
+                        Specializations[intIndexToReplace] = objNewSpec;
+                    }
+                    catch
+                    {
+                        objNewSpec.Dispose();
+                        throw;
+                    }
                     // For safety's, remove all non-free specializations after the one we are replacing.
                     intIndexToReplace = Specializations.FindIndex(intIndexToReplace + 1, x => !x.Free);
                     if (intIndexToReplace > 0)
                         Utils.BreakIfDebug(); // This shouldn't happen under normal operations because chargen can only ever have one player-picked specialization at a time
                     while (intIndexToReplace > 0)
                     {
+                        SkillSpecialization objToRemove = Specializations[intIndexToReplace];
                         Specializations.RemoveAt(intIndexToReplace);
+                        objToRemove.Dispose();
                         intIndexToReplace = Specializations.FindIndex(intIndexToReplace + 1, x => !x.Free);
                     }
                 }
@@ -4774,25 +4824,33 @@ namespace Chummer.Backend.Skills
                 {
                     token.ThrowIfCancellationRequested();
                     int intIndexToReplace = await lstSpecs.FindIndexAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
-                    if (intIndexToReplace < 0)
+                    SkillSpecialization objNewSpec = new SkillSpecialization(CharacterObject, value);
+                    try
                     {
-                        await lstSpecs.AddWithSortAsync(new SkillSpecialization(CharacterObject, value),
-                                                               async (x, y) =>
-                                                               {
-                                                                   bool blnLhsFree = await x.GetFreeAsync(token).ConfigureAwait(false);
-                                                                   if (blnLhsFree != await y.GetFreeAsync(token).ConfigureAwait(false))
-                                                                       return blnLhsFree ? 1 : -1;
-                                                                   bool blnLhsExpertise =
-                                                                       await x.GetExpertiseAsync(token).ConfigureAwait(false);
-                                                                   if (blnLhsExpertise != await y.GetExpertiseAsync(token).ConfigureAwait(false))
-                                                                       return blnLhsExpertise ? 1 : -1;
-                                                                   return 0;
-                                                               }, token: token).ConfigureAwait(false);
-                        return;
-                    }
+                        if (intIndexToReplace < 0)
+                        {
+                            await lstSpecs.AddWithSortAsync(objNewSpec,
+                                                                   async (x, y) =>
+                                                                   {
+                                                                       bool blnLhsFree = await x.GetFreeAsync(token).ConfigureAwait(false);
+                                                                       if (blnLhsFree != await y.GetFreeAsync(token).ConfigureAwait(false))
+                                                                           return blnLhsFree ? 1 : -1;
+                                                                       bool blnLhsExpertise =
+                                                                           await x.GetExpertiseAsync(token).ConfigureAwait(false);
+                                                                       if (blnLhsExpertise != await y.GetExpertiseAsync(token).ConfigureAwait(false))
+                                                                           return blnLhsExpertise ? 1 : -1;
+                                                                       return 0;
+                                                                   }, token: token).ConfigureAwait(false);
+                            return;
+                        }
 
-                    await lstSpecs.SetValueAtAsync(intIndexToReplace,
-                                                          new SkillSpecialization(CharacterObject, value), token).ConfigureAwait(false);
+                        await lstSpecs.SetValueAtAsync(intIndexToReplace, objNewSpec, token).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await objNewSpec.DisposeAsync().ConfigureAwait(false);
+                        throw;
+                    }
                     // For safety's, remove all non-free specializations after the one we are replacing.
                     intIndexToReplace
                         = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -4800,7 +4858,9 @@ namespace Chummer.Backend.Skills
                         Utils.BreakIfDebug(); // This shouldn't happen under normal operations because chargen can only ever have one player-picked specialization at a time
                     while (intIndexToReplace > 0)
                     {
+                        SkillSpecialization objToRemove = await lstSpecs.GetValueAtAsync(intIndexToReplace, token).ConfigureAwait(false);
                         await lstSpecs.RemoveAtAsync(intIndexToReplace, token).ConfigureAwait(false);
+                        await objToRemove.DisposeAsync().ConfigureAwait(false);
                         intIndexToReplace
                             = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
@@ -8367,73 +8427,81 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 SkillSpecialization nspec = new SkillSpecialization(CharacterObject, strName);
-                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
-                if (blnCreated)
-                {
-                    int intPrice = IsKnowledgeSkill
-                        ? await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
-                        : await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaSpecializationAsync(token).ConfigureAwait(false);
-
-                    decimal decExtraSpecCost = 0;
-                    int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
-                    decimal decSpecCostMultiplier = 1.0m;
-                    await CharacterObject.Improvements.ForEachAsync(objLoopImprovement =>
-                    {
-                        if (objLoopImprovement.Minimum <= intTotalBaseRating
-                            && (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                                || objLoopImprovement.Condition == "career")
-                            && objLoopImprovement.Enabled && objLoopImprovement.ImprovedName == SkillCategory)
-                        {
-                            switch (objLoopImprovement.ImproveType)
-                            {
-                                case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
-                                    decExtraSpecCost += objLoopImprovement.Value;
-                                    break;
-
-                                case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
-                                    decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
-                            }
-                        }
-                    }, token).ConfigureAwait(false);
-
-                    if (decSpecCostMultiplier != 1.0m)
-                        intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
-                    else
-                        intPrice += decExtraSpecCost.StandardRound(); //Spec
-
-                    if (intPrice > await CharacterObject.GetKarmaAsync(token).ConfigureAwait(false))
-                        return;
-
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
-                        .ConfigureAwait(false);
-                    string strUpgradeText
-                        = await LanguageManager.GetStringAsync("String_ExpenseLearnSpecialization", token: token)
-                            .ConfigureAwait(false) + strSpace
-                                                   + await GetCurrentDisplayNameAsync(token)
-                                                       .ConfigureAwait(false) + strSpace + '('
-                                                   + strName + ')';
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(intPrice * -1, strUpgradeText, ExpenseType.Karma, DateTime.Now);
-                    objExpense.Undo =
-                        new ExpenseUndo().CreateKarma(KarmaExpenseType.AddSpecialization, nspec.InternalId);
-
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
-                        .ConfigureAwait(false);
-
-                    await CharacterObject.ModifyKarmaAsync(-intPrice, token).ConfigureAwait(false);
-                }
-
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    token.ThrowIfCancellationRequested();
-                    await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AddAsync(nspec, token)
-                        .ConfigureAwait(false);
+                    bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
+                    if (blnCreated)
+                    {
+                        int intPrice = IsKnowledgeSkill
+                            ? await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
+                            : await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaSpecializationAsync(token).ConfigureAwait(false);
+
+                        decimal decExtraSpecCost = 0;
+                        int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
+                        decimal decSpecCostMultiplier = 1.0m;
+                        await CharacterObject.Improvements.ForEachAsync(objLoopImprovement =>
+                        {
+                            if (objLoopImprovement.Minimum <= intTotalBaseRating
+                                && (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                                    || objLoopImprovement.Condition == "career")
+                                && objLoopImprovement.Enabled && objLoopImprovement.ImprovedName == SkillCategory)
+                            {
+                                switch (objLoopImprovement.ImproveType)
+                                {
+                                    case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
+                                        decExtraSpecCost += objLoopImprovement.Value;
+                                        break;
+
+                                    case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
+                                        decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                                        break;
+                                }
+                            }
+                        }, token).ConfigureAwait(false);
+
+                        if (decSpecCostMultiplier != 1.0m)
+                            intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
+                        else
+                            intPrice += decExtraSpecCost.StandardRound(); //Spec
+
+                        if (intPrice > await CharacterObject.GetKarmaAsync(token).ConfigureAwait(false))
+                            return;
+
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                            .ConfigureAwait(false);
+                        string strUpgradeText
+                            = await LanguageManager.GetStringAsync("String_ExpenseLearnSpecialization", token: token)
+                                .ConfigureAwait(false) + strSpace
+                                                       + await GetCurrentDisplayNameAsync(token)
+                                                           .ConfigureAwait(false) + strSpace + '('
+                                                       + strName + ')';
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(intPrice * -1, strUpgradeText, ExpenseType.Karma, DateTime.Now);
+                        objExpense.Undo =
+                            new ExpenseUndo().CreateKarma(KarmaExpenseType.AddSpecialization, nspec.InternalId);
+
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                            .ConfigureAwait(false);
+
+                        await CharacterObject.ModifyKarmaAsync(-intPrice, token).ConfigureAwait(false);
+                    }
+
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AddAsync(nspec, token)
+                            .ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
-                finally
+                catch
                 {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    await nspec.DisposeAsync().ConfigureAwait(false);
+                    throw;
                 }
             }
             finally

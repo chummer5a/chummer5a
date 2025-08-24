@@ -156,26 +156,32 @@ namespace Chummer
             if (objPower != null)
             {
                 // Create the Weapon.
-                _objWeapon = new Weapon(_objCharacter)
+                _objWeapon = new Weapon(_objCharacter);
+                try
                 {
-                    Name = txtName.Text,
-                    Category = await LanguageManager.GetStringAsync("Tab_Critter", GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false),
-                    RangeType = "Melee",
-                    Reach = (await nudReach.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
-                    Accuracy = "Physical",
-                    Damage = strDamage,
-                    AP = strAP,
-                    Mode = "0",
-                    RC = "0",
-                    Concealability = "0",
-                    Avail = "0",
-                    Cost = "0",
-                    Ammo = "0",
-                    UseSkill = await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false),
-                    Source = objPower.SelectSingleNodeAndCacheExpression("source", token: token)?.Value ?? "SR5",
-                    Page = objPower.SelectSingleNodeAndCacheExpression("page", token: token)?.Value ?? "0"
-                };
-                _objWeapon.CreateClips();
+                    _objWeapon.Name = await txtName.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+                    _objWeapon.Category = await LanguageManager.GetStringAsync("Tab_Critter", GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false);
+                    _objWeapon.RangeType = "Melee";
+                    _objWeapon.Reach = (await nudReach.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo);
+                    _objWeapon.Accuracy = "Physical";
+                    _objWeapon.Damage = strDamage;
+                    _objWeapon.AP = strAP;
+                    _objWeapon.Mode = "0";
+                    _objWeapon.RC = "0";
+                    _objWeapon.Concealability = "0";
+                    _objWeapon.Avail = "0";
+                    _objWeapon.Cost = "0";
+                    _objWeapon.Ammo = "0";
+                    _objWeapon.UseSkill = await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
+                    _objWeapon.Source = objPower.SelectSingleNodeAndCacheExpression("source", token: token)?.Value ?? "SR5";
+                    _objWeapon.Page = objPower.SelectSingleNodeAndCacheExpression("page", token: token)?.Value ?? "0";
+                    await _objWeapon.CreateClipsAsync(token).ConfigureAwait(false);
+                }
+                catch
+                {
+                    await _objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                    throw;
+                }
 
                 await this.DoThreadSafeAsync(x =>
                 {

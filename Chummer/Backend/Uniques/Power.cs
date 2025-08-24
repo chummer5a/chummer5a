@@ -98,6 +98,8 @@ namespace Chummer
 
         public void DeletePower()
         {
+            if (IsDisposed)
+                return;
             using (LockObject.EnterWriteLock())
             {
                 ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId);
@@ -108,6 +110,8 @@ namespace Chummer
 
         public async Task DeletePowerAsync(CancellationToken token = default)
         {
+            if (IsDisposed)
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -3749,9 +3753,15 @@ namespace Chummer
             }
         }
 
+        private int _intIsDisposed;
+
+        public bool IsDisposed => _intIsDisposed > 0;
+
         /// <inheritdoc />
         public void Dispose()
         {
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                return;
             using (LockObject.EnterWriteLock())
             {
                 Character objCharacter = CharacterObject;
@@ -3794,6 +3804,8 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {

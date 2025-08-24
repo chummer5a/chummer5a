@@ -426,40 +426,50 @@ namespace Chummer.Backend.Equipment
 
                             XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode(strFilter);
 
-                            Gear objGear = new Gear(_objCharacter);
-
                             List<Weapon> lstWeapons = new List<Weapon>(1);
 
-                            if (blnSync)
+                            Gear objGear = new Gear(_objCharacter);
+                            try
                             {
-                                // ReSharper disable once MethodHasAsyncOverload
-                                objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
-                                    blnAddChildImprovements, blnChildCreateChildren, token: token);
-                                objGear.Quantity = decGearQty;
+                                if (blnSync)
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
+                                        blnAddChildImprovements, blnChildCreateChildren, token: token);
+                                    objGear.Quantity = decGearQty;
+                                }
+                                else
+                                {
+                                    await objGear.CreateAsync(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
+                                            blnAddChildImprovements, blnChildCreateChildren, token: token)
+                                        .ConfigureAwait(false);
+                                    await objGear.SetQuantityAsync(decGearQty, token).ConfigureAwait(false);
+                                }
+
+                                objGear.Cost = "0";
+                                objGear.ParentID = InternalId;
+                                if (!string.IsNullOrEmpty(strChildForceSource))
+                                    objGear.Source = strChildForceSource;
+                                if (!string.IsNullOrEmpty(strChildForcePage))
+                                    objGear.Page = strChildForcePage;
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    _lstGear.Add(objGear);
+                                else
+                                    await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+
+                                // Change the Capacity of the child if necessary.
+                                if (objXmlAccessoryGear["capacity"] != null)
+                                    objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
                             }
-                            else
+                            catch
                             {
-                                await objGear.CreateAsync(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
-                                        blnAddChildImprovements, blnChildCreateChildren, token: token)
-                                    .ConfigureAwait(false);
-                                await objGear.SetQuantityAsync(decGearQty, token).ConfigureAwait(false);
+                                if (blnSync)
+                                    objGear.DeleteGear();
+                                else
+                                    await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
                             }
-
-                            objGear.Cost = "0";
-                            objGear.ParentID = InternalId;
-                            if (!string.IsNullOrEmpty(strChildForceSource))
-                                objGear.Source = strChildForceSource;
-                            if (!string.IsNullOrEmpty(strChildForcePage))
-                                objGear.Page = strChildForcePage;
-                            if (blnSync)
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                _lstGear.Add(objGear);
-                            else
-                                await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
-
-                            // Change the Capacity of the child if necessary.
-                            if (objXmlAccessoryGear["capacity"] != null)
-                                objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
                         }
                     }
                 }
@@ -680,8 +690,16 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode nodChild in nodChildren)
                             {
                                 Gear objGear = new Gear(_objCharacter);
-                                objGear.Load(nodChild, blnCopy);
-                                _lstGear.Add(objGear);
+                                try
+                                {
+                                    objGear.Load(nodChild, blnCopy);
+                                    _lstGear.Add(objGear);
+                                }
+                                catch
+                                {
+                                    objGear.DeleteGear();
+                                    throw;
+                                }
                             }
                         }
                         else
@@ -689,8 +707,16 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode nodChild in nodChildren)
                             {
                                 Gear objGear = new Gear(_objCharacter);
-                                await objGear.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
-                                await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                                try
+                                {
+                                    await objGear.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
+                                    await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
                             }
                         }
                     }

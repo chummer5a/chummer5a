@@ -1806,7 +1806,7 @@ namespace Chummer
                                         }
                                         catch
                                         {
-                                            await objQuality.DisposeAsync().ConfigureAwait(false);
+                                            await objQuality.DeleteQualityAsync(token: CancellationToken.None).ConfigureAwait(false);
                                             throw;
                                         }
 

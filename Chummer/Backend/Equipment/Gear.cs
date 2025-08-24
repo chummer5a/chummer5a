@@ -550,19 +550,30 @@ namespace Chummer.Backend.Equipment
                             }
 
                             Weapon objGearWeapon = new Weapon(_objCharacter);
-                            if (blnSync)
-                                // ReSharper disable once MethodHasAsyncOverload
-                                objGearWeapon.Create(objXmlWeapon, lstWeapons, true, blnAddImprovements,
-                                    blnSkipSelectForms, intAddWeaponRating, token: token);
-                            else
-                                await objGearWeapon.CreateAsync(objXmlWeapon, lstWeapons, true, blnAddImprovements,
-                                    blnSkipSelectForms, intAddWeaponRating, token: token).ConfigureAwait(false);
-                            objGearWeapon.ParentID = InternalId;
-                            objGearWeapon.Cost = "0";
-                            if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID))
-                                lstWeapons.Add(objGearWeapon);
-                            else
-                                _guiWeaponID = Guid.Empty;
+                            try
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objGearWeapon.Create(objXmlWeapon, lstWeapons, true, blnAddImprovements,
+                                        blnSkipSelectForms, intAddWeaponRating, token: token);
+                                else
+                                    await objGearWeapon.CreateAsync(objXmlWeapon, lstWeapons, true, blnAddImprovements,
+                                        blnSkipSelectForms, intAddWeaponRating, token: token).ConfigureAwait(false);
+                                objGearWeapon.ParentID = InternalId;
+                                objGearWeapon.Cost = "0";
+                                if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID))
+                                    lstWeapons.Add(objGearWeapon);
+                                else
+                                    _guiWeaponID = Guid.Empty;
+                            }
+                            catch
+                            {
+                                if (blnSync)
+                                    objGearWeapon.DeleteWeapon();
+                                else
+                                    await objGearWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     }
                 }
@@ -879,25 +890,33 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strChildQty) || !decimal.TryParse(strChildQty, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decChildQty))
                 decChildQty = 1.0m;
 
-            Gear objChild = new Gear(_objCharacter);
             List<Weapon> lstChildWeapons = new List<Weapon>(1);
-            objChild.Create(xmlChildDataNode, intChildRating, lstChildWeapons, strChildForceValue,
-                blnAddChildImprovements, blnCreateChildren, blnSkipSelectForms);
-            objChild.Quantity = decChildQty;
-            objChild.Cost = "0";
-            objChild.ParentID = InternalId;
-            if (!string.IsNullOrEmpty(strChildForceSource))
-                objChild.Source = strChildForceSource;
-            if (!string.IsNullOrEmpty(strChildForcePage))
-                objChild.Page = strChildForcePage;
-            Children.Add(objChild);
-            this.RefreshMatrixAttributeArray(_objCharacter);
+            Gear objChild = new Gear(_objCharacter);
+            try
+            {
+                objChild.Create(xmlChildDataNode, intChildRating, lstChildWeapons, strChildForceValue,
+                    blnAddChildImprovements, blnCreateChildren, blnSkipSelectForms);
+                objChild.Quantity = decChildQty;
+                objChild.Cost = "0";
+                objChild.ParentID = InternalId;
+                if (!string.IsNullOrEmpty(strChildForceSource))
+                    objChild.Source = strChildForceSource;
+                if (!string.IsNullOrEmpty(strChildForcePage))
+                    objChild.Page = strChildForcePage;
+                Children.Add(objChild);
+                this.RefreshMatrixAttributeArray(_objCharacter);
 
-            // Change the Capacity of the child if necessary.
-            if (xmlChildNode["capacity"] != null)
-                objChild.Capacity = xmlChildNode["capacity"].InnerText;
+                // Change the Capacity of the child if necessary.
+                if (xmlChildNode["capacity"] != null)
+                    objChild.Capacity = xmlChildNode["capacity"].InnerText;
 
-            objChild.CreateChildren(xmlChildNode, blnAddChildImprovements, blnSkipSelectForms);
+                objChild.CreateChildren(xmlChildNode, blnAddChildImprovements, blnSkipSelectForms);
+            }
+            catch
+            {
+                objChild.DeleteGear();
+                throw;
+            }
         }
 
         private async Task CreateChildrenAsync(XmlNode xmlParentGearNode, bool blnAddImprovements, bool blnSkipSelectForms, CancellationToken token = default)
@@ -1089,25 +1108,33 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strChildQty) || !decimal.TryParse(strChildQty, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decChildQty))
                 decChildQty = 1.0m;
 
-            Gear objChild = new Gear(_objCharacter);
             List<Weapon> lstChildWeapons = new List<Weapon>(1);
-            await objChild.CreateAsync(xmlChildDataNode, intChildRating, lstChildWeapons, strChildForceValue,
-                blnAddChildImprovements, blnCreateChildren, blnSkipSelectForms, token).ConfigureAwait(false);
-            await objChild.SetQuantityAsync(decChildQty, token).ConfigureAwait(false);
-            objChild.Cost = "0";
-            objChild.ParentID = InternalId;
-            if (!string.IsNullOrEmpty(strChildForceSource))
-                objChild.Source = strChildForceSource;
-            if (!string.IsNullOrEmpty(strChildForcePage))
-                objChild.Page = strChildForcePage;
-            await Children.AddAsync(objChild, token).ConfigureAwait(false);
-            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
+            Gear objChild = new Gear(_objCharacter);
+            try
+            {
+                await objChild.CreateAsync(xmlChildDataNode, intChildRating, lstChildWeapons, strChildForceValue,
+                    blnAddChildImprovements, blnCreateChildren, blnSkipSelectForms, token).ConfigureAwait(false);
+                await objChild.SetQuantityAsync(decChildQty, token).ConfigureAwait(false);
+                objChild.Cost = "0";
+                objChild.ParentID = InternalId;
+                if (!string.IsNullOrEmpty(strChildForceSource))
+                    objChild.Source = strChildForceSource;
+                if (!string.IsNullOrEmpty(strChildForcePage))
+                    objChild.Page = strChildForcePage;
+                await Children.AddAsync(objChild, token).ConfigureAwait(false);
+                await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
 
-            // Change the Capacity of the child if necessary.
-            if (xmlChildNode["capacity"] != null)
-                objChild.Capacity = xmlChildNode["capacity"].InnerText;
+                // Change the Capacity of the child if necessary.
+                if (xmlChildNode["capacity"] != null)
+                    objChild.Capacity = xmlChildNode["capacity"].InnerText;
 
-            await objChild.CreateChildrenAsync(xmlChildNode, blnAddChildImprovements, blnSkipSelectForms, token).ConfigureAwait(false);
+                await objChild.CreateChildrenAsync(xmlChildNode, blnAddChildImprovements, blnSkipSelectForms, token).ConfigureAwait(false);
+            }
+            catch
+            {
+                await objChild.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         /// <summary>
@@ -1144,15 +1171,23 @@ namespace Chummer.Backend.Equipment
                     foreach (XmlNode xmlChildGearNode in xmlInnerGears)
                     {
                         Gear objChildGear = new Gear(_objCharacter);
-                        if (objChildGear.CreateFromNode(xmlGearsDocument, xmlChildGearNode, lstWeapons,
-                            blnAddImprovements, blnSkipSelectForms))
+                        try
                         {
-                            objChildGear.ParentID = InternalId;
-                            objChildGear.Parent = this;
-                            lstChildGears.Add(objChildGear);
+                            if (objChildGear.CreateFromNode(xmlGearsDocument, xmlChildGearNode, lstWeapons,
+                                blnAddImprovements, blnSkipSelectForms))
+                            {
+                                objChildGear.ParentID = InternalId;
+                                objChildGear.Parent = this;
+                                lstChildGears.Add(objChildGear);
+                            }
+                            else
+                                objChildGear.DeleteGear();
                         }
-                        else
-                            Utils.BreakIfDebug();
+                        catch
+                        {
+                            objChildGear.DeleteGear();
+                            throw;
+                        }
                     }
                 }
             }
@@ -1248,15 +1283,23 @@ namespace Chummer.Backend.Equipment
                     foreach (XmlNode xmlChildGearNode in xmlInnerGears)
                     {
                         Gear objChildGear = new Gear(_objCharacter);
-                        if (await objChildGear.CreateFromNodeAsync(xmlGearsDocument, xmlChildGearNode, lstWeapons,
-                                blnAddImprovements, blnSkipSelectForms, token).ConfigureAwait(false))
+                        try
                         {
-                            objChildGear.ParentID = InternalId;
-                            objChildGear.Parent = this;
-                            lstChildGears.Add(objChildGear);
+                            if (await objChildGear.CreateFromNodeAsync(xmlGearsDocument, xmlChildGearNode, lstWeapons,
+                                    blnAddImprovements, blnSkipSelectForms, token).ConfigureAwait(false))
+                            {
+                                objChildGear.ParentID = InternalId;
+                                await objChildGear.SetParentAsync(this, token).ConfigureAwait(false);
+                                lstChildGears.Add(objChildGear);
+                            }
+                            else
+                                await objChildGear.DeleteGearAsync(token: token).ConfigureAwait(false);
                         }
-                        else
-                            Utils.BreakIfDebug();
+                        catch
+                        {
+                            await objChildGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
                     }
                 }
             }
@@ -1373,8 +1416,16 @@ namespace Chummer.Backend.Equipment
                     foreach (Gear objGearChild in objGear.Children)
                     {
                         Gear objChild = new Gear(_objCharacter);
-                        objChild.Copy(objGearChild);
-                        lstToAdd.Add(objChild);
+                        try
+                        {
+                            objChild.Copy(objGearChild);
+                            lstToAdd.Add(objChild);
+                        }
+                        catch
+                        {
+                            objChild.DeleteGear();
+                            throw;
+                        }
                     }
                     _lstChildren.Clear();
                     _lstChildren.AddRange(lstToAdd);
@@ -1454,8 +1505,16 @@ namespace Chummer.Backend.Equipment
                     await objGear.Children.ForEachAsync(async objGearChild =>
                     {
                         Gear objChild = new Gear(_objCharacter);
-                        await objChild.CopyAsync(objGearChild, token).ConfigureAwait(false);
-                        lstToAdd.Add(objChild);
+                        try
+                        {
+                            await objChild.CopyAsync(objGearChild, token).ConfigureAwait(false);
+                            lstToAdd.Add(objChild);
+                        }
+                        catch
+                        {
+                            await objChild.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
                     }, token).ConfigureAwait(false);
                     await _lstChildren.ClearAsync(token).ConfigureAwait(false);
                     await _lstChildren.AddRangeAsync(lstToAdd, token).ConfigureAwait(false);
@@ -1726,9 +1785,17 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode nodChild in nodChildren)
                         {
                             Gear objGear = new Gear(_objCharacter);
-                            objGear.Load(nodChild, blnCopy);
-                            objGear.Parent = this;
-                            _lstChildren.Add(objGear);
+                            try
+                            {
+                                objGear.Load(nodChild, blnCopy);
+                                objGear.Parent = this;
+                                _lstChildren.Add(objGear);
+                            }
+                            catch
+                            {
+                                objGear.DeleteGear();
+                                throw;
+                            }
                         }
                     }
                     else
@@ -1736,9 +1803,17 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode nodChild in nodChildren)
                         {
                             Gear objGear = new Gear(_objCharacter);
-                            await objGear.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
-                            await objGear.SetParentAsync(this, token).ConfigureAwait(false);
-                            await _lstChildren.AddAsync(objGear, token).ConfigureAwait(false);
+                            try
+                            {
+                                await objGear.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
+                                await objGear.SetParentAsync(this, token).ConfigureAwait(false);
+                                await _lstChildren.AddAsync(objGear, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     }
                 }
@@ -1757,9 +1832,17 @@ namespace Chummer.Backend.Equipment
                         if (intMyRating > 0)
                         {
                             Gear objNuyenGear = new Gear(_objCharacter);
-                            objNuyenGear.Create(objNuyenNode, 0, new List<Weapon>(1), token: token);
-                            objNuyenGear.Quantity = intMyRating;
-                            _lstChildren.Add(objNuyenGear);
+                            try
+                            {
+                                objNuyenGear.Create(objNuyenNode, 0, new List<Weapon>(1), token: token);
+                                objNuyenGear.Quantity = intMyRating;
+                                _lstChildren.Add(objNuyenGear);
+                            }
+                            catch
+                            {
+                                objNuyenGear.DeleteGear();
+                                throw;
+                            }
                         }
 
                         objMyNode.Value?.TryGetStringFieldQuickly("rating", ref _strMaxRating);
@@ -1780,9 +1863,17 @@ namespace Chummer.Backend.Equipment
                         if (intMyRating > 0)
                         {
                             Gear objNuyenGear = new Gear(_objCharacter);
-                            await objNuyenGear.CreateAsync(objNuyenNode, 0, new List<Weapon>(1), token: token).ConfigureAwait(false);
-                            await objNuyenGear.SetQuantityAsync(intMyRating, token).ConfigureAwait(false);
-                            await _lstChildren.AddAsync(objNuyenGear, token).ConfigureAwait(false);
+                            try
+                            {
+                                await objNuyenGear.CreateAsync(objNuyenNode, 0, new List<Weapon>(1), token: token).ConfigureAwait(false);
+                                await objNuyenGear.SetQuantityAsync(intMyRating, token).ConfigureAwait(false);
+                                await _lstChildren.AddAsync(objNuyenGear, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objNuyenGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
 
                         (await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("rating", ref _strMaxRating);
@@ -6745,10 +6836,20 @@ namespace Chummer.Backend.Equipment
                 {
                     token.ThrowIfCancellationRequested();
                     Gear objPlugin = new Gear(_objCharacter);
-                    if (objPlugin.ImportHeroLabGear(xmlPluginToAdd, this.GetNode(token), lstWeapons, token))
+                    try
                     {
-                        objPlugin.Parent = this;
-                        Children.Add(objPlugin);
+                        if (objPlugin.ImportHeroLabGear(xmlPluginToAdd, this.GetNode(token), lstWeapons, token))
+                        {
+                            objPlugin.Parent = this;
+                            Children.Add(objPlugin);
+                        }
+                        else
+                            objPlugin.DeleteGear();
+                    }
+                    catch
+                    {
+                        objPlugin.DeleteGear();
+                        throw;
                     }
                 }
 
@@ -6784,10 +6885,20 @@ namespace Chummer.Backend.Equipment
                              "/item[@useradded != \"no\"]"))
                 {
                     Gear objPlugin = new Gear(_objCharacter);
-                    if (await objPlugin.ImportHeroLabGearAsync(xmlPluginToAdd, await this.GetNodeAsync(token: token).ConfigureAwait(false), lstWeapons, token).ConfigureAwait(false))
+                    try
                     {
-                        objPlugin.Parent = this;
-                        await Children.AddAsync(objPlugin, token).ConfigureAwait(false);
+                        if (await objPlugin.ImportHeroLabGearAsync(xmlPluginToAdd, await this.GetNodeAsync(token: token).ConfigureAwait(false), lstWeapons, token).ConfigureAwait(false))
+                        {
+                            objPlugin.Parent = this;
+                            await Children.AddAsync(objPlugin, token).ConfigureAwait(false);
+                        }
+                        else
+                            await objPlugin.DeleteGearAsync(token: token).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await objPlugin.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        throw;
                     }
                 }
 

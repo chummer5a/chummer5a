@@ -52,10 +52,7 @@ namespace Chummer
         public SelectLifestyle(Character objCharacter, Lifestyle objLifestyle, bool blnAdvancedMode = true)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            _objLifestyle = objLifestyle ?? new Lifestyle(objCharacter)
-            {
-                StyleType = blnAdvancedMode ? LifestyleType.Advanced : LifestyleType.Standard
-            };
+            _objLifestyle = objLifestyle ?? throw new ArgumentNullException(nameof(objLifestyle));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -797,16 +794,7 @@ namespace Chummer
                     }
                     catch
                     {
-                        try
-                        {
-                            await objQuality.RemoveAsync(false).ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            await objQuality.DisposeAsync().ConfigureAwait(false);
-                            // Swallow removal exceptions here because we already want to throw an exception
-                        }
-
+                        await objQuality.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
                         throw;
                     }
                 }
