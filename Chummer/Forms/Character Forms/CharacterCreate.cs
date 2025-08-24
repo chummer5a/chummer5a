@@ -22544,30 +22544,30 @@ namespace Chummer
                                 {
                                     await objArt.CreateAsync(objXmlArtNode, token).ConfigureAwait(false);
                                     await CharacterObject.MartialArts.AddAsync(objArt, token).ConfigureAwait(false);
+
+                                    // Check for Techniques.
+                                    using (XmlNodeList xmlTechniquesList = objXmlArt.SelectNodes("techniques/technique"))
+                                    {
+                                        if (xmlTechniquesList?.Count > 0)
+                                        {
+                                            foreach (XmlNode xmlTechnique in xmlTechniquesList)
+                                            {
+                                                MartialArtTechnique objTechnique = new MartialArtTechnique(CharacterObject);
+                                                XmlNode xmlTechniqueNode = objXmlMartialArtDocument.TryGetNodeByNameOrId(
+                                                    "/chummer/techniques/technique", xmlTechnique["name"]?.InnerText,
+                                                    await CharacterObjectSettings.BookXPathAsync(token: token)
+                                                        .ConfigureAwait(false));
+                                                await objTechnique.CreateAsync(xmlTechniqueNode, token)
+                                                    .ConfigureAwait(false);
+                                                await objArt.Techniques.AddAsync(objTechnique, token).ConfigureAwait(false);
+                                            }
+                                        }
+                                    }
                                 }
                                 catch
                                 {
                                     await objArt.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
                                     throw;
-                                }
-
-                                // Check for Techniques.
-                                using (XmlNodeList xmlTechniquesList = objXmlArt.SelectNodes("techniques/technique"))
-                                {
-                                    if (xmlTechniquesList?.Count > 0)
-                                    {
-                                        foreach (XmlNode xmlTechnique in xmlTechniquesList)
-                                        {
-                                            MartialArtTechnique objTechnique = new MartialArtTechnique(CharacterObject);
-                                            XmlNode xmlTechniqueNode = objXmlMartialArtDocument.TryGetNodeByNameOrId(
-                                                "/chummer/techniques/technique", xmlTechnique["name"]?.InnerText,
-                                                await CharacterObjectSettings.BookXPathAsync(token: token)
-                                                    .ConfigureAwait(false));
-                                            await objTechnique.CreateAsync(xmlTechniqueNode, token)
-                                                .ConfigureAwait(false);
-                                            await objArt.Techniques.AddAsync(objTechnique, token).ConfigureAwait(false);
-                                        }
-                                    }
                                 }
                             }
                         }

@@ -1810,19 +1810,51 @@ namespace Chummer.Backend.Skills
                                                         objGroup = new SkillGroup(_objCharacter, strName);
                                                         if (blnSync)
                                                         {
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            objGroup.Load(xmlNode, token);
-                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                            _lstSkillGroups.Add(objGroup);
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            objGroup.LockObject.SetParent(_objCharacter.LockObject, token: token);
+                                                            try
+                                                            {
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                objGroup.Load(xmlNode, token);
+                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                _lstSkillGroups.Add(objGroup);
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                objGroup.LockObject.SetParent(_objCharacter.LockObject, token: token);
+                                                            }
+                                                            catch
+                                                            {
+                                                                try
+                                                                {
+                                                                    _lstSkillGroups.Remove(objGroup);
+                                                                }
+                                                                catch
+                                                                {
+                                                                    // swallow this
+                                                                }
+                                                                objGroup.Dispose();
+                                                                throw;
+                                                            }
                                                         }
                                                         else
                                                         {
-                                                            await objGroup.LoadAsync(xmlNode, token).ConfigureAwait(false);
-                                                            await _lstSkillGroups.AddAsync(objGroup, token)
-                                                                .ConfigureAwait(false);
-                                                            await objGroup.LockObject.SetParentAsync(_objCharacter.LockObject, token: token).ConfigureAwait(false);
+                                                            try
+                                                            {
+                                                                await objGroup.LoadAsync(xmlNode, token).ConfigureAwait(false);
+                                                                await _lstSkillGroups.AddAsync(objGroup, token)
+                                                                    .ConfigureAwait(false);
+                                                                await objGroup.LockObject.SetParentAsync(_objCharacter.LockObject, token: token).ConfigureAwait(false);
+                                                            }
+                                                            catch
+                                                            {
+                                                                try
+                                                                {
+                                                                    await _lstSkillGroups.RemoveAsync(objGroup, CancellationToken.None).ConfigureAwait(false);
+                                                                }
+                                                                catch
+                                                                {
+                                                                    // swallow this
+                                                                }
+                                                                await objGroup.DisposeAsync().ConfigureAwait(false);
+                                                                throw;
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -2504,17 +2536,33 @@ namespace Chummer.Backend.Skills
                         foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("groups/skill", token))
                         {
                             SkillGroup objGroup = new SkillGroup(_objCharacter);
-                            objGroup.LoadFromHeroLab(xmlNode, token: token);
-                            SkillGroups.AddWithSort(objGroup, CompareSkillGroups,
-                                                    (objExistingSkillGroup, objNewSkillGroup) =>
-                                                    {
-                                                        foreach (Skill x in objExistingSkillGroup.SkillList
-                                                                     .Where(x => !objExistingSkillGroup
-                                                                                .SkillList.Contains(x)))
-                                                            objExistingSkillGroup.Add(x);
-                                                        objNewSkillGroup.Dispose();
-                                                    }, token);
-                            objGroup.LockObject.SetParent(_objCharacter.LockObject, token: token);
+                            try
+                            {
+                                objGroup.LoadFromHeroLab(xmlNode, token: token);
+                                SkillGroups.AddWithSort(objGroup, CompareSkillGroups,
+                                                        (objExistingSkillGroup, objNewSkillGroup) =>
+                                                        {
+                                                            foreach (Skill x in objExistingSkillGroup.SkillList
+                                                                         .Where(x => !objExistingSkillGroup
+                                                                                    .SkillList.Contains(x)))
+                                                                objExistingSkillGroup.Add(x);
+                                                            objNewSkillGroup.Dispose();
+                                                        }, token);
+                                objGroup.LockObject.SetParent(_objCharacter.LockObject, token: token);
+                            }
+                            catch
+                            {
+                                try
+                                {
+                                    SkillGroups.Remove(objGroup);
+                                }
+                                catch
+                                {
+                                    // swallow this
+                                }
+                                objGroup.Dispose();
+                                throw;
+                            }
                         }
 
                         //Timekeeper.Finish("load_char_skills_groups");

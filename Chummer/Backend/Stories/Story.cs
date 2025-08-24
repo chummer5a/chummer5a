@@ -197,13 +197,11 @@ namespace Chummer
                     XPathNavigator xmlNewPersistentNode = _xmlStoryDocumentBaseNode.TryGetNodeByNameOrId("stories/story", strSelectedId);
                     if (xmlNewPersistentNode != null)
                     {
-                        StoryModule objPersistentStoryModule = new StoryModule(_objCharacter)
-                        {
-                            ParentStory = this,
-                            IsRandomlyGenerated = true
-                        };
+                        StoryModule objPersistentStoryModule = new StoryModule(_objCharacter);
                         try
                         {
+                            objPersistentStoryModule.ParentStory = this;
+                            objPersistentStoryModule.IsRandomlyGenerated = true;
                             await objPersistentStoryModule.CreateAsync(xmlNewPersistentNode, token).ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             _dicPersistentModules.TryAdd(strFunction, objPersistentStoryModule);
