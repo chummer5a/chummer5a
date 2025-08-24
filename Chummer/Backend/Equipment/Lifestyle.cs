@@ -4321,13 +4321,6 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             switch (e.Action)
             {
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (LifestyleQuality objQuality in e.OldItems)
-                    {
-                        await objQuality.DisposeAsync().ConfigureAwait(false);
-                    }
-                    break;
-
                 case NotifyCollectionChangedAction.Replace:
                     HashSet<LifestyleQuality> setNewLifestyleQualities = e.NewItems.OfType<LifestyleQuality>().ToHashSet();
                     foreach (LifestyleQuality objQuality in e.OldItems)
