@@ -2934,6 +2934,8 @@ namespace Chummer.Backend.Equipment
                     = await objWriter.StartElementAsync("cyberware", token: token).ConfigureAwait(false);
                 try
                 {
+                    await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
                     if (!await GetIsLimbAsync(token).ConfigureAwait(false) || CyberlimbAttributeAbbrevs.Count == 0)
                     {
                         await objWriter
@@ -2992,7 +2994,6 @@ namespace Chummer.Backend.Equipment
                                 .ConfigureAwait(false);
                         }
                     }
-
                     await objWriter
                         .WriteElementStringAsync(
                             "category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false),
