@@ -547,8 +547,16 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode xmlModNode in xmlModList)
                         {
                             VehicleMod objMod = new VehicleMod(_objCharacter);
-                            objMod.Load(xmlModNode, blnCopy);
-                            Mods.Add(objMod);
+                            try
+                            {
+                                objMod.Load(xmlModNode, blnCopy);
+                                Mods.Add(objMod);
+                            }
+                            catch
+                            {
+                                objMod.DeleteVehicleMod();
+                                throw;
+                            }
                         }
                     }
                     else
@@ -556,8 +564,16 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode xmlModNode in xmlModList)
                         {
                             VehicleMod objMod = new VehicleMod(_objCharacter);
-                            await objMod.LoadAsync(xmlModNode, blnCopy, token).ConfigureAwait(false);
-                            await Mods.AddAsync(objMod, token).ConfigureAwait(false);
+                            try
+                            {
+                                await objMod.LoadAsync(xmlModNode, blnCopy, token).ConfigureAwait(false);
+                                await Mods.AddAsync(objMod, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objMod.DeleteVehicleModAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     }
                 }
@@ -795,13 +811,19 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (XmlNode xmlModNode in xmlModList)
                         {
-                            VehicleMod objMod = new VehicleMod(_objCharacter)
+                            VehicleMod objMod = new VehicleMod(_objCharacter);
+                            try
                             {
-                                IncludedInVehicle = true
-                            };
-                            xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmountmods/mod", xmlModNode.InnerText);
-                            objMod.Load(xmlDataNode);
-                            Mods.Add(objMod);
+                                objMod.IncludedInVehicle = true;
+                                xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmountmods/mod", xmlModNode.InnerText);
+                                objMod.Load(xmlDataNode);
+                                Mods.Add(objMod);
+                            }
+                            catch
+                            {
+                                objMod.DeleteVehicleMod();
+                                throw;
+                            }
                         }
                     }
                 }
@@ -879,10 +901,18 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode xmlModNode in xmlModList)
                         {
                             VehicleMod objMod = new VehicleMod(_objCharacter);
-                            await objMod.SetIncludedInVehicleAsync(true, token).ConfigureAwait(false);
-                            xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmountmods/mod", xmlModNode.InnerText);
-                            await objMod.LoadAsync(xmlDataNode, token: token).ConfigureAwait(false);
-                            await Mods.AddAsync(objMod, token).ConfigureAwait(false);
+                            try
+                            {
+                                await objMod.SetIncludedInVehicleAsync(true, token).ConfigureAwait(false);
+                                xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmountmods/mod", xmlModNode.InnerText);
+                                await objMod.LoadAsync(xmlDataNode, token: token).ConfigureAwait(false);
+                                await Mods.AddAsync(objMod, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objMod.DeleteVehicleModAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     }
                 }

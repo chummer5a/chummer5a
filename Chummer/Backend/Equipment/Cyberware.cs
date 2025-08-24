@@ -1256,18 +1256,29 @@ namespace Chummer.Backend.Equipment
                             if (xmlVehicle != null)
                             {
                                 Vehicle objVehicle = new Vehicle(_objCharacter);
-                                if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    objVehicle.Create(xmlVehicle, blnSkipSelectForms, true, blnCreateImprovements,
-                                        blnSkipSelectForms, token: token);
-                                else
-                                    await objVehicle.CreateAsync(xmlVehicle, blnSkipSelectForms, true,
-                                        blnCreateImprovements,
-                                        blnSkipSelectForms, token: token).ConfigureAwait(false);
-                                objVehicle.ParentID = InternalId;
+                                try
+                                {
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        objVehicle.Create(xmlVehicle, blnSkipSelectForms, true, blnCreateImprovements,
+                                            blnSkipSelectForms, token: token);
+                                    else
+                                        await objVehicle.CreateAsync(xmlVehicle, blnSkipSelectForms, true,
+                                            blnCreateImprovements,
+                                            blnSkipSelectForms, token: token).ConfigureAwait(false);
+                                    objVehicle.ParentID = InternalId;
 
-                                if (Guid.TryParse(objVehicle.InternalId, out _guiVehicleID))
-                                    lstVehicles.Add(objVehicle);
+                                    if (Guid.TryParse(objVehicle.InternalId, out _guiVehicleID))
+                                        lstVehicles.Add(objVehicle);
+                                }
+                                catch
+                                {
+                                    if (blnSync)
+                                        objVehicle.DeleteVehicle();
+                                    else
+                                        await objVehicle.DeleteVehicleAsync(CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
                             }
                         }
                     }

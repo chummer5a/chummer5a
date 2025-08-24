@@ -10082,14 +10082,30 @@ namespace Chummer
                                     Vehicle objVehicle = new Vehicle(this);
                                     if (blnSync)
                                     {
-                                        objVehicle.Load(objXmlVehicle);
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        _lstVehicles.Add(objVehicle);
+                                        try
+                                        {
+                                            objVehicle.Load(objXmlVehicle);
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            _lstVehicles.Add(objVehicle);
+                                        }
+                                        catch
+                                        {
+                                            objVehicle.DeleteVehicle();
+                                            throw;
+                                        }
                                     }
                                     else
                                     {
-                                        await objVehicle.LoadAsync(objXmlVehicle, token: token).ConfigureAwait(false);
-                                        await _lstVehicles.AddAsync(objVehicle, token).ConfigureAwait(false);
+                                        try
+                                        {
+                                            await objVehicle.LoadAsync(objXmlVehicle, token: token).ConfigureAwait(false);
+                                            await _lstVehicles.AddAsync(objVehicle, token).ConfigureAwait(false);
+                                        }
+                                        catch
+                                        {
+                                            await objVehicle.DeleteVehicleAsync(CancellationToken.None).ConfigureAwait(false);
+                                            throw;
+                                        }
                                     }
                                 }
 

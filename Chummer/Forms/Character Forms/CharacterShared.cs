@@ -11351,16 +11351,23 @@ namespace Chummer
                             // Make sure the character has enough Nuyen for the expense.
                             decimal decCost = decVehicleCost * decPercentage / 100;
 
-                            // Create a Vehicle Mod for the Retrofit.
-                            VehicleMod objRetrofit = new VehicleMod(CharacterObject);
-
                             XmlDocument objVehiclesDoc = await CharacterObject.LoadDataAsync("vehicles.xml", token: token)
                                 .ConfigureAwait(false);
                             XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
-                            await objRetrofit.CreateAsync(objXmlNode, 0, objMod.Parent, token: token).ConfigureAwait(false);
-                            objRetrofit.Cost = decCost.ToString(GlobalSettings.InvariantCultureInfo);
-                            await objRetrofit.SetIncludedInVehicleAsync(true, token).ConfigureAwait(false);
-                            await objMod.Parent.Mods.AddAsync(objRetrofit, token).ConfigureAwait(false);
+                            // Create a Vehicle Mod for the Retrofit.
+                            VehicleMod objRetrofit = new VehicleMod(CharacterObject);
+                            try
+                            {
+                                await objRetrofit.CreateAsync(objXmlNode, 0, objMod.Parent, token: token).ConfigureAwait(false);
+                                objRetrofit.Cost = decCost.ToString(GlobalSettings.InvariantCultureInfo);
+                                await objRetrofit.SetIncludedInVehicleAsync(true, token).ConfigureAwait(false);
+                                await objMod.Parent.Mods.AddAsync(objRetrofit, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objRetrofit.DeleteVehicleModAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
 
                             if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
                             {

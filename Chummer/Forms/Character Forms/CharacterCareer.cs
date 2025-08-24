@@ -6922,12 +6922,10 @@ namespace Chummer
                     bool blnAddAgain;
                     do
                     {
-                        Lifestyle objLifestyle = new Lifestyle(CharacterObject)
-                        {
-                            StyleType = LifestyleType.Standard
-                        };
+                        Lifestyle objLifestyle = new Lifestyle(CharacterObject);
                         try
                         {
+                            await objLifestyle.SetStyleTypeAsync(LifestyleType.Standard, GenericToken).ConfigureAwait(false);
                             using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle
                                    = await ThreadSafeForm<SelectLifestyle>.GetAsync(
                                            () => new SelectLifestyle(
@@ -7034,79 +7032,87 @@ namespace Chummer
 
                 XmlNode objXmlVehicle = objXmlDocument.TryGetNodeByNameOrId("/chummer/vehicles/vehicle", frmPickVehicle.MyForm.SelectedVehicle);
                 Vehicle objVehicle = new Vehicle(CharacterObject);
-                await objVehicle.CreateAsync(objXmlVehicle, token: token).ConfigureAwait(false);
-                // Update the Used Vehicle information if applicable.
-                if (frmPickVehicle.MyForm.UsedVehicle)
+                try
                 {
-                    objVehicle.Avail = frmPickVehicle.MyForm.UsedAvail;
-                    objVehicle.Cost = frmPickVehicle.MyForm.UsedCost.ToString(GlobalSettings.InvariantCultureInfo);
+                    await objVehicle.CreateAsync(objXmlVehicle, token: token).ConfigureAwait(false);
+                    // Update the Used Vehicle information if applicable.
+                    if (frmPickVehicle.MyForm.UsedVehicle)
+                    {
+                        objVehicle.Avail = frmPickVehicle.MyForm.UsedAvail;
+                        objVehicle.Cost = frmPickVehicle.MyForm.UsedCost.ToString(GlobalSettings.InvariantCultureInfo);
+                    }
+
+                    objVehicle.DiscountCost = frmPickVehicle.MyForm.BlackMarketDiscount;
+
+                    // Check the item's Cost and make sure the character can afford it.
+                    if (!frmPickVehicle.MyForm.FreeCost)
+                    {
+                        decimal decCost = await objVehicle.GetTotalCostAsync(token).ConfigureAwait(false);
+                        // Apply a markup if applicable.
+                        if (frmPickVehicle.MyForm.Markup != 0)
+                        {
+                            decCost *= 1 + frmPickVehicle.MyForm.Markup / 100.0m;
+                        }
+
+                        // Multiply the cost if applicable.
+                        char chrAvail = (await objVehicle.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
+                        switch (chrAvail)
+                        {
+                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                break;
+
+                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                break;
+                        }
+
+                        if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
+                        {
+                            await Program.ShowScrollableMessageBoxAsync(
+                                this,
+                                await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token)
+                                    .ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token)
+                                    .ConfigureAwait(false), MessageBoxButtons.OK,
+                                MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                            return frmPickVehicle.MyForm.AddAgain;
+                        }
+
+                        // Create the Expense Log Entry.
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(decCost * -1,
+                                          await LanguageManager
+                                                .GetStringAsync("String_ExpensePurchaseVehicle", token: token)
+                                                .ConfigureAwait(false)
+                                          + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                                 .ConfigureAwait(false)
+                                          + await objVehicle.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                          ExpenseType.Nuyen,
+                                          DateTime.Now);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                             .ConfigureAwait(false);
+                        await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateNuyen(NuyenExpenseType.AddVehicle, objVehicle.InternalId);
+                        objExpense.Undo = objUndo;
+                    }
+
+                    objVehicle.DiscountCost = frmPickVehicle.MyForm.BlackMarketDiscount;
+
+                    //objVehicle.Location = objLocation;
+                    if (objLocation != null)
+                        await objLocation.Children.AddAsync(objVehicle, token).ConfigureAwait(false);
+                    await CharacterObject.Vehicles.AddAsync(objVehicle, token).ConfigureAwait(false);
+
+                    return frmPickVehicle.MyForm.AddAgain;
                 }
-
-                objVehicle.DiscountCost = frmPickVehicle.MyForm.BlackMarketDiscount;
-
-                // Check the item's Cost and make sure the character can afford it.
-                if (!frmPickVehicle.MyForm.FreeCost)
+                catch
                 {
-                    decimal decCost = await objVehicle.GetTotalCostAsync(token).ConfigureAwait(false);
-                    // Apply a markup if applicable.
-                    if (frmPickVehicle.MyForm.Markup != 0)
-                    {
-                        decCost *= 1 + frmPickVehicle.MyForm.Markup / 100.0m;
-                    }
-
-                    // Multiply the cost if applicable.
-                    char chrAvail = (await objVehicle.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
-                    switch (chrAvail)
-                    {
-                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                            break;
-
-                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                            break;
-                    }
-
-                    if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
-                    {
-                        await Program.ShowScrollableMessageBoxAsync(
-                            this,
-                            await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token)
-                                .ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token)
-                                .ConfigureAwait(false), MessageBoxButtons.OK,
-                            MessageBoxIcon.Information, token: token).ConfigureAwait(false);
-                        return frmPickVehicle.MyForm.AddAgain;
-                    }
-
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1,
-                                      await LanguageManager
-                                            .GetStringAsync("String_ExpensePurchaseVehicle", token: token)
-                                            .ConfigureAwait(false)
-                                      + await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                             .ConfigureAwait(false)
-                                      + await objVehicle.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                                      ExpenseType.Nuyen,
-                                      DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
-                                         .ConfigureAwait(false);
-                    await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateNuyen(NuyenExpenseType.AddVehicle, objVehicle.InternalId);
-                    objExpense.Undo = objUndo;
+                    await objVehicle.DeleteVehicleAsync(CancellationToken.None).ConfigureAwait(false);
+                    throw;
                 }
-
-                objVehicle.DiscountCost = frmPickVehicle.MyForm.BlackMarketDiscount;
-
-                //objVehicle.Location = objLocation;
-                if (objLocation != null)
-                    await objLocation.Children.AddAsync(objVehicle, token).ConfigureAwait(false);
-                await CharacterObject.Vehicles.AddAsync(objVehicle, token).ConfigureAwait(false);
-
-                return frmPickVehicle.MyForm.AddAgain;
             }
         }
 
@@ -11317,10 +11323,10 @@ namespace Chummer
 
                         XmlNode objXmlMod = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", frmPickVehicleMod.MyForm.SelectedMod);
 
-                        VehicleMod objMod = new VehicleMod(CharacterObject)
+                        VehicleMod objMod = new VehicleMod(CharacterObject);
+                        try
                         {
-                            DiscountCost = frmPickVehicleMod.MyForm.BlackMarketDiscount
-                        };
+                        objMod.DiscountCost = frmPickVehicleMod.MyForm.BlackMarketDiscount;
                         await objMod.CreateAsync(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, objVehicle,
                             frmPickVehicleMod.MyForm.Markup, token: GenericToken).ConfigureAwait(false);
 
@@ -11363,52 +11369,58 @@ namespace Chummer
                             }
                         }
 
-                        if (!frmPickVehicleMod.MyForm.FreeCost)
+                            if (!frmPickVehicleMod.MyForm.FreeCost)
+                            {
+                                decimal decCost = await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false) - decOriginalCost;
+
+                                // Multiply the cost if applicable.
+                                char chrAvail = (await objMod.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
+                                switch (chrAvail)
+                                {
+                                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                        break;
+
+                                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                        break;
+                                }
+
+                                if (decCost > await CharacterObject.GetNuyenAsync(GenericToken).ConfigureAwait(false))
+                                {
+                                    await objVehicle.Mods.RemoveAsync(objMod, GenericToken).ConfigureAwait(false);
+                                    await Program.ShowScrollableMessageBoxAsync(
+                                        this,
+                                        await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: GenericToken)
+                                            .ConfigureAwait(false),
+                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: GenericToken)
+                                            .ConfigureAwait(false),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
+                                    continue;
+                                }
+
+                                // Create the Expense Log Entry.
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(decCost * -1,
+                                                  await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleMod", token: GenericToken)
+                                                                       .ConfigureAwait(false)
+                                                  + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
+                                                                         .ConfigureAwait(false)
+                                                  + await objMod.GetCurrentDisplayNameShortAsync(GenericToken)
+                                                                .ConfigureAwait(false), ExpenseType.Nuyen,
+                                                  DateTime.Now);
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
+                                await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
+
+                                ExpenseUndo objUndo = new ExpenseUndo();
+                                objUndo.CreateNuyen(NuyenExpenseType.AddVehicleMod, objMod.InternalId);
+                                objExpense.Undo = objUndo;
+                            }
+                        }
+                        catch
                         {
-                            decimal decCost = await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false) - decOriginalCost;
-
-                            // Multiply the cost if applicable.
-                            char chrAvail = (await objMod.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
-                            switch (chrAvail)
-                            {
-                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                    break;
-
-                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                    break;
-                            }
-
-                            if (decCost > await CharacterObject.GetNuyenAsync(GenericToken).ConfigureAwait(false))
-                            {
-                                await objVehicle.Mods.RemoveAsync(objMod, GenericToken).ConfigureAwait(false);
-                                await Program.ShowScrollableMessageBoxAsync(
-                                    this,
-                                    await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: GenericToken)
-                                        .ConfigureAwait(false),
-                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: GenericToken)
-                                        .ConfigureAwait(false),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
-                                continue;
-                            }
-
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1,
-                                              await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleMod", token: GenericToken)
-                                                                   .ConfigureAwait(false)
-                                              + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
-                                                                     .ConfigureAwait(false)
-                                              + await objMod.GetCurrentDisplayNameShortAsync(GenericToken)
-                                                            .ConfigureAwait(false), ExpenseType.Nuyen,
-                                              DateTime.Now);
-                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                            await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
-
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateNuyen(NuyenExpenseType.AddVehicleMod, objMod.InternalId);
-                            objExpense.Undo = objUndo;
+                            await objMod.DeleteVehicleModAsync(token: CancellationToken.None).ConfigureAwait(false);
+                            throw;
                         }
                     }
                 } while (blnAddAgain);
@@ -13024,12 +13036,10 @@ namespace Chummer
                     bool blnAddAgain;
                     do
                     {
-                        Lifestyle objLifestyle = new Lifestyle(CharacterObject)
-                        {
-                            StyleType = LifestyleType.Advanced
-                        };
+                        Lifestyle objLifestyle = new Lifestyle(CharacterObject);
                         try
                         {
+                            await objLifestyle.SetStyleTypeAsync(LifestyleType.Advanced, GenericToken).ConfigureAwait(false);
                             using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle
                                    = await ThreadSafeForm<SelectLifestyle>.GetAsync(
                                            () => new SelectLifestyle(

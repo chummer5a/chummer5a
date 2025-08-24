@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
@@ -116,23 +115,25 @@ namespace Chummer
                     Utils.DoEventsSafe();
                     try
                     {
-                        Vehicle objTemp = new Vehicle(_objCharacter);
-                        objTemp.Create(objXmlGear);
-
-                        Type objType = objTemp.GetType();
-
-                        foreach (PropertyInfo objProperty in objType.GetProperties())
+                        using (Vehicle objTemp = new Vehicle(_objCharacter))
                         {
-                            try
+                            objTemp.Create(objXmlGear);
+
+                            Type objType = objTemp.GetType();
+
+                            foreach (PropertyInfo objProperty in objType.GetProperties())
                             {
-                                objProperty.GetValue(objTemp, null);
-                            }
-                            catch (Exception e)
-                            {
-                                if (_blnAddExceptionInfoToErrors)
-                                    _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
-                                else
-                                    _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                try
+                                {
+                                    objProperty.GetValue(objTemp, null);
+                                }
+                                catch (Exception e)
+                                {
+                                    if (_blnAddExceptionInfoToErrors)
+                                        _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
+                                    else
+                                        _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                }
                             }
                         }
                     }
@@ -158,36 +159,38 @@ namespace Chummer
                     Utils.DoEventsSafe();
                     try
                     {
-                        VehicleMod objTemp = new VehicleMod(_objCharacter);
-                        objTemp.Create(objXmlGear, 1, null);
-
-                        Type objType = objTemp.GetType();
-
-                        foreach (PropertyInfo objProperty in objType.GetProperties())
+                        using (VehicleMod objTemp = new VehicleMod(_objCharacter))
                         {
+                            objTemp.Create(objXmlGear, 1, null);
+
+                            Type objType = objTemp.GetType();
+
+                            foreach (PropertyInfo objProperty in objType.GetProperties())
+                            {
+                                try
+                                {
+                                    objProperty.GetValue(objTemp, null);
+                                }
+                                catch (Exception e)
+                                {
+                                    if (_blnAddExceptionInfoToErrors)
+                                        _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
+                                    else
+                                        _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                }
+                            }
+
                             try
                             {
-                                objProperty.GetValue(objTemp, null);
+                                string _ = objTemp.TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage);
                             }
                             catch (Exception e)
                             {
                                 if (_blnAddExceptionInfoToErrors)
-                                    _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
+                                    _sbdOutputBuilder.Append(strName).Append(" failed TotalAvail. Exception: ").AppendLine(e.ToString());
                                 else
-                                    _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                    _sbdOutputBuilder.Append(strName).AppendLine(" failed TotalAvail");
                             }
-                        }
-
-                        try
-                        {
-                            string _ = objTemp.TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage);
-                        }
-                        catch (Exception e)
-                        {
-                            if (_blnAddExceptionInfoToErrors)
-                                _sbdOutputBuilder.Append(strName).Append(" failed TotalAvail. Exception: ").AppendLine(e.ToString());
-                            else
-                                _sbdOutputBuilder.Append(strName).AppendLine(" failed TotalAvail");
                         }
                     }
                     catch (Exception e)
@@ -224,8 +227,7 @@ namespace Chummer
                     Utils.DoEventsSafe();
                     try
                     {
-                        Weapon objTemp = new Weapon(_objCharacter);
-                        try
+                        using (Weapon objTemp = new Weapon(_objCharacter))
                         {
                             objTemp.Create(objXmlGear, null, true, false, true);
 
@@ -245,11 +247,6 @@ namespace Chummer
                                         _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
                                 }
                             }
-                        }
-                        catch
-                        {
-                            objTemp.DeleteWeapon();
-                            throw;
                         }
                     }
                     catch (Exception e)
@@ -274,8 +271,7 @@ namespace Chummer
                     Utils.DoEventsSafe();
                     try
                     {
-                        WeaponAccessory objTemp = new WeaponAccessory(_objCharacter);
-                        try
+                        using (WeaponAccessory objTemp = new WeaponAccessory(_objCharacter))
                         {
                             objTemp.Create(objXmlGear, new Tuple<string, string>(string.Empty, string.Empty), 0, true, true, false);
 
@@ -295,11 +291,6 @@ namespace Chummer
                                         _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
                                 }
                             }
-                        }
-                        catch
-                        {
-                            objTemp.DeleteWeaponAccessory();
-                            throw;
                         }
                     }
                     catch (Exception e)
@@ -337,34 +328,34 @@ namespace Chummer
                     try
                     {
                         List<Weapon> lstWeapons = new List<Weapon>(1);
-                        Armor objTemp = new Armor(_objCharacter);
                         try
                         {
-                            objTemp.Create(objXmlGear, 0, lstWeapons, true, true, true);
-
-                            Type objType = objTemp.GetType();
-
-                            foreach (PropertyInfo objProperty in objType.GetProperties())
+                            using (Armor objTemp = new Armor(_objCharacter))
                             {
-                                try
+                                objTemp.Create(objXmlGear, 0, lstWeapons, true, true, true);
+
+                                Type objType = objTemp.GetType();
+
+                                foreach (PropertyInfo objProperty in objType.GetProperties())
                                 {
-                                    objProperty.GetValue(objTemp, null);
-                                }
-                                catch (Exception e)
-                                {
-                                    if (_blnAddExceptionInfoToErrors)
-                                        _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
-                                    else
-                                        _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                    try
+                                    {
+                                        objProperty.GetValue(objTemp, null);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        if (_blnAddExceptionInfoToErrors)
+                                            _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
+                                        else
+                                            _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                    }
                                 }
                             }
                         }
-                        catch
+                        finally
                         {
                             foreach (Weapon objWeapon in lstWeapons)
-                                objWeapon.DeleteWeapon();
-                            objTemp.DeleteArmor();
-                            throw;
+                                objWeapon.Dispose();
                         }
                     }
                     catch (Exception e)
@@ -389,35 +380,35 @@ namespace Chummer
                     Utils.DoEventsSafe();
                     try
                     {
-                        ArmorMod objTemp = new ArmorMod(_objCharacter);
                         List<Weapon> lstWeapons = new List<Weapon>(1);
                         try
                         {
-                            objTemp.Create(objXmlGear, 1, lstWeapons, true, true);
-
-                            Type objType = objTemp.GetType();
-
-                            foreach (PropertyInfo objProperty in objType.GetProperties())
+                            using (ArmorMod objTemp = new ArmorMod(_objCharacter))
                             {
-                                try
+                                objTemp.Create(objXmlGear, 1, lstWeapons, true, true);
+
+                                Type objType = objTemp.GetType();
+
+                                foreach (PropertyInfo objProperty in objType.GetProperties())
                                 {
-                                    objProperty.GetValue(objTemp, null);
-                                }
-                                catch (Exception e)
-                                {
-                                    if (_blnAddExceptionInfoToErrors)
-                                        _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
-                                    else
-                                        _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                    try
+                                    {
+                                        objProperty.GetValue(objTemp, null);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        if (_blnAddExceptionInfoToErrors)
+                                            _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
+                                        else
+                                            _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                    }
                                 }
                             }
                         }
-                        catch
+                        finally
                         {
                             foreach (Weapon objWeapon in lstWeapons)
-                                objWeapon.DeleteWeapon();
-                            objTemp.DeleteArmorMod();
-                            throw;
+                                objWeapon.Dispose();
                         }
                     }
                     catch (Exception e)
@@ -453,25 +444,35 @@ namespace Chummer
                         Utils.DoEventsSafe();
                         try
                         {
-                            Gear objTemp = new Gear(_objCharacter);
                             List<Weapon> lstWeapons = new List<Weapon>(1);
-                            objTemp.Create(objXmlGear, 1, lstWeapons, string.Empty, false);
-
-                            Type objType = objTemp.GetType();
-
-                            foreach (PropertyInfo objProperty in objType.GetProperties())
+                            try
                             {
-                                try
+                                using (Gear objTemp = new Gear(_objCharacter))
                                 {
-                                    objProperty.GetValue(objTemp, null);
+                                    objTemp.Create(objXmlGear, 1, lstWeapons, string.Empty, false);
+
+                                    Type objType = objTemp.GetType();
+
+                                    foreach (PropertyInfo objProperty in objType.GetProperties())
+                                    {
+                                        try
+                                        {
+                                            objProperty.GetValue(objTemp, null);
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            if (_blnAddExceptionInfoToErrors)
+                                                _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
+                                            else
+                                                _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                        }
+                                    }
                                 }
-                                catch (Exception e)
-                                {
-                                    if (_blnAddExceptionInfoToErrors)
-                                        _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
-                                    else
-                                        _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
-                                }
+                            }
+                            finally
+                            {
+                                foreach (Weapon objWeapon in lstWeapons)
+                                    objWeapon.Dispose();
                             }
                         }
                         catch (Exception e)
@@ -518,31 +519,42 @@ namespace Chummer
                         Utils.DoEventsSafe();
                         try
                         {
-                            using (Cyberware objTemp = new Cyberware(_objCharacter))
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+                            List<Vehicle> lstVehicles = new List<Vehicle>(1);
+                            try
                             {
-                                List<Weapon> lstWeapons = new List<Weapon>(1);
-                                List<Vehicle> objVehicles = new List<Vehicle>(1);
-                                objTemp.Create(objXmlGear, objTestGrade, objSource, 1, lstWeapons, objVehicles, false);
-
-                                Type objType = objTemp.GetType();
-
-                                foreach (PropertyInfo objProperty in objType.GetProperties())
+                                using (Cyberware objTemp = new Cyberware(_objCharacter))
                                 {
-                                    try
+                                    objTemp.Create(objXmlGear, objTestGrade, objSource, 1, lstWeapons, lstVehicles, false);
+
+                                    Type objType = objTemp.GetType();
+
+                                    foreach (PropertyInfo objProperty in objType.GetProperties())
                                     {
-                                        objProperty.GetValue(objTemp, null);
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        if (_blnAddExceptionInfoToErrors)
-                                            _sbdOutputBuilder.Append(strName).Append(" failed ")
-                                                             .Append(objProperty.Name).Append(". Exception: ")
-                                                             .AppendLine(e.ToString());
-                                        else
-                                            _sbdOutputBuilder.Append(strName).Append(" failed ")
-                                                             .AppendLine(objProperty.Name);
+                                        try
+                                        {
+                                            objProperty.GetValue(objTemp, null);
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            if (_blnAddExceptionInfoToErrors)
+                                                _sbdOutputBuilder.Append(strName).Append(" failed ")
+                                                                 .Append(objProperty.Name).Append(". Exception: ")
+                                                                 .AppendLine(e.ToString());
+                                            else
+                                                _sbdOutputBuilder.Append(strName).Append(" failed ")
+                                                                 .AppendLine(objProperty.Name);
+                                        }
                                     }
                                 }
+                            }
+                            finally
+                            {
+                                foreach (Weapon objWeapon in lstWeapons)
+                                    objWeapon.Dispose();
+
+                                foreach (Vehicle objVehicle in lstVehicles)
+                                    objVehicle.Dispose();
                             }
                         }
                         catch (Exception e)
@@ -581,35 +593,37 @@ namespace Chummer
                         try
                         {
                             List<Weapon> lstWeapons = new List<Weapon>(1);
-                            Quality objTemp = new Quality(_objCharacter);
                             try
                             {
-                                objTemp.Create(objXmlGear, QualitySource.Selected, lstWeapons);
-
-                                Type objType = objTemp.GetType();
-
-                                foreach (PropertyInfo objProperty in objType.GetProperties())
+                                using (Quality objTemp = new Quality(_objCharacter))
                                 {
-                                    try
+                                    objTemp.Create(objXmlGear, QualitySource.Selected, lstWeapons);
+
+                                    Type objType = objTemp.GetType();
+
+                                    foreach (PropertyInfo objProperty in objType.GetProperties())
                                     {
-                                        objProperty.GetValue(objTemp, null);
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        if (_blnAddExceptionInfoToErrors)
-                                            _sbdOutputBuilder.Append(strName).Append(" failed ")
-                                                             .Append(objProperty.Name).Append(". Exception: ")
-                                                             .AppendLine(e.ToString());
-                                        else
-                                            _sbdOutputBuilder.Append(strName).Append(" failed ")
-                                                             .AppendLine(objProperty.Name);
+                                        try
+                                        {
+                                            objProperty.GetValue(objTemp, null);
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            if (_blnAddExceptionInfoToErrors)
+                                                _sbdOutputBuilder.Append(strName).Append(" failed ")
+                                                                 .Append(objProperty.Name).Append(". Exception: ")
+                                                                 .AppendLine(e.ToString());
+                                            else
+                                                _sbdOutputBuilder.Append(strName).Append(" failed ")
+                                                                 .AppendLine(objProperty.Name);
+                                        }
                                     }
                                 }
                             }
-                            catch
+                            finally
                             {
-                                objTemp.Dispose();
-                                throw;
+                                foreach (Weapon objWeapon in lstWeapons)
+                                    objWeapon.Dispose();
                             }
                         }
                         catch (Exception e)
@@ -867,14 +881,22 @@ namespace Chummer
                             {
                                 XmlNode objXmlCritterPower = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", objXmlPower.InnerText);
                                 CritterPower objPower = new CritterPower(_objCharacter);
-                                string strForcedValue = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
-                                int intRating = 0;
+                                try
+                                {
+                                    string strForcedValue = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
+                                    int intRating = 0;
 
-                                if (objXmlPower.Attributes["rating"] != null)
-                                    intRating = CommonFunctions.ExpressionToInt(objXmlPower.Attributes["rating"].InnerText, intForce, 0, 0);
+                                    if (objXmlPower.Attributes["rating"] != null)
+                                        intRating = CommonFunctions.ExpressionToInt(objXmlPower.Attributes["rating"].InnerText, intForce, 0, 0);
 
-                                objPower.Create(objXmlCritterPower, intRating, strForcedValue);
-                                _objCharacter.CritterPowers.Add(objPower);
+                                    objPower.Create(objXmlCritterPower, intRating, strForcedValue);
+                                    _objCharacter.CritterPowers.Add(objPower);
+                                }
+                                catch
+                                {
+                                    objPower.Remove(false);
+                                    throw;
+                                }
                             }
 
                             // Set the Skill Ratings for the Critter.
@@ -1001,11 +1023,23 @@ namespace Chummer
                                     intRating = CommonFunctions.ExpressionToInt(objXmlGear.Attributes["rating"].InnerText, intForce, 0, 0);
                                 string strForceValue = objXmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
                                 XmlNode objXmlGearItem = objXmlGearDocument.TryGetNodeByNameOrId("/chummer/gears/gear", objXmlGear.InnerText);
-                                Gear objGear = new Gear(_objCharacter);
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
-                                objGear.Create(objXmlGearItem, intRating, lstWeapons, strForceValue);
-                                objGear.Cost = "0";
-                                _objCharacter.Gear.Add(objGear);
+                                Gear objGear = new Gear(_objCharacter);
+                                try
+                                {
+                                    objGear.Create(objXmlGearItem, intRating, lstWeapons, strForceValue);
+                                    objGear.Cost = "0";
+                                    _objCharacter.Gear.Add(objGear);
+                                    foreach (Weapon objWeapon in lstWeapons)
+                                        _objCharacter.Weapons.Add(objWeapon);
+                                }
+                                catch
+                                {
+                                    foreach (Weapon objWeapon in lstWeapons)
+                                        objWeapon.Remove(false);
+                                    objGear.Remove(false);
+                                    throw;
+                                }
                             }
                         }
                         catch (Exception e)

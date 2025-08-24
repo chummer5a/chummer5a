@@ -543,8 +543,16 @@ namespace Chummer
         public static async Task<CharacterCache> CreateFromFileAsync(CharacterCache objExistingCache, CancellationToken token = default)
         {
             CharacterCache objReturn = new CharacterCache();
-            await objReturn.CopyFromAsync(objExistingCache, token).ConfigureAwait(false);
-            return objReturn;
+            try
+            {
+                await objReturn.CopyFromAsync(objExistingCache, token).ConfigureAwait(false);
+                return objReturn;
+            }
+            catch
+            {
+                await objReturn.DisposeAsync().ConfigureAwait(false);
+                throw;
+            }
         }
 
         /// <summary>
@@ -553,8 +561,16 @@ namespace Chummer
         public static async Task<CharacterCache> CreateFromFileAsync(string strFile, CancellationToken token = default)
         {
             CharacterCache objReturn = new CharacterCache();
-            await objReturn.LoadFromFileAsync(strFile, token).ConfigureAwait(false);
-            return objReturn;
+            try
+            {
+                await objReturn.LoadFromFileAsync(strFile, token).ConfigureAwait(false);
+                return objReturn;
+            }
+            catch
+            {
+                await objReturn.DisposeAsync().ConfigureAwait(false);
+                throw;
+            }
         }
 
         public void CopyFrom(CharacterCache objExistingCache)

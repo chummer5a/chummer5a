@@ -4892,8 +4892,16 @@ namespace Chummer
                             // Paste Vehicle.
                             XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/vehicle");
                             Vehicle objVehicle = new Vehicle(CharacterObject);
-                            await objVehicle.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                            await (await CharacterObject.GetVehiclesAsync(GenericToken).ConfigureAwait(false)).AddAsync(objVehicle, GenericToken).ConfigureAwait(false);
+                            try
+                            {
+                                await objVehicle.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
+                                await (await CharacterObject.GetVehiclesAsync(GenericToken).ConfigureAwait(false)).AddAsync(objVehicle, GenericToken).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objVehicle.DeleteVehicleAsync(CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                             break;
                         }
                         case ClipboardContentType.Weapon:
@@ -5027,9 +5035,17 @@ namespace Chummer
                         foreach (XmlNode objLoopNode in objXmlNodeList)
                         {
                             Vehicle objVehicle = new Vehicle(CharacterObject);
-                            await objVehicle.LoadAsync(objLoopNode, true, GenericToken).ConfigureAwait(false);
-                            await (await CharacterObject.GetVehiclesAsync(GenericToken).ConfigureAwait(false)).AddAsync(objVehicle, GenericToken).ConfigureAwait(false);
-                            objVehicle.ParentID = parentId;
+                            try
+                            {
+                                await objVehicle.LoadAsync(objLoopNode, true, GenericToken).ConfigureAwait(false);
+                                await (await CharacterObject.GetVehiclesAsync(GenericToken).ConfigureAwait(false)).AddAsync(objVehicle, GenericToken).ConfigureAwait(false);
+                                objVehicle.ParentID = parentId;
+                            }
+                            catch
+                            {
+                                await objVehicle.DeleteVehicleAsync(CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     }
                 }
@@ -5629,12 +5645,10 @@ namespace Chummer
                     bool blnAddAgain;
                     do
                     {
-                        Lifestyle objLifestyle = new Lifestyle(CharacterObject)
-                        {
-                            StyleType = LifestyleType.Standard
-                        };
+                        Lifestyle objLifestyle = new Lifestyle(CharacterObject);
                         try
                         {
+                            await objLifestyle.SetStyleTypeAsync(LifestyleType.Standard, GenericToken).ConfigureAwait(false);
                             using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle
                                    = await ThreadSafeForm<SelectLifestyle>.GetAsync(
                                            () => new SelectLifestyle(
@@ -5750,27 +5764,35 @@ namespace Chummer
                     if (objXmlVehicle == null)
                         return frmPickVehicle.MyForm.AddAgain;
                     Vehicle objVehicle = new Vehicle(CharacterObject);
-                    await objVehicle.CreateAsync(objXmlVehicle, token: token).ConfigureAwait(false);
-                    // Update the Used Vehicle information if applicable.
-                    if (frmPickVehicle.MyForm.UsedVehicle)
+                    try
                     {
-                        objVehicle.Avail = frmPickVehicle.MyForm.UsedAvail;
-                        objVehicle.Cost = frmPickVehicle.MyForm.UsedCost.ToString(GlobalSettings.InvariantCultureInfo);
-                    }
+                        await objVehicle.CreateAsync(objXmlVehicle, token: token).ConfigureAwait(false);
+                        // Update the Used Vehicle information if applicable.
+                        if (frmPickVehicle.MyForm.UsedVehicle)
+                        {
+                            objVehicle.Avail = frmPickVehicle.MyForm.UsedAvail;
+                            objVehicle.Cost = frmPickVehicle.MyForm.UsedCost.ToString(GlobalSettings.InvariantCultureInfo);
+                        }
 
-                    objVehicle.DiscountCost = frmPickVehicle.MyForm.BlackMarketDiscount;
-                    if (frmPickVehicle.MyForm.FreeCost)
+                        objVehicle.DiscountCost = frmPickVehicle.MyForm.BlackMarketDiscount;
+                        if (frmPickVehicle.MyForm.FreeCost)
+                        {
+                            objVehicle.Cost = "0";
+                        }
+
+                        //objVehicle.Location = objLocation;
+                        if (objLocation != null)
+                            await objLocation.Children.AddAsync(objVehicle, token).ConfigureAwait(false);
+
+                        await CharacterObject.Vehicles.AddAsync(objVehicle, token).ConfigureAwait(false);
+
+                        return frmPickVehicle.MyForm.AddAgain;
+                    }
+                    catch
                     {
-                        objVehicle.Cost = "0";
+                        await objVehicle.DeleteVehicleAsync(CancellationToken.None).ConfigureAwait(false);
+                        throw;
                     }
-
-                    //objVehicle.Location = objLocation;
-                    if (objLocation != null)
-                        await objLocation.Children.AddAsync(objVehicle, token).ConfigureAwait(false);
-
-                    await CharacterObject.Vehicles.AddAsync(objVehicle, token).ConfigureAwait(false);
-
-                    return frmPickVehicle.MyForm.AddAgain;
                 }
             }
             finally
@@ -7630,38 +7652,44 @@ namespace Chummer
                             XmlNode objXmlMod
                                 = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", frmPickVehicleMod.MyForm.SelectedMod);
 
-                            VehicleMod objMod = new VehicleMod(CharacterObject)
+                            VehicleMod objMod = new VehicleMod(CharacterObject);
+                            try
                             {
-                                DiscountCost = frmPickVehicleMod.MyForm.BlackMarketDiscount
-                            };
-                            await objMod.CreateAsync(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, objVehicle,
-                                frmPickVehicleMod.MyForm.Markup, token: GenericToken).ConfigureAwait(false);
+                                objMod.DiscountCost = frmPickVehicleMod.MyForm.BlackMarketDiscount;
+                                await objMod.CreateAsync(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, objVehicle,
+                                    frmPickVehicleMod.MyForm.Markup, token: GenericToken).ConfigureAwait(false);
 
-                            // Check the item's Cost and make sure the character can afford it.
-                            if (frmPickVehicleMod.MyForm.FreeCost)
-                                objMod.Cost = "0";
-                            else
-                            {
-                                // Multiply the cost if applicable.
-                                decimal decOldCost = await objMod.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
-                                decimal decCost = decOldCost;
-                                char chrAvail = (await objMod.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
-                                switch (chrAvail)
+                                // Check the item's Cost and make sure the character can afford it.
+                                if (frmPickVehicleMod.MyForm.FreeCost)
+                                    objMod.Cost = "0";
+                                else
                                 {
-                                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                        break;
+                                    // Multiply the cost if applicable.
+                                    decimal decOldCost = await objMod.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
+                                    decimal decCost = decOldCost;
+                                    char chrAvail = (await objMod.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
+                                    switch (chrAvail)
+                                    {
+                                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                            break;
 
-                                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                        break;
+                                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                            break;
+                                    }
+
+                                    decCost -= decOldCost;
+                                    objMod.Markup = decCost;
                                 }
 
-                                decCost -= decOldCost;
-                                objMod.Markup = decCost;
+                                await objVehicle.Mods.AddAsync(objMod, GenericToken).ConfigureAwait(false);
                             }
-
-                            await objVehicle.Mods.AddAsync(objMod, GenericToken).ConfigureAwait(false);
+                            catch
+                            {
+                                await objMod.DeleteVehicleModAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     } while (blnAddAgain);
                 }
@@ -8322,12 +8350,10 @@ namespace Chummer
                     bool blnAddAgain;
                     do
                     {
-                        Lifestyle objLifestyle = new Lifestyle(CharacterObject)
-                        {
-                            StyleType = LifestyleType.Advanced
-                        };
+                        Lifestyle objLifestyle = new Lifestyle(CharacterObject);
                         try
                         {
+                            await objLifestyle.SetStyleTypeAsync(LifestyleType.Advanced, GenericToken).ConfigureAwait(false);
                             using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle
                                    = await ThreadSafeForm<SelectLifestyle>.GetAsync(
                                            () => new SelectLifestyle(
@@ -23202,220 +23228,236 @@ namespace Chummer
                             if (objXmlVehicleNode == null)
                                 continue;
                             Vehicle objVehicle = new Vehicle(CharacterObject);
-                            await objVehicle
-                                .CreateAsync(objXmlVehicleNode, blnCreateChildren: blnCreateChildren, token: token)
-                                .ConfigureAwait(false);
-                            await CharacterObject.Vehicles.AddAsync(objVehicle, token).ConfigureAwait(false);
-
-                            // Grab the default Sensor that comes with the Vehicle.
-                            foreach (Gear objSensorGear in objVehicle.GearChildren)
+                            try
                             {
-                                if (objSensorGear.Category == "Sensors" && objSensorGear.Cost == "0"
-                                                                        && await objSensorGear.GetRatingAsync(token)
-                                                                            .ConfigureAwait(false) == 0)
-                                {
-                                    objDefaultSensor = objSensorGear;
-                                    break;
-                                }
-                            }
-
-                            // Add any Vehicle Mods.
-                            foreach (XmlNode objXmlMod in objXmlVehicle.SelectNodes("mods/mod"))
-                            {
-                                XmlNode objXmlModNode = objXmlVehicleDocument.TryGetNodeByNameOrId(
-                                    "/chummer/mods/mod", objXmlMod["name"].InnerText,
-                                    await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
-                                if (objXmlModNode == null)
-                                    continue;
-                                int intRating = 0;
-                                objXmlMod.TryGetInt32FieldQuickly("rating", ref intRating);
-                                int intMarkup = 0;
-                                objXmlMod.TryGetInt32FieldQuickly("markup", ref intMarkup);
-                                VehicleMod objMod = new VehicleMod(CharacterObject);
-                                await objMod.CreateAsync(objXmlModNode, intRating, objVehicle, intMarkup, token: token)
+                                await objVehicle
+                                    .CreateAsync(objXmlVehicleNode, blnCreateChildren: blnCreateChildren, token: token)
                                     .ConfigureAwait(false);
-                                await objVehicle.Mods.AddAsync(objMod, token).ConfigureAwait(false);
+                                await CharacterObject.Vehicles.AddAsync(objVehicle, token).ConfigureAwait(false);
 
-                                foreach (XmlNode objXmlCyberware in objXmlMod.SelectNodes("cyberwares/cyberware"))
-                                    await AddPACKSCyberwareAsync(objXmlCyberwareDocument, objXmlBiowareDocument,
-                                        objXmlGearDocument,
-                                        objXmlCyberware, objMod, blnCreateChildren, token).ConfigureAwait(false);
-                            }
-
-                            // Add any Vehicle Gear.
-                            foreach (XmlNode objXmlGear in objXmlVehicle.SelectNodes("gears/gear"))
-                            {
-                                Gear objGear =
-                                    await AddPACKSGearAsync(objXmlGearDocument, objXmlGear, objVehicle,
-                                        blnCreateChildren,
-                                        token).ConfigureAwait(false);
-                                // If this is a Sensor, it will replace the Vehicle's base sensor, so remove it.
-                                if (objGear?.Category == "Sensors" && objGear.Cost == "0" &&
-                                    await objGear.GetRatingAsync(token).ConfigureAwait(false) == 0)
+                                // Grab the default Sensor that comes with the Vehicle.
+                                foreach (Gear objSensorGear in objVehicle.GearChildren)
                                 {
-                                    await objVehicle.GearChildren.RemoveAsync(objDefaultSensor, token)
-                                        .ConfigureAwait(false);
+                                    if (objSensorGear.Category == "Sensors" && objSensorGear.Cost == "0"
+                                                                            && await objSensorGear.GetRatingAsync(token)
+                                                                                .ConfigureAwait(false) == 0)
+                                    {
+                                        objDefaultSensor = objSensorGear;
+                                        break;
+                                    }
                                 }
-                            }
 
-                            // Add any Vehicle Weapons.
-                            if (objXmlVehicle["weapons"] != null)
-                            {
-                                XmlDocument objXmlWeaponDocument = await CharacterObject
-                                    .LoadDataAsync("weapons.xml", token: token)
-                                    .ConfigureAwait(false);
-
-                                foreach (XmlNode objXmlWeapon in objXmlVehicle.SelectNodes("weapons/weapon"))
+                                // Add any Vehicle Mods.
+                                foreach (XmlNode objXmlMod in objXmlVehicle.SelectNodes("mods/mod"))
                                 {
-                                    List<Weapon> lstSubWeapons = new List<Weapon>(1);
-                                    XmlNode objXmlWeaponNode = objXmlWeaponDocument.TryGetNodeByNameOrId(
-                                        "/chummer/weapons/weapon", objXmlWeapon["name"].InnerText,
-                                        await CharacterObjectSettings.BookXPathAsync(token: token)
-                                            .ConfigureAwait(false));
-                                    if (objXmlWeaponNode == null)
+                                    XmlNode objXmlModNode = objXmlVehicleDocument.TryGetNodeByNameOrId(
+                                        "/chummer/mods/mod", objXmlMod["name"].InnerText,
+                                        await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
+                                    if (objXmlModNode == null)
                                         continue;
-                                    Weapon objWeapon = new Weapon(CharacterObject);
+                                    int intRating = 0;
+                                    objXmlMod.TryGetInt32FieldQuickly("rating", ref intRating);
+                                    int intMarkup = 0;
+                                    objXmlMod.TryGetInt32FieldQuickly("markup", ref intMarkup);
+                                    VehicleMod objMod = new VehicleMod(CharacterObject);
                                     try
                                     {
-                                        await objWeapon.SetParentVehicleAsync(objVehicle, token).ConfigureAwait(false);
-                                        await objWeapon
-                                            .CreateAsync(objXmlWeaponNode, lstSubWeapons, blnCreateChildren, token: token)
+                                        await objMod.CreateAsync(objXmlModNode, intRating, objVehicle, intMarkup, token: token)
                                             .ConfigureAwait(false);
+                                        await objVehicle.Mods.AddAsync(objMod, token).ConfigureAwait(false);
 
-                                        // Find the first Weapon Mount in the Vehicle.
-                                        await objVehicle.Mods.ForEachWithBreakAsync(async objMod =>
-                                        {
-                                            if (objMod.Name.Contains("Weapon Mount")
-                                                || !string.IsNullOrEmpty(objMod.WeaponMountCategories)
-                                                && objMod.WeaponMountCategories.Contains(objWeapon.Category))
-                                            {
-                                                await objMod.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-                                                foreach (Weapon objSubWeapon in lstSubWeapons)
-                                                    await objMod.Weapons.AddAsync(objSubWeapon, token)
-                                                        .ConfigureAwait(false);
-                                                return false;
-                                            }
-
-                                            return true;
-                                        }, token).ConfigureAwait(false);
-
-                                        // Look for Weapon Accessories.
-                                        foreach (XmlNode objXmlAccessory in objXmlWeapon.SelectNodes(
-                                                     "accessories/accessory"))
-                                        {
-                                            XmlNode objXmlAccessoryNode =
-                                                objXmlWeaponDocument.TryGetNodeByNameOrId(
-                                                    "/chummer/accessories/accessory", objXmlAccessory["name"].InnerText,
-                                                    await CharacterObjectSettings.BookXPathAsync(token: token)
-                                                        .ConfigureAwait(false));
-                                            if (objXmlAccessoryNode == null)
-                                                continue;
-                                            string strMount = objXmlAccessory["mount"]?.InnerText ?? "Internal";
-                                            string strExtraMount = objXmlAccessory["extramount"]?.InnerText ?? "None";
-                                            WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
-                                            try
-                                            {
-                                                await objMod.CreateAsync(objXmlAccessoryNode,
-                                                    new Tuple<string, string>(strMount, strExtraMount),
-                                                    0, false, blnCreateChildren, token: token).ConfigureAwait(false);
-                                                await objMod.SetParentAsync(objWeapon, token).ConfigureAwait(false);
-
-                                                await objWeapon.WeaponAccessories.AddAsync(objMod, token).ConfigureAwait(false);
-                                            }
-                                            catch
-                                            {
-                                                await objMod.DeleteWeaponAccessoryAsync(token: CancellationToken.None).ConfigureAwait(false);
-                                                throw;
-                                            }
-                                        }
-
-                                        // Look for an Underbarrel Weapon.
-                                        XmlElement xmlUnderbarrelNode = objXmlWeapon["underbarrel"];
-                                        if (xmlUnderbarrelNode != null)
-                                        {
-                                            XmlNode objXmlUnderbarrelNode =
-                                                objXmlWeaponDocument.TryGetNodeByNameOrId(
-                                                    "/chummer/weapons/weapon", objXmlWeapon["underbarrel"].InnerText,
-                                                    await CharacterObjectSettings.BookXPathAsync(token: token)
-                                                        .ConfigureAwait(false));
-                                            if (objXmlUnderbarrelNode != null)
-                                            {
-                                                List<Weapon> lstLoopWeapons = new List<Weapon>(1);
-                                                Weapon objUnderbarrelWeapon = new Weapon(CharacterObject);
-                                                try
-                                                {
-                                                    await objUnderbarrelWeapon.CreateAsync(objXmlUnderbarrelNode,
-                                                        lstLoopWeapons,
-                                                        blnCreateChildren, token: token).ConfigureAwait(false);
-                                                    await objWeapon.UnderbarrelWeapons.AddAsync(objUnderbarrelWeapon, token)
-                                                        .ConfigureAwait(false);
-                                                    if (!objWeapon.AllowAccessory)
-                                                        objUnderbarrelWeapon.AllowAccessory = false;
-
-                                                    foreach (Weapon objLoopWeapon in lstLoopWeapons)
-                                                    {
-                                                        if (!objWeapon.AllowAccessory)
-                                                            objLoopWeapon.AllowAccessory = false;
-                                                        await objWeapon.UnderbarrelWeapons.AddAsync(objLoopWeapon, token)
-                                                            .ConfigureAwait(false);
-                                                    }
-
-                                                    foreach (XmlNode objXmlAccessory in xmlUnderbarrelNode.SelectNodes(
-                                                                 "accessories/accessory"))
-                                                    {
-                                                        XmlNode objXmlAccessoryNode = objXmlWeaponDocument.TryGetNodeByNameOrId(
-                                                            "/chummer/accessories/accessory", objXmlAccessory["name"].InnerText,
-                                                            await CharacterObjectSettings.BookXPathAsync(token: token)
-                                                                .ConfigureAwait(false));
-                                                        if (objXmlAccessoryNode == null)
-                                                            continue;
-                                                        string strMount = objXmlAccessory["mount"]?.InnerText ?? "Internal";
-                                                        string strExtraMount =
-                                                            objXmlAccessory["extramount"]?.InnerText ?? "None";
-                                                        WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
-                                                        try
-                                                        {
-                                                            await objMod.CreateAsync(objXmlAccessoryNode,
-                                                                new Tuple<string, string>(strMount, strExtraMount), 0, false,
-                                                                blnCreateChildren, token: token).ConfigureAwait(false);
-                                                            await objMod.SetParentAsync(objWeapon, token).ConfigureAwait(false);
-
-                                                            await objUnderbarrelWeapon.WeaponAccessories.AddAsync(objMod, token)
-                                                                .ConfigureAwait(false);
-
-                                                            foreach (XmlNode objXmlGear in
-                                                                     objXmlAccessory.SelectNodes("gears/gear"))
-                                                                await AddPACKSGearAsync(objXmlGearDocument, objXmlGear, objMod,
-                                                                    blnCreateChildren, token).ConfigureAwait(false);
-                                                        }
-                                                        catch
-                                                        {
-                                                            await objMod.DeleteWeaponAccessoryAsync(token: CancellationToken.None).ConfigureAwait(false);
-                                                            throw;
-                                                        }
-                                                    }
-                                                }
-                                                catch
-                                                {
-                                                    foreach (Weapon objLoopWeapon in lstLoopWeapons)
-                                                        await objLoopWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
-                                                    await objUnderbarrelWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
-                                                    throw;
-                                                }
-                                            }
-                                        }
+                                        foreach (XmlNode objXmlCyberware in objXmlMod.SelectNodes("cyberwares/cyberware"))
+                                            await AddPACKSCyberwareAsync(objXmlCyberwareDocument, objXmlBiowareDocument,
+                                                objXmlGearDocument,
+                                                objXmlCyberware, objMod, blnCreateChildren, token).ConfigureAwait(false);
                                     }
                                     catch
                                     {
-                                        foreach (Weapon objLoopWeapon in lstSubWeapons)
-                                            await objLoopWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
-                                        await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                        await objMod.DeleteVehicleModAsync(token: CancellationToken.None).ConfigureAwait(false);
                                         throw;
                                     }
                                 }
-                            }
 
-                            Utils.DoEventsSafe();
+                                // Add any Vehicle Gear.
+                                foreach (XmlNode objXmlGear in objXmlVehicle.SelectNodes("gears/gear"))
+                                {
+                                    Gear objGear =
+                                        await AddPACKSGearAsync(objXmlGearDocument, objXmlGear, objVehicle,
+                                            blnCreateChildren,
+                                            token).ConfigureAwait(false);
+                                    // If this is a Sensor, it will replace the Vehicle's base sensor, so remove it.
+                                    if (objGear?.Category == "Sensors" && objGear.Cost == "0" &&
+                                        await objGear.GetRatingAsync(token).ConfigureAwait(false) == 0)
+                                    {
+                                        await objVehicle.GearChildren.RemoveAsync(objDefaultSensor, token)
+                                            .ConfigureAwait(false);
+                                    }
+                                }
+
+                                // Add any Vehicle Weapons.
+                                if (objXmlVehicle["weapons"] != null)
+                                {
+                                    XmlDocument objXmlWeaponDocument = await CharacterObject
+                                        .LoadDataAsync("weapons.xml", token: token)
+                                        .ConfigureAwait(false);
+
+                                    foreach (XmlNode objXmlWeapon in objXmlVehicle.SelectNodes("weapons/weapon"))
+                                    {
+                                        List<Weapon> lstSubWeapons = new List<Weapon>(1);
+                                        XmlNode objXmlWeaponNode = objXmlWeaponDocument.TryGetNodeByNameOrId(
+                                            "/chummer/weapons/weapon", objXmlWeapon["name"].InnerText,
+                                            await CharacterObjectSettings.BookXPathAsync(token: token)
+                                                .ConfigureAwait(false));
+                                        if (objXmlWeaponNode == null)
+                                            continue;
+                                        Weapon objWeapon = new Weapon(CharacterObject);
+                                        try
+                                        {
+                                            await objWeapon.SetParentVehicleAsync(objVehicle, token).ConfigureAwait(false);
+                                            await objWeapon
+                                                .CreateAsync(objXmlWeaponNode, lstSubWeapons, blnCreateChildren, token: token)
+                                                .ConfigureAwait(false);
+
+                                            // Find the first Weapon Mount in the Vehicle.
+                                            await objVehicle.Mods.ForEachWithBreakAsync(async objMod =>
+                                            {
+                                                if (objMod.Name.Contains("Weapon Mount")
+                                                    || !string.IsNullOrEmpty(objMod.WeaponMountCategories)
+                                                    && objMod.WeaponMountCategories.Contains(objWeapon.Category))
+                                                {
+                                                    await objMod.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                                                    foreach (Weapon objSubWeapon in lstSubWeapons)
+                                                        await objMod.Weapons.AddAsync(objSubWeapon, token)
+                                                            .ConfigureAwait(false);
+                                                    return false;
+                                                }
+
+                                                return true;
+                                            }, token).ConfigureAwait(false);
+
+                                            // Look for Weapon Accessories.
+                                            foreach (XmlNode objXmlAccessory in objXmlWeapon.SelectNodes(
+                                                         "accessories/accessory"))
+                                            {
+                                                XmlNode objXmlAccessoryNode =
+                                                    objXmlWeaponDocument.TryGetNodeByNameOrId(
+                                                        "/chummer/accessories/accessory", objXmlAccessory["name"].InnerText,
+                                                        await CharacterObjectSettings.BookXPathAsync(token: token)
+                                                            .ConfigureAwait(false));
+                                                if (objXmlAccessoryNode == null)
+                                                    continue;
+                                                string strMount = objXmlAccessory["mount"]?.InnerText ?? "Internal";
+                                                string strExtraMount = objXmlAccessory["extramount"]?.InnerText ?? "None";
+                                                WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
+                                                try
+                                                {
+                                                    await objMod.CreateAsync(objXmlAccessoryNode,
+                                                        new Tuple<string, string>(strMount, strExtraMount),
+                                                        0, false, blnCreateChildren, token: token).ConfigureAwait(false);
+                                                    await objMod.SetParentAsync(objWeapon, token).ConfigureAwait(false);
+
+                                                    await objWeapon.WeaponAccessories.AddAsync(objMod, token).ConfigureAwait(false);
+                                                }
+                                                catch
+                                                {
+                                                    await objMod.DeleteWeaponAccessoryAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                                    throw;
+                                                }
+                                            }
+
+                                            // Look for an Underbarrel Weapon.
+                                            XmlElement xmlUnderbarrelNode = objXmlWeapon["underbarrel"];
+                                            if (xmlUnderbarrelNode != null)
+                                            {
+                                                XmlNode objXmlUnderbarrelNode =
+                                                    objXmlWeaponDocument.TryGetNodeByNameOrId(
+                                                        "/chummer/weapons/weapon", objXmlWeapon["underbarrel"].InnerText,
+                                                        await CharacterObjectSettings.BookXPathAsync(token: token)
+                                                            .ConfigureAwait(false));
+                                                if (objXmlUnderbarrelNode != null)
+                                                {
+                                                    List<Weapon> lstLoopWeapons = new List<Weapon>(1);
+                                                    Weapon objUnderbarrelWeapon = new Weapon(CharacterObject);
+                                                    try
+                                                    {
+                                                        await objUnderbarrelWeapon.CreateAsync(objXmlUnderbarrelNode,
+                                                            lstLoopWeapons,
+                                                            blnCreateChildren, token: token).ConfigureAwait(false);
+                                                        await objWeapon.UnderbarrelWeapons.AddAsync(objUnderbarrelWeapon, token)
+                                                            .ConfigureAwait(false);
+                                                        if (!objWeapon.AllowAccessory)
+                                                            objUnderbarrelWeapon.AllowAccessory = false;
+
+                                                        foreach (Weapon objLoopWeapon in lstLoopWeapons)
+                                                        {
+                                                            if (!objWeapon.AllowAccessory)
+                                                                objLoopWeapon.AllowAccessory = false;
+                                                            await objWeapon.UnderbarrelWeapons.AddAsync(objLoopWeapon, token)
+                                                                .ConfigureAwait(false);
+                                                        }
+
+                                                        foreach (XmlNode objXmlAccessory in xmlUnderbarrelNode.SelectNodes(
+                                                                     "accessories/accessory"))
+                                                        {
+                                                            XmlNode objXmlAccessoryNode = objXmlWeaponDocument.TryGetNodeByNameOrId(
+                                                                "/chummer/accessories/accessory", objXmlAccessory["name"].InnerText,
+                                                                await CharacterObjectSettings.BookXPathAsync(token: token)
+                                                                    .ConfigureAwait(false));
+                                                            if (objXmlAccessoryNode == null)
+                                                                continue;
+                                                            string strMount = objXmlAccessory["mount"]?.InnerText ?? "Internal";
+                                                            string strExtraMount =
+                                                                objXmlAccessory["extramount"]?.InnerText ?? "None";
+                                                            WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
+                                                            try
+                                                            {
+                                                                await objMod.CreateAsync(objXmlAccessoryNode,
+                                                                    new Tuple<string, string>(strMount, strExtraMount), 0, false,
+                                                                    blnCreateChildren, token: token).ConfigureAwait(false);
+                                                                await objMod.SetParentAsync(objWeapon, token).ConfigureAwait(false);
+
+                                                                await objUnderbarrelWeapon.WeaponAccessories.AddAsync(objMod, token)
+                                                                    .ConfigureAwait(false);
+
+                                                                foreach (XmlNode objXmlGear in
+                                                                         objXmlAccessory.SelectNodes("gears/gear"))
+                                                                    await AddPACKSGearAsync(objXmlGearDocument, objXmlGear, objMod,
+                                                                        blnCreateChildren, token).ConfigureAwait(false);
+                                                            }
+                                                            catch
+                                                            {
+                                                                await objMod.DeleteWeaponAccessoryAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                                                throw;
+                                                            }
+                                                        }
+                                                    }
+                                                    catch
+                                                    {
+                                                        foreach (Weapon objLoopWeapon in lstLoopWeapons)
+                                                            await objLoopWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                                        await objUnderbarrelWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                                        throw;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        catch
+                                        {
+                                            foreach (Weapon objLoopWeapon in lstSubWeapons)
+                                                await objLoopWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                            await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                            throw;
+                                        }
+                                    }
+                                }
+
+                                Utils.DoEventsSafe();
+                            }
+                            catch
+                            {
+                                await objVehicle.DeleteVehicleAsync(CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     }
                     finally
