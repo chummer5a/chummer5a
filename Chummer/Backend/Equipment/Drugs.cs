@@ -474,6 +474,11 @@ namespace Chummer.Backend.Equipment
             set => _strName = _objCharacter.ReverseTranslateExtra(value);
         }
 
+        public async Task SetNameAsync(string value, CancellationToken token = default)
+        {
+            _strName = await _objCharacter.ReverseTranslateExtraAsync(value, token: token).ConfigureAwait(false);
+        }
+
         /// <summary>
         /// Translated Category.
         /// </summary>

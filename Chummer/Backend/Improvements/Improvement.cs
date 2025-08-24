@@ -31,6 +31,7 @@ using Chummer.Backend.Enums;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Uniques;
 using NLog;
+using static Chummer.Backend.Skills.SkillsSection;
 
 namespace Chummer
 {
@@ -2180,6 +2181,7 @@ namespace Chummer
                     break;
 
                 case ImprovementType.SpecialSkills:
+                    // We directly modify the ForceDisabled property for these improvements, so we don't need to return anything
                     break;
 
                 case ImprovementType.SkillAttribute:
@@ -4722,6 +4724,7 @@ namespace Chummer
                     break;
 
                 case ImprovementType.SpecialSkills:
+                    // We directly modify the ForceDisabled property for these improvements, so we don't need to return anything
                     break;
 
                 case ImprovementType.SkillAttribute:

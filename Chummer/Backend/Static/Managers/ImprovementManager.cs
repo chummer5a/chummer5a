@@ -3338,10 +3338,19 @@ namespace Chummer
                             SkillsSection.FilterOption eFilterOption
                                 = (SkillsSection.FilterOption) Enum.Parse(
                                     typeof(SkillsSection.FilterOption), strImprovedName);
-                            foreach (Skill objSkill in await objCharacter.SkillsSection.GetActiveSkillsFromDataAsync(
-                                         eFilterOption, false, objImprovement.Target, token).ConfigureAwait(false))
+                            if (blnSync)
                             {
-                                objSkill.ForceDisabled = false;
+                                foreach (Skill objSkill in objCharacter.SkillsSection.FetchExistingSkillsByFilter(eFilterOption, objImprovement.Target, true, token))
+                                {
+                                    objSkill.ForceDisabled = false;
+                                }
+                            }
+                            else
+                            {
+                                foreach (Skill objSkill in await objCharacter.SkillsSection.FetchExistingSkillsByFilterAsync(eFilterOption, objImprovement.Target, token).ConfigureAwait(false))
+                                {
+                                    await objSkill.SetForceDisabledAsync(false, token).ConfigureAwait(false);
+                                }
                             }
                         }
                             break;
@@ -4027,33 +4036,46 @@ namespace Chummer
                                 SkillsSection.FilterOption eFilterOption
                                     = (SkillsSection.FilterOption) Enum.Parse(
                                         typeof(SkillsSection.FilterOption), strImprovedName);
-                                HashSet<Skill> setSkillsToDisable
-                                    = new HashSet<Skill>(await objCharacter.SkillsSection.GetActiveSkillsFromDataAsync(
-                                                                               eFilterOption, false,
-                                                                               objImprovement.Target, token)
-                                                                           .ConfigureAwait(false));
-                                foreach (Improvement objLoopImprovement in await
+                                HashSet<Skill> setSkillsToKeepEnabled = new HashSet<Skill>();
+                                if (blnSync)
+                                {
+                                    foreach (Improvement objLoopImprovement in
+                                             GetCachedImprovementListForValueOf(
+                                                     objCharacter, Improvement.ImprovementType.SpecialSkills,
+                                                     token: token))
+                                    {
+                                        if (objLoopImprovement == objImprovement)
+                                            continue;
+                                        eFilterOption
+                                            = (SkillsSection.FilterOption)Enum.Parse(
+                                                typeof(SkillsSection.FilterOption), objLoopImprovement.ImprovedName);
+                                        setSkillsToKeepEnabled.AddRange(objCharacter.SkillsSection.FetchExistingSkillsByFilter(eFilterOption, objLoopImprovement.Target, false, token));
+                                    }
+                                    foreach (Skill objSkill in objCharacter.SkillsSection.FetchExistingSkillsByFilter(eFilterOption, objImprovement.Target, true, token))
+                                    {
+                                        objSkill.ForceDisabled = true;
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (Improvement objLoopImprovement in await
                                              GetCachedImprovementListForValueOfAsync(
                                                      objCharacter, Improvement.ImprovementType.SpecialSkills,
                                                      token: token)
                                                  .ConfigureAwait(false))
-                                {
-                                    if (objLoopImprovement == objImprovement)
-                                        continue;
-                                    eFilterOption
-                                        = (SkillsSection.FilterOption) Enum.Parse(
-                                            typeof(SkillsSection.FilterOption), objLoopImprovement.ImprovedName);
-                                    setSkillsToDisable.ExceptWith(
-                                        await objCharacter.SkillsSection.GetActiveSkillsFromDataAsync(
-                                                              eFilterOption, false, objLoopImprovement.Target, token)
-                                                          .ConfigureAwait(false));
-                                    if (setSkillsToDisable.Count == 0)
-                                        return;
-                                }
-
-                                foreach (Skill objSkill in setSkillsToDisable)
-                                {
-                                    objSkill.ForceDisabled = true;
+                                    {
+                                        if (objLoopImprovement == objImprovement)
+                                            continue;
+                                        eFilterOption
+                                            = (SkillsSection.FilterOption)Enum.Parse(
+                                                typeof(SkillsSection.FilterOption), objLoopImprovement.ImprovedName);
+                                        setSkillsToKeepEnabled.AddRange(await objCharacter.SkillsSection.FetchExistingSkillsByFilterAsync(eFilterOption, objLoopImprovement.Target, token).ConfigureAwait(false));
+                                    }
+                                    foreach (Skill objSkill in await objCharacter.SkillsSection.FetchExistingSkillsByFilterAsync(eFilterOption, objImprovement.Target, token).ConfigureAwait(false))
+                                    {
+                                        if (!setSkillsToKeepEnabled.Contains(objSkill))
+                                            await objSkill.SetForceDisabledAsync(true, token).ConfigureAwait(false);
+                                    }
                                 }
                             }
 

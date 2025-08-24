@@ -2263,6 +2263,25 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// The Contact's type, either Contact or Enemy.
+        /// </summary>
+        public async Task SetEntityTypeAsync(ContactType value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (InterlockedExtensions.Exchange(ref _eContactType, value) != value)
+                    await OnPropertyChangedAsync(nameof(EntityType), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public bool IsEnemy => EntityType == ContactType.Enemy;
 
         public async Task<bool> GetIsEnemyAsync(CancellationToken token = default)

@@ -133,9 +133,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             Drug objNewDrug = new Drug(_objCharacter)
             {
-                Name = await txtDrugName.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false),
                 Category = "Custom Drug"
             };
+            await objNewDrug.SetNameAsync(await txtDrugName.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false), token).ConfigureAwait(false);
             if (_objCharacter != null)
             {
                 string strSelectedGrade = cboGrade != null
@@ -306,7 +306,7 @@ namespace Chummer
 
         private async void txtDrugName_TextChanged(object sender, EventArgs e)
         {
-            _objDrug.Name = await txtDrugName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            await _objDrug.SetNameAsync(await txtDrugName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false)).ConfigureAwait(false);
             string strDescription = await _objDrug.GenerateDescriptionAsync(0).ConfigureAwait(false);
             await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
         }

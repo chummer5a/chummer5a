@@ -682,31 +682,39 @@ namespace Chummer
                 {
                     bool blnAllowUpgrade = !bonusNode.InnerXml.Contains("disableupgrades");
                     KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(_objCharacter, strSelectedSkill, blnAllowUpgrade);
-                    _objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
-                    // We've found the selected Skill.
-                    if (!string.IsNullOrEmpty(strVal))
+                    try
                     {
-                        CreateImprovement(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.Skill,
-                            _strUnique,
-                            ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1, 0, 0, 0, 0, string.Empty,
-                            blnAddToRating);
-                    }
+                        _objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
+                        // We've found the selected Skill.
+                        if (!string.IsNullOrEmpty(strVal))
+                        {
+                            CreateImprovement(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
+                                Improvement.ImprovementType.Skill,
+                                _strUnique,
+                                ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1, 0, 0, 0, 0, string.Empty,
+                                blnAddToRating);
+                        }
 
-                    if (blnDisableSpec)
-                    {
-                        CreateImprovement(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.DisableSpecializationEffects,
-                            _strUnique);
-                    }
+                        if (blnDisableSpec)
+                        {
+                            CreateImprovement(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
+                                Improvement.ImprovementType.DisableSpecializationEffects,
+                                _strUnique);
+                        }
 
-                    if (!string.IsNullOrEmpty(strMax))
+                        if (!string.IsNullOrEmpty(strMax))
+                        {
+                            CreateImprovement(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
+                                Improvement.ImprovementType.Skill,
+                                _strUnique,
+                                0, 1, 0, ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
+                                blnAddToRating);
+                        }
+                    }
+                    catch
                     {
-                        CreateImprovement(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.Skill,
-                            _strUnique,
-                            0, 1, 0, ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
-                            blnAddToRating);
+                        objKnowledgeSkill.Remove();
+                        throw;
                     }
                 }
             }
@@ -2126,28 +2134,35 @@ namespace Chummer
                 intConnection = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
             bool group = bonusNode["group"] != null;
             bool canwrite = bonusNode["canwrite"] != null;
-            Contact contact = new Contact(_objCharacter, !canwrite)
+            Contact contact = new Contact(_objCharacter, !canwrite);
+            try
             {
-                IsGroup = group,
-                Loyalty = intLoyalty,
-                Connection = intConnection
-            };
-            _objCharacter.Contacts.Add(contact);
+                contact.IsGroup = group;
+                contact.Loyalty = intLoyalty;
+                contact.Connection = intConnection;
+                _objCharacter.Contacts.Add(contact);
 
-            CreateImprovement(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.AddContact, contact.UniqueId);
+                CreateImprovement(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.AddContact, contact.UniqueId);
 
-            if (bonusNode.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
-            {
-                decimal decForcedLoyalty = ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating);
-                CreateImprovement(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForcedLoyalty, _strUnique, decForcedLoyalty);
+                if (bonusNode.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
+                {
+                    decimal decForcedLoyalty = ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating);
+                    CreateImprovement(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForcedLoyalty, _strUnique, decForcedLoyalty);
+                }
+                if (bonusNode["free"] != null)
+                {
+                    CreateImprovement(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactMakeFree, _strUnique);
+                }
+                if (bonusNode["forcegroup"] != null)
+                {
+                    CreateImprovement(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForceGroup, _strUnique);
+                }
             }
-            if (bonusNode["free"] != null)
+            catch
             {
-                CreateImprovement(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactMakeFree, _strUnique);
-            }
-            if (bonusNode["forcegroup"] != null)
-            {
-                CreateImprovement(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForceGroup, _strUnique);
+                _objCharacter.Contacts.Remove(contact);
+                contact.Dispose();
+                throw;
             }
         }
 
@@ -2365,14 +2380,21 @@ namespace Chummer
             if (bonusNode["addknowledge"] != null)
             {
                 KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(_objCharacter, strSelectedValue, false);
-
-                _objCharacter.SkillsSection.KnowsoftSkills.Add(objKnowledgeSkill);
-                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0)
+                try
                 {
-                    _objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
-                }
+                    _objCharacter.SkillsSection.KnowsoftSkills.Add(objKnowledgeSkill);
+                    if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0)
+                    {
+                        _objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
+                    }
 
-                CreateImprovement(objKnowledgeSkill.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillsoft, _strUnique, ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
+                    CreateImprovement(objKnowledgeSkill.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillsoft, _strUnique, ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
+                }
+                catch
+                {
+                    objKnowledgeSkill.Remove();
+                    throw;
+                }
             }
         }
 
@@ -2389,14 +2411,21 @@ namespace Chummer
             string strVal = bonusNode["val"]?.InnerText;
 
             KnowledgeSkill objSkill = new KnowledgeSkill(_objCharacter, SelectedValue, false);
-
-            _objCharacter.SkillsSection.KnowsoftSkills.Add(objSkill);
-            if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0)
+            try
             {
-                _objCharacter.SkillsSection.KnowledgeSkills.Add(objSkill);
-            }
+                _objCharacter.SkillsSection.KnowsoftSkills.Add(objSkill);
+                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0)
+                {
+                    _objCharacter.SkillsSection.KnowledgeSkills.Add(objSkill);
+                }
 
-            CreateImprovement(objSkill.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillsoft, _strUnique, ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
+                CreateImprovement(objSkill.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillsoft, _strUnique, ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
+            }
+            catch
+            {
+                objSkill.Remove();
+                throw;
+            }
         }
 
         public void knowledgeskilllevel(XmlNode bonusNode)

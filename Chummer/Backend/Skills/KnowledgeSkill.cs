@@ -169,7 +169,7 @@ namespace Chummer.Backend.Skills
             }
             catch
             {
-                await objReturn.DisposeAsync().ConfigureAwait(false);
+                await objReturn.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
                 throw;
             }
 

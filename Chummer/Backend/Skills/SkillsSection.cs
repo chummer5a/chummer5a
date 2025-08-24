@@ -588,7 +588,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal IEnumerable<Skill> GetActiveSkillsFromData(FilterOption eFilterOption,
+        private IEnumerable<Tuple<Skill, bool>> GetActiveSkillsFromData(FilterOption eFilterOption,
             bool blnDeleteSkillsFromBackupIfFound = false, string strName = "", CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -616,7 +616,7 @@ namespace Chummer.Backend.Skills
                                     && _dicSkillBackups.TryRemove(guiSkillId, out Skill objSkill)
                                     && objSkill != null)
                                 {
-                                    yield return objSkill;
+                                    yield return new Tuple<Skill, bool>(objSkill, true);
                                 }
                                 else
                                 {
@@ -628,7 +628,7 @@ namespace Chummer.Backend.Skills
                                                 + strCategoryCleaned + "]/@type", token)
                                             ?.Value
                                         != "active";
-                                    yield return Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill);
+                                    yield return new Tuple<Skill, bool>(Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill), true);
                                 }
                             }
                             else if (!_dicSkillBackups.IsEmpty
@@ -636,7 +636,7 @@ namespace Chummer.Backend.Skills
                                      && _dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill)
                                      && objSkill != null)
                             {
-                                yield return objSkill;
+                                yield return new Tuple<Skill, bool>(objSkill, false);
                             }
                             else
                             {
@@ -648,7 +648,7 @@ namespace Chummer.Backend.Skills
                                             + strCategoryCleaned + "]/@type", token)
                                         ?.Value
                                     != "active";
-                                yield return Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill);
+                                yield return new Tuple<Skill, bool>(Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill), true);
                             }
                         }
                     }
@@ -656,9 +656,9 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal async Task<List<Skill>> GetActiveSkillsFromDataAsync(FilterOption eFilterOption, bool blnDeleteSkillsFromBackupIfFound = false, string strName = "", CancellationToken token = default)
+        private async Task<List<Tuple<Skill, bool>>> GetActiveSkillsFromDataAsync(FilterOption eFilterOption, bool blnDeleteSkillsFromBackupIfFound = false, string strName = "", CancellationToken token = default)
         {
-            List<Skill> lstReturn;
+            List<Tuple<Skill, bool>> lstReturn;
             XmlDocument xmlSkillsDocument =
                 await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
@@ -674,18 +674,40 @@ namespace Chummer.Backend.Skills
                                         + ')'
                                         + SkillFilter(eFilterOption, strName) + ']'))
                 {
-                    lstReturn = new List<Skill>(xmlSkillList?.Count ?? 0);
+                    lstReturn = new List<Tuple<Skill, bool>>(xmlSkillList?.Count ?? 0);
                     if (xmlSkillList?.Count > 0)
                     {
-                        foreach (XmlNode xmlSkill in xmlSkillList)
+                        try
                         {
-                            if (blnDeleteSkillsFromBackupIfFound)
+                            foreach (XmlNode xmlSkill in xmlSkillList)
                             {
-                                if (!_dicSkillBackups.IsEmpty
-                                    && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId) &&
-                                    _dicSkillBackups.TryRemove(guiSkillId, out Skill objSkill) && objSkill != null)
+                                if (blnDeleteSkillsFromBackupIfFound)
                                 {
-                                    lstReturn.Add(objSkill);
+                                    if (!_dicSkillBackups.IsEmpty
+                                        && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId) &&
+                                        _dicSkillBackups.TryRemove(guiSkillId, out Skill objSkill) && objSkill != null)
+                                    {
+                                        lstReturn.Add(new Tuple<Skill, bool>(objSkill, true));
+                                    }
+                                    else
+                                    {
+                                        bool blnIsKnowledgeSkill
+                                            = xmlSkillsDocument
+                                                  .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                      "/chummer/categories/category[. = "
+                                                      + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type", token)
+                                                  ?.Value
+                                              != "active";
+                                        lstReturn.Add(new Tuple<Skill, bool>(await Skill
+                                            .FromDataAsync(xmlSkill, _objCharacter, blnIsKnowledgeSkill, token)
+                                            .ConfigureAwait(false), true));
+                                    }
+                                }
+                                else if (!_dicSkillBackups.IsEmpty
+                                         && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId) &&
+                                         _dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill) && objSkill != null)
+                                {
+                                    lstReturn.Add(new Tuple<Skill, bool>(objSkill, false));
                                 }
                                 else
                                 {
@@ -696,30 +718,20 @@ namespace Chummer.Backend.Skills
                                                   + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type", token)
                                               ?.Value
                                           != "active";
-                                    lstReturn.Add(await Skill
+                                    lstReturn.Add(new Tuple<Skill, bool>(await Skill
                                         .FromDataAsync(xmlSkill, _objCharacter, blnIsKnowledgeSkill, token)
-                                        .ConfigureAwait(false));
+                                        .ConfigureAwait(false), true));
                                 }
                             }
-                            else if (!_dicSkillBackups.IsEmpty
-                                     && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId) &&
-                                     _dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill) && objSkill != null)
+                        }
+                        catch
+                        {
+                            foreach (Tuple<Skill, bool> tupSkill in lstReturn)
                             {
-                                lstReturn.Add(objSkill);
+                                if (tupSkill.Item2)
+                                    await tupSkill.Item1.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
                             }
-                            else
-                            {
-                                bool blnIsKnowledgeSkill
-                                    = xmlSkillsDocument
-                                          .SelectSingleNodeAndCacheExpressionAsNavigator(
-                                              "/chummer/categories/category[. = "
-                                              + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type", token)
-                                          ?.Value
-                                      != "active";
-                                lstReturn.Add(await Skill
-                                    .FromDataAsync(xmlSkill, _objCharacter, blnIsKnowledgeSkill, token)
-                                    .ConfigureAwait(false));
-                            }
+                            throw;
                         }
                     }
                 }
@@ -738,25 +750,39 @@ namespace Chummer.Backend.Skills
             using (LockObject.EnterUpgradeableReadLock(token))
             {
                 token.ThrowIfCancellationRequested();
-                List<Skill> lstSkillsToAdd = GetActiveSkillsFromData(eFilterOption, true, strName, token).ToList();
-                using (LockObject.EnterWriteLock(token))
+                List<Tuple<Skill, bool>> lstSkillsToAdd = new List<Tuple<Skill, bool>>();
+                try
                 {
-                    token.ThrowIfCancellationRequested();
-                    foreach (Skill objSkill in lstSkillsToAdd)
+                    lstSkillsToAdd.AddRange(GetActiveSkillsFromData(eFilterOption, true, strName, token));
+                    using (LockObject.EnterWriteLock(token))
                     {
-                        Guid guidLoop = objSkill.SkillId;
-                        if (guidLoop != Guid.Empty && !objSkill.IsExoticSkill)
+                        token.ThrowIfCancellationRequested();
+                        foreach (Tuple<Skill, bool> tupSkill in lstSkillsToAdd)
                         {
-                            Skill objExistingSkill = Skills.Find(x => x.SkillId == guidLoop);
-                            if (objExistingSkill != null)
+                            Skill objSkill = tupSkill.Item1;
+                            Guid guidLoop = objSkill.SkillId;
+                            if (guidLoop != Guid.Empty && !objSkill.IsExoticSkill)
                             {
-                                MergeSkills(objExistingSkill, objSkill, token);
-                                continue;
+                                Skill objExistingSkill = Skills.Find(x => x.SkillId == guidLoop);
+                                if (objExistingSkill != null)
+                                {
+                                    MergeSkills(objExistingSkill, objSkill, token);
+                                    continue;
+                                }
                             }
-                        }
 
-                        Skills.AddWithSort(objSkill, CompareSkills, (x, y) => MergeSkills(x, y, token), token);
+                            Skills.AddWithSort(objSkill, CompareSkills, (x, y) => MergeSkills(x, y, token), token);
+                        }
                     }
+                }
+                catch
+                {
+                    foreach (Tuple<Skill, bool> tupSkill in lstSkillsToAdd)
+                    {
+                        if (tupSkill.Item2)
+                            tupSkill.Item1.Remove();
+                    }
+                    throw;
                 }
             }
         }
@@ -767,37 +793,50 @@ namespace Chummer.Backend.Skills
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
-                List<Skill> lstSkillsToAdd = await GetActiveSkillsFromDataAsync(eFilterOption, true, strName, token).ConfigureAwait(false);
-                token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                List<Tuple<Skill, bool>> lstSkillsToAdd = await GetActiveSkillsFromDataAsync(eFilterOption, true, strName, token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    foreach (Skill objSkill in lstSkillsToAdd)
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        Guid guidLoop = await objSkill.GetSkillIdAsync(token).ConfigureAwait(false);
-                        if (guidLoop != Guid.Empty && !objSkill.IsExoticSkill)
+                        token.ThrowIfCancellationRequested();
+                        foreach (Tuple<Skill, bool> tupSkill in lstSkillsToAdd)
                         {
-                            Skill objExistingSkill = await Skills
-                                .FirstOrDefaultAsync(
-                                    async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) == guidLoop, token)
-                                .ConfigureAwait(false);
-                            if (objExistingSkill != null)
+                            Skill objSkill = tupSkill.Item1;
+                            Guid guidLoop = await objSkill.GetSkillIdAsync(token).ConfigureAwait(false);
+                            if (guidLoop != Guid.Empty && !objSkill.IsExoticSkill)
                             {
-                                await MergeSkillsAsync(objExistingSkill, objSkill, token).ConfigureAwait(false);
-                                continue;
+                                Skill objExistingSkill = await Skills
+                                    .FirstOrDefaultAsync(
+                                        async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) == guidLoop, token)
+                                    .ConfigureAwait(false);
+                                if (objExistingSkill != null)
+                                {
+                                    await MergeSkillsAsync(objExistingSkill, objSkill, token).ConfigureAwait(false);
+                                    continue;
+                                }
                             }
-                        }
 
-                        await Skills
-                            .AddWithSortAsync(objSkill, (x, y) => CompareSkillsAsync(x, y, token),
-                                (x, y) => MergeSkillsAsync(x, y, token), token)
-                            .ConfigureAwait(false);
+                            await Skills
+                                .AddWithSortAsync(objSkill, (x, y) => CompareSkillsAsync(x, y, token),
+                                    (x, y) => MergeSkillsAsync(x, y, token), token)
+                                .ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
-                finally
+                catch
                 {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    foreach (Tuple<Skill, bool> tupSkill in lstSkillsToAdd)
+                    {
+                        if (tupSkill.Item2)
+                            await tupSkill.Item1.RemoveAsync(token).ConfigureAwait(false);
+                    }
+                    throw;
                 }
             }
             finally
@@ -820,9 +859,17 @@ namespace Chummer.Backend.Skills
                     ExoticSkill objExoticSkill = Skill.FromData(xmlSkillNode, _objCharacter, false) as ExoticSkill
                                                  ?? throw new ArgumentException(
                                                      "Attempted to add non-exotic skill as exotic skill");
-                    objExoticSkill.Specific = strSpecific;
-                    Skills.AddWithSort(objExoticSkill, CompareSkills, (x, y) => MergeSkills(x, y, token), token);
-                    return objExoticSkill;
+                    try
+                    {
+                        objExoticSkill.Specific = strSpecific;
+                        Skills.AddWithSort(objExoticSkill, CompareSkills, (x, y) => MergeSkills(x, y, token), token);
+                        return objExoticSkill;
+                    }
+                    catch
+                    {
+                        objExoticSkill.Remove();
+                        throw;
+                    }
                 }
             }
         }
@@ -846,11 +893,19 @@ namespace Chummer.Backend.Skills
                         await Skill.FromDataAsync(xmlSkillNode, _objCharacter, false, token)
                             .ConfigureAwait(false) as ExoticSkill
                         ?? throw new ArgumentException("Attempted to add non-exotic skill as exotic skill");
-                    await objExoticSkill.SetSpecificAsync(strSpecific, token).ConfigureAwait(false);
-                    await Skills.AddWithSortAsync(objExoticSkill, (x, y) => CompareSkillsAsync(x, y, token),
-                        (x, y) => MergeSkillsAsync(x, y, token),
-                        token: token).ConfigureAwait(false);
-                    return objExoticSkill;
+                    try
+                    {
+                        await objExoticSkill.SetSpecificAsync(strSpecific, token).ConfigureAwait(false);
+                        await Skills.AddWithSortAsync(objExoticSkill, (x, y) => CompareSkillsAsync(x, y, token),
+                            (x, y) => MergeSkillsAsync(x, y, token),
+                            token: token).ConfigureAwait(false);
+                        return objExoticSkill;
+                    }
+                    catch
+                    {
+                        await objExoticSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
                 }
                 finally
                 {
@@ -869,18 +924,20 @@ namespace Chummer.Backend.Skills
             using (LockObject.EnterUpgradeableReadLock(token))
             {
                 token.ThrowIfCancellationRequested();
-                HashSet<Skill> setSkillsToRemove
-                    = new HashSet<Skill>(GetActiveSkillsFromData(eSkillsToRemove, false, strName, token));
+                HashSet<Skill> setSkillsToRemove = new HashSet<Skill>(FetchExistingSkillsByFilter(eSkillsToRemove, strName, token: token));
                 // Check for duplicates (we'd normally want to make sure the improvement is enabled, but disabled SpecialSkills just force-disables a skill, so we need to keep those)
-                _objCharacter.Improvements.ForEach(objImprovement =>
+                foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
+                    token.ThrowIfCancellationRequested();
                     if (objImprovement.ImproveType != Improvement.ImprovementType.SpecialSkills)
-                        return;
+                        continue;
                     FilterOption eFilterOption
-                        = (FilterOption) Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
-                    setSkillsToRemove.ExceptWith(
-                        GetActiveSkillsFromData(eFilterOption, false, objImprovement.Target, token));
-                }, token);
+                        = (FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
+                    foreach (Skill objSkill in FetchExistingSkillsByFilter(eFilterOption, objImprovement.Target, token: token))
+                    {
+                        setSkillsToRemove.Remove(objSkill);
+                    }
+                }
 
                 if (setSkillsToRemove.Count == 0)
                     return;
@@ -897,7 +954,7 @@ namespace Chummer.Backend.Skills
                             != null)
                             return "Professional";
                         return xmlCategories.SelectSingleNodeAndCacheExpression("category[@type = \"knowledge\"]", token)?.Value
-                               ?? "Professional";
+                                ?? "Professional";
                     });
                 }
 
@@ -916,28 +973,34 @@ namespace Chummer.Backend.Skills
 
                         if (blnCreateKnowledge && objSkill.TotalBaseRating > 0)
                         {
-                            KnowledgeSkill objNewKnowledgeSkill = new KnowledgeSkill(_objCharacter)
+                            KnowledgeSkill objNewKnowledgeSkill = new KnowledgeSkill(_objCharacter);
+                            try
                             {
-                                Type = strKnowledgeSkillTypeToUse.Value,
-                                WritableName = objSkill.Name,
-                                Base = objSkill.Base,
-                                Karma = objSkill.Karma
-                            };
-                            objNewKnowledgeSkill.Specializations.AddRange(objSkill.Specializations);
-                            KnowledgeSkills.AddWithSort(objNewKnowledgeSkill, (x, y) =>
-                            {
-                                switch (string.CompareOrdinal(x.Type, y.Type))
+                                objNewKnowledgeSkill.Type = strKnowledgeSkillTypeToUse.Value;
+                                objNewKnowledgeSkill.WritableName = objSkill.Name;
+                                objNewKnowledgeSkill.Base = objSkill.Base;
+                                objNewKnowledgeSkill.Karma = objSkill.Karma;
+                                objNewKnowledgeSkill.Specializations.AddRange(objSkill.Specializations);
+                                KnowledgeSkills.AddWithSort(objNewKnowledgeSkill, (x, y) =>
                                 {
-                                    case 0:
-                                        return CompareSkills(x, y);
+                                    switch (string.CompareOrdinal(x.Type, y.Type))
+                                    {
+                                        case 0:
+                                            return CompareSkills(x, y);
 
-                                    case -1:
-                                        return -1;
+                                        case -1:
+                                            return -1;
 
-                                    default:
-                                        return 1;
-                                }
-                            }, (x, y) => MergeSkills(x, y, token), token: token);
+                                        default:
+                                            return 1;
+                                    }
+                                }, (x, y) => MergeSkills(x, y, token), token: token);
+                            }
+                            catch
+                            {
+                                objNewKnowledgeSkill.Remove();
+                                throw;
+                            }
                         }
                     }
 
@@ -965,20 +1028,18 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                HashSet<Skill> setSkillsToRemove
-                    = new HashSet<Skill>(await GetActiveSkillsFromDataAsync(eSkillsToRemove, false, strName, token)
-                        .ConfigureAwait(false));
+                HashSet<Skill> setSkillsToRemove = new HashSet<Skill>(await FetchExistingSkillsByFilterAsync(eSkillsToRemove, strName, token).ConfigureAwait(false));
                 // Check for duplicates (we'd normally want to make sure the improvement is enabled, but disabled SpecialSkills just force-disables a skill, so we need to keep those)
                 await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
                     async objImprovement =>
                     {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.SpecialSkills)
+                        if (objImprovement.ImproveType != Improvement.ImprovementType.SpecialSkills)
+                            return;
+                        FilterOption eFilterOption
+                            = (FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
+                        foreach (Skill objSkill in await FetchExistingSkillsByFilterAsync(eFilterOption, objImprovement.Target, token).ConfigureAwait(false))
                         {
-                            FilterOption eFilterOption
-                                = (FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
-                            setSkillsToRemove.ExceptWith(
-                                await GetActiveSkillsFromDataAsync(eFilterOption, false, objImprovement.Target, token)
-                                    .ConfigureAwait(false));
+                            setSkillsToRemove.Remove(objSkill);
                         }
                     }, token: token).ConfigureAwait(false);
 
@@ -997,8 +1058,8 @@ namespace Chummer.Backend.Skills
                                 "category[@type = \"knowledge\" and . = \"Professional\"]", token) != null)
                             return "Professional";
                         return xmlCategories
-                                   .SelectSingleNodeAndCacheExpression("category[@type = \"knowledge\"]", token)?.Value
-                               ?? "Professional";
+                                    .SelectSingleNodeAndCacheExpression("category[@type = \"knowledge\"]", token)?.Value
+                                ?? "Professional";
                     }, Utils.JoinableTaskFactory);
                 }
 
@@ -1021,37 +1082,45 @@ namespace Chummer.Backend.Skills
                             await objSkill.GetTotalBaseRatingAsync(token).ConfigureAwait(false) > 0)
                         {
                             KnowledgeSkill objNewKnowledgeSkill = new KnowledgeSkill(_objCharacter, false);
-                            await objNewKnowledgeSkill.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
-                            await objNewKnowledgeSkill
-                                .SetBaseAsync(await objSkill.GetBaseAsync(token).ConfigureAwait(false), token)
-                                .ConfigureAwait(false);
-                            await objNewKnowledgeSkill
-                                .SetKarmaAsync(await objSkill.GetKarmaAsync(token).ConfigureAwait(false), token)
-                                .ConfigureAwait(false);
-                            await objNewKnowledgeSkill.SetTypeAsync(
-                                    await strKnowledgeSkillTypeToUse.GetValueAsync(token).ConfigureAwait(false), token)
-                                .ConfigureAwait(false);
-                            await objNewKnowledgeSkill
-                                .SetWritableNameAsync(await objSkill.GetNameAsync(token).ConfigureAwait(false), token)
-                                .ConfigureAwait(false);
-                            await objNewKnowledgeSkill.Specializations
-                                .AddRangeAsync(objSkill.Specializations, token: token).ConfigureAwait(false);
-                            await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddWithSortAsync(
-                                objNewKnowledgeSkill, async (x, y) =>
-                                {
-                                    switch (string.CompareOrdinal(await x.GetTypeAsync(token).ConfigureAwait(false),
-                                                await y.GetTypeAsync(token).ConfigureAwait(false)))
+                            try
+                            {
+                                await objNewKnowledgeSkill.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
+                                await objNewKnowledgeSkill
+                                    .SetBaseAsync(await objSkill.GetBaseAsync(token).ConfigureAwait(false), token)
+                                    .ConfigureAwait(false);
+                                await objNewKnowledgeSkill
+                                    .SetKarmaAsync(await objSkill.GetKarmaAsync(token).ConfigureAwait(false), token)
+                                    .ConfigureAwait(false);
+                                await objNewKnowledgeSkill.SetTypeAsync(
+                                        await strKnowledgeSkillTypeToUse.GetValueAsync(token).ConfigureAwait(false), token)
+                                    .ConfigureAwait(false);
+                                await objNewKnowledgeSkill
+                                    .SetWritableNameAsync(await objSkill.GetNameAsync(token).ConfigureAwait(false), token)
+                                    .ConfigureAwait(false);
+                                await objNewKnowledgeSkill.Specializations
+                                    .AddRangeAsync(objSkill.Specializations, token: token).ConfigureAwait(false);
+                                await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddWithSortAsync(
+                                    objNewKnowledgeSkill, async (x, y) =>
                                     {
-                                        case 0:
-                                            return await CompareSkillsAsync(x, y, token).ConfigureAwait(false);
+                                        switch (string.CompareOrdinal(await x.GetTypeAsync(token).ConfigureAwait(false),
+                                                    await y.GetTypeAsync(token).ConfigureAwait(false)))
+                                        {
+                                            case 0:
+                                                return await CompareSkillsAsync(x, y, token).ConfigureAwait(false);
 
-                                        case -1:
-                                            return -1;
+                                            case -1:
+                                                return -1;
 
-                                        default:
-                                            return 1;
-                                    }
-                                }, (x, y) => MergeSkillsAsync(x, y, token), token: token).ConfigureAwait(false);
+                                            default:
+                                                return 1;
+                                        }
+                                    }, (x, y) => MergeSkillsAsync(x, y, token), token: token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objNewKnowledgeSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     }
 
@@ -1083,6 +1152,176 @@ namespace Chummer.Backend.Skills
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+        }
+
+        internal IEnumerable<Skill> FetchExistingSkillsByFilter(FilterOption eFilterOption, string strName = "", bool blnWithSideEffects = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = LockObject.EnterReadLock(token);
+            try
+            {
+                if (_dicSkillBackups.IsEmpty && Skills.Count == 0 && KnowledgeSkills.Count == 0)
+                    yield break;
+                if (blnWithSideEffects)
+                {
+                    objLocker.Dispose();
+                    objLocker = LockObject.EnterUpgradeableReadLock(token);
+                    if (_dicSkillBackups.IsEmpty && Skills.Count == 0 && KnowledgeSkills.Count == 0)
+                        yield break;
+                }
+                XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml", token: token);
+                using (XmlNodeList xmlSkillList = xmlSkillsDocument
+                            .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
+                                        _objCharacter.Settings.BookXPath(token: token)
+                                        + ')'
+                                        + SkillFilter(eFilterOption, strName) + ']'))
+                {
+                    if (xmlSkillList?.Count > 0)
+                    {
+                        foreach (XmlNode xmlSkill in xmlSkillList)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId))
+                            {
+                                if (_dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill) && objSkill != null)
+                                    yield return objSkill;
+                                else
+                                {
+                                    string strCategoryCleaned = xmlSkill["category"]?.InnerText.CleanXPath();
+                                    bool blnIsKnowledgeSkill
+                                        = string.IsNullOrEmpty(strCategoryCleaned) || xmlSkillsDocument
+                                            .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                "/chummer/categories/category[. = "
+                                                + strCategoryCleaned + "]/@type", token)
+                                            ?.Value
+                                        != "active";
+                                    if (blnIsKnowledgeSkill)
+                                    {
+                                        objSkill = KnowledgeSkills.Find(x => x.SkillId == guiSkillId);
+                                        if (objSkill != null)
+                                            yield return objSkill;
+                                        else
+                                        {
+                                            string strBackupName = string.Empty;
+                                            if (xmlSkill.TryGetStringFieldQuickly("name", ref strBackupName))
+                                            {
+                                                objSkill = KnowledgeSkills.Find(x => x.Name == strName);
+                                                if (objSkill != null)
+                                                    yield return objSkill;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        objSkill = Skills.Find(x => x.SkillId == guiSkillId);
+                                        if (objSkill != null)
+                                            yield return objSkill;
+                                        else
+                                        {
+                                            string strBackupName = string.Empty;
+                                            if (xmlSkill.TryGetStringFieldQuickly("name", ref strBackupName))
+                                            {
+                                                objSkill = Skills.Find(x => x.Name == strName);
+                                                if (objSkill != null)
+                                                    yield return objSkill;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                objLocker.Dispose();
+            }
+        }
+
+        internal async Task<List<Skill>> FetchExistingSkillsByFilterAsync(FilterOption eFilterOption, string strName = "", CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Skill> lstReturn = new List<Skill>();
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!_dicSkillBackups.IsEmpty)
+                {
+                    XmlDocument xmlSkillsDocument = await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
+                    using (XmlNodeList xmlSkillList = xmlSkillsDocument
+                               .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
+                                            await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)
+                                            + ')'
+                                            + SkillFilter(eFilterOption, strName) + ']'))
+                    {
+                        if (xmlSkillList?.Count > 0)
+                        {
+                            foreach (XmlNode xmlSkill in xmlSkillList)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId))
+                                {
+                                    if (_dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill) && objSkill != null)
+                                        lstReturn.Add(objSkill);
+                                    else
+                                    {
+                                        string strCategoryCleaned = xmlSkill["category"]?.InnerText.CleanXPath();
+                                        bool blnIsKnowledgeSkill
+                                            = string.IsNullOrEmpty(strCategoryCleaned) || xmlSkillsDocument
+                                                .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                    "/chummer/categories/category[. = "
+                                                    + strCategoryCleaned + "]/@type", token)
+                                                ?.Value
+                                            != "active";
+                                        if (blnIsKnowledgeSkill)
+                                        {
+                                            ThreadSafeBindingList<KnowledgeSkill> lstKnowledgeSkills = await GetKnowledgeSkillsAsync(token).ConfigureAwait(false);
+                                            objSkill = await lstKnowledgeSkills.FirstOrDefaultAsync(async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) == guiSkillId, token).ConfigureAwait(false);
+                                            if (objSkill != null)
+                                                lstReturn.Add(objSkill);
+                                            else
+                                            {
+                                                string strBackupName = string.Empty;
+                                                if (xmlSkill.TryGetStringFieldQuickly("name", ref strBackupName))
+                                                {
+                                                    objSkill = await lstKnowledgeSkills.FirstOrDefaultAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == strName, token).ConfigureAwait(false);
+                                                    if (objSkill != null)
+                                                        lstReturn.Add(objSkill);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            ThreadSafeBindingList<Skill> lstSkills = await GetSkillsAsync(token).ConfigureAwait(false);
+                                            objSkill = await lstSkills.FirstOrDefaultAsync(async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) == guiSkillId, token).ConfigureAwait(false);
+                                            if (objSkill != null)
+                                                lstReturn.Add(objSkill);
+                                            else
+                                            {
+                                                string strBackupName = string.Empty;
+                                                if (xmlSkill.TryGetStringFieldQuickly("name", ref strBackupName))
+                                                {
+                                                    objSkill = await lstSkills.FirstOrDefaultAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == strName, token).ConfigureAwait(false);
+                                                    if (objSkill != null)
+                                                        lstReturn.Add(objSkill);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            return lstReturn;
         }
 
         private ReadOnlyDictionary<string, string> _dicKnowledgeSkillCategoriesMap;  //Categories to their attribute
@@ -1392,92 +1631,119 @@ namespace Chummer.Backend.Skills
                                                                                     _objCharacter,
                                                                                     blnIsKnowledgeSkill, token)
                                                                                 .ConfigureAwait(false);
-                                                                        if (objSkill.SkillId != Guid.Empty)
+                                                                        try
                                                                         {
-                                                                            string strSkillId =
-                                                                                objSkill.SkillId.ToString("D", GlobalSettings.InvariantCultureInfo);
-                                                                            XmlNode xmlLoadingSkillNode =
-                                                                                xmlSkillNode.SelectSingleNode(
-                                                                                    "skills/skill[suid = " +
-                                                                                    strSkillId.CleanXPath() +
-                                                                                    ']') ??
-                                                                                xmlSkillNode.SelectSingleNode(
-                                                                                    "knoskills/skill[suid = " +
-                                                                                    strSkillId.CleanXPath() +
-                                                                                    ']');
-                                                                            if (xmlLoadingSkillNode != null)
+                                                                            if (objSkill.SkillId != Guid.Empty)
                                                                             {
-                                                                                setSkillIdsToSkip.Add(
-                                                                                    strSkillId);
-                                                                                Skill.Load(_objCharacter,
-                                                                                    xmlLoadingSkillNode,
-                                                                                    objSkill);
+                                                                                string strSkillId =
+                                                                                    objSkill.SkillId.ToString("D", GlobalSettings.InvariantCultureInfo);
+                                                                                XmlNode xmlLoadingSkillNode =
+                                                                                    xmlSkillNode.SelectSingleNode(
+                                                                                        "skills/skill[suid = " +
+                                                                                        strSkillId.CleanXPath() +
+                                                                                        ']') ??
+                                                                                    xmlSkillNode.SelectSingleNode(
+                                                                                        "knoskills/skill[suid = " +
+                                                                                        strSkillId.CleanXPath() +
+                                                                                        ']');
+                                                                                if (xmlLoadingSkillNode != null)
+                                                                                {
+                                                                                    setSkillIdsToSkip.Add(
+                                                                                        strSkillId);
+                                                                                    if (blnSync)
+                                                                                    {
+                                                                                        Skill.Load(_objCharacter,
+                                                                                            xmlLoadingSkillNode,
+                                                                                            objSkill);
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        await Skill.LoadAsync(_objCharacter,
+                                                                                            xmlLoadingSkillNode,
+                                                                                            objSkill, token).ConfigureAwait(false);
+                                                                                    }
+                                                                                }
                                                                             }
-                                                                        }
 
-                                                                        KnowledgeSkill objKnoSkill =
-                                                                            blnIsKnowledgeSkill
-                                                                                ? objSkill as KnowledgeSkill
-                                                                                : null;
+                                                                            KnowledgeSkill objKnoSkill =
+                                                                                blnIsKnowledgeSkill
+                                                                                    ? objSkill as KnowledgeSkill
+                                                                                    : null;
 
-                                                                        if (blnSync)
-                                                                        {
-                                                                            if (objKnoSkill != null)
-                                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                                                _lstKnowledgeSkills
-                                                                                    .Add(objKnoSkill);
+                                                                            if (blnSync)
+                                                                            {
+                                                                                if (objKnoSkill != null)
+                                                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                                    _lstKnowledgeSkills
+                                                                                        .Add(objKnoSkill);
+                                                                                else
+                                                                                {
+                                                                                    string strKey =
+                                                                                        objSkill.DictionaryKey;
+                                                                                    if (_dicSkills.TryAdd(strKey,
+                                                                                             objSkill))
+                                                                                    {
+                                                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                                        _lstSkills.Add(objSkill);
+                                                                                    }
+                                                                                    else if (_dicSkills.TryGetValue(
+                                                                                             strKey,
+                                                                                             out Skill
+                                                                                                 objExistingSkill))
+                                                                                    {
+                                                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                                                        MergeSkills(
+                                                                                            objExistingSkill,
+                                                                                            objSkill,
+                                                                                            token);
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        Utils.BreakIfDebug();
+                                                                                        objSkill?.Remove();
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                            else if (objKnoSkill != null)
+                                                                                await _lstKnowledgeSkills
+                                                                                    .AddAsync(objKnoSkill, token)
+                                                                                    .ConfigureAwait(false);
                                                                             else
                                                                             {
-                                                                                string strKey =
-                                                                                    objSkill.DictionaryKey;
+                                                                                string strKey = await objSkill
+                                                                                    .GetDictionaryKeyAsync(token)
+                                                                                    .ConfigureAwait(false);
                                                                                 if (_dicSkills.TryAdd(strKey,
-                                                                                         objSkill))
+                                                                                        objSkill))
                                                                                 {
-                                                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                                                    _lstSkills.Add(objSkill);
+                                                                                    await _lstSkills.AddAsync(
+                                                                                            objSkill,
+                                                                                            token)
+                                                                                        .ConfigureAwait(false);
                                                                                 }
                                                                                 else if (_dicSkills.TryGetValue(
                                                                                          strKey,
                                                                                          out Skill
                                                                                              objExistingSkill))
-                                                                                {
-                                                                                    // ReSharper disable once MethodHasAsyncOverload
-                                                                                    MergeSkills(
-                                                                                        objExistingSkill,
-                                                                                        objSkill,
-                                                                                        token);
-                                                                                }
+                                                                                    await MergeSkillsAsync(
+                                                                                            objExistingSkill,
+                                                                                            objSkill, token)
+                                                                                        .ConfigureAwait(false);
                                                                                 else
+                                                                                {
                                                                                     Utils.BreakIfDebug();
+                                                                                    if (objSkill != null)
+                                                                                        await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                                                                                }
                                                                             }
                                                                         }
-                                                                        else if (objKnoSkill != null)
-                                                                            await _lstKnowledgeSkills
-                                                                                .AddAsync(objKnoSkill, token)
-                                                                                .ConfigureAwait(false);
-                                                                        else
+                                                                        catch
                                                                         {
-                                                                            string strKey = await objSkill
-                                                                                .GetDictionaryKeyAsync(token)
-                                                                                .ConfigureAwait(false);
-                                                                            if (_dicSkills.TryAdd(strKey,
-                                                                                    objSkill))
-                                                                            {
-                                                                                await _lstSkills.AddAsync(
-                                                                                        objSkill,
-                                                                                        token)
-                                                                                    .ConfigureAwait(false);
-                                                                            }
-                                                                            else if (_dicSkills.TryGetValue(
-                                                                                     strKey,
-                                                                                     out Skill
-                                                                                         objExistingSkill))
-                                                                                await MergeSkillsAsync(
-                                                                                        objExistingSkill,
-                                                                                        objSkill, token)
-                                                                                    .ConfigureAwait(false);
-                                                                            else
-                                                                                Utils.BreakIfDebug();
+                                                                            if (blnSync)
+                                                                                objSkill?.Remove();
+                                                                            else if (objSkill != null)
+                                                                                await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                                                                            throw;
                                                                         }
                                                                     }
                                                                 }
@@ -1578,41 +1844,68 @@ namespace Chummer.Backend.Skills
                                                     if (!string.IsNullOrEmpty(strLoopId) &&
                                                         setSkillIdsToSkip.Contains(strLoopId))
                                                         continue;
-                                                    Skill objSkill = Skill.Load(_objCharacter, xmlNode);
+                                                    Skill objSkill;
+                                                    bool blnNewSkill;
+                                                    if (blnSync)
+                                                        objSkill = Skill.Load(_objCharacter, xmlNode, out blnNewSkill);
+                                                    else
+                                                        (objSkill, blnNewSkill) = await Skill.LoadAsync(_objCharacter, xmlNode, token: token).ConfigureAwait(false);
                                                     if (objSkill == null)
                                                         continue;
-                                                    if (blnSync)
+                                                    try
                                                     {
-                                                        string strKey = objSkill.DictionaryKey;
-                                                        if (_dicSkills.TryAdd(strKey, objSkill))
+                                                        if (blnSync)
                                                         {
-                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                            _lstSkills.Add(objSkill);
-                                                        }
-                                                        else if (_dicSkills.TryGetValue(strKey,
-                                                                     out Skill objExistingSkill))
-                                                        {
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            MergeSkills(objExistingSkill, objSkill, token);
+                                                            string strKey = objSkill.DictionaryKey;
+                                                            if (_dicSkills.TryAdd(strKey, objSkill))
+                                                            {
+                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                _lstSkills.Add(objSkill);
+                                                            }
+                                                            else if (_dicSkills.TryGetValue(strKey,
+                                                                         out Skill objExistingSkill))
+                                                            {
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                MergeSkills(objExistingSkill, objSkill, token);
+                                                            }
+                                                            else
+                                                            {
+                                                                Utils.BreakIfDebug();
+                                                                if (blnNewSkill)
+                                                                    objSkill?.Remove();
+                                                            }
                                                         }
                                                         else
-                                                            Utils.BreakIfDebug();
-                                                    }
-                                                    else
-                                                    {
-                                                        string strKey = await objSkill.GetDictionaryKeyAsync(token)
-                                                            .ConfigureAwait(false);
-                                                        if (_dicSkills.TryAdd(strKey, objSkill))
                                                         {
-                                                            await _lstSkills.AddAsync(objSkill, token)
+                                                            string strKey = await objSkill.GetDictionaryKeyAsync(token)
                                                                 .ConfigureAwait(false);
+                                                            if (_dicSkills.TryAdd(strKey, objSkill))
+                                                            {
+                                                                await _lstSkills.AddAsync(objSkill, token)
+                                                                    .ConfigureAwait(false);
+                                                            }
+                                                            else if (_dicSkills.TryGetValue(strKey,
+                                                                         out Skill objExistingSkill))
+                                                                await MergeSkillsAsync(objExistingSkill,
+                                                                    objSkill, token).ConfigureAwait(false);
+                                                            else
+                                                            {
+                                                                Utils.BreakIfDebug();
+                                                                if (blnNewSkill && objSkill != null)
+                                                                    await objSkill.RemoveAsync(token).ConfigureAwait(false);
+                                                            }
                                                         }
-                                                        else if (_dicSkills.TryGetValue(strKey,
-                                                                     out Skill objExistingSkill))
-                                                            await MergeSkillsAsync(objExistingSkill,
-                                                                objSkill, token).ConfigureAwait(false);
-                                                        else
-                                                            Utils.BreakIfDebug();
+                                                    }
+                                                    catch
+                                                    {
+                                                        if (blnNewSkill)
+                                                        {
+                                                            if (blnSync)
+                                                                objSkill?.Remove();
+                                                            else if (objSkill != null)
+                                                                await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                                                        }
+                                                        throw;
                                                     }
                                                 }
                                             }
@@ -1633,36 +1926,60 @@ namespace Chummer.Backend.Skills
                                                     if (!string.IsNullOrEmpty(strLoopId) &&
                                                         setSkillIdsToSkip.Contains(strLoopId))
                                                         continue;
-                                                    Skill objUncastSkill = Skill.Load(_objCharacter, xmlNode);
-                                                    if (objUncastSkill is KnowledgeSkill objSkill)
+                                                    Skill objUncastSkill;
+                                                    bool blnNewSkill;
+                                                    if (blnSync)
+                                                        objUncastSkill = Skill.Load(_objCharacter, xmlNode, out blnNewSkill);
+                                                    else
+                                                        (objUncastSkill, blnNewSkill) = await Skill.LoadAsync(_objCharacter, xmlNode, token: token).ConfigureAwait(false);
+                                                    try
                                                     {
-                                                        if (blnSync)
+                                                        if (objUncastSkill is KnowledgeSkill objSkill)
                                                         {
-                                                            ThreadSafeBindingList<KnowledgeSkill> lstKnowledgeSkills = KnowledgeSkills;
-                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                            if (!lstKnowledgeSkills.Contains(objSkill))
+                                                            if (blnSync)
+                                                            {
+                                                                ThreadSafeBindingList<KnowledgeSkill> lstKnowledgeSkills = KnowledgeSkills;
                                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                                lstKnowledgeSkills.Add(objSkill);
+                                                                if (!lstKnowledgeSkills.Contains(objSkill))
+                                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                    lstKnowledgeSkills.Add(objSkill);
+                                                            }
+                                                            else
+                                                            {
+                                                                ThreadSafeBindingList<KnowledgeSkill> lstKnowledgeSkills = await GetKnowledgeSkillsAsync(token).ConfigureAwait(false);
+                                                                if (!await lstKnowledgeSkills.ContainsAsync(objSkill, token)
+                                                                         .ConfigureAwait(false))
+                                                                    await lstKnowledgeSkills.AddAsync(objSkill, token)
+                                                                        .ConfigureAwait(false);
+                                                            }
                                                         }
                                                         else
                                                         {
-                                                            ThreadSafeBindingList<KnowledgeSkill> lstKnowledgeSkills = await GetKnowledgeSkillsAsync(token).ConfigureAwait(false);
-                                                            if (!await lstKnowledgeSkills.ContainsAsync(objSkill, token)
-                                                                     .ConfigureAwait(false))
-                                                                await lstKnowledgeSkills.AddAsync(objSkill, token)
-                                                                    .ConfigureAwait(false);
+                                                            Utils
+                                                                .BreakIfDebug(); // Somehow, a non-knowledge skill got into a knowledge skill block
+                                                            if (blnNewSkill && objUncastSkill != null)
+                                                            {
+                                                                if (blnSync)
+                                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                    objUncastSkill.Remove();
+                                                                else
+                                                                    await objUncastSkill.RemoveAsync(token)
+                                                                        .ConfigureAwait(false);
+                                                            }
                                                         }
                                                     }
-                                                    else
+                                                    catch
                                                     {
-                                                        Utils
-                                                            .BreakIfDebug(); // Somehow, a non-knowledge skill got into a knowledge skill block
-                                                        if (blnSync)
-                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                            objUncastSkill.Remove();
-                                                        else
-                                                            await objUncastSkill.RemoveAsync(token)
-                                                                .ConfigureAwait(false);
+                                                        if (blnNewSkill && objUncastSkill != null)
+                                                        {
+                                                            if (blnSync)
+                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                objUncastSkill.Remove();
+                                                            else
+                                                                await objUncastSkill.RemoveAsync(token)
+                                                                    .ConfigureAwait(false);
+                                                        }
+                                                        throw;
                                                     }
                                                 }
                                             }
@@ -1679,13 +1996,19 @@ namespace Chummer.Backend.Skills
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     if (!lstKnowledgeSkills.Any(x => x.IsNativeLanguage, token))
                                                     {
-                                                        KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter)
+                                                        KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter);
+                                                        try
                                                         {
-                                                            WritableName = "English",
-                                                            IsNativeLanguage = true
-                                                        };
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        lstKnowledgeSkills.Add(objEnglishSkill);
+                                                            objEnglishSkill.WritableName = "English";
+                                                            objEnglishSkill.IsNativeLanguage = true;
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                            lstKnowledgeSkills.Add(objEnglishSkill);
+                                                        }
+                                                        catch
+                                                        {
+                                                            objEnglishSkill.Remove();
+                                                            throw;
+                                                        }
                                                     }
                                                 }
                                             }
@@ -1698,13 +2021,21 @@ namespace Chummer.Backend.Skills
                                                          .ConfigureAwait(false))
                                                 {
                                                     KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter, false);
-                                                    await objEnglishSkill.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
-                                                    await objEnglishSkill.SetWritableNameAsync("English", token)
-                                                        .ConfigureAwait(false);
-                                                    await objEnglishSkill.SetIsNativeLanguageAsync(true, token)
-                                                        .ConfigureAwait(false);
-                                                    await lstKnowledgeSkills.AddAsync(objEnglishSkill, token)
-                                                        .ConfigureAwait(false);
+                                                    try
+                                                    {
+                                                        await objEnglishSkill.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
+                                                        await objEnglishSkill.SetWritableNameAsync("English", token)
+                                                            .ConfigureAwait(false);
+                                                        await objEnglishSkill.SetIsNativeLanguageAsync(true, token)
+                                                            .ConfigureAwait(false);
+                                                        await lstKnowledgeSkills.AddAsync(objEnglishSkill, token)
+                                                            .ConfigureAwait(false);
+                                                    }
+                                                    catch
+                                                    {
+                                                        await objEnglishSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                                                        throw;
+                                                    }
                                                 }
                                             }
                                         }
@@ -1729,8 +2060,16 @@ namespace Chummer.Backend.Skills
                                                     {
                                                         KnowledgeSkill objSkill
                                                             = new KnowledgeSkill(_objCharacter, strName, false);
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        KnowsoftSkills.Add(objSkill);
+                                                        try
+                                                        {
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                            KnowsoftSkills.Add(objSkill);
+                                                        }
+                                                        catch
+                                                        {
+                                                            objSkill.Remove();
+                                                            throw;
+                                                        }
                                                     }
                                                     else
                                                     {
@@ -1738,8 +2077,16 @@ namespace Chummer.Backend.Skills
                                                             = await KnowledgeSkill
                                                                 .NewAsync(_objCharacter, strName, false, token)
                                                                 .ConfigureAwait(false);
-                                                        await KnowsoftSkills.AddAsync(objSkill, token)
-                                                            .ConfigureAwait(false);
+                                                        try
+                                                        {
+                                                            await KnowsoftSkills.AddAsync(objSkill, token)
+                                                                .ConfigureAwait(false);
+                                                        }
+                                                        catch
+                                                        {
+                                                            await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                                                            throw;
+                                                        }
                                                     }
                                                 }
                                             }
@@ -1751,108 +2098,125 @@ namespace Chummer.Backend.Skills
                             }
                             else
                             {
-                                List<Skill> lstTempSkillList;
-                                using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skills/skill"))
+                                List<Skill> lstTempSkillList = null;
+                                try
                                 {
-                                    lstTempSkillList = new List<Skill>(xmlSkillsList?.Count ?? 0);
-                                    if (xmlSkillsList?.Count > 0)
+                                    using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skills/skill"))
                                     {
-                                        foreach (XmlNode xmlNode in xmlSkillsList)
+                                        lstTempSkillList = new List<Skill>(xmlSkillsList?.Count ?? 0);
+                                        if (xmlSkillsList?.Count > 0)
                                         {
-                                            Skill objSkill = blnSync
-                                                ? Skill.LegacyLoad(_objCharacter, xmlNode)
-                                                : await Skill.LegacyLoadAsync(_objCharacter, xmlNode, token).ConfigureAwait(false);
-                                            if (objSkill != null)
-                                                lstTempSkillList.Add(objSkill);
-                                        }
-                                    }
-                                }
-
-                                if (lstTempSkillList.Count > 0)
-                                {
-                                    List<Skill> lstUnsortedSkills = new List<Skill>(lstTempSkillList.Count);
-                                    //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
-                                    bool OldSkillFilter(Skill skill)
-                                    {
-                                        if (skill.Rating > 0)
-                                            return true;
-
-                                        if (skill.SkillCategory == "Resonance Active" && !_objCharacter.RESEnabled)
-                                            return false;
-
-                                        //This could be more fine grained, but frankly i don't care
-                                        return skill.SkillCategory != "Magical Active" || _objCharacter.MAGEnabled;
-                                    }
-
-                                    async Task<bool> OldSkillFilterAsync(Skill skill)
-                                    {
-                                        if (await skill.GetRatingAsync(token).ConfigureAwait(false) > 0)
-                                            return true;
-
-                                        if (skill.SkillCategory == "Resonance Active"
-                                            && !await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
-                                            return false;
-
-                                        //This could be more fine grained, but frankly i don't care
-                                        return skill.SkillCategory != "Magical Active"
-                                               || await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false);
-                                    }
-
-                                    foreach (Skill objSkill in lstTempSkillList)
-                                    {
-                                        if (objSkill is KnowledgeSkill objKnoSkill)
-                                        {
-                                            if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                KnowledgeSkills.Add(objKnoSkill);
-                                            else
-                                                await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddAsync(objKnoSkill, token)
-                                                    .ConfigureAwait(false);
-                                        }
-                                        else if (blnSync)
-                                        {
-                                            if (OldSkillFilter(objSkill))
-                                                lstUnsortedSkills.Add(objSkill);
-                                        }
-                                        else if (await OldSkillFilterAsync(objSkill).ConfigureAwait(false))
-                                        {
-                                            lstUnsortedSkills.Add(objSkill);
+                                            foreach (XmlNode xmlNode in xmlSkillsList)
+                                            {
+                                                Skill objSkill = blnSync
+                                                    ? Skill.LegacyLoad(_objCharacter, xmlNode)
+                                                    : await Skill.LegacyLoadAsync(_objCharacter, xmlNode, token).ConfigureAwait(false);
+                                                if (objSkill != null)
+                                                    lstTempSkillList.Add(objSkill);
+                                            }
                                         }
                                     }
 
-                                    lstUnsortedSkills.Sort(CompareSkills);
-
-                                    foreach (Skill objSkill in lstUnsortedSkills)
+                                    if (lstTempSkillList.Count > 0)
                                     {
-                                        if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
+                                        List<Skill> lstUnsortedSkills = new List<Skill>(lstTempSkillList.Count);
+                                        //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
+                                        bool OldSkillFilter(Skill skill)
                                         {
-                                            Skill objExistingSkill
-                                                = Skills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
-                                            if (objExistingSkill != null)
+                                            if (skill.Rating > 0)
+                                                return true;
+
+                                            if (skill.SkillCategory == "Resonance Active" && !_objCharacter.RESEnabled)
+                                                return false;
+
+                                            //This could be more fine grained, but frankly i don't care
+                                            return skill.SkillCategory != "Magical Active" || _objCharacter.MAGEnabled;
+                                        }
+
+                                        async Task<bool> OldSkillFilterAsync(Skill skill)
+                                        {
+                                            if (await skill.GetRatingAsync(token).ConfigureAwait(false) > 0)
+                                                return true;
+
+                                            if (skill.SkillCategory == "Resonance Active"
+                                                && !await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
+                                                return false;
+
+                                            //This could be more fine grained, but frankly i don't care
+                                            return skill.SkillCategory != "Magical Active"
+                                                   || await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false);
+                                        }
+
+                                        foreach (Skill objSkill in lstTempSkillList)
+                                        {
+                                            if (objSkill is KnowledgeSkill objKnoSkill)
                                             {
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverload
-                                                    MergeSkills(objExistingSkill, objSkill, token);
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    KnowledgeSkills.Add(objKnoSkill);
                                                 else
-                                                    await MergeSkillsAsync(objExistingSkill, objSkill, token)
+                                                    await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddAsync(objKnoSkill, token)
                                                         .ConfigureAwait(false);
-                                                continue;
                                             }
+                                            else if (blnSync)
+                                            {
+                                                if (OldSkillFilter(objSkill))
+                                                    lstUnsortedSkills.Add(objSkill);
+                                            }
+                                            else if (await OldSkillFilterAsync(objSkill).ConfigureAwait(false))
+                                            {
+                                                lstUnsortedSkills.Add(objSkill);
+                                            }
+                                        }
+
+                                        lstUnsortedSkills.Sort(CompareSkills);
+
+                                        foreach (Skill objSkill in lstUnsortedSkills)
+                                        {
+                                            if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
+                                            {
+                                                Skill objExistingSkill
+                                                    = Skills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
+                                                if (objExistingSkill != null)
+                                                {
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        MergeSkills(objExistingSkill, objSkill, token);
+                                                    else
+                                                        await MergeSkillsAsync(objExistingSkill, objSkill, token)
+                                                            .ConfigureAwait(false);
+                                                    continue;
+                                                }
+                                            }
+
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                Skills.Add(objSkill);
+                                            else
+                                                await (await GetSkillsAsync(token).ConfigureAwait(false)).AddAsync(objSkill, token).ConfigureAwait(false);
                                         }
 
                                         if (blnSync)
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            Skills.Add(objSkill);
+                                            UpdateUndoList(xmlSkillNode.OwnerDocument);
                                         else
-                                            await (await GetSkillsAsync(token).ConfigureAwait(false)).AddAsync(objSkill, token).ConfigureAwait(false);
+                                            await UpdateUndoListAsync(xmlSkillNode.OwnerDocument, token)
+                                                .ConfigureAwait(false);
                                     }
-
-                                    if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        UpdateUndoList(xmlSkillNode.OwnerDocument);
-                                    else
-                                        await UpdateUndoListAsync(xmlSkillNode.OwnerDocument, token)
-                                            .ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    if (lstTempSkillList != null)
+                                    {
+                                        foreach (Skill objSkill in lstTempSkillList)
+                                        {
+                                            if (blnSync)
+                                                objSkill.Remove();
+                                            else
+                                                await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                                        }
+                                    }
+                                    throw;
                                 }
                             }
 
@@ -1906,36 +2270,58 @@ namespace Chummer.Backend.Skills
                                                         continue;
                                                     if (blnSync)
                                                     {
-                                                        string strKey = objSkill.DictionaryKey;
-                                                        if (_dicSkills.TryAdd(strKey, objSkill))
+                                                        try
                                                         {
-                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                            _lstSkills.Add(objSkill);
+                                                            string strKey = objSkill.DictionaryKey;
+                                                            if (_dicSkills.TryAdd(strKey, objSkill))
+                                                            {
+                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                _lstSkills.Add(objSkill);
+                                                            }
+                                                            else if (_dicSkills.TryGetValue(strKey,
+                                                                         out Skill objExistingSkill))
+                                                            {
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                MergeSkills(objExistingSkill, objSkill, token);
+                                                            }
+                                                            else
+                                                            {
+                                                                Utils.BreakIfDebug();
+                                                                objSkill.Remove();
+                                                            }
                                                         }
-                                                        else if (_dicSkills.TryGetValue(strKey,
-                                                                     out Skill objExistingSkill))
+                                                        catch
                                                         {
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            MergeSkills(objExistingSkill, objSkill, token);
+                                                            objSkill.Remove();
+                                                            throw;
                                                         }
-                                                        else
-                                                            Utils.BreakIfDebug();
                                                     }
                                                     else
                                                     {
-                                                        string strKey = await objSkill.GetDictionaryKeyAsync(token)
-                                                            .ConfigureAwait(false);
-                                                        if (_dicSkills.TryAdd(strKey, objSkill))
+                                                        try
                                                         {
-                                                            await _lstSkills.AddAsync(objSkill, token)
+                                                            string strKey = await objSkill.GetDictionaryKeyAsync(token)
                                                                 .ConfigureAwait(false);
+                                                            if (_dicSkills.TryAdd(strKey, objSkill))
+                                                            {
+                                                                await _lstSkills.AddAsync(objSkill, token)
+                                                                    .ConfigureAwait(false);
+                                                            }
+                                                            else if (_dicSkills.TryGetValue(strKey,
+                                                                         out Skill objExistingSkill))
+                                                                await MergeSkillsAsync(objExistingSkill,
+                                                                    objSkill, token).ConfigureAwait(false);
+                                                            else
+                                                            {
+                                                                Utils.BreakIfDebug();
+                                                                await objSkill.RemoveAsync(token).ConfigureAwait(false);
+                                                            }
                                                         }
-                                                        else if (_dicSkills.TryGetValue(strKey,
-                                                                     out Skill objExistingSkill))
-                                                            await MergeSkillsAsync(objExistingSkill,
-                                                                objSkill, token).ConfigureAwait(false);
-                                                        else
-                                                            Utils.BreakIfDebug();
+                                                        catch
+                                                        {
+                                                            await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                                                            throw;
+                                                        }
                                                     }
                                                 }
                                             }
@@ -2693,13 +3079,24 @@ namespace Chummer.Backend.Skills
                                               != "active";
                                         Skill objSkill = Skill.FromData(xmlSkill, _objCharacter,
                                             blnIsKnowledgeSkill);
-                                        string strKey = objSkill.DictionaryKey;
-                                        if (_dicSkills.TryAdd(strKey, objSkill))
-                                            _lstSkills.Add(objSkill);
-                                        else if (_dicSkills.TryGetValue(strKey, out Skill objExistingSkill))
-                                            MergeSkills(objExistingSkill, objSkill);
-                                        else
-                                            Utils.BreakIfDebug();
+                                        try
+                                        {
+                                            string strKey = objSkill.DictionaryKey;
+                                            if (_dicSkills.TryAdd(strKey, objSkill))
+                                                _lstSkills.Add(objSkill);
+                                            else if (_dicSkills.TryGetValue(strKey, out Skill objExistingSkill))
+                                                MergeSkills(objExistingSkill, objSkill);
+                                            else
+                                            {
+                                                Utils.BreakIfDebug();
+                                                objSkill.Remove();
+                                            }
+                                        }
+                                        catch
+                                        {
+                                            objSkill?.Remove();
+                                            throw;
+                                        }
                                     }
                                 }
                             }
@@ -2790,18 +3187,29 @@ namespace Chummer.Backend.Skills
                                                   != "active";
                                             Skill objSkill = await Skill.FromDataAsync(xmlSkill, _objCharacter,
                                                 blnIsKnowledgeSkill, token).ConfigureAwait(false);
-                                            string strKey = await objSkill.GetDictionaryKeyAsync(token)
-                                                .ConfigureAwait(false);
-                                            if (_dicSkills.TryAdd(strKey, objSkill))
+                                            try
                                             {
-                                                await _lstSkills.AddAsync(objSkill, token).ConfigureAwait(false);
+                                                string strKey = await objSkill.GetDictionaryKeyAsync(token)
+                                                    .ConfigureAwait(false);
+                                                if (_dicSkills.TryAdd(strKey, objSkill))
+                                                {
+                                                    await _lstSkills.AddAsync(objSkill, token).ConfigureAwait(false);
+                                                }
+                                                else if (_dicSkills.TryGetValue(strKey,
+                                                             out Skill objExistingSkill))
+                                                    await MergeSkillsAsync(objExistingSkill,
+                                                        objSkill, token).ConfigureAwait(false);
+                                                else
+                                                {
+                                                    Utils.BreakIfDebug();
+                                                    await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                                                }
                                             }
-                                            else if (_dicSkills.TryGetValue(strKey,
-                                                         out Skill objExistingSkill))
-                                                await MergeSkillsAsync(objExistingSkill,
-                                                    objSkill, token).ConfigureAwait(false);
-                                            else
-                                                Utils.BreakIfDebug();
+                                            catch
+                                            {
+                                                await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                                                throw;
+                                            }
                                         }
                                     }
                                 }

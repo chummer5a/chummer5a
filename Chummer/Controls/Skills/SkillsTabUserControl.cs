@@ -1433,60 +1433,76 @@ namespace Chummer.UI.Skills
                     }
 
                     KnowledgeSkill skill = new KnowledgeSkill(_objCharacter, false);
-                    await skill.SetDefaultAttributeAsync("LOG", MyToken).ConfigureAwait(false);
-                    await skill.SetWritableNameAsync(strSelectedSkill, MyToken).ConfigureAwait(false);
-
-                    if (await _objCharacter.SkillsSection.GetHasAvailableNativeLanguageSlotsAsync(MyToken)
-                                           .ConfigureAwait(false)
-                        && (await skill.GetIsLanguageAsync(MyToken).ConfigureAwait(false)
-                            || string.IsNullOrEmpty(await skill.GetTypeAsync(MyToken).ConfigureAwait(false))))
+                    try
                     {
-                        DialogResult eDialogResult = await Program.ShowScrollableMessageBoxAsync(this,
-                            string.Format(GlobalSettings.CultureInfo,
+                        await skill.SetDefaultAttributeAsync("LOG", MyToken).ConfigureAwait(false);
+                        await skill.SetWritableNameAsync(strSelectedSkill, MyToken).ConfigureAwait(false);
+
+                        if (await _objCharacter.SkillsSection.GetHasAvailableNativeLanguageSlotsAsync(MyToken)
+                                               .ConfigureAwait(false)
+                            && (await skill.GetIsLanguageAsync(MyToken).ConfigureAwait(false)
+                                || string.IsNullOrEmpty(await skill.GetTypeAsync(MyToken).ConfigureAwait(false))))
+                        {
+                            DialogResult eDialogResult = await Program.ShowScrollableMessageBoxAsync(this,
+                                string.Format(GlobalSettings.CultureInfo,
+                                    await LanguageManager
+                                        .GetStringAsync(
+                                            "Message_NewNativeLanguageSkill",
+                                            token: MyToken)
+                                        .ConfigureAwait(false),
+                                    1 + await ImprovementManager
+                                        .ValueOfAsync(
+                                            _objCharacter,
+                                            Improvement.ImprovementType
+                                                .NativeLanguageLimit,
+                                            token: MyToken)
+                                        .ConfigureAwait(false),
+                                    await skill
+                                        .GetWritableNameAsync(MyToken)
+                                        .ConfigureAwait(false)),
                                 await LanguageManager
                                     .GetStringAsync(
-                                        "Message_NewNativeLanguageSkill",
+                                        "Tip_Skill_NativeLanguage",
                                         token: MyToken)
                                     .ConfigureAwait(false),
-                                1 + await ImprovementManager
-                                    .ValueOfAsync(
-                                        _objCharacter,
-                                        Improvement.ImprovementType
-                                            .NativeLanguageLimit,
-                                        token: MyToken)
-                                    .ConfigureAwait(false),
-                                await skill
-                                    .GetWritableNameAsync(MyToken)
-                                    .ConfigureAwait(false)),
-                            await LanguageManager
-                                .GetStringAsync(
-                                    "Tip_Skill_NativeLanguage",
-                                    token: MyToken)
-                                .ConfigureAwait(false),
-                            MessageBoxButtons.YesNoCancel, token: MyToken).ConfigureAwait(false);
-                        switch (eDialogResult)
-                        {
-                            case DialogResult.Cancel:
-                                return;
-
-                            case DialogResult.Yes:
+                                MessageBoxButtons.YesNoCancel, token: MyToken).ConfigureAwait(false);
+                            switch (eDialogResult)
                             {
-                                if (!await skill.GetIsLanguageAsync(MyToken).ConfigureAwait(false))
-                                    await skill.SetTypeAsync("Language", MyToken).ConfigureAwait(false);
-                                await skill.SetIsNativeLanguageAsync(true, MyToken).ConfigureAwait(false);
-                                break;
+                                case DialogResult.Cancel:
+                                    return;
+
+                                case DialogResult.Yes:
+                                    {
+                                        if (!await skill.GetIsLanguageAsync(MyToken).ConfigureAwait(false))
+                                            await skill.SetTypeAsync("Language", MyToken).ConfigureAwait(false);
+                                        await skill.SetIsNativeLanguageAsync(true, MyToken).ConfigureAwait(false);
+                                        break;
+                                    }
                             }
                         }
-                    }
 
-                    await _objCharacter.SkillsSection.KnowledgeSkills.AddAsync(skill, MyToken)
-                                       .ConfigureAwait(false);
+                        await _objCharacter.SkillsSection.KnowledgeSkills.AddAsync(skill, MyToken)
+                                           .ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await skill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
                 }
                 else
                 {
                     KnowledgeSkill skill = new KnowledgeSkill(_objCharacter, false);
-                    await skill.SetDefaultAttributeAsync("LOG", MyToken).ConfigureAwait(false);
-                    await _objCharacter.SkillsSection.KnowledgeSkills.AddAsync(skill, MyToken).ConfigureAwait(false);
+                    try
+                    {
+                        await skill.SetDefaultAttributeAsync("LOG", MyToken).ConfigureAwait(false);
+                        await _objCharacter.SkillsSection.KnowledgeSkills.AddAsync(skill, MyToken).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await skill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
                 }
             }
             catch (OperationCanceledException)

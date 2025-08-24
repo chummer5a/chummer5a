@@ -721,31 +721,39 @@ namespace Chummer
                 {
                     bool blnAllowUpgrade = !bonusNode.InnerXml.Contains("disableupgrades");
                     KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(_objCharacter, strSelectedSkill, blnAllowUpgrade);
-                    await _objCharacter.SkillsSection.KnowledgeSkills.AddAsync(objKnowledgeSkill, token).ConfigureAwait(false);
-                    // We've found the selected Skill.
-                    if (!string.IsNullOrEmpty(strVal))
+                    try
                     {
-                        await CreateImprovementAsync(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.Skill,
-                            _strUnique,
-                            await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty,
-                            blnAddToRating, token: token).ConfigureAwait(false);
-                    }
+                        await _objCharacter.SkillsSection.KnowledgeSkills.AddAsync(objKnowledgeSkill, token).ConfigureAwait(false);
+                        // We've found the selected Skill.
+                        if (!string.IsNullOrEmpty(strVal))
+                        {
+                            await CreateImprovementAsync(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
+                                Improvement.ImprovementType.Skill,
+                                _strUnique,
+                                await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty,
+                                blnAddToRating, token: token).ConfigureAwait(false);
+                        }
 
-                    if (blnDisableSpec)
-                    {
-                        await CreateImprovementAsync(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.DisableSpecializationEffects,
-                            _strUnique, token: token).ConfigureAwait(false);
-                    }
+                        if (blnDisableSpec)
+                        {
+                            await CreateImprovementAsync(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
+                                Improvement.ImprovementType.DisableSpecializationEffects,
+                                _strUnique, token: token).ConfigureAwait(false);
+                        }
 
-                    if (!string.IsNullOrEmpty(strMax))
+                        if (!string.IsNullOrEmpty(strMax))
+                        {
+                            await CreateImprovementAsync(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
+                                Improvement.ImprovementType.Skill,
+                                _strUnique,
+                                0, 1, 0, await ImprovementManager.ValueToIntAsync(_objCharacter, strMax, _intRating, token).ConfigureAwait(false), 0, 0, string.Empty,
+                                blnAddToRating, token: token).ConfigureAwait(false);
+                        }
+                    }
+                    catch
                     {
-                        await CreateImprovementAsync(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.Skill,
-                            _strUnique,
-                            0, 1, 0, await ImprovementManager.ValueToIntAsync(_objCharacter, strMax, _intRating, token).ConfigureAwait(false), 0, 0, string.Empty,
-                            blnAddToRating, token: token).ConfigureAwait(false);
+                        await objKnowledgeSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                        throw;
                     }
                 }
             }
@@ -2202,25 +2210,41 @@ namespace Chummer
             bool group = bonusNode["group"] != null;
             bool canwrite = bonusNode["canwrite"] != null;
             Contact contact = new Contact(_objCharacter, !canwrite);
-            await contact.SetIsGroupAsync(group, token).ConfigureAwait(false);
-            await contact.SetLoyaltyAsync(intLoyalty, token).ConfigureAwait(false);
-            await contact.SetConnectionAsync(intConnection, token).ConfigureAwait(false);
-            await _objCharacter.Contacts.AddAsync(contact, token).ConfigureAwait(false);
+            try
+            {
+                await contact.SetIsGroupAsync(group, token).ConfigureAwait(false);
+                await contact.SetLoyaltyAsync(intLoyalty, token).ConfigureAwait(false);
+                await contact.SetConnectionAsync(intConnection, token).ConfigureAwait(false);
+                await _objCharacter.Contacts.AddAsync(contact, token).ConfigureAwait(false);
 
-            await CreateImprovementAsync(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.AddContact, contact.UniqueId, token: token).ConfigureAwait(false);
+                await CreateImprovementAsync(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.AddContact, contact.UniqueId, token: token).ConfigureAwait(false);
 
-            if (bonusNode.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
-            {
-                decimal decForcedLoyalty = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
-                await CreateImprovementAsync(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForcedLoyalty, _strUnique, decForcedLoyalty, token: token).ConfigureAwait(false);
+                if (bonusNode.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
+                {
+                    decimal decForcedLoyalty = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
+                    await CreateImprovementAsync(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForcedLoyalty, _strUnique, decForcedLoyalty, token: token).ConfigureAwait(false);
+                }
+                if (bonusNode["free"] != null)
+                {
+                    await CreateImprovementAsync(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactMakeFree, _strUnique, token: token).ConfigureAwait(false);
+                }
+                if (bonusNode["forcegroup"] != null)
+                {
+                    await CreateImprovementAsync(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForceGroup, _strUnique, token: token).ConfigureAwait(false);
+                }
             }
-            if (bonusNode["free"] != null)
+            catch
             {
-                await CreateImprovementAsync(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactMakeFree, _strUnique, token: token).ConfigureAwait(false);
-            }
-            if (bonusNode["forcegroup"] != null)
-            {
-                await CreateImprovementAsync(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForceGroup, _strUnique, token: token).ConfigureAwait(false);
+                try
+                {
+                    await _objCharacter.Contacts.RemoveAsync(contact, CancellationToken.None).ConfigureAwait(false);
+                }
+                catch
+                {
+                    //swallow this
+                }
+                await contact.DisposeAsync().ConfigureAwait(false);
+                throw;
             }
         }
 
@@ -2444,14 +2468,21 @@ namespace Chummer
             if (bonusNode["addknowledge"] != null)
             {
                 KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(_objCharacter, strSelectedValue, false);
-
-                await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowsoftSkillsAsync(token).ConfigureAwait(false)).AddAsync(objKnowledgeSkill, token).ConfigureAwait(false);
-                if (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.SkillsoftAccess, token: token).ConfigureAwait(false) > 0)
+                try
                 {
-                    await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddAsync(objKnowledgeSkill, token).ConfigureAwait(false);
-                }
+                    await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowsoftSkillsAsync(token).ConfigureAwait(false)).AddAsync(objKnowledgeSkill, token).ConfigureAwait(false);
+                    if (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.SkillsoftAccess, token: token).ConfigureAwait(false) > 0)
+                    {
+                        await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddAsync(objKnowledgeSkill, token).ConfigureAwait(false);
+                    }
 
-                await CreateImprovementAsync(objKnowledgeSkill.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillsoft, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    await CreateImprovementAsync(objKnowledgeSkill.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillsoft, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                }
+                catch
+                {
+                    await objKnowledgeSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                    throw;
+                }
             }
         }
 
@@ -2469,14 +2500,21 @@ namespace Chummer
             string strVal = bonusNode["val"]?.InnerText;
 
             KnowledgeSkill objSkill = new KnowledgeSkill(_objCharacter, SelectedValue, false);
-
-            await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowsoftSkillsAsync(token).ConfigureAwait(false)).AddAsync(objSkill, token).ConfigureAwait(false);
-            if (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.SkillsoftAccess, token: token).ConfigureAwait(false) > 0)
+            try
             {
-                await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddAsync(objSkill, token).ConfigureAwait(false);
-            }
+                await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowsoftSkillsAsync(token).ConfigureAwait(false)).AddAsync(objSkill, token).ConfigureAwait(false);
+                if (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.SkillsoftAccess, token: token).ConfigureAwait(false) > 0)
+                {
+                    await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddAsync(objSkill, token).ConfigureAwait(false);
+                }
 
-            await CreateImprovementAsync(objSkill.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillsoft, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await CreateImprovementAsync(objSkill.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillsoft, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         public async Task knowledgeskilllevel(XmlNode bonusNode, CancellationToken token = default)

@@ -9304,11 +9304,25 @@ namespace Chummer
         protected async Task AddContact(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            Contact objContact = new Contact(CharacterObject)
+            Contact objContact = new Contact(CharacterObject);
+            try
             {
-                EntityType = ContactType.Contact
-            };
-            await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
+                await objContact.SetEntityTypeAsync(ContactType.Contact, token).ConfigureAwait(false);
+                await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                try
+                {
+                    await CharacterObject.Contacts.RemoveAsync(objContact, token: token).ConfigureAwait(false);
+                }
+                catch
+                {
+                    //swallow this
+                }
+                await objContact.DisposeAsync().ConfigureAwait(false);
+                throw;
+            }
             await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
@@ -9354,12 +9368,25 @@ namespace Chummer
         protected async Task AddPet(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            Contact objContact = new Contact(CharacterObject)
+            Contact objContact = new Contact(CharacterObject);
+            try
             {
-                EntityType = ContactType.Pet
-            };
-
-            await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
+                await objContact.SetEntityTypeAsync(ContactType.Pet, token).ConfigureAwait(false);
+                await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                try
+                {
+                    await CharacterObject.Contacts.RemoveAsync(objContact, token: token).ConfigureAwait(false);
+                }
+                catch
+                {
+                    //swallow this
+                }
+                await objContact.DisposeAsync().ConfigureAwait(false);
+                throw;
+            }
             await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
@@ -9405,13 +9432,25 @@ namespace Chummer
         protected async Task AddEnemy(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            // Handle the ConnectionRatingChanged Event for the ContactControl object.
-            Contact objContact = new Contact(CharacterObject)
+            Contact objContact = new Contact(CharacterObject);
+            try
             {
-                EntityType = ContactType.Enemy
-            };
-
-            await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
+                await objContact.SetEntityTypeAsync(ContactType.Enemy, token).ConfigureAwait(false);
+                await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                try
+                {
+                    await CharacterObject.Contacts.RemoveAsync(objContact, token: token).ConfigureAwait(false);
+                }
+                catch
+                {
+                    //swallow this
+                }
+                await objContact.DisposeAsync().ConfigureAwait(false);
+                throw;
+            }
             await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
@@ -9507,8 +9546,24 @@ namespace Chummer
                                      "/chummer/contacts/contact", token: token))
                     {
                         Contact objContact = new Contact(CharacterObject);
-                        await objContact.LoadAsync(xmlContact, token).ConfigureAwait(false);
-                        await CharacterObject.Contacts.AddAsync(objContact, token).ConfigureAwait(false);
+                        try
+                        {
+                            await objContact.LoadAsync(xmlContact, token).ConfigureAwait(false);
+                            await CharacterObject.Contacts.AddAsync(objContact, token).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            try
+                            {
+                                await CharacterObject.Contacts.RemoveAsync(objContact, token: token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                //swallow this
+                            }
+                            await objContact.DisposeAsync().ConfigureAwait(false);
+                            throw;
+                        }
                     }
                 }
                 finally
@@ -9982,9 +10037,25 @@ namespace Chummer
             }
 
             Spirit objSpirit = new Spirit(CharacterObject);
-            await objSpirit.SetEntityTypeAsync(SpiritType.Spirit, token).ConfigureAwait(false);
-            await objSpirit.SetForceAsync(await CharacterObject.GetMaxSpiritForceAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
-            await CharacterObject.Spirits.AddAsync(objSpirit, token: token).ConfigureAwait(false);
+            try
+            {
+                await objSpirit.SetEntityTypeAsync(SpiritType.Spirit, token).ConfigureAwait(false);
+                await objSpirit.SetForceAsync(await CharacterObject.GetMaxSpiritForceAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await CharacterObject.Spirits.AddAsync(objSpirit, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                try
+                {
+                    await CharacterObject.Spirits.RemoveAsync(objSpirit, token: token).ConfigureAwait(false);
+                }
+                catch
+                {
+                    //swallow this
+                }
+                await objSpirit.DisposeAsync().ConfigureAwait(false);
+                throw;
+            }
             await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
@@ -10015,9 +10086,25 @@ namespace Chummer
             }
 
             Spirit objSprite = new Spirit(CharacterObject);
-            await objSprite.SetEntityTypeAsync(SpiritType.Sprite, token).ConfigureAwait(false);
-            await objSprite.SetForceAsync(await CharacterObject.GetMaxSpriteLevelAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
-            await CharacterObject.Spirits.AddAsync(objSprite, token: token).ConfigureAwait(false);
+            try
+            {
+                await objSprite.SetEntityTypeAsync(SpiritType.Sprite, token).ConfigureAwait(false);
+                await objSprite.SetForceAsync(await CharacterObject.GetMaxSpriteLevelAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await CharacterObject.Spirits.AddAsync(objSprite, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                try
+                {
+                    await CharacterObject.Spirits.RemoveAsync(objSprite, token: token).ConfigureAwait(false);
+                }
+                catch
+                {
+                    //swallow this
+                }
+                await objSprite.DisposeAsync().ConfigureAwait(false);
+                throw;
+            }
             await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 

@@ -22714,14 +22714,30 @@ namespace Chummer
                         {
                             foreach (XmlNode objXmlSpirit in xmlSpiritsList)
                             {
-                                Spirit objSpirit = new Spirit(CharacterObject);
-                                await objSpirit.SetEntityTypeAsync(SpiritType.Spirit, token).ConfigureAwait(false);
-                                await objSpirit.SetNameAsync(objXmlSpirit["name"].InnerText, token).ConfigureAwait(false);
                                 int.TryParse(objXmlSpirit["force"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intForce);
-                                await objSpirit.SetForceAsync(intForce, token).ConfigureAwait(false);
                                 int.TryParse(objXmlSpirit["services"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intServices);
-                                await objSpirit.SetServicesOwedAsync(intServices, token).ConfigureAwait(false);
-                                await CharacterObject.Spirits.AddAsync(objSpirit, token).ConfigureAwait(false);
+                                Spirit objSpirit = new Spirit(CharacterObject);
+                                try
+                                {
+                                    await objSpirit.SetEntityTypeAsync(SpiritType.Spirit, token).ConfigureAwait(false);
+                                    await objSpirit.SetNameAsync(objXmlSpirit["name"].InnerText, token).ConfigureAwait(false);
+                                    await objSpirit.SetForceAsync(intForce, token).ConfigureAwait(false);
+                                    await objSpirit.SetServicesOwedAsync(intServices, token).ConfigureAwait(false);
+                                    await CharacterObject.Spirits.AddAsync(objSpirit, token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    try
+                                    {
+                                        await CharacterObject.Spirits.RemoveAsync(objSpirit, token: token).ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        //swallow this
+                                    }
+                                    await objSpirit.DisposeAsync().ConfigureAwait(false);
+                                    throw;
+                                }
                             }
                         }
                     }

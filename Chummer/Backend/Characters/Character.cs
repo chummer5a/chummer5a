@@ -3048,21 +3048,35 @@ namespace Chummer
                             if (objXmlSkillNode != null)
                             {
                                 Skill objUncastSkill = Skill.FromData(objXmlSkillNode, this, true);
-                                if (objUncastSkill is KnowledgeSkill objSkill)
-                                    SkillsSection.KnowledgeSkills.Add(objSkill);
-                                else
+                                try
                                 {
-                                    Utils.BreakIfDebug();
-                                    objUncastSkill.Remove();
+                                    if (objUncastSkill is KnowledgeSkill objSkill)
+                                        SkillsSection.KnowledgeSkills.Add(objSkill);
+                                    else
+                                    {
+                                        Utils.BreakIfDebug();
+                                        objUncastSkill?.Remove();
+                                    }
+                                }
+                                catch
+                                {
+                                    objUncastSkill?.Remove();
+                                    throw;
                                 }
                             }
                             else
                             {
-                                KnowledgeSkill objSkill = new KnowledgeSkill(this, strName, true)
+                                KnowledgeSkill objSkill = new KnowledgeSkill(this, strName, true);
+                                try
                                 {
-                                    Type = xmlSkill.Attributes?["category"]?.InnerText
-                                };
-                                SkillsSection.KnowledgeSkills.Add(objSkill);
+                                    objSkill.Type = xmlSkill.Attributes?["category"]?.InnerText;
+                                    SkillsSection.KnowledgeSkills.Add(objSkill);
+                                }
+                                catch
+                                {
+                                    objSkill.Remove();
+                                    throw;
+                                }
                             }
                         }
 
@@ -3809,21 +3823,38 @@ namespace Chummer
                             if (objXmlSkillNode != null)
                             {
                                 Skill objUncastSkill = await Skill.FromDataAsync(objXmlSkillNode, this, true, token).ConfigureAwait(false);
-                                if (objUncastSkill is KnowledgeSkill objSkill)
-                                    await SkillsSection.KnowledgeSkills.AddAsync(objSkill, token).ConfigureAwait(false);
-                                else
+                                try
                                 {
-                                    Utils.BreakIfDebug();
-                                    await objUncastSkill.RemoveAsync(token).ConfigureAwait(false);
+                                    if (objUncastSkill is KnowledgeSkill objSkill)
+                                        await SkillsSection.KnowledgeSkills.AddAsync(objSkill, token).ConfigureAwait(false);
+                                    else
+                                    {
+                                        Utils.BreakIfDebug();
+                                        if (objUncastSkill != null)
+                                            await objUncastSkill.RemoveAsync(token).ConfigureAwait(false);
+                                    }
+                                }
+                                catch
+                                {
+                                    if (objUncastSkill != null)
+                                        await objUncastSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                                    throw;
                                 }
                             }
                             else
                             {
                                 KnowledgeSkill objSkill = await KnowledgeSkill.NewAsync(this, strName, true, token)
                                     .ConfigureAwait(false);
-                                await objSkill.SetTypeAsync(xmlSkill.Attributes?["category"]?.InnerText, token)
-                                    .ConfigureAwait(false);
-                                await SkillsSection.KnowledgeSkills.AddAsync(objSkill, token).ConfigureAwait(false);
+                                try
+                                {
+                                    await objSkill.SetTypeAsync(xmlSkill.Attributes?["category"]?.InnerText, token).ConfigureAwait(false);
+                                    await SkillsSection.KnowledgeSkills.AddAsync(objSkill, token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
                             }
                         }
 
@@ -7747,15 +7778,47 @@ namespace Chummer
                                     Contact objContact = new Contact(this);
                                     if (blnSync)
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        objContact.Load(xmlContact, token);
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        _lstContacts.Add(objContact);
+                                        try
+                                        {
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objContact.Load(xmlContact, token);
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            _lstContacts.Add(objContact);
+                                        }
+                                        catch
+                                        {
+                                            try
+                                            {
+                                                _lstContacts.Remove(objContact);
+                                            }
+                                            catch
+                                            {
+                                                //swallow this
+                                            }
+                                            objContact.Dispose();
+                                            throw;
+                                        }
                                     }
                                     else
                                     {
-                                        await objContact.LoadAsync(xmlContact, token).ConfigureAwait(false);
-                                        await _lstContacts.AddAsync(objContact, token).ConfigureAwait(false);
+                                        try
+                                        {
+                                            await objContact.LoadAsync(xmlContact, token).ConfigureAwait(false);
+                                            await _lstContacts.AddAsync(objContact, token).ConfigureAwait(false);
+                                        }
+                                        catch
+                                        {
+                                            try
+                                            {
+                                                await _lstContacts.RemoveAsync(objContact, CancellationToken.None).ConfigureAwait(false);
+                                            }
+                                            catch
+                                            {
+                                                // swallow this
+                                            }
+                                            await objContact.DisposeAsync().ConfigureAwait(false);
+                                            throw;
+                                        }
                                     }
                                 }
 
@@ -8843,14 +8906,30 @@ namespace Chummer
                                     Drug objDrug = new Drug(this);
                                     if (blnSync)
                                     {
-                                        objDrug.Load(objXmlDrug);
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        _lstDrugs.Add(objDrug);
+                                        try
+                                        {
+                                            objDrug.Load(objXmlDrug);
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            _lstDrugs.Add(objDrug);
+                                        }
+                                        catch
+                                        {
+                                            objDrug.Remove(false);
+                                            throw;
+                                        }
                                     }
                                     else
                                     {
-                                        await objDrug.LoadAsync(objXmlDrug, token).ConfigureAwait(false);
-                                        await _lstDrugs.AddAsync(objDrug, token).ConfigureAwait(false);
+                                        try
+                                        {
+                                            await objDrug.LoadAsync(objXmlDrug, token).ConfigureAwait(false);
+                                            await _lstDrugs.AddAsync(objDrug, token).ConfigureAwait(false);
+                                        }
+                                        catch
+                                        {
+                                            await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
+                                            throw;
+                                        }
                                     }
                                 }
 
@@ -9481,15 +9560,47 @@ namespace Chummer
                                     Spirit objSpirit = new Spirit(this);
                                     if (blnSync)
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        objSpirit.Load(xmlSpirit, token);
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        _lstSpirits.Add(objSpirit);
+                                        try
+                                        {
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objSpirit.Load(xmlSpirit, token);
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            _lstSpirits.Add(objSpirit);
+                                        }
+                                        catch
+                                        {
+                                            try
+                                            {
+                                                _lstSpirits.Remove(objSpirit);
+                                            }
+                                            catch
+                                            {
+                                                //swallow this
+                                            }
+                                            objSpirit.Dispose();
+                                            throw;
+                                        }
                                     }
                                     else
                                     {
-                                        await objSpirit.LoadAsync(xmlSpirit, token).ConfigureAwait(false);
-                                        await _lstSpirits.AddAsync(objSpirit, token).ConfigureAwait(false);
+                                        try
+                                        {
+                                            await objSpirit.LoadAsync(xmlSpirit, token).ConfigureAwait(false);
+                                            await _lstSpirits.AddAsync(objSpirit, token).ConfigureAwait(false);
+                                        }
+                                        catch
+                                        {
+                                            try
+                                            {
+                                                await _lstSpirits.RemoveAsync(objSpirit, token: token).ConfigureAwait(false);
+                                            }
+                                            catch
+                                            {
+                                                //swallow this
+                                            }
+                                            await objSpirit.DisposeAsync().ConfigureAwait(false);
+                                            throw;
+                                        }
                                     }
                                 }
 
@@ -50940,90 +51051,110 @@ namespace Chummer
                                 foreach (XPathNavigator xmlContactToImport in xmlStatBlockBaseNode.SelectAndCacheExpression(
                                              "contacts/contact[@useradded != \"no\"]", token))
                                 {
-                                    Contact objContact = new Contact(this)
+                                    Contact objContact = new Contact(this);
+                                    try
                                     {
-                                        EntityType = ContactType.Contact,
-                                        Name
+                                        objContact.EntityType = ContactType.Contact;
+                                        objContact.Name
                                             = xmlContactToImport.SelectSingleNodeAndCacheExpression("@name", token)
-                                                ?.Value ?? string.Empty,
-                                        Role
+                                                ?.Value ?? string.Empty;
+                                        objContact.Role
                                             = xmlContactToImport.SelectSingleNodeAndCacheExpression("@type", token)
-                                                ?.Value ?? string.Empty,
-                                        Connection =
+                                                ?.Value ?? string.Empty;
+                                        objContact.Connection =
                                             xmlContactToImport.SelectSingleNodeAndCacheExpression("@connection", token)
-                                                ?.ValueAsInt ?? 1,
-                                        Loyalty = xmlContactToImport
+                                                ?.ValueAsInt ?? 1;
+                                        objContact.Loyalty = xmlContactToImport
                                             .SelectSingleNodeAndCacheExpression("@loyalty", token)
-                                            ?.ValueAsInt ?? 1
-                                    };
+                                            ?.ValueAsInt ?? 1;
 
-                                    string strDescription =
-                                        xmlContactToImport.SelectSingleNodeAndCacheExpression(
-                                            "description", token)?.Value;
-                                    using (new FetchSafelyFromObjectPool<StringBuilder>(
-                                               Utils.StringBuilderPool, out StringBuilder sbdNotes))
-                                    {
-                                        foreach (string strLine in strDescription.SplitNoAlloc('\n',
-                                                     StringSplitOptions.RemoveEmptyEntries))
+                                        string strDescription =
+                                            xmlContactToImport.SelectSingleNodeAndCacheExpression(
+                                                "description", token)?.Value;
+                                        using (new FetchSafelyFromObjectPool<StringBuilder>(
+                                                   Utils.StringBuilderPool, out StringBuilder sbdNotes))
                                         {
-                                            string[] astrLineColonSplit =
-                                                strLine.SplitFixedSizePooledArray(':', 2, StringSplitOptions.RemoveEmptyEntries);
-                                            try
+                                            foreach (string strLine in strDescription.SplitNoAlloc('\n',
+                                                         StringSplitOptions.RemoveEmptyEntries))
                                             {
-                                                switch (astrLineColonSplit[0])
+                                                string[] astrLineColonSplit =
+                                                    strLine.SplitFixedSizePooledArray(':', 2, StringSplitOptions.RemoveEmptyEntries);
+                                                try
                                                 {
-                                                    case "Metatype":
-                                                        objContact.Metatype = astrLineColonSplit[1].Trim();
-                                                        break;
+                                                    switch (astrLineColonSplit[0])
+                                                    {
+                                                        case "Metatype":
+                                                            objContact.Metatype = astrLineColonSplit[1].Trim();
+                                                            break;
 
-                                                    case "Gender":
-                                                        objContact.Gender = astrLineColonSplit[1].Trim();
-                                                        break;
+                                                        case "Gender":
+                                                            objContact.Gender = astrLineColonSplit[1].Trim();
+                                                            break;
 
-                                                    case "Age":
-                                                        objContact.Age = astrLineColonSplit[1].Trim();
-                                                        break;
+                                                        case "Age":
+                                                            objContact.Age = astrLineColonSplit[1].Trim();
+                                                            break;
 
-                                                    case "Preferred Payment Method":
-                                                        objContact.PreferredPayment = astrLineColonSplit[1].Trim();
-                                                        break;
+                                                        case "Preferred Payment Method":
+                                                            objContact.PreferredPayment = astrLineColonSplit[1].Trim();
+                                                            break;
 
-                                                    case "Hobbies/Vice":
-                                                        objContact.HobbiesVice = astrLineColonSplit[1].Trim();
-                                                        break;
+                                                        case "Hobbies/Vice":
+                                                            objContact.HobbiesVice = astrLineColonSplit[1].Trim();
+                                                            break;
 
-                                                    case "Personal Life":
-                                                        objContact.PersonalLife = astrLineColonSplit[1].Trim();
-                                                        break;
+                                                        case "Personal Life":
+                                                            objContact.PersonalLife = astrLineColonSplit[1].Trim();
+                                                            break;
 
-                                                    case "Type":
-                                                        objContact.Type = astrLineColonSplit[1].Trim();
-                                                        break;
+                                                        case "Type":
+                                                            objContact.Type = astrLineColonSplit[1].Trim();
+                                                            break;
 
-                                                    default:
-                                                        sbdNotes.AppendLine(strLine);
-                                                        break;
+                                                        default:
+                                                            sbdNotes.AppendLine(strLine);
+                                                            break;
+                                                    }
+                                                }
+                                                finally
+                                                {
+                                                    ArrayPool<string>.Shared.Return(astrLineColonSplit);
                                                 }
                                             }
-                                            finally
-                                            {
-                                                ArrayPool<string>.Shared.Return(astrLineColonSplit);
-                                            }
+
+                                            if (sbdNotes.Length > 0)
+                                                sbdNotes.Length -= Environment.NewLine.Length;
+                                            if (blnSync)
+                                                objContact.Notes = sbdNotes.ToString();
+                                            else
+                                                await objContact.SetNotesAsync(sbdNotes.ToString(), token).ConfigureAwait(false);
                                         }
 
-                                        if (sbdNotes.Length > 0)
-                                            sbdNotes.Length -= Environment.NewLine.Length;
                                         if (blnSync)
-                                            objContact.Notes = sbdNotes.ToString();
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            _lstContacts.Add(objContact);
                                         else
-                                            await objContact.SetNotesAsync(sbdNotes.ToString(), token).ConfigureAwait(false);
+                                            await _lstContacts.AddAsync(objContact, token).ConfigureAwait(false);
                                     }
-
-                                    if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        _lstContacts.Add(objContact);
-                                    else
-                                        await _lstContacts.AddAsync(objContact, token).ConfigureAwait(false);
+                                    catch
+                                    {
+                                        try
+                                        {
+                                            if (blnSync)
+                                                _lstContacts.Remove(objContact);
+                                            else
+                                                await _lstContacts.RemoveAsync(objContact, CancellationToken.None).ConfigureAwait(false);
+                                        }
+                                        catch
+                                        {
+                                            //swallow this
+                                        }
+                                        if (blnSync)
+                                            objContact.Dispose();
+                                        else
+                                            await objContact.DisposeAsync().ConfigureAwait(false);
+                                        throw;
+                                    }
                                 }
 
                                 //Timekeeper.Finish("load_char_contacts");
