@@ -802,11 +802,22 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Loads skill saved in legacy format
         /// </summary>
-        /// <param name="objCharacter"></param>
-        /// <param name="xmlSkillNode"></param>
-        /// <returns></returns>
         public static Skill LegacyLoad(Character objCharacter, XmlNode xmlSkillNode)
         {
+            return Utils.SafelyRunSynchronously(() => LegacyLoadCoreAsync(true, objCharacter, xmlSkillNode));
+        }
+
+        /// <summary>
+        /// Loads skill saved in legacy format
+        /// </summary>
+        public static Task<Skill> LegacyLoadAsync(Character objCharacter, XmlNode xmlSkillNode, CancellationToken token = default)
+        {
+            return LegacyLoadCoreAsync(false, objCharacter, xmlSkillNode);
+        }
+
+        private static async Task<Skill> LegacyLoadCoreAsync(bool blnSync, Character objCharacter, XmlNode xmlSkillNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (xmlSkillNode == null)
                 return null;
             xmlSkillNode.TryGetField("id", Guid.TryParse, out Guid suid, Guid.NewGuid());
@@ -821,18 +832,27 @@ namespace Chummer.Backend.Skills
             Skill objSkill;
             if (xmlSkillNode.TryGetBoolFieldQuickly("knowledge", ref blnTemp) && blnTemp)
             {
-                objSkill = new KnowledgeSkill(objCharacter)
+                KnowledgeSkill objKnoSkill = new KnowledgeSkill(objCharacter);
+                if (blnSync)
                 {
-                    WritableName = strName,
-                    Base = intBaseRating,
-                    Karma = intKarmaRating,
-                    Type = xmlSkillNode["skillcategory"]?.InnerText
-                };
+                    objKnoSkill.WritableName = strName;
+                    objKnoSkill.Base = intBaseRating;
+                    objKnoSkill.Karma = intKarmaRating;
+                    objKnoSkill.Type = xmlSkillNode["skillcategory"]?.InnerText;
+                }
+                else
+                {
+                    await objKnoSkill.SetWritableNameAsync(strName, token).ConfigureAwait(false);
+                    await objKnoSkill.SetBaseAsync(intBaseRating, token).ConfigureAwait(false);
+                    await objKnoSkill.SetKarmaAsync(intKarmaRating, token).ConfigureAwait(false);
+                    await objKnoSkill.SetTypeAsync(xmlSkillNode["skillcategory"]?.InnerText, token).ConfigureAwait(false);
+                }
+                objSkill = objKnoSkill;
             }
             else
             {
-                XmlDocument xmlSkillsDocument = objCharacter.LoadData("skills.xml");
-                XmlNode xmlSkillDataNode = objCharacter.LoadData("skills.xml").TryGetNodeById("/chummer/skills/skill", suid)
+                XmlDocument xmlSkillsDocument = blnSync ? objCharacter.LoadData("skills.xml") : await objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
+                XmlNode xmlSkillDataNode = xmlSkillsDocument.TryGetNodeById("/chummer/skills/skill", suid)
                     //Some stuff apparently have a guid of 0000-000... (only exotic?)
                     ?? xmlSkillsDocument.TryGetNodeByNameOrId("/chummer/skills/skill", strName);
 
@@ -840,7 +860,7 @@ namespace Chummer.Backend.Skills
                                            && xmlSkillsDocument
                                               .SelectSingleNodeAndCacheExpressionAsNavigator(
                                                   "/chummer/categories/category[. = "
-                                                  + xmlSkillDataNode["category"]?.InnerText.CleanXPath() + "]/@type")
+                                                  + xmlSkillDataNode["category"]?.InnerText.CleanXPath() + "]/@type", token)
                                               ?.Value != "active";
 
                 objSkill = FromData(xmlSkillDataNode, objCharacter, blnIsKnowledgeSkill);
@@ -850,7 +870,10 @@ namespace Chummer.Backend.Skills
                 if (objSkill is ExoticSkill objExoticSkill)
                 {
                     //don't need to do more load then.
-                    objExoticSkill.Specific = xmlSkillNode.SelectSingleNodeAndCacheExpressionAsNavigator("skillspecializations/skillspecialization/name")?.Value ?? string.Empty;
+                    if (blnSync)
+                        objExoticSkill.Specific = xmlSkillNode.SelectSingleNodeAndCacheExpressionAsNavigator("skillspecializations/skillspecialization/name")?.Value ?? string.Empty;
+                    else
+                        await objExoticSkill.SetSpecificAsync(xmlSkillNode.SelectSingleNodeAndCacheExpressionAsNavigator("skillspecializations/skillspecialization/name")?.Value ?? string.Empty, token).ConfigureAwait(false);
                     return objSkill;
                 }
 
@@ -868,11 +891,17 @@ namespace Chummer.Backend.Skills
                         {
                             try
                             {
-                                objSkill.Specializations.Add(objSpec);
+                                if (blnSync)
+                                    objSkill.Specializations.Add(objSpec);
+                                else
+                                    await (await objSkill.GetSpecializationsAsync(token).ConfigureAwait(false)).AddAsync(objSpec, token).ConfigureAwait(false);
                             }
                             catch
                             {
-                                objSkill.Dispose();
+                                if (blnSync)
+                                    objSpec.Dispose();
+                                else
+                                    await objSpec.DisposeAsync().ConfigureAwait(false);
                                 throw;
                             }
                         }

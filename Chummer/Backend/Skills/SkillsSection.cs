@@ -1759,7 +1759,9 @@ namespace Chummer.Backend.Skills
                                     {
                                         foreach (XmlNode xmlNode in xmlSkillsList)
                                         {
-                                            Skill objSkill = Skill.LegacyLoad(_objCharacter, xmlNode);
+                                            Skill objSkill = blnSync
+                                                ? Skill.LegacyLoad(_objCharacter, xmlNode)
+                                                : await Skill.LegacyLoadAsync(_objCharacter, xmlNode, token).ConfigureAwait(false);
                                             if (objSkill != null)
                                                 lstTempSkillList.Add(objSkill);
                                         }
