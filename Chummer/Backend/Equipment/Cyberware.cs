@@ -3006,6 +3006,13 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                     await objWriter
+                            .WriteElementStringAsync(
+                                "fullname", await DisplayNameAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
+                                token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("fullname_english", await DisplayNameAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token: token)
+                        .ConfigureAwait(false);
+
+                    await objWriter
                         .WriteElementStringAsync(
                             "category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);

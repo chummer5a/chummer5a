@@ -1061,20 +1061,23 @@ namespace Chummer.Backend.Equipment
                     await objWriter.WriteElementStringAsync("bonuslp", (await GetBonusLPAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                         .ConfigureAwait(false);
                     string strBaseLifestyle = await GetBaseLifestyleAsync(token).ConfigureAwait(false);
-
+                    string strBaseLifestyleLocalized = strBaseLifestyle;
                     // Retrieve the Advanced Lifestyle information if applicable.
                     if (!string.IsNullOrEmpty(strBaseLifestyle))
                     {
                         XPathNavigator objXmlAspect = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                         if (objXmlAspect != null)
                         {
-                            strBaseLifestyle
+                            strBaseLifestyle = objXmlAspect.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? strBaseLifestyle;
+                            strBaseLifestyleLocalized
                                 = objXmlAspect.SelectSingleNodeAndCacheExpression("translate", token)?.Value
-                                  ?? objXmlAspect.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? strBaseLifestyle;
+                                  ?? strBaseLifestyle;
                         }
                     }
 
-                    await objWriter.WriteElementStringAsync("baselifestyle", strBaseLifestyle, token)
+                    await objWriter.WriteElementStringAsync("baselifestyle", strBaseLifestyleLocalized, token)
+                        .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("baselifestyle_english", strBaseLifestyle, token)
                         .ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("trustfund", TrustFund.ToString(GlobalSettings.InvariantCultureInfo),

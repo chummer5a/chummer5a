@@ -812,8 +812,10 @@ namespace Chummer.Backend.Equipment
             {
                 await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname_english", await DisplayNameAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("mount", Mount, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("extramount", ExtraMount, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("addmount", AddMount, token).ConfigureAwait(false);

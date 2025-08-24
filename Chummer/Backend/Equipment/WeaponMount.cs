@@ -709,6 +709,8 @@ namespace Chummer.Backend.Equipment
             await objWriter.WriteElementStringAsync("name_english", Name, token: token).ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("fullname",
                 await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("fullname_english",
+                await DisplayNameAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("category_english", Category, token: token).ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("limit", Limit, token: token).ConfigureAwait(false);

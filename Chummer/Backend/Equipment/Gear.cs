@@ -2355,25 +2355,17 @@ namespace Chummer.Backend.Equipment
             {
                 await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
-                if ((Category == "Foci" || Category == "Metamagic Foci") && Bonded)
-                    await objWriter.WriteElementStringAsync(
-                                       "name",
-                                       await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false)
-                                       + await LanguageManager
-                                               .GetStringAsync("String_Space", strLanguageToPrint, token: token)
-                                               .ConfigureAwait(false) + await LanguageManager
-                                                                              .GetStringAsync(
-                                                                                  "Label_BondedFoci",
-                                                                                  strLanguageToPrint, token: token)
-                                                                              .ConfigureAwait(false), token)
-                                   .ConfigureAwait(false);
-                else
-                    await objWriter
-                          .WriteElementStringAsync(
-                              "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
                               token).ConfigureAwait(false);
-
                 await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
+                await objWriter
+                          .WriteElementStringAsync(
+                              "fullname", await DisplayNameAsync(objCulture, strLanguageToPrint, token: token).ConfigureAwait(false),
+                              token).ConfigureAwait(false);
+                await objWriter
+                          .WriteElementStringAsync(
+                              "fullname_english", await DisplayNameAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false),
+                              token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("category_english", Category, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ispersona",
@@ -4932,6 +4924,8 @@ namespace Chummer.Backend.Equipment
                 strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
             if (!string.IsNullOrEmpty(GearName))
                 strReturn += strSpace + "(\"" + GearName + "\")";
+            if ((Category == "Foci" || Category == "Metamagic Foci") && Bonded)
+                strReturn += strSpace + '(' + LanguageManager.GetString("Label_BondedFoci", strLanguage) + ')';
             if (LoadedIntoClip != null)
             {
                 if (objCulture == null)
@@ -4951,7 +4945,6 @@ namespace Chummer.Backend.Equipment
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strQuantity))
                 strReturn = strQuantity + strSpace + strReturn;
-
             int intRating = await GetRatingAsync(token).ConfigureAwait(false);
             if (intRating > 0)
             {
@@ -4971,6 +4964,8 @@ namespace Chummer.Backend.Equipment
                 strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
             if (!string.IsNullOrEmpty(GearName))
                 strReturn += strSpace + "(\"" + GearName + "\")";
+            if ((Category == "Foci" || Category == "Metamagic Foci") && Bonded)
+                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync("Label_BondedFoci", strLanguage, token: token).ConfigureAwait(false) + ')';
             if (LoadedIntoClip != null)
             {
                 if (objCulture == null)

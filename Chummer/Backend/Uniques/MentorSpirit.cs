@@ -671,12 +671,12 @@ namespace Chummer
                 {
                     await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("mentortype", _eMentorType.ToString(), token)
+                        .ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
                             token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("mentortype", _eMentorType.ToString(), token)
-                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name_english", await GetNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("advantage",

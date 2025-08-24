@@ -723,6 +723,11 @@ namespace Chummer
                             "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name_english", await GetNameAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    await objWriter
+                        .WriteElementStringAsync(
+                            "fullname", await DisplayNameAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("fullname_english", await DisplayNameAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     string strSpace = await LanguageManager
                         .GetStringAsync("String_Space", strLanguageToPrint, token: token)
                         .ConfigureAwait(false);
