@@ -17662,21 +17662,41 @@ namespace Chummer
                                 await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false);
                             ThreadSafeObservableCollection<CharacterAttrib> lstAttributeList =
                                 await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false);
-                            await lstAttributeList.ForEachWithSideEffectsAsync(async objOldAttribute =>
+                            try
                             {
-                                CharacterAttrib objNewAttribute = new CharacterAttrib(
-                                    CharacterObject, objOldAttribute.Abbrev,
-                                    AttributeCategory.Shapeshifter);
-                                await AttributeSection.CopyAttributeAsync(objOldAttribute, objNewAttribute,
-                                    strMetavariantXPath,
-                                    xmlDoc, token).ConfigureAwait(false);
-                                lstAttributesToAdd.Add(objNewAttribute);
-                            }, token).ConfigureAwait(false);
+                                await lstAttributeList.ForEachWithSideEffectsAsync(async objOldAttribute =>
+                                {
+                                    CharacterAttrib objNewAttribute = new CharacterAttrib(
+                                        CharacterObject, objOldAttribute.Abbrev,
+                                        AttributeCategory.Shapeshifter);
+                                    try
+                                    {
+                                        await AttributeSection.CopyAttributeAsync(objOldAttribute, objNewAttribute,
+                                            strMetavariantXPath,
+                                            xmlDoc, token).ConfigureAwait(false);
+                                        lstAttributesToAdd.Add(objNewAttribute);
+                                    }
+                                    catch
+                                    {
+                                        await objNewAttribute.DisposeAsync().ConfigureAwait(false);
+                                        throw;
+                                    }
+                                }, token).ConfigureAwait(false);
 
-                            foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
+                                foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
+                                {
+                                    await lstAttributeList.AddAsync(objAttributeToAdd, token)
+                                        .ConfigureAwait(false);
+                                }
+                            }
+                            catch
                             {
-                                await lstAttributeList.AddAsync(objAttributeToAdd, token)
-                                    .ConfigureAwait(false);
+                                foreach (CharacterAttrib objAttribute in lstAttributesToAdd)
+                                {
+                                    await lstAttributeList.RemoveAsync(objAttribute, CancellationToken.None).ConfigureAwait(false);
+                                    await objAttribute.DisposeAsync().ConfigureAwait(false);
+                                }
+                                throw;
                             }
                         }
 

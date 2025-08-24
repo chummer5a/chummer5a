@@ -5529,13 +5529,13 @@ namespace Chummer
                 try
                 {
                     Character objMerge = new Character();
-                    await objMerge.SetFileNameAsync(await CharacterObject.GetFileNameAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                     try
                     {
+                        await objMerge.SetFileNameAsync(await CharacterObject.GetFileNameAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                         Character objVessel = new Character();
-                        await objVessel.SetFileNameAsync(strFileName, GenericToken).ConfigureAwait(false);
                         try
                         {
+                            await objVessel.SetFileNameAsync(strFileName, GenericToken).ConfigureAwait(false);
                             using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                    = await Program.CreateAndShowProgressBarAsync(
                                        Path.GetFileName(objVessel.FileName), Character.NumLoadingSections * 2 + 7,

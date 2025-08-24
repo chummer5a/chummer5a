@@ -1330,48 +1330,21 @@ namespace Chummer
                         return objCharacter;
                 }
 
-                objCharacter = new Character
+                bool blnLoaded = false;
+                objCharacter = new Character();
+                try
                 {
-                    FileName = strFileName
-                };
-                string strAutosavesPath = Utils.GetAutosavesFolderPath;
-                string strAutosaveName = string.Empty;
-                if (blnShowErrors) // Only do the autosave prompt if we will show prompts
-                {
-                    if (!strFileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
+                    if (blnSync)
+                        objCharacter.FileName = strFileName;
+                    else
+                        await objCharacter.SetFileNameAsync(strFileName, token).ConfigureAwait(false);
+                    string strAutosavesPath = Utils.GetAutosavesFolderPath;
+                    string strAutosaveName = string.Empty;
+                    if (blnShowErrors) // Only do the autosave prompt if we will show prompts
                     {
-                        string strBaseFileName = Path.GetFileNameWithoutExtension(strFileName);
-                        if (!string.IsNullOrEmpty(strBaseFileName))
+                        if (!strFileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
                         {
-                            strAutosaveName = Path.Combine(strAutosavesPath, strBaseFileName) + ".chum5";
-                            if (File.Exists(strAutosaveName))
-                            {
-                                if (File.GetLastWriteTimeUtc(strAutosaveName) <= File.GetLastWriteTimeUtc(strFileName))
-                                {
-                                    strAutosaveName = string.Empty;
-                                }
-                            }
-                            else
-                                strAutosaveName = string.Empty;
-                            if (string.IsNullOrEmpty(strAutosaveName))
-                            {
-                                strAutosaveName = Path.Combine(strAutosavesPath, strBaseFileName) + ".chum5lz";
-                                if (File.Exists(strAutosaveName))
-                                {
-                                    if (File.GetLastWriteTimeUtc(strAutosaveName)
-                                        <= File.GetLastWriteTimeUtc(strFileName))
-                                    {
-                                        strAutosaveName = string.Empty;
-                                    }
-                                }
-                                else
-                                    strAutosaveName = string.Empty;
-                            }
-                        }
-
-                        if (string.IsNullOrEmpty(strAutosaveName) && !string.IsNullOrEmpty(strNewName))
-                        {
-                            strBaseFileName = Path.GetFileNameWithoutExtension(strNewName);
+                            string strBaseFileName = Path.GetFileNameWithoutExtension(strFileName);
                             if (!string.IsNullOrEmpty(strBaseFileName))
                             {
                                 strAutosaveName = Path.Combine(strAutosavesPath, strBaseFileName) + ".chum5";
@@ -1399,78 +1372,126 @@ namespace Chummer
                                         strAutosaveName = string.Empty;
                                 }
                             }
-                        }
-                    }
 
-                    if (!string.IsNullOrEmpty(strAutosaveName))
-                    {
-                        if (blnSync)
+                            if (string.IsNullOrEmpty(strAutosaveName) && !string.IsNullOrEmpty(strNewName))
+                            {
+                                strBaseFileName = Path.GetFileNameWithoutExtension(strNewName);
+                                if (!string.IsNullOrEmpty(strBaseFileName))
+                                {
+                                    strAutosaveName = Path.Combine(strAutosavesPath, strBaseFileName) + ".chum5";
+                                    if (File.Exists(strAutosaveName))
+                                    {
+                                        if (File.GetLastWriteTimeUtc(strAutosaveName) <= File.GetLastWriteTimeUtc(strFileName))
+                                        {
+                                            strAutosaveName = string.Empty;
+                                        }
+                                    }
+                                    else
+                                        strAutosaveName = string.Empty;
+                                    if (string.IsNullOrEmpty(strAutosaveName))
+                                    {
+                                        strAutosaveName = Path.Combine(strAutosavesPath, strBaseFileName) + ".chum5lz";
+                                        if (File.Exists(strAutosaveName))
+                                        {
+                                            if (File.GetLastWriteTimeUtc(strAutosaveName)
+                                                <= File.GetLastWriteTimeUtc(strFileName))
+                                            {
+                                                strAutosaveName = string.Empty;
+                                            }
+                                        }
+                                        else
+                                            strAutosaveName = string.Empty;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(strAutosaveName))
                         {
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            if (ShowScrollableMessageBox(
-                                    string.Format(GlobalSettings.CultureInfo,
+                            if (blnSync)
+                            {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                if (ShowScrollableMessageBox(
+                                        string.Format(GlobalSettings.CultureInfo,
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            LanguageManager.GetString("Message_AutosaveFound", token: token),
+                                            Path.GetFileName(strFileName),
+                                            File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime(),
+                                            File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        LanguageManager.GetString("Message_AutosaveFound", token: token),
-                                        Path.GetFileName(strFileName),
-                                        File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime(),
-                                        File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    LanguageManager.GetString("MessageTitle_AutosaveFound", token: token),
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                                        LanguageManager.GetString("MessageTitle_AutosaveFound", token: token),
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                                {
+                                    strAutosaveName = string.Empty;
+                                }
+                            }
+                            else if (await ShowScrollableMessageBoxAsync(
+                                         string.Format(GlobalSettings.CultureInfo,
+                                             await LanguageManager
+                                                 .GetStringAsync("Message_AutosaveFound", token: token)
+                                                 .ConfigureAwait(false),
+                                             Path.GetFileName(strFileName),
+                                             File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime(),
+                                             File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
+                                         await LanguageManager
+                                             .GetStringAsync("MessageTitle_AutosaveFound", token: token)
+                                             .ConfigureAwait(false),
+                                         MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) != DialogResult.Yes)
                             {
                                 strAutosaveName = string.Empty;
                             }
                         }
-                        else if (await ShowScrollableMessageBoxAsync(
-                                     string.Format(GlobalSettings.CultureInfo,
-                                         await LanguageManager
-                                             .GetStringAsync("Message_AutosaveFound", token: token)
-                                             .ConfigureAwait(false),
-                                         Path.GetFileName(strFileName),
-                                         File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime(),
-                                         File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
-                                     await LanguageManager
-                                         .GetStringAsync("MessageTitle_AutosaveFound", token: token)
-                                         .ConfigureAwait(false),
-                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) != DialogResult.Yes)
-                        {
-                            strAutosaveName = string.Empty;
-                        }
                     }
-                }
 
-                if (blnSync)
-                    // ReSharper disable once MethodHasAsyncOverload
-                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    OpenCharacters.Add(objCharacter);
-                else
-                    await OpenCharacters.AddAsync(objCharacter, token).ConfigureAwait(false);
-                string strFileToLoad = string.IsNullOrEmpty(strAutosaveName) ? strFileName : strAutosaveName;
-                //Timekeeper.Start("load_file");
-                bool blnLoaded = blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? objCharacter.Load(strFileToLoad, frmLoadingBar, blnShowErrors, token)
-                    : await objCharacter.LoadAsync(strFileToLoad, frmLoadingBar, blnShowErrors, token).ConfigureAwait(false);
-                //Timekeeper.Finish("load_file");
-                if (!blnLoaded)
-                {
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        OpenCharacters.Remove(objCharacter);
+                        OpenCharacters.Add(objCharacter);
                     else
-                        await OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
-                    return null;
-                }
+                        await OpenCharacters.AddAsync(objCharacter, token).ConfigureAwait(false);
+                    string strFileToLoad = string.IsNullOrEmpty(strAutosaveName) ? strFileName : strAutosaveName;
+                    //Timekeeper.Start("load_file");
+                    blnLoaded = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? objCharacter.Load(strFileToLoad, frmLoadingBar, blnShowErrors, token)
+                        : await objCharacter.LoadAsync(strFileToLoad, frmLoadingBar, blnShowErrors, token).ConfigureAwait(false);
+                    //Timekeeper.Finish("load_file");
+                    if (!blnLoaded)
+                        return null;
 
-                // If a new name is given, set the character's name to match (used in cloning).
-                if (!string.IsNullOrEmpty(strNewName))
-                    objCharacter.Name = strNewName;
-                // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
-                if (blnClearFileName
-                    // Clear out file name if the character's file is in the autosaves folder because we do not want them to be manually saving there.
-                    || objCharacter.FileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
-                    objCharacter.FileName = string.Empty;
+                    // If a new name is given, set the character's name to match (used in cloning).
+                    if (!string.IsNullOrEmpty(strNewName))
+                        objCharacter.Name = strNewName;
+                    // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
+                    if (blnClearFileName
+                        // Clear out file name if the character's file is in the autosaves folder because we do not want them to be manually saving there.
+                        || objCharacter.FileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
+                        objCharacter.FileName = string.Empty;
+                }
+                catch
+                {
+                    if (!blnLoaded)
+                    {
+                        blnLoaded = blnSync
+                            ? OpenCharacters.Remove(objCharacter)
+                            : await OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
+                    }
+                    throw;
+                }
+                finally
+                {
+                    if (!blnLoaded)
+                    {
+                        if (blnSync)
+                            OpenCharacters.Remove(objCharacter);
+                        else
+                            await OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
+                    }
+                    if (blnSync)
+                        objCharacter.Dispose();
+                    else
+                        await objCharacter.DisposeAsync().ConfigureAwait(false);
+                }
             }
             else if (blnShowErrors)
             {

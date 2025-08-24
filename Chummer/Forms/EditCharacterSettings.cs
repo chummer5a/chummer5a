@@ -384,36 +384,43 @@ namespace Chummer
                 {
                     CharacterSettings objNewCharacterSettings
                         = new CharacterSettings(_objCharacterSettings, false, strSelectedFullFileName);
-                    string strKey = await objNewCharacterSettings.GetDictionaryKeyAsync().ConfigureAwait(false);
-                    if (!dicCharacterSettings.TryAdd(strKey, objNewCharacterSettings))
-                    {
-                        await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
-                        return;
-                    }
-
-                    bool blnSaveSuccessful;
                     try
                     {
-                        blnSaveSuccessful = await _objCharacterSettings.SaveAsync(strSelectedFullFileName, true).ConfigureAwait(false);
+                        string strKey = await objNewCharacterSettings.GetDictionaryKeyAsync().ConfigureAwait(false);
+                        if (!dicCharacterSettings.TryAdd(strKey, objNewCharacterSettings))
+                        {
+                            await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                            return;
+                        }
+
+                        bool blnSaveSuccessful;
+                        try
+                        {
+                            blnSaveSuccessful = await _objCharacterSettings.SaveAsync(strSelectedFullFileName, true).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            // Revert addition of settings if we cannot create a file
+                            dicCharacterSettings.TryRemove(strKey, out _);
+                            throw;
+                        }
+                        if (!blnSaveSuccessful)
+                        {
+                            // Revert addition of settings if we cannot create a file
+                            dicCharacterSettings.TryRemove(strKey, out _);
+                            await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                            return;
+                        }
+
+                        // Force repopulate character settings list in Master Index from here in lieu of event handling for concurrent dictionaries
+                        _blnForceMasterIndexRepopulateOnClose = true;
+                        _objReferenceCharacterSettings = objNewCharacterSettings;
                     }
                     catch
                     {
-                        // Revert addition of settings if we cannot create a file
-                        dicCharacterSettings.TryRemove(strKey, out _);
                         await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                         throw;
                     }
-                    if (!blnSaveSuccessful)
-                    {
-                        // Revert addition of settings if we cannot create a file
-                        dicCharacterSettings.TryRemove(strKey, out _);
-                        await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
-                        return;
-                    }
-
-                    // Force repopulate character settings list in Master Index from here in lieu of event handling for concurrent dictionaries
-                    _blnForceMasterIndexRepopulateOnClose = true;
-                    _objReferenceCharacterSettings = objNewCharacterSettings;
                     await SetIsDirtyAsync(false).ConfigureAwait(false);
                     await PopulateSettingsList().ConfigureAwait(false);
                 }

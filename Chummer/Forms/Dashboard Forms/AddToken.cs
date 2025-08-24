@@ -77,34 +77,40 @@ namespace Chummer
         {
             if (File.Exists(fileName) && (fileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)))
             {
-                Character objCharacter = new Character
-                {
-                    FileName = fileName
-                };
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+                Character objCharacter = new Character();
                 try
                 {
-                    if (!await objCharacter.LoadAsync(token: token).ConfigureAwait(false))
+                    await objCharacter.SetFileNameAsync(fileName, token).ConfigureAwait(false);
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+                    try
                     {
-                        // TODO edward setup error page
-                        await objCharacter.DisposeAsync().ConfigureAwait(false);
-                        return; // we obviously cannot init
-                    }
+                        if (!await objCharacter.LoadAsync(token: token).ConfigureAwait(false))
+                        {
+                            // TODO edward setup error page
+                            await objCharacter.DisposeAsync().ConfigureAwait(false);
+                            return; // we obviously cannot init
+                        }
 
-                    int intInitDice = await objCharacter.GetInitiativeDiceAsync(token: token).ConfigureAwait(false);
-                    await nudInit.DoThreadSafeAsync(x => x.Value = intInitDice, token: token).ConfigureAwait(false);
-                    string strName = await objCharacter.GetNameAsync(token).ConfigureAwait(false);
-                    await txtName.DoThreadSafeAsync(x => x.Text = strName, token: token).ConfigureAwait(false);
-                    if (int.TryParse((await objCharacter.GetInitiativeAsync(token).ConfigureAwait(false))
-                        .SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(), out int intTemp))
-                        await nudInitStart.DoThreadSafeAsync(x => x.Value = intTemp, token: token).ConfigureAwait(false);
-                    Character objOldCharacter = Interlocked.Exchange(ref _character, objCharacter);
-                    if (objOldCharacter != null)
-                        await objOldCharacter.DisposeAsync().ConfigureAwait(false);
+                        int intInitDice = await objCharacter.GetInitiativeDiceAsync(token: token).ConfigureAwait(false);
+                        await nudInit.DoThreadSafeAsync(x => x.Value = intInitDice, token: token).ConfigureAwait(false);
+                        string strName = await objCharacter.GetNameAsync(token).ConfigureAwait(false);
+                        await txtName.DoThreadSafeAsync(x => x.Text = strName, token: token).ConfigureAwait(false);
+                        if (int.TryParse((await objCharacter.GetInitiativeAsync(token).ConfigureAwait(false))
+                            .SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(), out int intTemp))
+                            await nudInitStart.DoThreadSafeAsync(x => x.Value = intTemp, token: token).ConfigureAwait(false);
+                        Character objOldCharacter = Interlocked.Exchange(ref _character, objCharacter);
+                        if (objOldCharacter != null)
+                            await objOldCharacter.DisposeAsync().ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
-                finally
+                catch
                 {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
+                    throw;
                 }
             }
         }
@@ -133,23 +139,12 @@ namespace Chummer
         /// <param name="e"></param>
         private async void btnOK_Click(object sender, EventArgs e)
         {
-            if (_character != null)
-            {
-                _character.Name = await txtName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
-                _character.InitPasses = await nudInit.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
-                _character.Delayed = false;
-                _character.InitialInit = await nudInitStart.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
-            }
-            else
-            {
-                _character = new Character
-                {
-                    Name = await txtName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false),
-                    InitPasses = await nudInit.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false),
-                    Delayed = false,
-                    InitialInit = await nudInitStart.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false)
-                };
-            }
+            if (_character == null)
+                _character = new Character();
+            await _character.SetNameAsync(await txtName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false)).ConfigureAwait(false);
+            _character.InitPasses = await nudInit.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
+            _character.Delayed = false;
+            _character.InitialInit = await nudInitStart.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
             if (await chkAutoRollInit.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
             {
                 int intInitPasses = _character.InitPasses;

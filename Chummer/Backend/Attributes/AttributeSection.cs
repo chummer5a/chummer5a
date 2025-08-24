@@ -961,13 +961,31 @@ namespace Chummer.Backend.Attributes
                                 case AttributeCategory.Special:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                        AttributeCategory.Special);
-                                    SpecialAttributeList.Add(objAttribute);
+                                    try
+                                    {
+                                        SpecialAttributeList.Add(objAttribute);
+                                    }
+                                    catch
+                                    {
+                                        SpecialAttributeList.Remove(objAttribute);
+                                        objAttribute.Dispose();
+                                        throw;
+                                    }
                                     break;
 
                                 case AttributeCategory.Standard:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                        AttributeCategory.Standard);
-                                    AttributeList.Add(objAttribute);
+                                    try
+                                    {
+                                        AttributeList.Add(objAttribute);
+                                    }
+                                    catch
+                                    {
+                                        AttributeList.Remove(objAttribute);
+                                        objAttribute.Dispose();
+                                        throw;
+                                    }
                                     break;
 
                                 default:
@@ -1186,13 +1204,31 @@ namespace Chummer.Backend.Attributes
                                 case AttributeCategory.Special:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                         AttributeCategory.Special);
-                                    await SpecialAttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                    try
+                                    {
+                                        await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).RemoveAsync(objAttribute, CancellationToken.None).ConfigureAwait(false);
+                                        await objAttribute.DisposeAsync().ConfigureAwait(false);
+                                        throw;
+                                    }
                                     break;
 
                                 case AttributeCategory.Standard:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                         AttributeCategory.Standard);
-                                    await AttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                    try
+                                    {
+                                        await (await GetAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        await (await GetAttributeListAsync(token).ConfigureAwait(false)).RemoveAsync(objAttribute, CancellationToken.None).ConfigureAwait(false);
+                                        await objAttribute.DisposeAsync().ConfigureAwait(false);
+                                        throw;
+                                    }
                                     break;
 
                                 default:
@@ -1503,17 +1539,34 @@ namespace Chummer.Backend.Attributes
                                 case AttributeCategory.Special:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                        AttributeCategory.Special);
-                                    if (blnSync)
+                                    try
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        SpecialAttributeList.Add(objAttribute);
+                                        if (blnSync)
+                                        {
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            SpecialAttributeList.Add(objAttribute);
+                                        }
+                                        else
+                                        {
+                                            objAttribute = await RemakeAttributeAsync(objAttribute, xmlCharNode, token).ConfigureAwait(false);
+                                            await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
+                                        }
                                     }
-                                    else
+                                    catch
                                     {
-                                        objAttribute = await RemakeAttributeAsync(objAttribute, xmlCharNode, token).ConfigureAwait(false);
-                                        await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
+                                        if (blnSync)
+                                        {
+                                            SpecialAttributeList.Remove(objAttribute);
+                                            objAttribute.Dispose();
+                                        }
+                                        else
+                                        {
+                                            await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).RemoveAsync(objAttribute, CancellationToken.None).ConfigureAwait(false);
+                                            await objAttribute.DisposeAsync().ConfigureAwait(false);
+                                        }
+                                        throw;
                                     }
 
                                     break;
@@ -1521,17 +1574,34 @@ namespace Chummer.Backend.Attributes
                                 case AttributeCategory.Standard:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                        AttributeCategory.Standard);
-                                    if (blnSync)
+                                    try
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        AttributeList.Add(objAttribute);
+                                        if (blnSync)
+                                        {
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            AttributeList.Add(objAttribute);
+                                        }
+                                        else
+                                        {
+                                            objAttribute = await RemakeAttributeAsync(objAttribute, xmlCharNode, token).ConfigureAwait(false);
+                                            await (await GetAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
+                                        }
                                     }
-                                    else
+                                    catch
                                     {
-                                        objAttribute = await RemakeAttributeAsync(objAttribute, xmlCharNode, token).ConfigureAwait(false);
-                                        await (await GetAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
+                                        if (blnSync)
+                                        {
+                                            AttributeList.Remove(objAttribute);
+                                            objAttribute.Dispose();
+                                        }
+                                        else
+                                        {
+                                            await (await GetAttributeListAsync(token).ConfigureAwait(false)).RemoveAsync(objAttribute, CancellationToken.None).ConfigureAwait(false);
+                                            await objAttribute.DisposeAsync().ConfigureAwait(false);
+                                        }
+                                        throw;
                                     }
 
                                     break;
@@ -1544,30 +1614,65 @@ namespace Chummer.Backend.Attributes
                                 continue;
                             objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                AttributeCategory.Shapeshifter);
-                            objAttribute = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token)
-                                : await RemakeAttributeAsync(objAttribute, xmlCharNodeAnimalForm, token).ConfigureAwait(false);
-                            switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
+                            try
                             {
-                                case AttributeCategory.Special:
-                                    if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        SpecialAttributeList.Add(objAttribute);
-                                    else
-                                        await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
-                                    break;
+                                objAttribute = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token)
+                                    : await RemakeAttributeAsync(objAttribute, xmlCharNodeAnimalForm, token).ConfigureAwait(false);
+                                switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
+                                {
+                                    case AttributeCategory.Special:
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            SpecialAttributeList.Add(objAttribute);
+                                        else
+                                            await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
+                                        break;
 
-                                case AttributeCategory.Standard:
-                                    if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        AttributeList.Add(objAttribute);
-                                    else
-                                        await (await GetAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
-                                    break;
+                                    case AttributeCategory.Standard:
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            AttributeList.Add(objAttribute);
+                                        else
+                                            await (await GetAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
+                                        break;
 
-                                default:
-                                    continue;
+                                    default:
+                                        continue;
+                                }
+                            }
+                            catch
+                            {
+                                if (blnSync)
+                                {
+                                    switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
+                                    {
+                                        case AttributeCategory.Special:
+                                            SpecialAttributeList.Remove(objAttribute);
+                                            break;
+                                        case AttributeCategory.Standard:
+                                            AttributeList.Remove(objAttribute);
+                                            break;
+                                    }
+
+                                    objAttribute.Dispose();
+                                }
+                                else
+                                {
+                                    switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
+                                    {
+                                        case AttributeCategory.Special:
+                                            await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).RemoveAsync(objAttribute, CancellationToken.None).ConfigureAwait(false);
+                                            break;
+                                        case AttributeCategory.Standard:
+                                            await (await GetAttributeListAsync(token).ConfigureAwait(false)).RemoveAsync(objAttribute, CancellationToken.None).ConfigureAwait(false);
+                                            break;
+                                    }
+                                    
+                                    await objAttribute.DisposeAsync().ConfigureAwait(false);
+                                }
+                                throw;
                             }
                         }
                         else
@@ -1582,15 +1687,33 @@ namespace Chummer.Backend.Attributes
                                                                            AttributeCategory.Special);
                                         if (blnSync)
                                         {
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objAttribute.Load(xmlAttributeNode);
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            SpecialAttributeList.Add(objAttribute);
+                                            try
+                                            {
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                objAttribute.Load(xmlAttributeNode);
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                SpecialAttributeList.Add(objAttribute);
+                                            }
+                                            catch
+                                            {
+                                                SpecialAttributeList.Remove(objAttribute);
+                                                objAttribute.Dispose();
+                                                throw;
+                                            }
                                         }
                                         else
                                         {
-                                            await objAttribute.LoadAsync(xmlAttributeNode, token).ConfigureAwait(false);
-                                            await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                await objAttribute.LoadAsync(xmlAttributeNode, token).ConfigureAwait(false);
+                                                await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
+                                            }
+                                            catch
+                                            {
+                                                await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).RemoveAsync(objAttribute, CancellationToken.None).ConfigureAwait(false);
+                                                await objAttribute.DisposeAsync().ConfigureAwait(false);
+                                                throw;
+                                            }
                                         }
                                         break;
 
@@ -1599,15 +1722,33 @@ namespace Chummer.Backend.Attributes
                                                                            AttributeCategory.Standard);
                                         if (blnSync)
                                         {
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objAttribute.Load(xmlAttributeNode);
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            AttributeList.Add(objAttribute);
+                                            try
+                                            {
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                objAttribute.Load(xmlAttributeNode);
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                AttributeList.Add(objAttribute);
+                                            }
+                                            catch
+                                            {
+                                                AttributeList.Remove(objAttribute);
+                                                objAttribute.Dispose();
+                                                throw;
+                                            }
                                         }
                                         else
                                         {
-                                            await objAttribute.LoadAsync(xmlAttributeNode, token).ConfigureAwait(false);
-                                            await (await GetAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                await objAttribute.LoadAsync(xmlAttributeNode, token).ConfigureAwait(false);
+                                                await (await GetAttributeListAsync(token).ConfigureAwait(false)).AddAsync(objAttribute, token).ConfigureAwait(false);
+                                            }
+                                            catch
+                                            {
+                                                await (await GetAttributeListAsync(token).ConfigureAwait(false)).RemoveAsync(objAttribute, CancellationToken.None).ConfigureAwait(false);
+                                                await objAttribute.DisposeAsync().ConfigureAwait(false);
+                                                throw;
+                                            }
                                         }
                                         break;
 
@@ -1669,15 +1810,33 @@ namespace Chummer.Backend.Attributes
                             case AttributeCategory.Special:
                                 objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                     AttributeCategory.Special);
-                                objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
-                                SpecialAttributeList.Add(objAttribute);
+                                try
+                                {
+                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
+                                    SpecialAttributeList.Add(objAttribute);
+                                }
+                                catch
+                                {
+                                    SpecialAttributeList.Remove(objAttribute);
+                                    objAttribute.Dispose();
+                                    throw;
+                                }
                                 break;
 
                             case AttributeCategory.Standard:
                                 objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                     AttributeCategory.Standard);
-                                objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
-                                AttributeList.Add(objAttribute);
+                                try
+                                {
+                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
+                                    AttributeList.Add(objAttribute);
+                                }
+                                catch
+                                {
+                                    AttributeList.Remove(objAttribute);
+                                    objAttribute.Dispose();
+                                    throw;
+                                }
                                 break;
                         }
 
@@ -1688,16 +1847,34 @@ namespace Chummer.Backend.Attributes
                                 case AttributeCategory.Special:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                         AttributeCategory.Special);
-                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
-                                    SpecialAttributeList.Add(objAttribute);
+                                    try
+                                    {
+                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
+                                        SpecialAttributeList.Add(objAttribute);
+                                    }
+                                    catch
+                                    {
+                                        SpecialAttributeList.Remove(objAttribute);
+                                        objAttribute.Dispose();
+                                        throw;
+                                    }
                                     break;
 
                                 case AttributeCategory.Shapeshifter:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                         AttributeCategory
                                             .Shapeshifter);
-                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
-                                    AttributeList.Add(objAttribute);
+                                    try
+                                    {
+                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
+                                        AttributeList.Add(objAttribute);
+                                    }
+                                    catch
+                                    {
+                                        AttributeList.Remove(objAttribute);
+                                        objAttribute.Dispose();
+                                        throw;
+                                    }
                                     break;
                             }
                         }
@@ -3292,13 +3469,31 @@ namespace Chummer.Backend.Attributes
                             case AttributeCategory.Special:
                                 objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                    AttributeCategory.Special);
-                                SpecialAttributeList.Add(objAttribute);
+                                try
+                                {
+                                    SpecialAttributeList.Add(objAttribute);
+                                }
+                                catch
+                                {
+                                    SpecialAttributeList.Remove(objAttribute);
+                                    objAttribute.Dispose();
+                                    throw;
+                                }
                                 break;
 
                             case AttributeCategory.Standard:
                                 objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                    AttributeCategory.Standard);
-                                AttributeList.Add(objAttribute);
+                                try
+                                {
+                                    AttributeList.Add(objAttribute);
+                                }
+                                catch
+                                {
+                                    AttributeList.Remove(objAttribute);
+                                    objAttribute.Dispose();
+                                    throw;
+                                }
                                 break;
                             default:
                                 continue;
@@ -3340,13 +3535,31 @@ namespace Chummer.Backend.Attributes
                             case AttributeCategory.Special:
                                 objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                    AttributeCategory.Special);
-                                await lstSpecialAttributes.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                try
+                                {
+                                    await lstSpecialAttributes.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await lstSpecialAttributes.RemoveAsync(objAttribute, CancellationToken.None).ConfigureAwait(false);
+                                    await objAttribute.DisposeAsync().ConfigureAwait(false);
+                                    throw;
+                                }
                                 break;
 
                             case AttributeCategory.Standard:
                                 objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                    AttributeCategory.Standard);
-                                await lstAttributes.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                try
+                                {
+                                    await lstAttributes.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await lstAttributes.RemoveAsync(objAttribute, CancellationToken.None).ConfigureAwait(false);
+                                    await objAttribute.DisposeAsync().ConfigureAwait(false);
+                                    throw;
+                                }
                                 break;
                             default:
                                 continue;

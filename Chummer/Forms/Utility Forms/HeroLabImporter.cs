@@ -698,12 +698,19 @@ namespace Chummer
                     //Timekeeper.Finish("load_file");
                     await Program.OpenCharacter(objCharacter, token: token).ConfigureAwait(false);
                 }
+                catch
+                {
+                    if (!blnLoaded)
+                        blnLoaded = await Program.OpenCharacters.RemoveAsync(objCharacter, token: CancellationToken.None).ConfigureAwait(false);
+                    throw;
+                }
                 finally
                 {
-                    await cmdImport.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
-                    await cmdSelectFile.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                     if (!blnLoaded)
                         await Program.OpenCharacters.RemoveAsync(objCharacter, token: token).ConfigureAwait(false);
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
+                    await cmdImport.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                    await cmdSelectFile.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                 }
             }
             finally
