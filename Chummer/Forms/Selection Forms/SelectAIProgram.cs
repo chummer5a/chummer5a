@@ -55,8 +55,6 @@ namespace Chummer
             _blnInherentProgram = blnInherentProgram;
             // Load the Programs information.
             _xmlBaseChummerNode = _objCharacter.LoadDataXPath("programs.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            if (!_objCharacter.IsCritter)
-                return;
             _xmlOptionalAIProgramsNode = _objCharacter.GetNodeXPath().SelectSingleNodeAndCacheExpression("optionalaiprograms");
             _lstCategory = Utils.ListItemListPool.Get();
             Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
