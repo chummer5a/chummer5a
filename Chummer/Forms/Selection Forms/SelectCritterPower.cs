@@ -52,11 +52,12 @@ namespace Chummer
             this.TranslateWinForm();
             _xmlBaseCritterPowerDataNode = _objCharacter.LoadDataXPath("critterpowers.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _xmlMetatypeDataNode = _objCharacter.GetNodeXPath();
-
-            if (_xmlMetatypeDataNode == null || _objCharacter.MetavariantGuid == Guid.Empty) return;
-            XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.TryGetNodeById("metavariants/metavariant", _objCharacter.MetavariantGuid);
-            if (xmlMetavariantNode != null)
-                _xmlMetatypeDataNode = xmlMetavariantNode;
+            if (_xmlMetatypeDataNode != null && _objCharacter.MetavariantGuid != Guid.Empty)
+            {
+                XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.TryGetNodeById("metavariants/metavariant", _objCharacter.MetavariantGuid);
+                if (xmlMetavariantNode != null)
+                    _xmlMetatypeDataNode = xmlMetavariantNode;
+            }
 
             _lstCategory = Utils.ListItemListPool.Get();
             Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
