@@ -50,17 +50,18 @@ namespace Chummer
             this.TranslateWinForm();
             // Load the Complex Form information.
             _xmlBaseComplexFormsNode = _objCharacter.LoadDataXPath("complexforms.xml").SelectSingleNodeAndCacheExpression("/chummer/complexforms");
-
             _xmlOptionalComplexFormNode = _objCharacter.GetNodeXPath();
-            if (_xmlOptionalComplexFormNode == null) return;
-            if (_objCharacter.MetavariantGuid != Guid.Empty)
+            if (_xmlOptionalComplexFormNode != null)
             {
-                XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.TryGetNodeById("metavariants/metavariant", _objCharacter.MetavariantGuid);
-                if (xmlMetavariantNode != null)
-                    _xmlOptionalComplexFormNode = xmlMetavariantNode;
-            }
+                if (_objCharacter.MetavariantGuid != Guid.Empty)
+                {
+                    XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.TryGetNodeById("metavariants/metavariant", _objCharacter.MetavariantGuid);
+                    if (xmlMetavariantNode != null)
+                        _xmlOptionalComplexFormNode = xmlMetavariantNode;
+                }
 
-            _xmlOptionalComplexFormNode = _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpression("optionalcomplexforms");
+                _xmlOptionalComplexFormNode = _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpression("optionalcomplexforms");
+            }
         }
 
         private async void SelectComplexForm_Load(object sender, EventArgs e)
