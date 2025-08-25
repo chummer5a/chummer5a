@@ -32,13 +32,14 @@ namespace Chummer
     {
         private bool _blnLoading = true;
         private string _strSelectedMetamagic = string.Empty;
-
-        private readonly string _strType;
+        private readonly bool _blnTechnomancer;
+        private readonly int _intMyGrade;
+        private string _strType;
         private readonly string _strRootXPath;
 
         private readonly Character _objCharacter;
 
-        private readonly XPathNavigator _objXmlDocument;
+        private XPathNavigator _objXmlDocument;
 
         private readonly List<string> _lstMetamagicLimits = new List<string>();
 
@@ -52,33 +53,33 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-
-            int intMyGrade = objGrade.Grade;
-            foreach (Improvement imp in ImprovementManager
-                                        .GetCachedImprovementListForValueOf(
-                                            _objCharacter, Improvement.ImprovementType.MetamagicLimit)
-                                        .Where(imp => imp.Rating == intMyGrade))
-            {
-                _lstMetamagicLimits.Add(imp.ImprovedName);
-            }
-
-            // Load the Metamagic information.
-            if (objGrade.Technomancer)
-            {
-                _strRootXPath = "/chummer/echoes/echo";
-                _objXmlDocument = _objCharacter.LoadDataXPath("echoes.xml");
-                _strType = LanguageManager.GetString("String_Echo");
-            }
-            else
-            {
-                _strRootXPath = "/chummer/metamagics/metamagic";
-                _objXmlDocument = _objCharacter.LoadDataXPath("metamagic.xml");
-                _strType = LanguageManager.GetString("String_Metamagic");
-            }
+            _blnTechnomancer = objGrade.Technomancer;
+            _intMyGrade = objGrade.Grade;
+            _strRootXPath = _blnTechnomancer
+                ? "/chummer/echoes/echo"
+                : "/chummer/metamagics/metamagic";
         }
 
         private async void SelectMetamagic_Load(object sender, EventArgs e)
         {
+            // Load the Metamagic information.
+            if (_blnTechnomancer)
+            {
+                _objXmlDocument = await _objCharacter.LoadDataXPathAsync("echoes.xml").ConfigureAwait(false);
+                _strType = await LanguageManager.GetStringAsync("String_Echo").ConfigureAwait(false);
+            }
+            else
+            {
+                _objXmlDocument = await _objCharacter.LoadDataXPathAsync("metamagic.xml").ConfigureAwait(false);
+                _strType = await LanguageManager.GetStringAsync("String_Metamagic").ConfigureAwait(false);
+            }
+            foreach (Improvement imp in await ImprovementManager
+                                        .GetCachedImprovementListForValueOfAsync(
+                                            _objCharacter, Improvement.ImprovementType.MetamagicLimit).ConfigureAwait(false))
+            {
+                if (imp.Rating == _intMyGrade)
+                    _lstMetamagicLimits.Add(imp.ImprovedName);
+            }
             string strText = string.Format(GlobalSettings.CultureInfo,
                                            await LanguageManager.GetStringAsync("Title_SelectGeneric").ConfigureAwait(false), _strType);
             await this.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);

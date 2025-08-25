@@ -78,16 +78,6 @@ namespace Chummer
             _intCostMultiplier = intCostMultiplier;
             _objGearParent = objGearParent;
             _objParentNode = (_objGearParent as IHasXmlDataNode)?.GetNodeXPath();
-            // Stack Checkbox is only available in Career Mode.
-            if (!_objCharacter.Created)
-            {
-                lblMarkupLabel.Visible = false;
-                nudMarkup.Visible = false;
-                lblMarkupPercentLabel.Visible = false;
-                chkStack.Checked = false;
-                chkStack.Visible = false;
-            }
-
             _lstCategory = Utils.ListItemListPool.Get();
             _setAllowedCategories = Utils.StringHashSetPool.Get();
             _setAllowedNames = Utils.StringHashSetPool.Get();
@@ -154,6 +144,7 @@ namespace Chummer
                         x.Visible = false;
                         x.Checked = false;
                     }, _objGenericToken).ConfigureAwait(false);
+                    await chkStack.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -166,6 +157,11 @@ namespace Chummer
                         x.Text = string.Format(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
                         x.Visible = true;
                         x.Checked = GlobalSettings.HideItemsOverAvailLimit;
+                    }, _objGenericToken).ConfigureAwait(false);
+                    await chkStack.DoThreadSafeAsync(x =>
+                    {
+                        x.Visible = false;
+                        x.Checked = false;
                     }, _objGenericToken).ConfigureAwait(false);
                 }
 
