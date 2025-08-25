@@ -903,7 +903,7 @@ namespace Chummer
                     if (token.IsCancellationRequested)
                         return Task.FromCanceled(token);
                     // Special case here, we do not want to get caught up on escaped quotation marks inside of the text
-                    int intSnipEndIndex = strDisplayText.IndexOfAny(intSnipStartIndex, "\\\"", "\"");
+                    int intSnipEndIndex = strDisplayText.IndexOfAny(intSnipStartIndex + 10, "\\\"", "\"");
                     if (intSnipEndIndex >= 0 && strDisplayText[intSnipEndIndex] != '\"')
                         ++intSnipEndIndex;
                     if (intSnipEndIndex > intSnipStartIndex)
@@ -911,7 +911,7 @@ namespace Chummer
                         string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 10);
                         string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
                         strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
-                        intSnipStartIndex = strDisplayText.IndexOf("base64\": \"", intSnipStartIndex + 17);
+                        intSnipStartIndex = strDisplayText.IndexOf("base64\": \"", intSnipStartIndex + 16);
                     }
                     else
                         intSnipStartIndex = -1;
