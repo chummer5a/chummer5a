@@ -727,7 +727,7 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetAddictionThresholdAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return _intCachedAddictionRating != int.MinValue
+            return _intCachedAddictionThreshold != int.MinValue
                     ? _intCachedAddictionThreshold
                     : _intCachedAddictionThreshold = await Components.SumAsync(d => d.ActiveDrugEffect != null, d => d.AddictionThreshold, token).ConfigureAwait(false);
         }
