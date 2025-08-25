@@ -168,6 +168,7 @@ Data Changes:
 - Spellcasting foci now properly no longer stack with individualised spellcasting foci of the same type. This change does not affect existing characters with spellcasting foci.
 - Added customdata for Critter Prices, as originally created by u/RunnerPakhet and implemented for Chummer by Mesothelioma.
 - Added basic traditions for the Traditionalist and Ancestor Shamans from Forbidden Arcana. 
+- Added a customdata entry to change the Krime Stopper II to use the Shotguns category instead of Heavy Pistols.
 
 Fixes implemented by BM123499
 
