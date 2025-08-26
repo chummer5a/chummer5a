@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,7 +54,7 @@ namespace Chummer
 
         #region Form Events
 
-        public SelectMetatypeKarma(Character objCharacter, string strXmlFile = "metatypes.xml")
+        public SelectMetatypeKarma(Character objCharacter)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objGenericToken = _objGenericCancellationTokenSource.Token;
@@ -85,6 +84,7 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
+            string strXmlFile = _objCharacter.IsCritter ? "critters.xml" : "metatypes.xml";
             _xmlMetatypeDocumentMetatypesNode = _objCharacter.LoadData(strXmlFile).SelectSingleNode("/chummer/metatypes");
             _xmlBaseMetatypeDataNode = _objCharacter.LoadDataXPath(strXmlFile).SelectSingleNodeAndCacheExpression("/chummer");
             _xmlSkillsDocumentKnowledgeSkillsNode = _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills");
@@ -198,13 +198,16 @@ namespace Chummer
 
                             lstMethods.Sort(CompareListItems.CompareNames);
 
-                            _strCurrentPossessionMethod = _objCharacter.CritterPowers.Select(x => x.Name)
-                                                                       .FirstOrDefault(
-                                                                           y => lstMethods.Exists(
-                                                                               x => y.Equals(
-                                                                                   x.Value.ToString(),
-                                                                                   StringComparison.OrdinalIgnoreCase)));
-
+                            await (await _objCharacter.GetCritterPowersAsync(_objGenericToken).ConfigureAwait(false)).ForEachWithBreakAsync(y =>
+                            {
+                                string strLoop = y.Name;
+                                if (lstMethods.Exists(x => strLoop.Equals(x.Value.ToString(), StringComparison.OrdinalIgnoreCase)))
+                                {
+                                    _strCurrentPossessionMethod = strLoop;
+                                    return false;
+                                }
+                                return true;
+                            }, _objGenericToken).ConfigureAwait(false);
                             await cboPossessionMethod.PopulateWithListItemsAsync(lstMethods, _objGenericToken).ConfigureAwait(false);
                         }
 
@@ -1219,6 +1222,8 @@ namespace Chummer
                             if (blnDoProcess)
                                 await ProcessMetatypeSelectedChanged(token).ConfigureAwait(false);
                         }
+                        else
+                            await ProcessMetatypeSelectedChanged(token).ConfigureAwait(false);
                         await lstMetatypes.DoThreadSafeAsync(x =>
                         {
                             if (x.SelectedIndex == -1 && lstMetatypeItems.Count > 0)

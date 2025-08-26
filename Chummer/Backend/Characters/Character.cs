@@ -15502,6 +15502,9 @@ namespace Chummer
 
         public async Task<bool> SwitchBuildMethods(CharacterBuildMethod eOldBuildMethod, CharacterBuildMethod eNewBuildMethod, string strOldSettingsKey, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            if (await GetCreatedAsync(token).ConfigureAwait(false))
+                return true;
             DialogResult eResult;
             if (eNewBuildMethod.UsesPriorityTables())
             {

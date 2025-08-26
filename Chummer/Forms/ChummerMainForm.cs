@@ -1933,8 +1933,7 @@ namespace Chummer
                         // Show the Metatype selection window.
                         using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype =
                                await ThreadSafeForm<SelectMetatypeKarma>.GetAsync(() =>
-                                   new SelectMetatypeKarma(
-                                       objCharacter, "critters.xml"), _objGenericToken).ConfigureAwait(false))
+                                   new SelectMetatypeKarma(objCharacter), _objGenericToken).ConfigureAwait(false))
                         {
                             if (await frmSelectMetatype.ShowDialogSafeAsync(this, _objGenericToken).ConfigureAwait(false) == DialogResult.Cancel)
                                 return;
