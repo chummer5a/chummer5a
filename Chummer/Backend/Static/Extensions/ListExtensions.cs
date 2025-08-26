@@ -479,6 +479,65 @@ namespace Chummer
             }
         }
 
+        /// <inheritdoc cref="List.Sort()"/>
+        public static void Sort<T>(this IList<T> lstCollection)
+        {
+            lstCollection.Sort(0, lstCollection.Count, null);
+        }
+
+        /// <inheritdoc cref="List.Sort(IComparer{T})"/>
+        public static void Sort<T>(this IList<T> lstCollection, IComparer<T> comparer)
+        {
+            lstCollection.Sort(0, lstCollection.Count, comparer);
+        }
+
+        /// <inheritdoc cref="List.Sort(int, int, IComparer{T})"/>
+        public static void Sort<T>(this IList<T> lstCollection, int index, int count, IComparer<T> comparer)
+        {
+            if (index < 0)
+                throw new ArgumentOutOfRangeException(nameof(index));
+
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            if (count == 0)
+                return;
+
+            if (lstCollection.Count - index < count)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            IntrospectiveSort(lstCollection, index, count, comparer);
+        }
+
+        /// <inheritdoc cref="List.Sort(Comparison{T})"/>
+        public static void Sort<T>(this IList<T> lstCollection, Comparison<T> comparison)
+        {
+            if (comparison == null)
+                throw new ArgumentNullException(nameof(comparison));
+
+            int intCount = lstCollection.Count;
+            if (intCount > 0)
+            {
+                IComparer<T> comparer = new FunctorComparer<T>(comparison);
+                IntrospectiveSort(lstCollection, 0, intCount, comparer);
+            }
+        }
+
+        private readonly struct FunctorComparer<T> : IComparer<T>
+        {
+            private readonly Comparison<T> comparison;
+
+            public FunctorComparer(Comparison<T> comparison)
+            {
+                this.comparison = comparison;
+            }
+
+            public int Compare(T x, T y)
+            {
+                return comparison(x, y);
+            }
+        }
+
         public static Task SortAsync<T>(this IList<T> lstCollection, Func<T, T, Task<int>> comparer,
             CancellationToken token = default)
         {
@@ -506,6 +565,160 @@ namespace Chummer
                     if (objLocker != null)
                         await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+        }
+
+        private static void IntrospectiveSort<T>(IList<T> keys, int left, int length, IComparer<T> comparer)
+        {
+            if (length >= 2)
+            {
+                IntroSort(keys, left, length + left - 1, 2 * keys.Count.FloorLog2(), comparer);
+            }
+        }
+
+        private static void IntroSort<T>(IList<T> keys, int lo, int hi, int depthLimit, IComparer<T> comparer)
+        {
+            while (hi > lo)
+            {
+                int num = hi - lo + 1;
+                if (num <= 16)
+                {
+                    switch (num)
+                    {
+                        case 1:
+                            break;
+                        case 2:
+                            SwapIfGreater(keys, comparer, lo, hi);
+                            break;
+                        case 3:
+                            SwapIfGreater(keys, comparer, lo, hi - 1);
+                            SwapIfGreater(keys, comparer, lo, hi);
+                            SwapIfGreater(keys, comparer, hi - 1, hi);
+                            break;
+                        default:
+                            InsertionSort(keys, lo, hi, comparer);
+                            break;
+                    }
+
+                    break;
+                }
+
+                if (depthLimit == 0)
+                {
+                    Heapsort(keys, lo, hi, comparer);
+                    break;
+                }
+
+                depthLimit--;
+                int num2 = PickPivotAndPartition(keys, lo, hi, comparer);
+                IntroSort(keys, num2 + 1, hi, depthLimit, comparer);
+                hi = num2 - 1;
+            }
+        }
+
+        private static void SwapIfGreater<T>(IList<T> keys, IComparer<T> comparer, int a, int b)
+        {
+            if (a != b && comparer.Compare(keys[a], keys[b]) > 0)
+            {
+                T val = keys[a];
+                keys[a] = keys[b];
+                keys[b] = val;
+            }
+        }
+
+        private static void Swap<T>(IList<T> a, int i, int j)
+        {
+            if (i != j)
+            {
+                T val = a[i];
+                a[i] = a[j];
+                a[j] = val;
+            }
+        }
+
+        private static int PickPivotAndPartition<T>(IList<T> keys, int lo, int hi, IComparer<T> comparer)
+        {
+            int num = lo + (hi - lo) / 2;
+            SwapIfGreater(keys, comparer, lo, num);
+            SwapIfGreater(keys, comparer, lo, hi);
+            SwapIfGreater(keys, comparer, num, hi);
+            T val = keys[num];
+            Swap(keys, num, hi - 1);
+            int num2 = lo;
+            int num3 = hi - 1;
+            while (num2 < num3)
+            {
+                while (comparer.Compare(keys[++num2], val) < 0)
+                {
+                }
+
+                while (comparer.Compare(val, keys[--num3]) < 0)
+                {
+                }
+
+                if (num2 >= num3)
+                {
+                    break;
+                }
+
+                Swap(keys, num2, num3);
+            }
+
+            Swap(keys, num2, hi - 1);
+            return num2;
+        }
+
+        private static void Heapsort<T>(IList<T> keys, int lo, int hi, IComparer<T> comparer)
+        {
+            int num = hi - lo + 1;
+            for (int num2 = num / 2; num2 >= 1; num2--)
+            {
+                DownHeap(keys, num2, num, lo, comparer);
+            }
+
+            for (int num3 = num; num3 > 1; num3--)
+            {
+                Swap(keys, lo, lo + num3 - 1);
+                DownHeap(keys, 1, num3 - 1, lo, comparer);
+            }
+        }
+
+        private static void DownHeap<T>(IList<T> keys, int i, int n, int lo, IComparer<T> comparer)
+        {
+            T val = keys[lo + i - 1];
+            while (i <= n / 2)
+            {
+                int num = 2 * i;
+                if (num < n && comparer.Compare(keys[lo + num - 1], keys[lo + num]) < 0)
+                {
+                    num++;
+                }
+
+                if (comparer.Compare(val, keys[lo + num - 1]) >= 0)
+                {
+                    break;
+                }
+
+                keys[lo + i - 1] = keys[lo + num - 1];
+                i = num;
+            }
+
+            keys[lo + i - 1] = val;
+        }
+
+        private static void InsertionSort<T>(IList<T> keys, int lo, int hi, IComparer<T> comparer)
+        {
+            for (int i = lo; i < hi; i++)
+            {
+                int num = i;
+                T val = keys[i + 1];
+                while (num >= lo && comparer.Compare(val, keys[num]) < 0)
+                {
+                    keys[num + 1] = keys[num];
+                    num--;
+                }
+
+                keys[num + 1] = val;
             }
         }
 
