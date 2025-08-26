@@ -980,7 +980,7 @@ namespace Chummer.Backend.Skills
             }
             else
             {
-                XmlDocument xmlSkillsDocument = blnSync ? objCharacter.LoadData("skills.xml") : await objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
+                XmlDocument xmlSkillsDocument = blnSync ? objCharacter.LoadData("skills.xml", token: token) : await objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
                 XmlNode xmlSkillDataNode = xmlSkillsDocument.TryGetNodeById("/chummer/skills/skill", suid)
                     //Some stuff apparently have a guid of 0000-000... (only exotic?)
                     ?? xmlSkillsDocument.TryGetNodeByNameOrId("/chummer/skills/skill", strName);

@@ -3728,7 +3728,7 @@ namespace Chummer
                                         continue;
                                     }
 
-                                    goto IL_0097;
+                                    throw new FormatException("The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
                                 }
 
                                 if (num2 != 43)
@@ -3737,7 +3737,7 @@ namespace Chummer
                                     {
                                         if (num2 != 61)
                                         {
-                                            goto IL_0097;
+                                            throw new FormatException("The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
                                         }
 
                                         if (ptr == ptr3)
@@ -3814,11 +3814,6 @@ namespace Chummer
                                 ptr2 += 3;
                                 num = 255u;
                             }
-
-                            continue;
-                        IL_0097:
-                            throw new FormatException(
-                                "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
                         }
 
                         if (num != 255)
@@ -3983,7 +3978,7 @@ namespace Chummer
                                         continue;
                                     }
 
-                                    goto IL_0097;
+                                    throw new FormatException("The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
                                 }
 
                                 if (num2 != 43)
@@ -3992,7 +3987,7 @@ namespace Chummer
                                     {
                                         if (num2 != 61)
                                         {
-                                            goto IL_0097;
+                                            throw new FormatException("The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
                                         }
 
                                         if (ptr == ptr3)
@@ -4065,11 +4060,6 @@ namespace Chummer
                                 stream.Write(new[] {(byte) (num >> 16), (byte) (num >> 8), (byte) num}, 0, 3);
                                 num = 255u;
                             }
-
-                            continue;
-                        IL_0097:
-                            throw new FormatException(
-                                "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
                         }
 
                         if (num != 255)

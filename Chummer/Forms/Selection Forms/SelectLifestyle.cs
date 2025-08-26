@@ -49,7 +49,7 @@ namespace Chummer
 
         #region Control Events
 
-        public SelectLifestyle(Character objCharacter, Lifestyle objLifestyle, bool blnAdvancedMode = true)
+        public SelectLifestyle(Character objCharacter, Lifestyle objLifestyle)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objLifestyle = objLifestyle ?? throw new ArgumentNullException(nameof(objLifestyle));

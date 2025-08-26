@@ -49,7 +49,6 @@ using Microsoft.ApplicationInsights;
 using Microsoft.IO;
 using Newtonsoft.Json;
 using NLog;
-using Application = System.Windows.Forms.Application;
 using System.Buffers;
 using Chummer.Backend.Enums;
 

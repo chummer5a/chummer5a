@@ -1451,7 +1451,6 @@ namespace Chummer.Backend.Equipment
                                                                     !string.IsNullOrEmpty(objMod.WeaponMountCategories) &&
                                                                     objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory))
                                                                 {
-                                                                    blnAttached = true;
                                                                     objMod.Weapons.Add(objWeapon);
                                                                     foreach (Weapon objSubWeapon in lstSubWeapons)
                                                                         objMod.Weapons.Add(objSubWeapon);

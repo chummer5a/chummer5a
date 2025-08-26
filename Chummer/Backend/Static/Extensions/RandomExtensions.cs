@@ -85,12 +85,12 @@ namespace Chummer
             if (objRandom == null)
                 throw new ArgumentNullException(nameof(objRandom));
             const int intModuloCheck = int.MaxValue - 1;  // Faster Modulo bias removal for 1d6
-            int intLoopResult = 0;
             return DoLoop();
             async Task<int> DoLoop()
             {
-                await Task.Run(async () =>
+                int intReturn = await Task.Run(async () =>
                 {
+                    int intLoopResult;
                     if (objRandom is ThreadSafeRandom objThreadSafeRandom)
                     {
                         do
@@ -105,9 +105,10 @@ namespace Chummer
                             intLoopResult = objRandom.Next();
                         } while (intLoopResult >= intModuloCheck);
                     }
+                    return intLoopResult;
                 }, token).ConfigureAwait(false);
 
-                return 1 + intLoopResult % 6;
+                return 1 + intReturn % 6;
             }
         }
 
@@ -122,12 +123,12 @@ namespace Chummer
             if (objRandom == null)
                 throw new ArgumentNullException(nameof(objRandom));
             int intModuloCheck = int.MaxValue - int.MaxValue % maxValue;
-            int intLoopResult = 0;
             return DoLoop();
             async Task<int> DoLoop()
             {
-                await Task.Run(async () =>
+                int intReturn = await Task.Run(async () =>
                 {
+                    int intLoopResult;
                     if (objRandom is ThreadSafeRandom objThreadSafeRandom)
                     {
                         do
@@ -142,9 +143,10 @@ namespace Chummer
                             intLoopResult = objRandom.Next();
                         } while (intLoopResult >= intModuloCheck);
                     }
+                    return intLoopResult;
                 }, token).ConfigureAwait(false);
 
-                return intLoopResult % maxValue;
+                return intReturn % maxValue;
             }
         }
     }

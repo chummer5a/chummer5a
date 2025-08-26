@@ -31,7 +31,6 @@ using Chummer.Backend.Enums;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Uniques;
 using NLog;
-using static Chummer.Backend.Skills.SkillsSection;
 
 namespace Chummer
 {

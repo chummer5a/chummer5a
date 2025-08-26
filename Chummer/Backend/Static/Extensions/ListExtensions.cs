@@ -620,9 +620,7 @@ namespace Chummer
         {
             if (a != b && comparer.Compare(keys[a], keys[b]) > 0)
             {
-                T val = keys[a];
-                keys[a] = keys[b];
-                keys[b] = val;
+                (keys[b], keys[a]) = (keys[a], keys[b]);
             }
         }
 
@@ -630,9 +628,7 @@ namespace Chummer
         {
             if (i != j)
             {
-                T val = a[i];
-                a[i] = a[j];
-                a[j] = val;
+                (a[j], a[i]) = (a[i], a[j]);
             }
         }
 
@@ -648,20 +644,20 @@ namespace Chummer
             int num3 = hi - 1;
             while (num2 < num3)
             {
-                while (comparer.Compare(keys[++num2], val) < 0)
+                do
                 {
+                    ++num2;
                 }
+                while (comparer.Compare(keys[num2], val) < 0);
 
-                while (comparer.Compare(val, keys[--num3]) < 0)
+                do
                 {
+                    --num3;
                 }
+                while (comparer.Compare(val, keys[num3]) < 0);
 
-                if (num2 >= num3)
-                {
-                    break;
-                }
-
-                Swap(keys, num2, num3);
+                if (num2 < num3)
+                    Swap(keys, num2, num3);
             }
 
             Swap(keys, num2, hi - 1);
@@ -671,12 +667,12 @@ namespace Chummer
         private static void Heapsort<T>(IList<T> keys, int lo, int hi, IComparer<T> comparer)
         {
             int num = hi - lo + 1;
-            for (int num2 = num / 2; num2 >= 1; num2--)
+            for (int num2 = num / 2; num2 >= 1; --num2)
             {
                 DownHeap(keys, num2, num, lo, comparer);
             }
 
-            for (int num3 = num; num3 > 1; num3--)
+            for (int num3 = num; num3 > 1; --num3)
             {
                 Swap(keys, lo, lo + num3 - 1);
                 DownHeap(keys, 1, num3 - 1, lo, comparer);
@@ -686,21 +682,17 @@ namespace Chummer
         private static void DownHeap<T>(IList<T> keys, int i, int n, int lo, IComparer<T> comparer)
         {
             T val = keys[lo + i - 1];
-            while (i <= n / 2)
+            int num;
+            for (; i <= n / 2; i = num)
             {
-                int num = 2 * i;
-                if (num < n && comparer.Compare(keys[lo + num - 1], keys[lo + num]) < 0)
-                {
-                    num++;
-                }
-
-                if (comparer.Compare(val, keys[lo + num - 1]) >= 0)
-                {
+                num = 2 * i;
+                int right = lo + num - 1;
+                if (num < n && comparer.Compare(keys[right], keys[lo + num]) < 0)
+                    right++;
+                if (comparer.Compare(val, keys[right]) < 0)
+                    keys[lo + i - 1] = keys[right];
+                else
                     break;
-                }
-
-                keys[lo + i - 1] = keys[lo + num - 1];
-                i = num;
             }
 
             keys[lo + i - 1] = val;
@@ -712,10 +704,9 @@ namespace Chummer
             {
                 int num = i;
                 T val = keys[i + 1];
-                while (num >= lo && comparer.Compare(val, keys[num]) < 0)
+                for (; num >= lo && comparer.Compare(val, keys[num]) < 0; --num)
                 {
                     keys[num + 1] = keys[num];
-                    num--;
                 }
 
                 keys[num + 1] = val;
@@ -808,8 +799,6 @@ namespace Chummer
 
                 if (i < j)
                     await SwapAsync(lstCollection, i, j, token).ConfigureAwait(false);
-                else
-                    break;
             }
 
             await SwapAsync(lstCollection, i, hi - 1, token).ConfigureAwait(false);
@@ -840,11 +829,12 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 num = 2 * i;
-                if (num < n && await comparer(lstCollection[lo + num - 1], lstCollection[lo + num])
+                int right = lo + num - 1;
+                if (num < n && await comparer(lstCollection[right], lstCollection[lo + num])
                         .ConfigureAwait(false) < 0)
-                    ++num;
-                if (await comparer(key, lstCollection[lo + num - 1]).ConfigureAwait(false) < 0)
-                    lstCollection[lo + i - 1] = lstCollection[lo + num - 1];
+                    ++right;
+                if (await comparer(key, lstCollection[right]).ConfigureAwait(false) < 0)
+                    lstCollection[lo + i - 1] = lstCollection[right];
                 else
                     break;
             }

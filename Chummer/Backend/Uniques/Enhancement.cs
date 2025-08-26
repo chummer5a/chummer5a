@@ -682,7 +682,7 @@ namespace Chummer
                     await objPower.Enhancements.RemoveAsync(this, token).ConfigureAwait(false);
             }, token).ConfigureAwait(false);
 
-            return await (await _objCharacter.GetEnhancementsAsync(token).ConfigureAwait(false)).RemoveAsync(this, token).ConfigureAwait(false); ;
+            return await (await _objCharacter.GetEnhancementsAsync(token).ConfigureAwait(false)).RemoveAsync(this, token).ConfigureAwait(false);
         }
 
         public void SetSourceDetail(Control sourceControl)
