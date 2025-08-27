@@ -3472,10 +3472,10 @@
       <range />
       <duration />
       <bonus>
-        <specificattribute>
+        <specificskill>
           <name>Swimming</name>
-          <val>2</val>
-        </specificattribute>
+          <bonus>2</bonus>
+        </specificskill>
       </bonus>
       <source>HS</source>
       <page>170</page>
