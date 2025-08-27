@@ -903,6 +903,9 @@ namespace Chummer
 
                 try
                 {
+                    string strConditionToAcceptForUnconditional = (blnSync ? objCharacter.Created : await objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                        ? "career"
+                        : "create";
                     List<Improvement> lstImprovementsToConsider;
                     if (blnSync)
                     {
@@ -923,7 +926,7 @@ namespace Chummer
                     {
                         if (objImprovement.ImproveType != eImprovementType || !objImprovement.Enabled)
                             return;
-                        if (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition))
+                        if (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition) && objImprovement.Condition != strConditionToAcceptForUnconditional)
                             return;
                         // Matrix initiative boosting gear does not help Living Personas
                         if ((eImprovementType == Improvement.ImprovementType.MatrixInitiativeDice

@@ -1004,29 +1004,18 @@ namespace Chummer.UI.Skills
                         .GetKarmaKnowledgeSpecializationAsync(_objMyToken).ConfigureAwait(false);
 
                     int intTotalBaseRating = await _objSkill.GetTotalBaseRatingAsync(_objMyToken).ConfigureAwait(false);
+                    decimal decExtraSpecCost = 0;
                     decimal decSpecCostMultiplier = 1.0m;
-                    bool blnCreated =
-                        await objCharacter.GetCreatedAsync(_objMyToken).ConfigureAwait(false);
-                    decimal decExtraSpecCost = objCharacter.Improvements.Sum(objLoopImprovement =>
-                        objLoopImprovement.Minimum <= intTotalBaseRating
-                        && (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                            || (objLoopImprovement.Condition == "career") == blnCreated
-                            || (objLoopImprovement.Condition == "create") != blnCreated)
-                        && objLoopImprovement.Enabled
-                        && objLoopImprovement.ImprovedName == _objSkill.SkillCategory, objLoopImprovement =>
+                    foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(objCharacter, Improvement.ImprovementType.SkillCategorySpecializationKarmaCost, _objSkill.SkillCategory, true, _objMyToken).ConfigureAwait(false))
                     {
-                        switch (objLoopImprovement.ImproveType)
-                        {
-                            case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
-                                return objLoopImprovement.Value;
-
-                            case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
-                                decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
-                                break;
-                        }
-
-                        return 0;
-                    }, token: _objMyToken);
+                        if (objImprovement.Minimum <= intTotalBaseRating)
+                            decExtraSpecCost += objImprovement.Value;
+                    }
+                    foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(objCharacter, Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier, _objSkill.SkillCategory, true, _objMyToken).ConfigureAwait(false))
+                    {
+                        if (objImprovement.Minimum <= intTotalBaseRating)
+                            decSpecCostMultiplier *= objImprovement.Value / 100.0m;
+                    }
 
                     if (decSpecCostMultiplier != 1.0m)
                         intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
