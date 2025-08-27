@@ -3189,9 +3189,10 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             // If the Lifestyle node is present, we restrict to a specific lifestyle type.
-            string baseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
-            CreateImprovement(baseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.LifestyleCost, _strUnique,
-                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+            string strBaseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
+            string strCondition = bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty;
+            CreateImprovement(strBaseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.LifestyleCost, _strUnique,
+                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating), strCondition: strCondition);
         }
 
         // Check for basic Lifestyle cost modifiers.
@@ -3200,9 +3201,10 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             // If the Lifestyle node is present, we restrict to a specific lifestyle type.
-            string baseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
-            CreateImprovement(baseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.BasicLifestyleCost, _strUnique,
-                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+            string strBaseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
+            string strCondition = bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty;
+            CreateImprovement(strBaseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.BasicLifestyleCost, _strUnique,
+                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating), strCondition: strCondition);
         }
 
         // Check for Genetech Cost modifiers.

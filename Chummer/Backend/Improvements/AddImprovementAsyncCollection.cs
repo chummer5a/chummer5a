@@ -3317,9 +3317,10 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             // If the Lifestyle node is present, we restrict to a specific lifestyle type.
-            string baseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
-            await CreateImprovementAsync(baseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.LifestyleCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            string strBaseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
+            string strCondition = bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty;
+            await CreateImprovementAsync(strBaseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.LifestyleCost, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), strCondition: strCondition, token: token).ConfigureAwait(false);
         }
 
         // Check for basic Lifestyle cost modifiers.
@@ -3329,9 +3330,10 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             // If the Lifestyle node is present, we restrict to a specific lifestyle type.
-            string baseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
-            await CreateImprovementAsync(baseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.BasicLifestyleCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            string strBaseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
+            string strCondition = bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty;
+            await CreateImprovementAsync(strBaseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.BasicLifestyleCost, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), strCondition: strCondition, token: token).ConfigureAwait(false);
         }
 
         // Check for Genetech Cost modifiers.

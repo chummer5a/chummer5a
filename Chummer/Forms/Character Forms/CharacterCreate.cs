@@ -18682,19 +18682,15 @@ namespace Chummer
 
                     await flpLifestyleDetails.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                     await cmdDeleteLifestyle.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                           .ConfigureAwait(false);
-                    string strMonthlyCost = (await objLifestyle.GetTotalMonthlyCostAsync(token).ConfigureAwait(false)).ToString(
-                                                await CharacterObjectSettings.GetNuyenFormatAsync(token).ConfigureAwait(false),
-                                                GlobalSettings.CultureInfo)
-                                            + await LanguageManager.GetStringAsync(
-                                                "String_NuyenSymbol", token: token).ConfigureAwait(false);
+                    string strMonthlyCost = await objLifestyle.GetDisplayTotalMonthlyCostAsync(token).ConfigureAwait(false);
                     await lblLifestyleCost.DoThreadSafeAsync(x => x.Text
                                                                  = strMonthlyCost, token)
                                           .ConfigureAwait(false);
                     int intMonths = await objLifestyle.GetIncrementsAsync(GenericToken).ConfigureAwait(false);
                     await nudLifestyleMonths.DoThreadSafeAsync(x => x.Value = intMonths, token)
                                             .ConfigureAwait(false);
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                           .ConfigureAwait(false);
                     string strText = objLifestyle.Dice.ToString(GlobalSettings.CultureInfo)
                                      + await LanguageManager.GetStringAsync("String_D6", token: token)
                                                             .ConfigureAwait(false)

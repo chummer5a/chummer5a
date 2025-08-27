@@ -1035,7 +1035,7 @@ namespace Chummer.Backend.Equipment
                             token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("totalmonthlycost",
-                            (await GetTotalMonthlyCostAsync(token).ConfigureAwait(false))
+                            (await GetTotalMonthlyCostAsync(token: token).ConfigureAwait(false))
                             .ToString(
                                 strNuyenFormat, objCulture), token)
                         .ConfigureAwait(false);
@@ -3578,7 +3578,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (LockObject.EnterReadLock())
-                    return TotalMonthlyCost * Increments;
+                    return GetTotalMonthlyCost() * Increments;
             }
         }
 
@@ -3591,7 +3591,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await GetTotalMonthlyCostAsync(token).ConfigureAwait(false) * await GetIncrementsAsync(token).ConfigureAwait(false);
+                return await GetTotalMonthlyCostAsync(token: token).ConfigureAwait(false) * await GetIncrementsAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -4037,115 +4037,206 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total monthly cost of the Lifestyle.
         /// </summary>
-        public decimal TotalMonthlyCost
+        public decimal GetTotalMonthlyCost(bool blnIncorporateOnceOffAdjustments = true)
         {
-            get
+            decimal decReturn = 0;
+
+            using (LockObject.EnterReadLock())
             {
-                decimal decReturn = 0;
-
-                using (LockObject.EnterReadLock())
+                if (!TrustFund)
                 {
-                    if (!TrustFund)
+                    decReturn += CostPreSplit;
+
+                    // Follow HT 139 from Split step onwards
+                    if (SplitCostWithRoommates)
                     {
-                        decReturn += CostPreSplit;
-
-                        // Follow HT 139 from Split step onwards
-                        if (SplitCostWithRoommates)
-                        {
-                            decReturn /= Roommates + 1.0m;
-                        }
+                        decReturn /= Roommates + 1.0m;
                     }
-
-                    // Factor in character-based lifestyle cost adjustments (metatype, dependents, augmentations, etc.)
-                    List<Improvement> lstImprovements = ImprovementManager.GetCachedImprovementListForValueOf(
-                        _objCharacter,
-                        Improvement.ImprovementType.LifestyleCost,
-                        strImprovedName: BaseLifestyle, blnIncludeNonImproved: true);
-                    if (StyleType == LifestyleType.Standard)
-                    {
-                        lstImprovements.AddRange(ImprovementManager.GetCachedImprovementListForValueOf(
-                            _objCharacter,
-                            Improvement.ImprovementType.BasicLifestyleCost,
-                            strImprovedName: BaseLifestyle, blnIncludeNonImproved: true));
-                    }
-                    // Dependents and metatype adjustments are handled separately
-                    List<Quality> lstDependentsQualities =
-                        _objCharacter.Qualities.Where(x => x.Name.Contains("Dependent")).ToList();
-                    decimal decDependents = 0;
-                    decimal decMetatype = 0;
-                    decimal decOther = 0;
-                    foreach (Improvement objImprovement in lstImprovements)
-                    {
-                        if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality &&
-                            lstDependentsQualities.Any(x => x.InternalId == objImprovement.SourceName))
-                            decDependents += objImprovement.Value;
-                        else if (objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage
-                                 || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
-                                 || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant)
-                            decMetatype += objImprovement.Value;
-                        else
-                            decOther += objImprovement.Value;
-                    }
-                    // Dependents first
-                    if (decDependents != 0)
-                        decReturn *= 1.0m + decDependents / 100.0m;
-                    // Metatype next
-                    if (decMetatype != 0)
-                        decReturn *= 1.0m + decMetatype / 100.0m;
-                    // Finally, everything else
-                    if (decOther != 0)
-                        decReturn *= 1.0m + decOther / 100.0m;
-
-                    // Add in Outings and Services costs
-                    decimal decContractCost = 0;
-                    decimal decOutingsAndServicesCost = 0;
-                    decimal decMultiplier = 0;
-                    decimal decBaseMultiplier = 0;
-                    foreach (LifestyleQuality objQuality in LifestyleQualities)
-                    {
-                        if (objQuality.OriginSource == QualitySource.BuiltIn)
-                            continue;
-                        if (objQuality.Type == QualityType.Contracts)
-                            decContractCost += objQuality.Cost;
-                        else if (objQuality.Type == QualityType.Entertainment && !objQuality.Category.Contains("Asset"))
-                        {
-                            decOutingsAndServicesCost += objQuality.Cost;
-                            decMultiplier += objQuality.Multiplier;
-                            decBaseMultiplier += objQuality.BaseMultiplier;
-                        }
-                    }
-                    if (decMultiplier != 0)
-                        decReturn *= 1.0m + decMultiplier / 100.0m;
-                    decReturn += decOutingsAndServicesCost;
-                    if (decBaseMultiplier != 0)
-                        decReturn += Cost * (1.0m + decBaseMultiplier / 100.0m);
-
-                    // Apply final percentage modifier
-                    decReturn *= Percentage / 100;
-
-                    // Add contract costs, which are technically not a part of the lifestyle and are just used as a more automated way to deal with recurring costs
-                    switch (IncrementType)
-                    {
-                        case LifestyleIncrement.Day:
-                            decContractCost /= 4.34812m * 7;
-                            break;
-
-                        case LifestyleIncrement.Week:
-                            decContractCost /= 4.34812m;
-                            break;
-                    }
-
-                    decReturn += decContractCost;
                 }
 
-                return decReturn;
+                string strBaseLifestyle = BaseLifestyle;
+                // Factor in character-based lifestyle cost adjustments (metatype, dependents, augmentations, etc.)
+                List<Improvement> lstImprovements = ImprovementManager.GetCachedImprovementListForValueOf(
+                    _objCharacter,
+                    Improvement.ImprovementType.LifestyleCost,
+                    strImprovedName: strBaseLifestyle, blnIncludeNonImproved: true);
+                if (StyleType == LifestyleType.Standard)
+                {
+                    lstImprovements.AddRange(ImprovementManager.GetCachedImprovementListForValueOf(
+                        _objCharacter,
+                        Improvement.ImprovementType.BasicLifestyleCost,
+                        strImprovedName: strBaseLifestyle, blnIncludeNonImproved: true));
+                }
+                if (blnIncorporateOnceOffAdjustments)
+                {
+                    List<Improvement> lstOnceOffImprovements = StyleType == LifestyleType.Standard
+                        ? _objCharacter.Improvements.FindAll(x =>
+                            x.Enabled && (x.ImproveType == Improvement.ImprovementType.LifestyleCost || x.ImproveType == Improvement.ImprovementType.BasicLifestyleCost)
+                            && x.Condition == "once"
+                            && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == strBaseLifestyle))
+                        : _objCharacter.Improvements.FindAll(x =>
+                            x.Enabled && x.ImproveType == Improvement.ImprovementType.LifestyleCost
+                            && x.Condition == "once"
+                            && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == strBaseLifestyle));
+                    if (lstOnceOffImprovements.Count > 0)
+                    {
+                        Dictionary<string, List<Improvement>> dicGenericOnceOffImprovementsByUnique = new Dictionary<string, List<Improvement>>();
+                        Dictionary<string, List<Improvement>> dicSpecificOnceOffImprovementsByUnique = new Dictionary<string, List<Improvement>>();
+                        foreach (Improvement objImprovement in lstOnceOffImprovements)
+                        {
+                            string strUnique = objImprovement.UniqueName;
+                            Dictionary<string, List<Improvement>> dicToUse = string.IsNullOrEmpty(objImprovement.ImprovedName)
+                                ? dicGenericOnceOffImprovementsByUnique
+                                : dicSpecificOnceOffImprovementsByUnique;
+                            if (dicToUse.TryGetValue(strUnique, out List<Improvement> lstLoop))
+                                lstLoop.Add(objImprovement);
+                            else
+                            {
+                                lstLoop = new List<Improvement>
+                                    {
+                                        objImprovement
+                                    };
+                                dicToUse.Add(strUnique, lstLoop);
+                            }
+                        }
+                        if (dicGenericOnceOffImprovementsByUnique.Count > 0 || dicSpecificOnceOffImprovementsByUnique.Count > 0)
+                        {
+                            // We want to make sure that the largest discounts affect the costliest lifestyle first and the largest markups affect the smallest first
+                            List<Lifestyle> lstLifestyles = dicGenericOnceOffImprovementsByUnique.Count > 0
+                                ? _objCharacter.Lifestyles.ToList()
+                                : _objCharacter.Lifestyles.FindAll(x => x.BaseLifestyle == strBaseLifestyle);
+                            lstLifestyles.Sort((x, y) =>
+                            {
+                                decimal decLeftCost = x.GetTotalMonthlyCost(false);
+                                switch (x.IncrementType)
+                                {
+                                    case LifestyleIncrement.Day:
+                                        decLeftCost *= 4.34812m / 7;
+                                        break;
+
+                                    case LifestyleIncrement.Week:
+                                        decLeftCost *= 4.34812m;
+                                        break;
+                                }
+                                decimal decRightCost = y.GetTotalMonthlyCost(false);
+                                switch (y.IncrementType)
+                                {
+                                    case LifestyleIncrement.Day:
+                                        decRightCost *= 4.34812m / 7;
+                                        break;
+
+                                    case LifestyleIncrement.Week:
+                                        decRightCost *= 4.34812m;
+                                        break;
+                                }
+                                return decRightCost.CompareTo(decLeftCost);
+                            });
+                            int intMyIndex = lstLifestyles.IndexOf(this);
+                            foreach (List<Improvement> lstLoop in dicGenericOnceOffImprovementsByUnique.Values)
+                            {
+                                if (lstLoop.Count <= intMyIndex)
+                                    continue; // We have so few improvements in this unique group that this lifestyle would not be affected, so skip
+                                lstLoop.Sort((x, y) => x.Value.CompareTo(y.Value));
+                                lstImprovements.Add(lstLoop[intMyIndex]);
+                            }
+                            if (dicGenericOnceOffImprovementsByUnique.Count > 0)
+                            {
+                                intMyIndex = 0;
+                                foreach (Lifestyle objLoop in lstLifestyles)
+                                {
+                                    if (ReferenceEquals(objLoop, this))
+                                        break;
+                                    if (objLoop.BaseLifestyle == strBaseLifestyle)
+                                        ++intMyIndex;
+                                }
+                            }
+                            foreach (List<Improvement> lstLoop in dicSpecificOnceOffImprovementsByUnique.Values)
+                            {
+                                if (lstLoop.Count <= intMyIndex)
+                                    continue; // We have so few improvements in this unique group that this lifestyle would not be affected, so skip
+                                lstLoop.Sort((x, y) => x.Value.CompareTo(y.Value));
+                                lstImprovements.Add(lstLoop[intMyIndex]);
+                            }
+                        }
+                    }
+                }
+                // Dependents and metatype adjustments are handled separately
+                List<Quality> lstDependentsQualities =
+                    _objCharacter.Qualities.Where(x => x.Name.Contains("Dependent")).ToList();
+                decimal decDependents = 0;
+                decimal decMetatype = 0;
+                decimal decOther = 0;
+                foreach (Improvement objImprovement in lstImprovements)
+                {
+                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality &&
+                        lstDependentsQualities.Any(x => x.InternalId == objImprovement.SourceName))
+                        decDependents += objImprovement.Value;
+                    else if (objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage
+                                || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant)
+                        decMetatype += objImprovement.Value;
+                    else
+                        decOther += objImprovement.Value;
+                }
+                // Dependents first
+                if (decDependents != 0)
+                    decReturn *= 1.0m + decDependents / 100.0m;
+                // Metatype next
+                if (decMetatype != 0)
+                    decReturn *= 1.0m + decMetatype / 100.0m;
+                // Finally, everything else
+                if (decOther != 0)
+                    decReturn *= 1.0m + decOther / 100.0m;
+
+                // Add in Outings and Services costs
+                decimal decContractCost = 0;
+                decimal decOutingsAndServicesCost = 0;
+                decimal decMultiplier = 0;
+                decimal decBaseMultiplier = 0;
+                foreach (LifestyleQuality objQuality in LifestyleQualities)
+                {
+                    if (objQuality.OriginSource == QualitySource.BuiltIn)
+                        continue;
+                    if (objQuality.Type == QualityType.Contracts)
+                        decContractCost += objQuality.Cost;
+                    else if (objQuality.Type == QualityType.Entertainment && !objQuality.Category.Contains("Asset"))
+                    {
+                        decOutingsAndServicesCost += objQuality.Cost;
+                        decMultiplier += objQuality.Multiplier;
+                        decBaseMultiplier += objQuality.BaseMultiplier;
+                    }
+                }
+                if (decMultiplier != 0)
+                    decReturn *= 1.0m + decMultiplier / 100.0m;
+                decReturn += decOutingsAndServicesCost;
+                if (decBaseMultiplier != 0)
+                    decReturn += Cost * (1.0m + decBaseMultiplier / 100.0m);
+
+                // Apply final percentage modifier
+                decReturn *= Percentage / 100;
+
+                // Add contract costs, which are technically not a part of the lifestyle and are just used as a more automated way to deal with recurring costs
+                switch (IncrementType)
+                {
+                    case LifestyleIncrement.Day:
+                        decContractCost /= 4.34812m * 7;
+                        break;
+
+                    case LifestyleIncrement.Week:
+                        decContractCost /= 4.34812m;
+                        break;
+                }
+
+                decReturn += decContractCost;
             }
+
+            return decReturn;
         }
 
         /// <summary>
         /// Total monthly cost of the Lifestyle.
         /// </summary>
-        public async Task<decimal> GetTotalMonthlyCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetTotalMonthlyCostAsync(bool blnIncorporateOnceOffAdjustments = true, CancellationToken token = default)
         {
             decimal decReturn = 0;
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -4175,6 +4266,111 @@ namespace Chummer.Backend.Equipment
                         _objCharacter,
                         Improvement.ImprovementType.BasicLifestyleCost,
                         strImprovedName: strBaseLifestyle, blnIncludeNonImproved: true, token: token).ConfigureAwait(false));
+                }
+                if (blnIncorporateOnceOffAdjustments)
+                {
+                    List<Improvement> lstOnceOffImprovements = new List<Improvement>();
+                    if (StyleType == LifestyleType.Standard)
+                    {
+                        await _objCharacter.Improvements.ForEachAsync(x =>
+                        {
+                            if (x.Enabled && (x.ImproveType == Improvement.ImprovementType.LifestyleCost || x.ImproveType == Improvement.ImprovementType.BasicLifestyleCost)
+                                && x.Condition == "once"
+                                && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == BaseLifestyle))
+                                lstOnceOffImprovements.Add(x);
+                        }, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await _objCharacter.Improvements.ForEachAsync(x =>
+                        {
+                            if (x.Enabled && x.ImproveType == Improvement.ImprovementType.LifestyleCost
+                                && x.Condition == "once"
+                                && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == BaseLifestyle))
+                                lstOnceOffImprovements.Add(x);
+                        }, token).ConfigureAwait(false);
+                    }
+                    if (lstOnceOffImprovements.Count > 0)
+                    {
+                        Dictionary<string, List<Improvement>> dicGenericOnceOffImprovementsByUnique = new Dictionary<string, List<Improvement>>();
+                        Dictionary<string, List<Improvement>> dicSpecificOnceOffImprovementsByUnique = new Dictionary<string, List<Improvement>>();
+                        foreach (Improvement objImprovement in lstOnceOffImprovements)
+                        {
+                            string strUnique = objImprovement.UniqueName;
+                            Dictionary<string, List<Improvement>> dicToUse = string.IsNullOrEmpty(objImprovement.ImprovedName)
+                                ? dicGenericOnceOffImprovementsByUnique
+                                : dicSpecificOnceOffImprovementsByUnique;
+                            if (dicToUse.TryGetValue(strUnique, out List<Improvement> lstLoop))
+                                lstLoop.Add(objImprovement);
+                            else
+                            {
+                                lstLoop = new List<Improvement>
+                                    {
+                                        objImprovement
+                                    };
+                                dicToUse.Add(strUnique, lstLoop);
+                            }
+                        }
+                        if (dicGenericOnceOffImprovementsByUnique.Count > 0 || dicSpecificOnceOffImprovementsByUnique.Count > 0)
+                        {
+                            // We want to make sure that the largest discounts affect the costliest lifestyle first and the largest markups affect the smallest first
+                            List<Lifestyle> lstLifestyles = dicGenericOnceOffImprovementsByUnique.Count > 0
+                                ? await _objCharacter.Lifestyles.ToListAsync(token)
+                                : await _objCharacter.Lifestyles.ToListAsync(async x => await x.GetBaseLifestyleAsync(token).ConfigureAwait(false) == strBaseLifestyle, token);
+                            await lstLifestyles.SortAsync(async (x, y) =>
+                            {
+                                decimal decLeftCost = await x.GetTotalMonthlyCostAsync(false, token).ConfigureAwait(false);
+                                switch (x.IncrementType)
+                                {
+                                    case LifestyleIncrement.Day:
+                                        decLeftCost *= 4.34812m / 7;
+                                        break;
+
+                                    case LifestyleIncrement.Week:
+                                        decLeftCost *= 4.34812m;
+                                        break;
+                                }
+                                decimal decRightCost = await y.GetTotalMonthlyCostAsync(false, token).ConfigureAwait(false);
+                                switch (y.IncrementType)
+                                {
+                                    case LifestyleIncrement.Day:
+                                        decRightCost *= 4.34812m / 7;
+                                        break;
+
+                                    case LifestyleIncrement.Week:
+                                        decRightCost *= 4.34812m;
+                                        break;
+                                }
+                                return decRightCost.CompareTo(decLeftCost);
+                            }, token).ConfigureAwait(false);
+                            int intMyIndex = lstLifestyles.IndexOf(this);
+                            foreach (List<Improvement> lstLoop in dicGenericOnceOffImprovementsByUnique.Values)
+                            {
+                                if (lstLoop.Count <= intMyIndex)
+                                    continue; // We have so few improvements in this unique group that this lifestyle would not be affected, so skip
+                                lstLoop.Sort((x, y) => x.Value.CompareTo(y.Value));
+                                lstImprovements.Add(lstLoop[intMyIndex]);
+                            }
+                            if (dicGenericOnceOffImprovementsByUnique.Count > 0)
+                            {
+                                intMyIndex = 0;
+                                foreach (Lifestyle objLoop in lstLifestyles)
+                                {
+                                    if (ReferenceEquals(objLoop, this))
+                                        break;
+                                    if (await objLoop.GetBaseLifestyleAsync(token).ConfigureAwait(false) == strBaseLifestyle)
+                                        ++intMyIndex;
+                                }
+                            }
+                            foreach (List<Improvement> lstLoop in dicSpecificOnceOffImprovementsByUnique.Values)
+                            {
+                                if (lstLoop.Count <= intMyIndex)
+                                    continue; // We have so few improvements in this unique group that this lifestyle would not be affected, so skip
+                                lstLoop.Sort((x, y) => x.Value.CompareTo(y.Value));
+                                lstImprovements.Add(lstLoop[intMyIndex]);
+                            }
+                        }
+                    }
                 }
                 // Dependents and metatype adjustments are handled separately
                 List<Quality> lstDependentsQualities =
@@ -4263,7 +4459,7 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterReadLock())
                 {
-                    return TotalMonthlyCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                    return GetTotalMonthlyCost().ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                            + LanguageManager.GetString("String_NuyenSymbol");
                 }
             }
@@ -4275,7 +4471,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return (await GetTotalMonthlyCostAsync(token).ConfigureAwait(false)).ToString(
+                return (await GetTotalMonthlyCostAsync(token: token).ConfigureAwait(false)).ToString(
                            await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false),
                            GlobalSettings.CultureInfo)
                        + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
@@ -4334,7 +4530,7 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 // Create the Expense Log Entry.
-                decimal decAmount = await GetTotalMonthlyCostAsync(token).ConfigureAwait(false);
+                decimal decAmount = await GetTotalMonthlyCostAsync(token: token).ConfigureAwait(false);
                 if (decAmount > await _objCharacter.GetNuyenAsync(token).ConfigureAwait(false))
                 {
                     await Program.ShowScrollableMessageBoxAsync(
@@ -4504,7 +4700,7 @@ namespace Chummer.Backend.Equipment
                     new DependencyGraphNode<string, Lifestyle>(nameof(TotalAreaMaximum))
                 ),
                 new DependencyGraphNode<string, Lifestyle>(nameof(DisplayTotalMonthlyCost),
-                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalMonthlyCost),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(GetTotalMonthlyCost),
                         new DependencyGraphNode<string, Lifestyle>(nameof(TrustFund),
                             new DependencyGraphNode<string, Lifestyle>(nameof(IsTrustFundEligible),
                                 new DependencyGraphNode<string, Lifestyle>(nameof(BaseLifestyle))
@@ -4539,7 +4735,7 @@ namespace Chummer.Backend.Equipment
                 ),
                 new DependencyGraphNode<string, Lifestyle>(nameof(TotalCost),
                     new DependencyGraphNode<string, Lifestyle>(nameof(Increments)),
-                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalMonthlyCost))
+                    new DependencyGraphNode<string, Lifestyle>(nameof(GetTotalMonthlyCost))
                 ),
                 new DependencyGraphNode<string, Lifestyle>(nameof(TotalLP),
                     new DependencyGraphNode<string, Lifestyle>(nameof(LP)),
