@@ -170,6 +170,7 @@ Data Changes:
 - Added customdata for Critter Prices, as originally created by u/RunnerPakhet and implemented for Chummer by Mesothelioma.
 - Added basic traditions for the Traditionalist and Ancestor Shamans from Forbidden Arcana. 
 - Added a customdata entry to change the Krime Stopper II to use the Shotguns category instead of Heavy Pistols.
+- Corrected and/or added the effects of the following The Complete Trog qualities: Community Connection, Nasty Trog, Trog Artisan, Trog Historian, Trog Leader, Trog Networker, Bad Credit. Existing characters with these qualities will need to reapply their improvements to see any changes.
 
 Fixes implemented by BM123499
 
