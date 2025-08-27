@@ -3183,6 +3183,17 @@ namespace Chummer
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
+        public void availability(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            // If the Lifestyle node is present, we restrict to a specific lifestyle type.
+            string strForId = bonusNode.Attributes?["id"]?.InnerText ?? string.Empty;
+            string strCondition = bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty;
+            CreateImprovement(strForId, _objImprovementSource, SourceName, Improvement.ImprovementType.Availability, _strUnique,
+                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating), strCondition: strCondition);
+        }
+
         // Check for Lifestyle cost modifiers.
         public void lifestylecost(XmlNode bonusNode)
         {

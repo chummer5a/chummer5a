@@ -278,6 +278,7 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                                             while (intMaximum > 1 && !await SelectionShared
                                                        .CheckAvailRestrictionAsync(xmlArmor, _objCharacter, intMaximum,
+                                                       (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objArmor.SourceIDString, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(),
                                                            token: token).ConfigureAwait(false))
                                             {
                                                 --intMaximum;
@@ -680,7 +681,7 @@ namespace Chummer
                                 decCostMultiplier *= 0.9m;
                             if (!blnHideOverAvailLimit
                                 || await SelectionShared
-                                    .CheckAvailRestrictionAsync(objXmlArmor, _objCharacter, token: token)
+                                    .CheckAvailRestrictionAsync(objXmlArmor, _objCharacter, (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlArmor["id"]?.InnerText, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token)
                                     .ConfigureAwait(false) && (blnFreeItem
                                                                || !blnShowOnlyAffordItems
                                                                || await SelectionShared.CheckNuyenRestrictionAsync(
@@ -766,7 +767,7 @@ namespace Chummer
                             if (_setBlackMarketMaps.Contains(objXmlArmor["category"]?.InnerText))
                                 decCostMultiplier *= 0.9m;
                             if ((!blnHideOverAvailLimit
-                                 || await SelectionShared.CheckAvailRestrictionAsync(objXmlArmor, _objCharacter, token: token).ConfigureAwait(false))
+                                 || await SelectionShared.CheckAvailRestrictionAsync(objXmlArmor, _objCharacter, (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlArmor["id"]?.InnerText, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token).ConfigureAwait(false))
                                 && (blnFreeItem
                                     || !blnShowOnlyAffordItems
                                     || await SelectionShared.CheckNuyenRestrictionAsync(

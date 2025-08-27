@@ -263,8 +263,27 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="availability" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="id" type="xs:string" use="optional" />
+              <xs:attribute name="condition" type="xs:string" use="optional" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="basicbiowareessmultiplier" minOccurs="0" maxOccurs="1" />
-      <xs:element name="basiclifestylecost" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="basiclifestylecost" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="lifestyle" type="xs:string" use="optional" />
+              <xs:attribute name="condition" type="xs:string" use="optional" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="biowareessmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
       <xs:element name="biowaretotalessmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
       <xs:element name="blockskilldefaulting" minOccurs="0" maxOccurs="unbounded">
@@ -574,8 +593,9 @@
       <xs:element name="lifestylecost" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:simpleContent>
-            <xs:extension base="xs:integer">
+            <xs:extension base="xs:string">
               <xs:attribute name="lifestyle" type="xs:string" use="optional" />
+              <xs:attribute name="condition" type="xs:string" use="optional" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>

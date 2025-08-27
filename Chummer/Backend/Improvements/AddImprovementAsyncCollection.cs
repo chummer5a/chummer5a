@@ -3310,6 +3310,17 @@ namespace Chummer
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
+        public async Task availability(XmlNode bonusNode, CancellationToken token = default)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            // If the Lifestyle node is present, we restrict to a specific lifestyle type.
+            string strForId = bonusNode.Attributes?["id"]?.InnerText ?? string.Empty;
+            string strCondition = bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty;
+            await CreateImprovementAsync(strForId, _objImprovementSource, SourceName, Improvement.ImprovementType.Availability, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), strCondition: strCondition, token: token).ConfigureAwait(false);
+        }
+
         // Check for Lifestyle cost modifiers.
         public async Task lifestylecost(XmlNode bonusNode, CancellationToken token = default)
         {

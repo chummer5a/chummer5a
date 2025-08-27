@@ -648,6 +648,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            intAvail += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: SourceIDString, blnIncludeNonImproved: true).StandardRound();
+
             if (intAvail < 0)
                 intAvail = 0;
 
@@ -699,6 +701,8 @@ namespace Chummer.Backend.Equipment
                     return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(token).ConfigureAwait(false) : 0;
                 }, token).ConfigureAwait(false);
             }
+
+            intAvail += (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: SourceIDString, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound();
 
             if (intAvail < 0)
                 intAvail = 0;
@@ -2423,6 +2427,8 @@ namespace Chummer.Backend.Equipment
                         intAvail += decValue.StandardRound();
                 }
 
+                intAvail += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: SourceIDString, blnIncludeNonImproved: true).StandardRound();
+
                 if (intAvail < 0)
                     intAvail = 0;
 
@@ -2461,6 +2467,8 @@ namespace Chummer.Backend.Equipment
                 else
                     intAvail += decValue.StandardRound();
             }
+
+            intAvail += (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: SourceIDString, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound();
 
             if (intAvail < 0)
                 intAvail = 0;

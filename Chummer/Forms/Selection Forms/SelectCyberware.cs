@@ -580,7 +580,7 @@ namespace Chummer
                             {
                                 while (intMaxRating > intMinRating
                                        && !await xmlCyberware.CheckAvailRestrictionAsync(
-                                           _objCharacter, intMaxRating, _intAvailModifier, token: token).ConfigureAwait(false))
+                                           _objCharacter, intMaxRating, _intAvailModifier + (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: xmlCyberware.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token).ConfigureAwait(false))
                                 {
                                     --intMaxRating;
                                 }
@@ -1076,10 +1076,10 @@ namespace Chummer
                                                                        () => nudRating.DoThreadSafeFuncAsync(
                                                                            y => y.Minimum.ToString(
                                                                                GlobalSettings.InvariantCultureInfo), token: token),
-                                                                       token: token).ConfigureAwait(false), _intAvailModifier);
-                        await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+                                                                       token: token).ConfigureAwait(false),
+                            _intAvailModifier + (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlCyberware.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound());
                         string strAvail = await objTotalAvail.ToStringAsync(token).ConfigureAwait(false);
-
+                        await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
                         await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
 
                         // Cost.
@@ -1675,7 +1675,7 @@ namespace Chummer
 
                         if (blnHideOverAvailLimit && !await xmlCyberware.CheckAvailRestrictionAsync(
                                 _objCharacter, intMinRating,
-                                blnIsForceGrade ? 0 : _intAvailModifier, token).ConfigureAwait(false))
+                                (blnIsForceGrade ? 0 : _intAvailModifier) + (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: xmlCyberware.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token).ConfigureAwait(false))
                         {
                             ++intOverLimit;
                             continue;

@@ -870,5 +870,15 @@
       <xml><![CDATA[{val}]]></xml>
       <page>Adjusts the character's Surprise dicepool by the value entered. Positive numbers improve the dicepool. Negative numbers reduce the dicepool.</page>
     </improvement>
+    <improvement>
+      <name>Availability</name>
+      <id>availability</id>
+      <internal>availability</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the availability of all of the character's items by the value entered. Positive numbers increase availability. Negative numbers reduce availability.</page>
+    </improvement>
   </improvements>
 </chummer>
