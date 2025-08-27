@@ -24791,7 +24791,7 @@ namespace Chummer
                     await flpLifestyleDetails.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                     await cmdDeleteLifestyle.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                     string strMonthlyCost =
-                        (await objLifestyle.GetTotalMonthlyCostAsync(token).ConfigureAwait(false)).ToString(
+                        (await objLifestyle.GetTotalMonthlyCostAsync(token: token).ConfigureAwait(false)).ToString(
                             await CharacterObjectSettings.GetNuyenFormatAsync(token)
                                 .ConfigureAwait(false),
                             GlobalSettings.CultureInfo)

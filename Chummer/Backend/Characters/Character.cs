@@ -49305,7 +49305,7 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             if (setNamesOfChangedProperties.Contains(nameof(Created)))
-                                ImprovementManager.ClearCachedValues(this);
+                                ImprovementManager.ClearCachedValues(this, token);
                             if (setNamesOfChangedProperties.Contains(nameof(CharacterGrammaticGender)))
                                 _strCachedCharacterGrammaticGender = string.Empty;
                             if (setNamesOfChangedProperties.Contains(nameof(TotalStartingNuyen)))
