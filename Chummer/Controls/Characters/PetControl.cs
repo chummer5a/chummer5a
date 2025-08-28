@@ -185,43 +185,18 @@ namespace Chummer
         {
             try
             {
+                string strFileName;
+                Character objOpenCharacter = null;
                 Character objLinkedCharacter = await _objContact.GetLinkedCharacterAsync(_objMyToken).ConfigureAwait(false);
-                if (objLinkedCharacter != null)
-                {
-                    Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(objLinkedCharacter, _objMyToken)
-                        .ConfigureAwait(false)
-                        ? objLinkedCharacter
-                        : null;
-                    CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
-                    try
-                    {
-                        if (objOpenCharacter == null)
-                        {
-                            using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                                   = await Program.CreateAndShowProgressBarAsync(
-                                           await objLinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false), Character.NumLoadingSections, _objMyToken)
-                                       .ConfigureAwait(false))
-                                objOpenCharacter = await Program.LoadCharacterAsync(
-                                        await objLinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false), frmLoadingBar: frmLoadingBar.MyForm, token: _objMyToken)
-                                    .ConfigureAwait(false);
-                        }
-
-                        if (!await Program.SwitchToOpenCharacter(objOpenCharacter, _objMyToken).ConfigureAwait(false))
-                            await Program.OpenCharacter(objOpenCharacter, token: _objMyToken).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                else
+                if (objLinkedCharacter == null)
                 {
                     // Make sure the file still exists before attempting to load it.
-                    string strFileName = await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
+                    strFileName = await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
                     if (!File.Exists(strFileName))
                     {
                         // If the file doesn't exist, use the relative path if one is available.
                         string strRelativeFileName = await _objContact.GetRelativeFileNameAsync(_objMyToken).ConfigureAwait(false);
+                        // If the file doesn't exist, use the relative path if one is available.
                         if (string.IsNullOrEmpty(strRelativeFileName) || !File.Exists(Path.GetFullPath(strRelativeFileName)))
                         {
                             await Program.ShowScrollableMessageBoxAsync(
@@ -235,8 +210,33 @@ namespace Chummer
                         else
                             strFileName = Path.GetFullPath(strRelativeFileName);
                     }
+                }
+                else
+                {
+                    strFileName = await objLinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
+                    if (await Program.OpenCharacters.ContainsAsync(objLinkedCharacter, _objMyToken).ConfigureAwait(false))
+                        objOpenCharacter = objLinkedCharacter;
+                }
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
+                try
+                {
+                    if (objOpenCharacter == null)
+                    {
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(
+                                       strFileName, Character.NumLoadingSections, _objMyToken)
+                                   .ConfigureAwait(false))
+                            objOpenCharacter = await Program.LoadCharacterAsync(
+                                    strFileName, frmLoadingBar: frmLoadingBar.MyForm, token: _objMyToken)
+                                .ConfigureAwait(false);
+                    }
 
-                    Process.Start(new ProcessStartInfo(strFileName) { UseShellExecute = true });
+                    if (!await Program.SwitchToOpenCharacter(objOpenCharacter, _objMyToken).ConfigureAwait(false))
+                        await Program.OpenCharacter(objOpenCharacter, token: _objMyToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

@@ -11242,6 +11242,7 @@ namespace Chummer
                     }
                     catch (Exception e)
                     {
+                        e = e.Demystify();
                         loadActivity.SetSuccess(false);
                         Log.Error(e);
                         throw;

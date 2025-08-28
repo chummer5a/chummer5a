@@ -2288,12 +2288,7 @@ namespace Chummer
                                .Replace("{page}", intPage.ToString(GlobalSettings.InvariantCultureInfo))
                                .Replace("{localpath}", uriPath.LocalPath)
                                .Replace("{absolutepath}", uriPath.AbsolutePath);
-            ProcessStartInfo objProcess = new ProcessStartInfo
-            {
-                FileName = strPdfAppPath,
-                Arguments = strParams
-            };
-            objProcess.Start();
+            Process.Start(strPdfAppPath, strParams);
         }
 
         /// <summary>

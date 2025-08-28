@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -285,6 +286,7 @@ namespace Chummer
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(objControl, e.ToString());
@@ -329,6 +331,7 @@ namespace Chummer
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(objControl, e.ToString());
@@ -373,6 +376,7 @@ namespace Chummer
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(objControl, e.ToString());
@@ -417,6 +421,7 @@ namespace Chummer
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(objControl, e.ToString());
@@ -652,6 +657,7 @@ namespace Chummer
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(objControl, e.ToString());
@@ -695,6 +701,7 @@ namespace Chummer
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(objControl, e.ToString());
@@ -740,6 +747,7 @@ namespace Chummer
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(objControl, e.ToString());
@@ -785,6 +793,7 @@ namespace Chummer
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(objControl, e.ToString());

@@ -230,38 +230,49 @@ namespace Chummer.Backend
                     dump.SerializeJson(objJsonWriter);
                 }
 
+                string strCrashHandler = Path.Combine(Utils.GetStartupPath, "CrashHandler.exe");
+                if (File.Exists(strCrashHandler))
+                {
+                    using (Process prcCrashHandler
+                       = Process.Start(strCrashHandler, "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc()
 #if DEBUG
-                using (Process prcCrashHandler
-                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"),
-                                       "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc()
                                        + "\" --debug"))
 #else
-                using (Process prcCrashHandler
-                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"),
-                                       "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc() + "\""))
+                                       + "\""))
 #endif
-                {
-                    if (prcCrashHandler == null)
-                        return;
-                    prcCrashHandler.WaitForExit();
-                    if (prcCrashHandler.ExitCode != 0)
                     {
-                        Program.ShowScrollableMessageBox(
-                            "Failed to create crash report because of an issue with the crash handler."
-                            + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion
-                            + Environment.NewLine + "Crash Handler crashed with exit code: "
-                            + prcCrashHandler.ExitCode + Environment.NewLine + "Crash information:"
-                            + Environment.NewLine + ex.ToString().Replace(Utils.GetStartupPath, "[Chummer Path]").Replace(Utils.GetEscapedStartupPath, "[Chummer Path]"),
-                            "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        if (prcCrashHandler == null)
+                            return;
+                        prcCrashHandler.WaitForExit();
+                        if (prcCrashHandler.ExitCode != 0)
+                        {
+                            Program.ShowScrollableMessageBox(
+                                "Failed to create crash report because of an issue with the crash handler."
+                                + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion
+                                + Environment.NewLine + "Crash Handler crashed with exit code: " + prcCrashHandler.ExitCode
+                                + Environment.NewLine + "Crash information:"
+                                + Environment.NewLine + ex.ToString().Replace(Utils.GetStartupPath, "[Chummer Path]").Replace(Utils.GetEscapedStartupPath, "[Chummer Path]"),
+                                "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
+                }
+                else
+                {
+                    Program.ShowScrollableMessageBox(
+                                "Failed to create crash report because the crash handler was not found."
+                                + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion
+                                + Environment.NewLine + "Crash information:"
+                                + Environment.NewLine + ex.ToString().Replace(Utils.GetStartupPath, "[Chummer Path]").Replace(Utils.GetEscapedStartupPath, "[Chummer Path]"),
+                                "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception nex)
             {
                 Program.ShowScrollableMessageBox(
-                    "Failed to create crash report." + Environment.NewLine + "Chummer crashed with version: "
-                    + Utils.CurrentChummerVersion + Environment.NewLine
-                    + "Here is some information to help the developers figure out why:" + Environment.NewLine + nex
+                    "Failed to create crash report."
+                    + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion
+                    + Environment.NewLine + "Here is some information to help the developers figure out why:"
+                    + Environment.NewLine + nex.Demystify().ToString().Replace(Utils.GetStartupPath, "[Chummer Path]").Replace(Utils.GetEscapedStartupPath, "[Chummer Path]")
                     + Environment.NewLine + "Crash information:" + Environment.NewLine
                     + ex.ToString().Replace(Utils.GetStartupPath, "[Chummer Path]").Replace(Utils.GetEscapedStartupPath, "[Chummer Path]"),
                     "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);

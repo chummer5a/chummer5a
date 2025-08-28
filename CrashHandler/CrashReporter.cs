@@ -134,8 +134,14 @@ namespace CrashHandler
                 FileName = Utils.GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
                 Arguments = strArguments
             };
-            Application.Exit();
-            objStartInfo.Start();
+            try
+            {
+                Application.Exit();
+            }
+            finally
+            {
+                objStartInfo.Start();
+            }
         }
 
         private void cmdSubmitIssue_Click(object sender, EventArgs e)

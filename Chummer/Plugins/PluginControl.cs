@@ -384,6 +384,7 @@ namespace Chummer.Plugins
                         }
                         catch (Exception e)
                         {
+                            e = e.Demystify();
                             Log.Error(e);
 #if DEBUG
                             throw;
@@ -402,6 +403,7 @@ namespace Chummer.Plugins
                 }
                 catch (Exception e) when (!(e is ApplicationException))
                 {
+                    e = e.Demystify();
                     Log.Fatal(e);
                     throw;
                 }

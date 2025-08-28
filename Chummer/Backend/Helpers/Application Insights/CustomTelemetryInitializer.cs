@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using Chummer.Plugins;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -72,6 +73,7 @@ namespace Chummer
                 }
                 catch (Exception e)
                 {
+                    e = e.Demystify();
                     Log.Error(e);
 #if DEBUG
                     throw;

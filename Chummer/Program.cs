@@ -467,6 +467,7 @@ namespace Chummer
                         }
                         catch (Exception e)
                         {
+                            e = e.Demystify();
                             Console.WriteLine(e);
                             Log.Error(e);
 #if DEBUG

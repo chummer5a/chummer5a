@@ -22,6 +22,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -1937,6 +1938,7 @@ namespace Chummer
                             }
                             catch (Exception ex)
                             {
+                                ex = ex.Demystify();
                                 if (op_load_frm_career != null)
                                 {
                                     op_load_frm_career.SetSuccess(false);

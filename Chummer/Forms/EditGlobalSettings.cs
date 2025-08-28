@@ -469,14 +469,12 @@ namespace Chummer
         private void cboUseLoggingHelp_Click(object sender, EventArgs e)
         {
             //open the telemetry document
-            Process.Start(
-                "https://docs.google.com/document/d/1LThAg6U5qXzHAfIRrH0Kb7griHrPN0hy7ab8FSJDoFY/edit?usp=sharing");
+            Process.Start(new ProcessStartInfo("https://docs.google.com/document/d/1LThAg6U5qXzHAfIRrH0Kb7griHrPN0hy7ab8FSJDoFY/edit?usp=sharing") { UseShellExecute = true });
         }
 
         private void cmdPluginsHelp_Click(object sender, EventArgs e)
         {
-            Process.Start(
-                "https://docs.google.com/document/d/1WOPB7XJGgcmxg7REWxF6HdP3kQdtHpv6LJOXZtLggxM/edit?usp=sharing");
+            Process.Start(new ProcessStartInfo("https://docs.google.com/document/d/1WOPB7XJGgcmxg7REWxF6HdP3kQdtHpv6LJOXZtLggxM/edit?usp=sharing") { UseShellExecute = true });
         }
 
         private void chkCustomDateTimeFormats_CheckedChanged(object sender, EventArgs e)

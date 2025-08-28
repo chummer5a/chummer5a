@@ -1009,6 +1009,7 @@ namespace Chummer
                         }
                         catch (Exception ex)
                         {
+                            ex = ex.Demystify();
                             if (opFrmChummerMain != null)
                             {
                                 opFrmChummerMain.SetSuccess(false);
@@ -2695,7 +2696,7 @@ namespace Chummer
         {
             string strTranslator = Path.Combine(Utils.GetStartupPath, "Translator.exe");
             if (File.Exists(strTranslator))
-                Process.Start(new ProcessStartInfo(strTranslator) { UseShellExecute = true });
+                Process.Start(strTranslator);
         }
 
         private async void ChummerMainForm_Closing(object sender, FormClosingEventArgs e)
