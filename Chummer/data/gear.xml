@@ -13544,7 +13544,7 @@
       <id>08b3bf17-e52a-41d4-b023-af6ee5354fe6</id>
       <name>AgHexHex</name>
       <category>Magical Compounds</category>
-      <rating>20</rating>
+      <rating>1000000</rating>
       <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>219</page>
@@ -13555,7 +13555,7 @@
       <id>46e9dca6-bb11-4e33-8436-3dcadc23433c</id>
       <name>BDNB</name>
       <category>Magical Compounds</category>
-      <rating>20</rating>
+      <rating>1000000</rating>
       <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>220</page>
@@ -13566,7 +13566,7 @@
       <id>bdb141a3-7104-4d9e-a939-6f2d75678c0f</id>
       <name>Lot's Curse</name>
       <category>Magical Compounds</category>
-      <rating>20</rating>
+      <rating>1000000</rating>
       <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>220</page>
@@ -13577,7 +13577,7 @@
       <id>e7b70355-cf78-4680-93f2-da82b6fc98a5</id>
       <name>Sage</name>
       <category>Magical Compounds</category>
-      <rating>20</rating>
+      <rating>1000000</rating>
       <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>220</page>
@@ -13588,7 +13588,7 @@
       <id>b6bbfa14-9b0f-4474-a182-4f374c1efae2</id>
       <name>Spirit Strength</name>
       <category>Magical Compounds</category>
-      <rating>20</rating>
+      <rating>1000000</rating>
       <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>220</page>
@@ -13599,7 +13599,7 @@
       <id>000dd333-262f-4b51-8c66-01495b0df8ab</id>
       <name>Witch's Moss</name>
       <category>Magical Compounds</category>
-      <rating>20</rating>
+      <rating>1000000</rating>
       <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>220</page>
@@ -13620,7 +13620,8 @@
       <id>01a0c2a6-3d06-4cf9-9fc4-4388b1c87bb3</id>
       <name>Alchemical Duct Tape</name>
       <category>Magical Compounds</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>194</page>
       <avail>14R</avail>
@@ -13630,7 +13631,8 @@
       <id>82afb8a5-e5b7-4fb2-9b9e-bb8ec9fee029</id>
       <name>Astral Increase</name>
       <category>Magical Compounds</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>194</page>
       <avail>14R</avail>
@@ -13640,7 +13642,8 @@
       <id>a869cbec-e320-417a-b9bc-e7ed8f624670</id>
       <name>Astral Bond</name>
       <category>Magical Compounds</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>195</page>
       <avail>14R</avail>
@@ -13650,7 +13653,8 @@
       <id>de78507e-d5ea-4fab-b034-d116d9fafd51</id>
       <name>Baobhan's Tears</name>
       <category>Magical Compounds</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>195</page>
       <avail>14R</avail>
@@ -13660,7 +13664,8 @@
       <id>14941349-f9fa-4671-b194-eb0e3b9205fc</id>
       <name>Drain Away</name>
       <category>Magical Compounds</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>195</page>
       <avail>14R</avail>
@@ -13670,7 +13675,8 @@
       <id>f48792cd-1c0e-4c69-93d5-ad54caca9827</id>
       <name>Dulled Edges</name>
       <category>Magical Compounds</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>195</page>
       <avail>14R</avail>
@@ -13680,7 +13686,8 @@
       <id>c8cc2a19-c40f-44b5-a2f9-6b3c5da2b10d</id>
       <name>Feel No Pain</name>
       <category>Magical Compounds</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>195</page>
       <avail>14R</avail>
@@ -13690,7 +13697,8 @@
       <id>86b0f1d8-5777-443f-a90c-4be0a264a5ea</id>
       <name>Force of Personality</name>
       <category>Magical Compounds</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>196</page>
       <avail>14R</avail>
@@ -13700,7 +13708,8 @@
       <id>feb6f468-641f-4443-a72a-b78b6cf239d3</id>
       <name>HMHVV II Inhibitor</name>
       <category>Magical Compounds</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>196</page>
       <avail>14R</avail>
@@ -13710,7 +13719,8 @@
       <id>9a2f3b3e-4f6c-4d47-bf65-09e79ea0e306</id>
       <name>Laminate</name>
       <category>Magical Compounds</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>196</page>
       <avail>14R</avail>
@@ -13720,7 +13730,8 @@
       <id>c40e890f-3744-4151-bcd2-ce8de0cf92fa</id>
       <name>Perfect Sight</name>
       <category>Magical Compounds</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>196</page>
       <avail>14R</avail>
@@ -13730,7 +13741,8 @@
       <id>af58e5e2-78aa-440f-9283-937819ef2d17</id>
       <name>Sharpshooter</name>
       <category>Magical Compounds</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>197</page>
       <avail>14R</avail>
@@ -13740,7 +13752,8 @@
       <id>22e38a1f-305d-460f-836d-645818811e60</id>
       <name>Unstoppable Vigor</name>
       <category>Magical Compounds</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>197</page>
       <avail>14R</avail>
@@ -13750,7 +13763,8 @@
       <id>bf435f24-1bf4-416f-8665-a5f9c4595196</id>
       <name>Water Breathing</name>
       <category>Magical Compounds</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>197</page>
       <avail>14R</avail>
@@ -13760,7 +13774,8 @@
       <id>0336261c-a1ae-4d82-91b2-6c03cab65bb9</id>
       <name>Abandon All Hope</name>
       <category>Alchemical Preperations</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>198</page>
       <avail>14R</avail>
@@ -13770,7 +13785,8 @@
       <id>94f8ff12-dfb6-4316-a3a5-fdd50cda26d9</id>
       <name>Barricade</name>
       <category>Alchemical Preperations</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>198</page>
       <avail>14R</avail>
@@ -13780,7 +13796,8 @@
       <id>30e7f5c4-b955-408c-a5c6-a221da65d067</id>
       <name>Burn, Baby, Burn</name>
       <category>Alchemical Preperations</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>198</page>
       <avail>14R</avail>
@@ -13790,7 +13807,8 @@
       <id>7b045c01-6631-4904-b024-824368b6a1e2</id>
       <name>Do your Best</name>
       <category>Alchemical Preperations</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>198</page>
       <avail>14R</avail>
@@ -13800,7 +13818,8 @@
       <id>00125c87-ab8a-4a5d-b9a9-167e305520d7</id>
       <name>Get Away From My Ride</name>
       <category>Alchemical Preperations</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>198</page>
       <avail>14R</avail>
@@ -13810,7 +13829,8 @@
       <id>ee884eb3-9f55-4375-a478-2d735c198d9d</id>
       <name>High As A Kite</name>
       <category>Alchemical Preperations</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>199</page>
       <avail>14R</avail>
@@ -13820,7 +13840,8 @@
       <id>6290d8fe-925b-4c48-80af-35236ae65f91</id>
       <name>Noise On The Line</name>
       <category>Alchemical Preperations</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>199</page>
       <avail>14R</avail>
@@ -13830,7 +13851,8 @@
       <id>8dd76614-b2a6-4cee-9998-33caf2b027c4</id>
       <name>NOMW</name>
       <category>Alchemical Preperations</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>199</page>
       <avail>14R</avail>
@@ -13840,7 +13862,8 @@
       <id>7bd5086c-bb9f-4d5b-aa49-8ed123427a4c</id>
       <name>Lightning Blade</name>
       <category>Alchemical Preperations</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>199</page>
       <avail>14R</avail>
@@ -13850,7 +13873,8 @@
       <id>70ed70bf-1da4-4e2b-b1ee-de6d9778c22e</id>
       <name>Spirit Zapper</name>
       <category>Alchemical Preperations</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>199</page>
       <avail>14R</avail>
@@ -13860,7 +13884,8 @@
       <id>8436a323-e60f-4651-a238-e33a895a0b42</id>
       <name>Stink Bomb</name>
       <category>Alchemical Preperations</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>199</page>
       <avail>14R</avail>
@@ -13870,7 +13895,8 @@
       <id>357492f9-adfe-491d-8893-3ba3f198b283</id>
       <name>Stop Thief!</name>
       <category>Alchemical Preperations</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>199</page>
       <avail>14R</avail>
@@ -13880,7 +13906,8 @@
       <id>7fc912ac-44d0-41ab-97dc-7b6df02ac327</id>
       <name>Truth Serum</name>
       <category>Alchemical Preperations</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>200</page>
       <avail>14R</avail>
@@ -13890,7 +13917,8 @@
       <id>4a16cc8a-0cd1-4d6b-8962-5edff4dd98aa</id>
       <name>Up And At 'Em</name>
       <category>Alchemical Preperations</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>200</page>
       <avail>14R</avail>
@@ -13900,7 +13928,8 @@
       <id>6ea96a5d-476f-445d-b439-4328c542983d</id>
       <name>Watch Your Step</name>
       <category>Alchemical Preperations</category>
-      <rating>0</rating>
+      <rating>1000000</rating>
+      <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>200</page>
       <avail>14R</avail>
