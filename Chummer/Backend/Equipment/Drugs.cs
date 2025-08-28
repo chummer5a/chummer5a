@@ -1739,7 +1739,7 @@ namespace Chummer.Backend.Equipment
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
                     ImproveType = Improvement.ImprovementType.Initiative,
-                    CustomName = strNamePrefix + await LanguageManager.GetStringAsync("String_Initiative", token: token)
+                    CustomName = strNamePrefix + await LanguageManager.GetStringAsync("String_AttributeINILong", token: token)
                                                    .ConfigureAwait(false)
                                                + strSpace + intInitiative.ToString("+#,0;-#,0;0",
                                                    GlobalSettings.CultureInfo)
@@ -1820,10 +1820,9 @@ namespace Chummer.Backend.Equipment
                                     ImproveSource = Improvement.ImprovementSource.Drug,
                                     SourceName = InternalId,
                                     ImproveType = Improvement.ImprovementType.SpecificQuality,
-                                    //TODO: String_InitiativeDice no longer exists. What should this be?
                                     CustomName =
                                         strNamePrefix + await LanguageManager
-                                                          .GetStringAsync("String_InitiativeDice", token: token)
+                                                          .GetStringAsync("String_Quality", token: token)
                                                           .ConfigureAwait(false)
                                                       + strSpace + await objAddQuality.GetNameAsync(token)
                                                           .ConfigureAwait(false)
