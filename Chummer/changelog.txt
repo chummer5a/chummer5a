@@ -105,9 +105,6 @@ Application Changes:
 - Cyberware with custom values that work off of STR and/or AGI values (not minima or maxima) now properly uses the STR and AGI of their parent cyberware or vehicle when appropriate.
 - If Chummer5a encounters an error while loading a custom data file, it will now show the exception of the file to the user instead of silently swallowing it.
 - The in-game calendar used for note-taking now follows the ISO 8601 standard in terms of how weeks behave and are displayed. Primarily, this means that weeks are displayed and exported as weeks of the year instead of weeks of the month, and months are no longer exported.
-- Fixed weapons that don't have a mount not being able to receive additional mounts from accessories that use the addmount element.
-- Fixed caching issue for description of custom drug effect descriptions
-- Fixed Drug Crash Damage retunring Speed instead
 - Improvements can now adjust the availability of all items or specific items.
 
 Data Changes:
