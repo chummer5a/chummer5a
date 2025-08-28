@@ -13621,6 +13621,7 @@
       <name>Alchemical Duct Tape</name>
       <category>Magical Compounds</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>194</page>
@@ -13632,6 +13633,7 @@
       <name>Astral Increase</name>
       <category>Magical Compounds</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>194</page>
@@ -13643,6 +13645,7 @@
       <name>Astral Bond</name>
       <category>Magical Compounds</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>195</page>
@@ -13654,6 +13657,7 @@
       <name>Baobhan's Tears</name>
       <category>Magical Compounds</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>195</page>
@@ -13665,6 +13669,7 @@
       <name>Drain Away</name>
       <category>Magical Compounds</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>195</page>
@@ -13676,6 +13681,7 @@
       <name>Dulled Edges</name>
       <category>Magical Compounds</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>195</page>
@@ -13687,6 +13693,7 @@
       <name>Feel No Pain</name>
       <category>Magical Compounds</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>195</page>
@@ -13698,6 +13705,7 @@
       <name>Force of Personality</name>
       <category>Magical Compounds</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>196</page>
@@ -13709,6 +13717,7 @@
       <name>HMHVV II Inhibitor</name>
       <category>Magical Compounds</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>196</page>
@@ -13720,6 +13729,7 @@
       <name>Laminate</name>
       <category>Magical Compounds</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>196</page>
@@ -13731,6 +13741,7 @@
       <name>Perfect Sight</name>
       <category>Magical Compounds</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>196</page>
@@ -13742,6 +13753,7 @@
       <name>Sharpshooter</name>
       <category>Magical Compounds</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>197</page>
@@ -13753,6 +13765,7 @@
       <name>Unstoppable Vigor</name>
       <category>Magical Compounds</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>197</page>
@@ -13764,6 +13777,7 @@
       <name>Water Breathing</name>
       <category>Magical Compounds</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>197</page>
@@ -13775,6 +13789,7 @@
       <name>Abandon All Hope</name>
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>198</page>
@@ -13786,6 +13801,7 @@
       <name>Barricade</name>
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>198</page>
@@ -13797,6 +13813,7 @@
       <name>Burn, Baby, Burn</name>
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>198</page>
@@ -13808,6 +13825,7 @@
       <name>Do your Best</name>
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>198</page>
@@ -13819,6 +13837,7 @@
       <name>Get Away From My Ride</name>
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>198</page>
@@ -13830,6 +13849,7 @@
       <name>High As A Kite</name>
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>199</page>
@@ -13841,6 +13861,7 @@
       <name>Noise On The Line</name>
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>199</page>
@@ -13852,6 +13873,7 @@
       <name>NOMW</name>
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>199</page>
@@ -13863,6 +13885,7 @@
       <name>Lightning Blade</name>
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>199</page>
@@ -13874,6 +13897,7 @@
       <name>Spirit Zapper</name>
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>199</page>
@@ -13885,6 +13909,7 @@
       <name>Stink Bomb</name>
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>199</page>
@@ -13896,6 +13921,7 @@
       <name>Stop Thief!</name>
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>199</page>
@@ -13907,6 +13933,7 @@
       <name>Truth Serum</name>
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>200</page>
@@ -13918,6 +13945,7 @@
       <name>Up And At 'Em</name>
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>200</page>
@@ -13929,6 +13957,7 @@
       <name>Watch Your Step</name>
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
+      <minrating>2</minrating>
       <ratinglabel>"Force + Current Potency"</ratinglabel>
       <source>FA</source>
       <page>200</page>
