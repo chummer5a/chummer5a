@@ -959,6 +959,10 @@
       <text>Force</text>
     </string>
     <string>
+      <key>String_Force_Potency</key>
+      <text>Force + Current Potency</text>
+    </string>
+    <string>
       <key>String_Level</key>
       <text>Level</text>
     </string>
