@@ -327,6 +327,7 @@ Changed/New Strings:
 - Label_CalendarStart
 - Label_WeekSpansFollowingDates
 - String_DateSpan
+- Label_InitiativeDice -> String_InitiativeDice
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage
