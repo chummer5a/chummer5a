@@ -947,15 +947,18 @@ namespace Chummer.Backend.Skills
                     if (decSpecCostMultiplier != 1.0m)
                         decSpecCost *= decSpecCostMultiplier;
                     decCost += decExtra;
-                    for (int i = 0; i < intLower; ++i)
+                    if (intMinOverride != int.MaxValue)
                     {
-                        decimal decLoopCost = i == 0
-                            ? CharacterObject.Settings.KarmaNewKnowledgeSkill
-                            : i * CharacterObject.Settings.KarmaImproveKnowledgeSkill;
-                        decLoopCost = (decLoopCost + decExtra) * decMultiplier;
-                        int intLoopCostDiff = intMinOverride - decLoopCost.StandardRound();
-                        if (intLoopCostDiff > 0)
-                            decCost += intLoopCostDiff;
+                        for (int i = 0; i < intLower; ++i)
+                        {
+                            decimal decLoopCost = i == 0
+                                ? CharacterObject.Settings.KarmaNewKnowledgeSkill
+                                : i * CharacterObject.Settings.KarmaImproveKnowledgeSkill;
+                            decLoopCost = (decLoopCost + decExtra) * decMultiplier;
+                            int intLoopCostDiff = intMinOverride - decLoopCost.StandardRound();
+                            if (intLoopCostDiff > 0)
+                                decCost += intLoopCostDiff;
+                        }
                     }
                     decCost += decSpecCost + decExtraSpecCost; //Spec
 
@@ -1059,15 +1062,18 @@ namespace Chummer.Backend.Skills
                 if (decSpecCostMultiplier != 1.0m)
                     decSpecCost *= decSpecCostMultiplier;
                 decCost += decExtra;
-                for (int i = 0; i < intLower; ++i)
+                if (intMinOverride != int.MaxValue)
                 {
-                    decimal decLoopCost = i == 0
-                        ? await objSettings.GetKarmaNewKnowledgeSkillAsync(token).ConfigureAwait(false)
-                        : i * await objSettings.GetKarmaImproveKnowledgeSkillAsync(token).ConfigureAwait(false);
-                    decLoopCost = (decLoopCost + decExtra) * decMultiplier;
-                    int intLoopCostDiff = intMinOverride - decLoopCost.StandardRound();
-                    if (intLoopCostDiff > 0)
-                        decCost += intLoopCostDiff;
+                    for (int i = 0; i < intLower; ++i)
+                    {
+                        decimal decLoopCost = i == 0
+                            ? await objSettings.GetKarmaNewKnowledgeSkillAsync(token).ConfigureAwait(false)
+                            : i * await objSettings.GetKarmaImproveKnowledgeSkillAsync(token).ConfigureAwait(false);
+                        decLoopCost = (decLoopCost + decExtra) * decMultiplier;
+                        int intLoopCostDiff = intMinOverride - decLoopCost.StandardRound();
+                        if (intLoopCostDiff > 0)
+                            decCost += intLoopCostDiff;
+                    }
                 }
                 decCost += decSpecCost + decExtraSpecCost; //Spec
 
