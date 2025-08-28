@@ -381,7 +381,7 @@ namespace Chummer
                     decimal decCostMultiplier = decBaseCostMultiplier;
                     if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNodeAndCacheExpression("category", token: token)?.Value))
                         decCostMultiplier *= 0.9m;
-                    if ((!blnHideOverAvailLimit || await objXmlMod.CheckAvailRestrictionAsync(_objCharacter, intMinRating, token: token).ConfigureAwait(false))
+                    if ((!blnHideOverAvailLimit || await objXmlMod.CheckAvailRestrictionAsync(_objCharacter, intMinRating, (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlMod.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token).ConfigureAwait(false))
                         &&
                         (!blnShowOnlyAffordItems || blnFreeItem
                                                  || await objXmlMod.CheckNuyenRestrictionAsync(
@@ -626,7 +626,7 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                             while (intMaximum > intMinRating && !await xmlVehicleMod
                                                                        .CheckAvailRestrictionAsync(
-                                                                           _objCharacter, intMaximum, token: token)
+                                                                           _objCharacter, intMaximum, (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: xmlVehicleMod.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token)
                                                                        .ConfigureAwait(false))
                             {
                                 --intMaximum;
@@ -686,7 +686,8 @@ namespace Chummer
                     string strAvail
                         = await new AvailabilityValue(
                                 intRating,
-                                xmlVehicleMod.SelectSingleNodeAndCacheExpression("avail", token)?.Value ?? string.Empty)
+                                xmlVehicleMod.SelectSingleNodeAndCacheExpression("avail", token)?.Value ?? string.Empty,
+                                (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: xmlVehicleMod.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound())
                             .ToStringAsync(token).ConfigureAwait(false);
                     await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
                     await lblAvailLabel

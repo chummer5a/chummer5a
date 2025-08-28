@@ -6929,7 +6929,7 @@ namespace Chummer
                             using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle
                                    = await ThreadSafeForm<SelectLifestyle>.GetAsync(
                                            () => new SelectLifestyle(
-                                               CharacterObject, objLifestyle, false),
+                                               CharacterObject, objLifestyle),
                                            GenericToken)
                                        .ConfigureAwait(false))
                             {
@@ -12205,8 +12205,7 @@ namespace Chummer
                             GenericToken.ThrowIfCancellationRequested();
                             using (ThreadSafeForm<SelectGear> frmPickGear
                                    = await ThreadSafeForm<SelectGear>.GetAsync(
-                                           () => new SelectGear(CharacterObject, 0, 1,
-                                               objSensor, strCategories), GenericToken)
+                                           () => new SelectGear(CharacterObject, objGearParent: objSensor, strAllowedCategories: strCategories), GenericToken)
                                        .ConfigureAwait(false))
                             {
                                 if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
@@ -15132,7 +15131,7 @@ namespace Chummer
                             GenericToken.ThrowIfCancellationRequested();
                             using (ThreadSafeForm<SelectGear> frmPickGear
                                    = await ThreadSafeForm<SelectGear>.GetAsync(
-                                       () => new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories),
+                                       () => new SelectGear(CharacterObject, objGearParent: objCyberware, strAllowedCategories: strCategories),
                                        GenericToken).ConfigureAwait(false))
                             {
                                 if (!string.IsNullOrEmpty(strCategories) &&
@@ -15312,7 +15311,7 @@ namespace Chummer
                             GenericToken.ThrowIfCancellationRequested();
                             using (ThreadSafeForm<SelectGear> frmPickGear
                                    = await ThreadSafeForm<SelectGear>.GetAsync(
-                                       () => new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories),
+                                       () => new SelectGear(CharacterObject, objGearParent: objCyberware, strAllowedCategories: strCategories),
                                        GenericToken).ConfigureAwait(false))
                             {
                                 if (!string.IsNullOrEmpty(strCategories) &&
@@ -15501,8 +15500,7 @@ namespace Chummer
                             GenericToken.ThrowIfCancellationRequested();
                             using (ThreadSafeForm<SelectGear> frmPickGear
                                    = await ThreadSafeForm<SelectGear>.GetAsync(
-                                           () => new SelectGear(CharacterObject, 0, 1,
-                                               objSensor, strCategories), GenericToken)
+                                           () => new SelectGear(CharacterObject, objGearParent: objSensor, strAllowedCategories: strCategories), GenericToken)
                                        .ConfigureAwait(false))
                             {
                                 if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
@@ -15676,8 +15674,7 @@ namespace Chummer
                             GenericToken.ThrowIfCancellationRequested();
                             using (ThreadSafeForm<SelectGear> frmPickGear
                                    = await ThreadSafeForm<SelectGear>.GetAsync(
-                                           () => new SelectGear(CharacterObject, 0, 1,
-                                               objSensor, strCategories), GenericToken)
+                                           () => new SelectGear(CharacterObject, objGearParent: objSensor, strAllowedCategories: strCategories), GenericToken)
                                        .ConfigureAwait(false))
                             {
                                 if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
@@ -15845,7 +15842,7 @@ namespace Chummer
                             GenericToken.ThrowIfCancellationRequested();
                             using (ThreadSafeForm<SelectGear> frmPickGear
                                    = await ThreadSafeForm<SelectGear>.GetAsync(
-                                       () => new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories),
+                                       () => new SelectGear(CharacterObject, objGearParent: objAccessory, strAllowedCategories: strCategories),
                                        GenericToken).ConfigureAwait(false))
                             {
                                 if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
@@ -16018,8 +16015,7 @@ namespace Chummer
                             GenericToken.ThrowIfCancellationRequested();
                             using (ThreadSafeForm<SelectGear> frmPickGear
                                    = await ThreadSafeForm<SelectGear>.GetAsync(
-                                           () => new SelectGear(CharacterObject, 0, 1,
-                                               objSensor, strCategories), GenericToken)
+                                           () => new SelectGear(CharacterObject, objGearParent: objSensor, strAllowedCategories: strCategories), GenericToken)
                                        .ConfigureAwait(false))
                             {
                                 if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
@@ -16262,8 +16258,7 @@ namespace Chummer
                             GenericToken.ThrowIfCancellationRequested();
                             using (ThreadSafeForm<SelectGear> frmPickGear
                                    = await ThreadSafeForm<SelectGear>.GetAsync(
-                                           () => new SelectGear(CharacterObject, 0, 1,
-                                               objSensor, strCategories), GenericToken)
+                                           () => new SelectGear(CharacterObject, objGearParent: objSensor, strAllowedCategories: strCategories), GenericToken)
                                        .ConfigureAwait(false))
                             {
                                 if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
@@ -16437,7 +16432,7 @@ namespace Chummer
                             GenericToken.ThrowIfCancellationRequested();
                             using (ThreadSafeForm<SelectGear> frmPickGear
                                    = await ThreadSafeForm<SelectGear>.GetAsync(
-                                       () => new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories),
+                                       () => new SelectGear(CharacterObject, objGearParent: objAccessory, strAllowedCategories: strCategories),
                                        token: GenericToken).ConfigureAwait(false))
                             {
                                 if (!string.IsNullOrEmpty(strCategories))
@@ -24495,7 +24490,7 @@ namespace Chummer
                     }
 
                     using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(
-                               () => new SelectGear(CharacterObject, 0, 1, objParent, strCategories)
+                               () => new SelectGear(CharacterObject, objGearParent: objParent, strAllowedCategories: strCategories)
                                {
                                    EnableStack = false,
                                    ShowArmorCapacityOnly = blnShowArmorCapacityOnly,
@@ -24796,7 +24791,7 @@ namespace Chummer
                     await flpLifestyleDetails.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                     await cmdDeleteLifestyle.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                     string strMonthlyCost =
-                        (await objLifestyle.GetTotalMonthlyCostAsync(token).ConfigureAwait(false)).ToString(
+                        (await objLifestyle.GetTotalMonthlyCostAsync(token: token).ConfigureAwait(false)).ToString(
                             await CharacterObjectSettings.GetNuyenFormatAsync(token)
                                 .ConfigureAwait(false),
                             GlobalSettings.CultureInfo)

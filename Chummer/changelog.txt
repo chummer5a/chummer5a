@@ -108,6 +108,7 @@ Application Changes:
 - Fixed weapons that don't have a mount not being able to receive additional mounts from accessories that use the addmount element.
 - Fixed caching issue for description of custom drug effect descriptions
 - Fixed Drug Crash Damage retunring Speed instead
+- Improvements can now adjust the availability of all items or specific items.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://jackpoint.live/index.php?topic=31750.msg544923#msg544923.
@@ -172,6 +173,7 @@ Data Changes:
 - Added basic traditions for the Traditionalist and Ancestor Shamans from Forbidden Arcana. 
 - Added a customdata entry to change the Krime Stopper II to use the Shotguns category instead of Heavy Pistols.
 - Fixed Cannon Shot gun not loading due to incorrectu nderbarrel. Closes #5212
+- Corrected and/or added the effects of the following The Complete Trog qualities: Community Connection, Nasty Trog, Trog Artisan, Trog Historian, Trog Leader, Trog Networker, Bad Credit. Existing characters with these qualities will need to reapply their improvements to see any changes.
 
 Fixes implemented by BM123499
 

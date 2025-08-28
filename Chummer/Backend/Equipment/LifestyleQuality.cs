@@ -2689,7 +2689,7 @@ namespace Chummer.Backend.Equipment
                                 if (Type == QualityType.Contracts || (Type == QualityType.Entertainment &&
                                                                       !Category.Contains("Asset")))
                                     setParentLifestyleNamesOfChangedProperties.Add(
-                                        nameof(Lifestyle.TotalMonthlyCost));
+                                        nameof(Lifestyle.GetTotalMonthlyCost));
                                 else
                                     setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostPreSplit));
                             }
@@ -2847,7 +2847,7 @@ namespace Chummer.Backend.Equipment
                                 if (Type == QualityType.Contracts || (Type == QualityType.Entertainment &&
                                                                       !Category.Contains("Asset")))
                                     setParentLifestyleNamesOfChangedProperties.Add(
-                                        nameof(Lifestyle.TotalMonthlyCost));
+                                        nameof(Lifestyle.GetTotalMonthlyCost));
                                 else
                                     setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostPreSplit));
                             }

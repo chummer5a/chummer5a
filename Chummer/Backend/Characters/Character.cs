@@ -49,7 +49,6 @@ using Microsoft.ApplicationInsights;
 using Microsoft.IO;
 using Newtonsoft.Json;
 using NLog;
-using Application = System.Windows.Forms.Application;
 using System.Buffers;
 using Chummer.Backend.Enums;
 
@@ -15502,6 +15501,9 @@ namespace Chummer
 
         public async Task<bool> SwitchBuildMethods(CharacterBuildMethod eOldBuildMethod, CharacterBuildMethod eNewBuildMethod, string strOldSettingsKey, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            if (await GetCreatedAsync(token).ConfigureAwait(false))
+                return true;
             DialogResult eResult;
             if (eNewBuildMethod.UsesPriorityTables())
             {
@@ -22806,63 +22808,13 @@ namespace Chummer
             using (LockObject.EnterReadLock())
             {
                 decimal decReturn = Settings.KarmaSpell;
-
-                // Unconditional modifiers first (which can be cached)
                 decReturn += ImprovementManager.ValueOf(this, Improvement.ImprovementType.NewSpellKarmaCost,
-                                                        strImprovedName: strCategory);
-
-                foreach (Improvement objLoopImprovement in Improvements)
-                {
-                    if (objLoopImprovement.ImproveType != Improvement.ImprovementType.NewSpellKarmaCost)
-                        continue;
-                    if (!objLoopImprovement.Enabled)
-                        continue;
-                    switch (objLoopImprovement.Condition)
-                    {
-                        case "career":
-                            if (Created)
-                                decReturn += objLoopImprovement.Value;
-                            break;
-
-                        case "create":
-                            if (!Created)
-                                decReturn += objLoopImprovement.Value;
-                            break;
-
-                        default:
-                            continue;
-                    }
-                }
-
-                // Unconditional modifiers first (which can be cached)
+                                                        strImprovedName: strCategory, blnIncludeNonImproved: true);
                 decimal decMultiplier = 1.0m;
                 foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
-                             this, Improvement.ImprovementType.NewSpellKarmaCostMultiplier, strCategory))
+                             this, Improvement.ImprovementType.NewSpellKarmaCostMultiplier, strCategory, blnIncludeNonImproved: true))
                 {
                     decMultiplier *= objLoopImprovement.Value / 100.0m;
-                }
-
-                foreach (Improvement objLoopImprovement in Improvements)
-                {
-                    if (objLoopImprovement.ImproveType != Improvement.ImprovementType.NewSpellKarmaCostMultiplier)
-                        continue;
-                    if (!objLoopImprovement.Enabled)
-                        continue;
-                    switch (objLoopImprovement.Condition)
-                    {
-                        case "career":
-                            if (Created)
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
-                            break;
-
-                        case "create":
-                            if (!Created)
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
-                            break;
-
-                        default:
-                            continue;
-                    }
                 }
 
                 if (decMultiplier != 1.0m)
@@ -22879,58 +22831,14 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 decimal decReturn = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaSpellAsync(token).ConfigureAwait(false);
-
-                // Unconditional modifiers first (which can be cached)
                 decReturn += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.NewSpellKarmaCost,
-                                                                   strImprovedName: strCategory, token: token).ConfigureAwait(false);
-
-                bool blnCreated = await GetCreatedAsync(token).ConfigureAwait(false);
-                decReturn += await (await GetImprovementsAsync(token).ConfigureAwait(false)).SumAsync(
-                    x => x.ImproveType == Improvement.ImprovementType.NewSpellKarmaCost && x.Enabled,
-                    objLoopImprovement =>
-                    {
-                        switch (objLoopImprovement.Condition)
-                        {
-                            case "career":
-                                if (blnCreated)
-                                    return objLoopImprovement.Value;
-                                break;
-
-                            case "create":
-                                if (!blnCreated)
-                                    return objLoopImprovement.Value;
-                                break;
-                        }
-
-                        return 0;
-                    }, token).ConfigureAwait(false);
-
-                // Unconditional modifiers first (which can be cached)
+                                                                   strImprovedName: strCategory, blnIncludeNonImproved: true, token: token).ConfigureAwait(false);
                 decimal decMultiplier = 1.0m;
                 foreach (Improvement objLoopImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                             this, Improvement.ImprovementType.NewSpellKarmaCostMultiplier, strCategory, token: token).ConfigureAwait(false))
+                             this, Improvement.ImprovementType.NewSpellKarmaCostMultiplier, strCategory, blnIncludeNonImproved: true, token: token).ConfigureAwait(false))
                 {
                     decMultiplier *= objLoopImprovement.Value / 100.0m;
                 }
-
-                await (await GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objLoopImprovement =>
-                {
-                    if (objLoopImprovement.ImproveType != Improvement.ImprovementType.NewSpellKarmaCostMultiplier
-                        || !objLoopImprovement.Enabled)
-                        return;
-                    switch (objLoopImprovement.Condition)
-                    {
-                        case "career":
-                            if (blnCreated)
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
-                            break;
-
-                        case "create":
-                            if (!blnCreated)
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
-                            break;
-                    }
-                }, token).ConfigureAwait(false);
 
                 if (decMultiplier != 1.0m)
                     decReturn *= decMultiplier;
@@ -22950,25 +22858,12 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                 {
                     decimal decReturn = Settings.KarmaNewComplexForm;
-
+                    decReturn += ImprovementManager.ValueOf(this, Improvement.ImprovementType.NewComplexFormKarmaCost);
                     decimal decMultiplier = 1.0m;
-                    foreach (Improvement objLoopImprovement in Improvements)
+                    foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 this, Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier))
                     {
-                        if ((string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             || objLoopImprovement.Condition == "career" == Created
-                             || objLoopImprovement.Condition == "create" != Created) && objLoopImprovement.Enabled)
-                        {
-                            switch (objLoopImprovement.ImproveType)
-                            {
-                                case Improvement.ImprovementType.NewComplexFormKarmaCost:
-                                    decReturn += objLoopImprovement.Value;
-                                    break;
-
-                                case Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
-                            }
-                        }
+                        decMultiplier *= objLoopImprovement.Value / 100.0m;
                     }
 
                     if (decMultiplier != 1.0m)
@@ -22986,28 +22881,13 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 decimal decReturn = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaNewComplexFormAsync(token).ConfigureAwait(false);
-                bool blnCreated = await GetCreatedAsync(token).ConfigureAwait(false);
+                decReturn += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.NewComplexFormKarmaCost, token: token).ConfigureAwait(false);
                 decimal decMultiplier = 1.0m;
-                decReturn += await (await GetImprovementsAsync(token).ConfigureAwait(false)).SumAsync(
-                    objLoopImprovement =>
-                    {
-                        if ((!string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             && objLoopImprovement.Condition == "career" != blnCreated
-                             && objLoopImprovement.Condition == "create" == blnCreated)
-                            || !objLoopImprovement.Enabled)
-                            return 0;
-                        switch (objLoopImprovement.ImproveType)
-                        {
-                            case Improvement.ImprovementType.NewComplexFormKarmaCost:
-                                return objLoopImprovement.Value;
-
-                            case Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier:
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                break;
-                        }
-
-                        return 0;
-                    }, token).ConfigureAwait(false);
+                foreach (Improvement objLoopImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                             this, Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier, token: token).ConfigureAwait(false))
+                {
+                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                }
 
                 if (decMultiplier != 1.0m)
                     decReturn *= decMultiplier;
@@ -23027,27 +22907,14 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                 {
                     decimal decReturn = Settings.KarmaNewAIProgram;
-
+                    decReturn += ImprovementManager.ValueOf(this, Improvement.ImprovementType.NewAIProgramKarmaCost);
                     decimal decMultiplier = 1.0m;
-                    foreach (Improvement objLoopImprovement in Improvements)
+                    foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 this, Improvement.ImprovementType.NewAIProgramKarmaCostMultiplier))
                     {
-                        if ((string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             || objLoopImprovement.Condition == "career" == Created
-                             || objLoopImprovement.Condition == "create" != Created) && objLoopImprovement.Enabled)
-                        {
-                            switch (objLoopImprovement.ImproveType)
-                            {
-                                case Improvement.ImprovementType.NewAIProgramKarmaCost:
-                                    decReturn += objLoopImprovement.Value;
-                                    break;
-
-                                case Improvement.ImprovementType.NewAIProgramKarmaCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
-                            }
-                        }
+                        decMultiplier *= objLoopImprovement.Value / 100.0m;
                     }
-
+                    
                     if (decMultiplier != 1.0m)
                         decReturn *= decMultiplier;
 
@@ -23063,28 +22930,13 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 decimal decReturn = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaNewAIProgramAsync(token).ConfigureAwait(false);
-                bool blnCreated = await GetCreatedAsync(token).ConfigureAwait(false);
+                decReturn += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.NewAIProgramKarmaCost, token: token).ConfigureAwait(false);
                 decimal decMultiplier = 1.0m;
-                decReturn += await (await GetImprovementsAsync(token).ConfigureAwait(false)).SumAsync(
-                    objLoopImprovement =>
-                    {
-                        if ((!string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             && objLoopImprovement.Condition == "career" != blnCreated
-                             && objLoopImprovement.Condition == "create" == blnCreated)
-                            || !objLoopImprovement.Enabled)
-                            return 0;
-                        switch (objLoopImprovement.ImproveType)
-                        {
-                            case Improvement.ImprovementType.NewAIProgramKarmaCost:
-                                return objLoopImprovement.Value;
-
-                            case Improvement.ImprovementType.NewAIProgramKarmaCostMultiplier:
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                break;
-                        }
-
-                        return 0;
-                    }, token).ConfigureAwait(false);
+                foreach (Improvement objLoopImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                             this, Improvement.ImprovementType.NewAIProgramKarmaCostMultiplier, token: token).ConfigureAwait(false))
+                {
+                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                }
 
                 if (decMultiplier != 1.0m)
                     decReturn *= decMultiplier;
@@ -23104,25 +22956,12 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                 {
                     decimal decReturn = Settings.KarmaNewAIAdvancedProgram;
-
+                    decReturn += ImprovementManager.ValueOf(this, Improvement.ImprovementType.NewAIAdvancedProgramKarmaCost);
                     decimal decMultiplier = 1.0m;
-                    foreach (Improvement objLoopImprovement in Improvements)
+                    foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 this, Improvement.ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier))
                     {
-                        if ((string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             || objLoopImprovement.Condition == "career" == Created
-                             || objLoopImprovement.Condition == "create" != Created) && objLoopImprovement.Enabled)
-                        {
-                            switch (objLoopImprovement.ImproveType)
-                            {
-                                case Improvement.ImprovementType.NewAIAdvancedProgramKarmaCost:
-                                    decReturn += objLoopImprovement.Value;
-                                    break;
-
-                                case Improvement.ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
-                            }
-                        }
+                        decMultiplier *= objLoopImprovement.Value / 100.0m;
                     }
 
                     if (decMultiplier != 1.0m)
@@ -23140,28 +22979,13 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 decimal decReturn = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaNewAIAdvancedProgramAsync(token).ConfigureAwait(false);
-                bool blnCreated = await GetCreatedAsync(token).ConfigureAwait(false);
+                decReturn += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.NewAIAdvancedProgramKarmaCost, token: token).ConfigureAwait(false);
                 decimal decMultiplier = 1.0m;
-                decReturn += await (await GetImprovementsAsync(token).ConfigureAwait(false)).SumAsync(
-                    objLoopImprovement =>
-                    {
-                        if ((!string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             && objLoopImprovement.Condition == "career" != blnCreated
-                             && objLoopImprovement.Condition == "create" == blnCreated)
-                            || !objLoopImprovement.Enabled)
-                            return 0;
-                        switch (objLoopImprovement.ImproveType)
-                        {
-                            case Improvement.ImprovementType.NewAIAdvancedProgramKarmaCost:
-                                return objLoopImprovement.Value;
-
-                            case Improvement.ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier:
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                break;
-                        }
-
-                        return 0;
-                    }, token).ConfigureAwait(false);
+                foreach (Improvement objLoopImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                             this, Improvement.ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier, token: token).ConfigureAwait(false))
+                {
+                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                }
 
                 if (decMultiplier != 1.0m)
                     decReturn *= decMultiplier;
@@ -49156,6 +48980,7 @@ namespace Chummer
 
         private static readonly HashSet<string> s_SetPropertyNamesWithCachedValues = new HashSet<string>
         {
+            nameof(Created),
             nameof(CharacterGrammaticGender),
             nameof(TotalStartingNuyen),
             nameof(ContactPoints),
@@ -49215,6 +49040,8 @@ namespace Chummer
                     {
                         using (LockObject.EnterWriteLock())
                         {
+                            if (setNamesOfChangedProperties.Contains(nameof(Created)))
+                                ImprovementManager.ClearCachedValues(this);
                             if (setNamesOfChangedProperties.Contains(nameof(CharacterGrammaticGender)))
                                 _strCachedCharacterGrammaticGender = string.Empty;
                             if (setNamesOfChangedProperties.Contains(nameof(TotalStartingNuyen)))
@@ -49477,6 +49304,8 @@ namespace Chummer
                         try
                         {
                             token.ThrowIfCancellationRequested();
+                            if (setNamesOfChangedProperties.Contains(nameof(Created)))
+                                ImprovementManager.ClearCachedValues(this, token);
                             if (setNamesOfChangedProperties.Contains(nameof(CharacterGrammaticGender)))
                                 _strCachedCharacterGrammaticGender = string.Empty;
                             if (setNamesOfChangedProperties.Contains(nameof(TotalStartingNuyen)))

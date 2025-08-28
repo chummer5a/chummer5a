@@ -236,6 +236,8 @@ namespace Chummer
                     return objImprovementAdder.matrixinitiativepassadd;
                 case "MATRIXINITIATIVEDICEADD":
                     return objImprovementAdder.matrixinitiativediceadd;
+                case "AVAILABILITY":
+                    return objImprovementAdder.availability;
                 case "LIFESTYLECOST":
                     return objImprovementAdder.lifestylecost;
                 case "BASICLIFESTYLECOST":
@@ -881,6 +883,8 @@ namespace Chummer
                     return objImprovementAsyncAdder.matrixinitiativepassadd;
                 case "MATRIXINITIATIVEDICEADD":
                     return objImprovementAsyncAdder.matrixinitiativediceadd;
+                case "AVAILABILITY":
+                    return objImprovementAsyncAdder.availability;
                 case "LIFESTYLECOST":
                     return objImprovementAsyncAdder.lifestylecost;
                 case "BASICLIFESTYLECOST":

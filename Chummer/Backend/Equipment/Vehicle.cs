@@ -1252,7 +1252,53 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             string strNodeInnerXml = objNode.InnerXml;
 
-            // Load gear first so that ammo stuff for weapons get loaded in properly
+            if (strNodeInnerXml.Contains("<mods>"))
+            {
+                XmlNodeList nodChildren = objNode.SelectNodes("mods/mod");
+                if (nodChildren.Count > 0)
+                {
+                    if (blnSync)
+                    {
+                        foreach (XmlNode nodChild in nodChildren)
+                        {
+                            VehicleMod objMod = new VehicleMod(_objCharacter);
+                            try
+                            {
+                                objMod.Parent = this;
+                                objMod.Load(nodChild, blnCopy);
+                                _lstVehicleMods.Add(objMod);
+                            }
+                            catch
+                            {
+                                objMod.DeleteVehicleMod();
+                                throw;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (XmlNode nodChild in nodChildren)
+                        {
+                            VehicleMod objMod = new VehicleMod(_objCharacter);
+                            try
+                            {
+                                await objMod.SetParentAsync(this, token).ConfigureAwait(false);
+                                await objMod.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
+                                await _lstVehicleMods.AddAsync(objMod, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objMod.DeleteVehicleModAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Load gear before weapons so that ammo stuff can load in properly
+            // We cannot load it before vehicle mods because that will mess up things like sensor arrays, even though it means that ammo loaded into weapons in vehicle mods won't load properly
+            // ... but that is not supposed to happen anyway, weapons are only supposed to go into weapon mounts (or directly into the vehicle).
             if (strNodeInnerXml.Contains("<gears>"))
             {
                 XmlNodeList nodChildren = objNode.SelectNodes("gears/gear");
@@ -1297,45 +1343,42 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (strNodeInnerXml.Contains("<mods>"))
+            if (strNodeInnerXml.Contains("<weapons>"))
             {
-                XmlNodeList nodChildren = objNode.SelectNodes("mods/mod");
-                if (nodChildren.Count > 0)
+                XmlNodeList nodChildren = objNode.SelectNodes("weapons/weapon");
+                if (blnSync)
                 {
-                    if (blnSync)
+                    foreach (XmlNode nodChild in nodChildren)
                     {
-                        foreach (XmlNode nodChild in nodChildren)
+                        Weapon objWeapon = new Weapon(_objCharacter);
+                        try
                         {
-                            VehicleMod objMod = new VehicleMod(_objCharacter);
-                            try
-                            {
-                                objMod.Parent = this;
-                                objMod.Load(nodChild, blnCopy);
-                                _lstVehicleMods.Add(objMod);
-                            }
-                            catch
-                            {
-                                objMod.DeleteVehicleMod();
-                                throw;
-                            }
+                            objWeapon.ParentVehicle = this;
+                            objWeapon.Load(nodChild, blnCopy);
+                            _lstWeapons.Add(objWeapon);
+                        }
+                        catch
+                        {
+                            objWeapon.DeleteWeapon();
+                            throw;
                         }
                     }
-                    else
+                }
+                else
+                {
+                    foreach (XmlNode nodChild in nodChildren)
                     {
-                        foreach (XmlNode nodChild in nodChildren)
+                        Weapon objWeapon = new Weapon(_objCharacter);
+                        try
                         {
-                            VehicleMod objMod = new VehicleMod(_objCharacter);
-                            try
-                            {
-                                await objMod.SetParentAsync(this, token).ConfigureAwait(false);
-                                await objMod.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
-                                await _lstVehicleMods.AddAsync(objMod, token).ConfigureAwait(false);
-                            }
-                            catch
-                            {
-                                await objMod.DeleteVehicleModAsync(token: CancellationToken.None).ConfigureAwait(false);
-                                throw;
-                            }
+                            await objWeapon.SetParentVehicleAsync(this, token).ConfigureAwait(false);
+                            await objWeapon.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
+                            await _lstWeapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                            throw;
                         }
                     }
                 }
@@ -1451,7 +1494,6 @@ namespace Chummer.Backend.Equipment
                                                                     !string.IsNullOrEmpty(objMod.WeaponMountCategories) &&
                                                                     objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory))
                                                                 {
-                                                                    blnAttached = true;
                                                                     objMod.Weapons.Add(objWeapon);
                                                                     foreach (Weapon objSubWeapon in lstSubWeapons)
                                                                         objMod.Weapons.Add(objSubWeapon);
@@ -1674,47 +1716,6 @@ namespace Chummer.Backend.Equipment
                         catch
                         {
                             await wm.DeleteWeaponMountAsync(token: CancellationToken.None).ConfigureAwait(false);
-                            throw;
-                        }
-                    }
-                }
-            }
-
-            if (strNodeInnerXml.Contains("<weapons>"))
-            {
-                XmlNodeList nodChildren = objNode.SelectNodes("weapons/weapon");
-                if (blnSync)
-                {
-                    foreach (XmlNode nodChild in nodChildren)
-                    {
-                        Weapon objWeapon = new Weapon(_objCharacter);
-                        try
-                        {
-                            objWeapon.ParentVehicle = this;
-                            objWeapon.Load(nodChild, blnCopy);
-                            _lstWeapons.Add(objWeapon);
-                        }
-                        catch
-                        {
-                            objWeapon.DeleteWeapon();
-                            throw;
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (XmlNode nodChild in nodChildren)
-                    {
-                        Weapon objWeapon = new Weapon(_objCharacter);
-                        try
-                        {
-                            await objWeapon.SetParentVehicleAsync(this, token).ConfigureAwait(false);
-                            await objWeapon.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
-                            await _lstWeapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
                             throw;
                         }
                     }
@@ -2450,6 +2451,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            intAvail += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: SourceIDString, blnIncludeNonImproved: true).StandardRound();
+
             if (intAvail < 0)
                 intAvail = 0;
 
@@ -2529,6 +2532,8 @@ namespace Chummer.Backend.Equipment
                     return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(token).ConfigureAwait(false) : 0;
                 }, token).ConfigureAwait(false);
             }
+
+            intAvail += (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: SourceIDString, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound();
 
             if (intAvail < 0)
                 intAvail = 0;

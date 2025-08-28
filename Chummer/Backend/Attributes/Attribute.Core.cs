@@ -2911,32 +2911,22 @@ namespace Chummer.Backend.Attributes
 
                     decimal decExtra = 0;
                     decimal decMultiplier = 1.0m;
-                    _objCharacter.Improvements.ForEach(objLoopImprovement =>
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.AttributePointCost, Abbrev, true))
                     {
-                        if ((objLoopImprovement.ImprovedName == Abbrev
-                             || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
-                            (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             || (objLoopImprovement.Condition == "career") == _objCharacter.Created
-                             || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
-                            objLoopImprovement.Minimum <= intBase && objLoopImprovement.Enabled)
-                        {
-                            switch (objLoopImprovement.ImproveType)
-                            {
-                                case Improvement.ImprovementType.AttributePointCost:
-                                    decExtra += objLoopImprovement.Value
-                                                * (Math.Min(
-                                                    intBase,
-                                                    objLoopImprovement.Maximum == 0
-                                                        ? int.MaxValue
-                                                        : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
-                                    break;
-
-                                case Improvement.ImprovementType.AttributePointCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
-                            }
-                        }
-                    });
+                        if (objImprovement.Minimum <= intBase)
+                            decExtra += objImprovement.Value
+                                                        * (Math.Min(
+                                                               intBase,
+                                                               objImprovement.Maximum == 0
+                                                                   ? int.MaxValue
+                                                                   : objImprovement.Maximum)
+                                                           - objImprovement.Minimum - 1);
+                    }
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.AttributePointCostMultiplier, Abbrev, true))
+                    {
+                        if (objImprovement.Minimum <= intBase)
+                            decMultiplier *= objImprovement.Value / 100.0m;
+                    }
 
                     if (decMultiplier != 1.0m)
                         intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
@@ -2959,34 +2949,23 @@ namespace Chummer.Backend.Attributes
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
-                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
-                await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objLoopImprovement =>
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributePointCost, Abbrev, true, token).ConfigureAwait(false))
                 {
-                    if ((objLoopImprovement.ImprovedName == Abbrev
-                         || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
-                        (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                         || (objLoopImprovement.Condition == "career") == blnCreated
-                         || (objLoopImprovement.Condition == "create") != blnCreated) &&
-                        objLoopImprovement.Minimum <= intBase && objLoopImprovement.Enabled)
-                    {
-                        switch (objLoopImprovement.ImproveType)
-                        {
-                            case Improvement.ImprovementType.AttributePointCost:
-                                decExtra += objLoopImprovement.Value
-                                            * (Math.Min(
-                                                intBase,
-                                                objLoopImprovement.Maximum == 0
-                                                    ? int.MaxValue
-                                                    : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
-                                break;
-
-                            case Improvement.ImprovementType.AttributePointCostMultiplier:
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                break;
-                        }
-                    }
-                }, token: token).ConfigureAwait(false);
-
+                    if (objImprovement.Minimum <= intBase)
+                        decExtra += objImprovement.Value
+                                                    * (Math.Min(
+                                                           intBase,
+                                                           objImprovement.Maximum == 0
+                                                               ? int.MaxValue
+                                                               : objImprovement.Maximum)
+                                                       - objImprovement.Minimum - 1);
+                }
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributePointCostMultiplier, Abbrev, true, token).ConfigureAwait(false))
+                {
+                    if (objImprovement.Minimum <= intBase)
+                        decMultiplier *= objImprovement.Value / 100.0m;
+                }
+                
                 if (decMultiplier != 1.0m)
                     intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
                 else
@@ -3128,28 +3107,18 @@ namespace Chummer.Backend.Attributes
 
                     decimal decExtra = 0;
                     decimal decMultiplier = 1.0m;
-                    _objCharacter.Improvements.ForEach(objLoopImprovement =>
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.AttributeKarmaCost, Abbrev, true))
                     {
-                        if ((objLoopImprovement.ImprovedName == Abbrev ||
-                             string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
-                            (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
-                             (objLoopImprovement.Condition == "career") == _objCharacter.Created ||
-                             (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
-                            (objLoopImprovement.Maximum == 0 || intValue + 1 <= objLoopImprovement.Maximum) &&
-                            objLoopImprovement.Minimum <= intValue + 1 && objLoopImprovement.Enabled)
-                        {
-                            switch (objLoopImprovement.ImproveType)
-                            {
-                                case Improvement.ImprovementType.AttributeKarmaCost:
-                                    decExtra += objLoopImprovement.Value;
-                                    break;
-
-                                case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
-                            }
-                        }
-                    });
+                        if ((objImprovement.Maximum == 0 || intValue + 1 <= objImprovement.Maximum) &&
+                            objImprovement.Minimum <= intValue + 1)
+                            decExtra += objImprovement.Value;
+                    }
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.AttributeKarmaCostMultiplier, Abbrev, true))
+                    {
+                        if ((objImprovement.Maximum == 0 || intValue + 1 <= objImprovement.Maximum) &&
+                            objImprovement.Minimum <= intValue + 1)
+                            decMultiplier *= objImprovement.Value / 100.0m;
+                    }
 
                     if (decMultiplier != 1.0m)
                         intUpgradeCost = (intUpgradeCost * decMultiplier + decExtra).StandardRound();
@@ -3201,32 +3170,19 @@ namespace Chummer.Backend.Attributes
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
-                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
-                await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
-                    objLoopImprovement =>
-                    {
-                        if ((objLoopImprovement.ImprovedName == Abbrev ||
-                             string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
-                            &&
-                            (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             || (objLoopImprovement.Condition == "career") == blnCreated
-                             || (objLoopImprovement.Condition == "create") != blnCreated) &&
-                            (objLoopImprovement.Maximum == 0 || intValue + 1 <= objLoopImprovement.Maximum)
-                            && objLoopImprovement.Minimum <= intValue + 1 && objLoopImprovement.Enabled)
-                        {
-                            switch (objLoopImprovement.ImproveType)
-                            {
-                                case Improvement.ImprovementType.AttributeKarmaCost:
-                                    decExtra += objLoopImprovement.Value;
-                                    break;
-
-                                case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
-                            }
-                        }
-                    }, token: token).ConfigureAwait(false);
-
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributeKarmaCost, Abbrev, true, token).ConfigureAwait(false))
+                {
+                    if ((objImprovement.Maximum == 0 || intValue + 1 <= objImprovement.Maximum) &&
+                        objImprovement.Minimum <= intValue + 1)
+                        decExtra += objImprovement.Value;
+                }
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributeKarmaCostMultiplier, Abbrev, true, token).ConfigureAwait(false))
+                {
+                    if ((objImprovement.Maximum == 0 || intValue + 1 <= objImprovement.Maximum) &&
+                        objImprovement.Minimum <= intValue + 1)
+                        decMultiplier *= objImprovement.Value / 100.0m;
+                }
+                
                 if (decMultiplier != 1.0m)
                     intUpgradeCost = (intUpgradeCost * decMultiplier + decExtra).StandardRound();
                 else
@@ -3277,32 +3233,21 @@ namespace Chummer.Backend.Attributes
 
                     decimal decExtra = 0;
                     decimal decMultiplier = 1.0m;
-                    _objCharacter.Improvements.ForEach(objLoopImprovement =>
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.AttributeKarmaCost, Abbrev, true))
                     {
-                        if ((objLoopImprovement.ImprovedName == Abbrev ||
-                             string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
-                            (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
-                             (objLoopImprovement.Condition == "career") == _objCharacter.Created ||
-                             (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
-                            objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
-                        {
-                            switch (objLoopImprovement.ImproveType)
-                            {
-                                case Improvement.ImprovementType.AttributeKarmaCost:
-                                    decExtra += objLoopImprovement.Value *
+                        if (objImprovement.Minimum <= intValue)
+                            decExtra += objImprovement.Value *
                                                 (Math.Min(intValue,
-                                                          objLoopImprovement.Maximum == 0
+                                                          objImprovement.Maximum == 0
                                                               ? int.MaxValue
-                                                              : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase,
-                                                    objLoopImprovement.Minimum - 1));
-                                    break;
-
-                                case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
-                            }
-                        }
-                    });
+                                                              : objImprovement.Maximum) - Math.Max(intRawTotalBase,
+                                                    objImprovement.Minimum - 1));
+                    }
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.AttributeKarmaCostMultiplier, Abbrev, true))
+                    {
+                        if (objImprovement.Minimum <= intValue)
+                            decMultiplier *= objImprovement.Value / 100.0m;
+                    }
 
                     if (decMultiplier != 1.0m)
                         intCost = (intCost * decMultiplier + decExtra).StandardRound();
@@ -3356,33 +3301,21 @@ namespace Chummer.Backend.Attributes
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
-                bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
-                await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objLoopImprovement =>
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributePointCost, Abbrev, true, token).ConfigureAwait(false))
                 {
-                    if ((objLoopImprovement.ImprovedName == Abbrev ||
-                         string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
-                        (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
-                         (objLoopImprovement.Condition == "career") == blnCreated ||
-                         (objLoopImprovement.Condition == "create") != blnCreated) &&
-                        objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
-                    {
-                        switch (objLoopImprovement.ImproveType)
-                        {
-                            case Improvement.ImprovementType.AttributeKarmaCost:
-                                decExtra += objLoopImprovement.Value *
+                    if (objImprovement.Minimum <= intValue)
+                        decExtra += objImprovement.Value *
                                             (Math.Min(intValue,
-                                                      objLoopImprovement.Maximum == 0
+                                                      objImprovement.Maximum == 0
                                                           ? int.MaxValue
-                                                          : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase,
-                                                objLoopImprovement.Minimum - 1));
-                                break;
-
-                            case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                break;
-                        }
-                    }
-                }, token).ConfigureAwait(false);
+                                                          : objImprovement.Maximum) - Math.Max(intRawTotalBase,
+                                                objImprovement.Minimum - 1));
+                }
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributePointCostMultiplier, Abbrev, true, token).ConfigureAwait(false))
+                {
+                    if (objImprovement.Minimum <= intValue)
+                        decMultiplier *= objImprovement.Value / 100.0m;
+                }
 
                 if (decMultiplier != 1.0m)
                     intCost = (intCost * decMultiplier + decExtra).StandardRound();

@@ -31,7 +31,6 @@ using Chummer.Backend.Enums;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Uniques;
 using NLog;
-using static Chummer.Backend.Skills.SkillsSection;
 
 namespace Chummer
 {
@@ -364,6 +363,7 @@ namespace Chummer
             PenaltyFreeSustain,
             WeaponRangeModifier,
             ReplaceSkillSpell,
+            Availability,
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 

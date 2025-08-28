@@ -260,7 +260,8 @@ namespace Chummer
 
                         if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            int intAvailModifier = strForceGrade == "None" ? 0 : _intAvailModifier;
+                            int intAvailModifier = (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: xmlDrug.SelectSingleNodeAndCacheExpression("id")?.Value, blnIncludeNonImproved: true).ConfigureAwait(false)).StandardRound()
+                                + strForceGrade == "None" ? 0 : _intAvailModifier;
                             while (intMaxRating > intMinRating
                                    && !await xmlDrug.CheckAvailRestrictionAsync(
                                        _objCharacter, intMaxRating, intAvailModifier).ConfigureAwait(false))
@@ -892,7 +893,7 @@ namespace Chummer
 
                     if (blnHideOverAvailLimit
                         && !await xmlDrug.CheckAvailRestrictionAsync(_objCharacter, intMinRating,
-                                                                     blnIsForceGrade ? 0 : _intAvailModifier, token)
+                                                                     (blnIsForceGrade ? 0 : _intAvailModifier) + (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: xmlDrug.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token)
                                          .ConfigureAwait(false))
                     {
                         ++intOverLimit;

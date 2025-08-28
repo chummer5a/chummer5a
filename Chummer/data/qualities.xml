@@ -17624,8 +17624,8 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
-        <lifestylecost lifestyle="Low">-50</lifestylecost>
-        <lifestylecost lifestyle="Squatter">-100</lifestylecost>
+        <lifestylecost lifestyle="Low" condition="once">-50</lifestylecost>
+        <lifestylecost lifestyle="Squatter" condition="once">-100</lifestylecost>
       </bonus>
       <required>
         <oneof>
@@ -17663,10 +17663,10 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
-        <!-- TODO: Conditionals for skill bonuses? -->
         <specificskill>
           <name>Intimidation</name>
           <bonus>3</bonus>
+          <condition>Non-orks and -trolls</condition>
         </specificskill>
       </bonus>
       <source>TCT</source>
@@ -17677,6 +17677,13 @@
       <name>Trog Artisan</name>
       <karma>8</karma>
       <category>Positive</category>
+      <bonus>
+        <specificskill>
+          <name>Artisan</name>
+          <bonus>2</bonus>
+          <condition>Items specifically for orks and/or trolls</condition>
+        </specificskill>
+      </bonus>
       <source>TCT</source>
       <page>188</page>
     </quality>
@@ -17685,6 +17692,28 @@
       <name>Trog Historian</name>
       <karma>4</karma>
       <category>Positive</category>
+      <bonus>
+        <skillcategory>
+          <name>Academic</name>
+          <bonus>2</bonus>
+          <condition>Involves a significant event in ork or troll history</condition>
+        </skillcategory>
+        <skillcategory>
+          <name>Interest</name>
+          <bonus>2</bonus>
+          <condition>Involves a significant event in ork or troll history</condition>
+        </skillcategory>
+        <skillcategory>
+          <name>Professional</name>
+          <bonus>2</bonus>
+          <condition>Involves a significant event in ork or troll history</condition>
+        </skillcategory>
+        <skillcategory>
+          <name>Street</name>
+          <bonus>2</bonus>
+          <condition>Involves a significant event in ork or troll history</condition>
+        </skillcategory>
+      </bonus>
       <source>TCT</source>
       <page>188</page>
     </quality>
@@ -17694,10 +17723,10 @@
       <karma>7</karma>
       <category>Positive</category>
       <bonus>
-        <!-- TODO: Conditionals for skill bonuses? -->
         <specificskill>
           <name>Leadership</name>
-          <bonus>3</bonus>
+          <bonus>2</bonus>
+          <condition>Groups of exclusively orks and/or trolls</condition>
         </specificskill>
       </bonus>
       <required>
@@ -17714,6 +17743,18 @@
       <name>Trog Networker</name>
       <karma>12</karma>
       <category>Positive</category>
+      <bonus>
+        <specificskill>
+          <name>Etiquette</name>
+          <bonus>2</bonus>
+          <condition>Communities of majority orks and/or trolls</condition>
+        </specificskill>
+        <specificskill>
+          <name>Navigation</name>
+          <bonus>1</bonus>
+          <condition>Communities of majority orks and/or trolls</condition>
+        </specificskill>
+      </bonus>
       <required>
         <oneof>
           <metatype>Troll</metatype>
@@ -17730,6 +17771,7 @@
       <category>Negative</category>
       <bonus>
         <lifestylecost>10</lifestylecost>
+        <availability condition="career">1</availability>
       </bonus>
       <source>TCT</source>
       <page>189</page>

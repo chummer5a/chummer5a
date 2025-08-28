@@ -11428,7 +11428,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         using (ThreadSafeForm<SelectGear> frmPickGear
                                = await ThreadSafeForm<SelectGear>.GetAsync(
-                                       () => new SelectGear(CharacterObject, 0, 1, objSelectedVehicle), token)
+                                       () => new SelectGear(CharacterObject, objGearParent: objSelectedVehicle), token)
                                    .ConfigureAwait(false))
                         {
                             if (await frmPickGear.ShowDialogSafeAsync(this, token).ConfigureAwait(false) ==

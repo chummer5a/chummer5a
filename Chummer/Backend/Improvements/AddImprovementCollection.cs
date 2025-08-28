@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -3184,15 +3183,27 @@ namespace Chummer
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
+        public void availability(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            // If the Lifestyle node is present, we restrict to a specific lifestyle type.
+            string strForId = bonusNode.Attributes?["id"]?.InnerText ?? string.Empty;
+            string strCondition = bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty;
+            CreateImprovement(strForId, _objImprovementSource, SourceName, Improvement.ImprovementType.Availability, _strUnique,
+                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating), strCondition: strCondition);
+        }
+
         // Check for Lifestyle cost modifiers.
         public void lifestylecost(XmlNode bonusNode)
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             // If the Lifestyle node is present, we restrict to a specific lifestyle type.
-            string baseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
-            CreateImprovement(baseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.LifestyleCost, _strUnique,
-                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+            string strBaseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
+            string strCondition = bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty;
+            CreateImprovement(strBaseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.LifestyleCost, _strUnique,
+                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating), strCondition: strCondition);
         }
 
         // Check for basic Lifestyle cost modifiers.
@@ -3201,9 +3212,10 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             // If the Lifestyle node is present, we restrict to a specific lifestyle type.
-            string baseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
-            CreateImprovement(baseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.BasicLifestyleCost, _strUnique,
-                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+            string strBaseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
+            string strCondition = bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty;
+            CreateImprovement(strBaseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.BasicLifestyleCost, _strUnique,
+                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating), strCondition: strCondition);
         }
 
         // Check for Genetech Cost modifiers.
