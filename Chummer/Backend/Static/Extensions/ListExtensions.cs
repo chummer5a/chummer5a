@@ -397,6 +397,7 @@ namespace Chummer
                 await AddWithSortAsync(lstCollection, objItem, funcComparison, funcOverrideIfEquals, token).ConfigureAwait(false);
         }
 
+        /// <inheritdoc cref="List.RemoveRange(int, int)"/>
         public static void RemoveRange<T>(this IList<T> lstCollection, int index, int count,
             CancellationToken token = default)
         {
@@ -416,6 +417,11 @@ namespace Chummer
                 : null;
             try
             {
+                if (lstCollection is List<T> lstCastCollection)
+                {
+                    lstCastCollection.RemoveRange(index, count);
+                    return;
+                }
                 for (int i = Math.Min(index + count - 1, lstCollection.Count); i >= index; --i)
                 {
                     token.ThrowIfCancellationRequested();
@@ -428,7 +434,8 @@ namespace Chummer
             }
         }
 
-        public static void RemoveAll<T>(this IList<T> lstCollection, Predicate<T> predicate,
+        /// <inheritdoc cref="List.RemoveAll(Predicate{T})"/>
+        public static int RemoveAll<T>(this IList<T> lstCollection, Predicate<T> predicate,
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -441,14 +448,19 @@ namespace Chummer
                 : null;
             try
             {
+                if (lstCollection is List<T> lstCastCollection)
+                    return lstCastCollection.RemoveAll(predicate);
+                int intReturn = 0;
                 for (int i = lstCollection.Count - 1; i >= 0; --i)
                 {
                     token.ThrowIfCancellationRequested();
                     if (predicate(lstCollection[i]))
                     {
                         lstCollection.RemoveAt(i);
+                        ++intReturn;
                     }
                 }
+                return intReturn;
             }
             finally
             {
@@ -456,6 +468,39 @@ namespace Chummer
             }
         }
 
+        public static async Task<int> RemoveAllAsync<T>(this IList<T> lstCollection, Func<T, Task<bool>> predicate,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
+            IAsyncDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
+                ? await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
+                : null;
+            try
+            {
+                int intReturn = 0;
+                for (int i = lstCollection.Count - 1; i >= 0; --i)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await predicate(lstCollection[i]).ConfigureAwait(false))
+                    {
+                        lstCollection.RemoveAt(i);
+                        ++intReturn;
+                    }
+                }
+                return intReturn;
+            }
+            finally
+            {
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <inheritdoc cref="List.InsertRange(int, IEnumerable{T})"/>
         public static void InsertRange<T>(this IList<T> lstCollection, int index, [NotNull] IEnumerable<T> collection,
             CancellationToken token = default)
         {
@@ -482,18 +527,39 @@ namespace Chummer
         /// <inheritdoc cref="List.Sort()"/>
         public static void Sort<T>(this IList<T> lstCollection)
         {
-            lstCollection.Sort(0, lstCollection.Count, null);
+            if (lstCollection is List<T> lstCollectionCast)
+                lstCollectionCast.Sort();
+            else if (lstCollection is T[] lstArray)
+                Array.Sort(lstArray);
+            else
+                lstCollection.Sort(0, lstCollection.Count, null);
         }
 
         /// <inheritdoc cref="List.Sort(IComparer{T})"/>
         public static void Sort<T>(this IList<T> lstCollection, IComparer<T> comparer)
         {
-            lstCollection.Sort(0, lstCollection.Count, comparer);
+            if (lstCollection is List<T> lstCollectionCast)
+                lstCollectionCast.Sort(comparer);
+            else if (lstCollection is T[] lstArray)
+                Array.Sort(lstArray, comparer);
+            else
+                lstCollection.Sort(0, lstCollection.Count, comparer);
         }
 
         /// <inheritdoc cref="List.Sort(int, int, IComparer{T})"/>
         public static void Sort<T>(this IList<T> lstCollection, int index, int count, IComparer<T> comparer)
         {
+            if (lstCollection is List<T> lstCollectionCast)
+            {
+                lstCollectionCast.Sort(index, count, comparer);
+                return;
+            }
+            if (lstCollection is T[] lstArray)
+            {
+                Array.Sort(lstArray, index, count, comparer);
+                return;
+            }
+
             if (index < 0)
                 throw new ArgumentOutOfRangeException(nameof(index));
 
@@ -512,6 +578,17 @@ namespace Chummer
         /// <inheritdoc cref="List.Sort(Comparison{T})"/>
         public static void Sort<T>(this IList<T> lstCollection, Comparison<T> comparison)
         {
+            if (lstCollection is List<T> lstCollectionCast)
+            {
+                lstCollectionCast.Sort(comparison);
+                return;
+            }
+            if (lstCollection is T[] lstArray)
+            {
+                Array.Sort(lstArray, comparison);
+                return;
+            }
+
             if (comparison == null)
                 throw new ArgumentNullException(nameof(comparison));
 
