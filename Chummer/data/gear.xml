@@ -13622,7 +13622,7 @@
       <category>Magical Compounds</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>194</page>
       <avail>14R</avail>
@@ -13634,7 +13634,7 @@
       <category>Magical Compounds</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>194</page>
       <avail>14R</avail>
@@ -13646,7 +13646,7 @@
       <category>Magical Compounds</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>195</page>
       <avail>14R</avail>
@@ -13658,7 +13658,7 @@
       <category>Magical Compounds</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>195</page>
       <avail>14R</avail>
@@ -13670,7 +13670,7 @@
       <category>Magical Compounds</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>195</page>
       <avail>14R</avail>
@@ -13682,7 +13682,7 @@
       <category>Magical Compounds</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>195</page>
       <avail>14R</avail>
@@ -13694,7 +13694,7 @@
       <category>Magical Compounds</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>195</page>
       <avail>14R</avail>
@@ -13706,7 +13706,7 @@
       <category>Magical Compounds</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>196</page>
       <avail>14R</avail>
@@ -13718,7 +13718,7 @@
       <category>Magical Compounds</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>196</page>
       <avail>14R</avail>
@@ -13730,7 +13730,7 @@
       <category>Magical Compounds</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>196</page>
       <avail>14R</avail>
@@ -13742,7 +13742,7 @@
       <category>Magical Compounds</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>196</page>
       <avail>14R</avail>
@@ -13754,7 +13754,7 @@
       <category>Magical Compounds</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>197</page>
       <avail>14R</avail>
@@ -13766,7 +13766,7 @@
       <category>Magical Compounds</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>197</page>
       <avail>14R</avail>
@@ -13778,7 +13778,7 @@
       <category>Magical Compounds</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>197</page>
       <avail>14R</avail>
@@ -13790,7 +13790,7 @@
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>198</page>
       <avail>14R</avail>
@@ -13802,7 +13802,7 @@
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>198</page>
       <avail>14R</avail>
@@ -13814,7 +13814,7 @@
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>198</page>
       <avail>14R</avail>
@@ -13826,7 +13826,7 @@
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>198</page>
       <avail>14R</avail>
@@ -13838,7 +13838,7 @@
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>198</page>
       <avail>14R</avail>
@@ -13850,7 +13850,7 @@
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>199</page>
       <avail>14R</avail>
@@ -13862,7 +13862,7 @@
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>199</page>
       <avail>14R</avail>
@@ -13874,7 +13874,7 @@
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>199</page>
       <avail>14R</avail>
@@ -13886,7 +13886,7 @@
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>199</page>
       <avail>14R</avail>
@@ -13898,7 +13898,7 @@
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>199</page>
       <avail>14R</avail>
@@ -13910,7 +13910,7 @@
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>199</page>
       <avail>14R</avail>
@@ -13922,7 +13922,7 @@
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>199</page>
       <avail>14R</avail>
@@ -13934,7 +13934,7 @@
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>200</page>
       <avail>14R</avail>
@@ -13946,7 +13946,7 @@
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>200</page>
       <avail>14R</avail>
@@ -13958,7 +13958,7 @@
       <category>Alchemical Preperations</category>
       <rating>1000000</rating>
       <minrating>2</minrating>
-      <ratinglabel>"Force + Current Potency"</ratinglabel>
+      <ratinglabel>String_Force_Potency</ratinglabel>
       <source>FA</source>
       <page>200</page>
       <avail>14R</avail>
