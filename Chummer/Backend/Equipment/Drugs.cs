@@ -455,7 +455,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<string> GetEffectDescriptionAsync(CancellationToken token = default)
         {
-            if (string.IsNullOrEmpty(_strDescription))
+            if (string.IsNullOrEmpty(_strEffectDescription))
                 _strEffectDescription = await GenerateDescriptionAsync(0, true, token: token).ConfigureAwait(false);
             return _strEffectDescription;
         }
@@ -1097,7 +1097,7 @@ namespace Chummer.Backend.Equipment
             return _strCachedDisplayDuration = await CommonFunctions.GetTimescaleStringAsync(DurationTimescale, false, token: token).ConfigureAwait(false);
         }
 
-        public int DurationDice { get; set; }
+        public int DurationDice { get => _intDurationDice; set => _intDurationDice = value; }
 
         private int _intCachedCrashDamage = int.MinValue;
 
@@ -1114,9 +1114,9 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetCrashDamageAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return _intCachedSpeed != int.MinValue
-                    ? _intCachedSpeed
-                    : _intCachedSpeed = await Components.SumAsync(d => d.ActiveDrugEffect != null, d => d.ActiveDrugEffect.CrashDamage, token).ConfigureAwait(false);
+            return _intCachedCrashDamage != int.MinValue
+                    ? _intCachedCrashDamage
+                    : _intCachedCrashDamage = await Components.SumAsync(d => d.ActiveDrugEffect != null, d => d.ActiveDrugEffect.CrashDamage, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1816,6 +1816,7 @@ namespace Chummer.Backend.Equipment
                                     ImproveSource = Improvement.ImprovementSource.Drug,
                                     SourceName = InternalId,
                                     ImproveType = Improvement.ImprovementType.SpecificQuality,
+                                    //TODO: String_InitiativeDice no longer exists. What should this be?
                                     CustomName =
                                         strNamePrefix + await LanguageManager
                                                           .GetStringAsync("String_InitiativeDice", token: token)

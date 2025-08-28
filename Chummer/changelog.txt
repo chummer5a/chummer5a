@@ -106,6 +106,8 @@ Application Changes:
 - If Chummer5a encounters an error while loading a custom data file, it will now show the exception of the file to the user instead of silently swallowing it.
 - The in-game calendar used for note-taking now follows the ISO 8601 standard in terms of how weeks behave and are displayed. Primarily, this means that weeks are displayed and exported as weeks of the year instead of weeks of the month, and months are no longer exported.
 - Fixed weapons that don't have a mount not being able to receive additional mounts from accessories that use the addmount element.
+- Fixed caching issue for description of custom drug effect descriptions
+- Fixed Drug Crash Damage retunring Speed instead
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://jackpoint.live/index.php?topic=31750.msg544923#msg544923.
@@ -169,6 +171,7 @@ Data Changes:
 - Added customdata for Critter Prices, as originally created by u/RunnerPakhet and implemented for Chummer by Mesothelioma.
 - Added basic traditions for the Traditionalist and Ancestor Shamans from Forbidden Arcana. 
 - Added a customdata entry to change the Krime Stopper II to use the Shotguns category instead of Heavy Pistols.
+- Fixed Cannon Shot gun not loading due to incorrectu nderbarrel. Closes #5212
 
 Fixes implemented by BM123499
 
