@@ -39,7 +39,7 @@ namespace Chummer.Backend.Skills
 {
     [DebuggerDisplay("{_strName} {_intBase} {_intKarma} {Rating}")]
     [HubClassTag("SkillId", true, "Name", "Rating;Specialization")]
-    public class Skill : INotifyMultiplePropertiesChangedAsync, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasLockObject, IHasCharacterObject
+    public class Skill : INotifyMultiplePropertiesChangedAsync, IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode, IHasNotes, IHasLockObject, IHasCharacterObject
     {
         private CharacterAttrib _objAttribute;
         private string _strDefaultAttribute = "LOG";

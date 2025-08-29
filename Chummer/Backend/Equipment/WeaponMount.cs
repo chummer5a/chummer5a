@@ -2257,7 +2257,7 @@ namespace Chummer.Backend.Equipment
     }
 
     [DebuggerDisplay("{DisplayName(\"en-us\")}")]
-    public class WeaponMountOption : IHasName, IHasXmlDataNode, IHasCost, IHasCharacterObject
+    public class WeaponMountOption : IHasName, IHasXmlDataNode, IHasCost, IHasCharacterObject, IHasInternalId
     {
         private readonly Character _objCharacter;
         private string _strAvail;
@@ -2443,7 +2443,7 @@ namespace Chummer.Backend.Equipment
                 return;
             objWriter.WriteStartElement("weaponmountoption");
             objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("guid", InternalID);
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("slots", _intSlots.ToString(GlobalSettings.InvariantCultureInfo));
@@ -2520,7 +2520,7 @@ namespace Chummer.Backend.Equipment
 
         public Character CharacterObject => _objCharacter;
 
-        public string InternalID => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
+        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Identifier of the object within data files.

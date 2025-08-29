@@ -29,7 +29,7 @@ namespace Chummer.Backend.Skills
     /// <summary>
     /// Type of Specialization
     /// </summary>
-    public sealed class SkillSpecialization : IHasName, IHasXmlDataNode, IHasLockObject, IHasCharacterObject
+    public sealed class SkillSpecialization : IHasName, IHasXmlDataNode, IHasLockObject, IHasCharacterObject, IHasInternalId
     {
         private Guid _guiID;
         private int _intNameLoaded;
