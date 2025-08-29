@@ -10248,6 +10248,10 @@
       <text>Chummer5a encountered an error when loading one or more improvements for this character. This is likely because a certain improvement present in an older version of Chummer has been significantly altered in a later version.\n\nThe issue can be fixed by re-applying only the improvements that caused issues.\n\nDo you wish to re-apply the problematic issues right now? If you do not, the issues can still be fixed by re-applying all improvements via Special > Re-apply Improvements.</text>
     </string>
     <string>
+      <key>Message_ImprovementLoadErrorPart2</key>
+      <text>\n\nThis affects the following items:\n</text>
+    </string>
+    <string>
       <key>String_SpecialModificationLimit</key>
       <text>Special Modification Limit</text>
     </string>

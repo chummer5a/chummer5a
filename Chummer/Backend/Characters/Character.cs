@@ -17,11 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using Chummer.Annotations;
-using Chummer.Backend.Attributes;
-using Chummer.Backend.Equipment;
-using Chummer.Backend.Skills;
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -35,22 +32,26 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
+using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
-using Chummer.Backend.Uniques;
 using System.Xml.Serialization;
-using System.Runtime.Serialization;
-using System.Threading;
+using System.Xml.XPath;
+using Chummer.Annotations;
+using Chummer.Backend.Attributes;
+using Chummer.Backend.Enums;
+using Chummer.Backend.Equipment;
+using Chummer.Backend.Skills;
+using Chummer.Backend.Uniques;
 using Chummer.Plugins;
 using Microsoft.ApplicationInsights;
 using Microsoft.IO;
 using Newtonsoft.Json;
 using NLog;
-using System.Buffers;
-using Chummer.Backend.Enums;
 
 namespace Chummer
 {
@@ -13463,6 +13464,1271 @@ namespace Chummer
 
         #region Helper Methods
 
+        public IEnumerable<IHasInternalId> GetItemsByInternalIds(IEnumerable<string> lstIds, bool blnOnlyValidImprovementSources = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setIds))
+            {
+                token.ThrowIfCancellationRequested();
+                foreach (string strId in lstIds)
+                {
+                    string strToAdd = strId?.TrimEndOnce("Pair").TrimEndOnce("Wireless");
+                    if (!string.IsNullOrEmpty(strId))
+                        setIds.Add(strToAdd);
+                }
+                if (setIds.Count == 0)
+                    yield break;
+                using (LockObject.EnterReadLock(token))
+                {
+                    foreach (Gear objGear in Gear.GetAllDescendants(x => x.Children, token))
+                    {
+                        if (setIds.Remove(objGear.InternalId))
+                        {
+                            yield return objGear;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                    }
+
+                    foreach (Armor objArmor in Armor)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objArmor.InternalId))
+                        {
+                            yield return objArmor;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                        foreach (ArmorMod objMod in objArmor.ArmorMods)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objMod.InternalId))
+                            {
+                                yield return objMod;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                            foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(x => x.Children, token))
+                            {
+                                if (setIds.Remove(objGear.InternalId))
+                                {
+                                    yield return objGear;
+                                    if (setIds.Count == 0)
+                                        yield break;
+                                }
+                            }
+                        }
+                        foreach (Gear objGear in objArmor.GearChildren.GetAllDescendants(x => x.Children, token))
+                        {
+                            if (setIds.Remove(objGear.InternalId))
+                            {
+                                yield return objGear;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                    }
+
+                    foreach (Weapon objWeapon in Weapons.GetAllDescendants(x => x.UnderbarrelWeapons, token))
+                    {
+                        if (setIds.Remove(objWeapon.InternalId))
+                        {
+                            yield return objWeapon;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                        foreach (WeaponAccessory objMod in objWeapon.WeaponAccessories)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objMod.InternalId))
+                            {
+                                yield return objMod;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                            foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(x => x.Children, token))
+                            {
+                                if (setIds.Remove(objGear.InternalId))
+                                {
+                                    yield return objGear;
+                                    if (setIds.Count == 0)
+                                        yield break;
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (Cyberware objCyberware in Cyberware.GetAllDescendants(x => x.Children, token))
+                    {
+                        if (setIds.Remove(objCyberware.InternalId))
+                        {
+                            yield return objCyberware;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                        foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children, token))
+                        {
+                            if (setIds.Remove(objGear.InternalId))
+                            {
+                                yield return objGear;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                    }
+
+                    foreach (Drug objDrug in Drugs)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objDrug.InternalId))
+                        {
+                            yield return objDrug;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                        foreach (DrugComponent objComponent in objDrug.Components)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objComponent.InternalId))
+                            {
+                                yield return objComponent;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                    }
+
+                    foreach (Lifestyle objLifestyle in Lifestyles)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objLifestyle.InternalId))
+                        {
+                            yield return objLifestyle;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                        foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objQuality.InternalId))
+                            {
+                                yield return objQuality;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                    }
+
+                    foreach (Improvement objImprovement in Improvements)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objImprovement.InternalId))
+                        {
+                            yield return objImprovement;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                    }
+
+                    foreach (Art objArt in Arts)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objArt.InternalId))
+                        {
+                            yield return objArt;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                    }
+                    foreach (CritterPower objCritterPower in CritterPowers)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objCritterPower.InternalId))
+                        {
+                            yield return objCritterPower;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                    }
+                    foreach (Enhancement objEnhancement in Enhancements)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objEnhancement.InternalId))
+                        {
+                            yield return objEnhancement;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                    }
+                    foreach (InitiationGrade objGrade in InitiationGrades)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objGrade.InternalId))
+                        {
+                            yield return objGrade;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                    }
+                    foreach (LimitModifier objModifier in LimitModifiers)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objModifier.InternalId))
+                        {
+                            yield return objModifier;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                    }
+                    foreach (MartialArt objArt in MartialArts)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objArt.InternalId))
+                        {
+                            yield return objArt;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                        foreach (MartialArtTechnique objTechnique in objArt.Techniques)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objTechnique.InternalId))
+                            {
+                                yield return objTechnique;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                    }
+                    foreach (MentorSpirit objMentor in MentorSpirits)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objMentor.InternalId))
+                        {
+                            yield return objMentor;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                    }
+                    foreach (Metamagic objMetamagic in Metamagics)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objMetamagic.InternalId))
+                        {
+                            yield return objMetamagic;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                    }
+                    foreach (Power objPower in Powers)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objPower.InternalId))
+                        {
+                            yield return objPower;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                    }
+                    foreach (Quality objQuality in Qualities)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objQuality.InternalId))
+                        {
+                            yield return objQuality;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                    }
+                    token.ThrowIfCancellationRequested();
+                    if (setIds.Remove(MagicTradition.InternalId))
+                    {
+                        yield return MagicTradition;
+                        if (setIds.Count == 0)
+                            yield break;
+                    }
+
+                    if (!blnOnlyValidImprovementSources)
+                    {
+                        foreach (Vehicle objVehicle in Vehicles)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objVehicle.InternalId))
+                            {
+                                yield return objVehicle;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                            foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendants(x => x.Children, token))
+                            {
+                                if (setIds.Remove(objGear.InternalId))
+                                {
+                                    yield return objGear;
+                                    if (setIds.Count == 0)
+                                        yield break;
+                                }
+                            }
+                            foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.UnderbarrelWeapons, token))
+                            {
+                                if (setIds.Remove(objWeapon.InternalId))
+                                {
+                                    yield return objWeapon;
+                                    if (setIds.Count == 0)
+                                        yield break;
+                                }
+                                foreach (WeaponAccessory objMod in objWeapon.WeaponAccessories)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (setIds.Remove(objMod.InternalId))
+                                    {
+                                        yield return objMod;
+                                        if (setIds.Count == 0)
+                                            yield break;
+                                    }
+                                    foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(x => x.Children, token))
+                                    {
+                                        if (setIds.Remove(objGear.InternalId))
+                                        {
+                                            yield return objGear;
+                                            if (setIds.Count == 0)
+                                                yield break;
+                                        }
+                                    }
+                                }
+                            }
+                            foreach (VehicleMod objMod in objVehicle.Mods)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (setIds.Remove(objMod.InternalId))
+                                {
+                                    yield return objMod;
+                                    if (setIds.Count == 0)
+                                        yield break;
+                                }
+                                foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children, token))
+                                {
+                                    if (setIds.Remove(objCyberware.InternalId))
+                                    {
+                                        yield return objCyberware;
+                                        if (setIds.Count == 0)
+                                            yield break;
+                                    }
+                                    foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children, token))
+                                    {
+                                        if (setIds.Remove(objGear.InternalId))
+                                        {
+                                            yield return objGear;
+                                            if (setIds.Count == 0)
+                                                yield break;
+                                        }
+                                    }
+                                }
+                            }
+                            foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (setIds.Remove(objMount.InternalId))
+                                {
+                                    yield return objMount;
+                                    if (setIds.Count == 0)
+                                        yield break;
+                                }
+                                foreach (WeaponMountOption objOption in objMount.WeaponMountOptions)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (setIds.Remove(objOption.InternalId))
+                                    {
+                                        yield return objOption;
+                                        if (setIds.Count == 0)
+                                            yield break;
+                                    }
+                                }
+                                foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.UnderbarrelWeapons, token))
+                                {
+                                    if (setIds.Remove(objWeapon.InternalId))
+                                    {
+                                        yield return objWeapon;
+                                        if (setIds.Count == 0)
+                                            yield break;
+                                    }
+                                    foreach (WeaponAccessory objMod in objWeapon.WeaponAccessories)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        if (setIds.Remove(objMod.InternalId))
+                                        {
+                                            yield return objMod;
+                                            if (setIds.Count == 0)
+                                                yield break;
+                                        }
+                                        foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(x => x.Children, token))
+                                        {
+                                            if (setIds.Remove(objGear.InternalId))
+                                            {
+                                                yield return objGear;
+                                                if (setIds.Count == 0)
+                                                    yield break;
+                                            }
+                                        }
+                                    }
+                                }
+                                foreach (VehicleMod objMod in objMount.Mods)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (setIds.Remove(objMod.InternalId))
+                                    {
+                                        yield return objMod;
+                                        if (setIds.Count == 0)
+                                            yield break;
+                                    }
+                                    foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children, token))
+                                    {
+                                        if (setIds.Remove(objCyberware.InternalId))
+                                        {
+                                            yield return objCyberware;
+                                            if (setIds.Count == 0)
+                                                yield break;
+                                        }
+                                        foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children, token))
+                                        {
+                                            if (setIds.Remove(objGear.InternalId))
+                                            {
+                                                yield return objGear;
+                                                if (setIds.Count == 0)
+                                                    yield break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        foreach (Skill objSkill in SkillsSection.Skills)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objSkill.InternalId))
+                            {
+                                yield return objSkill;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                            foreach (SkillSpecialization objSpec in objSkill.Specializations)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (setIds.Remove(objSpec.InternalId))
+                                {
+                                    yield return objSpec;
+                                    if (setIds.Count == 0)
+                                        yield break;
+                                }
+                            }
+                        }
+                        foreach (SkillGroup objGroup in SkillsSection.SkillGroups)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objGroup.InternalId))
+                            {
+                                yield return objGroup;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                        foreach (KnowledgeSkill objSkill in SkillsSection.KnowledgeSkills)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objSkill.InternalId))
+                            {
+                                yield return objSkill;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                            foreach (SkillSpecialization objSpec in objSkill.Specializations)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (setIds.Remove(objSpec.InternalId))
+                                {
+                                    yield return objSpec;
+                                    if (setIds.Count == 0)
+                                        yield break;
+                                }
+                            }
+                        }
+
+                        foreach (Contact objContact in Contacts)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objContact.InternalId))
+                            {
+                                yield return objContact;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                        foreach (Spirit objSpirit in Spirits)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objSpirit.InternalId))
+                            {
+                                yield return objSpirit;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+
+                        foreach (AIProgram objProgram in AIPrograms)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objProgram.InternalId))
+                            {
+                                yield return objProgram;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                        foreach (CalendarWeek objWeek in Calendar)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objWeek.InternalId))
+                            {
+                                yield return objWeek;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                        foreach (ComplexForm objComplexForm in ComplexForms)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objComplexForm.InternalId))
+                            {
+                                yield return objComplexForm;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                        foreach (ExpenseLogEntry objEntry in ExpenseEntries)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objEntry.InternalId))
+                            {
+                                yield return objEntry;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                        foreach (Focus objFocus in Foci)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objFocus.InternalId))
+                            {
+                                yield return objFocus;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                        foreach (Spell objSpell in Spells)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objSpell.InternalId))
+                            {
+                                yield return objSpell;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                        foreach (SustainedObject objSustained in SustainedCollection)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objSustained.InternalId))
+                            {
+                                yield return objSustained;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public async Task<List<IHasInternalId>> GetItemsByInternalIdsAsync(IEnumerable<string> lstIds, bool blnOnlyValidImprovementSources = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setIds))
+            {
+                token.ThrowIfCancellationRequested();
+                foreach (string strId in lstIds)
+                {
+                    string strToAdd = strId?.TrimEndOnce("Pair").TrimEndOnce("Wireless");
+                    if (!string.IsNullOrEmpty(strId))
+                        setIds.Add(strToAdd);
+                }
+                List<IHasInternalId> lstReturn = new List<IHasInternalId>(setIds.Count);
+                if (setIds.Count == 0)
+                    return lstReturn;
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    await (await Gear.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                    {
+                        if (setIds.Remove(x.InternalId))
+                        {
+                            lstReturn.Add(x);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        return true;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    await Armor.ForEachWithBreakAsync(async objArmor =>
+                    {
+                        if (setIds.Remove(objArmor.InternalId))
+                        {
+                            lstReturn.Add(objArmor);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        await objArmor.ArmorMods.ForEachWithBreakAsync(async objMod =>
+                        {
+                            if (setIds.Remove(objMod.InternalId))
+                            {
+                                lstReturn.Add(objMod);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            await (await objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                            {
+                                if (setIds.Remove(x.InternalId))
+                                {
+                                    lstReturn.Add(x);
+                                    if (setIds.Count == 0)
+                                        return false;
+                                }
+                                return true;
+                            }, token).ConfigureAwait(false);
+                            return setIds.Count > 0;
+                        }, token).ConfigureAwait(false);
+                        if (setIds.Count == 0)
+                            return false;
+                        await (await objArmor.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                        {
+                            if (setIds.Remove(x.InternalId))
+                            {
+                                lstReturn.Add(x);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            return true;
+                        }, token).ConfigureAwait(false);
+                        return setIds.Count > 0;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    await (await Weapons.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objWeapon =>
+                    {
+                        if (setIds.Remove(objWeapon.InternalId))
+                        {
+                            lstReturn.Add(objWeapon);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objMod =>
+                        {
+                            if (setIds.Remove(objMod.InternalId))
+                            {
+                                lstReturn.Add(objMod);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            await (await objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                            {
+                                if (setIds.Remove(x.InternalId))
+                                {
+                                    lstReturn.Add(x);
+                                    if (setIds.Count == 0)
+                                        return false;
+                                }
+                                return true;
+                            }, token).ConfigureAwait(false);
+                            return setIds.Count > 0;
+                        }, token).ConfigureAwait(false);
+                        return setIds.Count > 0;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    await (await Cyberware.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objCyberware =>
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objCyberware.InternalId))
+                        {
+                            lstReturn.Add(objCyberware);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        await (await objCyberware.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                        {
+                            if (setIds.Remove(x.InternalId))
+                            {
+                                lstReturn.Add(x);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            return true;
+                        }, token).ConfigureAwait(false);
+                        return setIds.Count > 0;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    await Drugs.ForEachWithBreakAsync(async objDrug =>
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objDrug.InternalId))
+                        {
+                            lstReturn.Add(objDrug);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        await objDrug.Components.ForEachWithBreakAsync(x =>
+                        {
+                            if (setIds.Remove(x.InternalId))
+                            {
+                                lstReturn.Add(x);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            return true;
+                        }, token).ConfigureAwait(false);
+                        return setIds.Count > 0;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    await Lifestyles.ForEachWithBreakAsync(async objLifestyle =>
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objLifestyle.InternalId))
+                        {
+                            lstReturn.Add(objLifestyle);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        await objLifestyle.LifestyleQualities.ForEachWithBreakAsync(x =>
+                        {
+                            if (setIds.Remove(x.InternalId))
+                            {
+                                lstReturn.Add(x);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            return true;
+                        }, token).ConfigureAwait(false);
+                        return setIds.Count > 0;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    await Improvements.ForEachWithBreakAsync(x =>
+                    {
+                        if (setIds.Remove(x.InternalId))
+                        {
+                            lstReturn.Add(x);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        return true;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    await Arts.ForEachWithBreakAsync(x =>
+                    {
+                        if (setIds.Remove(x.InternalId))
+                        {
+                            lstReturn.Add(x);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        return true;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    await CritterPowers.ForEachWithBreakAsync(x =>
+                    {
+                        if (setIds.Remove(x.InternalId))
+                        {
+                            lstReturn.Add(x);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        return true;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    await Enhancements.ForEachWithBreakAsync(x =>
+                    {
+                        if (setIds.Remove(x.InternalId))
+                        {
+                            lstReturn.Add(x);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        return true;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    await InitiationGrades.ForEachWithBreakAsync(x =>
+                    {
+                        if (setIds.Remove(x.InternalId))
+                        {
+                            lstReturn.Add(x);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        return true;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    await LimitModifiers.ForEachWithBreakAsync(x =>
+                    {
+                        if (setIds.Remove(x.InternalId))
+                        {
+                            lstReturn.Add(x);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        return true;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    await MartialArts.ForEachWithBreakAsync(async objArt =>
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objArt.InternalId))
+                        {
+                            lstReturn.Add(objArt);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        await objArt.Techniques.ForEachWithBreakAsync(x =>
+                        {
+                            if (setIds.Remove(x.InternalId))
+                            {
+                                lstReturn.Add(x);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            return true;
+                        }, token).ConfigureAwait(false);
+                        return setIds.Count > 0;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    await MentorSpirits.ForEachWithBreakAsync(x =>
+                    {
+                        if (setIds.Remove(x.InternalId))
+                        {
+                            lstReturn.Add(x);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        return true;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    await Metamagics.ForEachWithBreakAsync(x =>
+                    {
+                        if (setIds.Remove(x.InternalId))
+                        {
+                            lstReturn.Add(x);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        return true;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    await Powers.ForEachWithBreakAsync(x =>
+                    {
+                        if (setIds.Remove(x.InternalId))
+                        {
+                            lstReturn.Add(x);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        return true;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    await Qualities.ForEachWithBreakAsync(x =>
+                    {
+                        if (setIds.Remove(x.InternalId))
+                        {
+                            lstReturn.Add(x);
+                            if (setIds.Count == 0)
+                                return false;
+                        }
+                        return true;
+                    }, token).ConfigureAwait(false);
+                    if (setIds.Count == 0)
+                        return lstReturn;
+                    token.ThrowIfCancellationRequested();
+                    if (setIds.Remove(MagicTradition.InternalId))
+                    {
+                        lstReturn.Add(MagicTradition);
+                        if (setIds.Count == 0)
+                            return lstReturn;
+                    }
+
+                    if (!blnOnlyValidImprovementSources)
+                    {
+                        await Vehicles.ForEachWithBreakAsync(async objVehicle =>
+                        {
+                            if (setIds.Remove(objVehicle.InternalId))
+                            {
+                                lstReturn.Add(objVehicle);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            await (await objVehicle.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                            {
+                                if (setIds.Remove(x.InternalId))
+                                {
+                                    lstReturn.Add(x);
+                                    if (setIds.Count == 0)
+                                        return false;
+                                }
+                                return true;
+                            }, token).ConfigureAwait(false);
+                            if (setIds.Count == 0)
+                                return false;
+                            await (await objVehicle.Weapons.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objWeapon =>
+                            {
+                                if (setIds.Remove(objWeapon.InternalId))
+                                {
+                                    lstReturn.Add(objWeapon);
+                                    if (setIds.Count == 0)
+                                        return false;
+                                }
+                                await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objMod =>
+                                {
+                                    if (setIds.Remove(objMod.InternalId))
+                                    {
+                                        lstReturn.Add(objMod);
+                                        if (setIds.Count == 0)
+                                            return false;
+                                    }
+                                    await (await objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                                    {
+                                        if (setIds.Remove(x.InternalId))
+                                        {
+                                            lstReturn.Add(x);
+                                            if (setIds.Count == 0)
+                                                return false;
+                                        }
+                                        return true;
+                                    }, token).ConfigureAwait(false);
+                                    return setIds.Count > 0;
+                                }, token).ConfigureAwait(false);
+                                return setIds.Count > 0;
+                            }, token).ConfigureAwait(false);
+                            if (setIds.Count == 0)
+                                return false;
+                            await objVehicle.Mods.ForEachWithBreakAsync(async objMod =>
+                            {
+                                if (setIds.Remove(objMod.InternalId))
+                                {
+                                    lstReturn.Add(objMod);
+                                    if (setIds.Count == 0)
+                                        return false;
+                                }
+                                await (await objMod.Cyberware.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objCyberware =>
+                                {
+                                    if (setIds.Remove(objCyberware.InternalId))
+                                    {
+                                        lstReturn.Add(objCyberware);
+                                        if (setIds.Count == 0)
+                                            return false;
+                                    }
+                                    await (await objCyberware.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                                    {
+                                        if (setIds.Remove(x.InternalId))
+                                        {
+                                            lstReturn.Add(x);
+                                            if (setIds.Count == 0)
+                                                return false;
+                                        }
+                                        return true;
+                                    }, token).ConfigureAwait(false);
+                                    return setIds.Count > 0;
+                                }, token).ConfigureAwait(false);
+                                return setIds.Count > 0;
+                            }, token).ConfigureAwait(false);
+                            if (setIds.Count == 0)
+                                return false;
+                            await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objMount =>
+                            {
+                                if (setIds.Remove(objMount.InternalId))
+                                {
+                                    lstReturn.Add(objMount);
+                                    if (setIds.Count == 0)
+                                        return false;
+                                }
+                                await objMount.WeaponMountOptions.ForEachWithBreakAsync(objOption =>
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (setIds.Remove(objOption.InternalId))
+                                    {
+                                        lstReturn.Add(objOption);
+                                        if (setIds.Count == 0)
+                                            return false;
+                                    }
+                                    return true;
+                                }, token).ConfigureAwait(false);
+                                if (setIds.Count == 0)
+                                    return false;
+                                await (await objMount.Weapons.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objWeapon =>
+                                {
+                                    if (setIds.Remove(objWeapon.InternalId))
+                                    {
+                                        lstReturn.Add(objWeapon);
+                                        if (setIds.Count == 0)
+                                            return false;
+                                    }
+                                    await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objMod =>
+                                    {
+                                        if (setIds.Remove(objMod.InternalId))
+                                        {
+                                            lstReturn.Add(objMod);
+                                            if (setIds.Count == 0)
+                                                return false;
+                                        }
+                                        await (await objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                                        {
+                                            if (setIds.Remove(x.InternalId))
+                                            {
+                                                lstReturn.Add(x);
+                                                if (setIds.Count == 0)
+                                                    return false;
+                                            }
+                                            return true;
+                                        }, token).ConfigureAwait(false);
+                                        return setIds.Count > 0;
+                                    }, token).ConfigureAwait(false);
+                                    return setIds.Count > 0;
+                                }, token).ConfigureAwait(false);
+                                if (setIds.Count == 0)
+                                    return false;
+                                await objMount.Mods.ForEachWithBreakAsync(async objMod =>
+                                {
+                                    if (setIds.Remove(objMod.InternalId))
+                                    {
+                                        lstReturn.Add(objMod);
+                                        if (setIds.Count == 0)
+                                            return false;
+                                    }
+                                    await (await objMod.Cyberware.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objCyberware =>
+                                    {
+                                        if (setIds.Remove(objCyberware.InternalId))
+                                        {
+                                            lstReturn.Add(objCyberware);
+                                            if (setIds.Count == 0)
+                                                return false;
+                                        }
+                                        await (await objCyberware.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                                        {
+                                            if (setIds.Remove(x.InternalId))
+                                            {
+                                                lstReturn.Add(x);
+                                                if (setIds.Count == 0)
+                                                    return false;
+                                            }
+                                            return true;
+                                        }, token).ConfigureAwait(false);
+                                        return setIds.Count > 0;
+                                    }, token).ConfigureAwait(false);
+                                    return setIds.Count > 0;
+                                }, token).ConfigureAwait(false);
+                                return setIds.Count > 0;
+                            }, token).ConfigureAwait(false);
+                            return setIds.Count > 0;
+                        }, token).ConfigureAwait(false);
+                        if (setIds.Count == 0)
+                            return lstReturn;
+
+                        await SkillsSection.Skills.ForEachWithBreakAsync(async objSkill =>
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objSkill.InternalId))
+                            {
+                                lstReturn.Add(objSkill);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            await objSkill.Specializations.ForEachWithBreakAsync(x =>
+                            {
+                                if (setIds.Remove(x.InternalId))
+                                {
+                                    lstReturn.Add(x);
+                                    if (setIds.Count == 0)
+                                        return false;
+                                }
+                                return true;
+                            }, token).ConfigureAwait(false);
+                            return setIds.Count > 0;
+                        }, token).ConfigureAwait(false);
+                        if (setIds.Count == 0)
+                            return lstReturn;
+                        await SkillsSection.SkillGroups.ForEachWithBreakAsync(x =>
+                        {
+                            if (setIds.Remove(x.InternalId))
+                            {
+                                lstReturn.Add(x);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            return true;
+                        }, token).ConfigureAwait(false);
+                        if (setIds.Count == 0)
+                            return lstReturn;
+                        await SkillsSection.KnowledgeSkills.ForEachWithBreakAsync(async objSkill =>
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objSkill.InternalId))
+                            {
+                                lstReturn.Add(objSkill);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            await objSkill.Specializations.ForEachWithBreakAsync(x =>
+                            {
+                                if (setIds.Remove(x.InternalId))
+                                {
+                                    lstReturn.Add(x);
+                                    if (setIds.Count == 0)
+                                        return false;
+                                }
+                                return true;
+                            }, token).ConfigureAwait(false);
+                            return setIds.Count > 0;
+                        }, token).ConfigureAwait(false);
+                        if (setIds.Count == 0)
+                            return lstReturn;
+                        await Contacts.ForEachWithBreakAsync(x =>
+                        {
+                            if (setIds.Remove(x.InternalId))
+                            {
+                                lstReturn.Add(x);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            return true;
+                        }, token).ConfigureAwait(false);
+                        if (setIds.Count == 0)
+                            return lstReturn;
+                        await Spirits.ForEachWithBreakAsync(x =>
+                        {
+                            if (setIds.Remove(x.InternalId))
+                            {
+                                lstReturn.Add(x);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            return true;
+                        }, token).ConfigureAwait(false);
+                        if (setIds.Count == 0)
+                            return lstReturn;
+
+                        await AIPrograms.ForEachWithBreakAsync(x =>
+                        {
+                            if (setIds.Remove(x.InternalId))
+                            {
+                                lstReturn.Add(x);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            return true;
+                        }, token).ConfigureAwait(false);
+                        if (setIds.Count == 0)
+                            return lstReturn;
+                        await Calendar.ForEachWithBreakAsync(x =>
+                        {
+                            if (setIds.Remove(x.InternalId))
+                            {
+                                lstReturn.Add(x);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            return true;
+                        }, token).ConfigureAwait(false);
+                        if (setIds.Count == 0)
+                            return lstReturn;
+                        await ComplexForms.ForEachWithBreakAsync(x =>
+                        {
+                            if (setIds.Remove(x.InternalId))
+                            {
+                                lstReturn.Add(x);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            return true;
+                        }, token).ConfigureAwait(false);
+                        if (setIds.Count == 0)
+                            return lstReturn;
+                        await ExpenseEntries.ForEachWithBreakAsync(x =>
+                        {
+                            if (setIds.Remove(x.InternalId))
+                            {
+                                lstReturn.Add(x);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            return true;
+                        }, token).ConfigureAwait(false);
+                        if (setIds.Count == 0)
+                            return lstReturn;
+                        await Foci.ForEachWithBreakAsync(x =>
+                        {
+                            if (setIds.Remove(x.InternalId))
+                            {
+                                lstReturn.Add(x);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            return true;
+                        }, token).ConfigureAwait(false);
+                        if (setIds.Count == 0)
+                            return lstReturn;
+                        await Spells.ForEachWithBreakAsync(x =>
+                        {
+                            if (setIds.Remove(x.InternalId))
+                            {
+                                lstReturn.Add(x);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            return true;
+                        }, token).ConfigureAwait(false);
+                        if (setIds.Count == 0)
+                            return lstReturn;
+                        await SustainedCollection.ForEachWithBreakAsync(x =>
+                        {
+                            if (setIds.Remove(x.InternalId))
+                            {
+                                lstReturn.Add(x);
+                                if (setIds.Count == 0)
+                                    return false;
+                            }
+                            return true;
+                        }, token).ConfigureAwait(false);
+                        if (setIds.Count == 0)
+                            return lstReturn;
+                    }
+                    return lstReturn;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
         /// <summary>
         /// Retrieve the name of the Object that created an Improvement.
         /// </summary>
@@ -13471,6 +14737,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public string GetObjectName(Improvement objImprovement, string strLanguage = "", CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objImprovement == null)
                 return string.Empty;
             if (string.IsNullOrEmpty(strLanguage))
