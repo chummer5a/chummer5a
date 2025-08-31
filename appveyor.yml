@@ -58,9 +58,6 @@ before_build:
     # Needs to be in this format, otherwise Exit-AppVeyorBuild won't work. That command has to be the final one executed in the script
     if ($exitBuild)
     {
-        # Decrement build number to offset the increment that happens even if the build exits early and doesn't actually produce a new build for deployment
-        $decremented_build_number = $env:appveyor_build_number - 1
-        Update-AppveyorBuild -Version "$Major.$Minor.$decremented_build_number"
         Exit-AppVeyorBuild
     }
     else
