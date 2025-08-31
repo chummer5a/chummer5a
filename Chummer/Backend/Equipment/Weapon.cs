@@ -487,7 +487,7 @@ namespace Chummer.Backend.Equipment
                 _objCachedMyXPathNode = null;
             }
 
-            _blnSkipEvents = !blnForSelectForm;
+            _blnSkipEvents = blnForSelectForm;
             _blnEquipped = !blnForSelectForm && blnCreateImprovements;
             objXmlWeapon.TryGetStringFieldQuickly("name", ref _strName);
             objXmlWeapon.TryGetStringFieldQuickly("category", ref _strCategory);
