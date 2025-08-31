@@ -99,13 +99,13 @@ namespace Chummer.Tests
             Color objColorLightGrayInDarkMode = ColorManager.GenerateDarkModeColor(Color.LightGray);
             float fltLightGrayLightness = Color.LightGray.GetBrightness();
             float fltLightGrayDarkModeLightness = objColorLightGrayInDarkMode.GetBrightness();
-            Assert.IsTrue(fltLightGrayDarkModeLightness < fltLightGrayLightness);
+            Assert.IsGreaterThan(fltLightGrayDarkModeLightness, fltLightGrayLightness);
 
             Color objColorBlackInvert = ColorManager.GenerateInverseDarkModeColor(Color.Black);
             Color objColorBlackInvertDark = ColorManager.GenerateDarkModeColor(objColorBlackInvert);
             float fltBlackHue = Color.Black.GetHue();
             float fltBlackInvertDarkHue = objColorBlackInvertDark.GetHue();
-            Assert.IsTrue(Math.Abs(fltBlackInvertDarkHue - fltBlackHue) < 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+            Assert.AreEqual(fltBlackInvertDarkHue, fltBlackHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
             Color objColorBlackInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorBlackInvertDark);
             Color objColorBlackInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorBlackInvertDarkInvert);
             Assert.IsTrue(objColorBlackInvertDark == objColorBlackInvertDarkInvertDark);
@@ -114,7 +114,7 @@ namespace Chummer.Tests
             Color objColorWhiteInvertDark = ColorManager.GenerateDarkModeColor(objColorWhiteInvert);
             float fltWhiteHue = Color.White.GetHue();
             float fltWhiteInvertDarkHue = objColorWhiteInvertDark.GetHue();
-            Assert.IsTrue(Math.Abs(fltWhiteInvertDarkHue - fltWhiteHue) < 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+            Assert.AreEqual(fltWhiteInvertDarkHue, fltWhiteHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
             Color objColorWhiteInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorWhiteInvertDark);
             Color objColorWhiteInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorWhiteInvertDarkInvert);
             Assert.IsTrue(objColorWhiteInvertDark == objColorWhiteInvertDarkInvertDark);
@@ -123,7 +123,7 @@ namespace Chummer.Tests
             Color objColorRedInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvert);
             float fltRedHue = Color.Red.GetHue();
             float fltRedInvertDarkHue = objColorRedInvertDark.GetHue();
-            Assert.IsTrue(Math.Abs(fltRedInvertDarkHue - fltRedHue) < 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+            Assert.AreEqual(fltRedInvertDarkHue, fltRedHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
             Color objColorRedInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorRedInvertDark);
             Color objColorRedInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvertDarkInvert);
             Assert.IsTrue(objColorRedInvertDark == objColorRedInvertDarkInvertDark);
@@ -132,7 +132,7 @@ namespace Chummer.Tests
             Color objColorChocolateInvertDark = ColorManager.GenerateDarkModeColor(objColorChocolateInvert);
             float fltChocolateHue = Color.Chocolate.GetHue();
             float fltChocolateInvertDarkHue = objColorChocolateInvertDark.GetHue();
-            Assert.IsTrue(Math.Abs(fltChocolateInvertDarkHue - fltChocolateHue) < 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+            Assert.AreEqual(fltChocolateInvertDarkHue, fltChocolateHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
             Color objColorChocolateInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorChocolateInvertDark);
             Color objColorChocolateInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorChocolateInvertDarkInvert);
             Assert.IsTrue(objColorChocolateInvertDark == objColorChocolateInvertDarkInvertDark);
