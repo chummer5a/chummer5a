@@ -72,8 +72,7 @@ namespace SevenZip.Compression.LZ
         public override void Init()
         {
             base.Init();
-            for (uint i = 0; i < _hashSizeSum; i++)
-                _hash[i] = kEmptyHashValue;
+            new Span<uint>(_hash).Clear();
             _cyclicBufferPos = 0;
             ReduceOffsets(-1);
         }
@@ -82,8 +81,7 @@ namespace SevenZip.Compression.LZ
         {
             token.ThrowIfCancellationRequested();
             await base.InitAsync(token).ConfigureAwait(false);
-            for (uint i = 0; i < _hashSizeSum; i++)
-                _hash[i] = kEmptyHashValue;
+            new Span<uint>(_hash).Clear();
             _cyclicBufferPos = 0;
             ReduceOffsets(-1);
         }
@@ -94,7 +92,7 @@ namespace SevenZip.Compression.LZ
                 _cyclicBufferPos = 0;
             base.MovePos();
             if (_pos == kMaxValForNormalize)
-                Normalize();
+                NormalizeParallel();
         }
 
         public override async Task MovePosAsync(CancellationToken token = default)
@@ -104,7 +102,7 @@ namespace SevenZip.Compression.LZ
                 _cyclicBufferPos = 0;
             await base.MovePosAsync(token).ConfigureAwait(false);
             if (_pos == kMaxValForNormalize)
-                Normalize();
+                await NormalizeParallelAsync(token).ConfigureAwait(false);
         }
 
         [CLSCompliant(false)]
@@ -167,14 +165,42 @@ namespace SevenZip.Compression.LZ
         }
 
         // Faster version of bottleneck code, inspired by the following post: https://stackoverflow.com/a/17598461
-        private unsafe int GetMatchLengthFast(int lenLimit, int cur, int pby1, int len = 0, CancellationToken token = default)
+        // Separate version without a cancellation token because the check for it is non-trivial in a function that is called as often as this one
+        private unsafe int GetMatchLengthFast(int lenLimit, int cur, int pby1, int len = 0)
         {
+            const int size = sizeof(ulong);
+            fixed (byte* p1 = &_bufferBase[cur])
+            fixed (byte* p2 = &_bufferBase[pby1])
+            {
+                // Do equality comparisons 8 bytes at a time to speed things up
+                if (lenLimit >= size)
+                {
+                    int longLenLimit = lenLimit - size + 1;
+                    while (len < longLenLimit && *(ulong*)(p1 + len) == *(ulong*)(p2 + len))
+                    {
+                        len += size;
+                    }
+                }
+                while (len < lenLimit && *(p1 + len) == *(p2 + len))
+                {
+                    ++len;
+                }
+            }
+            return len;
+        }
+
+        // Faster version of bottleneck code, inspired by the following post: https://stackoverflow.com/a/17598461
+        // Separate version with a cancellation token because the check for it is non-trivial in a function that is called as often as this one
+        private unsafe int GetMatchLengthFast(int lenLimit, int cur, int pby1, int len, CancellationToken token)
+        {
+            if (token == default)
+                return GetMatchLengthFast(lenLimit, cur, pby1, len);
             token.ThrowIfCancellationRequested();
             const int size = sizeof(ulong);
             fixed (byte* p1 = &_bufferBase[cur])
             fixed (byte* p2 = &_bufferBase[pby1])
             {
-                // First do equality comparisons 8 bytes at a time to speed things up
+                // Do equality comparisons 8 bytes at a time to speed things up
                 if (lenLimit >= size)
                 {
                     int longLenLimit = lenLimit - size + 1;
@@ -184,9 +210,9 @@ namespace SevenZip.Compression.LZ
                         len += size;
                     }
                 }
+                token.ThrowIfCancellationRequested();
                 while (len < lenLimit && *(p1 + len) == *(p2 + len))
                 {
-                    token.ThrowIfCancellationRequested();
                     ++len;
                 }
             }
@@ -290,30 +316,19 @@ namespace SevenZip.Compression.LZ
                         : _cyclicBufferPos - delta + _cyclicBufferSize) << 1;
 
                     int pby1 = _bufferOffset + (int)curMatch;
-                    int len = Math.Min(len0, len1);
-                    byte left = _bufferBase[pby1 + len];
-                    byte right = _bufferBase[cur + len];
-                    if (left == right)
+                    int len = GetMatchLengthFast(lenLimit, cur, pby1, Math.Min(len0, len1));
+                    if (len > 0 && maxLen < len)
                     {
-                        len = GetMatchLengthFast(lenLimit, cur, pby1, len);
-
-                        if (maxLen < len)
+                        distances[offset++] = maxLen = len;
+                        distances[offset++] = delta - 1;
+                        if (len == lenLimit)
                         {
-                            distances[offset++] = maxLen = len;
-                            distances[offset++] = delta - 1;
-                            if (len == lenLimit)
-                            {
-                                _son[ptr1] = _son[cyclicPos];
-                                _son[ptr0] = _son[cyclicPos + 1];
-                                break;
-                            }
+                            _son[ptr1] = _son[cyclicPos];
+                            _son[ptr0] = _son[cyclicPos + 1];
+                            break;
                         }
-
-                        left = _bufferBase[pby1 + len];
-                        right = _bufferBase[cur + len];
                     }
-
-                    if (left < right)
+                    if (_bufferBase[pby1 + len] < _bufferBase[cur + len])
                     {
                         _son[ptr1] = curMatch;
                         ptr1 = cyclicPos + 1;
@@ -432,30 +447,19 @@ namespace SevenZip.Compression.LZ
                         : _cyclicBufferPos - delta + _cyclicBufferSize) << 1;
 
                     int pby1 = _bufferOffset + (int)curMatch;
-                    int len = Math.Min(len0, len1);
-                    byte left = _bufferBase[pby1 + len];
-                    byte right = _bufferBase[cur + len];
-                    if (left == right)
+                    int len = GetMatchLengthFast(lenLimit, cur, pby1, Math.Min(len0, len1),token);
+                    if (len > 0 && maxLen < len)
                     {
-                        len = GetMatchLengthFast(lenLimit, cur, pby1, len, token);
-
-                        if (maxLen < len)
+                        distances[offset++] = maxLen = len;
+                        distances[offset++] = delta - 1;
+                        if (len == lenLimit)
                         {
-                            distances[offset++] = maxLen = len;
-                            distances[offset++] = delta - 1;
-                            if (len == lenLimit)
-                            {
-                                _son[ptr1] = _son[cyclicPos];
-                                _son[ptr0] = _son[cyclicPos + 1];
-                                break;
-                            }
+                            _son[ptr1] = _son[cyclicPos];
+                            _son[ptr0] = _son[cyclicPos + 1];
+                            break;
                         }
-
-                        left = _bufferBase[pby1 + len];
-                        right = _bufferBase[cur + len];
                     }
-
-                    if (left < right)
+                    if (_bufferBase[pby1 + len] < _bufferBase[cur + len])
                     {
                         _son[ptr1] = curMatch;
                         ptr1 = cyclicPos + 1;
@@ -693,6 +697,22 @@ namespace SevenZip.Compression.LZ
             }
         }
 
+        private static void NormalizeLinksParallel(uint[] items, int numItems, uint subValue)
+        {
+            Parallel.For(0, numItems, i =>
+            {
+                unchecked
+                {
+                    uint value = items[i];
+                    if (value <= subValue)
+                        value = kEmptyHashValue;
+                    else
+                        value -= subValue;
+                    items[i] = value;
+                }
+            });
+        }
+
         private void Normalize()
         {
             unchecked
@@ -701,6 +721,34 @@ namespace SevenZip.Compression.LZ
                 NormalizeLinks(_son, _cyclicBufferSize * 2, (uint)subValue);
                 NormalizeLinks(_hash, (int)_hashSizeSum, (uint)subValue);
                 ReduceOffsets(subValue);
+            }
+        }
+
+        private void NormalizeParallel()
+        {
+            unchecked
+            {
+                int subValue = _pos - _cyclicBufferSize;
+                Parallel.Invoke(
+                    () => NormalizeLinksParallel(_son, _cyclicBufferSize * 2, (uint)subValue),
+                    () => NormalizeLinksParallel(_hash, (int)_hashSizeSum, (uint)subValue),
+                    () => ReduceOffsets(subValue)
+                );
+            }
+        }
+
+        private Task NormalizeParallelAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            unchecked
+            {
+                int subValue = _pos - _cyclicBufferSize;
+                return Task.WhenAll(
+                    Task.Run(() => NormalizeLinksParallel(_son, _cyclicBufferSize * 2, (uint)subValue), token),
+                    Task.Run(() => NormalizeLinksParallel(_hash, (int)_hashSizeSum, (uint)subValue), token),
+                    Task.Run(() => ReduceOffsets(subValue), token)
+                );
             }
         }
 

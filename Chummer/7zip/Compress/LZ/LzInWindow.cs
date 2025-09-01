@@ -181,8 +181,7 @@ namespace SevenZip.Compression.LZ
         {
             unchecked
             {
-                _pos++;
-                if (_pos > _posLimit)
+                if (++_pos > _posLimit)
                 {
                     int pointerToPosition = _bufferOffset + _pos;
                     if (pointerToPosition > _pointerToLastSafePosition)
@@ -199,8 +198,7 @@ namespace SevenZip.Compression.LZ
 
             unchecked
             {
-                _pos++;
-                if (_pos > _posLimit)
+                if (++_pos > _posLimit)
                 {
                     int pointerToPosition = _bufferOffset + _pos;
                     if (pointerToPosition > _pointerToLastSafePosition)
