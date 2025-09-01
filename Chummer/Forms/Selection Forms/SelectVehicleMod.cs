@@ -619,11 +619,12 @@ namespace Chummer
 
                     if (await nudRating.DoThreadSafeFuncAsync(x => x.Maximum, token: token).ConfigureAwait(false) != 0)
                     {
+                        int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt, token: token)
+                                                            .ConfigureAwait(false);
+
                         if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token)
                                                        .ConfigureAwait(false))
                         {
-                            int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt, token: token)
-                                                            .ConfigureAwait(false);
                             while (intMaximum > intMinRating && !await xmlVehicleMod
                                                                        .CheckAvailRestrictionAsync(
                                                                            _objCharacter, intMaximum, (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: xmlVehicleMod.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token)
@@ -631,9 +632,6 @@ namespace Chummer
                             {
                                 --intMaximum;
                             }
-
-                            await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaximum, token: token)
-                                           .ConfigureAwait(false);
                         }
 
                         if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token)
@@ -646,8 +644,6 @@ namespace Chummer
                             if (_setBlackMarketMaps.Contains(
                                     xmlVehicleMod.SelectSingleNodeAndCacheExpression("category", token)?.Value))
                                 decCostMultiplier *= 0.9m;
-                            int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt, token: token)
-                                                            .ConfigureAwait(false);
                             decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                             while (intMaximum > 1 && !await xmlVehicleMod
                                                             .CheckNuyenRestrictionAsync(
@@ -656,14 +652,15 @@ namespace Chummer
                             {
                                 --intMaximum;
                             }
-
-                            await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaximum, token: token)
-                                           .ConfigureAwait(false);
                         }
 
+                        int intMinimum = intMinRating;
+                        if (intMinimum <= 0)
+                            intMinimum = Math.Min(1, intMaximum);
                         await nudRating.DoThreadSafeAsync(x =>
                         {
-                            x.Minimum = intMinRating;
+                            x.Minimum = intMinimum;
+                            x.Maximum = Math.Max(intMinimum, intMaximum);
                             x.Enabled = x.Maximum != x.Minimum;
                         }, token: token).ConfigureAwait(false);
                     }
