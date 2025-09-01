@@ -5946,10 +5946,10 @@ namespace Chummer.Backend.Equipment
                     if (Category == "Cyberlimb" || IsLimb)
                     {
                         dicVehicleValues = new Dictionary<string, int>(2)
-                                {
-                                    { "STRMinimum", MinStrength },
-                                    { "AGIMinimum", MinAgility }
-                                };
+                            {
+                                { "STRMinimum", MinStrength },
+                                { "AGIMinimum", MinAgility }
+                            };
                     }
                     else
                     {
@@ -5959,20 +5959,24 @@ namespace Chummer.Backend.Equipment
                         if (objCyberlimbParent != null)
                         {
                             dicVehicleValues = new Dictionary<string, int>(2)
-                                    {
-                                        { "STRMinimum", objCyberlimbParent.MinStrength },
-                                        { "AGIMinimum", objCyberlimbParent.MinAgility }
-                                    };
+                                {
+                                    { "STRMinimum", objCyberlimbParent.MinStrength },
+                                    { "AGIMinimum", objCyberlimbParent.MinAgility }
+                                };
                         }
                         else if (ParentVehicle != null)
                         {
                             int intTotalBody = ParentVehicle.TotalBody;
+                            int intBodyMinScore = Math.Max(1, intTotalBody);
+                            int intBodyMaxScore = Math.Max(1, intTotalBody * 2);
+                            int intPilotMinScore = Math.Max(1, ParentVehicle.Pilot);
+                            int intPilotMaxScore = Math.Max(1, ParentVehicle.MaxPilot);
                             dicVehicleValues = new Dictionary<string, int>(4)
                                 {
-                                    { "STRMaximum", Math.Max(1, intTotalBody * 2) },
-                                    { "AGIMaximum", Math.Max(1, ParentVehicle.MaxPilot) },
-                                    { "STRMinimum", Math.Max(1, intTotalBody) },
-                                    { "AGIMinimum", Math.Max(1, ParentVehicle.Pilot) }
+                                    { "STRMaximum", intBodyMaxScore },
+                                    { "STRMinimum", intBodyMinScore },
+                                    { "AGIMaximum", intPilotMaxScore },
+                                    { "AGIMinimum", intPilotMinScore },
                                 };
                         }
                     }
@@ -6132,14 +6136,18 @@ namespace Chummer.Backend.Equipment
                             Vehicle objParentVehicle = await GetParentVehicleAsync(token).ConfigureAwait(false);
                             if (objParentVehicle != null)
                             {
-                                int intTotalBody = await objParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                                int intTotalBody = ParentVehicle.TotalBody;
+                                int intBodyMinScore = Math.Max(1, intTotalBody);
+                                int intBodyMaxScore = Math.Max(1, intTotalBody * 2);
+                                int intPilotMinScore = Math.Max(1, ParentVehicle.Pilot);
+                                int intPilotMaxScore = Math.Max(1, ParentVehicle.MaxPilot);
                                 dicVehicleValues = new Dictionary<string, int>(4)
-                            {
-                                { "STRMaximum", Math.Max(1, intTotalBody * 2) },
-                                { "AGIMaximum", Math.Max(1, await objParentVehicle.GetMaxPilotAsync(token).ConfigureAwait(false)) },
-                                { "STRMinimum", Math.Max(1, intTotalBody) },
-                                { "AGIMinimum", Math.Max(1, await objParentVehicle.GetPilotAsync(token).ConfigureAwait(false)) }
-                            };
+                                {
+                                    { "STRMaximum", intBodyMaxScore },
+                                    { "STRMinimum", intBodyMinScore },
+                                    { "AGIMaximum", intPilotMaxScore },
+                                    { "AGIMinimum", intPilotMinScore },
+                                };
                             }
                         }
                     }
