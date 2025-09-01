@@ -7678,32 +7678,11 @@ namespace Chummer
                             try
                             {
                                 objMod.DiscountCost = frmPickVehicleMod.MyForm.BlackMarketDiscount;
-                                await objMod.CreateAsync(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, objVehicle,
-                                    frmPickVehicleMod.MyForm.Markup, token: GenericToken).ConfigureAwait(false);
+                                await objMod.CreateAsync(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, objVehicle, token: GenericToken).ConfigureAwait(false);
 
                                 // Check the item's Cost and make sure the character can afford it.
                                 if (frmPickVehicleMod.MyForm.FreeCost)
                                     objMod.Cost = "0";
-                                else
-                                {
-                                    // Multiply the cost if applicable.
-                                    decimal decOldCost = await objMod.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
-                                    decimal decCost = decOldCost;
-                                    char chrAvail = (await objMod.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
-                                    switch (chrAvail)
-                                    {
-                                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                            break;
-
-                                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                            break;
-                                    }
-
-                                    decCost -= decOldCost;
-                                    objMod.Markup = decCost;
-                                }
 
                                 await objVehicle.Mods.AddAsync(objMod, GenericToken).ConfigureAwait(false);
                             }
@@ -9230,9 +9209,11 @@ namespace Chummer
                                         frmPickCyberware.MyForm.SelectedRating,
                                         objVehicle, objMod.Cyberware, await CharacterObject.GetVehiclesAsync(GenericToken).ConfigureAwait(false),
                                         objVehicle.Weapons,
-                                        frmPickCyberware.MyForm.Markup, frmPickCyberware.MyForm.FreeCost,
-                                        frmPickCyberware.MyForm.BlackMarketDiscount, true,
-                                        "String_ExpensePurchaseVehicleCyberware", objCyberwareParent).ConfigureAwait(false))
+                                        blnFree: frmPickCyberware.MyForm.FreeCost,
+                                        blnBlackMarket: frmPickCyberware.MyForm.BlackMarketDiscount,
+                                        blnForVehicle: true,
+                                        strExpenseString: "String_ExpensePurchaseVehicleCyberware",
+                                        objParent: objCyberwareParent).ConfigureAwait(false))
                                     await objCyberware.DeleteCyberwareAsync(token: GenericToken).ConfigureAwait(false);
                             }
                             catch
@@ -23283,12 +23264,10 @@ namespace Chummer
                                         continue;
                                     int intRating = 0;
                                     objXmlMod.TryGetInt32FieldQuickly("rating", ref intRating);
-                                    int intMarkup = 0;
-                                    objXmlMod.TryGetInt32FieldQuickly("markup", ref intMarkup);
                                     VehicleMod objMod = new VehicleMod(CharacterObject);
                                     try
                                     {
-                                        await objMod.CreateAsync(objXmlModNode, intRating, objVehicle, intMarkup, token: token)
+                                        await objMod.CreateAsync(objXmlModNode, intRating, objVehicle, token: token)
                                             .ConfigureAwait(false);
                                         await objVehicle.Mods.AddAsync(objMod, token).ConfigureAwait(false);
 

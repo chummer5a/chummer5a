@@ -53,7 +53,6 @@ namespace Chummer.Backend.Equipment
         private string _strRatingLabel = "String_Rating";
         private string _strMaxRating = string.Empty;
         private string _strCost = string.Empty;
-        private decimal _decMarkup;
         private string _strAvail = string.Empty;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
@@ -152,14 +151,13 @@ namespace Chummer.Backend.Equipment
         /// <param name="objXmlMod">XmlNode to create the object from.</param>
         /// <param name="intRating">Selected Rating for the Gear.</param>
         /// <param name="objParent">Vehicle that the mod will be attached to.</param>
-        /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         /// <param name="blnSkipSelectForms">Whether bonuses should be created.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public void Create(XmlNode objXmlMod, int intRating, Vehicle objParent, decimal decMarkup = 0,
+        public void Create(XmlNode objXmlMod, int intRating, Vehicle objParent,
             string strForcedValue = "", bool blnSkipSelectForms = false, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlMod, intRating, objParent, decMarkup,
+            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlMod, intRating, objParent,
                 strForcedValue, blnSkipSelectForms, token), token);
         }
 
@@ -169,18 +167,17 @@ namespace Chummer.Backend.Equipment
         /// <param name="objXmlMod">XmlNode to create the object from.</param>
         /// <param name="intRating">Selected Rating for the Gear.</param>
         /// <param name="objParent">Vehicle that the mod will be attached to.</param>
-        /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         /// <param name="blnSkipSelectForms">Whether bonuses should be created.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public Task CreateAsync(XmlNode objXmlMod, int intRating, Vehicle objParent, decimal decMarkup = 0,
+        public Task CreateAsync(XmlNode objXmlMod, int intRating, Vehicle objParent,
             string strForcedValue = "", bool blnSkipSelectForms = false, CancellationToken token = default)
         {
-            return CreateCoreAsync(false, objXmlMod, intRating, objParent, decMarkup, strForcedValue,
+            return CreateCoreAsync(false, objXmlMod, intRating, objParent, strForcedValue,
                 blnSkipSelectForms, token);
         }
 
-        private async Task CreateCoreAsync(bool blnSync, XmlNode objXmlMod, int intRating, Vehicle objParent, decimal decMarkup = 0,
+        private async Task CreateCoreAsync(bool blnSync, XmlNode objXmlMod, int intRating, Vehicle objParent,
             string strForcedValue = "", bool blnSkipSelectForms = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -340,7 +337,6 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
-            _decMarkup = decMarkup;
 
             objXmlMod.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlMod.TryGetStringFieldQuickly("page", ref _strPage);
@@ -435,7 +431,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("conditionmonitor", _intConditionMonitor.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
-            objWriter.WriteElementString("markup", _decMarkup.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
@@ -525,7 +520,6 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetInt32FieldQuickly("conditionmonitor", ref _intConditionMonitor);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
-            objNode.TryGetDecFieldQuickly("markup", ref _decMarkup);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludeInVehicle);
             objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
@@ -1211,15 +1205,6 @@ namespace Chummer.Backend.Equipment
         {
             get => _strCost;
             set => _strCost = value;
-        }
-
-        /// <summary>
-        /// Markup.
-        /// </summary>
-        public decimal Markup
-        {
-            get => _decMarkup;
-            set => _decMarkup = value;
         }
 
         /// <summary>
@@ -2133,12 +2118,6 @@ namespace Chummer.Backend.Equipment
                 
                 if (DiscountCost)
                     decReturn *= 0.9m;
-
-                // Apply a markup if applicable.
-                if (_decMarkup != 0)
-                {
-                    decReturn *= 1 + _decMarkup / 100.0m;
-                }
             }
 
             return decReturn + await Weapons.SumAsync(x => x.ParentID != InternalId, x => x.GetTotalCostAsync(token), token).ConfigureAwait(false)
@@ -2173,12 +2152,6 @@ namespace Chummer.Backend.Equipment
                 if (DiscountCost)
                     decReturn *= 0.9m;
 
-                // Apply a markup if applicable.
-                if (_decMarkup != 0)
-                {
-                    decReturn *= 1 + _decMarkup / 100.0m;
-                }
-
                 return decReturn;
             }
         }
@@ -2197,12 +2170,6 @@ namespace Chummer.Backend.Equipment
             
             if (DiscountCost)
                 decReturn *= 0.9m;
-
-            // Apply a markup if applicable.
-            if (_decMarkup != 0)
-            {
-                decReturn *= 1 + _decMarkup / 100.0m;
-            }
 
             return decReturn;
         }

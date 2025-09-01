@@ -11349,52 +11349,57 @@ namespace Chummer
                         VehicleMod objMod = new VehicleMod(CharacterObject);
                         try
                         {
-                        objMod.DiscountCost = frmPickVehicleMod.MyForm.BlackMarketDiscount;
-                        await objMod.CreateAsync(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, objVehicle,
-                            frmPickVehicleMod.MyForm.Markup, token: GenericToken).ConfigureAwait(false);
+                            objMod.DiscountCost = frmPickVehicleMod.MyForm.BlackMarketDiscount;
+                            await objMod.CreateAsync(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, objVehicle, token: GenericToken).ConfigureAwait(false);
 
-                        // Check the item's Cost and make sure the character can afford it.
-                        decimal decOriginalCost = await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
+                            // Check the item's Cost and make sure the character can afford it.
+                            decimal decOriginalCost = await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
-                        await objVehicle.Mods.AddAsync(objMod, GenericToken).ConfigureAwait(false);
+                            await objVehicle.Mods.AddAsync(objMod, GenericToken).ConfigureAwait(false);
 
-                        // Do not allow the user to add a new Vehicle Mod if the Vehicle's Capacity has been reached.
-                        if (await CharacterObjectSettings.GetEnforceCapacityAsync(GenericToken).ConfigureAwait(false))
-                        {
-                            bool blnOverCapacity;
-                            if (await CharacterObjectSettings.BookEnabledAsync("R5", GenericToken)
-                                                             .ConfigureAwait(false))
+                            // Do not allow the user to add a new Vehicle Mod if the Vehicle's Capacity has been reached.
+                            if (await CharacterObjectSettings.GetEnforceCapacityAsync(GenericToken).ConfigureAwait(false))
                             {
-                                if (objVehicle.IsDrone && await CharacterObjectSettings.GetDroneModsAsync(GenericToken).ConfigureAwait(false))
-                                    blnOverCapacity
-                                        = await objVehicle.GetDroneModSlotsUsedAsync(GenericToken)
-                                                           .ConfigureAwait(false) > await objVehicle
-                                            .GetDroneModSlotsAsync(GenericToken).ConfigureAwait(false);
+                                bool blnOverCapacity;
+                                if (await CharacterObjectSettings.BookEnabledAsync("R5", GenericToken)
+                                                                 .ConfigureAwait(false))
+                                {
+                                    if (objVehicle.IsDrone && await CharacterObjectSettings.GetDroneModsAsync(GenericToken).ConfigureAwait(false))
+                                        blnOverCapacity
+                                            = await objVehicle.GetDroneModSlotsUsedAsync(GenericToken)
+                                                               .ConfigureAwait(false) > await objVehicle
+                                                .GetDroneModSlotsAsync(GenericToken).ConfigureAwait(false);
+                                    else
+                                        blnOverCapacity = await objVehicle.OverR5CapacityAsync(objMod.Category, GenericToken).ConfigureAwait(false);
+                                }
                                 else
-                                    blnOverCapacity = await objVehicle.OverR5CapacityAsync(objMod.Category, GenericToken).ConfigureAwait(false);
-                            }
-                            else
-                                blnOverCapacity = await objVehicle.GetSlotsAsync(GenericToken).ConfigureAwait(false)
-                                                  < await objVehicle.GetSlotsUsedAsync(GenericToken)
-                                                                    .ConfigureAwait(false);
+                                    blnOverCapacity = await objVehicle.GetSlotsAsync(GenericToken).ConfigureAwait(false)
+                                                      < await objVehicle.GetSlotsUsedAsync(GenericToken)
+                                                                        .ConfigureAwait(false);
 
-                            if (blnOverCapacity)
-                            {
-                                await Program.ShowScrollableMessageBoxAsync(
-                                    this,
-                                    await LanguageManager.GetStringAsync("Message_CapacityReached", token: GenericToken)
-                                        .ConfigureAwait(false),
-                                    await LanguageManager.GetStringAsync("MessageTitle_CapacityReached", token: GenericToken)
-                                        .ConfigureAwait(false),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
-                                await objVehicle.Mods.RemoveAsync(objMod, GenericToken).ConfigureAwait(false);
-                                continue;
+                                if (blnOverCapacity)
+                                {
+                                    await Program.ShowScrollableMessageBoxAsync(
+                                        this,
+                                        await LanguageManager.GetStringAsync("Message_CapacityReached", token: GenericToken)
+                                            .ConfigureAwait(false),
+                                        await LanguageManager.GetStringAsync("MessageTitle_CapacityReached", token: GenericToken)
+                                            .ConfigureAwait(false),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
+                                    await objVehicle.Mods.RemoveAsync(objMod, GenericToken).ConfigureAwait(false);
+                                    continue;
+                                }
                             }
-                        }
 
                             if (!frmPickVehicleMod.MyForm.FreeCost)
                             {
                                 decimal decCost = await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false) - decOriginalCost;
+
+                                // Apply a markup if applicable.
+                                if (frmPickVehicleMod.MyForm.Markup != 0)
+                                {
+                                    decCost *= 1 + frmPickVehicleMod.MyForm.Markup / 100.0m;
+                                }
 
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objMod.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
@@ -11645,53 +11650,60 @@ namespace Chummer
                         objVehicle))
                     return;
                 WeaponMount objNewWeaponMount;
-                using (ThreadSafeForm<CreateWeaponMount> frmPickVehicleMod
+                decimal decMarkup;
+                using (ThreadSafeForm<CreateWeaponMount> frmCreateWeaponMount
                        = await ThreadSafeForm<CreateWeaponMount>.GetAsync(
-                           () => new CreateWeaponMount(objVehicle, CharacterObject)
-                           {
-                               AllowDiscounts = true
-                           }, GenericToken).ConfigureAwait(false))
+                           () => new CreateWeaponMount(objVehicle, CharacterObject), GenericToken).ConfigureAwait(false))
                 {
-                    if (await frmPickVehicleMod.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                        == DialogResult.Cancel)
+                    if (await frmCreateWeaponMount.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
                         return;
 
-                    objNewWeaponMount = frmPickVehicleMod.MyForm.WeaponMount;
+                    objNewWeaponMount = frmCreateWeaponMount.MyForm.WeaponMount;
+                    decMarkup = frmCreateWeaponMount.MyForm.Markup;
                 }
 
-                // Calculate cost based on total vehicle cost change to make sure we capture everything
-                decimal decCost = -await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
-                await objVehicle.WeaponMounts.AddAsync(objNewWeaponMount, GenericToken).ConfigureAwait(false);
-                decCost += await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
-
-                // Multiply the cost if applicable.
-                char chrAvail = (await objNewWeaponMount.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
-                switch (chrAvail)
+                if (!objNewWeaponMount.FreeCost)
                 {
-                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                        break;
+                    // Calculate cost based on total vehicle cost change to make sure we capture everything
+                    decimal decCost = -await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
+                    await objVehicle.WeaponMounts.AddAsync(objNewWeaponMount, GenericToken).ConfigureAwait(false);
+                    decCost += await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
-                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                        break;
+                    // Apply a markup if applicable.
+                    if (decMarkup != 0)
+                    {
+                        decCost *= 1 + decMarkup / 100.0m;
+                    }
+
+                    // Multiply the cost if applicable.
+                    char chrAvail = (await objNewWeaponMount.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
+                    switch (chrAvail)
+                    {
+                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                            break;
+
+                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                            break;
+                    }
+
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                    objExpense.Create(decCost * -1,
+                                      await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeaponMount", token: GenericToken)
+                                                           .ConfigureAwait(false)
+                                      + await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false)
+                                      + await objNewWeaponMount.GetCurrentDisplayNameShortAsync(GenericToken)
+                                                               .ConfigureAwait(false), ExpenseType.Nuyen,
+                                      DateTime.Now);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
+                    await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
+
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeaponMount, objNewWeaponMount.InternalId);
+                    objExpense.Undo = objUndo;
                 }
-
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(decCost * -1,
-                                  await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeaponMount", token: GenericToken)
-                                                       .ConfigureAwait(false)
-                                  + await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false)
-                                  + await objNewWeaponMount.GetCurrentDisplayNameShortAsync(GenericToken)
-                                                           .ConfigureAwait(false), ExpenseType.Nuyen,
-                                  DateTime.Now);
-                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
-
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeaponMount, objNewWeaponMount.InternalId);
-                objExpense.Undo = objUndo;
             }
             catch (OperationCanceledException)
             {
@@ -11712,6 +11724,7 @@ namespace Chummer
                 decimal decOldVehicleCost = await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
                 string strOldName = await objWeaponMount.GetCurrentDisplayNameShortAsync(GenericToken)
                     .ConfigureAwait(false);
+                decimal decMarkup;
                 using (ThreadSafeForm<CreateWeaponMount> frmCreateWeaponMount
                        = await ThreadSafeForm<CreateWeaponMount>.GetAsync(
                            () => new CreateWeaponMount(objVehicle, CharacterObject, objWeaponMount),
@@ -11720,9 +11733,16 @@ namespace Chummer
                     if (await frmCreateWeaponMount.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                         == DialogResult.Cancel)
                         return;
+                    decMarkup = frmCreateWeaponMount.MyForm.Markup;
                 }
 
                 decimal decCost = await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false) - decOldVehicleCost;
+
+                // Apply a markup if applicable.
+                if (decMarkup != 0)
+                {
+                    decCost *= 1 + decMarkup / 100.0m;
+                }
 
                 // Multiply the cost if applicable.
                 char chrAvail = (await objWeaponMount.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
