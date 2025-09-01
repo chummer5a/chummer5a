@@ -535,14 +535,14 @@ namespace Chummer.Backend.Equipment
                                         if (blnSync)
                                         {
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            objMod.Create(objXmlMod, intRating, this, 0, strForcedValue,
+                                            objMod.Create(objXmlMod, intRating, this, strForcedValue,
                                                 blnSkipSelectForms, token);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstVehicleMods.Add(objMod);
                                         }
                                         else
                                         {
-                                            await objMod.CreateAsync(objXmlMod, intRating, this, 0, strForcedValue,
+                                            await objMod.CreateAsync(objXmlMod, intRating, this, strForcedValue,
                                                 blnSkipSelectForms, token).ConfigureAwait(false);
                                             await _lstVehicleMods.AddAsync(objMod, token).ConfigureAwait(false);
                                         }
@@ -585,9 +585,9 @@ namespace Chummer.Backend.Equipment
                                         objMod.Extra = strForcedValue;
                                         if (blnSync)
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            objMod.Create(objXmlMod, intRating, this, 0, strForcedValue, blnSkipSelectForms, token);
+                                            objMod.Create(objXmlMod, intRating, this, strForcedValue, blnSkipSelectForms, token);
                                         else
-                                            await objMod.CreateAsync(objXmlMod, intRating, this, 0, strForcedValue, blnSkipSelectForms, token).ConfigureAwait(false);
+                                            await objMod.CreateAsync(objXmlMod, intRating, this, strForcedValue, blnSkipSelectForms, token).ConfigureAwait(false);
 
                                         XmlElement xmlSubsystemsNode = objXmlVehicleMod["subsystems"];
                                         if (xmlSubsystemsNode != null)
