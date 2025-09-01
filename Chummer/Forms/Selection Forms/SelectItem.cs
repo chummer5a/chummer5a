@@ -34,9 +34,10 @@ namespace Chummer
         private List<ListItem> _lstGeneralItems;
         private string _strMode = "General";
         private Character _objCharacter;
+        private string _strSelectedItem = string.Empty;
+        private string _strSelectedName = string.Empty;
         private bool _blnAllowAutoSelect = true;
         private string _strForceItem = string.Empty;
-        private string _strSelectItemOnLoad = string.Empty;
 
         #region Control Events
 
@@ -371,19 +372,19 @@ namespace Chummer
                         AcceptForm();
                 }
 
-                if (!string.IsNullOrEmpty(_strSelectItemOnLoad))
+                if (!string.IsNullOrEmpty(_strSelectedItem))
                 {
                     await cboAmmo.DoThreadSafeAsync(x =>
                     {
                         if (x.DropDownStyle == ComboBoxStyle.DropDownList || x.DropDownStyle == ComboBoxStyle.DropDown)
                         {
                             string strOldSelected = x.SelectedValue?.ToString();
-                            x.SelectedValue = _strSelectItemOnLoad;
+                            x.SelectedValue = _strSelectedItem;
                             if (x.SelectedIndex == -1 && !string.IsNullOrEmpty(strOldSelected))
                                 x.SelectedValue = strOldSelected;
                         }
                         else
-                            x.Text = _strSelectItemOnLoad;
+                            x.Text = _strSelectedItem;
                     }).ConfigureAwait(false);
                 }
             }
@@ -412,21 +413,14 @@ namespace Chummer
         /// </summary>
         public string SelectedItem
         {
-            get
-            {
-                if (cboAmmo == null)
-                    return null;
-                if (cboAmmo.DropDownStyle == ComboBoxStyle.DropDownList && cboAmmo.SelectedValue != null)
-                    return cboAmmo.SelectedValue.ToString();
-                return cboAmmo.Text;
-            }
-            set => _strSelectItemOnLoad = value;
+            get => _strSelectedItem;
+            set => _strSelectedItem = value;
         }
 
         /// <summary>
         /// Name of the item that was selected.
         /// </summary>
-        public string SelectedName => cboAmmo.Text;
+        public string SelectedName => _strSelectedName;
 
         /// <summary>
         /// Whether the Form should be accepted if there is only one item left in the list.
@@ -512,6 +506,13 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
+            _strSelectedName = cboAmmo.Text;
+            if (cboAmmo == null)
+                _strSelectedItem = string.Empty;
+            else if (cboAmmo.DropDownStyle == ComboBoxStyle.DropDownList)
+                _strSelectedItem = cboAmmo.SelectedValue?.ToString() ?? _strSelectedName;
+            else
+                _strSelectedItem = _strSelectedName;
             DialogResult = DialogResult.OK;
             Close();
         }

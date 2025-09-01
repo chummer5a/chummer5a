@@ -39,6 +39,9 @@ namespace Chummer
         private readonly Armor _objArmor;
         private HashSet<string> _setBlackMarketMaps;
 
+        private decimal _decMarkup;
+        private bool _blnFreeCost;
+
         #region Control Events
 
         public SelectArmorMod(Character objCharacter, Armor objParentNode = null)
@@ -174,7 +177,7 @@ namespace Chummer
         /// <summary>
         /// Rating that was selected in the dialogue.
         /// </summary>
-        public int SelectedRating => nudRating.ValueAsInt;
+        public int SelectedRating { get; private set; }
 
         /// <summary>
         /// Categories that the Armor allows to be used.
@@ -189,12 +192,12 @@ namespace Chummer
         /// <summary>
         /// Whether the item should be added for free.
         /// </summary>
-        public bool FreeCost => chkFreeItem.Checked;
+        public bool FreeCost => _blnFreeCost;
 
         /// <summary>
         /// Markup percentage.
         /// </summary>
-        public decimal Markup { get; private set; }
+        public decimal Markup => _decMarkup;
 
         #endregion Properties
 
@@ -558,7 +561,9 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 SelectedArmorMod = strSelectedId;
-                Markup = nudMarkup.Value;
+                SelectedRating = nudRating.ValueAsInt;
+                _decMarkup = nudMarkup.Value;
+                _blnFreeCost = chkFreeItem.Checked;
                 BlackMarketDiscount = chkBlackMarketDiscount.Checked;
                 DialogResult = DialogResult.OK;
                 Close();

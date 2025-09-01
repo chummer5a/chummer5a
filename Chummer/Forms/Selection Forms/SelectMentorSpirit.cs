@@ -32,6 +32,9 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseMentorSpiritDataNode;
         private readonly Character _objCharacter;
 
+        private string _strChoice1 = string.Empty;
+        private string _strChoice2 = string.Empty;
+
         #region Control Events
 
         public SelectMentorSpirit(Character objCharacter, string strXmlFile = "mentors.xml")
@@ -194,7 +197,8 @@ namespace Chummer
                     return;
 
                 SelectedMentor = strSelectedId;
-
+                _strChoice1 = cboChoice1.SelectedValue?.ToString() ?? string.Empty;
+                _strChoice2 = cboChoice2.SelectedValue?.ToString() ?? string.Empty;
                 DialogResult = DialogResult.OK;
                 Close();
             }
@@ -286,12 +290,12 @@ namespace Chummer
         /// <summary>
         /// First choice that was selected in the dialogue.
         /// </summary>
-        public string Choice1 => cboChoice1.SelectedValue?.ToString() ?? string.Empty;
+        public string Choice1 => _strChoice1;
 
         /// <summary>
         /// Second choice that was selected in the dialogue.
         /// </summary>
-        public string Choice2 => cboChoice2.SelectedValue?.ToString() ?? string.Empty;
+        public string Choice2 => _strChoice2;
 
         #endregion Properties
     }

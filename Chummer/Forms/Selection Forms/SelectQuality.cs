@@ -33,9 +33,11 @@ namespace Chummer
     public partial class SelectQuality : Form
     {
         private string _strSelectedQuality = string.Empty;
+        private int _intSelectedRating;
         private bool _blnAddAgain;
         private bool _blnLoading = true;
         private readonly Character _objCharacter;
+        private bool _blnFreeCost;
 
         private readonly XPathNavigator _xmlBaseQualityDataNode;
         private readonly XPathNavigator _xmlMetatypeQualityRestrictionNode;
@@ -324,7 +326,7 @@ namespace Chummer
         /// </summary>
         public string SelectedQuality => _strSelectedQuality;
 
-        public int SelectedRating => nudRating.ValueAsInt;
+        public int SelectedRating => _intSelectedRating;
 
         /// <summary>
         /// Forcefully add a Category to the list.
@@ -362,7 +364,7 @@ namespace Chummer
         /// <summary>
         /// Whether the item has no cost.
         /// </summary>
-        public bool FreeCost => chkFree.Checked;
+        public bool FreeCost => _blnFreeCost;
 
         #endregion Properties
 
@@ -716,9 +718,11 @@ namespace Chummer
                 return;
 
             _strSelectedQuality = strSelectedQuality;
+            _intSelectedRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
             _strSelectCategory = GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0
                 ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false)
                 : objNode.SelectSingleNodeAndCacheExpression("category", token)?.Value;
+            _blnFreeCost = await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
             await this.DoThreadSafeAsync(x =>
             {
                 x.DialogResult = DialogResult.OK;

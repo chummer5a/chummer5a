@@ -33,7 +33,8 @@ namespace Chummer
     {
         private readonly Vehicle _objVehicle;
         private int _intWeaponMountSlots;
-        private int _intMarkup;
+        private decimal _decMarkup;
+        private bool _blnFreeCost;
         private bool _blnLoading = true;
         private bool _blnSkipUpdate;
         private static string _strSelectCategory = string.Empty;
@@ -269,12 +270,12 @@ namespace Chummer
         /// <summary>
         /// Whether the item should be added for free.
         /// </summary>
-        public bool FreeCost => chkFreeItem.Checked;
+        public bool FreeCost => _blnFreeCost;
 
         /// <summary>
         /// Markup percentage.
         /// </summary>
-        public int Markup => _intMarkup;
+        public decimal Markup => _decMarkup;
 
         /// <summary>
         /// Is the mod being added to a vehicle weapon mount?
@@ -433,7 +434,8 @@ namespace Chummer
                 {
                     SelectedMod = strSelectedId;
                     SelectedRating = nudRating.ValueAsInt;
-                    _intMarkup = nudMarkup.ValueAsInt;
+                    _decMarkup = nudMarkup.Value;
+                    _blnFreeCost = chkFreeItem.Checked;
                     _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
                     _strSelectCategory = GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0
                         ? cboCategory.SelectedValue?.ToString()

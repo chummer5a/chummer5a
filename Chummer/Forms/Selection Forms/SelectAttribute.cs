@@ -26,6 +26,7 @@ namespace Chummer
     public partial class SelectAttribute : Form
     {
         private string _strReturnValue = string.Empty;
+        private bool _blnDoNotAffectMetatypeMaximum;
 
         private readonly string[] _lstAttributeAbbrevs;
 
@@ -42,6 +43,7 @@ namespace Chummer
         private void cmdOK_Click(object sender, EventArgs e)
         {
             _strReturnValue = cboAttribute.SelectedValue.ToString();
+            _blnDoNotAffectMetatypeMaximum = chkDoNotAffectMetatypeMaximum.Checked;
             DialogResult = DialogResult.OK;
             Close();
         }
@@ -110,7 +112,7 @@ namespace Chummer
         /// <summary>
         /// Whether the Metatype Maximum value should be affected as well.
         /// </summary>
-        public bool DoNotAffectMetatypeMaximum => chkDoNotAffectMetatypeMaximum.Checked;
+        public bool DoNotAffectMetatypeMaximum => _blnDoNotAffectMetatypeMaximum;
 
         #endregion Properties
     }

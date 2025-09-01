@@ -47,16 +47,6 @@ namespace Chummer
 
         private async void SelectSpec_Load(object sender, EventArgs e)
         {
-            if (await _objCharacter.GetCreatedAsync().ConfigureAwait(false)
-                || !await _objCharacter.GetEffectiveBuildMethodUsesPriorityTablesAsync().ConfigureAwait(false))
-            {
-                await chkKarma.DoThreadSafeAsync(x =>
-                {
-                    x.Checked = true;
-                    x.Visible = false;
-                }).ConfigureAwait(false);
-            }
-
             string strSkillName = await _objSkill.GetNameAsync().ConfigureAwait(false);
             XPathNavigator xmlParentSkill;
             if (Mode == "Knowledge")
@@ -202,15 +192,6 @@ namespace Chummer
         /// Type of skill that we're selecting. Used to differentiate knowledge skills.
         /// </summary>
         public string Mode { get; set; }
-
-        /// <summary>
-        /// Whether to force the .
-        /// </summary>
-        public bool BuyWithKarma
-        {
-            get => chkKarma.Checked;
-            set => chkKarma.Checked = value;
-        }
 
         #endregion Properties
 

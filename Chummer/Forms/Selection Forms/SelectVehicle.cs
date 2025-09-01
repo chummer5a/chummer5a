@@ -39,6 +39,7 @@ namespace Chummer
         private string _strUsedAvail = string.Empty;
         private decimal _decUsedCost;
         private decimal _decMarkup;
+        private bool _blnFreeCost;
 
         private int _intLoading = 1;
         private bool _blnAddAgain;
@@ -388,7 +389,7 @@ namespace Chummer
         /// <summary>
         /// Whether the item should be added for free.
         /// </summary>
-        public bool FreeCost => chkFreeItem.Checked;
+        public bool FreeCost => _blnFreeCost;
 
         /// <summary>
         /// Markup percentage.
@@ -980,6 +981,7 @@ namespace Chummer
                             _strSelectedVehicle = xmlVehicle.SelectSingleNodeAndCacheExpression("id", token)?.Value;
                             _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
                                                         .ConfigureAwait(false);
+                            _blnFreeCost = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
                             _blnBlackMarketDiscount = await chkBlackMarketDiscount
                                                             .DoThreadSafeFuncAsync(x => x.Checked, token: token)
                                                             .ConfigureAwait(false);
@@ -1018,6 +1020,7 @@ namespace Chummer
 
                         _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
                                                     .ConfigureAwait(false);
+                        _blnFreeCost = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
 
                         await this.DoThreadSafeAsync(x =>
                         {

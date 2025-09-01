@@ -39,6 +39,9 @@ namespace Chummer
         private int _intSelectedRating;
         private decimal _decSelectedQty = 1;
         private decimal _decMarkup;
+        private bool _blnFreeCost;
+        private bool _blnDoItYourself;
+        private bool _blnStack;
 
         private readonly int _intAvailModifier;
         private readonly int _intCostMultiplier;
@@ -687,12 +690,12 @@ namespace Chummer
         /// <summary>
         /// Whether the item should be added for free.
         /// </summary>
-        public bool FreeCost => chkFreeItem.Checked;
+        public bool FreeCost => _blnFreeCost;
 
         /// <summary>
         /// Whether the item's cost should be cut in half for being a Do It Yourself component/upgrade.
         /// </summary>
-        public bool DoItYourself => chkDoItYourself.Checked;
+        public bool DoItYourself => _blnDoItYourself;
 
         /// <summary>
         /// Markup percentage.
@@ -702,7 +705,7 @@ namespace Chummer
         /// <summary>
         /// Whether the Gear should stack with others if possible.
         /// </summary>
-        public bool Stack => chkStack.Checked;
+        public bool Stack => _blnStack;
 
         /// <summary>
         /// Whether the Stack Checkbox should be shown (default true).
@@ -1375,6 +1378,9 @@ namespace Chummer
                 _intSelectedRating = nudRating.ValueAsInt;
                 _decSelectedQty = nudGearQty.Value;
                 _decMarkup = nudMarkup.Value;
+                _blnFreeCost = chkFreeItem.Checked;
+                _blnDoItYourself = chkDoItYourself.Checked;
+                _blnStack = chkStack.Checked;
 
                 DialogResult = DialogResult.OK;
                 Close();

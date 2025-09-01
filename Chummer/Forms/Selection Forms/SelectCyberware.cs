@@ -43,6 +43,8 @@ namespace Chummer
         private decimal _decCostMultiplier = 1.0m;
         private decimal _decESSMultiplier = 1.0m;
         private int _intAvailModifier;
+        private decimal _decMarkup;
+        private bool _blnFreeCost;
 
         private Grade _objForcedGrade;
         private string _strSubsystems = string.Empty;
@@ -896,7 +898,7 @@ namespace Chummer
         /// <summary>
         /// Whether the item has no cost.
         /// </summary>
-        public bool FreeCost => chkFree.Checked;
+        public bool FreeCost => _blnFreeCost;
 
         /// <summary>
         /// Set the window's Mode to Cyberware or Bioware.
@@ -986,7 +988,7 @@ namespace Chummer
         /// </summary>
         public VehicleMod ParentVehicleMod { get; set; }
 
-        public decimal Markup { get; set; }
+        public decimal Markup => _decMarkup;
 
         private bool _blnPrototypeTranshumanAllowed;
 
@@ -1848,7 +1850,8 @@ namespace Chummer
             SelectedCyberware = strSelectedId;
             SelectedRating = intRating;
             BlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
-            Markup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+            _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+            _blnFreeCost = await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
             await nudESSDiscount.DoThreadSafeAsync(x =>
             {
                 if (x.Visible)

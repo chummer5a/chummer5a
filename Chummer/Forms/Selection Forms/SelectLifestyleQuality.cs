@@ -39,6 +39,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private string _strIgnoreQuality = string.Empty;
         private readonly Lifestyle _objParentLifestyle;
+        private bool _blnFreeCost;
 
         private readonly XPathNavigator _objXPathDocument;
 
@@ -365,7 +366,7 @@ namespace Chummer
         /// <summary>
         /// Whether the item has no cost.
         /// </summary>
-        public bool FreeCost => chkFree.Checked;
+        public bool FreeCost => _blnFreeCost;
 
         #endregion Properties
 
@@ -499,6 +500,7 @@ namespace Chummer
             _strSelectCategory = GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0
                 ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false)
                 : objNode.SelectSingleNodeAndCacheExpression("category", token)?.Value;
+            _blnFreeCost = await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
 
             await this.DoThreadSafeAsync(x =>
             {

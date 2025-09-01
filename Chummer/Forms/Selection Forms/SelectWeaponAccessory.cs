@@ -34,6 +34,7 @@ namespace Chummer
     {
         private string _strSelectedAccessory;
         private decimal _decMarkup;
+        private bool _blnFreeCost;
         private int _intSelectedRating;
 
         private bool _blnLoading = true;
@@ -306,7 +307,7 @@ namespace Chummer
         /// <summary>
         /// Whether the item should be added for free.
         /// </summary>
-        public bool FreeCost => chkFreeItem.Checked;
+        public bool FreeCost => _blnFreeCost;
 
         /// <summary>
         /// Whether the selected Vehicle is used.
@@ -700,6 +701,7 @@ namespace Chummer
             {
                 _strSelectedAccessory = strSelectedId;
                 _decMarkup = nudMarkup.Value;
+                _blnFreeCost = chkFreeItem.Checked;
                 _intSelectedRating = nudRating.Visible ? nudRating.ValueAsInt : 0;
                 _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
                 DialogResult = DialogResult.OK;

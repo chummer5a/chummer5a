@@ -33,6 +33,8 @@ namespace Chummer
     {
         private readonly Character _objCharacter;
         private string _strForceSkill;
+        private string _strSelectedExoticSkill;
+        private string _strSelectedExoticSkillSpecialization;
 
         #region Control Events
 
@@ -44,10 +46,16 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.OK;
-            Close();
+            _strSelectedExoticSkill = (await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue).ConfigureAwait(false))?.ToString() ?? string.Empty;
+            _strSelectedExoticSkillSpecialization = (await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.SelectedValue).ConfigureAwait(false))?.ToString()
+                ?? await _objCharacter.ReverseTranslateExtraAsync(await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false)).ConfigureAwait(false);
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            }).ConfigureAwait(false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -115,13 +123,12 @@ namespace Chummer
         /// <summary>
         /// Skill that was selected in the dialogue.
         /// </summary>
-        public string SelectedExoticSkill => cboCategory.SelectedValue?.ToString() ?? string.Empty;
+        public string SelectedExoticSkill => _strSelectedExoticSkill;
 
         /// <summary>
         /// Skill specialization that was selected in the dialogue.
         /// </summary>
-        public string SelectedExoticSkillSpecialisation => cboSkillSpecialisations.SelectedValue?.ToString()
-                                                           ?? _objCharacter.ReverseTranslateExtra(cboSkillSpecialisations.Text);
+        public string SelectedExoticSkillSpecialisation => _strSelectedExoticSkillSpecialization;
 
         /// <summary>
         /// Skill specialization that was selected in the dialogue.

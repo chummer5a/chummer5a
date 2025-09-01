@@ -41,6 +41,7 @@ namespace Chummer
         private bool _blnAddAgain;
         private static string _strSelectCategory = string.Empty;
         private decimal _decMarkup;
+        private bool _blnFreeCost;
         private Armor _objSelectedArmor;
 
         private readonly XmlDocument _objXmlDocument;
@@ -549,7 +550,7 @@ namespace Chummer
         /// <summary>
         /// Whether the item should be added for free.
         /// </summary>
-        public bool FreeCost => chkFreeItem.Checked;
+        public bool FreeCost => _blnFreeCost;
 
         /// <summary>
         /// Markup percentage.
@@ -872,6 +873,7 @@ namespace Chummer
 
                     _strSelectedArmor = strSelectedId;
                     _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false);
+                    _blnFreeCost = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
                     _intRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
                     _blnBlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
                 }

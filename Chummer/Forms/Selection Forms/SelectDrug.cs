@@ -38,6 +38,8 @@ namespace Chummer
 
         private decimal _decCostMultiplier = 1.0m;
         private int _intAvailModifier;
+        private decimal _decMarkup;
+        private bool _blnFreeCost;
 
         private Grade _objForcedGrade;
         private bool _blnLockGrade;
@@ -537,7 +539,7 @@ namespace Chummer
         /// <summary>
         /// Whether the item has no cost.
         /// </summary>
-        public bool FreeCost => chkFree.Checked;
+        public bool FreeCost => _blnFreeCost;
 
         /// <summary>
         /// Manually set the Grade of the piece of Drug.
@@ -577,7 +579,7 @@ namespace Chummer
         /// </summary>
         public Vehicle ParentVehicle { get; set; }
 
-        public decimal Markup { get; set; }
+        public decimal Markup => _decMarkup;
 
         /// <summary>
         /// Parent Drug that the current selection will be added to.
@@ -1014,7 +1016,8 @@ namespace Chummer
             SelectedDrug = strSelectedId;
             SelectedRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
             BlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
-            Markup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+            _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+            _blnFreeCost = await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
 
             await this.DoThreadSafeAsync(x =>
             {
