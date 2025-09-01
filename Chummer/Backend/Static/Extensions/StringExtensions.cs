@@ -3121,45 +3121,13 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
+            if (intIndex < 0)
+                return strInput;
             int intInputLength = strInput.Length;
             if (intIndex >= intInputLength)
                 return strInput;
             // Function is more complicated than just splitting by commas because we need to be able to ignore commas that are inside of parentheses
-            if (intRating <= 1)
-            {
-                if (strInput[intIndex] == ',')
-                    return strInput.Substring(0, intIndex);
-                ++intIndex;
-                int intNumParentheses = 1;
-                while (intNumParentheses > 0)
-                {
-                    intIndex = strInput.IndexOfAny(s_achrParentheses, intIndex);
-                    // Unclosed parantheses before our first comma, so return the entire string
-                    if (intIndex < 0 || intIndex == intInputLength - 1)
-                        break;
-                    switch (strInput[intIndex])
-                    {
-                        case '(':
-                            ++intNumParentheses;
-                            break;
-                        case ')':
-                            --intNumParentheses;
-                            break;
-                    }
-                    ++intIndex;
-                    if (intNumParentheses == 0)
-                    {
-                        intIndex = strInput.IndexOfAny(s_achrOpenParenthesesComma, intIndex);
-                        if (intIndex < 0)
-                            break;
-                        if (strInput[intIndex] == ',')
-                            return strInput.Substring(0, intIndex);
-                        ++intIndex;
-                        ++intNumParentheses;
-                    }
-                }
-            }
-            else if (intRating == int.MaxValue)
+            if (intRating == int.MaxValue)
             {
                 // Do the same thing as with intRating == 1, but backwards and looking at closed parantheses instead
                 intIndex = strInput.LastIndexOfAny(s_achrClosedParenthesesComma);
@@ -3202,63 +3170,101 @@ namespace Chummer
             }
             else
             {
-                int intLastCommaIndex = intIndex;
-                for (int intCurrentCount = 2; intCurrentCount <= intRating; intCurrentCount++)
+                if (strInput[intIndex] != ',')
                 {
-                    intIndex = strInput.IndexOfAny(s_achrOpenParenthesesComma, intIndex + 1);
-                    if (intIndex < 0 || intIndex == intInputLength - 1)
-                        return strInput.Substring(intLastCommaIndex + 1);
-                    if (strInput[intIndex] == ',')
+                    ++intIndex;
+                    int intNumParentheses = 1;
+                    while (intNumParentheses > 0)
                     {
-                        if (intCurrentCount == intRating)
-                            return strInput.Substring(intLastCommaIndex + 1, intIndex - intLastCommaIndex - 1);
-                        intLastCommaIndex = intIndex;
-                    }
-                    else
-                    {
-                        ++intIndex;
-                        int intNumParentheses = 1;
-                        while (intNumParentheses > 0)
+                        intIndex = strInput.IndexOfAny(s_achrParentheses, intIndex);
+                        // Unclosed parantheses before our first comma, so return the entire string
+                        if (intIndex < 0 || intIndex == intInputLength - 1)
+                            break;
+                        switch (strInput[intIndex])
                         {
-                            intIndex = strInput.IndexOfAny(s_achrParentheses, intIndex);
-                            // Unclosed parantheses before our first comma, so skip directly to next comma
-                            if (intIndex < 0 || intIndex == intInputLength - 1)
-                            {
-                                intIndex = strInput.IndexOf(',', intLastCommaIndex + 1);
-                                if (intIndex < 0 || intIndex == intInputLength - 1)
-                                    return strInput.Substring(intLastCommaIndex + 1);
-                                else if (intCurrentCount == intRating)
-                                    return strInput.Substring(intLastCommaIndex + 1, intIndex - intLastCommaIndex - 1);
-                                intLastCommaIndex = intIndex;
+                            case '(':
+                                ++intNumParentheses;
                                 break;
-                            }
-                            intNumParentheses = 0;
-                            switch (strInput[intIndex])
-                            {
-                                case '(':
-                                    ++intNumParentheses;
-                                    break;
-                                case ')':
-                                    --intNumParentheses;
-                                    break;
-                            }
+                            case ')':
+                                --intNumParentheses;
+                                break;
+                        }
+                        ++intIndex;
+                        if (intNumParentheses == 0)
+                        {
+                            intIndex = strInput.IndexOfAny(s_achrOpenParenthesesComma, intIndex);
+                            if (intIndex < 0 || strInput[intIndex] == ',')
+                                break;
                             ++intIndex;
-                            if (intNumParentheses == 0)
+                            ++intNumParentheses;
+                        }
+                    }
+                }
+                if (intIndex < 0)
+                    return strInput;
+                if (intRating <= 1)
+                {
+                    return strInput.Substring(0, intIndex);
+                }
+                else
+                {
+                    int intLastCommaIndex = intIndex;
+                    for (int intCurrentCount = 2; intCurrentCount <= intRating; intCurrentCount++)
+                    {
+                        intIndex = strInput.IndexOfAny(s_achrOpenParenthesesComma, intIndex + 1);
+                        if (intIndex < 0 || intIndex == intInputLength - 1)
+                            return strInput.Substring(intLastCommaIndex + 1);
+                        if (strInput[intIndex] == ',')
+                        {
+                            if (intCurrentCount == intRating)
+                                return strInput.Substring(intLastCommaIndex + 1, intIndex - intLastCommaIndex - 1);
+                            intLastCommaIndex = intIndex;
+                        }
+                        else
+                        {
+                            ++intIndex;
+                            int intNumParentheses = 1;
+                            while (intNumParentheses > 0)
                             {
-                                intIndex = strInput.IndexOfAny(s_achrOpenParenthesesComma, intIndex);
+                                intIndex = strInput.IndexOfAny(s_achrParentheses, intIndex);
+                                // Unclosed parantheses before our first comma, so skip directly to next comma
                                 if (intIndex < 0 || intIndex == intInputLength - 1)
-                                    return strInput.Substring(intLastCommaIndex + 1);
-                                if (strInput[intIndex] == ',')
                                 {
-                                    if (intCurrentCount == intRating)
+                                    intIndex = strInput.IndexOf(',', intLastCommaIndex + 1);
+                                    if (intIndex < 0 || intIndex == intInputLength - 1)
+                                        return strInput.Substring(intLastCommaIndex + 1);
+                                    else if (intCurrentCount == intRating)
                                         return strInput.Substring(intLastCommaIndex + 1, intIndex - intLastCommaIndex - 1);
                                     intLastCommaIndex = intIndex;
                                     break;
                                 }
-                                else
+                                switch (strInput[intIndex])
                                 {
-                                    ++intIndex;
-                                    ++intNumParentheses;
+                                    case '(':
+                                        ++intNumParentheses;
+                                        break;
+                                    case ')':
+                                        --intNumParentheses;
+                                        break;
+                                }
+                                ++intIndex;
+                                if (intNumParentheses == 0)
+                                {
+                                    intIndex = strInput.IndexOfAny(s_achrOpenParenthesesComma, intIndex);
+                                    if (intIndex < 0 || intIndex == intInputLength - 1)
+                                        return strInput.Substring(intLastCommaIndex + 1);
+                                    if (strInput[intIndex] == ',')
+                                    {
+                                        if (intCurrentCount == intRating)
+                                            return strInput.Substring(intLastCommaIndex + 1, intIndex - intLastCommaIndex - 1);
+                                        intLastCommaIndex = intIndex;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        ++intIndex;
+                                        ++intNumParentheses;
+                                    }
                                 }
                             }
                         }
