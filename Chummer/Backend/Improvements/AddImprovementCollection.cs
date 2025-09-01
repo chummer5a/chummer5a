@@ -4082,7 +4082,7 @@ namespace Chummer
                             Power objNewPower = new Power(_objCharacter);
                             try
                             {
-                                if (!objNewPower.Create(objXmlPower))
+                                if (!objNewPower.Create(objXmlPower, 0, bonusNode["bonusoverride"]))
                                     throw new AbortedException();
 
                                 SelectedValue = objNewPower.CurrentDisplayName;

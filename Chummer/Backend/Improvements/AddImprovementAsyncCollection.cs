@@ -4273,7 +4273,7 @@ namespace Chummer
                             Power objNewPower = new Power(_objCharacter);
                             try
                             {
-                                if (!await objNewPower.CreateAsync(objXmlPower, token: token).ConfigureAwait(false))
+                                if (!await objNewPower.CreateAsync(objXmlPower, 0, bonusNode["bonusoverride"], token: token).ConfigureAwait(false))
                                     throw new AbortedException();
 
                                 SelectedValue = await objNewPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);

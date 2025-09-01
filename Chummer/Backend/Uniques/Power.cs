@@ -1823,18 +1823,18 @@ namespace Chummer
                                 ++intReturn;
                             }
                         }
-                        else if (decPointsPerLevel == 0)
-                        {
-                            Utils.BreakIfDebug();
-                            // power costs no PP, just return free levels
-                        }
                         //Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
-                        else
+                        else if (decPointsPerLevel != 0)
                         {
                             for (decimal i = decExtraCost; i >= decPointsPerLevel; i -= decPointsPerLevel)
                             {
                                 ++intReturn;
                             }
+                        }
+                        else
+                        {
+                            Utils.BreakIfDebug();
+                            // power costs no PP, just return free levels
                         }
 
                         return _intCachedFreeLevels = Math.Min(intReturn, MAGAttributeObject?.TotalValue ?? 0);

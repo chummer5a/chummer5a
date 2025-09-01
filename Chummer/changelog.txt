@@ -107,6 +107,7 @@ Application Changes:
 - The in-game calendar used for note-taking now follows the ISO 8601 standard in terms of how weeks behave and are displayed. Primarily, this means that weeks are displayed and exported as weeks of the year instead of weeks of the month, and months are no longer exported.
 - Improvements can now adjust the availability of all items or specific items.
 - If Chummer5a encounters errors when loading improvements, it will now also attempt to find the source(s) of those improvements and display them in the pop-up message asking about re-applying improvements.
+- Qi foci (and other sources of selectable adept powers) no longer automatically add an extra level/rating to the adept power chosen for them when they are taken.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://jackpoint.live/index.php?topic=31750.msg544923#msg544923.
