@@ -74,6 +74,30 @@ namespace Chummer
             }
         }
 
+        /// <inheritdoc cref="Interlocked.CompareExchange(ref long, long, long)"/>>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SecuritySafeCritical]
+        public static ulong CompareExchange(ref ulong lngLocation, ulong lngValue, ulong lngComparand)
+        {
+            long intComparandRaw = Unsafe.As<ulong, long>(ref lngComparand);
+            long intValueRaw = Unsafe.As<ulong, long>(ref lngValue);
+            ref long intLocationRaw = ref Unsafe.As<ulong, long>(ref lngLocation);
+            long intReturnRaw = Interlocked.CompareExchange(ref intLocationRaw, intValueRaw, intComparandRaw);
+            return Unsafe.As<long, ulong>(ref intReturnRaw);
+        }
+
+        /// <inheritdoc cref="Interlocked.CompareExchange(ref int, int, int)"/>>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SecuritySafeCritical]
+        public static uint CompareExchange(ref uint intLocation, uint intValue, uint intComparand)
+        {
+            int intComparandRaw = Unsafe.As<uint, int>(ref intComparand);
+            int intValueRaw = Unsafe.As<uint, int>(ref intValue);
+            ref int intLocationRaw = ref Unsafe.As<uint, int>(ref intLocation);
+            int intReturnRaw = Interlocked.CompareExchange(ref intLocationRaw, intValueRaw, intComparandRaw);
+            return Unsafe.As<int, uint>(ref intReturnRaw);
+        }
+
         /// <summary>
         /// Sets an enum to a specified value and returns the original value, as an atomic operation.
         /// Taken from the following (with some modifications): https://stackoverflow.com/a/59127914
@@ -114,6 +138,108 @@ namespace Chummer
                 ref long intLocationRaw = ref Unsafe.As<TEnum, long>(ref eInnerLocation);
                 long intReturnRaw = Interlocked.Exchange(ref intLocationRaw, intValueRaw);
                 return Unsafe.As<long, TEnum>(ref intReturnRaw);
+            }
+        }
+
+        /// <inheritdoc cref="Interlocked.Exchange(ref long, long)"/>>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SecuritySafeCritical]
+        public static ulong Exchange(ref ulong lngLocation, ulong lngValue)
+        {
+            long lngValueRaw = Unsafe.As<ulong, long>(ref lngValue);
+            ref long lngLocationRaw = ref Unsafe.As<ulong, long>(ref lngLocation);
+            long lngReturnRaw = Interlocked.Exchange(ref lngLocationRaw, lngValueRaw);
+            return Unsafe.As<long, ulong>(ref lngReturnRaw);
+        }
+
+        /// <inheritdoc cref="Interlocked.Exchange(ref int, int)"/>>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SecuritySafeCritical]
+        public static uint Exchange(ref uint intLocation, uint intValue)
+        {
+            int intValueRaw = Unsafe.As<uint, int>(ref intValue);
+            ref int intLocationRaw = ref Unsafe.As<uint, int>(ref intLocation);
+            int intReturnRaw = Interlocked.Exchange(ref intLocationRaw, intValueRaw);
+            return Unsafe.As<int, uint>(ref intReturnRaw);
+        }
+
+        /// <inheritdoc cref="Interlocked.Add(ref long, long)"/>>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SecuritySafeCritical]
+        public static ulong Add(ref ulong lngLocation, ulong lngValue)
+        {
+            long lngValueRaw = Unsafe.As<ulong, long>(ref lngValue);
+            ref long lngLocationRaw = ref Unsafe.As<ulong, long>(ref lngLocation);
+            unchecked
+            {
+                long lngReturnRaw = Interlocked.Add(ref lngLocationRaw, lngValueRaw);
+                return Unsafe.As<long, ulong>(ref lngReturnRaw);
+            }
+        }
+
+        /// <inheritdoc cref="Interlocked.Add(ref int, int)"/>>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SecuritySafeCritical]
+        public static uint Add(ref uint intLocation, uint intValue)
+        {
+            int intValueRaw = Unsafe.As<uint, int>(ref intValue);
+            ref int intLocationRaw = ref Unsafe.As<uint, int>(ref intLocation);
+            unchecked
+            {
+                int intReturnRaw = Interlocked.Add(ref intLocationRaw, intValueRaw);
+                return Unsafe.As<int, uint>(ref intReturnRaw);
+            }
+        }
+
+        /// <inheritdoc cref="Interlocked.Increment(ref long)"/>>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SecuritySafeCritical]
+        public static ulong Increment(ref ulong lngLocation)
+        {
+            ref long lngLocationRaw = ref Unsafe.As<ulong, long>(ref lngLocation);
+            unchecked
+            {
+                long lngReturnRaw = Interlocked.Increment(ref lngLocationRaw);
+                return Unsafe.As<long, ulong>(ref lngReturnRaw);
+            }
+        }
+
+        /// <inheritdoc cref="Interlocked.Increment(ref int)"/>>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SecuritySafeCritical]
+        public static uint Increment(ref uint intLocation)
+        {
+            ref int intLocationRaw = ref Unsafe.As<uint, int>(ref intLocation);
+            unchecked
+            {
+                int intReturnRaw = Interlocked.Increment(ref intLocationRaw);
+                return Unsafe.As<int, uint>(ref intReturnRaw);
+            }
+        }
+
+        /// <inheritdoc cref="Interlocked.Decrement(ref long)"/>>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SecuritySafeCritical]
+        public static ulong Decrement(ref ulong lngLocation)
+        {
+            ref long lngLocationRaw = ref Unsafe.As<ulong, long>(ref lngLocation);
+            unchecked
+            {
+                long lngReturnRaw = Interlocked.Decrement(ref lngLocationRaw);
+                return Unsafe.As<long, ulong>(ref lngReturnRaw);
+            }
+        }
+
+        /// <inheritdoc cref="Interlocked.Decrement(ref int)"/>>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SecuritySafeCritical]
+        public static uint Decrement(ref uint intLocation)
+        {
+            ref int intLocationRaw = ref Unsafe.As<uint, int>(ref intLocation);
+            unchecked
+            {
+                int intReturnRaw = Interlocked.Decrement(ref intLocationRaw);
+                return Unsafe.As<int, uint>(ref intReturnRaw);
             }
         }
     }
