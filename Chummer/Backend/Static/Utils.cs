@@ -2015,10 +2015,12 @@ namespace Chummer
             }
             List<Task<T>> lstTasks = new List<Task<T>>(MaxParallelBatchSize);
             int intOffset = 0;
+            int intCycleTracker = 0; // Tracking this way is faster than modulo'ing the iterating index
             for (int i = 0; i < intLength; ++i)
             {
-                if (i != 0 && i % MaxParallelBatchSize == 0)
+                if (++intCycleTracker > MaxParallelBatchSize)
                 {
+                    intCycleTracker = 1;
                     Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
                     while (!tskLoop.IsCompleted)
                         SafeSleep(token);
@@ -2138,11 +2140,13 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     List<Task<T>> lstMainThreadTasks = new List<Task<T>>(MaxParallelBatchSize);
                     int intMainThreadOffset = 0;
+                    int intMainThreadCycleTracker = 0; // Tracking this way is faster than modulo'ing the iterating index
                     for (int i = 0; i < intLength; ++i)
                     {
                         await Task.Yield().ConfigureAwait(true);
-                        if (i != 0 && i % MaxParallelBatchSize == 0)
+                        if (++intMainThreadCycleTracker > MaxParallelBatchSize)
                         {
+                            intMainThreadCycleTracker = 1;
                             await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
                             for (int j = 0; j < MaxParallelBatchSize; ++j)
                                 aobjReturn[intMainThreadOffset + j] = await lstMainThreadTasks[j].ConfigureAwait(true);
@@ -2186,10 +2190,12 @@ namespace Chummer
             }
             List<Task<T>> lstTasks = new List<Task<T>>(MaxParallelBatchSize);
             int intOffset = 0;
+            int intCycleTracker = 0; // Tracking this way is faster than modulo'ing the iterating index
             for (int i = 0; i < intLength; ++i)
             {
-                if (i != 0 && i % MaxParallelBatchSize == 0)
+                if (++intCycleTracker > MaxParallelBatchSize)
                 {
+                    intCycleTracker = 1;
                     Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
                     while (!tskLoop.IsCompleted)
                         SafeSleep(token);
