@@ -101,6 +101,7 @@ namespace Chummer
             0,
             0,
             0});
+            this.nudDice.ValueChanged += new System.EventHandler(this.nudDice_ValueChanged);
             // 
             // lblD6
             // 

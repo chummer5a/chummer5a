@@ -220,6 +220,11 @@ namespace Chummer
             }
         }
 
+        private void nudDice_ValueChanged(object sender, EventArgs e)
+        {
+            _intDice = nudDice.ValueAsInt;
+        }
+
         private void cboMethod_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboMethod.SelectedValue.ToString() == "Standard")
