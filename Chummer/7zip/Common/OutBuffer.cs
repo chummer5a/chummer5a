@@ -79,7 +79,15 @@ namespace SevenZip.Buffer
         {
             if (m_Pos == 0)
                 return;
-            m_Stream.Write(m_Buffer, 0, (int)m_Pos);
+            if (m_Pos > int.MaxValue)
+            {
+                int intToWrite1 = (int)(m_Pos / 2);
+                int intToWrite2 = intToWrite1 + (int)(m_Pos & 1);
+                m_Stream.Write(m_Buffer, 0, intToWrite1);
+                m_Stream.Write(m_Buffer, intToWrite1, intToWrite2);
+            }
+            else
+                m_Stream.Write(m_Buffer, 0, (int)m_Pos);
             m_Pos = 0;
         }
 
@@ -88,7 +96,15 @@ namespace SevenZip.Buffer
             token.ThrowIfCancellationRequested();
             if (m_Pos == 0)
                 return;
-            await m_Stream.WriteAsync(m_Buffer, 0, (int)m_Pos, token).ConfigureAwait(false);
+            if (m_Pos > int.MaxValue)
+            {
+                int intToWrite1 = (int)(m_Pos / 2);
+                int intToWrite2 = intToWrite1 + (int)(m_Pos & 1);
+                await m_Stream.WriteAsync(m_Buffer, 0, intToWrite1, token).ConfigureAwait(false);
+                await m_Stream.WriteAsync(m_Buffer, intToWrite1, intToWrite2, token).ConfigureAwait(false);
+            }
+            else
+                await m_Stream.WriteAsync(m_Buffer, 0, (int)m_Pos, token).ConfigureAwait(false);
             m_Pos = 0;
         }
 

@@ -369,6 +369,10 @@ namespace SevenZip.Compression.LZMA
             private int _tableSize;
             private readonly int[] _counters = new int[Base.kNumPosStatesEncodingMax];
 
+            public LenPriceTableEncoder() : base()
+            {
+            }
+
             public void SetTableSize(int tableSize)
             { _tableSize = tableSize; }
 
@@ -498,14 +502,14 @@ namespace SevenZip.Compression.LZMA
         {
             if (_matchFinder == null)
             {
-                BinTree bt = new BinTree();
+                BinTree bt;
                 switch (_matchFinderType)
                 {
                     case EMatchFinderType.BT2:
-                        bt.SetType(2);
+                        bt = new BinTree(2);
                         break;
                     case EMatchFinderType.BT4:
-                        bt.SetType(4);
+                        bt = new BinTree(4);
                         break;
                     default:
                         throw new ArgumentException("No appropriate matchfinder type found.");

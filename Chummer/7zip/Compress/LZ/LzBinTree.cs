@@ -38,8 +38,6 @@ namespace SevenZip.Compression.LZ
         private uint _hashMask;
         private uint _hashSizeSum;
 
-        private bool HASH_ARRAY = true;
-
         private const uint kHash2Size = 1 << 10;
         private const uint kHash3Size = 1 << 16;
         private const uint kBT2HashSize = 1 << 16;
@@ -48,11 +46,12 @@ namespace SevenZip.Compression.LZ
         private const uint kEmptyHashValue = 0;
         private const int kMaxValForNormalize = 134217728 + 256; // Set to make sure the uint arrays created are within the maximum array size of 32-bit .NET Framework (2^30 bytes max -> ceil((2^30 - 1)/2/sizeof(uint)) = this value)
 
-        private int kNumHashDirectBytes;
-        private uint kMinMatchCheck = 4;
-        private uint kFixHashSize = kHash2Size + kHash3Size;
+        private readonly bool HASH_ARRAY;
+        private readonly int kNumHashDirectBytes;
+        private readonly uint kMinMatchCheck;
+        private readonly uint kFixHashSize;
 
-        public void SetType(int numHashBytes)
+        public BinTree(int numHashBytes = 4)
         {
             HASH_ARRAY = numHashBytes > 2;
             if (HASH_ARRAY)

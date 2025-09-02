@@ -55,9 +55,17 @@ namespace SevenZip.Buffer
             if (m_StreamWasExhausted)
                 return false;
             m_ProcessedSize += m_Pos;
-            int aNumProcessedBytes = m_Stream.Read(m_Buffer, 0, (int)m_BufferSize);
+            uint aNumProcessedBytes;
+            if (m_BufferSize > int.MaxValue)
+            {
+                int intToRead1 = (int)(m_BufferSize / 2);
+                int intToRead2 = intToRead1 + (int)(m_BufferSize & 1);
+                aNumProcessedBytes = (uint)m_Stream.Read(m_Buffer, 0, intToRead1) + (uint)m_Stream.Read(m_Buffer, intToRead1, intToRead2);
+            }
+            else
+                aNumProcessedBytes = (uint)m_Stream.Read(m_Buffer, 0, (int)m_BufferSize);
             m_Pos = 0;
-            m_Limit = (uint)aNumProcessedBytes;
+            m_Limit = aNumProcessedBytes;
             m_StreamWasExhausted = aNumProcessedBytes == 0;
             return !m_StreamWasExhausted;
         }
@@ -68,9 +76,20 @@ namespace SevenZip.Buffer
             if (m_StreamWasExhausted)
                 return false;
             m_ProcessedSize += m_Pos;
-            int aNumProcessedBytes = await m_Stream.ReadAsync(m_Buffer, 0, (int)m_BufferSize, token).ConfigureAwait(false);
+            uint aNumProcessedBytes;
+            if (m_BufferSize > int.MaxValue)
+            {
+                int intToRead1 = (int)(m_BufferSize / 2);
+                int intToRead2 = intToRead1 + (int)(m_BufferSize & 1);
+                Task<int> tskRead1 = m_Stream.ReadAsync(m_Buffer, 0, intToRead1, token);
+                Task<int> tskRead2 = m_Stream.ReadAsync(m_Buffer, intToRead1, intToRead2, token);
+                await Task.WhenAll(tskRead1, tskRead2).ConfigureAwait(false);
+                aNumProcessedBytes = (uint)await tskRead1.ConfigureAwait(false) + (uint)await tskRead2.ConfigureAwait(false);
+            }
+            else
+                aNumProcessedBytes = (uint)await m_Stream.ReadAsync(m_Buffer, 0, (int)m_BufferSize, token).ConfigureAwait(false);
             m_Pos = 0;
-            m_Limit = (uint)aNumProcessedBytes;
+            m_Limit = aNumProcessedBytes;
             m_StreamWasExhausted = aNumProcessedBytes == 0;
             return !m_StreamWasExhausted;
         }
