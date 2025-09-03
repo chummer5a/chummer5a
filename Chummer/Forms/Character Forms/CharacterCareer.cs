@@ -11662,7 +11662,9 @@ namespace Chummer
                     decMarkup = frmCreateWeaponMount.MyForm.Markup;
                 }
 
-                if (!objNewWeaponMount.FreeCost)
+                if (objNewWeaponMount.FreeCost)
+                    await objVehicle.WeaponMounts.AddAsync(objNewWeaponMount, GenericToken).ConfigureAwait(false);
+                else
                 {
                     // Calculate cost based on total vehicle cost change to make sure we capture everything
                     decimal decCost = -await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
