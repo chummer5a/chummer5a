@@ -442,16 +442,15 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) == 0)
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) != 0)
+                return;
+            if (_blnDisposeSemaphore)
             {
-                if (_blnDisposeSemaphore)
-                {
-                    _objSemaphoreSlim.Dispose();
+                _objSemaphoreSlim.Dispose();
 #if SEMAPHOREDEBUG
-                    if (_blnTrackHolder)
-                        LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+                if (_blnTrackHolder)
+                    LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
-                }
             }
         }
 

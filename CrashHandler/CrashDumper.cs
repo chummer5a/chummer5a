@@ -476,7 +476,7 @@ namespace CrashHandler
                 case JsonToken.Null:
                     return base.ReadJson(reader, objectType, existingValue, serializer);
                 case JsonToken.StartArray:
-                    return serializer.Deserialize(reader, typeof(List<Dictionary<string, object>>));
+                    return serializer.Deserialize<List<Dictionary<string, object>>>(reader);
                 default:
                     return serializer.Deserialize(reader);
             }
