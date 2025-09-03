@@ -463,7 +463,7 @@ namespace Chummer
                                 using (ZipArchive zipNewArchive = new ZipArchive(objZipFileStream, ZipArchiveMode.Create))
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    ZipArchiveEntry objSettingsEntry = zipNewArchive.CreateEntry("_selectedsetting.xml");
+                                    ZipArchiveEntry objSettingsEntry = zipNewArchive.CreateEntry("_selectedsetting.xml", CompressionLevel.Optimal);
                                     token.ThrowIfCancellationRequested();
                                     using (Stream objStream = objSettingsEntry.Open())
                                     {
@@ -475,7 +475,7 @@ namespace Chummer
                                     {
                                         token.ThrowIfCancellationRequested();
                                         XmlDocument xmlDocument = await objSettings.LoadDataAsync(strFileName, strLanguage, token: token).ConfigureAwait(false);
-                                        ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFileName));
+                                        ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFileName), CompressionLevel.Optimal);
                                         token.ThrowIfCancellationRequested();
                                         using (Stream objStream = objEntry.Open())
                                         {

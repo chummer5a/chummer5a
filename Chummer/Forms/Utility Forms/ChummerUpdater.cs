@@ -870,7 +870,7 @@ namespace Chummer
                                 foreach (string strFile in Directory.EnumerateFiles(_strAppPath))
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFile));
+                                    ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFile), CompressionLevel.Fastest);
                                     objEntry.LastWriteTime = File.GetLastWriteTime(strFile);
                                     using (FileStream objFileStream = new FileStream(strFile, FileMode.Open, FileAccess.Read, FileShare.Read))
                                     {
