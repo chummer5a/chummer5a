@@ -193,7 +193,7 @@ namespace Chummer.Backend
             {
                 info.AddValue("_intProcessId", _intProcessId);
                 info.AddValue("_uintThreadId", _uintThreadId);
-                info.AddValue("_ptrExceptionInfo", _ptrExceptionInfo);
+                info.AddValue("_ptrExceptionInfo", _ptrExceptionInfo.ToInt64());
                 info.AddValue("_dicAttributes", _dicAttributes);
                 info.AddValue("_dicPretendFiles", _dicPretendFiles);
                 info.AddValue("_dicCapturedFiles", _dicCapturedFiles);
@@ -233,13 +233,13 @@ namespace Chummer.Backend
                 string strCrashHandler = Path.Combine(Utils.GetStartupPath, "CrashHandler.exe");
                 if (File.Exists(strCrashHandler))
                 {
-                    using (Process prcCrashHandler
-                       = Process.Start(strCrashHandler, "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc()
+                    string strArgs = "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc()
 #if DEBUG
-                                       + "\" --debug"))
+                        + "\" --debug";
 #else
-                                       + "\""))
+                        + "\"";
 #endif
+                    using (Process prcCrashHandler = Process.Start(strCrashHandler, strArgs))
                     {
                         if (prcCrashHandler == null)
                             return;

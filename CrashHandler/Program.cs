@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows.Forms;
 using Chummer;
 
@@ -50,47 +49,31 @@ namespace CrashHandler
         [STAThread]
         private static void Main(string[] args)
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
             Chummer.Program.SetProcessDPI(GlobalSettings.DpiScalingMethodSetting);
             if (Chummer.Program.IsMainThread)
                 Chummer.Program.SetThreadDPI(GlobalSettings.DpiScalingMethodSetting);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
 
-            int intDebugArgIndex = -1;
-            for (int i = 0; i < args.Length - 1; ++i)
+            Action<string[]> funcToRun = null;
+            List<string> lstArgsForFunc = new List<string>(args.Length - 1);
+            foreach (string strArg in args)
             {
-                if (args[i].Equals("--debug", StringComparison.OrdinalIgnoreCase))
+                if (strArg.Equals("--debug", StringComparison.OrdinalIgnoreCase))
                 {
                     if (!Debugger.IsAttached)
                         Debugger.Launch();
-                    intDebugArgIndex = i;
-                    break;
                 }
+                else if (funcToRun == null)
+                {
+                    if (!s_DictionaryFunctions.TryGetValue(strArg, out funcToRun))
+                        funcToRun = null;
+                }
+                else
+                    lstArgsForFunc.Add(strArg.Trim('\"'));
             }
 
-            if (intDebugArgIndex >= 0)
-            {
-                string[] astrNewArgs = new string[args.Length - 1];
-                for (int i = 0; i < args.Length - 1; ++i)
-                {
-                    if (i == intDebugArgIndex)
-                        continue;
-                    if (i > intDebugArgIndex)
-                        astrNewArgs[i - 1] = args[i];
-                    else
-                        astrNewArgs[i] = args[i];
-                }
-                args = astrNewArgs;
-            }
-
-            for (int i = 0; i < args.Length - 1; ++i)
-            {
-                if (s_DictionaryFunctions.TryGetValue(args[i], out Action<string[]> actCachedAction))
-                {
-                    actCachedAction(args.Skip(i + 1).ToArray());
-                    break;
-                }
-            }
+            funcToRun?.Invoke(lstArgsForFunc.ToArray());
         }
     }
 }

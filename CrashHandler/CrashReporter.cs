@@ -40,9 +40,18 @@ namespace CrashHandler
         {
             _objDumper = objDumper ?? throw new ArgumentNullException(nameof(objDumper));
             InitializeComponent();
-            lblDesc.Text = _objDumper.Attributes["visible-error-friendly"];
-            txtIdSelectable.Text = "Crash followup Id = " + _objDumper.Attributes["visible-crash-id"];
-            txtIdSelectable2.Text = "Installation Id = " + _objDumper.Attributes["installation-id"];
+            if (_objDumper.Attributes.TryGetValue("visible-error-friendly", out string strDesc))
+                lblDesc.Text = strDesc;
+            else
+                lblDesc.Text = "Error deserializing friendly crash description.";
+            if (_objDumper.Attributes.TryGetValue("visible-crash-id", out string strCrashId))
+                txtIdSelectable.Text = "Crash followup Id = " + strCrashId;
+            else
+                txtIdSelectable.Text = "Error deserializing crash identifier.";
+            if (_objDumper.Attributes.TryGetValue("installation-id", out string strInstallationId))
+                txtIdSelectable2.Text = "Installation Id = " + strInstallationId;
+            else
+                txtIdSelectable2.Text = "Error deserializing installation identifier.";
             _objDumper.CrashDumperProgressChanged += DumperOnCrashDumperProgressChanged;
         }
 
@@ -146,21 +155,32 @@ namespace CrashHandler
 
         private void cmdSubmitIssue_Click(object sender, EventArgs e)
         {
-            string strTitle = HtmlWrap("Auto-Generated Issue from Crash: ID " + _objDumper.Attributes["visible-crash-id"]);
+            if (!_objDumper.Attributes.TryGetValue("visible-crash-id", out string strCrashId))
+                strCrashId = "Error encountered while deserializing";
+            if (!_objDumper.Attributes.TryGetValue("visible-version", out string strVersion))
+                strVersion = "Error encountered while deserializing";
+            if (!_objDumper.Attributes.TryGetValue("os-name", out string strOsName))
+                strOsName = "Error encountered while deserializing";
+            if (!_objDumper.Attributes.TryGetValue("option-upload-logs-set", out string strOptionUploadLogsSet))
+                strOptionUploadLogsSet = "Error encountered while deserializing";
+            if (!_objDumper.Attributes.TryGetValue("installation-id", out string strInstallationId))
+                strInstallationId = "Error encountered while deserializing";
+            if (!_objDumper.Attributes.TryGetValue("visible-error-friendly", out string strErrorFriendly))
+                strErrorFriendly = "Error encountered while deserializing crash description.";
+            if (!_objDumper.Attributes.TryGetValue("visible-stacktrace", out string strStacktrace))
+                strStacktrace = "Error encountered while deserializing stacktrace.";
+            string strTitle = HtmlWrap("Auto-Generated Issue from Crash: ID " + strCrashId);
             string strBody = HtmlWrap("### Environment"
-                                      + Environment.NewLine + "Crash ID: " + _objDumper.Attributes["visible-crash-id"]
-                                      + Environment.NewLine + "Chummer Version: " +
-                                      _objDumper.Attributes["visible-version"]
-                                      + Environment.NewLine + "Environment: " + _objDumper.Attributes["os-name"]
+                                      + Environment.NewLine + "Crash ID: " + strCrashId
+                                      + Environment.NewLine + "Chummer Version: " + strVersion
+                                      + Environment.NewLine + "Environment: " + strOsName
                                       + Environment.NewLine + "Runtime: " + Environment.Version
-                                      + Environment.NewLine + "Option upload logs set: " +
-                                      _objDumper.Attributes["option-upload-logs-set"]
-                                      + Environment.NewLine + "Installation ID: " +
-                                      _objDumper.Attributes["installation-id"]
+                                      + Environment.NewLine + "Option upload logs set: " + strOptionUploadLogsSet
+                                      + Environment.NewLine + "Installation ID: " + strInstallationId
                                       + Environment.NewLine + Environment.NewLine + rtbUserStory.Text
                                       + Environment.NewLine + Environment.NewLine + "### Crash Description"
-                                      + Environment.NewLine + _objDumper.Attributes["visible-error-friendly"]
-                                      + Environment.NewLine + _objDumper.Attributes["visible-stacktrace"]);
+                                      + Environment.NewLine + strErrorFriendly
+                                      + Environment.NewLine + strStacktrace);
             string strSend = "https://github.com/chummer5a/chummer5a/issues/new?labels=new&title=" + strTitle + "&body="
                              + strBody;
 
