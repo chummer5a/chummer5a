@@ -56,6 +56,7 @@ namespace CrashHandler
 
         private readonly StreamWriter CrashLogWriter;
         private bool _blnDumpCreationSuccessful;
+        public bool DumpCreationSuccessful => _blnDumpCreationSuccessful;
 
         /// <summary>
         /// Start up the crash dump collector from a Base64-encoded string containing the serialized info for the crash.
@@ -136,13 +137,13 @@ namespace CrashHandler
 
         private async void CollectCrashDump(object sender, DoWorkEventArgs e)
         {
+            _blnDumpCreationSuccessful = false;
             SetProgress(CrashDumperProgress.Started);
             await CrashLogWriter.WriteLineAsync("Starting dump collection").ConfigureAwait(false);
             await CrashLogWriter.FlushAsync().ConfigureAwait(false);
             try
             {
                 Process = Process.GetProcessById(_procId);
-
                 SetProgress(CrashDumperProgress.Debugger);
                 await CrashLogWriter.WriteLineAsync("Attempting to attach debugger").ConfigureAwait(false);
                 await CrashLogWriter.FlushAsync().ConfigureAwait(false);
@@ -154,9 +155,10 @@ namespace CrashHandler
                 await CrashLogWriter.FlushAsync().ConfigureAwait(false);
                 if (!await CreateDump(Process, _exceptionPrt, _threadId, Attributes.ContainsKey("debugger-attached-success")).ConfigureAwait(false))
                 {
+                    Utils.BreakIfDebug();
                     await CrashLogWriter.WriteLineAsync("Failed to create minidump, aborting").ConfigureAwait(false);
                     await CrashLogWriter.FlushAsync().ConfigureAwait(false);
-                    SetProgress(CrashDumperProgress.Error);
+                    e.Result = false;
                     return;
                 }
 
@@ -188,6 +190,7 @@ namespace CrashHandler
             }
             catch (Exception ex)
             {
+                Utils.BreakIfDebug();
                 e.Result = false;
                 await CrashLogWriter.WriteLineAsync(
                     "Encountered the following exception while collecting crash information, aborting").ConfigureAwait(false);
@@ -196,13 +199,16 @@ namespace CrashHandler
             }
             finally
             {
-                SetProgress(CrashDumperProgress.Cleanup);
+                if (_blnDumpCreationSuccessful)
+                    SetProgress(CrashDumperProgress.Cleanup);
                 try
                 {
                     await CrashLogWriter.WriteLineAsync("Cleaning up working directory").ConfigureAwait(false);
                     await CrashLogWriter.FlushAsync().ConfigureAwait(false);
-                    Clean();
-                    await CrashLogWriter.WriteLineAsync("Cleanup done").ConfigureAwait(false);
+                    if (await Utils.SafeDeleteDirectoryAsync(WorkingDirectory).ConfigureAwait(false))
+                        await CrashLogWriter.WriteLineAsync("Cleanup done").ConfigureAwait(false);
+                    else
+                        await CrashLogWriter.WriteLineAsync("Encountered an erro while cleaning up working directory, skipping cleanup").ConfigureAwait(false);
                     await CrashLogWriter.FlushAsync().ConfigureAwait(false);
                 }
                 catch (Exception ex)
@@ -212,6 +218,8 @@ namespace CrashHandler
                     await CrashLogWriter.WriteLineAsync(ex.ToString()).ConfigureAwait(false);
                     await CrashLogWriter.FlushAsync().ConfigureAwait(false);
                 }
+                if (_blnDumpCreationSuccessful)
+                    SetProgress(CrashDumperProgress.Finished);
             }
         }
 
@@ -265,9 +273,9 @@ namespace CrashHandler
                         Attributes["debug-debug-exception-info"] = exceptionInfo.ToString();
                         Attributes["debug-debug-thread-id"] = threadId.ToString();
                     }
-                }
 
-                await file.FlushAsync(token).ConfigureAwait(false);
+                    await file.FlushAsync(token).ConfigureAwait(false);
+                }
             }
 
             return blnSuccess;
@@ -309,24 +317,6 @@ namespace CrashHandler
                     string strDestination = Path.Combine(WorkingDirectory, strFileName);
                     File.Copy(strFilePath, strDestination);
                 }
-            }
-        }
-
-        private void Clean()
-        {
-            if (!Directory.Exists(WorkingDirectory))
-                return;
-            try
-            {
-                Directory.Delete(WorkingDirectory, true);
-            }
-            catch (IOException)
-            {
-                // swallow this
-            }
-            catch (UnauthorizedAccessException)
-            {
-                // swallow this
             }
         }
 

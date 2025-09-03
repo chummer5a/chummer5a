@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -121,13 +121,13 @@
     <value>17, 17</value>
   </metadata>
   <data name="lblIntroText.Text" xml:space="preserve">
-    <value>We are sorry, Chummer encountered a problem and closed to protect your character data. 
+    <value>We are sorry, Chummer encountered a problem and closed to protect your character data. A .json file containing relevant, anonymized data about the crash has been created in your Chummer folder. A .zip file containing more detailed, anonymized data about the crash is being generated in your Chummer folder as well; once it is complete, it can be accessed quickly by clicking the link below.
 
 You can help us improve Chummer by reporting this error.
 
-Fill out the description of the error in the Error Description tab, then click the 'Create New Issue' button below to open a link to our GitHub issue tracker in your default browser.
+If you wish to report the crash to our GitHub page, please fill out the description of the error in the Error Description tab, then click the 'Create New Issue' button below to open a link to our GitHub issue tracker in your default browser. You can help even more if you attach the .zip archive containing anonymized crash information for this crash.
 
-You can help even more if you attach the .zip archive containing anonymized crash information for this crash. The archive is either being created or has already been created in your Chummer folder. It can be accessed quickly by clicking the link below.
+Alternatively, you can report the crash to our Discord server. You are more likely to get a timely response here; if you do not, please submit the issue to GitHub so that it does not get lost.
 
 Note: It is safe to close this window if you do not want to report this bug.</value>
   </data>

@@ -40,10 +40,6 @@ namespace CrashHandler
         {
             _objDumper = objDumper ?? throw new ArgumentNullException(nameof(objDumper));
             InitializeComponent();
-            if (_objDumper.Attributes.TryGetValue("visible-error-friendly", out string strDesc))
-                lblDesc.Text = strDesc;
-            else
-                lblDesc.Text = "Error deserializing friendly crash description.";
             if (_objDumper.Attributes.TryGetValue("visible-crash-id", out string strCrashId))
                 txtIdSelectable.Text = "Crash followup Id = " + strCrashId;
             else
@@ -52,6 +48,11 @@ namespace CrashHandler
                 txtIdSelectable2.Text = "Installation Id = " + strInstallationId;
             else
                 txtIdSelectable2.Text = "Error deserializing installation identifier.";
+            if (!_objDumper.Attributes.TryGetValue("visible-error-friendly", out string strDesc))
+                strDesc = "Error deserializing crash description.";
+            if (!_objDumper.Attributes.TryGetValue("visible-stacktrace", out string strStacktrace))
+                strStacktrace = "Error deserializing stacktrace.";
+            txtDescription.Text = strDesc + Environment.NewLine + strStacktrace;
             _objDumper.CrashDumperProgressChanged += DumperOnCrashDumperProgressChanged;
         }
 
@@ -73,8 +74,21 @@ namespace CrashHandler
         private void ChangeProgress(CrashDumperProgress progress, string desc)
         {
             tslStatusCollectionProgess.Text = desc;
-            if (progress == CrashDumperProgress.Finished)
+            if (_objDumper.DumpCreationSuccessful)
+            {
+                lblContents.Text = "Click here to open Explorer to the location of the .zip file containing anonymized crash information.";
                 lblContents.Enabled = true;
+            }
+            else if (progress == CrashDumperProgress.Error)
+            {
+                lblContents.Text = "The reporter has encountered an error while creating the .zip file containing anonymized crash information. Click here to open Explorer to the location of the .json file containing some, but not all, crash information.";
+                lblContents.Enabled = true;
+            }
+            else
+            {
+                lblContents.Text = "The .zip archive containing all anonymized crash information is being generated, please wait...";
+                lblContents.Enabled = false;
+            }
         }
 
         private void lblContents_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -195,6 +209,11 @@ namespace CrashHandler
             }
 
             Process.Start(new ProcessStartInfo(strSend) { UseShellExecute = true });
+        }
+
+        private void cmdReportToDiscord_Click(object sender, EventArgs e)
+        {
+            Process.Start(new ProcessStartInfo("https://discord.gg/5fTS3YK2Hm") { UseShellExecute = true });
         }
     }
 }
