@@ -144,16 +144,18 @@ namespace CrashHandler
             try
             {
                 Process = Process.GetProcessById(_procId);
+#if DEBUG
                 SetProgress(CrashDumperProgress.Debugger);
                 await CrashLogWriter.WriteLineAsync("Attempting to attach debugger").ConfigureAwait(false);
                 await CrashLogWriter.FlushAsync().ConfigureAwait(false);
                 AttemptDebug(Process);
                 await CrashLogWriter.WriteLineAsync("Debugger handled").ConfigureAwait(false);
                 await CrashLogWriter.FlushAsync().ConfigureAwait(false);
+#endif
                 SetProgress(CrashDumperProgress.CreateDmp);
                 await CrashLogWriter.WriteLineAsync("Creating minidump").ConfigureAwait(false);
                 await CrashLogWriter.FlushAsync().ConfigureAwait(false);
-                if (!await CreateDump(Process, _exceptionPrt, _threadId, Attributes.ContainsKey("debugger-attached-success")).ConfigureAwait(false))
+                if (!await CreateDump(Process, _exceptionPrt, _threadId, Attributes.TryGetValue("debugger-attached-success", out string strTemp) && strTemp == bool.TrueString).ConfigureAwait(false))
                 {
                     Utils.BreakIfDebug();
                     await CrashLogWriter.WriteLineAsync("Failed to create minidump, aborting").ConfigureAwait(false);
@@ -263,6 +265,11 @@ namespace CrashHandler
                     {
                         blnSuccess = NativeMethods.MiniDumpWriteDump(process.Handle, (uint)_procId, objHandle, dtype,
                                                                      ref info, IntPtr.Zero, IntPtr.Zero);
+                        if (blnSuccess)
+                        {
+                            Attributes["debug-debug-exception-info"] = info.ExceptionPointers.ToString();
+                            Attributes["debug-debug-thread-id"] = info.ThreadId.ToString();
+                        }
                     }
                     else if (NativeMethods.MiniDumpWriteDump(process.Handle, (uint)_procId, objHandle, dtype, IntPtr.Zero,
                                                              IntPtr.Zero, IntPtr.Zero))
