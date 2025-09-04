@@ -31,7 +31,7 @@
         <specificskill xpathfilter="name = 'Hardware'">
           <name>Electronics</name>
         </specificskill>
-        <weaponskillaccuracy xpathfilter="name = 'Automatics' or name = 'Exotic Melee Weapon' or name = 'Exotic Ranged Weapon" amendoperation="remove" />
+        <weaponskillaccuracy xpathfilter="name = 'Automatics' or name = 'Exotic Melee Weapon' or name = 'Exotic Ranged Weapon'" amendoperation="remove" />
         <weaponskillaccuracy xpathfilter="name = 'Blades'">
           <name>Edged Weapons</name>
         </weaponskillaccuracy>
