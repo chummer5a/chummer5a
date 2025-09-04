@@ -527,11 +527,22 @@ namespace Chummer.Backend.Skills
 
                 if (objLoadingSkill == null)
                 {
-                    XmlNode xmlSkillDataNode = objCharacter.LoadData("skills.xml")
-                        .TryGetNodeById("/chummer/skills/skill", suid);
+                    XmlDocument xmlSkillsDoc = objCharacter.LoadData("skills.xml");
+                    XmlNode xmlSkillDataNode = xmlSkillsDoc.TryGetNodeById("/chummer/skills/skill", suid);
 
                     if (xmlSkillDataNode == null)
-                        return null;
+                    {
+                        // Legacy sweeper: we might have an active skill by the same name whose ID was changed for whatever reason.
+                        string strName = xmlSkillNode["name"]?.InnerText ?? string.Empty;
+                        if (!string.IsNullOrEmpty(strName))
+                        {
+                            xmlSkillDataNode = xmlSkillsDoc.TryGetNodeByNameOrId("/chummer/skills/skill", strName);
+                            if (xmlSkillDataNode == null)
+                                return null;
+                        }
+                        else
+                            return null;
+                    }
 
                     bool blnExotic = false;
                     xmlSkillDataNode.TryGetBoolFieldQuickly("exotic", ref blnExotic);
@@ -769,11 +780,22 @@ namespace Chummer.Backend.Skills
 
                 if (objLoadingSkill == null)
                 {
-                    XmlNode xmlSkillDataNode = (await objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false))
-                        .TryGetNodeById("/chummer/skills/skill", suid);
+                    XmlDocument xmlSkillsDoc = await objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
+                    XmlNode xmlSkillDataNode = xmlSkillsDoc.TryGetNodeById("/chummer/skills/skill", suid);
 
                     if (xmlSkillDataNode == null)
-                        return null;
+                    {
+                        // Legacy sweeper: we might have an active skill by the same name whose ID was changed for whatever reason.
+                        string strName = xmlSkillNode["name"]?.InnerText ?? string.Empty;
+                        if (!string.IsNullOrEmpty(strName))
+                        {
+                            xmlSkillDataNode = xmlSkillsDoc.TryGetNodeByNameOrId("/chummer/skills/skill", strName);
+                            if (xmlSkillDataNode == null)
+                                return new Tuple<Skill, bool>(null, false);
+                        }
+                        else
+                            return new Tuple<Skill, bool>(null, false);
+                    }
 
                     bool blnExotic = false;
                     xmlSkillDataNode.TryGetBoolFieldQuickly("exotic", ref blnExotic);
