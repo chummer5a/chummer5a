@@ -6407,8 +6407,18 @@ namespace Chummer
                                 continue;
                             }
 
-                            objSpell.FreeBonus = frmPickSpell.MyForm.FreeBonus;
-                            if (!objSpell.FreeBonus)
+                            if (frmPickSpell.MyForm.FreeBonus)
+                            {
+                                objSpell.FreeBonus = true;
+                                // Barehanded Adept
+                                if (await CharacterObject.GetAdeptEnabledAsync(GenericToken).ConfigureAwait(false)
+                                    && !await CharacterObject.GetMagicianEnabledAsync(GenericToken).ConfigureAwait(false)
+                                    && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
+                                {
+                                    objSpell.BarehandedAdept = true;
+                                }
+                            }
+                            else
                             {
                                 if (await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false)
                                     < intSpellKarmaCost)
@@ -6439,14 +6449,25 @@ namespace Chummer
                                     await objSpell.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
                                     continue;
                                 }
-                            }
-                            // Barehanded Adept
-                            else if (await CharacterObject.GetAdeptEnabledAsync(GenericToken).ConfigureAwait(false)
-                                     && !await CharacterObject.GetMagicianEnabledAsync(GenericToken)
-                                                              .ConfigureAwait(false)
-                                     && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
-                            {
-                                objSpell.BarehandedAdept = true;
+
+                                // Create the Expense Log Entry.
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(-intSpellKarmaCost,
+                                                  await LanguageManager.GetStringAsync("String_ExpenseLearnSpell", token: GenericToken)
+                                                                       .ConfigureAwait(false)
+                                                  + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
+                                                                         .ConfigureAwait(false)
+                                                  + await objSpell.GetCurrentDisplayNameShortAsync(GenericToken)
+                                                                  .ConfigureAwait(false),
+                                                  ExpenseType.Karma, DateTime.Now);
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
+                                                     .ConfigureAwait(false);
+                                await CharacterObject.ModifyKarmaAsync(-intSpellKarmaCost, GenericToken)
+                                                     .ConfigureAwait(false);
+
+                                ExpenseUndo objUndo = new ExpenseUndo();
+                                objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
+                                objExpense.Undo = objUndo;
                             }
 
                             await CharacterObject.Spells.AddAsync(objSpell, GenericToken).ConfigureAwait(false);
@@ -6455,28 +6476,6 @@ namespace Chummer
                         {
                             await objSpell.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
                             throw;
-                        }
-
-                        if (!objSpell.FreeBonus)
-                        {
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(-intSpellKarmaCost,
-                                              await LanguageManager.GetStringAsync("String_ExpenseLearnSpell", token: GenericToken)
-                                                                   .ConfigureAwait(false)
-                                              + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
-                                                                     .ConfigureAwait(false)
-                                              + await objSpell.GetCurrentDisplayNameShortAsync(GenericToken)
-                                                              .ConfigureAwait(false),
-                                              ExpenseType.Karma, DateTime.Now);
-                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
-                                                 .ConfigureAwait(false);
-                            await CharacterObject.ModifyKarmaAsync(-intSpellKarmaCost, GenericToken)
-                                                 .ConfigureAwait(false);
-
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
-                            objExpense.Undo = objUndo;
                         }
                     }
                 } while (blnAddAgain);

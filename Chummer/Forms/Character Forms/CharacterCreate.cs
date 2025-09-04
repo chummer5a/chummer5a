@@ -5214,13 +5214,16 @@ namespace Chummer
                                     continue;
                                 }
 
-                                objSpell.FreeBonus = frmPickSpell.MyForm.FreeBonus;
-                                // Barehanded Adept
-                                if (objSpell.FreeBonus && await CharacterObject.GetAdeptEnabledAsync(GenericToken).ConfigureAwait(false)
-                                                       && !await CharacterObject.GetMagicianEnabledAsync(GenericToken).ConfigureAwait(false)
-                                                       && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
+                                if (frmPickSpell.MyForm.FreeBonus)
                                 {
-                                    objSpell.BarehandedAdept = true;
+                                    objSpell.FreeBonus = true;
+                                    // Barehanded Adept
+                                    if (await CharacterObject.GetAdeptEnabledAsync(GenericToken).ConfigureAwait(false)
+                                        && !await CharacterObject.GetMagicianEnabledAsync(GenericToken).ConfigureAwait(false)
+                                        && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
+                                    {
+                                        objSpell.BarehandedAdept = true;
+                                    }
                                 }
 
                                 await CharacterObject.Spells.AddAsync(objSpell, GenericToken).ConfigureAwait(false);
