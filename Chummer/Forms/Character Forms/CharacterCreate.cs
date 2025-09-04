@@ -18240,80 +18240,33 @@ namespace Chummer
                             .TryGetNodeByNameOrId("/chummer/cyberwares/cyberware",
                                 frmPickCyberware.MyForm.SelectedCyberware);
 
-                        // Create the Cyberware object.
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-                        List<Vehicle> lstVehicles = new List<Vehicle>(1);
                         Cyberware objCyberware = new Cyberware(CharacterObject);
                         try
                         {
-                            await objCyberware.CreateAsync(objXmlCyberware, frmPickCyberware.MyForm.SelectedGrade,
-                                objSource,
-                                frmPickCyberware.MyForm.SelectedRating, lstWeapons, lstVehicles, true, true,
-                                string.Empty, objSelectedCyberware, token: token).ConfigureAwait(false);
-                            if (objCyberware.InternalId.IsEmptyGuid())
-                            {
+                            await objCyberware
+                                   .SetPrototypeTranshumanAsync(frmPickCyberware.MyForm.PrototypeTranshuman, token)
+                                   .ConfigureAwait(false);
+                            if (await CharacterObjectSettings.GetAllowCyberwareESSDiscountsAsync(token).ConfigureAwait(false))
+                                await objCyberware.SetESSDiscountAsync(frmPickCyberware.MyForm.SelectedESSDiscount, token).ConfigureAwait(false);
+                            await objCyberware.SetParentAsync(objSelectedCyberware, token).ConfigureAwait(false);
+                            if (!await objCyberware.Purchase(objXmlCyberware, objSource,
+                                    frmPickCyberware.MyForm.SelectedGrade,
+                                    frmPickCyberware.MyForm.SelectedRating, null,
+                                    objSelectedCyberware != null
+                                        ? await objSelectedCyberware.GetChildrenAsync(token).ConfigureAwait(false)
+                                        : await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false),
+                                    await CharacterObject.GetVehiclesAsync(token).ConfigureAwait(false),
+                                    await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false),
+                                    frmPickCyberware.MyForm.Markup,
+                                    frmPickCyberware.MyForm.FreeCost,
+                                    frmPickCyberware.MyForm.BlackMarketDiscount,
+                                    objParent: objSelectedCyberware, token: token).ConfigureAwait(false))
                                 await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
-                                return false;
-                            }
-
-                            Guid guidSourceId = await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false);
-                            if (guidSourceId == Cyberware.EssenceAntiHoleGUID)
-                            {
-                                await CharacterObject
-                                    .DecreaseEssenceHoleAsync(
-                                        await objCyberware.GetRatingAsync(token).ConfigureAwait(false),
-                                        token: token).ConfigureAwait(false);
-                            }
-                            else if (guidSourceId == Cyberware.EssenceHoleGUID)
-                            {
-                                await CharacterObject
-                                    .IncreaseEssenceHoleAsync(
-                                        await objCyberware.GetRatingAsync(token).ConfigureAwait(false),
-                                        token: token).ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                await objCyberware.SetDiscountCostAsync(frmPickCyberware.MyForm.BlackMarketDiscount, token).ConfigureAwait(false);
-                                await objCyberware
-                                    .SetPrototypeTranshumanAsync(frmPickCyberware.MyForm.PrototypeTranshuman, token)
-                                    .ConfigureAwait(false);
-
-                                // Apply the ESS discount if applicable.
-                                if (await CharacterObjectSettings.GetAllowCyberwareESSDiscountsAsync(token).ConfigureAwait(false))
-                                    await objCyberware.SetESSDiscountAsync(frmPickCyberware.MyForm.SelectedESSDiscount, token).ConfigureAwait(false);
-
-                                if (frmPickCyberware.MyForm.FreeCost)
-                                    objCyberware.Cost = "0";
-
-                                if (objSelectedCyberware != null)
-                                    await (await objSelectedCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AddAsync(objCyberware, token).ConfigureAwait(false);
-                                else
-                                    await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AddAsync(objCyberware, token).ConfigureAwait(false);
-
-                                await (await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false)).AddRangeAsync(lstWeapons, token).ConfigureAwait(false);
-                                await (await CharacterObject.GetVehiclesAsync(token).ConfigureAwait(false)).AddRangeAsync(lstVehicles, token).ConfigureAwait(false);
-                            }
 
                             return frmPickCyberware.MyForm.AddAgain;
                         }
                         catch
                         {
-                            if (lstWeapons.Count > 0)
-                            {
-                                foreach (Weapon objWeapon in lstWeapons)
-                                {
-                                    await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
-                                }
-                            }
-
-                            if (lstVehicles.Count > 0)
-                            {
-                                foreach (Vehicle objVehicle in lstVehicles)
-                                {
-                                    await objVehicle.DeleteVehicleAsync(token: CancellationToken.None).ConfigureAwait(false);
-                                }
-                            }
-
                             await objCyberware.DeleteCyberwareAsync(token: CancellationToken.None).ConfigureAwait(false);
                             throw;
                         }

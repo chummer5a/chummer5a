@@ -12779,128 +12779,150 @@ namespace Chummer.Backend.Equipment
                 // Create the Cyberware object.
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 List<Vehicle> lstVehicles = new List<Vehicle>(1);
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    token.ThrowIfCancellationRequested();
-                    await CreateAsync(objNode, objGrade, objImprovementSource, intRating, lstWeapons, lstVehicles, true, true,
-                        string.Empty, objParent, objVehicle, token: token).ConfigureAwait(false);
-                    if (InternalId.IsEmptyGuid())
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        return false;
-                    }
-
-                    if (blnFree)
-                        Cost = "0";
-                    await SetDiscountCostAsync(blnBlackMarket, token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-
-                Guid guidSourceID = await GetSourceIDAsync(token).ConfigureAwait(false);
-
-                if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
-                {
-                    decimal decCost = 0;
-                    // Check the item's Cost and make sure the character can afford it.
-                    if (!blnFree)
-                    {
-                        decCost = await GetTotalCostAsync(token).ConfigureAwait(false);
-
-                        // Multiply the cost if applicable.
-                        char chrAvail = (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
-                        CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
-                        switch (chrAvail)
+                        token.ThrowIfCancellationRequested();
+                        await CreateAsync(objNode, objGrade, objImprovementSource, intRating, lstWeapons, lstVehicles, true, true,
+                            string.Empty, objParent, objVehicle, token: token).ConfigureAwait(false);
+                        if (InternalId.IsEmptyGuid())
                         {
-                            case 'R' when objSettings.MultiplyRestrictedCost:
-                                decCost *= objSettings.RestrictedCostMultiplier;
-                                break;
-
-                            case 'F' when objSettings.MultiplyForbiddenCost:
-                                decCost *= objSettings.ForbiddenCostMultiplier;
-                                break;
-                        }
-
-                        // Apply a markup if applicable.
-                        if (decMarkup != 0)
-                        {
-                            decCost *= 1 + decMarkup / 100.0m;
-                        }
-
-                        if (decCost > await _objCharacter.GetNuyenAsync(token).ConfigureAwait(false))
-                        {
-                            await Program.ShowScrollableMessageBoxAsync(
-                                await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
-                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                             return false;
                         }
-                    }
 
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-                    string strEntry = await LanguageManager.GetStringAsync(strExpenseString, token: token).ConfigureAwait(false);
-                    string strName = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
-                    if (guidSourceID == EssenceHoleGUID || guidSourceID == EssenceAntiHoleGUID)
+                        if (blnFree)
+                            Cost = "0";
+                        await SetDiscountCostAsync(blnBlackMarket, token).ConfigureAwait(false);
+                    }
+                    finally
                     {
-                        strName += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
-                                   (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
 
-                    objExpense.Create(decCost * -1,
-                        strEntry + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) +
-                        strName, ExpenseType.Nuyen, DateTime.Now);
-                    await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
-                    await _objCharacter.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+                    Guid guidSourceID = await GetSourceIDAsync(token).ConfigureAwait(false);
 
-                    if (guidSourceID != EssenceHoleGUID && guidSourceID != EssenceAntiHoleGUID)
+                    if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                     {
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(
-                            blnForVehicle ? NuyenExpenseType.AddVehicleModCyberware : NuyenExpenseType.AddCyberware,
-                            InternalId);
-                        objExpense.Undo = objUndo;
+                        decimal decCost = 0;
+                        // Check the item's Cost and make sure the character can afford it.
+                        if (!blnFree)
+                        {
+                            decCost = await GetTotalCostAsync(token).ConfigureAwait(false);
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
+                            CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
+                            switch (chrAvail)
+                            {
+                                case 'R' when objSettings.MultiplyRestrictedCost:
+                                    decCost *= objSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when objSettings.MultiplyForbiddenCost:
+                                    decCost *= objSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
+                            // Apply a markup if applicable.
+                            if (decMarkup != 0)
+                            {
+                                decCost *= 1 + decMarkup / 100.0m;
+                            }
+
+                            if (decCost > await _objCharacter.GetNuyenAsync(token).ConfigureAwait(false))
+                            {
+                                await Program.ShowScrollableMessageBoxAsync(
+                                    await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                return false;
+                            }
+                        }
+
+                        // Create the Expense Log Entry.
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+                        string strEntry = await LanguageManager.GetStringAsync(strExpenseString, token: token).ConfigureAwait(false);
+                        string strName = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                        if (guidSourceID == EssenceHoleGUID || guidSourceID == EssenceAntiHoleGUID)
+                        {
+                            strName += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                                       (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
+                        }
+
+                        objExpense.Create(decCost * -1,
+                            strEntry + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) +
+                            strName, ExpenseType.Nuyen, DateTime.Now);
+                        await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+                        await _objCharacter.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+
+                        if (guidSourceID != EssenceHoleGUID && guidSourceID != EssenceAntiHoleGUID)
+                        {
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(
+                                blnForVehicle ? NuyenExpenseType.AddVehicleModCyberware : NuyenExpenseType.AddCyberware,
+                                InternalId);
+                            objExpense.Undo = objUndo;
+                        }
                     }
+
+                    if (guidSourceID == EssenceAntiHoleGUID)
+                    {
+                        await _objCharacter.DecreaseEssenceHoleAsync(await GetRatingAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    }
+                    else if (guidSourceID == EssenceHoleGUID)
+                    {
+                        await _objCharacter.IncreaseEssenceHoleAsync(await GetRatingAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) && ReferenceEquals(lstCyberwareCollection, await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)))
+                        {
+                            await _objCharacter.DecreaseEssenceHoleAsync(await GetCalculatedESSAsync(token).ConfigureAwait(false), false, token).ConfigureAwait(false);
+                        }
+
+                        if (lstCyberwareCollection != null)
+                            await lstCyberwareCollection.AddAsync(this, token).ConfigureAwait(false);
+
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            await objWeapon.SetParentVehicleAsync(objVehicle, token).ConfigureAwait(false);
+                            if (lstWeaponCollection != null)
+                                await lstWeaponCollection.AddAsync(objWeapon, token).ConfigureAwait(false);
+                        }
+
+                        if (lstVehicleCollection != null)
+                        {
+                            foreach (Vehicle objLoopVehicle in lstVehicles)
+                            {
+                                await lstVehicleCollection.AddAsync(objLoopVehicle, token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+
+                    return true;
                 }
-
-                if (guidSourceID == EssenceAntiHoleGUID)
+                catch
                 {
-                    await _objCharacter.DecreaseEssenceHoleAsync(await GetRatingAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                }
-                else if (guidSourceID == EssenceHoleGUID)
-                {
-                    await _objCharacter.IncreaseEssenceHoleAsync(await GetRatingAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                }
-                else
-                {
-                    if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) && ReferenceEquals(lstCyberwareCollection, await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)))
+                    if (lstWeapons.Count > 0)
                     {
-                        await _objCharacter.DecreaseEssenceHoleAsync(await GetCalculatedESSAsync(token).ConfigureAwait(false), false, token).ConfigureAwait(false);
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        }
                     }
 
-                    if (lstCyberwareCollection != null)
-                        await lstCyberwareCollection.AddAsync(this, token).ConfigureAwait(false);
-
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        await objWeapon.SetParentVehicleAsync(objVehicle, token).ConfigureAwait(false);
-                        if (lstWeaponCollection != null)
-                            await lstWeaponCollection.AddAsync(objWeapon, token).ConfigureAwait(false);
-                    }
-
-                    if (lstVehicleCollection != null)
+                    if (lstVehicles.Count > 0)
                     {
                         foreach (Vehicle objLoopVehicle in lstVehicles)
                         {
-                            await lstVehicleCollection.AddAsync(objLoopVehicle, token).ConfigureAwait(false);
+                            await objLoopVehicle.DeleteVehicleAsync(token: CancellationToken.None).ConfigureAwait(false);
                         }
                     }
+                    throw;
                 }
-
-                return true;
             }
             finally
             {

@@ -24142,7 +24142,8 @@ namespace Chummer
                         Cyberware objCyberware = new Cyberware(CharacterObject);
                         try
                         {
-                            await objCyberware.SetESSDiscountAsync(frmPickCyberware.MyForm.SelectedESSDiscount, token).ConfigureAwait(false);
+                            if (await CharacterObjectSettings.GetAllowCyberwareESSDiscountsAsync(token).ConfigureAwait(false))
+                                await objCyberware.SetESSDiscountAsync(frmPickCyberware.MyForm.SelectedESSDiscount, token).ConfigureAwait(false);
                             await objCyberware.SetParentAsync(objSelectedCyberware, token).ConfigureAwait(false);
                             if (!await objCyberware.Purchase(objXmlCyberware, objSource,
                                     frmPickCyberware.MyForm.SelectedGrade,
