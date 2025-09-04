@@ -3173,8 +3173,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strFileName">Settings file to load from.</param>
         /// <param name="blnShowDialogs">Whether to show message boxes on failures to load.</param>
+        /// <param name="blnPatient">Whether to wait in case of an exception (usually because a file is in use).</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public bool Load(string strFileName, bool blnShowDialogs = true, CancellationToken token = default)
+        public bool Load(string strFileName, bool blnShowDialogs = true, bool blnPatient = true, CancellationToken token = default)
         {
             using (LockObject.EnterWriteLock(token))
             {
@@ -3186,7 +3187,9 @@ namespace Chummer
                 {
                     try
                     {
-                        objXmlDocument = XPathDocumentExtensions.LoadStandardFromFilePatient(strFilePath, token: token);
+                        objXmlDocument = blnPatient
+                            ? XPathDocumentExtensions.LoadStandardFromFilePatient(strFilePath, token: token)
+                            : XPathDocumentExtensions.LoadStandardFromFile(strFilePath, token: token);
                     }
                     catch (Exception e) when ((e is IOException) || (e is XmlException))
                     {
@@ -3920,8 +3923,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strFileName">Settings file to load from.</param>
         /// <param name="blnShowDialogs">Whether to show message boxes on failures to load.</param>
+        /// <param name="blnPatient">Whether to wait in case of an exception (usually because a file is in use).</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async Task<bool> LoadAsync(string strFileName, bool blnShowDialogs = true, CancellationToken token = default)
+        public async Task<bool> LoadAsync(string strFileName, bool blnShowDialogs = true, bool blnPatient = true, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -3936,7 +3940,9 @@ namespace Chummer
                     try
                     {
                         objXmlDocument
-                            = await XPathDocumentExtensions.LoadStandardFromFilePatientAsync(strFilePath, token: token).ConfigureAwait(false);
+                            = blnPatient
+                            ? await XPathDocumentExtensions.LoadStandardFromFilePatientAsync(strFilePath, token: token).ConfigureAwait(false)
+                            : await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token).ConfigureAwait(false);
                     }
                     catch (Exception e) when ((e is IOException) || (e is XmlException))
                     {

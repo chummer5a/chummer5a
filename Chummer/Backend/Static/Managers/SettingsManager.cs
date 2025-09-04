@@ -243,7 +243,7 @@ namespace Chummer
                         CharacterSettings objNewCharacterSettings = new CharacterSettings();
                         try
                         {
-                            if (!objNewCharacterSettings.Load(strSettingName, false)
+                            if (!objNewCharacterSettings.Load(strSettingName, false, false)
                                 || (objNewCharacterSettings.BuildMethodIsLifeModule
                                     && !GlobalSettings.LifeModuleEnabled)
                                 || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
@@ -356,7 +356,7 @@ namespace Chummer
                     CharacterSettings objNewCharacterSettings = new CharacterSettings();
                     try
                     {
-                        if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, token)
+                        if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, false, token)
                                                           .ConfigureAwait(false)
                             || (!GlobalSettings.LifeModuleEnabled
                                 && await objNewCharacterSettings.GetBuildMethodIsLifeModuleAsync(token).ConfigureAwait(false))
@@ -385,7 +385,7 @@ namespace Chummer
             CharacterSettings objNewCharacterSettings = new CharacterSettings();
             try
             {
-                if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, token).ConfigureAwait(false)
+                if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, true, token).ConfigureAwait(false)
                     || (objNewCharacterSettings.BuildMethodIsLifeModule
                         && !GlobalSettings.LifeModuleEnabled))
                 {
@@ -513,7 +513,7 @@ namespace Chummer
             CharacterSettings objNewCharacterSettings = new CharacterSettings();
             try
             {
-                if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, token).ConfigureAwait(false)
+                if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, true, token).ConfigureAwait(false)
                     || (objNewCharacterSettings.BuildMethodIsLifeModule
                         && !GlobalSettings.LifeModuleEnabled))
                 {
