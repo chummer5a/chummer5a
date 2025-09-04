@@ -3186,7 +3186,7 @@ namespace Chummer
                 {
                     try
                     {
-                        objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strFilePath, token: token);
+                        objXmlDocument = XPathDocumentExtensions.LoadStandardFromFilePatient(strFilePath, token: token);
                     }
                     catch (Exception e) when ((e is IOException) || (e is XmlException))
                     {
@@ -3936,7 +3936,7 @@ namespace Chummer
                     try
                     {
                         objXmlDocument
-                            = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token).ConfigureAwait(false);
+                            = await XPathDocumentExtensions.LoadStandardFromFilePatientAsync(strFilePath, token: token).ConfigureAwait(false);
                     }
                     catch (Exception e) when ((e is IOException) || (e is XmlException))
                     {
