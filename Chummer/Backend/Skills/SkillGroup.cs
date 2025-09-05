@@ -2142,9 +2142,21 @@ namespace Chummer.Backend.Skills
                 else if (SkillList.Count > 1)
                 {
                     Skill objFirstEnabledSkill = await SkillList.FirstOrDefaultAsync(x => x.GetEnabledAsync(token), token: token).ConfigureAwait(false);
-                    if (objFirstEnabledSkill != null && await SkillList.AllAsync(async x => x == objFirstEnabledSkill || !await x.GetEnabledAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                    if (objFirstEnabledSkill != null)
                     {
-                        lstProperties.Add(nameof(HasAnyBreakingSkills));
+                        if (await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetSpecializationsBreakSkillGroupsAsync(token).ConfigureAwait(false))
+                        {
+                            if (await (await objFirstEnabledSkill.GetSpecializationsAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false) == 0
+                                && await SkillList.AnyAsync(async x => !ReferenceEquals(x, objFirstEnabledSkill) && await x.GetEnabledAsync(token).ConfigureAwait(false)
+                                    && await (await x.GetSpecializationsAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false) == 0, token: token).ConfigureAwait(false))
+                            {
+                                lstProperties.Add(nameof(HasAnyBreakingSkills));
+                            }
+                        }
+                        else if (await SkillList.AnyAsync(async x => !ReferenceEquals(x, objFirstEnabledSkill) && await x.GetEnabledAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                        {
+                            lstProperties.Add(nameof(HasAnyBreakingSkills));
+                        }
                     }
                 }
                 lstProperties.Add(nameof(DisplayRating));
@@ -2152,8 +2164,9 @@ namespace Chummer.Backend.Skills
                 lstProperties.Add(nameof(CurrentKarmaCost));
                 lstProperties.Add(nameof(UpgradeKarmaCost));
             }
-            else if (e.PropertyNames.Contains(nameof(Skill.Specializations)) &&
-                     await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetSpecializationsBreakSkillGroupsAsync(token)
+
+            if (e.PropertyNames.Contains(nameof(Skill.Specializations)) && !lstProperties.Contains(nameof(HasAnyBreakingSkills)) &&
+                await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetSpecializationsBreakSkillGroupsAsync(token)
                          .ConfigureAwait(false) && SkillList.Count > 1)
             {
                 Skill objFirstEnabledSkill = await SkillList

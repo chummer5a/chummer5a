@@ -2404,6 +2404,15 @@ namespace Chummer.Backend.Skills
                                         }
                                     }
                                 }
+                                else if (_objCharacter.Settings.AllowSkillRegrouping)
+                                {
+                                    // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
+                                    foreach (SkillGroup g in SkillGroups.ToList())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        g.OnMultiplePropertyChanged(nameof(SkillGroup.SkillList), nameof(SkillGroup.HasAnyBreakingSkills));
+                                    }
+                                }
                                 else
                                 {
                                     // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
@@ -2436,6 +2445,16 @@ namespace Chummer.Backend.Skills
                                         await objSkillGroup.OnPropertyChangedAsync(nameof(SkillGroup.SkillList), token)
                                             .ConfigureAwait(false);
                                     }
+                                }
+                            }
+                            else if (_objCharacter.Settings.AllowSkillRegrouping)
+                            {
+                                // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
+                                foreach (SkillGroup objSkillGroup in await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ToListAsync(token)
+                                             .ConfigureAwait(false))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    await objSkillGroup.OnMultiplePropertyChangedAsync(token, nameof(SkillGroup.SkillList), nameof(SkillGroup.HasAnyBreakingSkills)).ConfigureAwait(false);
                                 }
                             }
                             else
