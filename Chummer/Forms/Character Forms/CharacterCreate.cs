@@ -2285,32 +2285,6 @@ namespace Chummer
                         await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strTemp7, token)
                             .ConfigureAwait(false);
 
-                        CharacterAttrib objMag = await CharacterObject.GetAttributeAsync("MAG", token: GenericToken).ConfigureAwait(false);
-                        if (!await CharacterObject.AttributeSection.Attributes
-                                .ContainsAsync(objMag, token)
-                                .ConfigureAwait(false))
-                        {
-                            await CharacterObject.AttributeSection.Attributes
-                                .AddAsync(objMag, token).ConfigureAwait(false);
-                        }
-
-                        if (await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token)
-                                .ConfigureAwait(false) && await CharacterObject.GetIsMysticAdeptAsync(token)
-                                .ConfigureAwait(false))
-                        {
-                            CharacterAttrib objMAGAdept =
-                                await CharacterObject.AttributeSection
-                                    .GetAttributeByNameAsync("MAGAdept", token)
-                                    .ConfigureAwait(false);
-                            if (!await CharacterObject.AttributeSection.Attributes
-                                    .ContainsAsync(objMAGAdept, token)
-                                    .ConfigureAwait(false))
-                            {
-                                await CharacterObject.AttributeSection.Attributes
-                                    .AddAsync(objMAGAdept, token).ConfigureAwait(false);
-                            }
-                        }
-
                         await gpbGearBondedFoci
                             .DoThreadSafeAsync(x => x.Visible = true, token)
                             .ConfigureAwait(false);
@@ -2322,13 +2296,6 @@ namespace Chummer
                         if (!await CharacterObject.GetRESEnabledAsync(token).ConfigureAwait(false))
                             await tabCharacterTabs
                                 .DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), token)
-                                .ConfigureAwait(false);
-
-                        await CharacterObject.AttributeSection.Attributes
-                                .RemoveAsync(await CharacterObject.GetAttributeAsync("MAG", token: GenericToken).ConfigureAwait(false), token)
-                                .ConfigureAwait(false);
-                        await CharacterObject.AttributeSection.Attributes
-                                .RemoveAsync(await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken).ConfigureAwait(false), token)
                                 .ConfigureAwait(false);
 
                         await gpbGearBondedFoci
@@ -2437,14 +2404,6 @@ namespace Chummer
                             .ConfigureAwait(false);
                         await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strTemp7, token)
                             .ConfigureAwait(false);
-
-                        CharacterAttrib objRes = await CharacterObject.GetAttributeAsync("RES", token: GenericToken).ConfigureAwait(false);
-                        if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(
-                                objRes, token).ConfigureAwait(false))
-                        {
-                            await CharacterObject.AttributeSection.Attributes.AddAsync(
-                                objRes, token).ConfigureAwait(false);
-                        }
                     }
                     else
                     {
@@ -2452,30 +2411,6 @@ namespace Chummer
                             await tabCharacterTabs
                                 .DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), token)
                                 .ConfigureAwait(false);
-                        await CharacterObject.AttributeSection.Attributes
-                                .RemoveAsync(await CharacterObject.GetAttributeAsync("RES", token: GenericToken).ConfigureAwait(false), token)
-                                .ConfigureAwait(false);
-                    }
-                }
-
-                if (e.PropertyNames.Contains(nameof(Character.DEPEnabled)))
-                {
-                    if (await CharacterObject.GetDEPEnabledAsync(token).ConfigureAwait(false))
-                    {
-                        CharacterAttrib objDep = await CharacterObject.GetAttributeAsync("DEP", token: GenericToken).ConfigureAwait(false);
-                        if (!await CharacterObject
-                                .AttributeSection.Attributes
-                                .ContainsAsync(objDep, token)
-                                .ConfigureAwait(false))
-                        {
-                            await CharacterObject.AttributeSection.Attributes
-                                .AddAsync(objDep, token).ConfigureAwait(false);
-                        }
-                    }
-                    else
-                    {
-                        await CharacterObject.AttributeSection.Attributes
-                            .RemoveAsync(await CharacterObject.GetAttributeAsync("DEP", token: GenericToken).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                 }
 
@@ -2536,17 +2471,6 @@ namespace Chummer
                         }, token).ConfigureAwait(false);
                         await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, token)
                             .ConfigureAwait(false);
-                        if (await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false) &&
-                            await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token)
-                                .ConfigureAwait(false))
-                        {
-                            CharacterAttrib objMAGAdept =
-                                await CharacterObject.AttributeSection
-                                    .GetAttributeByNameAsync("MAGAdept", token)
-                                    .ConfigureAwait(false);
-                            await CharacterObject.AttributeSection.Attributes.TryAddAsync(objMAGAdept, token)
-                                .ConfigureAwait(false);
-                        }
                     }
                     else
                     {
@@ -2554,15 +2478,6 @@ namespace Chummer
                             .ConfigureAwait(false);
                         await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false, token)
                             .ConfigureAwait(false);
-                        if (await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false))
-                        {
-                            CharacterAttrib objMAGAdept =
-                                await CharacterObject.AttributeSection
-                                    .GetAttributeByNameAsync("MAGAdept", token)
-                                    .ConfigureAwait(false);
-                            await CharacterObject.AttributeSection.Attributes.RemoveAsync(objMAGAdept, token)
-                                .ConfigureAwait(false);
-                        }
                     }
 
                     await cmdAddSpirit.DoThreadSafeAsync(x => x.Visible = blnMagicianEnabled,
@@ -2583,17 +2498,6 @@ namespace Chummer
                         }, token).ConfigureAwait(false);
                         await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, token)
                             .ConfigureAwait(false);
-                        if (await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false) &&
-                            await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token)
-                                .ConfigureAwait(false))
-                        {
-                            CharacterAttrib objMAGAdept =
-                                await CharacterObject.AttributeSection
-                                    .GetAttributeByNameAsync("MAGAdept", token)
-                                    .ConfigureAwait(false);
-                            await CharacterObject.AttributeSection.Attributes.TryAddAsync(objMAGAdept, token)
-                                .ConfigureAwait(false);
-                        }
 
                         await tabCharacterTabs.DoThreadSafeAsync(x =>
                         {
@@ -2610,16 +2514,6 @@ namespace Chummer
                                 .ConfigureAwait(false);
                             await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false, token)
                                 .ConfigureAwait(false);
-                            if (await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token)
-                                    .ConfigureAwait(false))
-                            {
-                                CharacterAttrib objMAGAdept =
-                                    await CharacterObject.AttributeSection
-                                        .GetAttributeByNameAsync("MAGAdept", token)
-                                        .ConfigureAwait(false);
-                                await CharacterObject.AttributeSection.Attributes.RemoveAsync(objMAGAdept, token)
-                                    .ConfigureAwait(false);
-                            }
                         }
                         else
                             await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, token)
