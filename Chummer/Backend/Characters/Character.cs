@@ -47674,24 +47674,21 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    lstProperties.AddRange(new[]
-                    {
-                        nameof(LimitPhysical),
-                        nameof(DamageResistancePool),
-                        nameof(LiftAndCarry),
-                        nameof(FatigueResist),
-                        nameof(RadiationResist),
-                        nameof(PhysiologicalAddictionResistFirstTime),
-                        nameof(PhysiologicalAddictionResistAlreadyAddicted),
-                        nameof(StunCMNaturalRecovery),
-                        nameof(PhysicalCMNaturalRecovery),
-                        nameof(PhysicalCM),
-                        nameof(CMOverflow),
-                        nameof(SpellDefenseIndirectSoak),
-                        nameof(SpellDefenseDirectSoakPhysical),
-                        nameof(SpellDefenseDecreaseBOD),
-                        nameof(SpellDefenseManipulationPhysical)
-                    });
+                    lstProperties.Add(nameof(LimitPhysical));
+                    lstProperties.Add(nameof(DamageResistancePool));
+                    lstProperties.Add(nameof(LiftAndCarry));
+                    lstProperties.Add(nameof(FatigueResist));
+                    lstProperties.Add(nameof(RadiationResist));
+                    lstProperties.Add(nameof(PhysiologicalAddictionResistFirstTime));
+                    lstProperties.Add(nameof(PhysiologicalAddictionResistAlreadyAddicted));
+                    lstProperties.Add(nameof(StunCMNaturalRecovery));
+                    lstProperties.Add(nameof(PhysicalCMNaturalRecovery));
+                    lstProperties.Add(nameof(PhysicalCM));
+                    lstProperties.Add(nameof(CMOverflow));
+                    lstProperties.Add(nameof(SpellDefenseIndirectSoak));
+                    lstProperties.Add(nameof(SpellDefenseDirectSoakPhysical));
+                    lstProperties.Add(nameof(SpellDefenseDecreaseBOD));
+                    lstProperties.Add(nameof(SpellDefenseManipulationPhysical));
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BOD}", token)
                         .ConfigureAwait(false);
                 }
@@ -47784,14 +47781,11 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    lstProperties.AddRange(new[]
-                    {
-                        nameof(LimitPhysical),
-                        nameof(InitiativeValue),
-                        nameof(Dodge),
-                        nameof(SpellDefenseDecreaseREA),
-                        nameof(Surprise)
-                    });
+                    lstProperties.Add(nameof(LimitPhysical));
+                    lstProperties.Add(nameof(InitiativeValue));
+                    lstProperties.Add(nameof(Dodge));
+                    lstProperties.Add(nameof(SpellDefenseDecreaseREA));
+                    lstProperties.Add(nameof(Surprise));
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REA}", token)
                         .ConfigureAwait(false);
                 }
@@ -47834,15 +47828,12 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    lstProperties.AddRange(new[]
-                    {
-                        nameof(LimitPhysical),
-                        nameof(LiftAndCarry),
-                        nameof(SpellDefenseDecreaseSTR),
-                        nameof(SpellDefenseManipulationPhysical),
-                        nameof(CalculatedMovement),
-                        nameof(ArmorEncumbrance)
-                    });
+                    lstProperties.Add(nameof(LimitPhysical));
+                    lstProperties.Add(nameof(LiftAndCarry));
+                    lstProperties.Add(nameof(SpellDefenseDecreaseSTR));
+                    lstProperties.Add(nameof(SpellDefenseManipulationPhysical));
+                    lstProperties.Add(nameof(CalculatedMovement));
+                    lstProperties.Add(nameof(ArmorEncumbrance));
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STR}", token)
                         .ConfigureAwait(false);
                 }
@@ -47885,14 +47876,11 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    lstProperties.AddRange(new[]
-                    {
-                        nameof(LimitSocial),
-                        nameof(Composure),
-                        nameof(JudgeIntentions),
-                        nameof(JudgeIntentionsResist),
-                        nameof(SpellDefenseDecreaseCHA)
-                    });
+                    lstProperties.Add(nameof(LimitSocial));
+                    lstProperties.Add(nameof(Composure));
+                    lstProperties.Add(nameof(JudgeIntentions));
+                    lstProperties.Add(nameof(JudgeIntentionsResist));
+                    lstProperties.Add(nameof(SpellDefenseDecreaseCHA));
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHA}", token)
                         .ConfigureAwait(false);
                 }
@@ -47935,20 +47923,17 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    lstProperties.AddRange(new[]
-                    {
-                        nameof(LimitMental),
-                        nameof(JudgeIntentions),
-                        nameof(InitiativeValue),
-                        nameof(AstralInitiativeValue),
-                        nameof(MatrixInitiativeValue),
-                        nameof(MatrixInitiativeColdValue),
-                        nameof(MatrixInitiativeHotValue),
-                        nameof(Dodge),
-                        nameof(SpellDefenseDecreaseINT),
-                        nameof(SpellDefenseIllusionPhysical),
-                        nameof(Surprise)
-                    });
+                    lstProperties.Add(nameof(LimitMental));
+                    lstProperties.Add(nameof(JudgeIntentions));
+                    lstProperties.Add(nameof(InitiativeValue));
+                    lstProperties.Add(nameof(AstralInitiativeValue));
+                    lstProperties.Add(nameof(MatrixInitiativeValue));
+                    lstProperties.Add(nameof(MatrixInitiativeColdValue));
+                    lstProperties.Add(nameof(MatrixInitiativeHotValue));
+                    lstProperties.Add(nameof(Dodge));
+                    lstProperties.Add(nameof(SpellDefenseDecreaseINT));
+                    lstProperties.Add(nameof(SpellDefenseIllusionPhysical));
+                    lstProperties.Add(nameof(Surprise));
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INT}", token)
                         .ConfigureAwait(false);
                 }
@@ -47991,18 +47976,15 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    lstProperties.AddRange(new[]
-                    {
-                        nameof(LimitMental),
-                        nameof(Memory),
-                        nameof(PsychologicalAddictionResistFirstTime),
-                        nameof(PsychologicalAddictionResistAlreadyAddicted),
-                        nameof(SpellDefenseDetection),
-                        nameof(SpellDefenseDecreaseLOG),
-                        nameof(SpellDefenseIllusionMana),
-                        nameof(SpellDefenseIllusionPhysical),
-                        nameof(SpellDefenseManipulationMental)
-                    });
+                    lstProperties.Add(nameof(LimitMental));
+                    lstProperties.Add(nameof(Memory));
+                    lstProperties.Add(nameof(PsychologicalAddictionResistFirstTime));
+                    lstProperties.Add(nameof(PsychologicalAddictionResistAlreadyAddicted));
+                    lstProperties.Add(nameof(SpellDefenseDetection));
+                    lstProperties.Add(nameof(SpellDefenseDecreaseLOG));
+                    lstProperties.Add(nameof(SpellDefenseIllusionMana));
+                    lstProperties.Add(nameof(SpellDefenseIllusionPhysical));
+                    lstProperties.Add(nameof(SpellDefenseManipulationMental));
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOG}", token)
                         .ConfigureAwait(false);
                 }
@@ -48045,35 +48027,31 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    lstProperties.AddRange(new[]
-                    {
-                        nameof(LimitSocial),
-                        nameof(LimitMental),
-                        nameof(Composure),
-                        nameof(Memory),
-                        nameof(JudgeIntentionsResist),
-                        nameof(FatigueResist),
-                        nameof(SonicResist),
-                        nameof(RadiationResist),
-                        nameof(PhysiologicalAddictionResistFirstTime),
-                        nameof(PhysiologicalAddictionResistAlreadyAddicted),
-                        nameof(PsychologicalAddictionResistFirstTime),
-                        nameof(PsychologicalAddictionResistAlreadyAddicted),
-                        nameof(StunCMNaturalRecovery),
-                        nameof(StunCM),
-                        nameof(SpellDefenseDirectSoakMana),
-                        nameof(SpellDefenseDetection),
-                        nameof(SpellDefenseDecreaseBOD),
-                        nameof(SpellDefenseDecreaseAGI),
-                        nameof(SpellDefenseDecreaseREA),
-                        nameof(SpellDefenseDecreaseSTR),
-                        nameof(SpellDefenseDecreaseCHA),
-                        nameof(SpellDefenseDecreaseINT),
-                        nameof(SpellDefenseDecreaseLOG),
-                        nameof(SpellDefenseDecreaseWIL),
-                        nameof(SpellDefenseIllusionMana),
-                        nameof(SpellDefenseManipulationMental)
-                    });
+                    lstProperties.Add(nameof(LimitSocial));
+                    lstProperties.Add(nameof(LimitMental));
+                    lstProperties.Add(nameof(Composure));
+                    lstProperties.Add(nameof(Memory));
+                    lstProperties.Add(nameof(JudgeIntentionsResist));
+                    lstProperties.Add(nameof(FatigueResist));
+                    lstProperties.Add(nameof(SonicResist));
+                    lstProperties.Add(nameof(RadiationResist));
+                    lstProperties.Add(nameof(PhysiologicalAddictionResistFirstTime));
+                    lstProperties.Add(nameof(PhysiologicalAddictionResistAlreadyAddicted));
+                    lstProperties.Add(nameof(PsychologicalAddictionResistFirstTime));
+                    lstProperties.Add(nameof(PsychologicalAddictionResistAlreadyAddicted));
+                    lstProperties.Add(nameof(StunCMNaturalRecovery));
+                    lstProperties.Add(nameof(StunCM));
+                    lstProperties.Add(nameof(SpellDefenseDetection));
+                    lstProperties.Add(nameof(SpellDefenseDecreaseBOD));
+                    lstProperties.Add(nameof(SpellDefenseDecreaseAGI));
+                    lstProperties.Add(nameof(SpellDefenseDecreaseREA));
+                    lstProperties.Add(nameof(SpellDefenseDecreaseSTR));
+                    lstProperties.Add(nameof(SpellDefenseDecreaseCHA));
+                    lstProperties.Add(nameof(SpellDefenseDecreaseINT));
+                    lstProperties.Add(nameof(SpellDefenseDecreaseLOG));
+                    lstProperties.Add(nameof(SpellDefenseDecreaseWIL));
+                    lstProperties.Add(nameof(SpellDefenseIllusionMana));
+                    lstProperties.Add(nameof(SpellDefenseManipulationMental));
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WIL}", token)
                         .ConfigureAwait(false);
                 }
@@ -48392,13 +48370,10 @@ namespace Chummer
                 // Only ESS.MetatypeMaximum is used for the Essence method/property when it comes to attributes
                 if (e.PropertyNames.Contains(nameof(CharacterAttrib.MetatypeMaximum)))
                 {
-                    lstProperties.AddRange(new[]
-                    {
-                        nameof(PrototypeTranshumanEssenceUsed),
-                        nameof(BiowareEssence),
-                        nameof(CyberwareEssence),
-                        nameof(EssenceHole)
-                    });
+                    lstProperties.Add(nameof(PrototypeTranshumanEssenceUsed));
+                    lstProperties.Add(nameof(BiowareEssence));
+                    lstProperties.Add(nameof(CyberwareEssence));
+                    lstProperties.Add(nameof(EssenceHole));
                 }
 
                 if (lstProperties.Count > 0)
