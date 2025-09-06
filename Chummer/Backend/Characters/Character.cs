@@ -19989,26 +19989,58 @@ namespace Chummer
             {
                 xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
                 XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot", token);
-                List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
-                foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
+                if (xmlMugshotsList.Count > 0)
                 {
-                    string strMugshot = objXmlMugshot.Value;
-                    if (!string.IsNullOrWhiteSpace(strMugshot))
+                    string[] astrMugshotsBase64 = ArrayPool<string>.Shared.Rent(xmlMugshotsList.Count);
+                    try
                     {
-                        lstMugshotsBase64.Add(strMugshot);
-                    }
-                }
+                        int j = 0;
+                        foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
+                        {
+                            string strMugshot = objXmlMugshot.Value;
+                            if (!string.IsNullOrWhiteSpace(strMugshot))
+                                astrMugshotsBase64[j++] = strMugshot;
+                            else
+                                astrMugshotsBase64[j++] = string.Empty;
+                        }
 
-                if (lstMugshotsBase64.Count > 1)
-                {
-                    Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
-                    Parallel.For(0, lstMugshotsBase64.Count,
-                                 i => objMugshotImages[i] = lstMugshotsBase64[i].ToImage(PixelFormat.Format32bppPArgb));
-                    _lstMugshots.AddRange(objMugshotImages);
-                }
-                else if (lstMugshotsBase64.Count == 1)
-                {
-                    _lstMugshots.Add(lstMugshotsBase64[0].ToImage(PixelFormat.Format32bppPArgb));
+                        if (xmlMugshotsList.Count > 1)
+                        {
+                            Image[] objMugshotImages = ArrayPool<Image>.Shared.Rent(xmlMugshotsList.Count);
+                            try
+                            {
+                                Parallel.For(0, xmlMugshotsList.Count,
+                                             i =>
+                                             {
+                                                 string strLoop = astrMugshotsBase64[i];
+                                                 if (!string.IsNullOrEmpty(strLoop))
+                                                     objMugshotImages[i] = strLoop.ToImage(PixelFormat.Format32bppPArgb);
+                                                 else
+                                                     objMugshotImages[i] = null;
+                                             });
+                                for (int i = 0; i < xmlMugshotsList.Count; ++i)
+                                {
+                                    Image objLoop = objMugshotImages[i];
+                                    if (objLoop != null)
+                                        _lstMugshots.Add(objLoop);
+                                }
+                            }
+                            finally
+                            {
+                                ArrayPool<Image>.Shared.Return(objMugshotImages);
+                            }
+                        }
+                        else
+                        {
+                            string strLoop = astrMugshotsBase64[0];
+                            if (!string.IsNullOrEmpty(strLoop))
+                                _lstMugshots.Add(strLoop.ToImage(PixelFormat.Format32bppPArgb));
+                        }
+                    }
+                    finally
+                    {
+                        ArrayPool<string>.Shared.Return(astrMugshotsBase64);
+                    }
                 }
 
                 // Legacy Shimmer
@@ -20034,30 +20066,53 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
                 XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot", token);
-                List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
-                foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
+                if (xmlMugshotsList.Count > 0)
                 {
-                    string strMugshot = objXmlMugshot.Value;
-                    if (!string.IsNullOrWhiteSpace(strMugshot))
+                    string[] astrMugshotsBase64 = ArrayPool<string>.Shared.Rent(xmlMugshotsList.Count);
+                    try
                     {
-                        lstMugshotsBase64.Add(strMugshot);
-                    }
-                }
+                        int j = 0;
+                        foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
+                        {
+                            string strMugshot = objXmlMugshot.Value;
+                            if (!string.IsNullOrWhiteSpace(strMugshot))
+                                astrMugshotsBase64[j++] = strMugshot;
+                            else
+                                astrMugshotsBase64[j++] = string.Empty;
+                        }
 
-                if (lstMugshotsBase64.Count > 1)
-                {
-                    Task<Bitmap>[] atskMugshotImages = new Task<Bitmap>[lstMugshotsBase64.Count];
-                    for (int i = 0; i < lstMugshotsBase64.Count; ++i)
-                    {
-                        int iLocal = i;
-                        atskMugshotImages[i]
-                            = Task.Run(() => lstMugshotsBase64[iLocal].ToImageAsync(PixelFormat.Format32bppPArgb, token), token);
+                        if (xmlMugshotsList.Count > 1)
+                        {
+                            Task<Bitmap>[] atskMugshotImages = new Task<Bitmap>[xmlMugshotsList.Count];
+                            for (int i = 0; i < xmlMugshotsList.Count; ++i)
+                            {
+                                int iLocal = i;
+                                atskMugshotImages[i]
+                                    = Task.Run(async () =>
+                                    {
+                                        string strLoop = astrMugshotsBase64[iLocal];
+                                        if (!string.IsNullOrEmpty(strLoop))
+                                            return await strLoop.ToImageAsync(PixelFormat.Format32bppPArgb, token).ConfigureAwait(false);
+                                        return null;
+                                    }, token);
+                            }
+                            foreach (Bitmap objImage in await Task.WhenAll(atskMugshotImages).ConfigureAwait(false))
+                            {
+                                if (objImage != null)
+                                    await _lstMugshots.AddAsync(objImage, token).ConfigureAwait(false);
+                            }
+                        }
+                        else
+                        {
+                            string strLoop = astrMugshotsBase64[0];
+                            if (!string.IsNullOrEmpty(strLoop))
+                                await _lstMugshots.AddAsync(await strLoop.ToImageAsync(PixelFormat.Format32bppPArgb, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        }
                     }
-                    await _lstMugshots.AddRangeAsync(await Task.WhenAll(atskMugshotImages).ConfigureAwait(false), token).ConfigureAwait(false);
-                }
-                else if (lstMugshotsBase64.Count == 1)
-                {
-                    await _lstMugshots.AddAsync(await lstMugshotsBase64[0].ToImageAsync(PixelFormat.Format32bppPArgb, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    finally
+                    {
+                        ArrayPool<string>.Shared.Return(astrMugshotsBase64);
+                    }
                 }
 
                 // Legacy Shimmer
