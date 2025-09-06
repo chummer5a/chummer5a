@@ -1401,7 +1401,7 @@ namespace Chummer
             {
                 if (blnDoUIUpdate)
                 {
-                    await lstCyberware.PopulateWithListItemsAsync(ListItem.Blank.Yield(), token: token)
+                    await lstCyberware.PopulateWithListItemAsync(ListItem.Blank, token: token)
                                       .ConfigureAwait(false);
                 }
 

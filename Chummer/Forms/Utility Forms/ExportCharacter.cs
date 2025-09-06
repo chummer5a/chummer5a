@@ -132,10 +132,13 @@ namespace Chummer
                     await objInnerLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
-                await LanguageManager
+                using (TemporaryArray<Character> objYieldedCharacter = _objCharacter.YieldAsPooled())
+                {
+                    await LanguageManager
                       .PopulateSheetLanguageListAsync(cboLanguage, GlobalSettings.DefaultCharacterSheet,
-                                                      _objCharacter.Yield(), _objExportCulture, token: _objGenericToken)
+                                                      objYieldedCharacter, _objExportCulture, token: _objGenericToken)
                       .ConfigureAwait(false);
+                }
                 using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                            Utils.ListItemListPool, out List<ListItem> lstExportMethods))
                 {

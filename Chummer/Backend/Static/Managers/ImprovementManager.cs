@@ -1013,7 +1013,7 @@ namespace Chummer
                             {
                                 dicValues.Add(strLoopImprovedName, funcValueGetter(objImprovement));
                                 dicImprovementsForValues.Add(strLoopImprovedName,
-                                                             new List<Improvement>(objImprovement.Yield()));
+                                                             new List<Improvement>(1) { objImprovement });
                             }
                         }
 
@@ -1197,7 +1197,7 @@ namespace Chummer
                             {
                                 dicCustomValues.Add(strLoopImprovedName, funcValueGetter(objImprovement));
                                 dicCustomImprovementsForValues.Add(strLoopImprovedName,
-                                                                   new List<Improvement>(objImprovement.Yield()));
+                                                                   new List<Improvement>(1) { objImprovement });
                             }
                         }
 
@@ -2771,7 +2771,9 @@ namespace Chummer
 
         public static void EnableImprovements(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
         {
-            EnableImprovements(objCharacter, objImprovement.Yield(), token);
+            token.ThrowIfCancellationRequested();
+            using (TemporaryArray<Improvement> objYielded = objImprovement.YieldAsPooled())
+                EnableImprovements(objCharacter, objYielded, token);
         }
 
         public static void EnableImprovements(Character objCharacter, params Improvement[] objImprovementList)
@@ -2789,9 +2791,11 @@ namespace Chummer
             return EnableImprovementsAsync(objCharacter, objImprovementList.ToList(), token);
         }
 
-        public static Task EnableImprovementsAsync(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
+        public static async Task EnableImprovementsAsync(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
         {
-            return EnableImprovementsAsync(objCharacter, objImprovement.Yield(), token);
+            token.ThrowIfCancellationRequested();
+            using (TemporaryArray<Improvement> objYielded = objImprovement.YieldAsPooled())
+                await EnableImprovementsAsync(objCharacter, objYielded, token).ConfigureAwait(false);
         }
 
         public static Task EnableImprovementsAsync(Character objCharacter, params Improvement[] objImprovementList)
@@ -3464,7 +3468,9 @@ namespace Chummer
 
         public static void DisableImprovements(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
         {
-            DisableImprovements(objCharacter, objImprovement.Yield(), token);
+            token.ThrowIfCancellationRequested();
+            using (TemporaryArray<Improvement> objYielded = objImprovement.YieldAsPooled())
+                DisableImprovements(objCharacter, objYielded, token);
         }
 
         public static void DisableImprovements(Character objCharacter, params Improvement[] objImprovementList)
@@ -3483,9 +3489,11 @@ namespace Chummer
             return DisableImprovementsAsync(objCharacter, objImprovementList.ToList(), token);
         }
 
-        public static Task DisableImprovementsAsync(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
+        public static async Task DisableImprovementsAsync(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
         {
-            return DisableImprovementsAsync(objCharacter, objImprovement.Yield(), token);
+            token.ThrowIfCancellationRequested();
+            using (TemporaryArray<Improvement> objYielded = objImprovement.YieldAsPooled())
+                await DisableImprovementsAsync(objCharacter, objYielded, token).ConfigureAwait(false);
         }
 
         public static Task DisableImprovementsAsync(Character objCharacter, params Improvement[] objImprovementList)
@@ -6041,7 +6049,7 @@ namespace Chummer
         /// <param name="lstExtraUniqueName">Additional UniqueName versions to check, if any.</param>
         /// <param name="lstExtraTarget">Additional Target versions to check, if any.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static void ProcessRelevantEvents(this Improvement objImprovement, ICollection<string> lstExtraImprovedName = null, IEnumerable<Improvement.ImprovementType> lstExtraImprovementTypes = null, ICollection<string> lstExtraUniqueName = null, ICollection<string> lstExtraTarget = null, CancellationToken token = default)
+        public static void ProcessRelevantEvents(this Improvement objImprovement, IReadOnlyCollection<string> lstExtraImprovedName = null, IEnumerable<Improvement.ImprovementType> lstExtraImprovementTypes = null, IReadOnlyCollection<string> lstExtraUniqueName = null, IReadOnlyCollection<string> lstExtraTarget = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (objImprovement?.SetupComplete != true)
@@ -6180,7 +6188,7 @@ namespace Chummer
         /// <param name="lstExtraUniqueName">Additional UniqueName versions to check, if any.</param>
         /// <param name="lstExtraTarget">Additional Target versions to check, if any.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ProcessRelevantEventsAsync(this Improvement objImprovement, ICollection<string> lstExtraImprovedName = null, IEnumerable<Improvement.ImprovementType> lstExtraImprovementTypes = null, ICollection<string> lstExtraUniqueName = null, ICollection<string> lstExtraTarget = null, CancellationToken token = default)
+        public static async Task ProcessRelevantEventsAsync(this Improvement objImprovement, IReadOnlyCollection<string> lstExtraImprovedName = null, IEnumerable<Improvement.ImprovementType> lstExtraImprovementTypes = null, IReadOnlyCollection<string> lstExtraUniqueName = null, IReadOnlyCollection<string> lstExtraTarget = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (objImprovement?.SetupComplete != true)

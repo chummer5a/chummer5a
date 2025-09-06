@@ -1834,6 +1834,219 @@ namespace Chummer
         private static readonly ConcurrentDictionary<Control, List<ListItem>> s_dicListItemListAssignments
             = new ConcurrentDictionary<Control, List<ListItem>>();
 
+        public static void PopulateWithListItem(this ListBox lsbThis, ListItem objItem, CancellationToken token = default)
+        {
+            lsbThis?.DoThreadSafe(x => PopulateWithListItemCore(x, objItem, token), token);
+        }
+
+        public static void PopulateWithListItem(this ComboBox cboThis, ListItem objItem, CancellationToken token = default)
+        {
+            cboThis?.DoThreadSafe(x => PopulateWithListItemCore(x, objItem, token), token);
+        }
+
+        public static void PopulateWithListItem(this ElasticComboBox cboThis, ListItem objItem, CancellationToken token = default)
+        {
+            cboThis?.DoThreadSafe(x => PopulateWithListItemCore(x, objItem, token), token);
+        }
+
+        public static Task PopulateWithListItemAsync([NotNull] this ListBox lsbThis, ListItem objItem, CancellationToken token = default)
+        {
+            return lsbThis.DoThreadSafeAsync(x => PopulateWithListItemCore(x, objItem, token), token);
+        }
+
+        public static Task PopulateWithListItemAsync([NotNull] this ComboBox cboThis, ListItem objItem, CancellationToken token = default)
+        {
+            return cboThis.DoThreadSafeAsync(x => PopulateWithListItemCore(x, objItem, token), token);
+        }
+
+        public static Task PopulateWithListItemAsync([NotNull] this ElasticComboBox cboThis, ListItem objItem, CancellationToken token = default)
+        {
+            return cboThis.DoThreadSafeAsync(x => PopulateWithListItemCore(x, objItem, token), token);
+        }
+
+        private static void PopulateWithListItemCore(this ListBox lsbThis, ListItem objItem, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
+            // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
+            // This means the code we use has to set the DataSources to new lists instead of the same one.
+            List<ListItem> lstItemsToSet = Utils.ListItemListPool.Get();
+            bool blnDoReturnList = true;
+            try
+            {
+                lstItemsToSet.Add(objItem);
+                token.ThrowIfCancellationRequested();
+                lsbThis.BeginUpdate();
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!(lsbThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+                    {
+                        lsbThis.ValueMember = nameof(ListItem.Value);
+                        lsbThis.DisplayMember = nameof(ListItem.Name);
+                    }
+                    // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
+                    else if (lstCurrentList.SequenceEqual(lstItemsToSet))
+                        return;
+
+                    token.ThrowIfCancellationRequested();
+                    if (lsbThis.DataSource != null)
+                    {
+                        // Assign new binding context to avoid weirdness when switching DataSource
+                        lsbThis.BindingContext = new BindingContext();
+                    }
+                    else
+                    {
+                        lsbThis.Disposed += (sender, args) =>
+                        {
+                            if (s_dicListItemListAssignments.TryRemove(lsbThis, out List<ListItem> lstInnerToReturn))
+                            {
+                                Utils.ListItemListPool.Return(ref lstInnerToReturn);
+                            }
+                        };
+                    }
+
+                    blnDoReturnList = false;
+                    lsbThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(lsbThis, lstItemsToSet, (x, y) =>
+                    {
+                        Utils.ListItemListPool.Return(ref y);
+                        return lstItemsToSet;
+                    });
+                }
+                finally
+                {
+                    lsbThis.EndUpdate();
+                }
+            }
+            finally
+            {
+                if (blnDoReturnList)
+                    Utils.ListItemListPool.Return(ref lstItemsToSet);
+            }
+        }
+
+        private static void PopulateWithListItemCore(this ComboBox cboThis, ListItem objItem, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
+            // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
+            // This means the code we use has to set the DataSources to new lists instead of the same one.
+            List<ListItem> lstItemsToSet = Utils.ListItemListPool.Get();
+            bool blnDoReturnList = true;
+            try
+            {
+                lstItemsToSet.Add(objItem);
+                token.ThrowIfCancellationRequested();
+                cboThis.BeginUpdate();
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+                    {
+                        cboThis.ValueMember = nameof(ListItem.Value);
+                        cboThis.DisplayMember = nameof(ListItem.Name);
+                    }
+                    // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
+                    else if (lstCurrentList.SequenceEqual(lstItemsToSet))
+                        return;
+
+                    token.ThrowIfCancellationRequested();
+                    if (cboThis.DataSource != null)
+                    {
+                        // Assign new binding context to avoid weirdness when switching DataSource
+                        cboThis.BindingContext = new BindingContext();
+                    }
+                    else
+                    {
+                        cboThis.Disposed += (sender, args) =>
+                        {
+                            if (s_dicListItemListAssignments.TryRemove(cboThis, out List<ListItem> lstInnerToReturn))
+                            {
+                                Utils.ListItemListPool.Return(ref lstInnerToReturn);
+                            }
+                        };
+                    }
+
+                    blnDoReturnList = false;
+                    cboThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
+                    {
+                        Utils.ListItemListPool.Return(ref y);
+                        return lstItemsToSet;
+                    });
+                }
+                finally
+                {
+                    cboThis.EndUpdate();
+                }
+            }
+            finally
+            {
+                if (blnDoReturnList)
+                    Utils.ListItemListPool.Return(ref lstItemsToSet);
+            }
+        }
+
+        private static void PopulateWithListItemCore(this ElasticComboBox cboThis, ListItem objItem, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
+            // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
+            // This means the code we use has to set the DataSources to new lists instead of the same one.
+            List<ListItem> lstItemsToSet = Utils.ListItemListPool.Get();
+            bool blnDoReturnList = true;
+            try
+            {
+                lstItemsToSet.Add(objItem);
+                token.ThrowIfCancellationRequested();
+                cboThis.BeginUpdate();
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+                    {
+                        cboThis.ValueMember = nameof(ListItem.Value);
+                        cboThis.DisplayMember = nameof(ListItem.Name);
+                    }
+                    // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
+                    else if (lstCurrentList.SequenceEqual(lstItemsToSet))
+                        return;
+
+                    token.ThrowIfCancellationRequested();
+                    if (cboThis.DataSource != null)
+                    {
+                        // Assign new binding context to avoid weirdness when switching DataSource
+                        cboThis.BindingContext = new BindingContext();
+                    }
+                    else
+                    {
+                        cboThis.Disposed += (sender, args) =>
+                        {
+                            if (s_dicListItemListAssignments.TryRemove(cboThis, out List<ListItem> lstInnerToReturn))
+                            {
+                                Utils.ListItemListPool.Return(ref lstInnerToReturn);
+                            }
+                        };
+                    }
+
+                    blnDoReturnList = false;
+                    cboThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
+                    {
+                        Utils.ListItemListPool.Return(ref y);
+                        return lstItemsToSet;
+                    });
+                }
+                finally
+                {
+                    cboThis.EndUpdate();
+                }
+            }
+            finally
+            {
+                if (blnDoReturnList)
+                    Utils.ListItemListPool.Return(ref lstItemsToSet);
+            }
+        }
+
         public static void PopulateWithListItems(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
             lsbThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token), token);

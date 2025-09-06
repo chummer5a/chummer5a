@@ -138,7 +138,7 @@ namespace Chummer
                 await cboSpec.DoThreadSafeAsync(x => x.SelectedIndex = x.FindStringExact(_strForceItem)).ConfigureAwait(false);
                 if (await cboSpec.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false) == -1)
                 {
-                    await cboSpec.PopulateWithListItemsAsync(new ListItem(_strForceItem, _strForceItem).Yield()).ConfigureAwait(false);
+                    await cboSpec.PopulateWithListItemAsync(new ListItem(_strForceItem, _strForceItem)).ConfigureAwait(false);
                     await cboSpec.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
                 }
 

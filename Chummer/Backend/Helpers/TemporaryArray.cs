@@ -30,7 +30,7 @@ namespace Chummer
     /// Helping wrapper around an array taken from the shared array pool that will also respect the desired input size of the array when being read or enumerated.
     /// Should only be used as a way to prevent excessive heap allocations for small arrays that are only meant to be used a handful of times (but cannot be stackalloc'ed because they are for reference types).
     /// </summary>
-    public readonly struct TemporaryArray<T> : IReadOnlyList<T>, IDisposable, IEquatable<TemporaryArray<T>>
+    public readonly struct TemporaryArray<T> : IReadOnlyList<T>, IDisposable, IEquatable<TemporaryArray<T>> // Note: array is *not* read-only, only its size is unchangeable, it's just that there is no good interface for typed arrays
     {
         private readonly int _intSize;
         private readonly T[] _aobjInternal;

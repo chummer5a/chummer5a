@@ -1105,11 +1105,11 @@ namespace Chummer
                     try
                     {
                         await cboMetavariant
-                              .PopulateWithListItemsAsync(
+                              .PopulateWithListItemAsync(
                                   new ListItem(
                                       Guid.Empty,
                                       await LanguageManager.GetStringAsync("String_None", token: token)
-                                                           .ConfigureAwait(false)).Yield(), token).ConfigureAwait(false);
+                                                           .ConfigureAwait(false)), token).ConfigureAwait(false);
                         await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                     }
                     finally

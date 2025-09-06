@@ -3289,9 +3289,11 @@ namespace Chummer
         /// <summary>
         /// Opens the correct window for a single character.
         /// </summary>
-        public Task OpenCharacter(Character objCharacter, bool blnIncludeInMru = true, CancellationToken token = default)
+        public async Task OpenCharacter(Character objCharacter, bool blnIncludeInMru = true, CancellationToken token = default)
         {
-            return OpenCharacterList(objCharacter.Yield(), blnIncludeInMru, token);
+            token.ThrowIfCancellationRequested();
+            using (TemporaryArray<Character> objYielded = objCharacter.YieldAsPooled())
+                await OpenCharacterList(objYielded, blnIncludeInMru, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -3316,7 +3318,8 @@ namespace Chummer
                 {
                     if (lstCharacters == null)
                         return;
-                    List<Character> lstNewCharacters = lstCharacters.ToList();
+                    if (!(lstCharacters is IReadOnlyCollection<Character> lstNewCharacters))
+                        lstNewCharacters = lstCharacters.ToList();
                     if (lstNewCharacters.Count == 0)
                         return;
                     await _objFormOpeningSemaphore.WaitAsync(token).ConfigureAwait(false);
@@ -3506,9 +3509,11 @@ namespace Chummer
         /// <summary>
         /// Open a character's print form up without necessarily opening them up fully for editing.
         /// </summary>
-        public Task OpenCharacterForPrinting(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
+        public async Task OpenCharacterForPrinting(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
         {
-            return OpenCharacterListForPrinting(objCharacter.Yield(), blnIncludeInMru, token);
+            token.ThrowIfCancellationRequested();
+            using (TemporaryArray<Character> objYielded = objCharacter.YieldAsPooled())
+                await OpenCharacterListForPrinting(objYielded, blnIncludeInMru, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -3751,9 +3756,11 @@ namespace Chummer
         /// <summary>
         /// Open a character's export form up without necessarily opening them up fully for editing.
         /// </summary>
-        public Task OpenCharacterForExport(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
+        public async Task OpenCharacterForExport(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
         {
-            return OpenCharacterListForExport(objCharacter.Yield(), blnIncludeInMru, token);
+            token.ThrowIfCancellationRequested();
+            using (TemporaryArray<Character> objYielded = objCharacter.YieldAsPooled())
+                await OpenCharacterListForExport(objYielded, blnIncludeInMru, token).ConfigureAwait(false);
         }
 
         /// <summary>

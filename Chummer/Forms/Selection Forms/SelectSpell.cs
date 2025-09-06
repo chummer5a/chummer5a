@@ -282,7 +282,7 @@ namespace Chummer
             {
                 if (blnDoUIUpdate)
                 {
-                    await lstSpells.PopulateWithListItemsAsync(ListItem.Blank.Yield(), token: token).ConfigureAwait(false);
+                    await lstSpells.PopulateWithListItemAsync(ListItem.Blank, token: token).ConfigureAwait(false);
                 }
                 return false;
             }

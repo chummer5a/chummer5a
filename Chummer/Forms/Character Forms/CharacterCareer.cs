@@ -4559,7 +4559,8 @@ namespace Chummer
                         .ConfigureAwait(false),
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) == DialogResult.No)
                 return;
-            await DoReapplyImprovements(strSelectedId.Yield().ToList(), token: token).ConfigureAwait(false);
+            using (TemporaryArray<string> eParam = strSelectedId.YieldAsPooled())
+                await DoReapplyImprovements(eParam, token: token).ConfigureAwait(false);
         }
 
         private async Task DoReapplyImprovements(IReadOnlyCollection<string> lstInternalIdFilter = null,

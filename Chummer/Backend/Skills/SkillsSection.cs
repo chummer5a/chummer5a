@@ -2857,10 +2857,13 @@ namespace Chummer.Backend.Skills
                     },
                     // ReSharper disable once AccessToDisposedClosure
                     () => Parallel.ForEach(KnowledgeSkills, x => dicSkills.TryAdd(x.Name, x.Id)));
-                UpdateUndoSpecific(
-                    dicSkills,
-                    EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
-                UpdateUndoSpecific(dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
+                using (TemporaryArray<KarmaExpenseType> eYielded = new TemporaryArray<KarmaExpenseType>(KarmaExpenseType.AddSkill,
+                        KarmaExpenseType.ImproveSkill))
+                {
+                    UpdateUndoSpecific(dicSkills, eYielded);
+                }
+                using (TemporaryArray<KarmaExpenseType> eYielded = KarmaExpenseType.ImproveSkillGroup.YieldAsPooled())
+                    UpdateUndoSpecific(dicGroups, eYielded);
 
                 void UpdateUndoSpecific(IReadOnlyDictionary<string, Guid> map,
                     IEnumerable<KarmaExpenseType> typesRequiringConverting)
@@ -2924,11 +2927,13 @@ namespace Chummer.Backend.Skills
                             () => KnowledgeSkills.ForEachParallelAsync(x => dicSkills.TryAdd(x.Name, x.Id),
                                 token: token), token))
                     .ConfigureAwait(false);
-                UpdateUndoSpecific(
-                    dicSkills,
-                    EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill,
-                        KarmaExpenseType.ImproveSkill));
-                UpdateUndoSpecific(dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
+                using (TemporaryArray<KarmaExpenseType> eYielded = new TemporaryArray<KarmaExpenseType>(KarmaExpenseType.AddSkill,
+                        KarmaExpenseType.ImproveSkill))
+                {
+                    UpdateUndoSpecific(dicSkills, eYielded);
+                }
+                using (TemporaryArray<KarmaExpenseType> eYielded = KarmaExpenseType.ImproveSkillGroup.YieldAsPooled())
+                    UpdateUndoSpecific(dicGroups, eYielded);
 
                 void UpdateUndoSpecific(IReadOnlyDictionary<string, Guid> map,
                     IEnumerable<KarmaExpenseType> typesRequiringConverting)

@@ -191,6 +191,18 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar to wraps this object instance into a temporary array consisting of a single item.
+        /// Potentially better than a normal Yield() because of fewer allocations needed, but more cumbersome because it requires disposal.
+        /// </summary>
+        /// <typeparam name="T">Type of the object.</typeparam>
+        /// <param name="objItem">The instance that will be wrapped. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TemporaryArray<T> YieldAsPooled<T>(this T objItem)
+        {
+            return new TemporaryArray<T>(objItem);
+        }
+
+        /// <summary>
         /// Syntactic sugar for LINQ Any() call that will use List::Exists() if possible.
         /// </summary>
         /// <typeparam name="T"></typeparam>

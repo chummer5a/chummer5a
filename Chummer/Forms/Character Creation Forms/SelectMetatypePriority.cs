@@ -3306,11 +3306,11 @@ namespace Chummer
                     else
                     {
                         await cboMetavariant
-                              .PopulateWithListItemsAsync(
+                              .PopulateWithListItemAsync(
                                   new ListItem(
                                       Utils.GuidEmptyString,
                                       await LanguageManager.GetStringAsync("String_None", token: token)
-                                                           .ConfigureAwait(false)).Yield(), token).ConfigureAwait(false);
+                                                           .ConfigureAwait(false)), token).ConfigureAwait(false);
                         await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
 
                         await lblForceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
@@ -3321,12 +3321,11 @@ namespace Chummer
                 {
                     // Clear the Metavariant list if nothing is currently selected.
                     await cboMetavariant
-                          .PopulateWithListItemsAsync(
+                          .PopulateWithListItemAsync(
                               new ListItem(
                                       Utils.GuidEmptyString,
                                       await LanguageManager.GetStringAsync("String_None", token: token)
-                                                           .ConfigureAwait(false))
-                                  .Yield(), token).ConfigureAwait(false);
+                                                           .ConfigureAwait(false)), token).ConfigureAwait(false);
                     await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
 
                     await lblForceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);

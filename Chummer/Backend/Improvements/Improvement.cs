@@ -710,7 +710,8 @@ namespace Chummer
                 {
                     ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, strOldValue);
                     ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, value);
-                    this.ProcessRelevantEvents(lstExtraImprovedName: strOldValue.Yield().ToList());
+                    using (TemporaryArray<string> strYielded = strOldValue.YieldAsPooled())
+                        this.ProcessRelevantEvents(lstExtraImprovedName: strYielded);
                 }
             }
         }
@@ -737,7 +738,8 @@ namespace Chummer
                 {
                     ImprovementManager.ClearCachedValue(_objCharacter, eOldType, ImprovedName);
                     ImprovementManager.ClearCachedValue(_objCharacter, value, ImprovedName);
-                    this.ProcessRelevantEvents(lstExtraImprovementTypes: eOldType.Yield());
+                    using (TemporaryArray<ImprovementType> eYielded = eOldType.YieldAsPooled())
+                        this.ProcessRelevantEvents(lstExtraImprovementTypes: eYielded);
                 }
             }
         }
@@ -933,7 +935,8 @@ namespace Chummer
                 if (strOldValue != value && Enabled)
                 {
                     ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                    this.ProcessRelevantEvents(lstExtraUniqueName: strOldValue.Yield().ToList());
+                    using (TemporaryArray<string> strYielded = strOldValue.YieldAsPooled())
+                        this.ProcessRelevantEvents(lstExtraUniqueName: strYielded);
                 }
             }
         }
@@ -965,7 +968,10 @@ namespace Chummer
             {
                 string strOldValue = Interlocked.Exchange(ref _strTarget, value);
                 if (strOldValue != value && Enabled)
-                    this.ProcessRelevantEvents(lstExtraTarget: strOldValue.Yield().ToList());
+                {
+                    using (TemporaryArray<string> strYielded = strOldValue.YieldAsPooled())
+                        this.ProcessRelevantEvents(lstExtraTarget: strYielded);
+                }
             }
         }
 
@@ -1023,7 +1029,7 @@ namespace Chummer
         /// TODO: Merge parts or all of this function with ImprovementManager methods that enable, disable, add, or remove improvements.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Tuple<INotifyMultiplePropertiesChangedAsync, string>> GetRelevantPropertyChangers(ICollection<string> lstExtraImprovedName = null, ImprovementType eOverrideType = ImprovementType.None, ICollection<string> lstExtraUniqueName = null, ICollection<string> lstExtraTarget = null)
+        public IEnumerable<Tuple<INotifyMultiplePropertiesChangedAsync, string>> GetRelevantPropertyChangers(IReadOnlyCollection<string> lstExtraImprovedName = null, ImprovementType eOverrideType = ImprovementType.None, IReadOnlyCollection<string> lstExtraUniqueName = null, IReadOnlyCollection<string> lstExtraTarget = null)
         {
             switch (eOverrideType != ImprovementType.None ? eOverrideType : ImproveType)
             {
@@ -1061,11 +1067,13 @@ namespace Chummer
                             setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MaximumModifiers));
                         if (Minimum != 0)
                             setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MinimumModifiers));
+                        List<string> lstAddonImprovedNames = null;
                         if (lstExtraImprovedName != null)
                         {
+                            lstAddonImprovedNames = new List<string>();
                             foreach (string strExtraAttribute in lstExtraImprovedName.Where(x => x.EndsWith("Base", StringComparison.Ordinal)).ToList())
                             {
-                                lstExtraImprovedName.Add(strExtraAttribute.TrimEndOnce("Base", true));
+                                lstAddonImprovedNames.Add(strExtraAttribute.TrimEndOnce("Base", true));
                             }
                         }
                         strTargetAttribute = strTargetAttribute.TrimEndOnce("Base");
@@ -1073,7 +1081,9 @@ namespace Chummer
                         {
                             foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                             {
-                                if (objCharacterAttrib.Abbrev != strTargetAttribute && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
+                                if (objCharacterAttrib.Abbrev != strTargetAttribute
+                                    && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true
+                                    && lstAddonImprovedNames?.Contains(objCharacterAttrib.Abbrev) != true)
                                     continue;
                                 foreach (string strPropertyName in setAttributePropertiesChanged)
                                 {
@@ -3585,7 +3595,7 @@ namespace Chummer
         /// TODO: Merge parts or all of this function with ImprovementManager methods that enable, disable, add, or remove improvements.
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Tuple<INotifyMultiplePropertiesChangedAsync, string>>> GetRelevantPropertyChangersAsync(ICollection<string> lstExtraImprovedName = null, ImprovementType eOverrideType = ImprovementType.None, ICollection<string> lstExtraUniqueName = null, ICollection<string> lstExtraTarget = null, CancellationToken token = default)
+        public async Task<List<Tuple<INotifyMultiplePropertiesChangedAsync, string>>> GetRelevantPropertyChangersAsync(IReadOnlyCollection<string> lstExtraImprovedName = null, ImprovementType eOverrideType = ImprovementType.None, IReadOnlyCollection<string> lstExtraUniqueName = null, IReadOnlyCollection<string> lstExtraTarget = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Tuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn =
@@ -3626,12 +3636,14 @@ namespace Chummer
                                 setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MaximumModifiers));
                             if (Minimum != 0)
                                 setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MinimumModifiers));
+                            List<string> lstAddonImprovedNames = null;
                             if (lstExtraImprovedName != null)
                             {
+                                lstAddonImprovedNames = new List<string>();
                                 foreach (string strExtraAttribute in lstExtraImprovedName.Where(x => x.EndsWith("Base", StringComparison.Ordinal)).ToList())
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    lstExtraImprovedName.Add(strExtraAttribute.TrimEndOnce("Base", true));
+                                    lstAddonImprovedNames.Add(strExtraAttribute.TrimEndOnce("Base", true));
                                 }
                             }
                             strTargetAttribute = strTargetAttribute.TrimEndOnce("Base");
@@ -3639,7 +3651,9 @@ namespace Chummer
                             {
                                 foreach (CharacterAttrib objCharacterAttrib in await _objCharacter.GetAllAttributesAsync(token).ConfigureAwait(false))
                                 {
-                                    if (objCharacterAttrib.Abbrev != strTargetAttribute && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true)
+                                    if (objCharacterAttrib.Abbrev != strTargetAttribute
+                                        && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true
+                                        && lstAddonImprovedNames?.Contains(objCharacterAttrib.Abbrev) != true)
                                         continue;
                                     foreach (string strPropertyName in setAttributePropertiesChanged)
                                     {

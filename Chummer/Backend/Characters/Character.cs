@@ -16219,6 +16219,33 @@ namespace Chummer
             }
         }
 
+        public void FormatImprovementModifiers(StringBuilder sbdToolTip, Improvement.ImprovementType eType, string strSpace, int intModifiers, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (sbdToolTip == null)
+                return;
+            sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Modifiers", token: token));
+            bool blnFirstModifier = true;
+            using (LockObject.EnterReadLock(token))
+            {
+                foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 this, eType, token: token))
+                {
+                    if (blnFirstModifier)
+                    {
+                        blnFirstModifier = false;
+                        sbdToolTip.Append(LanguageManager.GetString("String_Colon", token: token));
+                    }
+                    else
+                        sbdToolTip.Append(',');
+
+                    sbdToolTip.Append(strSpace).Append(GetObjectName(objLoopImprovement, token: token));
+                }
+            }
+
+            sbdToolTip.Append(strSpace).Append('(').Append(intModifiers.ToString(GlobalSettings.CultureInfo)).Append(')');
+        }
+
         public void FormatImprovementModifiers(StringBuilder sbdToolTip, IEnumerable<Improvement.ImprovementType> improvements, string strSpace, int intModifiers, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -16244,6 +16271,40 @@ namespace Chummer
                         sbdToolTip.Append(strSpace).Append(GetObjectName(objLoopImprovement, token: token));
                     }
                 }
+            }
+
+            sbdToolTip.Append(strSpace).Append('(').Append(intModifiers.ToString(GlobalSettings.CultureInfo)).Append(')');
+        }
+
+        public async Task FormatImprovementModifiersAsync(StringBuilder sbdToolTip, Improvement.ImprovementType eType, string strSpace, int intModifiers, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (sbdToolTip == null)
+                return;
+            sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false));
+            bool blnFirstModifier = true;
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                foreach (Improvement objLoopImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                this, eType, token: token).ConfigureAwait(false))
+                {
+                    if (blnFirstModifier)
+                    {
+                        blnFirstModifier = false;
+                        sbdToolTip.Append(await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false));
+                    }
+                    else
+                        sbdToolTip.Append(',');
+
+                    sbdToolTip.Append(strSpace).Append(await GetObjectNameAsync(objLoopImprovement, token: token).ConfigureAwait(false));
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             sbdToolTip.Append(strSpace).Append('(').Append(intModifiers.ToString(GlobalSettings.CultureInfo)).Append(')');
@@ -30080,7 +30141,7 @@ namespace Chummer
                         {
                             FormatImprovementModifiers(
                                 sbdToolTip,
-                                Improvement.ImprovementType.Composure.Yield(),
+                                Improvement.ImprovementType.Composure,
                                 strSpace,
                                 intModifiers);
                         }
@@ -30131,7 +30192,7 @@ namespace Chummer
                     {
                         await FormatImprovementModifiersAsync(
                             sbdToolTip,
-                            Improvement.ImprovementType.Composure.Yield(),
+                            Improvement.ImprovementType.Composure,
                             strSpace,
                             intModifiers, token).ConfigureAwait(false);
                     }
@@ -30452,7 +30513,7 @@ namespace Chummer
                         {
                             FormatImprovementModifiers(
                                 sbdToolTip,
-                                Improvement.ImprovementType.LiftAndCarry.Yield(),
+                                Improvement.ImprovementType.LiftAndCarry,
                                 strSpace,
                                 intModifiers);
                         }
@@ -30503,7 +30564,7 @@ namespace Chummer
                     {
                         await FormatImprovementModifiersAsync(
                             sbdToolTip,
-                            Improvement.ImprovementType.LiftAndCarry.Yield(),
+                            Improvement.ImprovementType.LiftAndCarry,
                             strSpace,
                             intModifiers, token).ConfigureAwait(false);
                     }
@@ -30625,7 +30686,7 @@ namespace Chummer
                         {
                             FormatImprovementModifiers(
                                 sbdToolTip,
-                                Improvement.ImprovementType.Memory.Yield(),
+                                Improvement.ImprovementType.Memory,
                                 strSpace,
                                 intModifiers);
                         }
@@ -30676,7 +30737,7 @@ namespace Chummer
                     {
                         await FormatImprovementModifiersAsync(
                             sbdToolTip,
-                            Improvement.ImprovementType.Memory.Yield(),
+                            Improvement.ImprovementType.Memory,
                             strSpace,
                             intModifiers, token).ConfigureAwait(false);
                     }
@@ -33868,7 +33929,7 @@ namespace Chummer
                         {
                             FormatImprovementModifiers(
                                 sbdToolTip,
-                                Improvement.ImprovementType.Dodge.Yield(),
+                                Improvement.ImprovementType.Dodge,
                                 strSpace,
                                 intModifiers);
                         }
@@ -33918,7 +33979,7 @@ namespace Chummer
                     {
                         await FormatImprovementModifiersAsync(
                             sbdToolTip,
-                            Improvement.ImprovementType.Dodge.Yield(),
+                            Improvement.ImprovementType.Dodge,
                             strSpace,
                             intModifiers, token).ConfigureAwait(false);
                     }
@@ -37104,7 +37165,7 @@ namespace Chummer
                         {
                             FormatImprovementModifiers(
                                 sbdToolTip,
-                                Improvement.ImprovementType.Surprise.Yield(),
+                                Improvement.ImprovementType.Surprise,
                                 strSpace,
                                 intModifiers);
                         }
@@ -37155,7 +37216,7 @@ namespace Chummer
                     {
                         await FormatImprovementModifiersAsync(
                             sbdToolTip,
-                            Improvement.ImprovementType.Surprise.Yield(),
+                            Improvement.ImprovementType.Surprise,
                             strSpace,
                             intModifiers, token).ConfigureAwait(false);
                     }

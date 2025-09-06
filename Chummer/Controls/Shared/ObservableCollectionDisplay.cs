@@ -997,7 +997,10 @@ namespace Chummer.Controls.Shared
                 if (_parent.ChildPropertyChanged != null)
                     Utils.RunOnMainThread(() => _parent.ChildPropertyChanged?.Invoke(sender, e));
                 if (changes)
-                    _parent.RedrawControls(this.Yield());
+                {
+                    using (TemporaryArray<ControlWithMetaData> objYielded = this.YieldAsPooled())
+                        _parent.RedrawControls(objYielded);
+                }
             }
 
             private async Task item_ChangedEventAsync(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
@@ -1029,7 +1032,10 @@ namespace Chummer.Controls.Shared
                 if (_parent.ChildPropertyChanged != null)
                     await Utils.RunOnMainThreadAsync(() => _parent.ChildPropertyChanged?.Invoke(sender, e), token).ConfigureAwait(false);
                 if (changes)
-                    await _parent.RedrawControlsAsync(this.Yield(), token).ConfigureAwait(false);
+                {
+                    using (TemporaryArray<ControlWithMetaData> objYielded = this.YieldAsPooled())
+                        await _parent.RedrawControlsAsync(objYielded, token).ConfigureAwait(false);
+                }
             }
 
             /// <summary>
