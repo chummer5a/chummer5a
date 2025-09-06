@@ -700,7 +700,7 @@ namespace Chummer
                                     string strArmorGuid = objArmor.SourceIDString;
                                     string strArmorName = await objArmor.GetCurrentDisplayNameAsync(token)
                                         .ConfigureAwait(false);
-                                    int intArmor = await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false);
+                                    int intArmor = await objArmor.GetTotalArmorAsync(token: token).ConfigureAwait(false);
                                     decimal.TryParse(await objArmor.CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false),
                                         System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCapacity);
                                     AvailabilityValue objAvail = await objArmor.TotalAvailTupleAsync(token: token)

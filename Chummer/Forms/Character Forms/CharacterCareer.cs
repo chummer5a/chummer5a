@@ -22759,11 +22759,11 @@ namespace Chummer
                         {
                             bool blnArmorIncreaseEnabled = objArmor.ArmorDamage > 0;
                             bool blnArmorDecreaseEnabled =
-                                objArmor.ArmorDamage < await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false) &&
+                                objArmor.ArmorDamage < await objArmor.GetTotalArmorAsync(token: token).ConfigureAwait(false) &&
                                 objArmor.ArmorDamage
                                 < (string.IsNullOrEmpty(objArmor.ArmorOverrideValue)
                                     ? int.MaxValue
-                                    : await objArmor.GetTotalOverrideArmorAsync(token).ConfigureAwait(false));
+                                    : await objArmor.GetTotalOverrideArmorAsync(token: token).ConfigureAwait(false));
                             await cmdArmorIncrease.DoThreadSafeAsync(x =>
                                                   {
                                                       x.Visible = true;

@@ -33377,18 +33377,18 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strCustomFitName) || strCustomFitName != objInnerArmor.Name)
                         {
                             if (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-'))
-                                dicArmorStackingValues[objInnerArmor] += objArmor.TotalArmor;
+                                dicArmorStackingValues[objInnerArmor] += objArmor.GetTotalArmor();
                         }
                         else if (objArmor.ArmorOverrideValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('-'))
                         {
-                            dicArmorStackingValues[objInnerArmor] += objArmor.TotalOverrideArmor;
+                            dicArmorStackingValues[objInnerArmor] += objArmor.GetTotalOverrideArmor();
                         }
                     }
 
                     if (intNakedStackingValue < intAverageStrength
                         && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')))
                         intNakedStackingValue
-                            = Math.Min(intNakedStackingValue + objArmor.TotalArmor, intAverageStrength);
+                            = Math.Min(intNakedStackingValue + objArmor.GetTotalArmor(), intAverageStrength);
                 }
 
                 // Run through list of Armor again to cap off any whose stacking bonuses are greater than STR
@@ -33407,7 +33407,7 @@ namespace Chummer
                         || objArmor.ArmorValue.StartsWith('-'))
                         continue;
 
-                    int intArmorValue = objArmor.TotalArmor + dicArmorStackingValues[objArmor] + dicArmorImprovementValues[objArmor].StandardRound();
+                    int intArmorValue = objArmor.GetTotalArmor() + dicArmorStackingValues[objArmor] + dicArmorImprovementValues[objArmor].StandardRound();
                     if (intArmorValue > intHighest)
                     {
                         intHighest = intArmorValue;
@@ -33502,18 +33502,18 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strCustomFitName) || strCustomFitName != objInnerArmor.Name)
                         {
                             if (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-'))
-                                dicArmorStackingValues[objInnerArmor] += await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false);
+                                dicArmorStackingValues[objInnerArmor] += await objArmor.GetTotalArmorAsync(token: token).ConfigureAwait(false);
                         }
                         else if (objArmor.ArmorOverrideValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('-'))
                         {
-                            dicArmorStackingValues[objInnerArmor] += await objArmor.GetTotalOverrideArmorAsync(token).ConfigureAwait(false);
+                            dicArmorStackingValues[objInnerArmor] += await objArmor.GetTotalOverrideArmorAsync(token: token).ConfigureAwait(false);
                         }
                     }
 
                     if (intNakedStackingValue < intAverageStrength
                         && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')))
                         intNakedStackingValue
-                            = Math.Min(intNakedStackingValue + await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false), intAverageStrength);
+                            = Math.Min(intNakedStackingValue + await objArmor.GetTotalArmorAsync(token: token).ConfigureAwait(false), intAverageStrength);
                 }
 
                 // Run through list of Armor again to cap off any whose stacking bonuses are greater than STR
@@ -33532,7 +33532,7 @@ namespace Chummer
                         || objArmor.ArmorValue.StartsWith('-'))
                         continue;
 
-                    int intArmorValue = await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false) + dicArmorStackingValues[objArmor] + dicArmorImprovementValues[objArmor].StandardRound();
+                    int intArmorValue = await objArmor.GetTotalArmorAsync(token: token).ConfigureAwait(false) + dicArmorStackingValues[objArmor] + dicArmorImprovementValues[objArmor].StandardRound();
                     if (intArmorValue > intHighest)
                     {
                         intHighest = intArmorValue;
@@ -37682,8 +37682,9 @@ namespace Chummer
                         string strCustomFitName = objArmor.ArmorMods.FirstOrDefault(x => x.Name == "Custom Fit (Stack)" && x.Equipped)?.Extra ?? string.Empty;
 
                         int intLoopStack = objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')
-                            ? objArmor.TotalArmor
+                            ? objArmor.GetTotalArmor()
                             : 0;
+                        int intLoopEncumbrance = objArmor.GetTotalArmor(true);
                         foreach (Armor objInnerArmor in lstArmorsToConsider)
                         {
                             if (objInnerArmor == objArmor
@@ -37695,26 +37696,29 @@ namespace Chummer
                                 (int intI, int intJ) = dicArmorStackingValues[objInnerArmor];
                                 if (objArmor.Encumbrance)
                                     dicArmorStackingValues[objInnerArmor]
-                                        = new Tuple<int, int>(intI + intLoopStack, intJ + intLoopStack);
+                                        = new Tuple<int, int>(intI + intLoopStack, intJ + intLoopEncumbrance);
                                 else
                                     dicArmorStackingValues[objInnerArmor]
                                         = new Tuple<int, int>(intI + intLoopStack, intJ);
                             }
                             else if (objArmor.ArmorOverrideValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('-'))
                             {
-                                int intLoopCustomFitStack = objArmor.TotalOverrideArmor;
+                                int intLoopCustomFitStack = objArmor.GetTotalOverrideArmor();
                                 (int intI, int intJ) = dicArmorStackingValues[objInnerArmor];
                                 if (objArmor.Encumbrance)
+                                {
+                                    int intLoopCustomFitEncumbrance = objArmor.GetTotalOverrideArmor(true);
                                     dicArmorStackingValues[objInnerArmor]
                                         = new Tuple<int, int>(intI + intLoopCustomFitStack,
-                                                              intJ + intLoopCustomFitStack);
+                                                              intJ + intLoopCustomFitEncumbrance);
+                                }
                                 else
                                     dicArmorStackingValues[objInnerArmor] = new Tuple<int, int>(intI + intLoopCustomFitStack, intJ);
                             }
                         }
 
                         if (objArmor.Encumbrance)
-                            intNakedEncumbranceValue += intLoopStack;
+                            intNakedEncumbranceValue += intLoopEncumbrance;
                     }
 
                     // Run through list of Armor again to cap off any whose stacking bonuses are greater than STR
@@ -37739,7 +37743,7 @@ namespace Chummer
                             || objArmor.ArmorValue.StartsWith('-'))
                             continue;
                         (int intLoopStack, int intLoopEncumbrance) = dicArmorStackingValues[objArmor];
-                        int intLoopTotal = objArmor.TotalArmor + intLoopStack;
+                        int intLoopTotal = objArmor.GetTotalArmor() + intLoopStack;
                         if (intLoopTotal >= intHighest && (intLoopTotal > intHighest || intLoopEncumbrance < intLowestEncumbrance))
                         {
                             intHighest = intLoopTotal;
@@ -37789,8 +37793,9 @@ namespace Chummer
                     string strCustomFitName = (await objArmor.ArmorMods.FirstOrDefaultAsync(x => x.Name == "Custom Fit (Stack)" && x.Equipped, token: token).ConfigureAwait(false))?.Extra ?? string.Empty;
 
                     int intLoopStack = objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')
-                        ? await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false)
+                        ? await objArmor.GetTotalArmorAsync(false, token).ConfigureAwait(false)
                         : 0;
+                    int intLoopEncumbrance = await objArmor.GetTotalArmorAsync(true, token).ConfigureAwait(false);
                     foreach (Armor objInnerArmor in lstArmorsToConsider)
                     {
                         if (objInnerArmor == objArmor
@@ -37802,7 +37807,7 @@ namespace Chummer
                             (int intI, int intJ) = dicArmorStackingValues[objInnerArmor];
                             if (objArmor.Encumbrance)
                                 dicArmorStackingValues[objInnerArmor]
-                                    = new Tuple<int, int>(intI + intLoopStack, intJ + intLoopStack);
+                                    = new Tuple<int, int>(intI + intLoopStack, intJ + intLoopEncumbrance);
                             else
                                 dicArmorStackingValues[objInnerArmor]
                                     = new Tuple<int, int>(intI + intLoopStack, intJ);
@@ -37810,12 +37815,15 @@ namespace Chummer
                         else if (objArmor.ArmorOverrideValue.StartsWith('+')
                                  || objArmor.ArmorOverrideValue.StartsWith('-'))
                         {
-                            int intLoopCustomFitStack = await objArmor.GetTotalOverrideArmorAsync(token).ConfigureAwait(false);
+                            int intLoopCustomFitStack = await objArmor.GetTotalOverrideArmorAsync(false, token).ConfigureAwait(false);
                             (int intI, int intJ) = dicArmorStackingValues[objInnerArmor];
                             if (objArmor.Encumbrance)
+                            {
+                                int intLoopCustomFitEncumbrance = await objArmor.GetTotalOverrideArmorAsync(false, token).ConfigureAwait(false);
                                 dicArmorStackingValues[objInnerArmor]
                                     = new Tuple<int, int>(intI + intLoopCustomFitStack,
-                                                          intJ + intLoopCustomFitStack);
+                                                          intJ + intLoopCustomFitEncumbrance);
+                            }
                             else
                                 dicArmorStackingValues[objInnerArmor]
                                     = new Tuple<int, int>(intI + intLoopCustomFitStack, intJ);
@@ -37823,7 +37831,7 @@ namespace Chummer
                     }
 
                     if (objArmor.Encumbrance)
-                        intNakedEncumbranceValue += intLoopStack;
+                        intNakedEncumbranceValue += intLoopEncumbrance;
                 }
 
                 // Run through list of Armor again to cap off any whose stacking bonuses are greater than STR
@@ -37848,7 +37856,7 @@ namespace Chummer
                         || objArmor.ArmorValue.StartsWith('-'))
                         continue;
                     (int intLoopStack, int intLoopEncumbrance) = dicArmorStackingValues[objArmor];
-                    int intLoopTotal = await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false) + intLoopStack;
+                    int intLoopTotal = await objArmor.GetTotalArmorAsync(token: token).ConfigureAwait(false) + intLoopStack;
                     if (intLoopTotal >= intHighest
                         && (intLoopTotal > intHighest || intLoopEncumbrance < intLowestEncumbrance))
                     {
