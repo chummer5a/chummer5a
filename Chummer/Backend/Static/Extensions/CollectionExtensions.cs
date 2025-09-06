@@ -19,8 +19,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -52,6 +54,35 @@ namespace Chummer
             return lstItems.Count > ushort.MaxValue
                 ? lstItems.GetOrderInvariantEnsembleHashCodeParallel(token)
                 : lstItems.GetOrderInvariantEnsembleHashCode(token);
+        }
+
+        /// <summary>
+        /// Get a HashCode representing the contents of a collection in a way where the order of the items is irrelevant
+        /// This is a parallelized version of GetOrderInvariantEnsembleHashCode meant to be used for large collections
+        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
+        /// </summary>
+        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <param name="lstItems">The collection containing the contents</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
+        public static int GetOrderInvariantEnsembleHashCodeParallel<T>(this IReadOnlyCollection<T> lstItems, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstItems == null)
+                return 0;
+            // uint to prevent overflows
+            unchecked
+            {
+                uint result = 0;
+                Parallel.For(0, lstItems.Count, () => 0, (i, state, local) =>
+                {
+                    if (token.IsCancellationRequested)
+                        state.Stop();
+                    return state.IsStopped ? 0 : lstItems.ElementAt(i).GetHashCode();
+                }, localResult => result += (uint)localResult);
+                token.ThrowIfCancellationRequested();
+                return (int)(19 + result * 31);
+            }
         }
     }
 }
