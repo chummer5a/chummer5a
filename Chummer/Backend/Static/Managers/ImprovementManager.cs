@@ -4241,7 +4241,7 @@ namespace Chummer
         /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public static decimal RemoveImprovements(Character objCharacter,
-            ICollection<Improvement.ImprovementSource> lstImprovementSources,
+            IReadOnlyCollection<Improvement.ImprovementSource> lstImprovementSources,
             string strSourceName = "", CancellationToken token = default)
         {
             // If there is no character object, don't try to remove any Improvements.
@@ -4291,7 +4291,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static decimal RemoveImprovements(Character objCharacter,
             Improvement.ImprovementSource objImprovementSource,
-            ICollection<string> lstSourceNames, CancellationToken token = default)
+            IReadOnlyCollection<string> lstSourceNames, CancellationToken token = default)
         {
             // If there is no character object, don't try to remove any Improvements.
             if (objCharacter == null)
@@ -4355,8 +4355,8 @@ namespace Chummer
         /// <param name="lstSourceNames">Names of the items that granted these Improvements.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public static decimal RemoveImprovements(Character objCharacter,
-            ICollection<Improvement.ImprovementSource> lstImprovementSources,
-            ICollection<string> lstSourceNames, CancellationToken token = default)
+            IReadOnlyCollection<Improvement.ImprovementSource> lstImprovementSources,
+            IReadOnlyCollection<string> lstSourceNames, CancellationToken token = default)
         {
             // If there is no character object, don't try to remove any Improvements.
             if (objCharacter == null)
@@ -4481,7 +4481,7 @@ namespace Chummer
         /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<decimal> RemoveImprovementsAsync(Character objCharacter,
-            ICollection<Improvement.ImprovementSource> lstImprovementSources,
+            IReadOnlyCollection<Improvement.ImprovementSource> lstImprovementSources,
             string strSourceName = "", CancellationToken token = default)
         {
             // If there is no character object, don't try to remove any Improvements.
@@ -4539,7 +4539,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<decimal> RemoveImprovementsAsync(Character objCharacter,
             Improvement.ImprovementSource objImprovementSource,
-            ICollection<string> lstSourceNames, CancellationToken token = default)
+            IReadOnlyCollection<string> lstSourceNames, CancellationToken token = default)
         {
             // If there is no character object, don't try to remove any Improvements.
             if (objCharacter == null)
@@ -4611,8 +4611,8 @@ namespace Chummer
         /// <param name="lstSourceNames">Names of the items that granted these Improvements.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<decimal> RemoveImprovementsAsync(Character objCharacter,
-            ICollection<Improvement.ImprovementSource> lstImprovementSources,
-            ICollection<string> lstSourceNames, CancellationToken token = default)
+            IReadOnlyCollection<Improvement.ImprovementSource> lstImprovementSources,
+            IReadOnlyCollection<string> lstSourceNames, CancellationToken token = default)
         {
             // If there is no character object, don't try to remove any Improvements.
             if (objCharacter == null)
@@ -4688,7 +4688,7 @@ namespace Chummer
         /// <param name="blnReapplyImprovements">Whether we're reapplying Improvements.</param>
         /// <param name="blnAllowDuplicatesFromSameSource">If we ignore checking whether a potential duplicate improvement has the same SourceName</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static decimal RemoveImprovements(Character objCharacter, ICollection<Improvement> objImprovementList,
+        public static decimal RemoveImprovements(Character objCharacter, IReadOnlyCollection<Improvement> objImprovementList,
                                                  bool blnReapplyImprovements = false,
                                                  bool blnAllowDuplicatesFromSameSource = false, CancellationToken token = default)
         {
@@ -4704,7 +4704,7 @@ namespace Chummer
         /// <param name="blnReapplyImprovements">Whether we're reapplying Improvements.</param>
         /// <param name="blnAllowDuplicatesFromSameSource">If we ignore checking whether a potential duplicate improvement has the same SourceName</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static Task<decimal> RemoveImprovementsAsync(Character objCharacter, ICollection<Improvement> objImprovementList,
+        public static Task<decimal> RemoveImprovementsAsync(Character objCharacter, IReadOnlyCollection<Improvement> objImprovementList,
                                                       bool blnReapplyImprovements = false,
                                                       bool blnAllowDuplicatesFromSameSource = false, CancellationToken token = default)
         {
@@ -4724,7 +4724,7 @@ namespace Chummer
         /// <param name="blnAllowDuplicatesFromSameSource">If we ignore checking whether a potential duplicate improvement has the same SourceName</param>
         /// <param name="token">Cancellation token to listen to.</param>
         private static async Task<decimal> RemoveImprovementsCoreAsync(bool blnSync, Character objCharacter,
-                                                                       ICollection<Improvement> objImprovementList,
+                                                                       IReadOnlyCollection<Improvement> objImprovementList,
                                                                        bool blnReapplyImprovements,
                                                                        bool blnAllowDuplicatesFromSameSource,
                                                                        CancellationToken token = default)

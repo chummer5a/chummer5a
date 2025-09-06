@@ -2914,10 +2914,15 @@ namespace Chummer.Backend.Skills
                 return Task.CompletedTask;
             if (e.PropertyNames.Contains(nameof(Character.Karma)))
             {
-                return e.PropertyNames.Contains(nameof(Character.EffectiveBuildMethodUsesPriorityTables))
-                    ? OnMultiplePropertiesChangedAsync(
-                        new[] { nameof(CareerCanIncrease), nameof(BaseUnbroken) }, token)
-                    : OnPropertyChangedAsync(nameof(CareerCanIncrease), token);
+                if (e.PropertyNames.Contains(nameof(Character.EffectiveBuildMethodUsesPriorityTables)))
+                {
+                    return Task.Run(async () =>
+                    {
+                        using (TemporaryArray<string> aParams = new TemporaryArray<string>(nameof(CareerCanIncrease), nameof(BaseUnbroken)))
+                            await OnMultiplePropertiesChangedAsync(aParams, token).ConfigureAwait(false);
+                    }, token);
+                }
+                return OnPropertyChangedAsync(nameof(CareerCanIncrease), token);
             }
 
             return e.PropertyNames.Contains(nameof(Character.EffectiveBuildMethodUsesPriorityTables))

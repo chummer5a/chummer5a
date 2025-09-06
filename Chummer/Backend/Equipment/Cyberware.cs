@@ -5620,7 +5620,10 @@ namespace Chummer.Backend.Equipment
                                 if (Bonus != null)
                                 {
                                     if (PairBonus != null)
-                                        ImprovementManager.RemoveImprovements(_objCharacter, SourceType, new[] { InternalId, InternalId + "Pair"});
+                                    {
+                                        using (TemporaryArray<string> aParams = new TemporaryArray<string>(InternalId, InternalId + "Pair"))
+                                            ImprovementManager.RemoveImprovements(_objCharacter, SourceType, aParams);
+                                    }
                                     else
                                         ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId);
                                     ImprovementManager.CreateImprovements(_objCharacter, SourceType,
@@ -5816,9 +5819,14 @@ namespace Chummer.Backend.Equipment
                                 if (Bonus != null)
                                 {
                                     if (PairBonus != null)
-                                        await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
-                                            await GetSourceTypeAsync(token).ConfigureAwait(false),
-                                            new[] { InternalId, InternalId + "Pair" }, token).ConfigureAwait(false);
+                                    {
+                                        using (TemporaryArray<string> aParams = new TemporaryArray<string>(InternalId, InternalId + "Pair"))
+                                        {
+                                            await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                                                await GetSourceTypeAsync(token).ConfigureAwait(false),
+                                                aParams, token).ConfigureAwait(false);
+                                        }
+                                    }
                                     else
                                         await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
                                                 await GetSourceTypeAsync(token).ConfigureAwait(false), InternalId,
@@ -11290,8 +11298,10 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                decReturn += ImprovementManager.RemoveImprovements(_objCharacter, SourceType,
-                    new[] { InternalId, InternalId + "Pair", InternalId + "WirelessPair" });
+                using (TemporaryArray<string> aParams = new TemporaryArray<string>(InternalId, InternalId + "Pair", InternalId + "Wireless", InternalId + "WirelessPair"))
+                {
+                    decReturn += ImprovementManager.RemoveImprovements(_objCharacter, SourceType, aParams);
+                }
 
                 if (PairBonus != null)
                 {
@@ -11561,10 +11571,12 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                decReturn += await ImprovementManager
-                    .RemoveImprovementsAsync(_objCharacter, SourceType,
-                        new[] { InternalId, InternalId + "Pair", InternalId + "WirelessPair" }, token)
-                    .ConfigureAwait(false);
+                using (TemporaryArray<string> aParams = new TemporaryArray<string>(InternalId, InternalId + "Pair", InternalId + "Wireless", InternalId + "WirelessPair"))
+                {
+                    decReturn += await ImprovementManager
+                        .RemoveImprovementsAsync(_objCharacter, SourceType, aParams, token)
+                        .ConfigureAwait(false);
+                }
 
                 if (PairBonus != null)
                 {

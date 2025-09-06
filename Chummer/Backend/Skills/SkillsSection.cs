@@ -245,10 +245,15 @@ namespace Chummer.Backend.Skills
                 return Task.CompletedTask;
             if (e.PropertyNames.Contains(nameof(KnowledgeSkill.CurrentSpCost)))
             {
-                return e.PropertyNames.Contains(nameof(KnowledgeSkill.IsNativeLanguage))
-                    ? OnMultiplePropertiesChangedAsync(
-                        new[] { nameof(KnowledgeSkillRanksSum), nameof(HasAvailableNativeLanguageSlots) }, token)
-                    : OnPropertyChangedAsync(nameof(KnowledgeSkillRanksSum), token);
+                if (e.PropertyNames.Contains(nameof(KnowledgeSkill.IsNativeLanguage)))
+                {
+                    return Task.Run(async () =>
+                    {
+                        using (TemporaryArray<string> aParams = new TemporaryArray<string>(nameof(KnowledgeSkillRanksSum), nameof(HasAvailableNativeLanguageSlots)))
+                            await OnMultiplePropertiesChangedAsync(aParams, token).ConfigureAwait(false);
+                    }, token);
+                }
+                return OnPropertyChangedAsync(nameof(KnowledgeSkillRanksSum), token);
             }
 
             return e.PropertyNames.Contains(nameof(KnowledgeSkill.IsNativeLanguage))

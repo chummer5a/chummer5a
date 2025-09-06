@@ -4010,7 +4010,8 @@ namespace Chummer
                                                 return -1;
                                             }
 
-                                            stream.Write(new[] {(byte) (num >> 16), (byte) (num >> 8)}, 0, 2);
+                                            using (TemporaryArray<byte> aParams = new TemporaryArray<byte>((byte)(num >> 16), (byte)(num >> 8)))
+                                                stream.Write(aParams.RawArray, 0, 2);
                                             num = 255u;
                                             break;
                                         }
@@ -4063,7 +4064,8 @@ namespace Chummer
                                     return -1;
                                 }
 
-                                stream.Write(new[] {(byte) (num >> 16), (byte) (num >> 8), (byte) num}, 0, 3);
+                                using (TemporaryArray<byte> aParams = new TemporaryArray<byte>((byte)(num >> 16), (byte)(num >> 8), (byte)num))
+                                    stream.Write(aParams.RawArray, 0, 3);
                                 num = 255u;
                             }
                         }
