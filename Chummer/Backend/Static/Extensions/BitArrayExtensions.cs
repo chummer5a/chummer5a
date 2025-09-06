@@ -79,9 +79,7 @@ namespace Chummer
                 ++intMaskSize;
             int intReturn = 0;
             // Can't use stackalloc because BitArray doesn't have a CopyTo implementation that works with span
-            int[] aintToCountMask = intMaskSize > GlobalSettings.MaxStackLimit
-                ? ArrayPool<int>.Shared.Rent(intMaskSize)
-                : new int[intMaskSize];
+            int[] aintToCountMask = ArrayPool<int>.Shared.Rent(intMaskSize);
             try
             {
                 ablnToCount.CopyTo(aintToCountMask, 0);
@@ -103,8 +101,7 @@ namespace Chummer
             }
             finally
             {
-                if (intMaskSize > GlobalSettings.MaxStackLimit)
-                    ArrayPool<int>.Shared.Return(aintToCountMask);
+                ArrayPool<int>.Shared.Return(aintToCountMask);
             }
             return intReturn;
         }

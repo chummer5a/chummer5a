@@ -93,34 +93,48 @@ namespace Chummer
                     }
                 }
 
-                string[] story = new string[modules.Count];
-                Task<string>[] atskStoryTasks = new Task<string>[modules.Count];
-                XPathNavigator xmlBaseMacrosNode = xdoc
-                    .SelectSingleNodeAndCacheExpression(
-                        "/chummer/storybuilder/macros", token: token);
-                //Actually "write" the story
-                for (int i = 0; i < modules.Count; ++i)
+                string[] story = ArrayPool<string>.Shared.Rent(modules.Count);
+                try
                 {
-                    int intLocal = i;
-                    atskStoryTasks[i] = Task.Run(async () =>
+                    Task<string>[] atskStoryTasks = ArrayPool<Task<string>>.Shared.Rent(modules.Count);
+                    try
                     {
-                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                   out StringBuilder sbdTemp))
+                        XPathNavigator xmlBaseMacrosNode = xdoc
+                            .SelectSingleNodeAndCacheExpression(
+                                "/chummer/storybuilder/macros", token: token);
+                        //Actually "write" the story
+                        for (int i = 0; i < modules.Count; ++i)
                         {
-                            return (await Write(sbdTemp, modules[intLocal]["story"]?.InnerText ?? string.Empty, 5,
-                                xmlBaseMacrosNode, token).ConfigureAwait(false)).ToString();
+                            int intLocal = i;
+                            atskStoryTasks[i] = Task.Run(async () =>
+                            {
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                           out StringBuilder sbdTemp))
+                                {
+                                    return (await Write(sbdTemp, modules[intLocal]["story"]?.InnerText ?? string.Empty, 5,
+                                        xmlBaseMacrosNode, token).ConfigureAwait(false)).ToString();
+                                }
+                            }, token);
                         }
-                    }, token);
+
+                        await Task.WhenAll(atskStoryTasks).ConfigureAwait(false);
+
+                        for (int i = 0; i < modules.Count; ++i)
+                        {
+                            story[i] = await atskStoryTasks[i].ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        ArrayPool<Task<string>>.Shared.Return(atskStoryTasks);
+                    }
+
+                    return string.Join(Environment.NewLine + Environment.NewLine, story);
                 }
-
-                await Task.WhenAll(atskStoryTasks).ConfigureAwait(false);
-
-                for (int i = 0; i < modules.Count; ++i)
+                finally
                 {
-                    story[i] = await atskStoryTasks[i].ConfigureAwait(false);
+                    ArrayPool<string>.Shared.Return(story);
                 }
-
-                return string.Join(Environment.NewLine + Environment.NewLine, story);
             }
             finally
             {

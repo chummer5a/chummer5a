@@ -446,21 +446,35 @@ namespace Codaxy.WkHtmlToPdf
                 {
                     if (woutput.OutputCallback != null || woutput.OutputCallbackAsync != null)
                     {
-                        byte[] pdfFileBytes = File.ReadAllBytes(outputPdfFilePath);
-                        woutput.OutputCallback?.Invoke(document, pdfFileBytes);
-                        if (woutput.OutputCallbackAsync != null)
+                        byte[] pdfFileBytes = FileExtensions.ReadAllBytesToPooledArray(outputPdfFilePath);
+                        try
                         {
-                            Utils.SafelyRunSynchronously(() => woutput.OutputCallbackAsync(document, pdfFileBytes, token), token);
+                            woutput.OutputCallback?.Invoke(document, pdfFileBytes);
+                            if (woutput.OutputCallbackAsync != null)
+                            {
+                                Utils.SafelyRunSynchronously(() => woutput.OutputCallbackAsync(document, pdfFileBytes, token), token);
+                            }
+                        }
+                        finally
+                        {
+                            ArrayPool<byte>.Shared.Return(pdfFileBytes);
                         }
                     }
                 }
                 else if (woutput.OutputCallback != null || woutput.OutputCallbackAsync != null)
                 {
-                    byte[] pdfFileBytes = await FileExtensions.ReadAllBytesAsync(outputPdfFilePath, token).ConfigureAwait(false);
-                    woutput.OutputCallback?.Invoke(document, pdfFileBytes);
-                    if (woutput.OutputCallbackAsync != null)
+                    byte[] pdfFileBytes = await FileExtensions.ReadAllBytesToPooledArrayAsync(outputPdfFilePath, token).ConfigureAwait(false);
+                    try
                     {
-                        await woutput.OutputCallbackAsync(document, pdfFileBytes, token).ConfigureAwait(false);
+                        woutput.OutputCallback?.Invoke(document, pdfFileBytes);
+                        if (woutput.OutputCallbackAsync != null)
+                        {
+                            await woutput.OutputCallbackAsync(document, pdfFileBytes, token).ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(pdfFileBytes);
                     }
                 }
             }

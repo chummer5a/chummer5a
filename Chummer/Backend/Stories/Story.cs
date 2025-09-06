@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -258,27 +259,35 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (_blnNeedToRegeneratePersistents)
                     await GeneratePersistentsAsync(objCulture, strLanguage, token).ConfigureAwait(false);
-                string[] strModuleOutputStrings;
-                IAsyncDisposable objLocker2 = await Modules.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                string[] astrModuleOutputStrings = null;
                 try
                 {
-                    token.ThrowIfCancellationRequested();
-                    int intCount = await Modules.GetCountAsync(token).ConfigureAwait(false);
-                    strModuleOutputStrings = new string[intCount];
-                    for (int i = 0; i < intCount; ++i)
+                    IAsyncDisposable objLocker2 = await Modules.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        strModuleOutputStrings[i]
-                            = await (await Modules.GetValueAtAsync(i, token).ConfigureAwait(false))
-                                .PrintModule(objCulture, strLanguage, token)
-                                .ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        int intCount = await Modules.GetCountAsync(token).ConfigureAwait(false);
+                        astrModuleOutputStrings = ArrayPool<string>.Shared.Rent(intCount);
+                        for (int i = 0; i < intCount; ++i)
+                        {
+                            astrModuleOutputStrings[i]
+                                = await (await Modules.GetValueAtAsync(i, token).ConfigureAwait(false))
+                                    .PrintModule(objCulture, strLanguage, token)
+                                    .ConfigureAwait(false);
+                        }
                     }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    return string.Concat(astrModuleOutputStrings);
                 }
                 finally
                 {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    if (astrModuleOutputStrings != null)
+                        ArrayPool<string>.Shared.Return(astrModuleOutputStrings);
                 }
-
-                return string.Concat(strModuleOutputStrings);
             }
             finally
             {

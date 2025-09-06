@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
+using System.Buffers;
 
 namespace Chummer
 {
@@ -393,6 +394,79 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 await objFileStream.WriteAsync(achrBytes, 0, achrBytes.Length, token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// An extended version of File.ReadAllBytes() that returns an array taken from ArrayPool{byte}.Shared.
+        /// </summary>
+        /// <param name="strPath">The file to open for reading.</param>
+        public static byte[] ReadAllBytesToPooledArray(string strPath)
+        {
+            if (string.IsNullOrEmpty(strPath) || !File.Exists(strPath))
+                return Array.Empty<byte>();
+            using (FileStream objFileStream = new FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+            {
+                long lngLength = objFileStream.Length;
+                if (lngLength == 0)
+                    return Array.Empty<byte>();
+                int intCount = lngLength <= int.MaxValue ? (int)lngLength : throw new IOException("File too large.");
+                byte[] achrReturn = ArrayPool<byte>.Shared.Rent(intCount);
+                try
+                {
+                    int intLoop;
+                    for (int intOffset = 0; intCount > 0; intCount -= intLoop)
+                    {
+                        intLoop = objFileStream.Read(achrReturn, intOffset, intCount);
+                        if (intLoop == 0)
+                            throw new EndOfStreamException();
+                        intOffset += intLoop;
+                    }
+                    return achrReturn;
+                }
+                catch
+                {
+                    ArrayPool<byte>.Shared.Return(achrReturn);
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        /// An extended version of File.ReadAllBytes() that is asynchronous and returns an array taken from ArrayPool{byte}.Shared.
+        /// </summary>
+        /// <param name="strPath">The file to open for reading.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<byte[]> ReadAllBytesToPooledArrayAsync(string strPath, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strPath) || !File.Exists(strPath))
+                return Array.Empty<byte>();
+            using (FileStream objFileStream = new FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+            {
+                long lngLength = objFileStream.Length;
+                if (lngLength == 0)
+                    return Array.Empty<byte>();
+                int intCount = lngLength <= int.MaxValue ? (int)lngLength : throw new IOException("File too large.");
+                byte[] achrReturn = ArrayPool<byte>.Shared.Rent(intCount);
+                try
+                {
+                    int intLoop;
+                    for (int intOffset = 0; intCount > 0; intCount -= intLoop)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        intLoop = await objFileStream.ReadAsync(achrReturn, intOffset, intCount, token).ConfigureAwait(false);
+                        if (intLoop == 0)
+                            throw new EndOfStreamException();
+                        intOffset += intLoop;
+                    }
+                    return achrReturn;
+                }
+                catch
+                {
+                    ArrayPool<byte>.Shared.Return(achrReturn);
+                    throw;
+                }
             }
         }
     }

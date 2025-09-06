@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -403,23 +404,30 @@ namespace Chummer
                     }
                 }
 
-                string[] lstOutputStrings = new string[lstSubstrings.Count];
-                for (int i = 0; i < lstSubstrings.Count; ++i)
+                string[] astrOutputStrings = ArrayPool<string>.Shared.Rent(lstSubstrings.Count);
+                try
                 {
-                    (string strContent, bool blnContainsMacros) = lstSubstrings[i];
-                    if (blnContainsMacros)
+                    for (int i = 0; i < lstSubstrings.Count; ++i)
                     {
-                        lstOutputStrings[i] = await ProcessSingleMacro(strContent, objCulture, strLanguage,
-                                                                       blnGeneratePersistents, token)
-                            .ConfigureAwait(false);
+                        (string strContent, bool blnContainsMacros) = lstSubstrings[i];
+                        if (blnContainsMacros)
+                        {
+                            astrOutputStrings[i] = await ProcessSingleMacro(strContent, objCulture, strLanguage,
+                                                                           blnGeneratePersistents, token)
+                                .ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            astrOutputStrings[i] = strContent;
+                        }
                     }
-                    else
-                    {
-                        lstOutputStrings[i] = strContent;
-                    }
-                }
 
-                return string.Concat(lstOutputStrings);
+                    return string.Concat(astrOutputStrings);
+                }
+                finally
+                {
+                    ArrayPool<string>.Shared.Return(astrOutputStrings);
+                }
             }
             finally
             {
