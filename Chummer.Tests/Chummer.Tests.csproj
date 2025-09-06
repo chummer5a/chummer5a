@@ -165,7 +165,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="MSTest" Version="3.10.2" />
+    <PackageReference Include="MSTest" Version="3.10.4" />
     <PackageReference Include="XMLUnit.Core" Version="2.11.1" />
   </ItemGroup>
 </Project>
