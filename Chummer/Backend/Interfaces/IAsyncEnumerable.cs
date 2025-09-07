@@ -169,6 +169,225 @@ namespace Chummer
             return await ToListAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Version of LINQ's ElementAt() that also supports IReadOnlyList
+        /// </summary>
+        public static async Task<T> ElementAtBetterAsync<T>(this IAsyncEnumerable<T> source, int index, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (source is IAsyncReadOnlyList<T> list1)
+                return await list1.GetValueAtAsync(index, token).ConfigureAwait(false);
+            // Just in case we have classes that inherit from IList but not from IReadOnlyList
+            if (source is IAsyncList<T> list2)
+                return await list2.GetValueAtAsync(index, token).ConfigureAwait(false);
+            if (index < 0)
+                throw new ArgumentOutOfRangeException(nameof(index));
+            IEnumerator<T> objEnumerator = await source.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (index-- == 0)
+                        return objEnumerator.Current;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            throw new ArgumentOutOfRangeException(nameof(index));
+        }
+
+        /// <summary>
+        /// Version of LINQ's ElementAtOrDefault() that also supports IReadOnlyList
+        /// </summary>
+        public static async Task<T> ElementAtOrDefaultBetterAsync<T>(this IAsyncEnumerable<T> source, int index, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (index >= 0)
+            {
+                if (source is IAsyncReadOnlyList<T> list1)
+                {
+                    if (index < await list1.GetCountAsync(token).ConfigureAwait(false))
+                    {
+                        return await list1.GetValueAtAsync(index, token).ConfigureAwait(false);
+                    }
+                }
+                // Just in case we have classes that inherit from IList but not from IReadOnlyList
+                else if (source is IAsyncList<T> list2)
+                {
+                    if (index < await list2.GetCountAsync(token).ConfigureAwait(false))
+                    {
+                        return await list2.GetValueAtAsync(index, token).ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    IEnumerator<T> objEnumerator = await source.GetEnumeratorAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            if (index-- == 0)
+                                return objEnumerator.Current;
+                        }
+                    }
+                    finally
+                    {
+                        if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                            await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                        else
+                            objEnumerator.Dispose();
+                    }
+                }
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Get a HashCode representing the contents of an enumerable (instead of just of the pointer to the location where the enumerable would start)
+        /// </summary>
+        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <param name="lstItems">The collection containing the contents</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
+        public static async Task<int> GetEnsembleHashCodeAsync<T>(this IAsyncEnumerable<T> lstItems, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstItems == null)
+                return 0;
+            unchecked
+            {
+                // uint to prevent overflows
+                uint result = 19u;
+                IEnumerator<T> objEnumerator = await lstItems.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        result = result * 31u + (uint)objEnumerator.Current.GetHashCode();
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
+                }
+
+                return (int)result;
+            }
+        }
+
+        /// <summary>
+        /// Get a HashCode representing the contents of an enumerable (instead of just of the pointer to the location where the enumerable would start) in a way where the order of the items is irrelevant
+        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
+        /// </summary>
+        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <param name="lstItems">The collection containing the contents</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
+        public static async Task<int> GetOrderInvariantEnsembleHashCodeAsync<T>(this IAsyncEnumerable<T> lstItems, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstItems == null)
+                return 0;
+            // uint to prevent overflows
+            unchecked
+            {
+                uint result = 0;
+                IEnumerator<T> objEnumerator = await lstItems.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        result += (uint)objEnumerator.Current.GetHashCode();
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
+                }
+                return (int)(19u + result * 31u);
+            }
+        }
+
+        /// <summary>
+        /// Get a HashCode representing the contents of a collection in a way where the order of the items is irrelevant
+        /// This is a parallelized version of GetOrderInvariantEnsembleHashCode meant to be used for large collections
+        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
+        /// </summary>
+        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <param name="lstItems">The collection containing the contents</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
+        public static async Task<int> GetOrderInvariantEnsembleHashCodeParallelAsync<T>(this IAsyncEnumerable<T> lstItems, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstItems == null)
+                return 0;
+            List<Task<int>> lstTasks = lstItems is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            // uint to prevent overflows
+            unchecked
+            {
+                uint result = 0;
+                IEnumerator<T> objEnumerator = await lstItems.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    bool blnMoveNext = objEnumerator.MoveNext();
+                    while (blnMoveNext)
+                    {
+                        for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            T objCurrent = objEnumerator.Current;
+                            lstTasks.Add(Task.Run(() => objCurrent.GetHashCode(), token));
+                            blnMoveNext = objEnumerator.MoveNext();
+                        }
+
+                        if (blnMoveNext)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            foreach (Task<int> tskLoop in lstTasks)
+                                result += (uint)await tskLoop.ConfigureAwait(false);
+                            lstTasks.Clear();
+                        }
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
+                }
+                token.ThrowIfCancellationRequested();
+                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                foreach (Task<int> tskLoop in lstTasks)
+                    result += (uint)await tskLoop.ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                return (int)(19u + result * 31u);
+            }
+        }
+
         public static bool Any<T>(this IAsyncEnumerable<T> objEnumerable, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

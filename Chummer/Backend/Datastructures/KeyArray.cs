@@ -21,6 +21,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -39,6 +41,19 @@ namespace Chummer
             _aobjItems = lstItems.ToArray();
             _intLength = _aobjItems.Length;
             _intHashCode = _aobjItems.GetEnsembleHashCode();
+        }
+
+        private KeyArray(T[] aobjItems)
+        {
+            _aobjItems = aobjItems;
+            _intLength = _aobjItems.Length;
+            _intHashCode = _aobjItems.GetEnsembleHashCode();
+        }
+
+        public async Task<KeyArray<T>> NewAsync(IAsyncEnumerable<T> lstItems, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return new KeyArray<T>((await lstItems.ToListAsync(token).ConfigureAwait(false)).ToArray());
         }
 
         /// <inheritdoc />
