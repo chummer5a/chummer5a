@@ -1665,7 +1665,7 @@ namespace Chummer
 
                         string strTemp = string.Empty;
                         string strExtraNoQuotes = strReturn.FastEscape('\"');
-                        IReadOnlyList<string> lstCustomDataPaths = null;
+                        IReadOnlyCollection<string> lstCustomDataPaths = null;
                         if (objCharacter != null)
                         {
                             if (blnSync)
@@ -1811,12 +1811,12 @@ namespace Chummer
                                 }
                             }
 
-                            string FindString(string strPreferredFileName = "", IReadOnlyList<string> lstInnerCustomDataPaths = null,
+                            string FindString(string strPreferredFileName = "", IReadOnlyCollection<string> lstInnerCustomDataPaths = null,
                                 CancellationToken innerToken = default)
                             {
                                 innerToken.ThrowIfCancellationRequested();
                                 string strInnerReturn = string.Empty;
-                                foreach (IReadOnlyList<Tuple<string, XPathExpression, Func<XPathNavigator, string>,
+                                foreach (IReadOnlyCollection<Tuple<string, XPathExpression, Func<XPathNavigator, string>,
                                              Func<XPathNavigator, string>>> aobjPaths
                                          in s_LstAXPathsToSearch)
                                 {
@@ -1905,12 +1905,12 @@ namespace Chummer
                                 return strInnerReturn;
                             }
 
-                            async Task<string> FindStringAsync(string strPreferredFileName = "", IReadOnlyList<string> lstInnerCustomDataPaths = null,
+                            async Task<string> FindStringAsync(string strPreferredFileName = "", IReadOnlyCollection<string> lstInnerCustomDataPaths = null,
                                 CancellationToken innerToken = default)
                             {
                                 innerToken.ThrowIfCancellationRequested();
                                 List<Task<string>> lstTasks = new List<Task<string>>(Utils.MaxParallelBatchSize);
-                                foreach (IReadOnlyList<Tuple<string, XPathExpression, Func<XPathNavigator, string>,
+                                foreach (IReadOnlyCollection<Tuple<string, XPathExpression, Func<XPathNavigator, string>,
                                              Func<XPathNavigator, string>>> aobjPaths
                                          in s_LstAXPathsToSearch)
                                 {
@@ -2004,7 +2004,7 @@ namespace Chummer
 
                                 return string.Empty;
 
-                                async Task<string> FetchAndReturnString(string strDoc, IReadOnlyList<string> lstInnerCustomDataPaths2,
+                                async Task<string> FetchAndReturnString(string strDoc, IReadOnlyCollection<string> lstInnerCustomDataPaths2,
                                         XPathExpression xprExpression,
                                         Func<XPathNavigator, string> funcEnglish,
                                         Func<XPathNavigator, string> funcTranslated,
@@ -2254,7 +2254,7 @@ namespace Chummer
 
             string strTemp = string.Empty;
             string strExtraNoQuotes = strReturn.FastEscape('\"');
-            IReadOnlyList<string> lstCustomDataPaths = null;
+            IReadOnlyCollection<string> lstCustomDataPaths = null;
             if (objCharacter != null)
             {
                 if (blnSync)
@@ -2387,11 +2387,11 @@ namespace Chummer
                     }
                 }
 
-                string FindString(string strPreferredFileName = "", IReadOnlyList<string> lstInnerCustomDataPaths = null, CancellationToken innerToken = default)
+                string FindString(string strPreferredFileName = "", IReadOnlyCollection<string> lstInnerCustomDataPaths = null, CancellationToken innerToken = default)
                 {
                     innerToken.ThrowIfCancellationRequested();
                     string strInnerReturn = string.Empty;
-                    foreach (IReadOnlyList<Tuple<string, XPathExpression, Func<XPathNavigator, string>,
+                    foreach (IReadOnlyCollection<Tuple<string, XPathExpression, Func<XPathNavigator, string>,
                                      Func<XPathNavigator, string>>>
                                  aobjPaths
                              in s_LstAXPathsToSearch)
@@ -2480,12 +2480,12 @@ namespace Chummer
                     return strInnerReturn;
                 }
 
-                async Task<string> FindStringAsync(string strPreferredFileName = "", IReadOnlyList<string> lstInnerCustomDataPaths = null,
+                async Task<string> FindStringAsync(string strPreferredFileName = "", IReadOnlyCollection<string> lstInnerCustomDataPaths = null,
                                 CancellationToken innerToken = default)
                 {
                     innerToken.ThrowIfCancellationRequested();
                     List<Task<string>> lstTasks = new List<Task<string>>(Utils.MaxParallelBatchSize);
-                    foreach (IReadOnlyList<Tuple<string, XPathExpression, Func<XPathNavigator, string>,
+                    foreach (IReadOnlyCollection<Tuple<string, XPathExpression, Func<XPathNavigator, string>,
                                  Func<XPathNavigator, string>>> aobjPaths
                              in s_LstAXPathsToSearch)
                     {
@@ -2579,7 +2579,7 @@ namespace Chummer
 
                     return string.Empty;
 
-                    async Task<string> FetchAndReturnString(string strDoc, IReadOnlyList<string> lstInnerCustomDataPaths2,
+                    async Task<string> FetchAndReturnString(string strDoc, IReadOnlyCollection<string> lstInnerCustomDataPaths2,
                             XPathExpression xprExpression,
                             Func<XPathNavigator, string> funcEnglish,
                             Func<XPathNavigator, string> funcTranslated,
