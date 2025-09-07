@@ -323,7 +323,7 @@ namespace Chummer
                                     x.SelectedIndex = 0;
                             }, _objGenericToken).ConfigureAwait(false);
                             //Selected Magical Bonus Skill
-                            string strSkill = _lstPrioritySkills.ElementAtOrDefault(0);
+                            string strSkill = _lstPrioritySkills.ElementAtOrDefaultBetter(0);
                             if (!string.IsNullOrEmpty(strSkill))
                             {
                                 if (await ExoticSkill.IsExoticSkillNameAsync(_objCharacter, strSkill, _objGenericToken).ConfigureAwait(false))
@@ -336,7 +336,7 @@ namespace Chummer
                                 await cboSkill1.DoThreadSafeAsync(x => x.SelectedValue = strSkill, _objGenericToken).ConfigureAwait(false);
                             }
 
-                            string strSkill2 = _lstPrioritySkills.ElementAtOrDefault(1);
+                            string strSkill2 = _lstPrioritySkills.ElementAtOrDefaultBetter(1);
                             if (!string.IsNullOrEmpty(strSkill2))
                             {
                                 if (await ExoticSkill.IsExoticSkillNameAsync(_objCharacter, strSkill2, _objGenericToken).ConfigureAwait(false))
@@ -349,7 +349,7 @@ namespace Chummer
                                 await cboSkill2.DoThreadSafeAsync(x => x.SelectedValue = strSkill2, _objGenericToken).ConfigureAwait(false);
                             }
 
-                            string strSkill3 = _lstPrioritySkills.ElementAtOrDefault(2);
+                            string strSkill3 = _lstPrioritySkills.ElementAtOrDefaultBetter(2);
                             if (!string.IsNullOrEmpty(strSkill3))
                             {
                                 if (await ExoticSkill.IsExoticSkillNameAsync(_objCharacter, strSkill3, _objGenericToken).ConfigureAwait(false))

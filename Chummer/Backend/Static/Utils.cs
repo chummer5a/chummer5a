@@ -1878,22 +1878,22 @@ namespace Chummer
         /// <param name="afuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RunWithoutThreadLock(Action[] afuncToRun, CancellationToken token)
+        public static void RunWithoutThreadLock(IReadOnlyCollection<Action> afuncToRun, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            switch (afuncToRun.Length)
+            switch (afuncToRun.Count)
             {
                 case 0:
                     return;
                 case 1:
-                    RunWithoutThreadLock(afuncToRun[0], token);
+                    RunWithoutThreadLock(afuncToRun.ElementAtBetter(0), token);
                     return;
             }
 
             if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
             {
                 if (token == CancellationToken.None)
-                    Parallel.Invoke(afuncToRun);
+                    Parallel.ForEach(afuncToRun, x => x.Invoke());
                 else
                 {
                     token.ThrowIfCancellationRequested();
@@ -1908,7 +1908,7 @@ namespace Chummer
             }
 
             Task objTask = token == CancellationToken.None
-                ? Task.Run(() => Parallel.Invoke(afuncToRun), token)
+                ? Task.Run(() => Parallel.ForEach(afuncToRun, x => x.Invoke()), token)
                 : Task.Run(() =>
                 {
                     ParallelOptions objOptions = new ParallelOptions
@@ -1989,7 +1989,7 @@ namespace Chummer
         /// <param name="lstFuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T[] RunWithoutThreadLock<T>(IReadOnlyList<Func<T>> lstFuncToRun, CancellationToken token = default)
+        public static T[] RunWithoutThreadLock<T>(IReadOnlyCollection<Func<T>> lstFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             int intLength = lstFuncToRun.Count;
@@ -1998,7 +1998,7 @@ namespace Chummer
             T[] aobjReturn = new T[intLength];
             if (intLength == 1)
             {
-                aobjReturn[0] = RunWithoutThreadLock(lstFuncToRun[0], token);
+                aobjReturn[0] = RunWithoutThreadLock(lstFuncToRun.ElementAtBetter(0), token);
                 return aobjReturn;
             }
             if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
@@ -2009,7 +2009,7 @@ namespace Chummer
                     CancellationToken = token
                 };
                 Parallel.For(0, intLength, objOptions, () => new Tuple<T, int>(default, 0),
-                    (i, x, y) => new Tuple<T, int>(lstFuncToRun[i].Invoke(), i), x => aobjReturn[x.Item2] = x.Item1);
+                    (i, x, y) => new Tuple<T, int>(lstFuncToRun.ElementAtBetter(i).Invoke(), i), x => aobjReturn[x.Item2] = x.Item1);
                 token.ThrowIfCancellationRequested();
                 return aobjReturn;
             }
@@ -2031,7 +2031,7 @@ namespace Chummer
                     intOffset += MaxParallelBatchSize;
                     lstTasks.Clear();
                 }
-                lstTasks.Add(Task.Run(lstFuncToRun[i], token));
+                lstTasks.Add(Task.Run(lstFuncToRun.ElementAtBetter(i), token));
             }
             int intFinalBatchSize = lstTasks.Count;
             if (intFinalBatchSize != 0)
@@ -2119,7 +2119,7 @@ namespace Chummer
         /// <param name="lstFuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T[] RunWithoutThreadLock<T>(IReadOnlyList<Func<Task<T>>> lstFuncToRun, CancellationToken token)
+        public static T[] RunWithoutThreadLock<T>(IReadOnlyCollection<Func<Task<T>>> lstFuncToRun, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             int intLength = lstFuncToRun.Count;
@@ -2128,7 +2128,7 @@ namespace Chummer
             T[] aobjReturn = new T[intLength];
             if (intLength == 1)
             {
-                aobjReturn[0] = RunWithoutThreadLock(lstFuncToRun[0], token);
+                aobjReturn[0] = RunWithoutThreadLock(lstFuncToRun.ElementAtBetter(0), token);
                 return aobjReturn;
             }
 
@@ -2154,7 +2154,7 @@ namespace Chummer
                             lstMainThreadTasks.Clear();
                         }
 
-                        lstMainThreadTasks.Add(Task.Run(lstFuncToRun[i], token));
+                        lstMainThreadTasks.Add(Task.Run(lstFuncToRun.ElementAtBetter(i), token));
                     }
                     await Task.Yield().ConfigureAwait(true);
                     int intMainThreadFinalBatchSize = lstMainThreadTasks.Count;
@@ -2177,7 +2177,7 @@ namespace Chummer
                 };
                 Parallel.For(0, intLength, objOptions, () => new Tuple<T, int>(default, 0), (i, x, y) =>
                 {
-                    Task<T> objSyncTask = lstFuncToRun[i].Invoke();
+                    Task<T> objSyncTask = lstFuncToRun.ElementAtBetter(i).Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
                     T objInnerReturn = objSyncTask.GetAwaiter().GetResult();
@@ -2206,7 +2206,7 @@ namespace Chummer
                     intOffset += MaxParallelBatchSize;
                     lstTasks.Clear();
                 }
-                lstTasks.Add(Task.Run(lstFuncToRun[i], token));
+                lstTasks.Add(Task.Run(lstFuncToRun.ElementAtBetter(i), token));
             }
             int intFinalBatchSize = lstTasks.Count;
             if (intFinalBatchSize != 0)
@@ -2384,7 +2384,7 @@ namespace Chummer
         /// <param name="lstFuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RunWithoutThreadLock(IReadOnlyList<Func<Task>> lstFuncToRun, CancellationToken token = default)
+        public static void RunWithoutThreadLock(IReadOnlyCollection<Func<Task>> lstFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             switch (lstFuncToRun.Count)
@@ -2392,7 +2392,7 @@ namespace Chummer
                 case 0:
                     return;
                 case 1:
-                    RunWithoutThreadLock(lstFuncToRun[0], token);
+                    RunWithoutThreadLock(lstFuncToRun.ElementAtBetter(0), token);
                     return;
             }
 

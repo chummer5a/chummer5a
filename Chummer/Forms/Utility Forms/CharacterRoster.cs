@@ -2794,16 +2794,12 @@ namespace Chummer
                 Name = "cmsRoster",
                 Size = new Size(intToolStripWidth, intToolStripHeight * 5)
             };
-            cmsRoster.Items.AddRange(new ToolStripItem[]
-            {
-                    tsToggleFav,
-                    tsSort,
-                    tsOpen,
-                    tsOpenForPrinting,
-                    tsOpenForExport,
-                    tsDelete
-            });
-
+            cmsRoster.Items.Add(tsToggleFav);
+            cmsRoster.Items.Add(tsSort);
+            cmsRoster.Items.Add(tsOpen);
+            cmsRoster.Items.Add(tsOpenForPrinting);
+            cmsRoster.Items.Add(tsOpenForExport);
+            cmsRoster.Items.Add(tsDelete);
             tsToggleFav.TranslateToolStripItemsRecursively(token: token);
             tsSort.TranslateToolStripItemsRecursively(token: token);
             tsOpen.TranslateToolStripItemsRecursively(token: token);

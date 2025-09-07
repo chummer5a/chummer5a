@@ -49,20 +49,6 @@ namespace Chummer
             }
         }
 
-        public TemporaryArray(ICollection<T> items)
-        {
-            _intSize = items.Count;
-            if (_intSize == 0)
-                _aobjInternal = Array.Empty<T>();
-            else
-            {
-                _aobjInternal = ArrayPool<T>.Shared.Rent(_intSize);
-                int i = 0;
-                foreach (T item in items)
-                    _aobjInternal[i++] = item;
-            }
-        }
-
         public TemporaryArray(IReadOnlyCollection<T> items)
         {
             _intSize = items.Count;
@@ -74,19 +60,6 @@ namespace Chummer
                 int i = 0;
                 foreach (T item in items)
                     _aobjInternal[i++] = item;
-            }
-        }
-
-        public TemporaryArray(IList<T> items)
-        {
-            _intSize = items.Count;
-            if (_intSize == 0)
-                _aobjInternal = Array.Empty<T>();
-            else
-            {
-                _aobjInternal = ArrayPool<T>.Shared.Rent(_intSize);
-                for (int i = 0; i < _intSize; ++i)
-                    _aobjInternal[i] = items[i];
             }
         }
 

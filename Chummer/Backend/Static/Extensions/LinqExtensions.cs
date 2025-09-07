@@ -29,6 +29,70 @@ namespace Chummer
     public static class LinqExtensions
     {
         /// <summary>
+        /// Version of LINQ's ElementAt() that also supports IReadOnlyList
+        /// </summary>
+        public static T ElementAtBetter<T>(this IEnumerable<T> source, int index)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (source is IReadOnlyList<T> list1)
+                return list1[index];
+            // Just in case we have classes that inherit from IList but not from IReadOnlyList
+            if (source is IList<T> list2)
+                return list2[index];
+            if (index < 0)
+                throw new ArgumentOutOfRangeException(nameof(index));
+            using (IEnumerator<T> enumerator = source.GetEnumerator())
+            {
+                while (enumerator.MoveNext())
+                {
+                    if (index-- == 0)
+                        return enumerator.Current;
+                }
+            }
+            throw new ArgumentOutOfRangeException(nameof(index));
+        }
+
+        /// <summary>
+        /// Version of LINQ's ElementAtOrDefault() that also supports IReadOnlyList
+        /// </summary>
+        public static T ElementAtOrDefaultBetter<T>(this IEnumerable<T> source, int index)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (index >= 0)
+            {
+                if (source is IReadOnlyList<T> list1)
+                {
+                    if (index < list1.Count)
+                    {
+                        return list1[index];
+                    }
+                }
+                // Just in case we have classes that inherit from IList but not from IReadOnlyList
+                else if (source is IList<T> list2)
+                {
+                    if (index < list2.Count)
+                    {
+                        return list2[index];
+                    }
+                }
+                else
+                {
+                    using (IEnumerator<T> enumerator = source.GetEnumerator())
+                    {
+                        while (enumerator.MoveNext())
+                        {
+                            if (index-- == 0)
+                                return enumerator.Current;
+                        }
+                    }
+                }
+            }
+            return default;
+        }
+
+        /// <summary>
         /// Similar to LINQ's Aggregate(), but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static TSource DeepAggregate<TSource, T2>(this IEnumerable<TSource> objParentList, Func<TSource, T2> funcGetChildrenMethod, Func<TSource, TSource, TSource> funcAggregate) where T2 : IEnumerable<TSource>
@@ -493,7 +557,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+                        return funcSelector.Invoke(objTemp.ElementAtBetter(0));
 
                     default:
                         lstTasks = new List<Task<int>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
@@ -540,7 +604,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp.ElementAtBetter(0)), token);
 
                     default:
                         lstTasks = new List<Task<int>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
@@ -587,7 +651,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+                        return funcSelector.Invoke(objTemp.ElementAtBetter(0));
 
                     default:
                         lstTasks = new List<Task<long>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
@@ -634,7 +698,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp.ElementAtBetter(0)), token);
 
                     default:
                         lstTasks = new List<Task<long>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
@@ -681,7 +745,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+                        return funcSelector.Invoke(objTemp.ElementAtBetter(0));
 
                     default:
                         lstTasks = new List<Task<float>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
@@ -728,7 +792,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp.ElementAtBetter(0)), token);
 
                     default:
                         lstTasks = new List<Task<float>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
@@ -775,7 +839,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+                        return funcSelector.Invoke(objTemp.ElementAtBetter(0));
 
                     default:
                         lstTasks = new List<Task<double>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
@@ -822,7 +886,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp.ElementAtBetter(0)), token);
 
                     default:
                         lstTasks = new List<Task<double>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
@@ -869,7 +933,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+                        return funcSelector.Invoke(objTemp.ElementAtBetter(0));
 
                     default:
                         lstTasks = new List<Task<decimal>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
@@ -916,7 +980,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp.ElementAtBetter(0)), token);
 
                     default:
                         lstTasks = new List<Task<decimal>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
@@ -963,7 +1027,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1011,7 +1075,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objFirstElement), token) : 0;
 
                     default:
@@ -1059,7 +1123,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1107,7 +1171,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objFirstElement), token) : 0;
 
                     default:
@@ -1155,7 +1219,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1203,7 +1267,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objFirstElement), token) : 0;
 
                     default:
@@ -1251,7 +1315,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1299,7 +1363,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objFirstElement), token) : 0;
 
                     default:
@@ -1347,7 +1411,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1395,7 +1459,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objFirstElement), token) : 0;
 
                     default:
@@ -1443,7 +1507,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1491,7 +1555,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
@@ -1539,7 +1603,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1587,7 +1651,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
@@ -1635,7 +1699,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1683,7 +1747,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
@@ -1731,7 +1795,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1779,7 +1843,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
@@ -1827,7 +1891,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1875,7 +1939,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:

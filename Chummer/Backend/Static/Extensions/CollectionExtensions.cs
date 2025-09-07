@@ -78,7 +78,7 @@ namespace Chummer
                 {
                     if (token.IsCancellationRequested)
                         state.Stop();
-                    return state.IsStopped ? 0 : lstItems.ElementAt(i).GetHashCode();
+                    return state.IsStopped ? 0 : lstItems.ElementAtBetter(i).GetHashCode();
                 }, localResult => result += (uint)localResult);
                 token.ThrowIfCancellationRequested();
                 return (int)(19 + result * 31);

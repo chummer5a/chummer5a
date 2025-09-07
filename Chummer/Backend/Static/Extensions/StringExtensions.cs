@@ -1603,7 +1603,7 @@ namespace Chummer
         /// <param name="blnWhitelist">Whether the list of chars is a whitelist and the string can only contain characters in the list (true) or a blacklist and the string cannot contain any characts in the list (false).</param>
         /// <param name="achrChars">List of chars against which to check the string.</param>
         /// <returns>True if the string contains only legal characters, false if the string contains at least one illegal character.</returns>
-        public static bool IsLegalCharsOnly(this string strInput, bool blnWhitelist, IReadOnlyList<char> achrChars)
+        public static bool IsLegalCharsOnly(this string strInput, bool blnWhitelist, IReadOnlyCollection<char> achrChars)
         {
             if (strInput == null)
                 return false;
@@ -1619,7 +1619,7 @@ namespace Chummer
                 bool blnCharIsInList = false;
                 for (int j = 0; j < intLegalCharsLength; ++j)
                 {
-                    if (chrLoop == achrChars[j])
+                    if (chrLoop == achrChars.ElementAtBetter(j))
                     {
                         blnCharIsInList = true;
                         break;

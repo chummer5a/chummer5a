@@ -41240,7 +41240,7 @@ namespace Chummer
                 }
 
                 string strReturn = CurrentWalkingRateString.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
-                                                           .ElementAtOrDefault(intIndexToGet);
+                                                           .ElementAtOrDefaultBetter(intIndexToGet);
                 if (strReturn != null)
                     decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                      out decTmp);
@@ -41280,7 +41280,7 @@ namespace Chummer
 
                 string strReturn = (await GetCurrentWalkingRateStringAsync(token).ConfigureAwait(false))
                                    .SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
-                                   .ElementAtOrDefault(intIndexToGet);
+                                   .ElementAtOrDefaultBetter(intIndexToGet);
                 if (strReturn != null)
                     decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                      out decTmp);
@@ -41321,7 +41321,7 @@ namespace Chummer
                 }
 
                 string strReturn = CurrentRunningRateString.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
-                                                           .ElementAtOrDefault(intIndexToGet);
+                                                           .ElementAtOrDefaultBetter(intIndexToGet);
                 if (strReturn != null)
                     decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                      out decTmp);
@@ -41361,7 +41361,7 @@ namespace Chummer
 
                 string strReturn = (await GetCurrentRunningRateStringAsync(token).ConfigureAwait(false))
                                    .SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
-                                   .ElementAtOrDefault(intIndexToGet);
+                                   .ElementAtOrDefaultBetter(intIndexToGet);
                 if (strReturn != null)
                     decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                      out decTmp);
@@ -41402,7 +41402,7 @@ namespace Chummer
                 }
 
                 string strReturn = CurrentSprintingRateString.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
-                                                             .ElementAtOrDefault(intIndexToGet);
+                                                             .ElementAtOrDefaultBetter(intIndexToGet);
                 if (strReturn != null)
                     decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                      out decTmp);
@@ -41442,7 +41442,7 @@ namespace Chummer
 
                 string strReturn = (await GetCurrentSprintingRateStringAsync(token).ConfigureAwait(false))
                                    .SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
-                                   .ElementAtOrDefault(intIndexToGet);
+                                   .ElementAtOrDefaultBetter(intIndexToGet);
                 if (strReturn != null)
                     decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                      out decTmp);
