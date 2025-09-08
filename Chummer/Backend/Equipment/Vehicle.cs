@@ -5461,9 +5461,9 @@ namespace Chummer.Backend.Equipment
         /// Locate a VehicleMod within this vehicle based on a predicate.
         /// </summary>
         /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
-        public VehicleMod FindVehicleMod([NotNull] Func<VehicleMod, bool> funcPredicate)
+        public VehicleMod FindVehicleMod([NotNull] Func<VehicleMod, bool> funcPredicate, CancellationToken token = default)
         {
-            return FindVehicleMod(funcPredicate, out WeaponMount _);
+            return FindVehicleMod(funcPredicate, out WeaponMount _, token);
         }
 
         /// <summary>
@@ -5471,8 +5471,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
         /// <param name="objFoundWeaponMount">Weapon Mount that the VehicleMod was found in.</param>
-        public VehicleMod FindVehicleMod([NotNull] Func<VehicleMod, bool> funcPredicate, out WeaponMount objFoundWeaponMount)
+        public VehicleMod FindVehicleMod([NotNull] Func<VehicleMod, bool> funcPredicate, out WeaponMount objFoundWeaponMount, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             VehicleMod objMod = Mods.FirstOrDefault(funcPredicate);
             if (objMod != null)
             {
@@ -5482,6 +5483,7 @@ namespace Chummer.Backend.Equipment
 
             foreach (WeaponMount objMount in WeaponMounts)
             {
+                token.ThrowIfCancellationRequested();
                 objMod = objMount.Mods.FirstOrDefault(funcPredicate);
                 if (objMod != null)
                 {
@@ -5523,9 +5525,9 @@ namespace Chummer.Backend.Equipment
         /// Locate a piece of Gear within one of a character's Vehicles.
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>
-        public Gear FindVehicleGear(string strGuid)
+        public Gear FindVehicleGear(string strGuid, CancellationToken token = default)
         {
-            return FindVehicleGear(strGuid, out WeaponAccessory _, out Cyberware _);
+            return FindVehicleGear(strGuid, out WeaponAccessory _, out Cyberware _, token);
         }
 
         /// <summary>
@@ -5534,11 +5536,12 @@ namespace Chummer.Backend.Equipment
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
         /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
-        public Gear FindVehicleGear(string strGuid, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
+        public Gear FindVehicleGear(string strGuid, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
             {
-                Gear objReturn = GearChildren.DeepFindById(strGuid);
+                Gear objReturn = GearChildren.DeepFindById(strGuid, token);
                 if (objReturn != null)
                 {
                     objFoundWeaponAccessory = null;
@@ -5550,7 +5553,7 @@ namespace Chummer.Backend.Equipment
                 foreach (VehicleMod objMod in Mods)
                 {
                     // Weapon Accessories.
-                    objReturn = objMod.Weapons.FindWeaponGear(strGuid, out WeaponAccessory objAccessory);
+                    objReturn = objMod.Weapons.FindWeaponGear(strGuid, out WeaponAccessory objAccessory, token);
 
                     if (objReturn != null)
                     {
@@ -5560,7 +5563,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Cyberware.
-                    objReturn = objMod.Cyberware.FindCyberwareGear(strGuid, out Cyberware objCyberware);
+                    objReturn = objMod.Cyberware.FindCyberwareGear(strGuid, out Cyberware objCyberware, token);
 
                     if (objReturn != null)
                     {

@@ -307,7 +307,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync(
                     "DV", await objAmmoGear.WeaponBonusDamageAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("BonusRange",
-                    objAmmoGear.WeaponBonusRange.ToString(objCulture), token: token).ConfigureAwait(false);
+                    objAmmoGear.WeaponBonusRange, token: token).ConfigureAwait(false);
 
                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             }

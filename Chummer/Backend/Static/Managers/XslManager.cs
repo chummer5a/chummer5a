@@ -41,9 +41,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strXslFilePath">Absolute path to the Xsl file to be transformed.</param>
         /// <returns>The compiled Xsl transform of <paramref name="strXslFilePath"/>.</returns>
-        public static XslCompiledTransform GetTransformForFile(string strXslFilePath)
+        public static XslCompiledTransform GetTransformForFile(string strXslFilePath, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => GetTransformForFileCoreAsync(true, strXslFilePath));
+            return Utils.SafelyRunSynchronously(() => GetTransformForFileCoreAsync(true, strXslFilePath, token), token);
         }
 
         /// <summary>

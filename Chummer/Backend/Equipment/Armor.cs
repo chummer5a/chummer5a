@@ -2883,7 +2883,7 @@ namespace Chummer.Backend.Equipment
         public string CalculatedCapacity(CultureInfo objCultureInfo)
         {
             string strReturn;
-            if (ArmorMods.Any(x => x.ArmorCapacity.StartsWith('-') || x.ArmorCapacity.StartsWith("[-")))
+            if (ArmorMods.Any(x => x.ArmorCapacity.StartsWith('-') || x.ArmorCapacity.StartsWith("[-", StringComparison.Ordinal)))
             {
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
@@ -2892,14 +2892,14 @@ namespace Chummer.Backend.Equipment
                     if (string.IsNullOrEmpty(strCapacity) || strCapacity == "0")
                         sbdReturn.Append("(0)");
                     else
-                        sbdReturn.Append('(' + strCapacity + ')');
+                        sbdReturn.Append('(').Append(strCapacity).Append(')');
 
                     foreach (ArmorMod objMod in ArmorMods)
                     {
                         string strArmorModCapacity = objMod.ArmorCapacity;
                         if (!strArmorModCapacity.StartsWith('-') && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
                             continue;
-                        sbdReturn.Append("-(" + objMod.GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo).Trim('[', ']') + ')');
+                        sbdReturn.Append("-(").Append(objMod.GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo).Trim('[', ']')).Append(')');
                     }
 
                     strReturn = sbdReturn.ToString();
@@ -2929,7 +2929,7 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             string strReturn;
-            if (await ArmorMods.AnyAsync(x => x.ArmorCapacity.StartsWith('-') || x.ArmorCapacity.StartsWith("[-"), token).ConfigureAwait(false))
+            if (await ArmorMods.AnyAsync(x => x.ArmorCapacity.StartsWith('-') || x.ArmorCapacity.StartsWith("[-", StringComparison.Ordinal), token).ConfigureAwait(false))
             {
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
@@ -2938,14 +2938,14 @@ namespace Chummer.Backend.Equipment
                     if (string.IsNullOrEmpty(strCapacity) || strCapacity == "0")
                         sbdReturn.Append("(0)");
                     else
-                        sbdReturn.Append('(' + strCapacity + ')');
+                        sbdReturn.Append('(').Append(strCapacity).Append(')');
 
                     await ArmorMods.ForEachAsync(async objMod =>
                     {
                         string strArmorModCapacity = objMod.ArmorCapacity;
                         if (!strArmorModCapacity.StartsWith('-') && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
                             return;
-                        sbdReturn.Append("-(" + (await objMod.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)).Trim('[', ']') + ')');
+                        sbdReturn.Append("-(").Append((await objMod.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)).Trim('[', ']')).Append(')');
                     }, token).ConfigureAwait(false);
 
                     strReturn = sbdReturn.ToString();

@@ -594,7 +594,7 @@ namespace Chummer
             int intCount = lstCollection.Count;
             if (intCount > 0)
             {
-                IComparer<T> comparer = new FunctorComparer<T>(comparison);
+                FunctorComparer<T> comparer = new FunctorComparer<T>(comparison);
                 IntrospectiveSort(lstCollection, 0, intCount, comparer);
             }
         }

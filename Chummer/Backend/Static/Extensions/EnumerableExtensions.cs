@@ -34,11 +34,12 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Needle to Find.</param>
         /// <param name="lstHaystack">Haystack to search.</param>
-        public static T DeepFindById<T>(this IEnumerable<T> lstHaystack, string strGuid) where T : IHasChildren<T>, IHasInternalId
+        public static T DeepFindById<T>(this IEnumerable<T> lstHaystack, string strGuid, CancellationToken token = default) where T : IHasChildren<T>, IHasInternalId
         {
+            token.ThrowIfCancellationRequested();
             if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid.IsEmptyGuid())
                 return default;
-            return lstHaystack.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strGuid);
+            return lstHaystack.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strGuid, token);
         }
 
         /// <summary>

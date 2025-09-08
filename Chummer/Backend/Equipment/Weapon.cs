@@ -1648,7 +1648,7 @@ namespace Chummer.Backend.Equipment
                 else //Load old clips
                 {
                     List<WeaponAccessory> lstWeaponAccessoriesWithClipSlots = blnSync
-                        ? GetClipProvidingAccessories().ToList()
+                        ? GetClipProvidingAccessories(token).ToList()
                         : await GetClipProvidingAccessoriesAsync(token).ConfigureAwait(false);
                     int i = 0;
                     foreach (string strOldClipValue in s_OldClipValues)
@@ -1662,9 +1662,9 @@ namespace Chummer.Backend.Equipment
                             if (blnSync)
                             {
                                 objGear = ParentVehicle != null
-                                    ? ParentVehicle.FindVehicleGear(guid.ToString("D", GlobalSettings.InvariantCultureInfo))
+                                    ? ParentVehicle.FindVehicleGear(guid.ToString("D", GlobalSettings.InvariantCultureInfo), token)
                                     : _objCharacter.Gear.DeepFindById(guid.ToString("D",
-                                        GlobalSettings.InvariantCultureInfo));
+                                        GlobalSettings.InvariantCultureInfo), token);
                             }
                             else
                             {
@@ -1714,7 +1714,7 @@ namespace Chummer.Backend.Equipment
 
             void AddClipNodes(XmlNode clipNode)
             {
-                List<WeaponAccessory> lstWeaponAccessoriesWithClipSlots = GetClipProvidingAccessories().ToList();
+                List<WeaponAccessory> lstWeaponAccessoriesWithClipSlots = GetClipProvidingAccessories(token).ToList();
                 int i = 0;
                 foreach (XmlNode node in clipNode.ChildNodes)
                 {
@@ -7452,7 +7452,7 @@ namespace Chummer.Backend.Equipment
                                 decBestAccuracy = decLoopAccuracy;
                             }
                         }
-                        sbdBonusAccuracy.Append("+(").Append(lstNonStackingAccessoryBonuses[intIndexToUse].ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
+                        sbdBonusAccuracy.Append("+(").Append(lstNonStackingAccessoryBonuses[intIndexToUse]).Append(')');
                     }
                     else
                         sbdBonusAccuracy.Append("+(").Append(lstNonStackingAccessoryBonuses[0]).Append(')');
@@ -7696,7 +7696,7 @@ namespace Chummer.Backend.Equipment
                                 decBestAccuracy = decLoopAccuracy;
                             }
                         }
-                        sbdBonusAccuracy.Append("+(").Append(lstNonStackingAccessoryBonuses[intIndexToUse].ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
+                        sbdBonusAccuracy.Append("+(").Append(lstNonStackingAccessoryBonuses[intIndexToUse]).Append(')');
                     }
                     else
                         sbdBonusAccuracy.Append("+(").Append(lstNonStackingAccessoryBonuses[0]).Append(')');
@@ -8504,7 +8504,7 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(strRange))
                 return string.Empty;
-            string strToEvaluate = string.Empty;
+            string strToEvaluate;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBaseModifier))
             {
                 string strBaseModifier = _objCharacter.LoadDataXPath("ranges.xml")
@@ -13152,10 +13152,12 @@ namespace Chummer.Backend.Equipment
 
         #endregion Hero Lab Importing
 
-        private IEnumerable<WeaponAccessory> GetClipProvidingAccessories()
+        private IEnumerable<WeaponAccessory> GetClipProvidingAccessories(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             foreach (WeaponAccessory objAccessory in WeaponAccessories)
             {
+                token.ThrowIfCancellationRequested();
                 for (int i = 0; i < objAccessory.AmmoSlots; i++)
                 {
                     yield return objAccessory;

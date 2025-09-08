@@ -4187,8 +4187,9 @@ namespace Chummer
                     {
                         if (!await objNewPower.CreateAsync(objXmlPower, 0, bonusNode["bonusoverride"], token: token).ConfigureAwait(false))
                             throw new AbortedException();
-
-                        objBoostedPower = await _objCharacter.Powers.FirstOrDefaultAsync(async objPower => await objPower.GetNameAsync(token).ConfigureAwait(false) == await objNewPower.GetNameAsync(token).ConfigureAwait(false) && await objPower.GetExtraAsync(token).ConfigureAwait(false) == await objNewPower.GetExtraAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        string strNewPowerName = await objNewPower.GetNameAsync(token).ConfigureAwait(false);
+                        string strNewPowerExtra = await objNewPower.GetExtraAsync(token).ConfigureAwait(false);
+                        objBoostedPower = await _objCharacter.Powers.FirstOrDefaultAsync(async objPower => await objPower.GetNameAsync(token).ConfigureAwait(false) == strNewPowerName && await objPower.GetExtraAsync(token).ConfigureAwait(false) == strNewPowerExtra, token: token).ConfigureAwait(false);
                     }
                     catch
                     {

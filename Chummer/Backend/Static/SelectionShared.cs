@@ -3820,9 +3820,10 @@ namespace Chummer
         /// <param name="intRating"></param>
         /// <param name="intAvailModifier"></param>
         /// <returns></returns>
-        public static bool CheckAvailRestriction(XmlNode objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0)
+        public static bool CheckAvailRestriction(XmlNode objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0, CancellationToken token = default)
         {
-            return objXmlGear?.CreateNavigator().CheckAvailRestriction(objCharacter, intRating, intAvailModifier) == true;
+            token.ThrowIfCancellationRequested();
+            return objXmlGear?.CreateNavigator().CheckAvailRestriction(objCharacter, intRating, intAvailModifier, token) == true;
         }
 
         /// <summary>
@@ -3833,8 +3834,9 @@ namespace Chummer
         /// <param name="intRating">Effective Rating of the object.</param>
         /// <param name="intAvailModifier">Availability Modifier from other sources.</param>
         /// <returns>Returns False if not permitted with the current gameplay restrictions. Returns True if valid.</returns>
-        public static bool CheckAvailRestriction(this XPathNavigator objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0)
+        public static bool CheckAvailRestriction(this XPathNavigator objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objXmlGear == null)
                 return false;
             //TODO: Better handler for restricted gear
@@ -3842,12 +3844,13 @@ namespace Chummer
                 return true;
             // Avail.
 
-            XPathNavigator objAvailNode = objXmlGear.SelectSingleNodeAndCacheExpression("avail");
+            XPathNavigator objAvailNode = objXmlGear.SelectSingleNodeAndCacheExpression("avail", token);
             if (objAvailNode == null)
             {
                 int intHighestAvailNode = 0;
                 foreach (XPathNavigator objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (!objLoopNode.Name.StartsWith("avail", StringComparison.Ordinal))
                         continue;
                     string strLoopCostString = objLoopNode.Name.Substring(5);
@@ -3859,6 +3862,7 @@ namespace Chummer
                 objAvailNode = objXmlGear.SelectSingleNode("avail" + intHighestAvailNode);
                 for (int i = intRating; i <= intHighestAvailNode; ++i)
                 {
+                    token.ThrowIfCancellationRequested();
                     XPathNavigator objLoopNode = objXmlGear.SelectSingleNode("avail" + i.ToString(GlobalSettings.InvariantCultureInfo));
                     if (objLoopNode != null)
                     {
@@ -3884,8 +3888,8 @@ namespace Chummer
             int intAvail = intAvailModifier;
             if (strAvailExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                strAvailExpr = objCharacter.ProcessAttributesInXPath(strAvailExpr);
-                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strAvailExpr);
+                strAvailExpr = objCharacter.ProcessAttributesInXPath(strAvailExpr, token: token);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strAvailExpr, token);
                 if (blnIsSuccess)
                     intAvail += ((double)objProcess).StandardRound();
             }
@@ -3974,9 +3978,10 @@ namespace Chummer
             return intAvail <= await (await objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaximumAvailabilityAsync(token).ConfigureAwait(false);
         }
 
-        public static bool CheckNuyenRestriction(XmlNode objXmlGear, Character objCharacter, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
+        public static bool CheckNuyenRestriction(XmlNode objXmlGear, Character objCharacter, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
         {
-            return objXmlGear?.CreateNavigator().CheckNuyenRestriction(objCharacter, decMaxNuyen, decCostMultiplier, intRating) == true;
+            token.ThrowIfCancellationRequested();
+            return objXmlGear?.CreateNavigator().CheckNuyenRestriction(objCharacter, decMaxNuyen, decCostMultiplier, intRating, token) == true;
         }
 
         /// <summary>
@@ -3987,18 +3992,20 @@ namespace Chummer
         /// <param name="decCostMultiplier">Multiplier of the object's cost value.</param>
         /// <param name="intRating">Effective Rating of the object.</param>
         /// <returns>Returns False if not permitted with the current restrictions. Returns True if valid.</returns>
-        public static bool CheckNuyenRestriction(this XPathNavigator objXmlGear, Character objCharacter, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
+        public static bool CheckNuyenRestriction(this XPathNavigator objXmlGear, Character objCharacter, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objXmlGear == null)
                 return false;
             // Cost.
             decimal decCost = 0.0m;
-            XPathNavigator objCostNode = objXmlGear.SelectSingleNodeAndCacheExpression("cost");
+            XPathNavigator objCostNode = objXmlGear.SelectSingleNodeAndCacheExpression("cost", token);
             if (objCostNode == null)
             {
                 int intCostRating = 1;
                 foreach (XmlNode objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (!objLoopNode.Name.StartsWith("cost", StringComparison.Ordinal))
                         continue;
                     string strLoopCostString = objLoopNode.Name.Substring(4);
@@ -4024,8 +4031,8 @@ namespace Chummer
                 }
                 if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decCost))
                 {
-                    strCost = objCharacter.ProcessAttributesInXPath(strCost);
-                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCost);
+                    strCost = objCharacter.ProcessAttributesInXPath(strCost, token: token);
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCost, token);
                     if (blnIsSuccess)
                         decCost = Convert.ToDecimal((double)objProcess);
                 }

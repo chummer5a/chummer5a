@@ -1751,10 +1751,9 @@ namespace Chummer
                     foreach (KeyValuePair<string, CharacterCache> kvpCache in _dicSavedCharacterCaches)
                     {
                         token.ThrowIfCancellationRequested();
-                        string strKey = kvpCache.Key;
                         CharacterCache objCache = kvpCache.Value;
                         if (await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objCache), token).ConfigureAwait(false) == null)
-                            lstToPurge.Add(strKey);
+                            lstToPurge.Add(kvpCache.Key);
                     }
                     foreach (string strKey in lstToPurge)
                     {

@@ -119,7 +119,7 @@ namespace Chummer
                                 throw;
                             }
 
-                            ImprovementManager.Commit(_objCharacter);
+                            ImprovementManager.Commit(_objCharacter, token);
                         }
                     }
                 }

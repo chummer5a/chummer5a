@@ -1053,7 +1053,6 @@ namespace Chummer
                         string strSelectCategory = objXmlCyberware.SelectSingleNodeAndCacheExpression("category", token)?.Value ?? string.Empty;
                         bool blnForceNoESSModifier = objXmlCyberware.SelectSingleNodeAndCacheExpression("forcegrade", token)?.Value == "None";
                         bool blnIsGeneware = objXmlCyberware.SelectSingleNodeAndCacheExpression("isgeneware", token) != null && objXmlCyberware.SelectSingleNodeAndCacheExpression("isgeneware", token)?.Value != bool.FalseString;
-                        bool blnOrGear = false;
 
                         // Place the Genetech cost multiplier in a variable that can be safely modified.
                         decimal decGenetechCostModifier = 1;
@@ -1068,7 +1067,7 @@ namespace Chummer
                         int intMinRating = await nudRating.DoThreadSafeFuncAsync(x => x.MinimumAsInt, token: token).ConfigureAwait(false);
                         string strAvailExpression = objXmlCyberware
                             .SelectSingleNodeAndCacheExpression("avail", token)?.Value ?? string.Empty;
-                        blnOrGear = strAvailExpression.EndsWith(" or Gear", StringComparison.Ordinal);
+                        bool blnOrGear = strAvailExpression.EndsWith(" or Gear", StringComparison.Ordinal);
                         if (blnOrGear)
                             strAvailExpression = strAvailExpression.TrimEndOnce(" or Gear", true);
 

@@ -3230,7 +3230,7 @@ namespace Chummer
                         foreach (Image imgMugshot in Mugshots)
                         {
                             objWriter.WriteElementString(
-                                "mugshot", GlobalSettings.ImageToBase64StringForStorage(imgMugshot));
+                                "mugshot", GlobalSettings.ImageToBase64StringForStorage(imgMugshot, token));
                         }
 
                         // </mugshot>
@@ -3286,6 +3286,7 @@ namespace Chummer
                     string[] astrMugshotsBase64 = ArrayPool<string>.Shared.Rent(xmlMugshotsList.Count);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         int j = 0;
                         foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
                         {
@@ -3301,12 +3302,13 @@ namespace Chummer
                             Image[] objMugshotImages = ArrayPool<Image>.Shared.Rent(xmlMugshotsList.Count);
                             try
                             {
+                                token.ThrowIfCancellationRequested();
                                 Parallel.For(0, xmlMugshotsList.Count,
                                              i =>
                                              {
                                                  string strLoop = astrMugshotsBase64[i];
                                                  if (!string.IsNullOrEmpty(strLoop))
-                                                     objMugshotImages[i] = strLoop.ToImage(PixelFormat.Format32bppPArgb);
+                                                     objMugshotImages[i] = strLoop.ToImage(PixelFormat.Format32bppPArgb, token);
                                                  else
                                                      objMugshotImages[i] = null;
                                              });
@@ -3326,7 +3328,7 @@ namespace Chummer
                         {
                             string strLoop = astrMugshotsBase64[0];
                             if (!string.IsNullOrEmpty(strLoop))
-                                _lstMugshots.Add(strLoop.ToImage(PixelFormat.Format32bppPArgb));
+                                _lstMugshots.Add(strLoop.ToImage(PixelFormat.Format32bppPArgb, token));
                         }
                     }
                     finally
@@ -3351,6 +3353,7 @@ namespace Chummer
                     string[] astrMugshotsBase64 = ArrayPool<string>.Shared.Rent(xmlMugshotsList.Count);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         int j = 0;
                         foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
                         {

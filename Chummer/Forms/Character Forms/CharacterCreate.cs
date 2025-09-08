@@ -21879,14 +21879,14 @@ namespace Chummer
                             intUsedPoints -= await (await skill.GetSpecializationsAsync(token).ConfigureAwait(false))
                                 .CountAsync(
                                     async spec =>
-                                        await (await CharacterObject.GetSpellsAsync(token)
+                                    {
+                                        string strNameInner = await spec.GetNameAsync(token).ConfigureAwait(false);
+                                        return await (await CharacterObject.GetSpellsAsync(token)
                                                 .ConfigureAwait(false)).AnyAsync(
-                                                async spell =>
-                                                    spell.Category ==
-                                                    await spec.GetNameAsync(token).ConfigureAwait(false)
-                                                    && !spell.FreeBonus,
+                                                spell => spell.Category == strNameInner && !spell.FreeBonus,
                                                 token)
-                                            .ConfigureAwait(false),
+                                            .ConfigureAwait(false);
+                                    },
                                     token)
                                 .ConfigureAwait(false);
                         }

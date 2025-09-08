@@ -17119,7 +17119,7 @@ namespace Chummer
                 {
                     await objCommlink.SetHomeNodeAsync(CharacterObject,
                             await chkVehicleHomeNode.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                .ConfigureAwait(false))
+                                .ConfigureAwait(false), GenericToken)
                         .ConfigureAwait(false);
                 }
             }
@@ -24277,7 +24277,6 @@ namespace Chummer
                             await CharacterObject.Gear.AddAsync(objGear, token).ConfigureAwait(false);
                         }
 
-                        ExpenseUndo objUndo = new ExpenseUndo();
                         // Check the item's Cost and make sure the character can afford it.
                         if (!frmPickGear.MyForm.FreeCost)
                         {
@@ -24342,6 +24341,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                             await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
 
+                            ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateNuyen(NuyenExpenseType.AddGear, objStackWith != null ? objStackWith.InternalId : objGear.InternalId, objGear.Quantity);
                             objExpense.Undo = objUndo;
                         }

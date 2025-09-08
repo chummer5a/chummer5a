@@ -456,7 +456,7 @@ namespace Chummer
                 return;
 
             // Display the Spell information.
-            XPathNavigator objXmlSpell = _xmlBaseSpellDataNode.TryGetNodeByNameOrId("spells/spell", strSelectedItem);
+            
             // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
             // The maximum number of Spells a character can start with is 2 x (highest of Spellcasting or Ritual Spellcasting Skill).
             int intSpellCount = 0;
@@ -480,6 +480,7 @@ namespace Chummer
             }, token).ConfigureAwait(false);
             if (!await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
             {
+                XPathNavigator objXmlSpell = _xmlBaseSpellDataNode.TryGetNodeByNameOrId("spells/spell", strSelectedItem);
                 if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                 {
                     int intSpellLimit = await (await _objCharacter.GetAttributeAsync("MAG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false) * 2;

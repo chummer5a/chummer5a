@@ -50,7 +50,7 @@ namespace Chummer
             _intHashCode = _aobjItems.GetEnsembleHashCode();
         }
 
-        public async Task<KeyArray<T>> NewAsync(IAsyncEnumerable<T> lstItems, CancellationToken token = default)
+        public static async Task<KeyArray<T>> NewAsync(IAsyncEnumerable<T> lstItems, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             return new KeyArray<T>((await lstItems.ToListAsync(token).ConfigureAwait(false)).ToArray());

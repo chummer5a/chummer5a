@@ -6397,7 +6397,7 @@ namespace Chummer.Backend.Equipment
                         {
                             token.ThrowIfCancellationRequested();
                             XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails", token);
-                            if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false, token))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
@@ -6405,14 +6405,14 @@ namespace Chummer.Backend.Equipment
 
                             xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails", token);
                             if (xmlTestNode != null &&
-                                !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false, token))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
                             }
 
                             xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/geardetails", token);
-                            if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false, token))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
@@ -6420,7 +6420,7 @@ namespace Chummer.Backend.Equipment
 
                             xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/geardetails", token);
                             if (xmlTestNode != null &&
-                                !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false, token))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
@@ -6451,7 +6451,7 @@ namespace Chummer.Backend.Equipment
                                         token.ThrowIfCancellationRequested();
                                         XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails", token);
                                         if (xmlTestNode != null &&
-                                            xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false, token))
                                         {
                                             // Assumes topmost parent is an AND node
                                             continue;
@@ -6459,7 +6459,7 @@ namespace Chummer.Backend.Equipment
 
                                         xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails", token);
                                         if (xmlTestNode != null &&
-                                            !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false, token))
                                         {
                                             // Assumes topmost parent is an AND node
                                             continue;
@@ -6467,7 +6467,7 @@ namespace Chummer.Backend.Equipment
 
                                         xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/geardetails", token);
                                         if (xmlTestNode != null &&
-                                            xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false, token))
                                         {
                                             // Assumes topmost parent is an AND node
                                             continue;
@@ -6475,7 +6475,7 @@ namespace Chummer.Backend.Equipment
 
                                         xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/geardetails", token);
                                         if (xmlTestNode != null &&
-                                            !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false, token))
                                         {
                                             // Assumes topmost parent is an AND node
                                             continue;
@@ -6515,7 +6515,7 @@ namespace Chummer.Backend.Equipment
                                             token.ThrowIfCancellationRequested();
                                             XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails", token);
                                             if (xmlTestNode != null &&
-                                                xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                                xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false, token))
                                             {
                                                 // Assumes topmost parent is an AND node
                                                 continue;
@@ -6523,7 +6523,7 @@ namespace Chummer.Backend.Equipment
 
                                             xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails", token);
                                             if (xmlTestNode != null &&
-                                                !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                                !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false, token))
                                             {
                                                 // Assumes topmost parent is an AND node
                                                 continue;
@@ -6531,7 +6531,7 @@ namespace Chummer.Backend.Equipment
 
                                             xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/geardetails", token);
                                             if (xmlTestNode != null &&
-                                                xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                                xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false, token))
                                             {
                                                 // Assumes topmost parent is an AND node
                                                 continue;
@@ -6539,7 +6539,7 @@ namespace Chummer.Backend.Equipment
 
                                             xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/geardetails", token);
                                             if (xmlTestNode != null &&
-                                                !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                                !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false, token))
                                             {
                                                 // Assumes topmost parent is an AND node
                                                 continue;

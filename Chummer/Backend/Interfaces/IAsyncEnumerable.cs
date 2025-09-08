@@ -9461,7 +9461,7 @@ namespace Chummer
                             return await lstChildrenAsync.DeepFirstAsync(funcGetChildrenMethod, predicate, token)
                                 .ConfigureAwait(false);
                         else
-                            return lstChildren.DeepFirst(funcGetChildrenMethod, predicate);
+                            return lstChildren.DeepFirst(funcGetChildrenMethod, predicate, token);
                     }
                     catch (InvalidOperationException)
                     {

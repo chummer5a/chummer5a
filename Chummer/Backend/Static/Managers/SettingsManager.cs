@@ -176,8 +176,9 @@ namespace Chummer
             return s_DicLoadedCharacterSettings;
         }
 
-        private static void LoadCharacterSettings()
+        private static void LoadCharacterSettings(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             _intDicLoadedCharacterSettingsLoadedStatus = 0;
             List<CharacterSettings> lstSettings = s_DicLoadedCharacterSettings.GetValuesToListSafe();
             s_DicLoadedCharacterSettings.Clear();
@@ -188,6 +189,7 @@ namespace Chummer
                 CharacterSettings objNewCharacterSettings = new CharacterSettings();
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     if (!s_DicLoadedCharacterSettings.TryAdd(GlobalSettings.DefaultCharacterSetting,
                                                              objNewCharacterSettings))
                         objNewCharacterSettings.Dispose();
@@ -208,14 +210,15 @@ namespace Chummer
             Utils.RunWithoutThreadLock(() =>
             {
                 IEnumerable<XPathNavigator> xmlSettingsIterator
-                    = XmlManager.LoadXPath("settings.xml").SelectAndCacheExpression("/chummer/settings/setting")
+                    = XmlManager.LoadXPath("settings.xml", token: token).SelectAndCacheExpression("/chummer/settings/setting", token)
                     .Cast<XPathNavigator>();
                 Parallel.ForEach(xmlSettingsIterator, xmlBuiltInSetting =>
                 {
                     CharacterSettings objNewCharacterSettings = new CharacterSettings();
                     try
                     {
-                        if (!objNewCharacterSettings.Load(xmlBuiltInSetting)
+                        token.ThrowIfCancellationRequested();
+                        if (!objNewCharacterSettings.Load(xmlBuiltInSetting, token)
                             || (objNewCharacterSettings.BuildMethodIsLifeModule
                                 && !GlobalSettings.LifeModuleEnabled)
                             || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
@@ -228,7 +231,7 @@ namespace Chummer
                         throw;
                     }
                 });
-            });
+            }, token);
             if (Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 1, 0) != 0)
                 return;
 
@@ -243,7 +246,8 @@ namespace Chummer
                         CharacterSettings objNewCharacterSettings = new CharacterSettings();
                         try
                         {
-                            if (!objNewCharacterSettings.Load(strSettingName, false, false)
+                            token.ThrowIfCancellationRequested();
+                            if (!objNewCharacterSettings.Load(strSettingName, false, false, token)
                                 || (objNewCharacterSettings.BuildMethodIsLifeModule
                                     && !GlobalSettings.LifeModuleEnabled)
                                 || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
@@ -256,7 +260,7 @@ namespace Chummer
                             throw;
                         }
                     });
-                });
+                }, token);
             }
 
             Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 2, 1);
@@ -264,6 +268,7 @@ namespace Chummer
 
         private static async Task LoadCharacterSettingsAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             _intDicLoadedCharacterSettingsLoadedStatus = 0;
             List<CharacterSettings> lstSettings = s_DicLoadedCharacterSettings.GetValuesToListSafe();
             s_DicLoadedCharacterSettings.Clear();
@@ -311,6 +316,7 @@ namespace Chummer
                 CharacterSettings objNewCharacterSettings = new CharacterSettings();
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     if (!await objNewCharacterSettings.LoadAsync(xmlBuiltInSetting, token)
                                                       .ConfigureAwait(false)
                         || (!GlobalSettings.LifeModuleEnabled
@@ -356,6 +362,7 @@ namespace Chummer
                     CharacterSettings objNewCharacterSettings = new CharacterSettings();
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, false, token)
                                                           .ConfigureAwait(false)
                             || (!GlobalSettings.LifeModuleEnabled
@@ -646,7 +653,10 @@ namespace Chummer
                 }
 
                 int intMismatchCount = setBaselineCustomDataDirectoryInfos.Count(x =>
-                    setCheckCustomDataDirectoryInfos.All(y => y.Name != x.Name));
+                {
+                    string strInner = x.Name;
+                    return setCheckCustomDataDirectoryInfos.All(y => y.Name != strInner);
+                });
                 if (intMismatchCount != 0)
                     intReturn -= intMismatchCount * intBaselineCustomDataCount * intBaseline;
             }

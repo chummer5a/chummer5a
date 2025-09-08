@@ -44,13 +44,14 @@ namespace Chummer
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns>String of compressed image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string JpegCompressBase64String(this string strBase64String, int intQuality = -1)
+        public static string JpegCompressBase64String(this string strBase64String, int intQuality = -1, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strBase64String))
                 return string.Empty;
-            using (Image imgTemp = strBase64String.ToImage())
+            using (Image imgTemp = strBase64String.ToImage(token))
             {
-                return imgTemp == null ? strBase64String : imgTemp.ToBase64StringAsJpeg(intQuality);
+                return imgTemp == null ? strBase64String : imgTemp.ToBase64StringAsJpeg(intQuality, token);
             }
         }
 
@@ -64,7 +65,8 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task<string> JpegCompressBase64StringAsync(this string strBase64String, int intQuality = -1, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             return string.IsNullOrEmpty(strBase64String) ? Task.FromResult(string.Empty) : GetImage();
             // Split into a private method for performance reasons
             async Task<string> GetImage()
@@ -87,8 +89,9 @@ namespace Chummer
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Image GetCompressedThumbnailImage(this Image imgToConvert, int intThumbWidth, int intThumbHeight,
-            bool blnKeepAspectRatio = true, int intQuality = -1)
+            bool blnKeepAspectRatio = true, int intQuality = -1, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (imgToConvert == null)
                 return null;
             int intImageWidth = imgToConvert.Width;
@@ -109,14 +112,15 @@ namespace Chummer
                 }
             }
 
+            token.ThrowIfCancellationRequested();
             if (intThumbWidth >= intImageWidth && intThumbHeight >= intImageHeight)
             {
-                return imgToConvert.GetCompressedImage(intQuality);
+                return imgToConvert.GetCompressedImage(intQuality, token);
             }
 
             using (Image imgThumbnail = imgToConvert.GetThumbnailImage(intThumbWidth, intThumbHeight, null, IntPtr.Zero))
             {
-                return imgThumbnail.GetCompressedImage(intQuality);
+                return imgThumbnail.GetCompressedImage(intQuality, token);
             }
         }
 
@@ -133,7 +137,8 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task<Image> GetCompressedThumbnailImageAsync(this Image imgToConvert, int intThumbWidth, int intThumbHeight, bool blnKeepAspectRatio = true, int intQuality = -1, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<Image>(token);
             if (imgToConvert == null)
                 return Task.FromResult<Image>(null);
             int intImageWidth = imgToConvert.Width;
@@ -159,6 +164,7 @@ namespace Chummer
             // Split into a private method for performance reasons
             async Task<Image> GetImage()
             {
+                token.ThrowIfCancellationRequested();
                 if (intThumbWidth >= intImageWidth && intThumbHeight >= intImageHeight)
                 {
                     return await imgToConvert.GetCompressedImageAsync(intQuality, token: token).ConfigureAwait(false);
@@ -178,14 +184,16 @@ namespace Chummer
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns>A clone of <paramref name="imgToConvert"/> that is compressed.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Image GetCompressedImage(this Image imgToConvert, int intQuality = -1)
+        public static Image GetCompressedImage(this Image imgToConvert, int intQuality = -1, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (imgToConvert == null)
                 return null;
             // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
             Bitmap bmpClone;
             while (true)
             {
+                token.ThrowIfCancellationRequested();
                 try
                 {
                     bmpClone = new Bitmap(imgToConvert);
@@ -198,16 +206,20 @@ namespace Chummer
                 break;
             }
 
+            token.ThrowIfCancellationRequested();
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
                 Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
             };
+            token.ThrowIfCancellationRequested();
 
             try
             {
                 using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                 {
+                    token.ThrowIfCancellationRequested();
                     bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
+                    token.ThrowIfCancellationRequested();
                     objImageStream.Position = 0;
                     return Image.FromStream(objImageStream, true);
                 }
@@ -260,6 +272,7 @@ namespace Chummer
                 {
                     using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {
+                        token.ThrowIfCancellationRequested();
                         bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
                         token.ThrowIfCancellationRequested();
                         objImageStream.Position = 0;
@@ -279,13 +292,14 @@ namespace Chummer
         /// <param name="strBase64String">String to convert.</param>
         /// <returns>Image from the Base64 string.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Image ToImage(this string strBase64String)
+        public static Image ToImage(this string strBase64String, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strBase64String))
                 return default;
             using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
             {
-                byte[] achrBuffer = strBase64String.ToBase64PooledByteArray(out int intArrayLength);
+                byte[] achrBuffer = strBase64String.ToBase64PooledByteArray(out int intArrayLength, token);
                 try
                 {
                     objStream.Write(achrBuffer, 0, intArrayLength);
@@ -294,6 +308,7 @@ namespace Chummer
                 {
                     ArrayPool<byte>.Shared.Return(achrBuffer);
                 }
+                token.ThrowIfCancellationRequested();
                 return Image.FromStream(objStream, true);
             }
         }
@@ -305,17 +320,20 @@ namespace Chummer
         /// <param name="eFormat">Pixel format in which the Bitmap is returned.</param>
         /// <returns>Image from the Base64 string.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Bitmap ToImage(this string strBase64String, PixelFormat eFormat)
+        public static Bitmap ToImage(this string strBase64String, PixelFormat eFormat, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strBase64String))
                 return default;
-            using (Image imgInput = strBase64String.ToImage())
+            using (Image imgInput = strBase64String.ToImage(token))
             {
                 Bitmap bmpInput = new Bitmap(imgInput);
+                token.ThrowIfCancellationRequested();
                 if (bmpInput.PixelFormat == eFormat)
                     return bmpInput;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     return bmpInput.ConvertPixelFormat(eFormat);
                 }
                 finally
@@ -350,6 +368,7 @@ namespace Chummer
                         {
                             ArrayPool<byte>.Shared.Return(achrBuffer);
                         }
+                        token.ThrowIfCancellationRequested();
                         return Image.FromStream(objStream, true);
                     }
                 }, token).ConfigureAwait(false);
@@ -393,14 +412,16 @@ namespace Chummer
         /// <param name="eOverrideFormat">The image format in which the image should be saved. If null, will use <paramref name="imgToConvert"/>'s RawFormat.</param>
         /// <returns>Base64 string from Image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string ToBase64String(this Image imgToConvert, ImageFormat eOverrideFormat = null)
+        public static string ToBase64String(this Image imgToConvert, ImageFormat eOverrideFormat = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (imgToConvert == null)
                 return string.Empty;
             // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
             Bitmap bmpClone;
             while (true)
             {
+                token.ThrowIfCancellationRequested();
                 try
                 {
                     bmpClone = new Bitmap(imgToConvert);
@@ -415,6 +436,7 @@ namespace Chummer
 
             try
             {
+                token.ThrowIfCancellationRequested();
                 using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                 {
                     if (eOverrideFormat == null)
@@ -428,8 +450,9 @@ namespace Chummer
                             eOverrideFormat = ImageFormat.Png;
                     }
 
+                    token.ThrowIfCancellationRequested();
                     bmpClone.Save(objImageStream, eOverrideFormat);
-                    return objImageStream.ToBase64String();
+                    return objImageStream.ToBase64String(token: token);
                 }
             }
             finally
@@ -446,14 +469,16 @@ namespace Chummer
         /// <param name="lstEncoderParameters">List of parameters for <paramref name="objCodecInfo"/>.</param>
         /// <returns>Base64 string from Image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string ToBase64String(this Image imgToConvert, ImageCodecInfo objCodecInfo, EncoderParameters lstEncoderParameters)
+        public static string ToBase64String(this Image imgToConvert, ImageCodecInfo objCodecInfo, EncoderParameters lstEncoderParameters, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (imgToConvert == null)
                 return string.Empty;
             // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
             Bitmap bmpClone;
             while (true)
             {
+                token.ThrowIfCancellationRequested();
                 try
                 {
                     bmpClone = new Bitmap(imgToConvert);
@@ -468,10 +493,12 @@ namespace Chummer
 
             try
             {
+                token.ThrowIfCancellationRequested();
                 using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                 {
+                    token.ThrowIfCancellationRequested();
                     bmpClone.Save(objImageStream, objCodecInfo, lstEncoderParameters);
-                    return objImageStream.ToBase64String();
+                    return objImageStream.ToBase64String(token: token);
                 }
             }
             finally
@@ -595,14 +622,16 @@ namespace Chummer
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns>Base64 string of Jpeg version of Image with a quality of <paramref name="intQuality"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string ToBase64StringAsJpeg(this Image imgToConvert, int intQuality = -1)
+        public static string ToBase64StringAsJpeg(this Image imgToConvert, int intQuality = -1, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (imgToConvert == null)
                 return string.Empty;
             // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
             Bitmap bmpClone;
             while (true)
             {
+                token.ThrowIfCancellationRequested();
                 try
                 {
                     bmpClone = new Bitmap(imgToConvert);
@@ -624,8 +653,9 @@ namespace Chummer
             {
                 using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                 {
+                    token.ThrowIfCancellationRequested();
                     bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
-                    return objImageStream.ToBase64String();
+                    return objImageStream.ToBase64String(token: token);
                 }
             }
             finally

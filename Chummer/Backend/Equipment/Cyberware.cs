@@ -11783,11 +11783,11 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
 
                 bool blnSwallowGear = false;
-                int intGearAvailToCheck = 0;
                 Gear objSwallowedGear = null;
 
                 if (string.IsNullOrEmpty(ParentID))
                 {
+                    int intGearAvailToCheck = 0;
                     AvailabilityValue objTotalAvail = await TotalAvailTupleAsync(token: token).ConfigureAwait(false);
 
                     // If parent ends with 'or Gear', swallow highest gear child

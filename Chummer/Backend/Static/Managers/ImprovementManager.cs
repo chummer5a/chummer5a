@@ -1342,8 +1342,9 @@ namespace Chummer
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="strValue">String value to parse.</param>
         /// <param name="intRating">Integer value to replace "Rating" with.</param>
-        public static int ValueToInt(Character objCharacter, string strValue, int intRating)
+        public static int ValueToInt(Character objCharacter, string strValue, int intRating, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strValue))
                 return 0;
             //         Log.Enter("ValueToInt");
@@ -1354,13 +1355,13 @@ namespace Chummer
                 .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string strReturn = objCharacter.ProcessAttributesInXPath(strValue);
+                string strReturn = objCharacter.ProcessAttributesInXPath(strValue, token: token);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strReturn);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strReturn, token);
 
                 //Log.Exit("ValueToInt");
                 return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
@@ -1411,8 +1412,9 @@ namespace Chummer
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="strValue">String value to parse.</param>
         /// <param name="intRating">Integer value to replace "Rating" with.</param>
-        public static decimal ValueToDec(Character objCharacter, string strValue, int intRating)
+        public static decimal ValueToDec(Character objCharacter, string strValue, int intRating, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strValue))
                 return 0;
             //         Log.Enter("ValueToInt");
@@ -1423,13 +1425,13 @@ namespace Chummer
                 .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string strReturn = objCharacter.ProcessAttributesInXPath(strValue);
+                string strReturn = objCharacter.ProcessAttributesInXPath(strValue, token: token);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strReturn);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strReturn, token);
 
                 //Log.Exit("ValueToInt");
                 return blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
@@ -1475,11 +1477,11 @@ namespace Chummer
         }
 
         public static Tuple<string, bool> DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating,
-            string strFriendlyName, bool blnIsKnowledgeSkill = false)
+            string strFriendlyName, bool blnIsKnowledgeSkill = false, CancellationToken token = default)
         {
             return Utils.SafelyRunSynchronously(() => DoSelectSkillCoreAsync(false, xmlBonusNode, objCharacter,
                 intRating, strFriendlyName,
-                blnIsKnowledgeSkill));
+                blnIsKnowledgeSkill, token), token);
         }
 
         public static Task<Tuple<string, bool>> DoSelectSkillAsync(XmlNode xmlBonusNode, Character objCharacter, int intRating,
@@ -1507,7 +1509,7 @@ namespace Chummer
                 if (!string.IsNullOrWhiteSpace(strMinimumRating))
                     intMinimumRating = blnSync
                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        ? ValueToInt(objCharacter, strMinimumRating, intRating)
+                        ? ValueToInt(objCharacter, strMinimumRating, intRating, token)
                         : await ValueToIntAsync(objCharacter, strMinimumRating, intRating, token).ConfigureAwait(false);
                 int intMaximumRating = int.MaxValue;
                 string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
@@ -1516,7 +1518,7 @@ namespace Chummer
                 if (!string.IsNullOrWhiteSpace(strMaximumRating))
                     intMaximumRating = blnSync
                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        ? ValueToInt(objCharacter, strMaximumRating, intRating)
+                        ? ValueToInt(objCharacter, strMaximumRating, intRating, token)
                         : await ValueToIntAsync(objCharacter, strMaximumRating, intRating, token).ConfigureAwait(false);
 
                 using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -1894,7 +1896,7 @@ namespace Chummer
                     if (!string.IsNullOrWhiteSpace(strMinimumRating))
                         intMinimumRating = blnSync
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            ? ValueToInt(objCharacter, strMinimumRating, intRating)
+                            ? ValueToInt(objCharacter, strMinimumRating, intRating, token)
                             : await ValueToIntAsync(objCharacter, strMinimumRating, intRating, token)
                                 .ConfigureAwait(false);
                     int intMaximumRating = int.MaxValue;
@@ -1902,7 +1904,7 @@ namespace Chummer
                     if (!string.IsNullOrWhiteSpace(strMaximumRating))
                         intMaximumRating = blnSync
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            ? ValueToInt(objCharacter, strMaximumRating, intRating)
+                            ? ValueToInt(objCharacter, strMaximumRating, intRating, token)
                             : await ValueToIntAsync(objCharacter, strMaximumRating, intRating, token)
                                 .ConfigureAwait(false);
                     if (intMinimumRating != 0 || intMaximumRating != int.MaxValue)
@@ -2065,7 +2067,7 @@ namespace Chummer
                         if (!string.IsNullOrWhiteSpace(strMinimumRating))
                             frmPickSkill.MyForm.MinimumRating = blnSync
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                ? ValueToInt(objCharacter, strMinimumRating, intRating)
+                                ? ValueToInt(objCharacter, strMinimumRating, intRating, token)
                                 : await ValueToIntAsync(objCharacter, strMinimumRating, intRating, token)
                                     .ConfigureAwait(false);
                         string strMaximumRating = xmlBonusNode
@@ -2073,7 +2075,7 @@ namespace Chummer
                         if (!string.IsNullOrWhiteSpace(strMaximumRating))
                             frmPickSkill.MyForm.MaximumRating = blnSync
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                ? ValueToInt(objCharacter, strMaximumRating, intRating)
+                                ? ValueToInt(objCharacter, strMaximumRating, intRating, token)
                                 : await ValueToIntAsync(objCharacter, strMaximumRating, intRating, token)
                                     .ConfigureAwait(false);
 
@@ -2535,7 +2537,7 @@ namespace Chummer
                                         if (ProcessBonus(objCharacter, objImprovementSource, ref strSourceName,
                                                 intRating,
                                                 strFriendlyName,
-                                                bonusNode, strUnique, !blnAddImprovementsToCharacter))
+                                                bonusNode, strUnique, !blnAddImprovementsToCharacter, token))
                                             continue;
                                         // ReSharper disable once MethodHasAsyncOverload
                                         Rollback(objCharacter, token);
@@ -2600,7 +2602,7 @@ namespace Chummer
                             sbdTrace.AppendLine("Committing improvements.");
                             if (blnSync)
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                Commit(objCharacter);
+                                Commit(objCharacter, token);
                             else
                                 await CommitAsync(objCharacter, token).ConfigureAwait(false);
                             sbdTrace.AppendLine("Finished committing improvements");
@@ -2656,8 +2658,9 @@ namespace Chummer
         private static bool ProcessBonus(Character objCharacter, Improvement.ImprovementSource objImprovementSource,
                                          ref string strSourceName,
                                          int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique,
-                                         bool blnIgnoreMethodNotFound = false)
+                                         bool blnIgnoreMethodNotFound = false, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 return false;
             //As this became a really big nest of **** that it searched past, several places having equal paths just adding a different improvement, a more flexible method was chosen.
@@ -2676,12 +2679,12 @@ namespace Chummer
             {
                 try
                 {
-                    using (objCharacter.LockObject.EnterWriteLock())
+                    using (objCharacter.LockObject.EnterWriteLock(token))
                         objImprovementMethod.Invoke(bonusNode);
                 }
                 catch (AbortedException)
                 {
-                    Rollback(objCharacter);
+                    Rollback(objCharacter, token);
                     return false;
                 }
 
@@ -3041,7 +3044,7 @@ namespace Chummer
                             else if (blnSync)
                             {
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                decimal decValue = ValueToDec(objCharacter, strImprovedName, objImprovement.Rating);
+                                decimal decValue = ValueToDec(objCharacter, strImprovedName, objImprovement.Rating, token);
                                 objCharacter.PrototypeTranshuman += decValue;
                             }
                             else
@@ -3208,7 +3211,7 @@ namespace Chummer
                                     ? objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
                                           x => x.InternalId == strImprovedName, token)
                                       ??
-                                      objCharacter.Vehicles.FindVehicleWeapon(strImprovedName)
+                                      objCharacter.Vehicles.FindVehicleWeapon(strImprovedName, token)
                                     : await objCharacter.Weapons.DeepFirstOrDefaultAsync(x => x.Children,
                                           x => x.InternalId == strImprovedName, token: token).ConfigureAwait(false)
                                       ?? (await objCharacter.Vehicles.FindVehicleWeaponAsync(strImprovedName, token)
@@ -3739,7 +3742,7 @@ namespace Chummer
                             else if (blnSync)
                             {
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                decimal decValue = ValueToDec(objCharacter, strImprovedName, objImprovement.Rating);
+                                decimal decValue = ValueToDec(objCharacter, strImprovedName, objImprovement.Rating, token);
                                 objCharacter.PrototypeTranshuman -= decValue;
                             }
                             else
@@ -3910,7 +3913,7 @@ namespace Chummer
                                     ? objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
                                           x => x.InternalId == strImprovedName, token)
                                       ??
-                                      objCharacter.Vehicles.FindVehicleWeapon(strImprovedName)
+                                      objCharacter.Vehicles.FindVehicleWeapon(strImprovedName, token)
                                     : await objCharacter.Weapons.DeepFirstOrDefaultAsync(x => x.Children,
                                           x => x.InternalId == strImprovedName, token: token).ConfigureAwait(false)
                                       ?? (await objCharacter.Vehicles.FindVehicleWeaponAsync(strImprovedName, token)
@@ -4811,7 +4814,7 @@ namespace Chummer
                                             x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                                && (x.ImproveType
                                                                                    == Improvement.ImprovementType.Skillsoft
-                                                                                   || eImprovementType
+                                                                                   || x.ImproveType
                                                                                    == Improvement.ImprovementType
                                                                                        .Activesoft)
                                                                                && x.Enabled
@@ -4847,7 +4850,7 @@ namespace Chummer
                                             x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                                && (x.ImproveType
                                                                                    == Improvement.ImprovementType.Skillsoft
-                                                                                   || eImprovementType
+                                                                                   || x.ImproveType
                                                                                    == Improvement.ImprovementType
                                                                                        .Activesoft)
                                                                                && x.SourceName != strSourceName
@@ -4884,7 +4887,7 @@ namespace Chummer
                                         x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                            && (x.ImproveType
                                                                                == Improvement.ImprovementType.Skillsoft
-                                                                               || eImprovementType
+                                                                               || x.ImproveType
                                                                                == Improvement.ImprovementType
                                                                                    .Activesoft)
                                                                            && x.Enabled
@@ -5192,7 +5195,7 @@ namespace Chummer
                             }
                             else if (blnSync)
                             {
-                                decimal decValue = ValueToDec(objCharacter, strImprovedName, objImprovement.Rating);
+                                decimal decValue = ValueToDec(objCharacter, strImprovedName, objImprovement.Rating, token);
                                 objCharacter.PrototypeTranshuman -= decValue;
                             }
                             else
@@ -5409,7 +5412,7 @@ namespace Chummer
                                     ? objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
                                           x => x.InternalId == strImprovedName, token)
                                       ??
-                                      objCharacter.Vehicles.FindVehicleWeapon(strImprovedName)
+                                      objCharacter.Vehicles.FindVehicleWeapon(strImprovedName, token)
                                     : await objCharacter.Weapons.DeepFirstOrDefaultAsync(x => x.Children,
                                           x => x.InternalId == strImprovedName, token: token).ConfigureAwait(false)
                                       ?? (await objCharacter.Vehicles.FindVehicleWeaponAsync(strImprovedName, token)
@@ -5981,13 +5984,14 @@ namespace Chummer
         /// <summary>
         /// Clear all the Improvements from the Transaction List.
         /// </summary>
-        public static void Commit(Character objCharacter)
+        public static void Commit(Character objCharacter, CancellationToken token = default)
         {
+            // No cancellation request here because we expect not to have to rollback once this method is called
             Log.Debug("Commit");
             // Clear all the Improvements from the Transaction List.
             if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))
             {
-                lstTransactions.ProcessRelevantEvents();
+                lstTransactions.ProcessRelevantEvents(token);
             }
 
             Log.Debug("Commit exit");
@@ -5998,6 +6002,7 @@ namespace Chummer
         /// </summary>
         public static async Task CommitAsync(Character objCharacter, CancellationToken token = default)
         {
+            // No cancellation request here because we expect not to have to rollback once this method is called
             Log.Debug("Commit");
             // Clear all the Improvements from the Transaction List.
             if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))

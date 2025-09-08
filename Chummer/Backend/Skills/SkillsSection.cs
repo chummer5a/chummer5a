@@ -2937,7 +2937,7 @@ namespace Chummer.Backend.Skills
                     UpdateUndoSpecific(dicGroups, eYielded);
 
                 void UpdateUndoSpecific(IReadOnlyDictionary<string, Guid> map,
-                    IEnumerable<KarmaExpenseType> typesRequiringConverting)
+                    TemporaryArray<KarmaExpenseType> typesRequiringConverting)
                 {
                     //Build a crazy xpath to get everything we want to convert
 

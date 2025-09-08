@@ -132,8 +132,9 @@ namespace Chummer
         /// <param name="first">First collection to compare.</param>
         /// <param name="second">Second collection to compare.</param>
         /// <returns>True if <paramref name="first"/> and <paramref name="second"/> are of the same size and have the same contents, false otherwise.</returns>
-        public static bool CollectionEqual<T>([NotNull] this IReadOnlyCollection<T> first, [NotNull] IReadOnlyCollection<T> second)
+        public static bool CollectionEqual<T>([NotNull] this IReadOnlyCollection<T> first, [NotNull] IReadOnlyCollection<T> second, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (first.Count != second.Count)
                 return false;
             // Use built-in, faster implementations if they are available
@@ -141,11 +142,12 @@ namespace Chummer
                 return setFirst.SetEquals(second);
             if (second is ISet<T> setSecond)
                 return setSecond.SetEquals(first);
-            if (first.GetOrderInvariantEnsembleHashCodeSmart() != second.GetOrderInvariantEnsembleHashCodeSmart())
+            if (first.GetOrderInvariantEnsembleHashCodeSmart(token) != second.GetOrderInvariantEnsembleHashCodeSmart(token))
                 return false;
             List<T> lstTemp = second.ToList();
             foreach (T item in first)
             {
+                token.ThrowIfCancellationRequested();
                 if (!lstTemp.Remove(item))
                     return false;
             }
@@ -300,13 +302,17 @@ namespace Chummer
         /// <summary>
         /// Similar to LINQ's First(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
-        public static T DeepFirst<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate) where T2 : IEnumerable<T>
+        public static T DeepFirst<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
+            token.ThrowIfCancellationRequested();
             foreach (T objLoopChild in objParentList)
             {
+                token.ThrowIfCancellationRequested();
                 if (predicate(objLoopChild))
                     return objLoopChild;
-                T objReturn = funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate);
+                token.ThrowIfCancellationRequested();
+                T objReturn = funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
             }

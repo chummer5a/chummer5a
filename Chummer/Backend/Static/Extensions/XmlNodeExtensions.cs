@@ -245,10 +245,11 @@ namespace Chummer
         /// <param name="xmlParentNode">The parent node against which the filter operations are checked.</param>
         /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
         public static bool ProcessFilterOperationNode(this XmlNode xmlParentNode, XPathNavigator xmlOperationNode,
-                                                      bool blnIsOrNode)
+                                                      bool blnIsOrNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             XPathNavigator xmlParentNavigator = xmlParentNode?.CreateNavigator();
-            return xmlParentNavigator.ProcessFilterOperationNode(xmlOperationNode, blnIsOrNode);
+            return xmlParentNavigator.ProcessFilterOperationNode(xmlOperationNode, blnIsOrNode, token);
         }
 
         /// <summary>
@@ -258,10 +259,11 @@ namespace Chummer
         /// <param name="xmlOperationNode">The node containing the filter operation or a list of filter operations. Every element here is checked against corresponding elements in the parent node, using an operation specified in the element's attributes.</param>
         /// <param name="xmlParentNode">The parent node against which the filter operations are checked.</param>
         /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
-        public static bool ProcessFilterOperationNode(this XmlNode xmlParentNode, XmlNode xmlOperationNode, bool blnIsOrNode)
+        public static bool ProcessFilterOperationNode(this XmlNode xmlParentNode, XmlNode xmlOperationNode, bool blnIsOrNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             XPathNavigator xmlParentNavigator = xmlParentNode?.CreateNavigator();
-            return xmlParentNavigator.ProcessFilterOperationNode(xmlOperationNode?.CreateNavigator(), blnIsOrNode);
+            return xmlParentNavigator.ProcessFilterOperationNode(xmlOperationNode?.CreateNavigator(), blnIsOrNode, token);
         }
 
         /// <summary>

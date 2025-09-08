@@ -2345,11 +2345,12 @@ namespace Chummer
         /// Converts an image to its Base64 string equivalent with compression settings specified by SavedImageQuality.
         /// </summary>
         /// <param name="objImageToSave">Image whose Base64 string should be created.</param>
-        public static string ImageToBase64StringForStorage(Image objImageToSave)
+        public static string ImageToBase64StringForStorage(Image objImageToSave, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             return SavedImageQuality == int.MaxValue
-                ? objImageToSave.ToBase64String()
-                : objImageToSave.ToBase64StringAsJpeg(SavedImageQuality);
+                ? objImageToSave.ToBase64String(token: token)
+                : objImageToSave.ToBase64StringAsJpeg(SavedImageQuality, token);
         }
 
         /// <summary>
@@ -2359,6 +2360,8 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static Task<string> ImageToBase64StringForStorageAsync(Image objImageToSave, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             return SavedImageQuality == int.MaxValue
                 ? objImageToSave.ToBase64StringAsync(token: token)
                 : objImageToSave.ToBase64StringAsJpegAsync(SavedImageQuality, token: token);

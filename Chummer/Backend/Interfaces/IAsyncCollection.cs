@@ -96,35 +96,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Get a HashCode representing the contents of a collection in a way where the order of the items is irrelevant
-        /// This is a parallelized version of GetOrderInvariantEnsembleHashCode meant to be used for large collections
-        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
-        /// </summary>
-        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
-        /// <param name="lstItems">The collection containing the contents</param>
-        /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
-        public static async Task<int> GetOrderInvariantEnsembleHashCodeParallelAsync<T>(this IAsyncReadOnlyCollection<T> lstItems, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            if (lstItems == null)
-                return 0;
-            // uint to prevent overflows
-            unchecked
-            {
-                uint result = 0;
-                Parallel.For(0, lstItems.Count, () => 0, (i, state, local) =>
-                {
-                    if (token.IsCancellationRequested)
-                        state.Stop();
-                    return state.IsStopped ? 0 : lstItems.ElementAtBetter(i).GetHashCode();
-                }, localResult => result += (uint)localResult);
-                token.ThrowIfCancellationRequested();
-                return (int)(19 + result * 31);
-            }
-        }
-
-        /// <summary>
         /// Syntactic sugar for a version of SequenceEquals that does not care about the order of elements, just the two collections' contents.
         /// </summary>
         /// <param name="first">First collection to compare.</param>

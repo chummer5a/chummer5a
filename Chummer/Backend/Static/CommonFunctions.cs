@@ -120,8 +120,8 @@ namespace Chummer
                 return sbdExpression.Enumerate().AsParallel().Any(x => s_setUppercaseLatinCharsAndOpenCurlyBracket.Contains(x));
             }
             if (sbdExpression.Length <= Utils.MaxParallelBatchSize)
-                return sbdExpression.Enumerate().Any(x => x == '{');
-            return sbdExpression.Enumerate().AsParallel().Any(x => x == '{');
+                return sbdExpression.Enumerate().Contains('{');
+            return sbdExpression.Enumerate().AsParallel().Contains('{');
         }
 
         private static readonly char[] s_achrUppercaseLatinCharsAndOpenCurlyBracket = new[]
@@ -479,8 +479,9 @@ namespace Chummer
         /// <param name="objFoundVehicle">Vehicle that the Gear was found in.</param>
         /// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
         /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
-        public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
+        public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (lstVehicles == null)
                 throw new ArgumentNullException(nameof(lstVehicles));
             if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
@@ -488,7 +489,7 @@ namespace Chummer
                 foreach (Vehicle objVehicle in lstVehicles)
                 {
                     Gear objReturn =
-                        objVehicle.FindVehicleGear(strGuid, out objFoundWeaponAccessory, out objFoundCyberware);
+                        objVehicle.FindVehicleGear(strGuid, out objFoundWeaponAccessory, out objFoundCyberware, token);
                     if (objReturn != null)
                     {
                         objFoundVehicle = objVehicle;
@@ -541,11 +542,11 @@ namespace Chummer
         /// </summary>
         /// <param name="funcPredicate">Predicate to locate the VehicleMod.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
-        public static VehicleMod FindVehicleMod([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate)
+        public static VehicleMod FindVehicleMod([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate, CancellationToken token = default)
         {
             if (lstVehicles == null)
                 throw new ArgumentNullException(nameof(lstVehicles));
-            return lstVehicles.FindVehicleMod(funcPredicate, out Vehicle _, out WeaponMount _);
+            return lstVehicles.FindVehicleMod(funcPredicate, out Vehicle _, out WeaponMount _, token);
         }
 
         /// <summary>
@@ -555,13 +556,14 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle that the VehicleMod was found in.</param>
         /// <param name="objFoundWeaponMount">Weapon Mount that the VehicleMod was found in.</param>
-        public static VehicleMod FindVehicleMod([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount)
+        public static VehicleMod FindVehicleMod([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (lstVehicles == null)
                 throw new ArgumentNullException(nameof(lstVehicles));
             foreach (Vehicle objVehicle in lstVehicles)
             {
-                VehicleMod objMod = objVehicle.FindVehicleMod(funcPredicate, out objFoundWeaponMount);
+                VehicleMod objMod = objVehicle.FindVehicleMod(funcPredicate, out objFoundWeaponMount, token);
                 if (objMod != null)
                 {
                     objFoundVehicle = objVehicle;
@@ -601,11 +603,11 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Weapon to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
-        public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid)
+        public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid, CancellationToken token = default)
         {
             if (lstVehicles == null)
                 throw new ArgumentNullException(nameof(lstVehicles));
-            return lstVehicles.FindVehicleWeapon(strGuid, out Vehicle _, out WeaponMount _, out VehicleMod _);
+            return lstVehicles.FindVehicleWeapon(strGuid, out Vehicle _, out WeaponMount _, out VehicleMod _, token);
         }
 
         /// <summary>
@@ -616,15 +618,16 @@ namespace Chummer
         /// <param name="objFoundVehicle">Vehicle that the Weapon was found in.</param>
         /// <param name="objFoundVehicleMod">Vehicle mod that the Weapon was found in.</param>
         /// <param name="objFoundWeaponMount">Weapon Mount that the Weapon was found in.</param>
-        public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount, out VehicleMod objFoundVehicleMod)
+        public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount, out VehicleMod objFoundVehicleMod, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (lstVehicles == null)
                 throw new ArgumentNullException(nameof(lstVehicles));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Vehicle objVehicle in lstVehicles)
                 {
-                    Weapon objReturn = objVehicle.Weapons.DeepFindById(strGuid);
+                    Weapon objReturn = objVehicle.Weapons.DeepFindById(strGuid, token);
                     if (objReturn != null)
                     {
                         objFoundVehicle = objVehicle;
@@ -635,7 +638,7 @@ namespace Chummer
 
                     foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
                     {
-                        objReturn = objWeaponMount.Weapons.DeepFindById(strGuid);
+                        objReturn = objWeaponMount.Weapons.DeepFindById(strGuid, token);
                         if (objReturn != null)
                         {
                             objFoundVehicle = objVehicle;
@@ -646,7 +649,7 @@ namespace Chummer
 
                         foreach (VehicleMod objMod in objWeaponMount.Mods)
                         {
-                            objReturn = objMod.Weapons.DeepFindById(strGuid);
+                            objReturn = objMod.Weapons.DeepFindById(strGuid, token);
                             if (objReturn != null)
                             {
                                 objFoundVehicle = objVehicle;
@@ -659,7 +662,7 @@ namespace Chummer
 
                     foreach (VehicleMod objMod in objVehicle.Mods)
                     {
-                        objReturn = objMod.Weapons.DeepFindById(strGuid);
+                        objReturn = objMod.Weapons.DeepFindById(strGuid, token);
                         if (objReturn != null)
                         {
                             objFoundVehicle = objVehicle;
@@ -1044,11 +1047,11 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstArmors">List of Armors to search.</param>
-        public static Gear FindArmorGear(this IEnumerable<Armor> lstArmors, string strGuid)
+        public static Gear FindArmorGear(this IEnumerable<Armor> lstArmors, string strGuid, CancellationToken token = default)
         {
             if (lstArmors == null)
                 throw new ArgumentNullException(nameof(lstArmors));
-            return lstArmors.FindArmorGear(strGuid, out Armor _, out ArmorMod _);
+            return lstArmors.FindArmorGear(strGuid, out Armor _, out ArmorMod _, token);
         }
 
         /// <summary>
@@ -1058,15 +1061,16 @@ namespace Chummer
         /// <param name="lstArmors">List of Armors to search.</param>
         /// <param name="objFoundArmor">Armor that the Gear was found in.</param>
         /// <param name="objFoundArmorMod">Armor mod that the Gear was found in.</param>
-        public static Gear FindArmorGear(this IEnumerable<Armor> lstArmors, string strGuid, out Armor objFoundArmor, out ArmorMod objFoundArmorMod)
+        public static Gear FindArmorGear(this IEnumerable<Armor> lstArmors, string strGuid, out Armor objFoundArmor, out ArmorMod objFoundArmorMod, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (lstArmors == null)
                 throw new ArgumentNullException(nameof(lstArmors));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Armor objArmor in lstArmors)
                 {
-                    Gear objReturn = objArmor.GearChildren.DeepFindById(strGuid);
+                    Gear objReturn = objArmor.GearChildren.DeepFindById(strGuid, token);
                     if (objReturn != null)
                     {
                         objFoundArmor = objArmor;
@@ -1076,7 +1080,7 @@ namespace Chummer
 
                     foreach (ArmorMod objMod in objArmor.ArmorMods)
                     {
-                        objReturn = objMod.GearChildren.DeepFindById(strGuid);
+                        objReturn = objMod.GearChildren.DeepFindById(strGuid, token);
                         if (objReturn != null)
                         {
                             objFoundArmor = objArmor;
@@ -1183,11 +1187,11 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstCyberware">List of Cyberware to search.</param>
-        public static Gear FindCyberwareGear(this IEnumerable<Cyberware> lstCyberware, string strGuid)
+        public static Gear FindCyberwareGear(this IEnumerable<Cyberware> lstCyberware, string strGuid, CancellationToken token = default)
         {
             if (lstCyberware == null)
                 throw new ArgumentNullException(nameof(lstCyberware));
-            return lstCyberware.FindCyberwareGear(strGuid, out Cyberware _);
+            return lstCyberware.FindCyberwareGear(strGuid, out Cyberware _, token);
         }
 
         /// <summary>
@@ -1196,15 +1200,16 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstCyberware">List of Cyberware to search.</param>
         /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
-        public static Gear FindCyberwareGear(this IEnumerable<Cyberware> lstCyberware, string strGuid, out Cyberware objFoundCyberware)
+        public static Gear FindCyberwareGear(this IEnumerable<Cyberware> lstCyberware, string strGuid, out Cyberware objFoundCyberware, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (lstCyberware == null)
                 throw new ArgumentNullException(nameof(lstCyberware));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Cyberware objCyberware in lstCyberware.DeepWhere(x => x.Children, x => x.GearChildren.Count > 0))
                 {
-                    Gear objReturn = objCyberware.GearChildren.DeepFindById(strGuid);
+                    Gear objReturn = objCyberware.GearChildren.DeepFindById(strGuid, token);
 
                     if (objReturn != null)
                     {
@@ -1338,8 +1343,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
-                        token.ThrowIfCancellationRequested();
-                        Gear objReturn = objAccessory.GearChildren.DeepFindById(strGuid);
+                        Gear objReturn = objAccessory.GearChildren.DeepFindById(strGuid, token);
 
                         if (objReturn != null)
                         {
