@@ -4233,6 +4233,7 @@ namespace Chummer.Backend.Equipment
                         decBaseMultiplier *= 1.0m + objQuality.BaseMultiplier / 100.0m;
                     }
                 }
+                // Flat costs added after multipliers, as per HT 139
                 if (decMultiplier != 1.0m)
                     decReturn *= decMultiplier;
                 decReturn += decOutingsAndServicesCost;
@@ -4445,6 +4446,7 @@ namespace Chummer.Backend.Equipment
                         }
                         return 0;
                     }, token).ConfigureAwait(false);
+                // Flat costs added after multipliers, as per HT 139
                 if (decMultiplier != 1.0m)
                     decReturn *= decMultiplier;
                 decReturn += decOutingsAndServicesCost;
