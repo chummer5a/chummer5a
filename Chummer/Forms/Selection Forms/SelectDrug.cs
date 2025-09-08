@@ -45,7 +45,7 @@ namespace Chummer
         private bool _blnLockGrade;
         private int _intLoading = 1;
 
-        private const string _strNodeXPath = "Drugs/Drug";
+        private const string _strNodeXPath = "drugs/drug";
         private static string _sStrSelectGrade = string.Empty;
         private string _strOldSelectedGrade = string.Empty;
         private bool _blnOldGradeEnabled = true;

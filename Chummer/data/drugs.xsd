@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:include schemaLocation="bonuses.xsd" />
+  <xs:include schemaLocation="conditions.xsd" />
+  <xs:element name="chummer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="drugs">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="drug" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="id" type="xs:string"/>
+                    <xs:element name="name" type="xs:string"/>
+                    <xs:element name="category" type="xs:string"/>
+                    <xs:element name="rating" type="xs:integer"/>
+                    <xs:element name="source" type="xs:string" minOccurs="0"/>
+                    <xs:element name="page" type="xs:string" minOccurs="0"/>
+                    <xs:element name="avail" type="xs:string" minOccurs="0"/>
+                    <xs:element name="cost" type="xs:string" minOccurs="0"/>
+                    <xs:element name="speed" type="xs:string" minOccurs="0"/>
+                    <xs:element name="vectors" type="xs:string" minOccurs="0"/>
+                    <xs:element name="duration" type="xs:string" minOccurs="0"/>
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
+                    <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />
+                    <xs:element ref="required" minOccurs="0" maxOccurs="1" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

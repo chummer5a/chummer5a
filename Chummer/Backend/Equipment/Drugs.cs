@@ -27,9 +27,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Media;
 using System.Xml;
 using System.Xml.XPath;
 using NLog;
+using static iText.IO.Util.IntHashtable;
 
 namespace Chummer.Backend.Equipment
 {
@@ -49,6 +51,7 @@ namespace Chummer.Backend.Equipment
         private readonly List<string> _lstCachedInfos = new List<string>();
         private readonly Dictionary<string, int> _dicCachedLimits = new Dictionary<string, int>();
         private readonly List<XmlNode> _lstCachedQualities = new List<XmlNode>();
+        private XmlNode _nodBonus;
         private string _strGrade = string.Empty;
         private decimal _decCost;
         private int _intAddictionThreshold;
@@ -91,8 +94,26 @@ namespace Chummer.Backend.Equipment
             _strDescription = string.Empty;
         }
 
-        public void Create(XmlNode objXmlData)
+        /// <summary>
+        /// Create a Drug from an XmlNode.
+        /// </summary>
+        /// <param name="objXmlDrug">XmlNode to create the object from.</param>
+        /// <param name="objGrade">Grade of the selected piece.</param>
+        /// <param name="lstWeapons">List of Weapons that should be added to the Character.</param>
+        /// <param name="blnCreateImprovements">Whether Improvements should be created.</param>
+        /// <param name="strForced">Force a particular value to be selected by an Improvement prompts.</param>
+        /// <param name="blnSkipSelectForms">Whether to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public void Create(XmlNode objXmlDrug, Grade objGrade, IList<Weapon> lstWeapons, bool blnCreateImprovements = true, string strForced = "", bool blnSkipSelectForms = false, CancellationToken token = default)
         {
+            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlDrug, objGrade, lstWeapons,
+                blnCreateImprovements, strForced, blnSkipSelectForms,
+                token), token);
+        }
+
+        private async Task CreateCoreAsync(bool blnSync, XmlNode objXmlData, Grade objGrade, IList<Weapon> lstWeapons, bool blnCreateImprovements = true, string strForced = "", bool blnSkipSelectForms = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             objXmlData.TryGetField("guid", Guid.TryParse, out _guiID);
             objXmlData.TryGetStringFieldQuickly("name", ref _strName);
             _objCachedMyXmlNode = null;
@@ -100,7 +121,7 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
             if (objXmlData["sourceid"] == null || !objXmlData.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
             {
-                this.GetNodeXPath()?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                this.GetNodeXPath(token: token)?.TryGetField("id", Guid.TryParse, out _guiSourceID);
             }
             objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
             objXmlData.TryGetDecFieldQuickly("cost", ref _decCost);
@@ -122,6 +143,102 @@ namespace Chummer.Backend.Equipment
             string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objXmlData.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+            if ((Bonus != null || PairBonus != null) && !blnSkipSelectForms)
+            {
+                if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                    ImprovementManager.SetForcedValue(_strForced, _objCharacter);
+
+                if (Bonus != null)
+                {
+                    if (blnSync)
+                    {
+                        // ReSharper disable once MethodHasAsyncOverload
+                        if (!ImprovementManager.CreateImprovements(_objCharacter, objSource,
+                                _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, Rating,
+                                CurrentDisplayNameShort, blnCreateImprovements, token))
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
+                    }
+                    else if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, objSource,
+                                 _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, await GetRatingAsync(token).ConfigureAwait(false),
+                                 await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), blnCreateImprovements, token).ConfigureAwait(false))
+                    {
+                        _guiID = Guid.Empty;
+                        return;
+                    }
+                }
+
+                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                    _strExtra = strSelectedValue;
+
+                if (PairBonus != null)
+                {
+                    // This cyberware should not be included in the count to make things easier.
+                    List<Cyberware> lstPairableCyberwares = blnSync
+                        ? _objCharacter.Cyberware.DeepWhere(x => x.Children,
+                            x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
+                                 x.IsModularCurrentlyEquipped, token).ToList()
+                        : await _objCharacter.Cyberware.DeepWhereAsync(x => x.GetChildrenAsync(token),
+                            async x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
+                                       await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    int intCount = lstPairableCyberwares.Count;
+                    // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                    if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
+                    {
+                        intCount = 0;
+                        foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                        {
+                            if (objPairableCyberware.Location != Location)
+                                // We have found a cyberware with which this one could be paired, so increase count by 1
+                                ++intCount;
+                            else
+                                // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
+                                --intCount;
+                        }
+
+                        // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
+                        intCount = (intCount > 0).ToInt32();
+                    }
+
+                    if ((intCount & 1) == 1)
+                    {
+                        if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                            ImprovementManager.SetForcedValue(_strForced, _objCharacter);
+                        else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
+                            ImprovementManager.SetForcedValue(_strExtra, _objCharacter);
+                        if (blnSync)
+                        {
+                            // ReSharper disable once MethodHasAsyncOverload
+                            if (!ImprovementManager.CreateImprovements(_objCharacter, objSource,
+                                    _guiID.ToString(
+                                        "D", GlobalSettings.InvariantCultureInfo)
+                                    + "Pair", PairBonus,
+                                    Rating,
+                                    CurrentDisplayNameShort,
+                                    blnCreateImprovements, token))
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
+                        }
+                        else if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, objSource,
+                                     _guiID.ToString(
+                                         "D", GlobalSettings.InvariantCultureInfo)
+                                     + "Pair", PairBonus,
+                                     await GetRatingAsync(token).ConfigureAwait(false),
+                                     await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                     blnCreateImprovements, token).ConfigureAwait(false))
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
+                    }
+                }
+            }
         }
 
         public void Load(XmlNode objXmlData)

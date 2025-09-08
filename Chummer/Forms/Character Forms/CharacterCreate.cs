@@ -26039,5 +26039,81 @@ namespace Chummer
                 //swallow this
             }
         }
+
+        private async void btnPurchaseDrug_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                bool blnAddAgain;
+
+                do
+                {
+                    blnAddAgain = await AddDrug(GenericToken).ConfigureAwait(false);
+                } while (blnAddAgain);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async Task<bool> AddDrug(CancellationToken token = default)
+        {
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            try
+            {
+                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token)
+                    .ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (ThreadSafeForm<SelectDrug> frmPickDrug
+                           = await ThreadSafeForm<SelectDrug>.GetAsync(() => new SelectDrug(CharacterObject), token)
+                               .ConfigureAwait(false))
+                    {
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickDrug.ShowDialogSafeAsync(this, token).ConfigureAwait(false)
+                            == DialogResult.Cancel)
+                            return false;
+
+                        // Open the Drugs XML file and locate the selected piece.
+                        XmlNode objXmlDrug
+                            = (await CharacterObject.LoadDataAsync("drugs.xml", token: token).ConfigureAwait(false))
+                            .TryGetNodeByNameOrId(
+                                "/chummer/drugs/drug", frmPickDrug.MyForm.SelectedDrug);
+                        if (objXmlDrug == null)
+                            return frmPickDrug.MyForm.AddAgain;
+
+                        Drug objDrug = new Drug(CharacterObject);
+                        try
+                        {
+                            await objDrug.CreateAsync(objXmlDrug, token: token).ConfigureAwait(false);
+                            objDrug.DiscountCost = frmPickDrug.MyForm.BlackMarketDiscount;
+                            if (frmPickDrug.MyForm.FreeCost)
+                            {
+                                objDrug.Cost = "0";
+                            }
+
+                            await CharacterObject.Drugs.AddAsync(objDrug, token).ConfigureAwait(false);
+
+                            return frmPickDrug.MyForm.AddAgain;
+                        }
+                        catch
+                        {
+                            //await objDrug.(token: CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
+        }
     }
 }
