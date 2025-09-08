@@ -2567,6 +2567,21 @@ namespace Chummer
             }
         }
 
+        private async void mnuXmlEditor_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (ThreadSafeForm<EditXmlData> frmXmlEditor
+                       = await ThreadSafeForm<EditXmlData>.GetAsync(
+                           () => new EditXmlData(), _objGenericToken).ConfigureAwait(false))
+                    await frmXmlEditor.ShowDialogSafeAsync(this, _objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async void menuStrip_ItemAdded(object sender, ToolStripItemEventArgs e)
         {
             try

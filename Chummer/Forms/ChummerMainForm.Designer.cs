@@ -76,6 +76,7 @@ namespace Chummer
             this.mnuRestart = new Chummer.DpiFriendlyToolStripMenuItem();
             this.toolStripSeparator6 = new Chummer.ColorableToolStripSeparator();
             this.mnuToolsTranslator = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuXmlEditor = new Chummer.DpiFriendlyToolStripMenuItem();
             this.mnuHeroLabImporter = new Chummer.DpiFriendlyToolStripMenuItem();
             this.mnuMasterIndex = new Chummer.DpiFriendlyToolStripMenuItem();
             this.mnuCharacterRoster = new Chummer.DpiFriendlyToolStripMenuItem();
@@ -683,6 +684,7 @@ namespace Chummer
             this.mnuRestart,
             this.toolStripSeparator6,
             this.mnuToolsTranslator,
+            this.mnuXmlEditor,
             this.mnuHeroLabImporter,
             this.mnuMasterIndex,
             this.mnuCharacterRoster,
@@ -795,6 +797,21 @@ namespace Chummer
             this.mnuToolsTranslator.Tag = "Menu_Main_Translator";
             this.mnuToolsTranslator.Text = "&Translator";
             this.mnuToolsTranslator.Click += new System.EventHandler(this.mnuToolsTranslator_Click);
+            // 
+            // mnuXmlEditor
+            // 
+            this.mnuXmlEditor.Image = global::Chummer.Properties.Resources.add_16;
+            this.mnuXmlEditor.ImageDpi120 = global::Chummer.Properties.Resources.add_20;
+            this.mnuXmlEditor.ImageDpi144 = global::Chummer.Properties.Resources.add_24;
+            this.mnuXmlEditor.ImageDpi192 = global::Chummer.Properties.Resources.add_32;
+            this.mnuXmlEditor.ImageDpi288 = global::Chummer.Properties.Resources.add_48;
+            this.mnuXmlEditor.ImageDpi384 = global::Chummer.Properties.Resources.add_64;
+            this.mnuXmlEditor.ImageDpi96 = global::Chummer.Properties.Resources.add_16;
+            this.mnuXmlEditor.Name = "mnuXmlEditor";
+            this.mnuXmlEditor.Size = new System.Drawing.Size(180, 22);
+            this.mnuXmlEditor.Tag = "Menu_Main_XmlEditor";
+            this.mnuXmlEditor.Text = "&XML Editor";
+            this.mnuXmlEditor.Click += new System.EventHandler(this.mnuXmlEditor_Click);
             // 
             // mnuHeroLabImporter
             // 
@@ -1298,6 +1315,7 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem mnuToolsUpdate;
         private DpiFriendlyToolStripMenuItem mnuRestart;
         private DpiFriendlyToolStripMenuItem mnuToolsTranslator;
+        private DpiFriendlyToolStripMenuItem mnuXmlEditor;
         private DpiFriendlyToolStripMenuItem mnuHeroLabImporter;
         private DpiFriendlyToolStripMenuItem newToolStripMenuItem;
         private DpiFriendlyToolStripMenuItem mnuNewCritter;

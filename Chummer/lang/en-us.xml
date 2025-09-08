@@ -1579,6 +1579,10 @@
       <text>&amp;Translator</text>
     </string>
     <string>
+      <key>Menu_Main_XmlEditor</key>
+      <text>&amp;XML Editor</text>
+    </string>
+    <string>
       <key>Menu_Main_HeroLabImporter</key>
       <text>&amp;Hero Lab Importer</text>
     </string>
@@ -10904,6 +10908,208 @@
     <string>
       <key>String_GameplayOption</key>
       <text>Missing Gameplay Option</text>
+    </string>
+    <!-- XML Editor Strings -->
+    <string>
+      <key>XmlEditor_Error_LoadingFiles</key>
+      <text>Error loading XML files</text>
+    </string>
+    <string>
+      <key>XmlEditor_Error_LoadingFile</key>
+      <text>Error loading XML file</text>
+    </string>
+    <string>
+      <key>XmlEditor_Error_ApplyingAmendment</key>
+      <text>Error applying amendment</text>
+    </string>
+    <string>
+      <key>XmlEditor_Error_SavingAmendment</key>
+      <text>Error saving amendment</text>
+    </string>
+    <string>
+      <key>XmlEditor_UnsavedChanges</key>
+      <text>You have unsaved changes. Do you want to save before closing?</text>
+    </string>
+    <string>
+      <key>XmlEditor_UnsavedChangesTitle</key>
+      <text>Unsaved Changes</text>
+    </string>
+    <string>
+      <key>XmlEditor_ErrorSaving</key>
+      <text>Error saving: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_DataDirectoryNotFound</key>
+      <text>Data directory not found</text>
+    </string>
+    <string>
+      <key>XmlEditor_Error_LoadingAvailableFiles</key>
+      <text>Error loading available XML files</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoFileSelected</key>
+      <text>Please select an XML file</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoFileSelectedTitle</key>
+      <text>No File Selected</text>
+    </string>
+    <string>
+      <key>XmlEditor_FileNotFound</key>
+      <text>File not found: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_FileNotFoundTitle</key>
+      <text>File Not Found</text>
+    </string>
+    <string>
+      <key>XmlEditor_Title</key>
+      <text>XML Amendment Developer - {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_LoadInstructions</key>
+      <text>Load a base XML file and create an amendment to see the result here.</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoBaseXml</key>
+      <text>Please load a base XML file first</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoBaseXmlTitle</key>
+      <text>No Base XML</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoAmendment</key>
+      <text>Please enter amendment XML</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoAmendmentTitle</key>
+      <text>No Amendment</text>
+    </string>
+    <string>
+      <key>XmlEditor_InvalidXml</key>
+      <text>Invalid amendment XML: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_InvalidXmlTitle</key>
+      <text>XML Parse Error</text>
+    </string>
+    <string>
+      <key>XmlEditor_NothingToSave</key>
+      <text>No amendment to save</text>
+    </string>
+    <string>
+      <key>XmlEditor_NothingToSaveTitle</key>
+      <text>Nothing to Save</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoBaseFile</key>
+      <text>No base file selected</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoBaseFileTitle</key>
+      <text>No Base File</text>
+    </string>
+    <string>
+      <key>XmlEditor_SaveTitle</key>
+      <text>Save Amendment File</text>
+    </string>
+    <string>
+      <key>XmlEditor_SaveSuccess</key>
+      <text>Amendment file saved successfully</text>
+    </string>
+    <string>
+      <key>XmlEditor_SaveSuccessTitle</key>
+      <text>Save Complete</text>
+    </string>
+    <string>
+      <key>XmlEditor_DiffInstructions</key>
+      <text>Load a base XML file and apply an amendment to see the diff here.</text>
+    </string>
+    <string>
+      <key>XmlEditor_Error_UpdatingDiff</key>
+      <text>Error updating diff preview</text>
+    </string>
+    <string>
+      <key>XmlEditor_ErrorGeneratingDiff</key>
+      <text>Error generating diff: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_AmendmentChanges</key>
+      <text>=== AMENDMENT CHANGES ===</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoChanges</key>
+      <text>No changes detected.</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoChangesDescription</key>
+      <text>The amendment did not modify the XML structure or values.</text>
+    </string>
+    <string>
+      <key>XmlEditor_ErrorGeneratingCleanDiff</key>
+      <text>Error generating diff: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_ErrorComparingDocuments</key>
+      <text>Error comparing documents: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_Added</key>
+      <text>+ Added: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_Removed</key>
+      <text>- Removed: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_Modified</key>
+      <text>* Modified: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_OldValue</key>
+      <text>  - Old: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_NewValue</key>
+      <text>  + New: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_RemovedAttribute</key>
+      <text>- Removed attribute: {0}@{1} = "{2}"</text>
+    </string>
+    <string>
+      <key>XmlEditor_ModifiedAttribute</key>
+      <text>* Modified attribute: {0}@{1}</text>
+    </string>
+    <string>
+      <key>XmlEditor_AddedAttribute</key>
+      <text>+ Added attribute: {0}@{1} = "{2}"</text>
+    </string>
+    <string>
+      <key>XmlEditor_ErrorComparingNodes</key>
+      <text>Error comparing nodes at {0}: {1}</text>
+    </string>
+    <string>
+      <key>XmlEditor_ErrorFormattingNode</key>
+      <text>Error formatting XML node</text>
+    </string>
+    <string>
+      <key>XmlEditor_AmendmentTemplate</key>
+      <text>&lt;chummer&gt;\n
+  &lt;elements&gt;\n
+        &lt;element&gt;\n
+        &lt;id&gt;YOUR_ID_HERE&lt;/id&gt;\n
+        &lt;!-- &lt;name&gt;Item Name&lt;/name&gt; --&gt;\n
+        &lt;bonus&gt;\n
+        &lt;elementname amendoperation="remove" /&gt;\n
+        &lt;newelement amendoperation="addnode"&gt;\n
+        &lt;value&gt;new value&lt;/value&gt;\n
+        &lt;/newelement&gt;\n
+        &lt;/bonus&gt;\n
+        &lt;/element&gt;\n
+  &lt;/elements&gt;\n
+&lt;/chummer&gt;</text>
     </string>
   </strings>
 </chummer>

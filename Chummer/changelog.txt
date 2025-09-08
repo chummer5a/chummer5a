@@ -110,6 +110,7 @@ Application Changes:
 - Qi foci (and other sources of selectable adept powers) no longer automatically add an extra level/rating to the adept power chosen for them when they are taken.
 - Markup entries for weapon mounts and vehicle mods are now consistent with how markup entries for other items work (the markup is applied a single time when the purchase happens instead of being saved and baked into the item's price after purchase).
 - The armor encumbrance setting for armor mods now works properly, and the armor encumbrance setting for armors now works properly when a character has no regular armor equipped.
+- Implemented a form for editing and previewing amend data files directly from within the program. This form can be accessed through the Tools menu by selecting the Xml Editor option.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://jackpoint.live/index.php?topic=31750.msg544923#msg544923.
@@ -330,6 +331,53 @@ Changed/New Strings:
 - String_DateSpan
 - Label_InitiativeDice -> String_InitiativeDice
 - Message_ImprovementLoadErrorPart2
+- XmlEditor_Error_LoadingFiles
+- XmlEditor_Error_LoadingFile
+- XmlEditor_Error_ApplyingAmendment
+- XmlEditor_Error_SavingAmendment
+- XmlEditor_UnsavedChanges
+- XmlEditor_UnsavedChangesTitle
+- XmlEditor_ErrorSaving
+- XmlEditor_DataDirectoryNotFound
+- XmlEditor_Error_LoadingAvailableFiles
+- XmlEditor_NoFileSelected
+- XmlEditor_NoFileSelectedTitle
+- XmlEditor_FileNotFound
+- XmlEditor_FileNotFoundTitle
+- XmlEditor_Title
+- XmlEditor_LoadInstructions
+- XmlEditor_NoBaseXml
+- XmlEditor_NoBaseXmlTitle
+- XmlEditor_NoAmendment
+- XmlEditor_NoAmendmentTitle
+- XmlEditor_InvalidXml
+- XmlEditor_InvalidXmlTitle
+- XmlEditor_NothingToSave
+- XmlEditor_NothingToSaveTitle
+- XmlEditor_NoBaseFile
+- XmlEditor_NoBaseFileTitle
+- XmlEditor_SaveTitle
+- XmlEditor_SaveSuccess
+- XmlEditor_SaveSuccessTitle
+- XmlEditor_DiffInstructions
+- XmlEditor_Error_UpdatingDiff
+- XmlEditor_ErrorGeneratingDiff
+- XmlEditor_AmendmentChanges
+- XmlEditor_NoChanges
+- XmlEditor_NoChangesDescription
+- XmlEditor_ErrorGeneratingCleanDiff
+- XmlEditor_ErrorComparingDocuments
+- XmlEditor_Added
+- XmlEditor_Removed
+- XmlEditor_Modified
+- XmlEditor_OldValue
+- XmlEditor_NewValue
+- XmlEditor_RemovedAttribute
+- XmlEditor_ModifiedAttribute
+- XmlEditor_AddedAttribute
+- XmlEditor_ErrorComparingNodes
+- XmlEditor_ErrorFormattingNode
+- XmlEditor_AmendmentTemplate
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage
