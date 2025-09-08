@@ -55,8 +55,8 @@ namespace Chummer.Backend.Equipment
         private bool _blnPrint = true;
         private int _intLPCost;
         private string _strCost = string.Empty;
-        private int _intMultiplier;
-        private int _intBaseMultiplier;
+        private decimal _decMultiplier;
+        private decimal _decBaseMultiplier;
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
         private int _intAreaMaximum;
@@ -161,8 +161,8 @@ namespace Chummer.Backend.Equipment
 
                 objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLPCost);
                 objXmlLifestyleQuality.TryGetStringFieldQuickly("cost", ref _strCost);
-                objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
-                objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplierbaseonly", ref _intBaseMultiplier);
+                objXmlLifestyleQuality.TryGetDecFieldQuickly("multiplier", ref _decMultiplier);
+                objXmlLifestyleQuality.TryGetDecFieldQuickly("multiplierbaseonly", ref _decBaseMultiplier);
                 if (objXmlLifestyleQuality.TryGetStringFieldQuickly("category", ref _strCategory))
                     _eType = ConvertToLifestyleQualityType(_strCategory);
                 OriginSource = objLifestyleQualitySource;
@@ -276,8 +276,8 @@ namespace Chummer.Backend.Equipment
 
                 objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLPCost);
                 objXmlLifestyleQuality.TryGetStringFieldQuickly("cost", ref _strCost);
-                objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
-                objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplierbaseonly", ref _intBaseMultiplier);
+                objXmlLifestyleQuality.TryGetDecFieldQuickly("multiplier", ref _decMultiplier);
+                objXmlLifestyleQuality.TryGetDecFieldQuickly("multiplierbaseonly", ref _decBaseMultiplier);
                 if (objXmlLifestyleQuality.TryGetStringFieldQuickly("category", ref _strCategory))
                     _eType = ConvertToLifestyleQualityType(_strCategory);
                 OriginSource = objLifestyleQualitySource;
@@ -419,9 +419,9 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("extra", _strExtra);
                 objWriter.WriteElementString("cost", _strCost);
                 objWriter.WriteElementString("multiplier",
-                                             _intMultiplier.ToString(GlobalSettings.InvariantCultureInfo));
+                                             _decMultiplier.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("basemultiplier",
-                                             _intBaseMultiplier.ToString(GlobalSettings.InvariantCultureInfo));
+                                             _decBaseMultiplier.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("lp", _intLPCost.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("areamaximum",
                                              _intAreaMaximum.ToString(GlobalSettings.InvariantCultureInfo));
@@ -512,8 +512,8 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
                 objNode.TryGetInt32FieldQuickly("lp", ref _intLPCost);
                 objNode.TryGetStringFieldQuickly("cost", ref _strCost);
-                objNode.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
-                objNode.TryGetInt32FieldQuickly("basemultiplier", ref _intBaseMultiplier);
+                objNode.TryGetDecFieldQuickly("multiplier", ref _decMultiplier);
+                objNode.TryGetDecFieldQuickly("basemultiplier", ref _decBaseMultiplier);
                 if (!objNode.TryGetBoolFieldQuickly("uselpcost", ref _blnUseLPCost))
                     objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnUseLPCost);
                 if (!objNode.TryGetInt32FieldQuickly("areamaximum", ref _intAreaMaximum))
@@ -645,10 +645,11 @@ namespace Chummer.Backend.Equipment
                     Comforts = intTemp;
                 if (objLifestyleQualityNode.TryGetInt32FieldQuickly("security", ref intTemp))
                     Security = intTemp;
-                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("multiplier", ref intTemp))
-                    Multiplier = intTemp;
-                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("multiplierbaseonly", ref intTemp))
-                    BaseMultiplier = intTemp;
+                decimal decTemp = 0.0m;
+                if (objLifestyleQualityNode.TryGetDecFieldQuickly("multiplier", ref decTemp))
+                    Multiplier = decTemp;
+                if (objLifestyleQualityNode.TryGetDecFieldQuickly("multiplierbaseonly", ref decTemp))
+                    BaseMultiplier = decTemp;
             }
         }
 
@@ -727,10 +728,11 @@ namespace Chummer.Backend.Equipment
                     Comforts = intTemp;
                 if (objLifestyleQualityNode.TryGetInt32FieldQuickly("security", ref intTemp))
                     Security = intTemp;
-                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("multiplier", ref intTemp))
-                    Multiplier = intTemp;
-                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("multiplierbaseonly", ref intTemp))
-                    BaseMultiplier = intTemp;
+                decimal decTemp = 0.0m;
+                if (objLifestyleQualityNode.TryGetDecFieldQuickly("multiplier", ref decTemp))
+                    await SetMultiplierAsync(decTemp, token).ConfigureAwait(false);
+                if (objLifestyleQualityNode.TryGetDecFieldQuickly("multiplierbaseonly", ref decTemp))
+                    await SetBaseMultiplierAsync(decTemp, token).ConfigureAwait(false);
             }
             finally
             {
@@ -1595,12 +1597,12 @@ namespace Chummer.Backend.Equipment
                 string strReturn;
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
-                    int intMultiplier = Multiplier;
-                    if (intMultiplier != 0)
+                    decimal decMultiplier = Multiplier;
+                    if (decMultiplier != 0)
                     {
-                        if (intMultiplier > 0)
+                        if (decMultiplier > 0)
                             sbdReturn.Append('+');
-                        sbdReturn.Append(intMultiplier.ToString(objCulture)).Append('%');
+                        sbdReturn.Append(decMultiplier.ToString(objCulture)).Append('%');
                     }
 
                     decimal decCost = Cost;
@@ -1633,12 +1635,12 @@ namespace Chummer.Backend.Equipment
                 string strReturn;
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
-                    int intMultiplier = await GetMultiplierAsync(token).ConfigureAwait(false);
-                    if (intMultiplier != 0)
+                    decimal decMultiplier = await GetMultiplierAsync(token).ConfigureAwait(false);
+                    if (decMultiplier != 0)
                     {
-                        if (intMultiplier > 0)
+                        if (decMultiplier > 0)
                             sbdReturn.Append('+');
-                        sbdReturn.Append(intMultiplier.ToString(objCulture)).Append('%');
+                        sbdReturn.Append(decMultiplier.ToString(objCulture)).Append('%');
                     }
 
                     decimal decCost = await GetCostAsync(token).ConfigureAwait(false);
@@ -2167,36 +2169,47 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        ///     Percentage by which the quality increases the overall Lifestyle Cost.
+        /// Percentage by which the quality increases the overall Lifestyle Cost.
         /// </summary>
-        public int Multiplier
+        public decimal Multiplier
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CostFree ? 0 : _intMultiplier;
+                    return CostFree ? 0 : _decMultiplier;
             }
-            set
+            private set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_decMultiplier == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _intMultiplier, value) != value)
+                    if (_decMultiplier == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _decMultiplier = value;
                         OnPropertyChanged();
+                    }
                 }
             }
         }
 
         /// <summary>
-        ///     Percentage by which the quality increases the overall Lifestyle Cost.
+        /// Percentage by which the quality increases the overall Lifestyle Cost.
         /// </summary>
-        public async Task<int> GetMultiplierAsync(CancellationToken token = default)
+        public async Task<decimal> GetMultiplierAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await GetCostFreeAsync(token).ConfigureAwait(false) ? 0 : _intMultiplier;
+                return await GetCostFreeAsync(token).ConfigureAwait(false) ? 0 : _decMultiplier;
             }
             finally
             {
@@ -2205,36 +2218,131 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        ///     Percentage by which the quality increases the Lifestyle Cost ONLY, without affecting other qualities.
+        /// Percentage by which the quality increases the overall Lifestyle Cost.
         /// </summary>
-        public int BaseMultiplier
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return CostFree ? 0 : _intBaseMultiplier;
-            }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                {
-                    if (Interlocked.Exchange(ref _intBaseMultiplier, value) != value)
-                        OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Percentage by which the quality increases the Lifestyle Cost ONLY, without affecting other qualities.
-        /// </summary>
-        public async Task<int> GetBaseMultiplierAsync(CancellationToken token = default)
+        private async Task SetMultiplierAsync(decimal value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await GetCostFreeAsync(token).ConfigureAwait(false) ? 0 : _intBaseMultiplier;
+                if (_decMultiplier == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decMultiplier == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decMultiplier = value;
+                    await OnPropertyChangedAsync(nameof(Multiplier), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Percentage by which the quality increases the Lifestyle Cost ONLY, without affecting other qualities.
+        /// </summary>
+        public decimal BaseMultiplier
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return CostFree ? 0 : _decBaseMultiplier;
+            }
+            private set
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_decBaseMultiplier == value)
+                        return;
+                }
+
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (_decBaseMultiplier == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _decBaseMultiplier = value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Percentage by which the quality increases the Lifestyle Cost ONLY, without affecting other qualities.
+        /// </summary>
+        public async Task<decimal> GetBaseMultiplierAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetCostFreeAsync(token).ConfigureAwait(false) ? 0 : _decBaseMultiplier;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Percentage by which the quality increases the Lifestyle Cost ONLY, without affecting other qualities.
+        /// </summary>
+        private async Task SetBaseMultiplierAsync(decimal value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decBaseMultiplier == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decBaseMultiplier == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decBaseMultiplier = value;
+                    await OnPropertyChangedAsync(nameof(BaseMultiplier), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
