@@ -3919,9 +3919,18 @@ namespace Chummer.Backend.Equipment
                     decimal decCost = Cost;
 
                     // Base cost multiplier
-                    decimal decMultiplier = LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.BaseMultiplier);
-                    if (decMultiplier != 0)
-                        decCost *= 1.0m + decMultiplier / 100.0m;
+                    decimal decMultiplier = 1.0m;
+                    foreach (LifestyleQuality lq in LifestyleQualities)
+                    {
+                        if (lq.OriginSource != QualitySource.BuiltIn)
+                        {
+                            decimal decInnerMultiplier = lq.BaseMultiplier;
+                            if (decInnerMultiplier != 0)
+                                decMultiplier *= 1.0m + decInnerMultiplier / 100.0m;
+                        }
+                    }
+                    if (decMultiplier != 1.0m)
+                        decCost *= decMultiplier;
 
                     // Add in costs from lifestyle categories.
                     decMultiplier = Area + Comforts + Security;
@@ -3930,30 +3939,37 @@ namespace Chummer.Backend.Equipment
                     decCost += Area * CostForArea + Comforts * CostForComforts + Security * CostForSecurity;
 
                     // Add costs from Entertainment Assets.
-                    decMultiplier =
-                        LifestyleQualities.Sum(
-                            x => x.OriginSource != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
-                                 x.Category.Contains("Asset"),
-                            lq => lq.Multiplier);
-                    if (decMultiplier != 0)
-                        decCost *= 1.0m + decMultiplier / 100.0m;
-                    // Flat costs added after multipliers, as per HT 139
-                    decCost += LifestyleQualities.Sum(
+                    decMultiplier = 1.0m;
+                    decimal decFlatCosts = LifestyleQualities.Sum(
                         x => x.OriginSource != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
-                             x.Category.Contains("Asset"),
-                        lq => lq.Cost);
+                                 x.Category.Contains("Asset"),
+                        lq =>
+                        {
+                            decimal decInnerMultiplier = lq.Multiplier;
+                            if (decInnerMultiplier != 0)
+                                decMultiplier *= 1.0m + decInnerMultiplier / 100.0m;
+                            return lq.Cost;
+                        });
+                    // Flat costs added after multipliers, as per HT 139
+                    if (decMultiplier != 1.0m)
+                        decCost *= decMultiplier;
+                    decCost += decFlatCosts;
 
                     // Add costs from qualities that are not Entertainment Assets (or Contracts)
-                    decMultiplier =
-                        LifestyleQualities.Sum(
-                            x => x.OriginSource != QualitySource.BuiltIn && x.Type != QualityType.Entertainment && x.Type != QualityType.Contracts,
-                            lq => lq.Multiplier);
-                    if (decMultiplier != 0)
-                        decCost *= 1.0m + decMultiplier / 100.0m;
-                    // Flat costs added after multipliers, as per HT 139
-                    decCost += LifestyleQualities.Sum(
+                    decMultiplier = 1.0m;
+                    decFlatCosts = LifestyleQualities.Sum(
                         x => x.OriginSource != QualitySource.BuiltIn && x.Type != QualityType.Entertainment && x.Type != QualityType.Contracts,
-                        lq => lq.Cost);
+                        lq =>
+                        {
+                            decimal decInnerMultiplier = lq.Multiplier;
+                            if (decInnerMultiplier != 0)
+                                decMultiplier *= 1.0m + decInnerMultiplier / 100.0m;
+                            return lq.Cost;
+                        });
+                    // Flat costs added after multipliers, as per HT 139
+                    if (decMultiplier != 1.0m)
+                        decCost *= decMultiplier;
+                    decCost += decFlatCosts;
 
                     // Shared lifestyle adjustment
                     if (Roommates > 0)
@@ -3979,9 +3995,18 @@ namespace Chummer.Backend.Equipment
                 decimal decCost = await GetCostAsync(token).ConfigureAwait(false);
 
                 // Base cost multiplier
-                decimal decMultiplier = await LifestyleQualities.SumAsync(async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn, lq => lq.GetBaseMultiplierAsync(token), token).ConfigureAwait(false) / 100.0m;
-                if (decMultiplier != 0)
-                    decCost *= 1.0m + decMultiplier;
+                decimal decMultiplier = 1.0m;
+                await LifestyleQualities.ForEachAsync(async x =>
+                {
+                    if (await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn)
+                    {
+                        decimal decInnerMultiplier = await x.GetBaseMultiplierAsync(token).ConfigureAwait(false);
+                        if (decInnerMultiplier != 0)
+                            decMultiplier *= 1.0m + decInnerMultiplier / 100.0m;
+                    }
+                }, token).ConfigureAwait(false);
+                if (decMultiplier != 1.0m)
+                    decCost *= decMultiplier;
 
                 // Add in costs from lifestyle categories.
                 int intArea = await GetAreaAsync(token).ConfigureAwait(false);
@@ -3993,32 +4018,38 @@ namespace Chummer.Backend.Equipment
                 decCost += intArea * CostForArea + intComforts * CostForComforts + intSecurity * CostForSecurity;
 
                 // Add costs from Entertainment Assets.
-                decMultiplier =
-                    await LifestyleQualities.SumAsync(
-                        async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
-                                   x.Category.Contains("Asset"),
-                        lq => lq.GetMultiplierAsync(token), token).ConfigureAwait(false)
-                    / 100.0m;
-                if (decMultiplier != 0)
-                    decCost *= 1.0m + decMultiplier;
-                // Flat costs added after multipliers, as per HT 139
-                decCost += await LifestyleQualities.SumAsync(
+                decMultiplier = 1.0m;
+                decimal decFlatCosts = await LifestyleQualities.SumAsync(
                     async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
                                x.Category.Contains("Asset"),
-                    lq => lq.GetCostAsync(token), token).ConfigureAwait(false);
+                    async lq =>
+                    {
+                        decimal decInnerMultiplier = await lq.GetMultiplierAsync(token).ConfigureAwait(false);
+                        if (decInnerMultiplier != 0)
+                            decMultiplier *= 1.0m + decInnerMultiplier / 100.0m;
+                        return await lq.GetCostAsync(token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                // Flat costs added after multipliers, as per HT 139
+                if (decMultiplier != 1.0m)
+                    decCost *= decMultiplier;
+                decCost += decFlatCosts;
 
                 // Add costs from qualities that are not Entertainment Assets (or Contracts)
-                decMultiplier =
-                    await LifestyleQualities.SumAsync(
-                        async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type != QualityType.Entertainment && x.Type != QualityType.Contracts,
-                        lq => lq.GetMultiplierAsync(token), token).ConfigureAwait(false)
-                    / 100.0m;
-                if (decMultiplier != 0)
-                    decCost *= 1.0m + decMultiplier;
+                decMultiplier = 1.0m;
+                decFlatCosts = await LifestyleQualities.SumAsync(
+                    async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type != QualityType.Entertainment &&
+                               x.Type != QualityType.Contracts,
+                    async lq =>
+                    {
+                        decimal decInnerMultiplier = await lq.GetMultiplierAsync(token).ConfigureAwait(false);
+                        if (decInnerMultiplier != 0)
+                            decMultiplier *= 1.0m + decInnerMultiplier / 100.0m;
+                        return await lq.GetCostAsync(token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
                 // Flat costs added after multipliers, as per HT 139
-                decCost += await LifestyleQualities.SumAsync(
-                    async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type != QualityType.Entertainment && x.Type != QualityType.Contracts,
-                    lq => lq.GetCostAsync(token), token).ConfigureAwait(false);
+                if (decMultiplier != 1.0m)
+                    decCost *= decMultiplier;
+                decCost += decFlatCosts;
 
                 // Shared lifestyle adjustment
                 int intRoommates = await GetRoommatesAsync(token).ConfigureAwait(false);
@@ -4105,30 +4136,26 @@ namespace Chummer.Backend.Equipment
                             List<Lifestyle> lstLifestyles = dicGenericOnceOffImprovementsByUnique.Count > 0
                                 ? _objCharacter.Lifestyles.ToList()
                                 : _objCharacter.Lifestyles.FindAll(x => x.BaseLifestyle == strBaseLifestyle);
+                            Dictionary<Lifestyle, decimal> dicLifestyleCosts = new Dictionary<Lifestyle, decimal>(lstLifestyles.Count);
+                            foreach (Lifestyle objLoop in lstLifestyles)
+                            {
+                                decimal decCost = objLoop.GetTotalMonthlyCost(false);
+                                switch (objLoop.IncrementType)
+                                {
+                                    case LifestyleIncrement.Day:
+                                        decCost *= 4.34812m / 7;
+                                        break;
+
+                                    case LifestyleIncrement.Week:
+                                        decCost *= 4.34812m;
+                                        break;
+                                }
+                                dicLifestyleCosts.Add(objLoop, decCost);
+                            }
                             lstLifestyles.Sort((x, y) =>
                             {
-                                decimal decLeftCost = x.GetTotalMonthlyCost(false);
-                                switch (x.IncrementType)
-                                {
-                                    case LifestyleIncrement.Day:
-                                        decLeftCost *= 4.34812m / 7;
-                                        break;
-
-                                    case LifestyleIncrement.Week:
-                                        decLeftCost *= 4.34812m;
-                                        break;
-                                }
-                                decimal decRightCost = y.GetTotalMonthlyCost(false);
-                                switch (y.IncrementType)
-                                {
-                                    case LifestyleIncrement.Day:
-                                        decRightCost *= 4.34812m / 7;
-                                        break;
-
-                                    case LifestyleIncrement.Week:
-                                        decRightCost *= 4.34812m;
-                                        break;
-                                }
+                                dicLifestyleCosts.TryGetValue(x, out decimal decLeftCost);
+                                dicLifestyleCosts.TryGetValue(y, out decimal decRightCost);
                                 return decRightCost.CompareTo(decLeftCost);
                             });
                             int intMyIndex = lstLifestyles.IndexOf(this);
@@ -4165,7 +4192,7 @@ namespace Chummer.Backend.Equipment
                     _objCharacter.Qualities.Where(x => x.Name.Contains("Dependent")).ToList();
                 decimal decDependents = 0;
                 decimal decMetatype = 0;
-                decimal decOther = 0;
+                decimal decOther = 1.0m;
                 foreach (Improvement objImprovement in lstImprovements)
                 {
                     if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality &&
@@ -4176,7 +4203,7 @@ namespace Chummer.Backend.Equipment
                                 || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant)
                         decMetatype += objImprovement.Value;
                     else
-                        decOther += objImprovement.Value;
+                        decOther *= 1.0m + objImprovement.Value / 100.0m;
                 }
                 // Dependents first
                 if (decDependents != 0)
@@ -4185,14 +4212,14 @@ namespace Chummer.Backend.Equipment
                 if (decMetatype != 0)
                     decReturn *= 1.0m + decMetatype / 100.0m;
                 // Finally, everything else
-                if (decOther != 0)
-                    decReturn *= 1.0m + decOther / 100.0m;
+                if (decOther != 1.0m)
+                    decReturn *= decOther;
 
                 // Add in Outings and Services costs
                 decimal decContractCost = 0;
                 decimal decOutingsAndServicesCost = 0;
-                decimal decMultiplier = 0;
-                decimal decBaseMultiplier = 0;
+                decimal decMultiplier = 1.0m;
+                decimal decBaseMultiplier = 1.0m;
                 foreach (LifestyleQuality objQuality in LifestyleQualities)
                 {
                     if (objQuality.OriginSource == QualitySource.BuiltIn)
@@ -4202,15 +4229,16 @@ namespace Chummer.Backend.Equipment
                     else if (objQuality.Type == QualityType.Entertainment && !objQuality.Category.Contains("Asset"))
                     {
                         decOutingsAndServicesCost += objQuality.Cost;
-                        decMultiplier += objQuality.Multiplier;
-                        decBaseMultiplier += objQuality.BaseMultiplier;
+                        decMultiplier *= 1.0m + objQuality.Multiplier / 100.0m;
+                        decBaseMultiplier *= 1.0m + objQuality.BaseMultiplier / 100.0m;
                     }
                 }
-                if (decMultiplier != 0)
-                    decReturn *= 1.0m + decMultiplier / 100.0m;
+                // Flat costs added after multipliers, as per HT 139
+                if (decMultiplier != 1.0m)
+                    decReturn *= decMultiplier;
                 decReturn += decOutingsAndServicesCost;
-                if (decBaseMultiplier != 0)
-                    decReturn += Cost * (1.0m + decBaseMultiplier / 100.0m);
+                if (decBaseMultiplier != 1.0m)
+                    decReturn += Cost * decBaseMultiplier;
 
                 // Apply final percentage modifier
                 decReturn *= Percentage / 100;
@@ -4276,7 +4304,7 @@ namespace Chummer.Backend.Equipment
                         {
                             if (x.Enabled && (x.ImproveType == Improvement.ImprovementType.LifestyleCost || x.ImproveType == Improvement.ImprovementType.BasicLifestyleCost)
                                 && x.Condition == "once"
-                                && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == BaseLifestyle))
+                                && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == strBaseLifestyle))
                                 lstOnceOffImprovements.Add(x);
                         }, token).ConfigureAwait(false);
                     }
@@ -4286,7 +4314,7 @@ namespace Chummer.Backend.Equipment
                         {
                             if (x.Enabled && x.ImproveType == Improvement.ImprovementType.LifestyleCost
                                 && x.Condition == "once"
-                                && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == BaseLifestyle))
+                                && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == strBaseLifestyle))
                                 lstOnceOffImprovements.Add(x);
                         }, token).ConfigureAwait(false);
                     }
@@ -4317,32 +4345,28 @@ namespace Chummer.Backend.Equipment
                             List<Lifestyle> lstLifestyles = dicGenericOnceOffImprovementsByUnique.Count > 0
                                 ? await _objCharacter.Lifestyles.ToListAsync(token)
                                 : await _objCharacter.Lifestyles.ToListAsync(async x => await x.GetBaseLifestyleAsync(token).ConfigureAwait(false) == strBaseLifestyle, token);
-                            await lstLifestyles.SortAsync(async (x, y) =>
+                            Dictionary<Lifestyle, decimal> dicLifestyleCosts = new Dictionary<Lifestyle, decimal>(lstLifestyles.Count);
+                            foreach (Lifestyle objLoop in lstLifestyles)
                             {
-                                decimal decLeftCost = await x.GetTotalMonthlyCostAsync(false, token).ConfigureAwait(false);
-                                switch (x.IncrementType)
+                                decimal decCost = await objLoop.GetTotalMonthlyCostAsync(false, token).ConfigureAwait(false);
+                                switch (objLoop.IncrementType)
                                 {
                                     case LifestyleIncrement.Day:
-                                        decLeftCost *= 4.34812m / 7;
+                                        decCost *= 4.34812m / 7;
                                         break;
 
                                     case LifestyleIncrement.Week:
-                                        decLeftCost *= 4.34812m;
+                                        decCost *= 4.34812m;
                                         break;
                                 }
-                                decimal decRightCost = await y.GetTotalMonthlyCostAsync(false, token).ConfigureAwait(false);
-                                switch (y.IncrementType)
-                                {
-                                    case LifestyleIncrement.Day:
-                                        decRightCost *= 4.34812m / 7;
-                                        break;
-
-                                    case LifestyleIncrement.Week:
-                                        decRightCost *= 4.34812m;
-                                        break;
-                                }
+                                dicLifestyleCosts.Add(objLoop, decCost);
+                            }
+                            lstLifestyles.Sort((x, y) =>
+                            {
+                                dicLifestyleCosts.TryGetValue(x, out decimal decLeftCost);
+                                dicLifestyleCosts.TryGetValue(y, out decimal decRightCost);
                                 return decRightCost.CompareTo(decLeftCost);
-                            }, token).ConfigureAwait(false);
+                            });
                             int intMyIndex = lstLifestyles.IndexOf(this);
                             foreach (List<Improvement> lstLoop in dicGenericOnceOffImprovementsByUnique.Values)
                             {
@@ -4378,7 +4402,7 @@ namespace Chummer.Backend.Equipment
                         async x => (await x.GetNameAsync(token).ConfigureAwait(false)).Contains("Dependent"), token).ConfigureAwait(false);
                 decimal decDependents = 0;
                 decimal decMetatype = 0;
-                decimal decOther = 0;
+                decimal decOther = 1.0m;
                 foreach (Improvement objImprovement in lstImprovements)
                 {
                     if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality &&
@@ -4389,7 +4413,7 @@ namespace Chummer.Backend.Equipment
                              || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant)
                         decMetatype += objImprovement.Value;
                     else
-                        decOther += objImprovement.Value;
+                        decOther *= 1.0m + objImprovement.Value / 100.0m;
                 }
                 // Dependents first
                 if (decDependents != 0)
@@ -4398,13 +4422,13 @@ namespace Chummer.Backend.Equipment
                 if (decMetatype != 0)
                     decReturn *= 1.0m + decMetatype / 100.0m;
                 // Finally, everything else
-                if (decOther != 0)
-                    decReturn *= 1.0m + decOther / 100.0m;
+                if (decOther != 1.0m)
+                    decReturn *= decOther;
 
                 // Add in Outings and Services costs
                 decimal decContractCost = 0;
-                decimal decMultiplier = 0;
-                decimal decBaseMultiplier = 0;
+                decimal decMultiplier = 1.0m;
+                decimal decBaseMultiplier = 1.0m;
                 decimal decOutingsAndServicesCost = await LifestyleQualities.SumAsync(
                     async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn, async x =>
                     {
@@ -4415,18 +4439,19 @@ namespace Chummer.Backend.Equipment
                                 break;
                             case QualityType.Entertainment when !x.Category.Contains("Asset"):
                             {
-                                decMultiplier += await x.GetMultiplierAsync(token).ConfigureAwait(false);
-                                decBaseMultiplier += await x.GetBaseMultiplierAsync(token).ConfigureAwait(false);
+                                decMultiplier *= 1.0m + (await x.GetMultiplierAsync(token).ConfigureAwait(false)) / 100.0m;
+                                decBaseMultiplier *= 1.0m + (await x.GetBaseMultiplierAsync(token).ConfigureAwait(false)) / 100.0m;
                                 return await x.GetCostAsync(token).ConfigureAwait(false);
                             }
                         }
                         return 0;
                     }, token).ConfigureAwait(false);
-                if (decMultiplier != 0)
-                    decReturn *= 1.0m + decMultiplier / 100.0m;
+                // Flat costs added after multipliers, as per HT 139
+                if (decMultiplier != 1.0m)
+                    decReturn *= decMultiplier;
                 decReturn += decOutingsAndServicesCost;
-                if (decBaseMultiplier != 0)
-                    decReturn += Cost * (1.0m + decBaseMultiplier / 100.0m);
+                if (decBaseMultiplier != 1.0m)
+                    decReturn += await GetCostAsync(token).ConfigureAwait(false) * decBaseMultiplier;
 
                 // Apply final percentage modifier
                 decReturn *= await GetPercentageAsync(token).ConfigureAwait(false) / 100;
