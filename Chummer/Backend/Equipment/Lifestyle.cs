@@ -4192,7 +4192,7 @@ namespace Chummer.Backend.Equipment
                     _objCharacter.Qualities.Where(x => x.Name.Contains("Dependent")).ToList();
                 decimal decDependents = 0;
                 decimal decMetatype = 0;
-                decimal decOther = 0;
+                decimal decOther = 1.0m;
                 foreach (Improvement objImprovement in lstImprovements)
                 {
                     if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality &&
@@ -4203,7 +4203,7 @@ namespace Chummer.Backend.Equipment
                                 || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant)
                         decMetatype += objImprovement.Value;
                     else
-                        decOther += objImprovement.Value;
+                        decOther *= 1.0m + objImprovement.Value / 100.0m;
                 }
                 // Dependents first
                 if (decDependents != 0)
@@ -4212,8 +4212,8 @@ namespace Chummer.Backend.Equipment
                 if (decMetatype != 0)
                     decReturn *= 1.0m + decMetatype / 100.0m;
                 // Finally, everything else
-                if (decOther != 0)
-                    decReturn *= 1.0m + decOther / 100.0m;
+                if (decOther != 1.0m)
+                    decReturn *= decOther;
 
                 // Add in Outings and Services costs
                 decimal decContractCost = 0;
@@ -4401,7 +4401,7 @@ namespace Chummer.Backend.Equipment
                         async x => (await x.GetNameAsync(token).ConfigureAwait(false)).Contains("Dependent"), token).ConfigureAwait(false);
                 decimal decDependents = 0;
                 decimal decMetatype = 0;
-                decimal decOther = 0;
+                decimal decOther = 1.0m;
                 foreach (Improvement objImprovement in lstImprovements)
                 {
                     if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality &&
@@ -4412,7 +4412,7 @@ namespace Chummer.Backend.Equipment
                              || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant)
                         decMetatype += objImprovement.Value;
                     else
-                        decOther += objImprovement.Value;
+                        decOther *= 1.0m + objImprovement.Value / 100.0m;
                 }
                 // Dependents first
                 if (decDependents != 0)
@@ -4421,8 +4421,8 @@ namespace Chummer.Backend.Equipment
                 if (decMetatype != 0)
                     decReturn *= 1.0m + decMetatype / 100.0m;
                 // Finally, everything else
-                if (decOther != 0)
-                    decReturn *= 1.0m + decOther / 100.0m;
+                if (decOther != 1.0m)
+                    decReturn *= decOther;
 
                 // Add in Outings and Services costs
                 decimal decContractCost = 0;
