@@ -853,15 +853,8 @@ namespace Chummer
                                             }
 
                                             // Delete all old autosaves
-                                            List<Task> lstTasks = new List<Task>(lstOldAutosaves.Count);
-                                            foreach (string strOldAutosave in lstOldAutosaves)
-                                            {
-                                                lstTasks.Add(
-                                                    FileExtensions.SafeDeleteAsync(
-                                                        strOldAutosave, token: _objGenericToken));
-                                            }
-
-                                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                            await ParallelExtensions.ForEachAsync(lstOldAutosaves, strOldAutosave =>
+                                                FileExtensions.SafeDeleteAsync(strOldAutosave, token: _objGenericToken), _objGenericToken).ConfigureAwait(false);
                                         }
 
                                         if (setFilesToLoad.Count > 0)
@@ -3949,17 +3942,8 @@ namespace Chummer
                                                                          * setCharactersToOpen.Count, token)
                                           .ConfigureAwait(false))
                     {
-                        List<Task<Character>> tskCharacterLoads = new List<Task<Character>>(setCharactersToOpen.Count);
-                        while (setCharactersToOpen.TryTake(out string strFile))
-                        {
-                            // ReSharper disable once AccessToDisposedClosure
-                            tskCharacterLoads.Add(Task.Run(
-                                                      () => Program.LoadCharacterAsync(
-                                                          strFile, frmLoadingBar: frmLoadingBar.MyForm,
-                                                          token: token), token));
-                        }
-                        Character[] aobjCharacters = await Task.WhenAll(tskCharacterLoads).ConfigureAwait(false);
-                        lstCharacters.AddRange(aobjCharacters);
+                        lstCharacters.AddRange(await ParallelExtensions.ForEachAsync(setCharactersToOpen, strFile =>
+                            Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar.MyForm, token: token), token).ConfigureAwait(false));
                     }
 
                     await OpenCharacterList(lstCharacters, token: token).ConfigureAwait(false);

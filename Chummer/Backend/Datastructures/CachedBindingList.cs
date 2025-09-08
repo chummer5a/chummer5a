@@ -272,22 +272,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 if (_setAddingNewAsync.Count > 0)
-                {
-                    List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                    int i = 0;
-                    foreach (AsyncAddingNewEventHandler objEvent in _setAddingNewAsync)
-                    {
-                        lstTasks.Add(objEvent.Invoke(this, e, token));
-                        if (++i < Utils.MaxParallelBatchSize)
-                            continue;
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                        lstTasks.Clear();
-                        i = 0;
-                    }
-
-                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                }
-
+                    await ParallelExtensions.ForEachAsync(_setAddingNewAsync, objEvent => objEvent.Invoke(this, e, token), token).ConfigureAwait(false);
                 base.OnAddingNew(e);
             }
             finally
@@ -342,22 +327,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 if (_setListChangedAsync.Count > 0)
-                {
-                    List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                    int i = 0;
-                    foreach (AsyncListChangedEventHandler objEvent in _setListChangedAsync)
-                    {
-                        lstTasks.Add(objEvent.Invoke(this, e, token));
-                        if (++i < Utils.MaxParallelBatchSize)
-                            continue;
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                        lstTasks.Clear();
-                        i = 0;
-                    }
-
-                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                }
-
+                    await ParallelExtensions.ForEachAsync(_setListChangedAsync, objEvent => objEvent.Invoke(this, e, token), token).ConfigureAwait(false);
                 base.OnListChanged(e);
             }
             finally
@@ -406,24 +376,16 @@ namespace Chummer
                 if (_setBeforeRemoveAsync.Count > 0)
                 {
                     List<RemovingOldEventArgs> lstArgsList = new List<RemovingOldEventArgs>(Items.Count);
-                    for (int j = 0; j < Items.Count; ++j)
-                        lstArgsList.Add(new RemovingOldEventArgs(Items[j], j));
-                    List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                    int i = 0;
+                    List<Tuple<AsyncBeforeRemoveEventHandler, RemovingOldEventArgs>> lstAsyncEventsList
+                            = new List<Tuple<AsyncBeforeRemoveEventHandler, RemovingOldEventArgs>>(lstArgsList.Count * _setBeforeRemoveAsync.Count);
                     foreach (AsyncBeforeRemoveEventHandler objEvent in _setBeforeRemoveAsync)
                     {
-                        foreach (RemovingOldEventArgs objArgs in lstArgsList)
+                        for (int j = 0; j < Items.Count; ++j)
                         {
-                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
-                            if (++i < Utils.MaxParallelBatchSize)
-                                continue;
-                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                            lstTasks.Clear();
-                            i = 0;
+                            lstAsyncEventsList.Add(new Tuple<AsyncBeforeRemoveEventHandler, RemovingOldEventArgs>(objEvent, new RemovingOldEventArgs(Items[j], j)));
                         }
                     }
-
-                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                    await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
                 }
             }
             finally
@@ -517,19 +479,7 @@ namespace Chummer
                     if (_setBeforeRemoveAsync.Count > 0)
                     {
                         RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
-                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                        int i = 0;
-                        foreach (AsyncBeforeRemoveEventHandler objEvent in _setBeforeRemoveAsync)
-                        {
-                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
-                            if (++i < Utils.MaxParallelBatchSize)
-                                continue;
-                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                            lstTasks.Clear();
-                            i = 0;
-                        }
-
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setBeforeRemoveAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -613,19 +563,7 @@ namespace Chummer
                 if (_setBeforeRemoveAsync.Count > 0)
                 {
                     RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
-                    List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                    int i = 0;
-                    foreach (AsyncBeforeRemoveEventHandler objEvent in _setBeforeRemoveAsync)
-                    {
-                        lstTasks.Add(objEvent.Invoke(this, objArgs, token));
-                        if (++i < Utils.MaxParallelBatchSize)
-                            continue;
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                        lstTasks.Clear();
-                        i = 0;
-                    }
-
-                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                    await ParallelExtensions.ForEachAsync(_setBeforeRemoveAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
                 }
             }
             finally

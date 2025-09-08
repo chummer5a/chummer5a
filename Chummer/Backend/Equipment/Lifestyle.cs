@@ -4984,19 +4984,7 @@ namespace Chummer.Backend.Equipment
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                        int i = 0;
-                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
-                        {
-                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
-                            if (++i < Utils.MaxParallelBatchSize)
-                                continue;
-                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                            lstTasks.Clear();
-                            i = 0;
-                        }
-
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -5021,22 +5009,16 @@ namespace Chummer.Backend.Equipment
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                        int i = 0;
+                        List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
+                            = new List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
                         foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {
-                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
-                                if (++i < Utils.MaxParallelBatchSize)
-                                    continue;
-                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                                lstTasks.Clear();
-                                i = 0;
+                                lstAsyncEventsList.Add(new Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {

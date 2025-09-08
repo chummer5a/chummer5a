@@ -764,19 +764,7 @@ namespace Chummer.Controls.Shared
                     PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(nameof(Contents));
                     if (_setChildPropertyChangedAsync.Count > 0)
                     {
-                        List<Task> lstTasks =
-                            new List<Task>(Math.Min(_setChildPropertyChangedAsync.Count, Utils.MaxParallelBatchSize));
-                        int i = 0;
-                        foreach (PropertyChangedAsyncEventHandler objEvent in _setChildPropertyChangedAsync)
-                        {
-                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
-                            if (++i < Utils.MaxParallelBatchSize)
-                                continue;
-                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                            lstTasks.Clear();
-                            i = 0;
-                        }
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setChildPropertyChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
                     }
                     if (ChildPropertyChanged != null)
                         await Utils.RunOnMainThreadAsync(() => ChildPropertyChanged?.Invoke(this, objArgs), token: token).ConfigureAwait(false);
@@ -1014,21 +1002,7 @@ namespace Chummer.Controls.Shared
                 }
 
                 if (_parent._setChildPropertyChangedAsync.Count > 0)
-                {
-                    List<Task> lstTasks =
-                        new List<Task>(Math.Min(_parent._setChildPropertyChangedAsync.Count, Utils.MaxParallelBatchSize));
-                    int i = 0;
-                    foreach (PropertyChangedAsyncEventHandler objEvent in _parent._setChildPropertyChangedAsync)
-                    {
-                        lstTasks.Add(objEvent.Invoke(this, e, token));
-                        if (++i < Utils.MaxParallelBatchSize)
-                            continue;
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                        lstTasks.Clear();
-                        i = 0;
-                    }
-                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                }
+                    await ParallelExtensions.ForEachAsync(_parent._setChildPropertyChangedAsync, objEvent => objEvent.Invoke(this, e, token), token).ConfigureAwait(false);
                 if (_parent.ChildPropertyChanged != null)
                     await Utils.RunOnMainThreadAsync(() => _parent.ChildPropertyChanged?.Invoke(sender, e), token).ConfigureAwait(false);
                 if (changes)

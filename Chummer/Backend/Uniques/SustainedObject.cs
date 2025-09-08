@@ -641,7 +641,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyName);
             if (_setPropertyChangedAsync.Count > 0)
-                await Task.WhenAll(_setPropertyChangedAsync.Select(x => x.Invoke(this, objArgs, token))).ConfigureAwait(false);
+                await ParallelExtensions.ForEachAsync(_setPropertyChangedAsync, x => x.Invoke(this, objArgs, token), token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             if (PropertyChanged != null)
                 await Utils.RunOnMainThreadAsync(() => PropertyChanged?.Invoke(this, objArgs), token).ConfigureAwait(false);

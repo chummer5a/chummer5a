@@ -296,20 +296,9 @@ namespace Chummer
                 return;
             }
 
-            List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
-            int i = 0;
-            foreach (XPathNavigator xmlBuiltInSetting in (await XmlManager.LoadXPathAsync("settings.xml", token: token)
-                         .ConfigureAwait(false)).SelectAndCacheExpression("/chummer/settings/setting", token: token))
-            {
-                lstTasks.Add(Task.Run(() => LoadSettings(xmlBuiltInSetting), token));
-                if (++i < Utils.MaxParallelBatchSize)
-                    continue;
-                await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                lstTasks.Clear();
-                i = 0;
-            }
-
-            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            await ParallelExtensions.ForEachAsync((await XmlManager.LoadXPathAsync("settings.xml", token: token)
+                    .ConfigureAwait(false)).SelectAndCacheExpression("/chummer/settings/setting", token: token),
+                xmlBuiltInSetting => LoadSettings(xmlBuiltInSetting as XPathNavigator), token).ConfigureAwait(false);
 
             async Task LoadSettings(XPathNavigator xmlBuiltInSetting)
             {
@@ -341,20 +330,8 @@ namespace Chummer
             string strSettingsPath = Utils.GetSettingsFolderPath;
             if (Directory.Exists(strSettingsPath))
             {
-                lstTasks.Clear();
-                i = 0;
-                foreach (string strSettingsFilePath in Directory.EnumerateFiles(strSettingsPath, "*.xml"))
-                {
-                    lstTasks.Add(Task.Run(() => LoadSettingsFromFile(strSettingsFilePath), token));
-                    if (++i < Utils.MaxParallelBatchSize)
-                        continue;
-                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                    lstTasks.Clear();
-                    i = 0;
-                }
-
-                await Task.WhenAll(lstTasks).ConfigureAwait(false);
-
+                await ParallelExtensions.ForEachAsync(Directory.EnumerateFiles(strSettingsPath, "*.xml"), strSettingsFilePath => LoadSettingsFromFile(strSettingsFilePath), token).ConfigureAwait(false);
+                
                 async Task LoadSettingsFromFile(string strSettingsFilePath)
                 {
                     token.ThrowIfCancellationRequested();

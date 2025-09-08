@@ -322,7 +322,7 @@ namespace Chummer
             }
             try
             {
-                await _dicCachedNotes.ForEachParallelAsync(async x =>
+                await ParallelExtensions.ForEachAsync(_dicCachedNotes, async x =>
                 {
                     try
                     {
@@ -497,21 +497,15 @@ namespace Chummer
                                     {
                                         ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading
                                             = new ConcurrentBag<ListItem>();
+                                        IReadOnlyList<string> lstCustomDataPaths = await _objSelectedSetting.GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
                                         // Prevents locking the UI thread while still benefiting from static scheduling of Parallel.ForEach
                                         // Preload all data first to prevent weird locking issues with the rest of the program
-                                        await Task.WhenAll(_astrFileNames.Select(
-                                                               x => Task.Run(
-                                                                   async () => await XmlManager.LoadXPathAsync(
-                                                                       x,
-                                                                       await _objSelectedSetting
-                                                                           .GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
-                                                                       token: token).ConfigureAwait(false), token))).ConfigureAwait(false);
-                                        await Task.WhenAll(_astrFileNames.Select(strFileName => Task.Run(async () =>
+                                        await ParallelExtensions.ForEachAsync(_astrFileNames, strFile => XmlManager.LoadXPathAsync(strFile, lstCustomDataPaths), token).ConfigureAwait(false);
+                                        await ParallelExtensions.ForEachAsync(_astrFileNames, async strFileName =>
                                         {
                                             XPathNavigator xmlBaseNode
                                                 = await XmlManager.LoadXPathAsync(strFileName,
-                                                    await _objSelectedSetting
-                                                        .GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
+                                                    lstCustomDataPaths,
                                                     token: token).ConfigureAwait(false);
                                             xmlBaseNode
                                                 = xmlBaseNode.SelectSingleNodeAndCacheExpression(
@@ -587,7 +581,7 @@ namespace Chummer
                                             if (blnLoopFileNameHasItems)
                                                 lstFileNamesWithItemsForLoading.Add(
                                                     new ListItem(strFileName, strFileName));
-                                        }, token))).ConfigureAwait(false);
+                                        }, token).ConfigureAwait(false);
                                         _lstFileNamesWithItems.AddRange(lstFileNamesWithItemsForLoading);
                                     }
 

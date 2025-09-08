@@ -454,20 +454,14 @@ namespace Chummer
 
                     try
                     {
-                        List<Task> lstTasks =
-                                new List<Task>(2 + await Program.PluginLoader.MyPlugins.GetCountAsync(objTemp.Token)
-                                    .ConfigureAwait(false))
-                                {
-                                    tskNewRecentlyUsedsRefresh,
-                                    tskNewWatchFolderRefresh
-                                };
-                        foreach (IPlugin objPlugin in await Program.PluginLoader
+                        await Task.WhenAll(tskNewRecentlyUsedsRefresh, tskNewWatchFolderRefresh).ConfigureAwait(false);
+                        IReadOnlyList<IPlugin> lstPlugins = await Program.PluginLoader
                                      .GetMyActivePluginsAsync(objTemp.Token)
-                                     .ConfigureAwait(false))
+                                     .ConfigureAwait(false);
+                        if (lstPlugins.Count > 0)
                         {
-                            lstTasks.Add(RefreshPluginNodesAsync(objPlugin, objTemp.Token));
+                            await ParallelExtensions.ForEachAsync(lstPlugins, objPlugin => RefreshPluginNodesAsync(objPlugin, objTemp.Token), objTemp.Token).ConfigureAwait(false);
                         }
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -1508,37 +1502,13 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                List<Task<TreeNode>> lstCachingTasks = new List<Task<TreeNode>>(Utils.MaxParallelBatchSize);
-                int intCounter = 0;
-                foreach (string strKey in dicWatch.Keys)
+                await ParallelExtensions.ForEachAsync(dicWatch.Keys, async strKey =>
                 {
-                    lstCachingTasks.Add(Task.Run(() => CacheCharacter(strKey, token: token), token));
-                    if (++intCounter != Utils.MaxParallelBatchSize)
-                        continue;
-                    token.ThrowIfCancellationRequested();
-                    await Task.WhenAll(lstCachingTasks).ConfigureAwait(false);
-                    token.ThrowIfCancellationRequested();
-                    foreach (Task<TreeNode> tskCachingTask in lstCachingTasks)
-                    {
-                        TreeNode objNode = await tskCachingTask.ConfigureAwait(false);
-                        if (objNode.Tag is CharacterCache objCache && !objCache.IsDisposed)
-                            dicWatchNodes.Add(objNode, dicWatch[await objCache.GetFilePathAsync(token).ConfigureAwait(false)]);
-                        token.ThrowIfCancellationRequested();
-                    }
-                    lstCachingTasks.Clear();
-                    intCounter = 0;
-                }
-                token.ThrowIfCancellationRequested();
-                await Task.WhenAll(lstCachingTasks).ConfigureAwait(false);
-                token.ThrowIfCancellationRequested();
-                foreach (Task<TreeNode> tskCachingTask in lstCachingTasks)
-                {
-                    TreeNode objNode = await tskCachingTask.ConfigureAwait(false);
+                    TreeNode objNode = await CacheCharacter(strKey, token: token).ConfigureAwait(false);
                     if (objNode.Tag is CharacterCache objCache && !objCache.IsDisposed)
                         dicWatchNodes.Add(objNode, dicWatch[await objCache.GetFilePathAsync(token).ConfigureAwait(false)]);
-                    token.ThrowIfCancellationRequested();
-                }
-
+                }, token).ConfigureAwait(false);
+                
                 foreach (string s in new SortedSet<string>(dicWatchNodes.Values))
                 {
                     token.ThrowIfCancellationRequested();

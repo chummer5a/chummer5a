@@ -1197,81 +1197,80 @@ namespace Chummer
 
                 if (blnDoRestart)
                 {
-                    List<string> lstBlocked = new List<string>(lstFilesToDelete.Count);
-                    Dictionary<string, Task<bool>> dicTasks
-                        = new Dictionary<string, Task<bool>>(Utils.MaxParallelBatchSize);
-                    int intCounter = 0;
-                    foreach (string strFileToDelete in lstFilesToDelete)
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setBlocked))
                     {
-                        dicTasks.Add(strFileToDelete, FileExtensions.SafeDeleteAsync(strFileToDelete, token: token));
-                        if (++intCounter != Utils.MaxParallelBatchSize)
-                            continue;
-                        await Task.WhenAll(dicTasks.Values).ConfigureAwait(false);
-                        foreach (KeyValuePair<string, Task<bool>> kvpTaskPair in dicTasks)
-                        {
-                            if (!await kvpTaskPair.Value.ConfigureAwait(false))
-                                lstBlocked.Add(kvpTaskPair.Key);
-                        }
-
-                        dicTasks.Clear();
-                        intCounter = 0;
-                    }
-
-                    await Task.WhenAll(dicTasks.Values).ConfigureAwait(false);
-                    foreach (KeyValuePair<string, Task<bool>> kvpTaskPair in dicTasks)
-                    {
-                        if (!await kvpTaskPair.Value.ConfigureAwait(false))
-                            lstBlocked.Add(kvpTaskPair.Key);
-                    }
-
-                    foreach (string strBlockedFile in lstBlocked.ToList())
-                    {
+                        DebuggableSemaphoreSlim objBlockedFilesPopulateSemaphore = Utils.SemaphorePool.Get();
                         try
                         {
-                            if (File.Exists(strBlockedFile + ".old")
-                                && !await FileExtensions.SafeDeleteAsync(strBlockedFile + ".old", !SilentMode, token: token)
-                                               .ConfigureAwait(false))
+                            await ParallelExtensions.ForEachAsync(lstFilesToDelete, async strFileToDelete =>
+                            {
+                                if (!await FileExtensions.SafeDeleteAsync(strFileToDelete, token: token).ConfigureAwait(false))
+                                {
+                                    await objBlockedFilesPopulateSemaphore.WaitAsync(token).ConfigureAwait(false);
+                                    try
+                                    {
+                                        setBlocked.Add(strFileToDelete);
+                                    }
+                                    finally
+                                    {
+                                        objBlockedFilesPopulateSemaphore.Release();
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            Utils.SemaphorePool.Return(ref objBlockedFilesPopulateSemaphore);
+                        }
+                        foreach (string strBlockedFile in setBlocked)
+                        {
+                            try
+                            {
+                                if (File.Exists(strBlockedFile + ".old")
+                                    && !await FileExtensions.SafeDeleteAsync(strBlockedFile + ".old", !SilentMode, token: token)
+                                                   .ConfigureAwait(false))
+                                {
+                                    continue;
+                                }
+
+                                File.Move(strBlockedFile, strBlockedFile + ".old");
+                            }
+                            catch (IOException)
+                            {
+                                continue;
+                            }
+                            catch (NotSupportedException)
+                            {
+                                continue;
+                            }
+                            catch (UnauthorizedAccessException)
                             {
                                 continue;
                             }
 
-                            File.Move(strBlockedFile, strBlockedFile + ".old");
-                        }
-                        catch (IOException)
-                        {
-                            continue;
-                        }
-                        catch (NotSupportedException)
-                        {
-                            continue;
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            continue;
+                            setBlocked.Remove(strBlockedFile);
                         }
 
-                        lstBlocked.Remove(strBlockedFile);
-                    }
-
-                    if (lstBlocked.Count > 0)
-                    {
-                        Utils.BreakIfDebug();
-                        if (!SilentMode)
+                        if (setBlocked.Count > 0)
                         {
-                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdOutput))
+                            Utils.BreakIfDebug();
+                            if (!SilentMode)
                             {
-                                sbdOutput.Append(
-                                    await LanguageManager
-                                          .GetStringAsync("Message_Files_Cannot_Be_Removed", token: token)
-                                          .ConfigureAwait(false));
-                                foreach (string strFile in lstBlocked)
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdOutput))
                                 {
-                                    sbdOutput.AppendLine().Append(strFile);
-                                }
+                                    sbdOutput.Append(
+                                        await LanguageManager
+                                              .GetStringAsync("Message_Files_Cannot_Be_Removed", token: token)
+                                              .ConfigureAwait(false));
+                                    foreach (string strFile in setBlocked)
+                                    {
+                                        sbdOutput.AppendLine().Append(strFile);
+                                    }
 
-                                await Program.ShowScrollableMessageBoxAsync(this, sbdOutput.ToString(), null, MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                    await Program.ShowScrollableMessageBoxAsync(this, sbdOutput.ToString(), null, MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                }
                             }
                         }
                     }

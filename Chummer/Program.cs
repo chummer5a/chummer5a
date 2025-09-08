@@ -588,22 +588,7 @@ namespace Chummer
                             using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                    = CreateAndShowProgressBar(Application.ProductName, Utils.BasicDataFileNames.Count))
                             {
-                                List<Task> lstCachingTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                                int intCounter = 0;
-                                foreach (string strLoopFile in Utils.BasicDataFileNames)
-                                {
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    lstCachingTasks.Add(
-                                        Task.Run(() => CacheCommonFile(strLoopFile, frmLoadingBar.MyForm)));
-                                    if (++intCounter != Utils.MaxParallelBatchSize)
-                                        continue;
-                                    Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
-                                    lstCachingTasks.Clear();
-                                    intCounter = 0;
-                                }
-
-                                Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
-
+                                Utils.RunWithoutThreadLock(() => ParallelExtensions.ForEachAsync(Utils.BasicDataFileNames, strLoopFile => CacheCommonFile(strLoopFile, frmLoadingBar.MyForm)));
                                 async Task CacheCommonFile(string strFile, LoadingBar frmLoadingBarInner)
                                 {
                                     // Load default language data first for performance reasons

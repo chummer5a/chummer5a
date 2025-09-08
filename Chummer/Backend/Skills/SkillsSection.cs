@@ -497,19 +497,7 @@ namespace Chummer.Backend.Skills
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                        int i = 0;
-                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
-                        {
-                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
-                            if (++i < Utils.MaxParallelBatchSize)
-                                continue;
-                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                            lstTasks.Clear();
-                            i = 0;
-                        }
-
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -534,22 +522,16 @@ namespace Chummer.Backend.Skills
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                        int i = 0;
+                        List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
+                            = new List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
                         foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {
-                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
-                                if (++i < Utils.MaxParallelBatchSize)
-                                    continue;
-                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                                lstTasks.Clear();
-                                i = 0;
+                                lstAsyncEventsList.Add(new Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {
@@ -2857,7 +2839,7 @@ namespace Chummer.Backend.Skills
                         });
                     },
                     // ReSharper disable once AccessToDisposedClosure
-                    () => Parallel.ForEach(KnowledgeSkills, x => dicSkills.TryAdd(x.Name, x.Id)));
+                    () => KnowledgeSkills.ForEach(x => dicSkills.TryAdd(x.Name, x.Id)));
                 using (TemporaryArray<KarmaExpenseType> eYielded = new TemporaryArray<KarmaExpenseType>(KarmaExpenseType.AddSkill,
                         KarmaExpenseType.ImproveSkill))
                 {
@@ -2906,35 +2888,29 @@ namespace Chummer.Backend.Skills
                 //Hacky way of converting Expense entries to guid based skill identification
                 //specs already did?
                 //First create dictionary mapping name=>guid
-                ConcurrentDictionary<string, Guid> dicGroups = new ConcurrentDictionary<string, Guid>();
-                ConcurrentDictionary<string, Guid> dicSkills = new ConcurrentDictionary<string, Guid>();
-                // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
-                // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
-                // Not using async-await because this is trivial code and I do not want to infect everything that calls this with async as well.
-                await Task.WhenAll(
-                        Task.Run(() => SkillGroups.ForEachParallelAsync(async x =>
-                        {
-                            // ReSharper disable once AccessToDisposedClosure
-                            if (await x.GetRatingAsync(token).ConfigureAwait(false) > 0)
-                                dicGroups.TryAdd(x.Name, x.Id);
-                        }, token: token), token),
-                        Task.Run(() => Skills.ForEachParallelAsync(async x =>
-                        {
-                            if (await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) > 0)
-                                dicSkills.TryAdd(x.Name, x.Id);
-                        }, token: token), token),
-                        // ReSharper disable once AccessToDisposedClosure
-                        Task.Run(
-                            () => KnowledgeSkills.ForEachParallelAsync(x => dicSkills.TryAdd(x.Name, x.Id),
-                                token: token), token))
-                    .ConfigureAwait(false);
+                ConcurrentDictionary<string, Guid> dicToProcess = new ConcurrentDictionary<string, Guid>();
+                // Potentially expensive checks that can (and therefore should) be parallelized.
+                await ParallelExtensions.ForEachAsync(Skills, async x =>
+                {
+                    // ReSharper disable once AccessToDisposedClosure
+                    if (await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) > 0)
+                        dicToProcess.TryAdd(x.Name, x.Id);
+                }, token).ConfigureAwait(false);
+                await KnowledgeSkills.ForEachAsync(x => dicToProcess.TryAdd(x.Name, x.Id), token).ConfigureAwait(false);
                 using (TemporaryArray<KarmaExpenseType> eYielded = new TemporaryArray<KarmaExpenseType>(KarmaExpenseType.AddSkill,
                         KarmaExpenseType.ImproveSkill))
                 {
-                    UpdateUndoSpecific(dicSkills, eYielded);
+                    UpdateUndoSpecific(dicToProcess, eYielded);
                 }
+                dicToProcess.Clear();
+                await ParallelExtensions.ForEachAsync(SkillGroups, async x =>
+                {
+                    // ReSharper disable once AccessToDisposedClosure
+                    if (await x.GetRatingAsync(token).ConfigureAwait(false) > 0)
+                        dicToProcess.TryAdd(x.Name, x.Id);
+                }, token).ConfigureAwait(false);
                 using (TemporaryArray<KarmaExpenseType> eYielded = KarmaExpenseType.ImproveSkillGroup.YieldAsPooled())
-                    UpdateUndoSpecific(dicGroups, eYielded);
+                    UpdateUndoSpecific(dicToProcess, eYielded);
 
                 void UpdateUndoSpecific(IReadOnlyDictionary<string, Guid> map,
                     TemporaryArray<KarmaExpenseType> typesRequiringConverting)
