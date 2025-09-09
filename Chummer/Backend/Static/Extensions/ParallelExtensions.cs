@@ -44,40 +44,26 @@ namespace Chummer
                 int intBufferSize = Utils.MaxParallelBatchSize;
                 if (lstItems is IReadOnlyCollection<TSource> lstItemsCollection)
                     intBufferSize = Math.Min(intBufferSize, lstItemsCollection.Count);
-                Task[] aobjTaskBuffer = ArrayPool<Task>.Shared.Rent(intBufferSize);
-                try
+                using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                 {
                     token.ThrowIfCancellationRequested();
                     int i = 0;
-                    for (; i < intBufferSize; ++i)
-                    {
-                        aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
-                    }
-                    i = 0;
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        aobjTaskBuffer[i++] = funcCodeToRun(objEnumerator.Current) ?? Task.CompletedTask;
-                        if (i == intBufferSize)
+                        lstBuffer.Add(funcCodeToRun(objEnumerator.Current));
+                        if (++i == intBufferSize)
                         {
-                            await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
+                            await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                            lstBuffer.Clear();
                             i = 0;
                         }
                     }
                     if (i > 0)
                     {
                         token.ThrowIfCancellationRequested();
-                        for (int j = i; j < intBufferSize; ++j)
-                        {
-                            aobjTaskBuffer[j] = Task.CompletedTask;
-                        }
-                        await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
+                        await Task.WhenAll(lstBuffer).ConfigureAwait(false);
                     }
-
-                }
-                finally
-                {
-                    ArrayPool<Task>.Shared.Return(aobjTaskBuffer);
                 }
             }
             finally
@@ -105,40 +91,27 @@ namespace Chummer
                 int intBufferSize = Utils.MaxParallelBatchSize;
                 if (lstItems is ICollection lstItemsCollection)
                     intBufferSize = Math.Min(intBufferSize, lstItemsCollection.Count);
-                Task[] aobjTaskBuffer = ArrayPool<Task>.Shared.Rent(intBufferSize);
-                try
+                using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                 {
                     token.ThrowIfCancellationRequested();
                     int i = 0;
-                    for (; i < intBufferSize; ++i)
-                    {
-                        aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
-                    }
-                    i = 0;
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        aobjTaskBuffer[i++] = funcCodeToRun(objEnumerator.Current) ?? Task.CompletedTask;
-                        if (i == intBufferSize)
+                        lstBuffer.Add(funcCodeToRun(objEnumerator.Current));
+                        if (++i == intBufferSize)
                         {
-                            await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
+                            await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                            lstBuffer.Clear();
                             i = 0;
                         }
                     }
                     if (i > 0)
                     {
                         token.ThrowIfCancellationRequested();
-                        for (int j = i; j < intBufferSize; ++j)
-                        {
-                            aobjTaskBuffer[j] = Task.CompletedTask;
-                        }
-                        await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
+                        await Task.WhenAll(lstBuffer).ConfigureAwait(false);
                     }
 
-                }
-                finally
-                {
-                    ArrayPool<Task>.Shared.Return(aobjTaskBuffer);
                 }
             }
             finally
@@ -167,24 +140,19 @@ namespace Chummer
                 int intBufferSize = Utils.MaxParallelBatchSize;
                 if (lstItems is IAsyncReadOnlyCollection<TSource> lstItemsCollection)
                     intBufferSize = Math.Min(intBufferSize, await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false));
-                Task[] aobjTaskBuffer = ArrayPool<Task>.Shared.Rent(intBufferSize);
-                try
+                using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                 {
                     token.ThrowIfCancellationRequested();
 
                     int i = 0;
-                    for (; i < intBufferSize; ++i)
-                    {
-                        aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
-                    }
-                    i = 0;
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        aobjTaskBuffer[i++] = funcCodeToRun(objEnumerator.Current) ?? Task.CompletedTask;
-                        if (i == intBufferSize)
+                        lstBuffer.Add(funcCodeToRun(objEnumerator.Current));
+                        if (++i == intBufferSize)
                         {
-                            await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
+                            await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                            lstBuffer.Clear();
                             i = 0;
                         }
                     }
@@ -193,16 +161,8 @@ namespace Chummer
                     if (i > 0)
                     {
                         token.ThrowIfCancellationRequested();
-                        for (int j = i; j < intBufferSize; ++j)
-                        {
-                            aobjTaskBuffer[j] = Task.CompletedTask;
-                        }
-                        await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
+                        await Task.WhenAll(lstBuffer).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    ArrayPool<Task>.Shared.Return(aobjTaskBuffer);
                 }
             }
             finally
@@ -231,23 +191,18 @@ namespace Chummer
                 int intBufferSize = Utils.MaxParallelBatchSize;
                 if (lstItems is IAsyncReadOnlyCollection<TSource> lstItemsCollection)
                     intBufferSize = Math.Min(intBufferSize, await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false));
-                Task[] aobjTaskBuffer = ArrayPool<Task>.Shared.Rent(intBufferSize);
-                try
+                using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                 {
                     token.ThrowIfCancellationRequested();
                     int i = 0;
-                    for (; i < intBufferSize; ++i)
-                    {
-                        aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
-                    }
-                    i = 0;
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        aobjTaskBuffer[i++] = Task.Run(() => funcCodeToRun(objEnumerator.Current), token);
-                        if (i == intBufferSize)
+                        lstBuffer.Add(Task.Run(() => funcCodeToRun(objEnumerator.Current), token));
+                        if (++i == intBufferSize)
                         {
-                            await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
+                            await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                            lstBuffer.Clear();
                             i = 0;
                         }
                     }
@@ -256,16 +211,8 @@ namespace Chummer
                     if (i > 0)
                     {
                         token.ThrowIfCancellationRequested();
-                        for (int j = i; j < intBufferSize; ++j)
-                        {
-                            aobjTaskBuffer[j] = Task.CompletedTask;
-                        }
-                        await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
+                        await Task.WhenAll(lstBuffer).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    ArrayPool<Task>.Shared.Return(aobjTaskBuffer);
                 }
             }
             finally
@@ -303,45 +250,27 @@ namespace Chummer
                 {
                     lstReturn = new List<TResult>(intBufferSize);
                 }
-                Task<TResult>[] aobjTaskBuffer = ArrayPool<Task<TResult>>.Shared.Rent(intBufferSize);
-                try
+                List<Task<TResult>> lstBuffer = new List<Task<TResult>>(intBufferSize);
+                token.ThrowIfCancellationRequested();
+                int i = 0;
+                while (objEnumerator.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
-                    int i = 0;
-                    for (; i < intBufferSize; ++i)
+                    lstBuffer.Add(funcCodeToRun(objEnumerator.Current));
+                    if (++i == intBufferSize)
                     {
-                        aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
+                        lstReturn.AddRange(await Task.WhenAll(lstBuffer).ConfigureAwait(false));
+                        lstBuffer.Clear();
+                        i = 0;
                     }
-                    i = 0;
-                    while (objEnumerator.MoveNext())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        aobjTaskBuffer[i++] = funcCodeToRun(objEnumerator.Current) ?? Task.FromResult(default(TResult));
-                        if (i == intBufferSize)
-                        {
-                            lstReturn.AddRange(await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false));
-                            i = 0;
-                        }
-                    }
-                    if (i > 0)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        for (int j = i; j < intBufferSize; ++j)
-                        {
-                            aobjTaskBuffer[j] = Task.FromResult<TResult>(default);
-                        }
-                        await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
-                        token.ThrowIfCancellationRequested();
-                        for (int j = 0; j <= i; ++j)
-                        {
-                            lstReturn.Add(await aobjTaskBuffer[j].ConfigureAwait(false));
-                        }
-                    }
-
                 }
-                finally
+                if (i > 0)
                 {
-                    ArrayPool<Task<TResult>>.Shared.Return(aobjTaskBuffer);
+                    token.ThrowIfCancellationRequested();
+                    await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    foreach (Task<TResult> tskLoop in lstBuffer)
+                        lstReturn.Add(await tskLoop.ConfigureAwait(false));
                 }
                 return lstReturn;
             }
@@ -380,45 +309,28 @@ namespace Chummer
                 {
                     lstReturn = new List<TResult>(intBufferSize);
                 }
-                Task<TResult>[] aobjTaskBuffer = ArrayPool<Task<TResult>>.Shared.Rent(intBufferSize);
-                try
+                List<Task<TResult>> lstBuffer = new List<Task<TResult>>(intBufferSize);
+                token.ThrowIfCancellationRequested();
+                int i = 0;
+                token.ThrowIfCancellationRequested();
+                while (objEnumerator.MoveNext())
                 {
-                    token.ThrowIfCancellationRequested();
-                    int i = 0;
-                    for (; i < intBufferSize; ++i)
+                    lstBuffer.Add(funcCodeToRun(objEnumerator.Current));
+                    if (++i == intBufferSize)
                     {
-                        aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
-                    }
-                    i = 0;
-                    token.ThrowIfCancellationRequested();
-                    while (objEnumerator.MoveNext())
-                    {
-                        aobjTaskBuffer[i++] = funcCodeToRun(objEnumerator.Current) ?? Task.FromResult(default(TResult));
-                        if (i == intBufferSize)
-                        {
-                            lstReturn.AddRange(await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false));
-                            i = 0;
-                        }
-                    }
-
-                    if (i > 0)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        for (int j = i; j < intBufferSize; ++j)
-                        {
-                            aobjTaskBuffer[j] = Task.FromResult<TResult>(default);
-                        }
-                        await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
-                        token.ThrowIfCancellationRequested();
-                        for (int j = 0; j <= i; ++j)
-                        {
-                            lstReturn.Add(await aobjTaskBuffer[j].ConfigureAwait(false));
-                        }
+                        lstReturn.AddRange(await Task.WhenAll(lstBuffer).ConfigureAwait(false));
+                        lstBuffer.Clear();
+                        i = 0;
                     }
                 }
-                finally
+
+                if (i > 0)
                 {
-                    ArrayPool<Task<TResult>>.Shared.Return(aobjTaskBuffer);
+                    token.ThrowIfCancellationRequested();
+                    await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    foreach (Task<TResult> tskLoop in lstBuffer)
+                        lstReturn.Add(await tskLoop.ConfigureAwait(false));
                 }
                 return lstReturn;
             }
@@ -457,48 +369,29 @@ namespace Chummer
                 {
                     lstReturn = new List<TResult>(intBufferSize);
                 }
-                Task<TResult>[] aobjTaskBuffer = ArrayPool<Task<TResult>>.Shared.Rent(intBufferSize);
-                try
+                List<Task<TResult>> lstBuffer = new List<Task<TResult>>(intBufferSize);
+                token.ThrowIfCancellationRequested();
+                int i = 0;
+                while (objEnumerator.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
-                    int i = 0;
-                    for (; i < intBufferSize; ++i)
+                    lstBuffer.Add(funcCodeToRun(objEnumerator.Current));
+                    if (++i == intBufferSize)
                     {
-                        aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
+                        lstReturn.AddRange(await Task.WhenAll(lstBuffer).ConfigureAwait(false));
+                        lstBuffer.Clear();
+                        i = 0;
                     }
-                    i = 0;
-
-                    while (objEnumerator.MoveNext())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        aobjTaskBuffer[i++] = funcCodeToRun(objEnumerator.Current) ?? Task.FromResult(default(TResult));
-                        if (i == intBufferSize)
-                        {
-                            lstReturn.AddRange(await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false));
-                            i = 0;
-                        }
-                    }
-
-                    // Keep this last part inside the bloc before enumerator is disposed because we want to maintain the read lock on collections that have one until the parallel methods have completed
-                    if (i > 0)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        for (int j = i; j < intBufferSize; ++j)
-                        {
-                            aobjTaskBuffer[j] = Task.FromResult<TResult>(default);
-                        }
-                        await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
-                        token.ThrowIfCancellationRequested();
-                        for (int j = 0; j <= i; ++j)
-                        {
-                            lstReturn.Add(await aobjTaskBuffer[j].ConfigureAwait(false));
-                        }
-                    }
-
                 }
-                finally
+
+                // Keep this last part inside the bloc before enumerator is disposed because we want to maintain the read lock on collections that have one until the parallel methods have completed
+                if (i > 0)
                 {
-                    ArrayPool<Task<TResult>>.Shared.Return(aobjTaskBuffer);
+                    token.ThrowIfCancellationRequested();
+                    await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    foreach (Task<TResult> tskLoop in lstBuffer)
+                        lstReturn.Add(await tskLoop.ConfigureAwait(false));
                 }
                 return lstReturn;
             }
@@ -537,48 +430,29 @@ namespace Chummer
                 {
                     lstReturn = new List<TResult>(intBufferSize);
                 }
-                Task<TResult>[] aobjTaskBuffer = ArrayPool<Task<TResult>>.Shared.Rent(intBufferSize);
-                try
+                List<Task<TResult>> lstBuffer = new List<Task<TResult>>(intBufferSize);
+                token.ThrowIfCancellationRequested();
+                int i = 0;
+                while (objEnumerator.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
-                    int i = 0;
-                    for (; i < intBufferSize; ++i)
+                    lstBuffer.Add(Task.Run(() => funcCodeToRun(objEnumerator.Current), token));
+                    if (++i == intBufferSize)
                     {
-                        aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
+                        lstReturn.AddRange(await Task.WhenAll(lstBuffer).ConfigureAwait(false));
+                        lstBuffer.Clear();
+                        i = 0;
                     }
-                    i = 0;
-
-                    while (objEnumerator.MoveNext())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        aobjTaskBuffer[i++] = Task.Run(() => funcCodeToRun(objEnumerator.Current), token) ?? Task.FromResult(default(TResult));
-                        if (i == intBufferSize)
-                        {
-                            lstReturn.AddRange(await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false));
-                            i = 0;
-                        }
-                    }
-
-                    // Keep this last part inside the bloc before enumerator is disposed because we want to maintain the read lock on collections that have one until the parallel methods have completed
-                    if (i > 0)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        for (int j = i; j < intBufferSize; ++j)
-                        {
-                            aobjTaskBuffer[j] = Task.FromResult<TResult>(default);
-                        }
-                        await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
-                        token.ThrowIfCancellationRequested();
-                        for (int j = 0; j <= i; ++j)
-                        {
-                            lstReturn.Add(await aobjTaskBuffer[j].ConfigureAwait(false));
-                        }
-                    }
-
                 }
-                finally
+
+                // Keep this last part inside the bloc before enumerator is disposed because we want to maintain the read lock on collections that have one until the parallel methods have completed
+                if (i > 0)
                 {
-                    ArrayPool<Task<TResult>>.Shared.Return(aobjTaskBuffer);
+                    token.ThrowIfCancellationRequested();
+                    await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    foreach (Task<TResult> tskLoop in lstBuffer)
+                        lstReturn.Add(await tskLoop.ConfigureAwait(false));
                 }
                 return lstReturn;
             }
@@ -616,25 +490,19 @@ namespace Chummer
                         int intBufferSize = Utils.MaxParallelBatchSize;
                         if (lstItems is IReadOnlyCollection<TSource> lstItemsCollection)
                             intBufferSize = Math.Min(intBufferSize, lstItemsCollection.Count);
-                        Task[] aobjTaskBuffer = ArrayPool<Task>.Shared.Rent(intBufferSize);
-                        try
+                        using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                         {
                             objJoinedToken.ThrowIfCancellationRequested();
                             int i = 0;
-                            for (; i < intBufferSize; ++i)
-                            {
-                                aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
-                            }
-                            i = 0;
-
                             while (objEnumerator.MoveNext())
                             {
                                 objJoinedToken.ThrowIfCancellationRequested();
-                                aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken) ?? Task.CompletedTask;
+                                lstBuffer.Add(funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken));
                                 if (i == intBufferSize)
                                 {
-                                    if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                    if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
                                         return;
+                                    lstBuffer.Clear();
                                     i = 0;
                                 }
                             }
@@ -642,18 +510,9 @@ namespace Chummer
                             if (i > 0)
                             {
                                 objJoinedToken.ThrowIfCancellationRequested();
-                                for (int j = i; j < intBufferSize; ++j)
-                                {
-                                    aobjTaskBuffer[j] = Task.CompletedTask;
-                                }
-                                if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
                                     return;
                             }
-
-                        }
-                        finally
-                        {
-                            ArrayPool<Task>.Shared.Return(aobjTaskBuffer);
                         }
                     }
                 }
@@ -692,25 +551,19 @@ namespace Chummer
                         int intBufferSize = Utils.MaxParallelBatchSize;
                         if (lstItems is ICollection lstItemsCollection)
                             intBufferSize = Math.Min(lstItemsCollection.Count, intBufferSize);
-                        Task[] aobjTaskBuffer = ArrayPool<Task>.Shared.Rent(intBufferSize);
-                        try
+                        using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                         {
                             token.ThrowIfCancellationRequested();
                             int i = 0;
-                            for (; i < intBufferSize; ++i)
-                            {
-                                aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
-                            }
-                            i = 0;
-
                             while (objEnumerator.MoveNext())
                             {
                                 token.ThrowIfCancellationRequested();
-                                aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken) ?? Task.CompletedTask;
-                                if (i == intBufferSize)
+                                lstBuffer.Add(funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken));
+                                if (++i == intBufferSize)
                                 {
-                                    if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                    if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
                                         return;
+                                    lstBuffer.Clear();
                                     i = 0;
                                 }
                             }
@@ -718,17 +571,8 @@ namespace Chummer
                             if (i > 0)
                             {
                                 token.ThrowIfCancellationRequested();
-                                for (int j = i; j < intBufferSize; ++j)
-                                {
-                                    aobjTaskBuffer[j] = Task.CompletedTask;
-                                }
-                                if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
-                                    return;
+                                await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false);
                             }
-                        }
-                        finally
-                        {
-                            ArrayPool<Task>.Shared.Return(aobjTaskBuffer);
                         }
                     }
                 }
@@ -767,25 +611,19 @@ namespace Chummer
                         int intBufferSize = Utils.MaxParallelBatchSize;
                         if (lstItems is IAsyncReadOnlyCollection<TSource> lstItemsCollection)
                             intBufferSize = Math.Min(await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false), intBufferSize);
-                        Task[] aobjTaskBuffer = ArrayPool<Task>.Shared.Rent(intBufferSize);
-                        try
+                        using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                         {
                             token.ThrowIfCancellationRequested();
                             int i = 0;
-                            for (; i < intBufferSize; ++i)
-                            {
-                                aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
-                            }
-                            i = 0;
-
                             while (objEnumerator.MoveNext())
                             {
                                 token.ThrowIfCancellationRequested();
-                                aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken) ?? Task.CompletedTask;
-                                if (i == intBufferSize)
+                                lstBuffer.Add(funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken));
+                                if (++i == intBufferSize)
                                 {
-                                    if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                    if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
                                         return;
+                                    lstBuffer.Clear();
                                     i = 0;
                                 }
                             }
@@ -794,17 +632,8 @@ namespace Chummer
                             if (i > 0)
                             {
                                 token.ThrowIfCancellationRequested();
-                                for (int j = i; j < intBufferSize; ++j)
-                                {
-                                    aobjTaskBuffer[j] = Task.CompletedTask;
-                                }
-                                if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
-                                    return;
+                                await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false);
                             }
-                        }
-                        finally
-                        {
-                            ArrayPool<Task>.Shared.Return(aobjTaskBuffer);
                         }
                     }
                 }
@@ -843,25 +672,19 @@ namespace Chummer
                         int intBufferSize = Utils.MaxParallelBatchSize;
                         if (lstItems is IAsyncReadOnlyCollection<TSource> lstItemsCollection)
                             intBufferSize = Math.Min(await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false), intBufferSize);
-                        Task[] aobjTaskBuffer = ArrayPool<Task>.Shared.Rent(intBufferSize);
-                        try
+                        using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                         {
                             token.ThrowIfCancellationRequested();
                             int i = 0;
-                            for (; i < intBufferSize; ++i)
-                            {
-                                aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
-                            }
-                            i = 0;
-
                             while (objEnumerator.MoveNext())
                             {
                                 token.ThrowIfCancellationRequested();
-                                aobjTaskBuffer[i++] = Task.Run(() => funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken), objJoinedToken);
-                                if (i == intBufferSize)
+                                lstBuffer.Add(Task.Run(() => funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken), objJoinedToken));
+                                if (++i == intBufferSize)
                                 {
-                                    if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                    if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
                                         return;
+                                    lstBuffer.Clear();
                                     i = 0;
                                 }
                             }
@@ -870,17 +693,8 @@ namespace Chummer
                             if (i > 0)
                             {
                                 token.ThrowIfCancellationRequested();
-                                for (int j = i; j < intBufferSize; ++j)
-                                {
-                                    aobjTaskBuffer[j] = Task.CompletedTask;
-                                }
-                                if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
-                                    return;
+                                await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false);
                             }
-                        }
-                        finally
-                        {
-                            ArrayPool<Task>.Shared.Return(aobjTaskBuffer);
                         }
                     }
                 }
@@ -926,55 +740,21 @@ namespace Chummer
                         }
                         else
                             lstReturn = new List<TResult>(intBufferSize);
-                        Task<TResult>[] aobjTaskBuffer = ArrayPool<Task<TResult>>.Shared.Rent(intBufferSize);
-                        try
+                        List<Task<TResult>> lstBuffer = new List<Task<TResult>>(intBufferSize);
+                        token.ThrowIfCancellationRequested();
+                        int i = 0;
+                        while (objEnumerator.MoveNext())
                         {
                             token.ThrowIfCancellationRequested();
-                            int i = 0;
-                            for (; i < intBufferSize; ++i)
+                            lstBuffer.Add(funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken));
+                            if (++i == intBufferSize)
                             {
-                                aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
-                            }
-                            i = 0;
-
-                            while (objEnumerator.MoveNext())
-                            {
-                                token.ThrowIfCancellationRequested();
-                                aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken) ?? Task.FromResult(default(TResult));
-                                if (i == intBufferSize)
-                                {
-                                    Task<TResult[]> tskEnsemble = Task.WhenAll(aobjTaskBuffer);
-                                    if (await Task.WhenAny(tskEnsemble, objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        for (int j = 0; j < i; ++j)
-                                        {
-                                            Task<TResult> tskLoop = aobjTaskBuffer[j];
-                                            if (!tskLoop.IsCanceled)
-                                                lstReturn.Add(await tskLoop.ConfigureAwait(false));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        lstReturn.AddRange(await tskEnsemble.ConfigureAwait(false));
-                                    }
-                                    i = 0;
-                                }
-                            }
-                            if (i > 0)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                for (int j = i; j < intBufferSize; ++j)
-                                {
-                                    aobjTaskBuffer[j] = Task.FromResult<TResult>(default);
-                                }
-                                if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                Task<TResult[]> tskEnsemble = Task.WhenAll(lstBuffer);
+                                if (await Task.WhenAny(tskEnsemble, objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    for (int j = 0; j < i; ++j)
+                                    foreach (Task<TResult> tskLoop in lstBuffer)
                                     {
-                                        Task<TResult> tskLoop = aobjTaskBuffer[j];
                                         if (!tskLoop.IsCanceled)
                                             lstReturn.Add(await tskLoop.ConfigureAwait(false));
                                     }
@@ -982,17 +762,30 @@ namespace Chummer
                                 else
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    for (int j = 0; j < i; ++j)
-                                    {
-                                        lstReturn.Add(await aobjTaskBuffer[j].ConfigureAwait(false));
-                                    }
+                                    lstReturn.AddRange(await tskEnsemble.ConfigureAwait(false));
+                                }
+                                lstBuffer.Clear();
+                                i = 0;
+                            }
+                        }
+                        if (i > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                {
+                                    if (!tskLoop.IsCanceled)
+                                        lstReturn.Add(await tskLoop.ConfigureAwait(false));
                                 }
                             }
-
-                        }
-                        finally
-                        {
-                            ArrayPool<Task<TResult>>.Shared.Return(aobjTaskBuffer);
+                            else
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                    lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                            }
                         }
                         return lstReturn;
                     }
@@ -1039,73 +832,53 @@ namespace Chummer
                         }
                         else
                             lstReturn = new List<TResult>(intBufferSize);
-                        Task<TResult>[] aobjTaskBuffer = ArrayPool<Task<TResult>>.Shared.Rent(intBufferSize);
-                        try
+                        List<Task<TResult>> lstBuffer = new List<Task<TResult>>(intBufferSize);
+                        token.ThrowIfCancellationRequested();
+                        int i = 0;
+                        while (objEnumerator.MoveNext())
                         {
-                            token.ThrowIfCancellationRequested();
-                            int i = 0;
-                            for (; i < intBufferSize; ++i)
+                            lstBuffer.Add(funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken));
+                            if (++i == intBufferSize)
                             {
-                                aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
-                            }
-                            i = 0;
-
-                            while (objEnumerator.MoveNext())
-                            {
-                                aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken) ?? Task.FromResult(default(TResult));
-                                if (i == intBufferSize)
-                                {
-                                    Task<TResult[]> tskEnsemble = Task.WhenAll(aobjTaskBuffer);
-                                    if (await Task.WhenAny(tskEnsemble, objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        for (int j = 0; j < i; ++j)
-                                        {
-                                            Task<TResult> tskLoop = aobjTaskBuffer[j];
-                                            if (!tskLoop.IsCanceled)
-                                                lstReturn.Add(await tskLoop.ConfigureAwait(false));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        lstReturn.AddRange(await tskEnsemble.ConfigureAwait(false));
-                                    }
-                                    i = 0;
-                                }
-                            }
-
-                            if (i > 0)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                for (int j = i; j < intBufferSize; ++j)
-                                {
-                                    aobjTaskBuffer[j] = Task.FromResult<TResult>(default);
-                                }
-                                if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                Task<TResult[]> tskEnsemble = Task.WhenAll(lstBuffer);
+                                if (await Task.WhenAny(tskEnsemble, objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    for (int j = 0; j < i; ++j)
+                                    foreach (Task<TResult> tskLoop in lstBuffer)
                                     {
-                                        Task<TResult> tskLoop = aobjTaskBuffer[j];
                                         if (!tskLoop.IsCanceled)
                                             lstReturn.Add(await tskLoop.ConfigureAwait(false));
                                     }
+                                    return lstReturn;
                                 }
                                 else
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    for (int j = 0; j < i; ++j)
-                                    {
-                                        lstReturn.Add(await aobjTaskBuffer[j].ConfigureAwait(false));
-                                    }
+                                    lstReturn.AddRange(await tskEnsemble.ConfigureAwait(false));
+                                }
+                                lstBuffer.Clear();
+                                i = 0;
+                            }
+                        }
+
+                        if (i > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                {
+                                    if (!tskLoop.IsCanceled)
+                                        lstReturn.Add(await tskLoop.ConfigureAwait(false));
                                 }
                             }
-
-                        }
-                        finally
-                        {
-                            ArrayPool<Task<TResult>>.Shared.Return(aobjTaskBuffer);
+                            else
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                    lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                            }
                         }
                         return lstReturn;
                     }
@@ -1152,74 +925,55 @@ namespace Chummer
                         }
                         else
                             lstReturn = new List<TResult>(intBufferSize);
-                        Task<TResult>[] aobjTaskBuffer = ArrayPool<Task<TResult>>.Shared.Rent(intBufferSize);
-                        try
+                        List<Task<TResult>> lstBuffer = new List<Task<TResult>>(intBufferSize);
+                        token.ThrowIfCancellationRequested();
+                        int i = 0;
+                        while (objEnumerator.MoveNext())
                         {
                             token.ThrowIfCancellationRequested();
-                            int i = 0;
-                            for (; i < intBufferSize; ++i)
+                            lstBuffer.Add(funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken));
+                            if (++i == intBufferSize)
                             {
-                                aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
-                            }
-                            i = 0;
-
-                            while (objEnumerator.MoveNext())
-                            {
-                                token.ThrowIfCancellationRequested();
-                                aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken) ?? Task.FromResult(default(TResult));
-                                if (i == intBufferSize)
-                                {
-                                    Task<TResult[]> tskEnsemble = Task.WhenAll(aobjTaskBuffer);
-                                    if (await Task.WhenAny(tskEnsemble, objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        for (int j = 0; j < i; ++j)
-                                        {
-                                            Task<TResult> tskLoop = aobjTaskBuffer[j];
-                                            if (!tskLoop.IsCanceled)
-                                                lstReturn.Add(await tskLoop.ConfigureAwait(false));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        lstReturn.AddRange(await tskEnsemble.ConfigureAwait(false));
-                                    }
-                                    i = 0;
-                                }
-                            }
-
-                            // Keep this last part inside the bloc before enumerator is disposed because we want to maintain the read lock on collections that have one until the parallel methods have completed
-                            if (i > 0)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                for (int j = i; j < intBufferSize; ++j)
-                                {
-                                    aobjTaskBuffer[j] = Task.FromResult<TResult>(default);
-                                }
-                                if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                Task<TResult[]> tskEnsemble = Task.WhenAll(lstBuffer);
+                                if (await Task.WhenAny(tskEnsemble, objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    for (int j = 0; j < i; ++j)
+                                    foreach (Task<TResult> tskLoop in lstBuffer)
                                     {
-                                        Task<TResult> tskLoop = aobjTaskBuffer[j];
                                         if (!tskLoop.IsCanceled)
                                             lstReturn.Add(await tskLoop.ConfigureAwait(false));
                                     }
+                                    return lstReturn;
                                 }
                                 else
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    for (int j = 0; j < i; ++j)
-                                    {
-                                        lstReturn.Add(await aobjTaskBuffer[j].ConfigureAwait(false));
-                                    }
+                                    lstReturn.AddRange(await tskEnsemble.ConfigureAwait(false));
                                 }
+                                lstBuffer.Clear();
+                                i = 0;
                             }
                         }
-                        finally
+
+                        // Keep this last part inside the bloc before enumerator is disposed because we want to maintain the read lock on collections that have one until the parallel methods have completed
+                        if (i > 0)
                         {
-                            ArrayPool<Task<TResult>>.Shared.Return(aobjTaskBuffer);
+                            token.ThrowIfCancellationRequested();
+                            if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                {
+                                    if (!tskLoop.IsCanceled)
+                                        lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                                }
+                            }
+                            else
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                    lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                            }
                         }
                         return lstReturn;
                     }
@@ -1265,75 +1019,55 @@ namespace Chummer
                         }
                         else
                             lstReturn = new List<TResult>(intBufferSize);
-                        Task<TResult>[] aobjTaskBuffer = ArrayPool<Task<TResult>>.Shared.Rent(intBufferSize);
-                        try
+                        List<Task<TResult>> lstBuffer = new List<Task<TResult>>(intBufferSize);
+                        token.ThrowIfCancellationRequested();
+                        int i = 0;
+                        while (objEnumerator.MoveNext())
                         {
                             token.ThrowIfCancellationRequested();
-                            int i = 0;
-                            for (; i < intBufferSize; ++i)
+                            lstBuffer.Add(Task.Run(() => funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken), objJoinedToken));
+                            if (++i == intBufferSize)
                             {
-                                aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
-                            }
-                            i = 0;
-
-                            while (objEnumerator.MoveNext())
-                            {
-                                token.ThrowIfCancellationRequested();
-                                aobjTaskBuffer[i++] = Task.Run(() => funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken), objJoinedToken);
-                                if (i == intBufferSize)
-                                {
-                                    Task<TResult[]> tskEnsemble = Task.WhenAll(aobjTaskBuffer);
-                                    if (await Task.WhenAny(tskEnsemble, objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        for (int j = 0; j < i; ++j)
-                                        {
-                                            Task<TResult> tskLoop = aobjTaskBuffer[j];
-                                            if (!tskLoop.IsCanceled)
-                                                lstReturn.Add(await tskLoop.ConfigureAwait(false));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        lstReturn.AddRange(await tskEnsemble.ConfigureAwait(false));
-                                    }
-                                    i = 0;
-                                }
-                            }
-
-                            // Keep this last part inside the bloc before enumerator is disposed because we want to maintain the read lock on collections that have one until the parallel methods have completed
-                            if (i > 0)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                for (int j = i; j < intBufferSize; ++j)
-                                {
-                                    aobjTaskBuffer[j] = Task.FromResult<TResult>(default);
-                                }
-                                if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                Task<TResult[]> tskEnsemble = Task.WhenAll(lstBuffer);
+                                if (await Task.WhenAny(tskEnsemble, objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    for (int j = 0; j < i; ++j)
+                                    foreach (Task<TResult> tskLoop in lstBuffer)
                                     {
-                                        Task<TResult> tskLoop = aobjTaskBuffer[j];
                                         if (!tskLoop.IsCanceled)
                                             lstReturn.Add(await tskLoop.ConfigureAwait(false));
                                     }
+                                    return lstReturn;
                                 }
                                 else
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    for (int j = 0; j < i; ++j)
-                                    {
-                                        lstReturn.Add(await aobjTaskBuffer[j].ConfigureAwait(false));
-                                    }
+                                    lstReturn.AddRange(await tskEnsemble.ConfigureAwait(false));
+                                }
+                                lstBuffer.Clear();
+                                i = 0;
+                            }
+                        }
+
+                        // Keep this last part inside the bloc before enumerator is disposed because we want to maintain the read lock on collections that have one until the parallel methods have completed
+                        if (i > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                {
+                                    if (!tskLoop.IsCanceled)
+                                        lstReturn.Add(await tskLoop.ConfigureAwait(false));
                                 }
                             }
-
-                        }
-                        finally
-                        {
-                            ArrayPool<Task<TResult>>.Shared.Return(aobjTaskBuffer);
+                            else
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                    lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                            }
                         }
 
                         return lstReturn;
@@ -1367,40 +1101,27 @@ namespace Chummer
             async Task Inner()
             {
                 int intBufferSize = Math.Min(intLoopLength, Utils.MaxParallelBatchSize);
-                Task[] aobjTaskBuffer = ArrayPool<Task>.Shared.Rent(intBufferSize);
-                try
+                using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                 {
                     token.ThrowIfCancellationRequested();
                     int i = 0;
-                    for (; i < intBufferSize; ++i)
-                    {
-                        aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
-                    }
-                    i = 0;
                     for (int j = intLowerBound; j < intUpperBound; ++j)
                     {
                         token.ThrowIfCancellationRequested();
-                        aobjTaskBuffer[i++] = funcCodeToRun(j) ?? Task.CompletedTask;
-                        if (i == intBufferSize)
+                        lstBuffer.Add(funcCodeToRun(j));
+                        if (++i == intBufferSize)
                         {
-                            await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
+                            await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                            lstBuffer.Clear();
                             i = 0;
                         }
                     }
                     if (i > 0)
                     {
                         token.ThrowIfCancellationRequested();
-                        for (int j = i; j < intBufferSize; ++j)
-                        {
-                            aobjTaskBuffer[j] = Task.CompletedTask;
-                        }
-                        await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
+                        await Task.WhenAll(lstBuffer).ConfigureAwait(false);
                     }
 
-                }
-                finally
-                {
-                    ArrayPool<Task>.Shared.Return(aobjTaskBuffer);
                 }
             }
         }
@@ -1430,42 +1151,29 @@ namespace Chummer
                     {
                         CancellationToken objJoinedToken = objBreakLoop.Token;
                         int intBufferSize = Math.Min(intLoopLength, Utils.MaxParallelBatchSize);
-                        Task[] aobjTaskBuffer = ArrayPool<Task>.Shared.Rent(intBufferSize);
-                        try
+                        using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                         {
+                            lstBuffer.Capacity = intBufferSize;
                             token.ThrowIfCancellationRequested();
                             int i = 0;
-                            for (; i < intBufferSize; ++i)
-                            {
-                                aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
-                            }
-                            i = 0;
                             for (int j = intLowerBound; j < intUpperBound; ++j)
                             {
                                 token.ThrowIfCancellationRequested();
-                                aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(j, objJoinedToken) ?? Task.CompletedTask;
-                                if (i == intBufferSize)
+                                lstBuffer.Add(funcCodeToRunWithPotentialBreak(j, objJoinedToken));
+                                if (++i == intBufferSize)
                                 {
-                                    if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                    if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
                                         return;
+                                    lstBuffer.Clear();
                                     i = 0;
                                 }
                             }
                             if (i > 0)
                             {
                                 token.ThrowIfCancellationRequested();
-                                for (int j = i; j < intBufferSize; ++j)
-                                {
-                                    aobjTaskBuffer[j] = Task.CompletedTask;
-                                }
-                                if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
-                                    return;
+                                await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false);
                             }
 
-                        }
-                        finally
-                        {
-                            ArrayPool<Task>.Shared.Return(aobjTaskBuffer);
                         }
                     }
                 }
@@ -1510,46 +1218,30 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     int intBufferSize = Math.Min(intReturnLength, Utils.MaxParallelBatchSize);
-                    Task<TResult>[] aobjTaskBuffer = ArrayPool<Task<TResult>>.Shared.Rent(intBufferSize);
-                    try
+                    List<Task<TResult>> lstBuffer = new List<Task<TResult>>(intBufferSize);
+                    token.ThrowIfCancellationRequested();
+                    int i = 0;
+                    for (int j = intLowerBound; j < intUpperBound; ++j)
                     {
                         token.ThrowIfCancellationRequested();
-                        int i = 0;
-                        for (; i < intBufferSize; ++i)
+                        lstBuffer.Add(funcCodeToRun(j));
+                        if (++i == intBufferSize)
                         {
-                            aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
-                        }
-                        i = 0;
-                        for (int j = intLowerBound; j < intUpperBound; ++j)
-                        {
-                            token.ThrowIfCancellationRequested();
-                            aobjTaskBuffer[i++] = funcCodeToRun(j) ?? Task.FromResult(default(TResult));
-                            if (i == intBufferSize)
-                            {
-                                TResult[] aobjReturnInner = await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
-                                for (int k = 0; k < i; ++k)
-                                    aobjReturn[intCounter++] = aobjReturnInner[k];
-                                i = 0;
-                            }
-                        }
-                        if (i > 0)
-                        {
-                            token.ThrowIfCancellationRequested();
-                            for (int j = i; j < intBufferSize; ++j)
-                            {
-                                aobjTaskBuffer[j] = Task.FromResult<TResult>(default);
-                            }
-                            await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
-                            token.ThrowIfCancellationRequested();
-                            TResult[] aobjReturnInner = await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
+                            TResult[] aobjReturnInner = await Task.WhenAll(lstBuffer).ConfigureAwait(false);
                             for (int k = 0; k < i; ++k)
                                 aobjReturn[intCounter++] = aobjReturnInner[k];
+                            lstBuffer.Clear();
+                            i = 0;
                         }
-
                     }
-                    finally
+                    if (i > 0)
                     {
-                        ArrayPool<Task<TResult>>.Shared.Return(aobjTaskBuffer);
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        TResult[] aobjReturnInner = await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                        for (int k = 0; k < i; ++k)
+                            aobjReturn[intCounter++] = aobjReturnInner[k];
                     }
                     return aobjReturn;
                 }
@@ -1567,7 +1259,6 @@ namespace Chummer
         /// <param name="intLowerBound">Starting value of the iterating variable (inclusive).</param>
         /// <param name="intUpperBound">Terminating value of the iterating variable (exclusive).</param>
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationToken argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
-        /// <param name="blnPooledArray">Whether the returned array should be one taken from ArrayPool.Shared</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Array of the results of <paramref name="funcCodeToRun"/> when run from <paramref name="intLowerBound"/> (inclusive) to <paramref name="intUpperBound"/> (exclusive).</returns>
         public static Task<List<TResult>> ForAsync<TResult>(int intLowerBound, int intUpperBound, Func<int, CancellationToken, Task<TResult>> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
@@ -1590,71 +1281,52 @@ namespace Chummer
                     {
                         CancellationToken objJoinedToken = objBreakLoop.Token;
                         int intBufferSize = Math.Min(intReturnLength, Utils.MaxParallelBatchSize);
-                        Task<TResult>[] aobjTaskBuffer = ArrayPool<Task<TResult>>.Shared.Rent(intBufferSize);
-                        try
+                        List<Task<TResult>> lstBuffer = new List<Task<TResult>>(intBufferSize);
+                        token.ThrowIfCancellationRequested();
+                        int i = 0;
+                        for (int j = intLowerBound; j < intUpperBound; ++j)
                         {
                             token.ThrowIfCancellationRequested();
-                            int i = 0;
-                            for (; i < intBufferSize; ++i)
+                            lstBuffer.Add(funcCodeToRunWithPotentialBreak(j, objJoinedToken));
+                            if (++i == intBufferSize)
                             {
-                                aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
-                            }
-                            i = 0;
-                            for (int j = intLowerBound; j < intUpperBound; ++j)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(j, objJoinedToken) ?? Task.FromResult(default(TResult));
-                                if (i == intBufferSize)
-                                {
-                                    Task<TResult[]> tskEnsemble = Task.WhenAll(aobjTaskBuffer);
-                                    if (await Task.WhenAny(tskEnsemble, objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        for (int k = 0; k < i; ++k)
-                                        {
-                                            Task<TResult> tskLoop = aobjTaskBuffer[k];
-                                            if (!tskLoop.IsCanceled)
-                                                lstReturn.Add(await tskLoop.ConfigureAwait(false));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        lstReturn.AddRange(await tskEnsemble.ConfigureAwait(false));
-                                    }
-                                    i = 0;
-                                }
-                            }
-                            if (i > 0)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                for (int j = i; j < intBufferSize; ++j)
-                                {
-                                    aobjTaskBuffer[j] = Task.FromResult<TResult>(default);
-                                }
-                                if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                Task<TResult[]> tskEnsemble = Task.WhenAll(lstBuffer);
+                                if (await Task.WhenAny(tskEnsemble, objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    for (int j = 0; j < i; ++j)
+                                    foreach (Task<TResult> tskLoop in lstBuffer)
                                     {
-                                        Task<TResult> tskLoop = aobjTaskBuffer[j];
                                         if (!tskLoop.IsCanceled)
                                             lstReturn.Add(await tskLoop.ConfigureAwait(false));
                                     }
+                                    return lstReturn;
                                 }
                                 else
                                 {
-                                    for (int j = 0; j < i; ++j)
-                                    {
-                                        lstReturn.Add(await aobjTaskBuffer[j].ConfigureAwait(false));
-                                    }
+                                    token.ThrowIfCancellationRequested();
+                                    lstReturn.AddRange(await tskEnsemble.ConfigureAwait(false));
+                                }
+                                lstBuffer.Clear();
+                                i = 0;
+                            }
+                        }
+                        if (i > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                {
+                                    if (!tskLoop.IsCanceled)
+                                        lstReturn.Add(await tskLoop.ConfigureAwait(false));
                                 }
                             }
-
-                        }
-                        finally
-                        {
-                            ArrayPool<Task<TResult>>.Shared.Return(aobjTaskBuffer);
+                            else
+                            {
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                    lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                            }
                         }
                         return lstReturn;
                     }

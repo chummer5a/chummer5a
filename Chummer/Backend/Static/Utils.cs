@@ -2693,6 +2693,13 @@ namespace Chummer
             = new SafeObjectPool<List<ListItem>>(Math.Max(MaxParallelBatchSize, ushort.MaxValue + 1), () => new List<ListItem>(), x => x.Clear());
 
         /// <summary>
+        /// Memory Pool for empty lists of Tasks. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
+        /// </summary>
+        [CLSCompliant(false)]
+        public static SafeObjectPool<List<Task>> TaskListPool { get; }
+            = new SafeObjectPool<List<Task>>(Math.Max(MaxParallelBatchSize, ushort.MaxValue + 1), () => new List<Task>(), x => x.Clear());
+
+        /// <summary>
         /// Memory Pool for empty hash sets of strings. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
         /// </summary>
         [CLSCompliant(false)]
