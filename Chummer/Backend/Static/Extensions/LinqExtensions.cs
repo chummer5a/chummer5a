@@ -566,7 +566,7 @@ namespace Chummer
                         return funcSelector.Invoke(objTemp.ElementAtBetter(0));
 
                     default:
-                        lstTasks = new List<Task<int>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -613,7 +613,7 @@ namespace Chummer
                         return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp.ElementAtBetter(0)), token);
 
                     default:
-                        lstTasks = new List<Task<int>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -660,7 +660,7 @@ namespace Chummer
                         return funcSelector.Invoke(objTemp.ElementAtBetter(0));
 
                     default:
-                        lstTasks = new List<Task<long>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -707,7 +707,7 @@ namespace Chummer
                         return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp.ElementAtBetter(0)), token);
 
                     default:
-                        lstTasks = new List<Task<long>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -754,7 +754,7 @@ namespace Chummer
                         return funcSelector.Invoke(objTemp.ElementAtBetter(0));
 
                     default:
-                        lstTasks = new List<Task<float>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -801,7 +801,7 @@ namespace Chummer
                         return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp.ElementAtBetter(0)), token);
 
                     default:
-                        lstTasks = new List<Task<float>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -848,7 +848,7 @@ namespace Chummer
                         return funcSelector.Invoke(objTemp.ElementAtBetter(0));
 
                     default:
-                        lstTasks = new List<Task<double>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -895,7 +895,7 @@ namespace Chummer
                         return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp.ElementAtBetter(0)), token);
 
                     default:
-                        lstTasks = new List<Task<double>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -942,7 +942,7 @@ namespace Chummer
                         return funcSelector.Invoke(objTemp.ElementAtBetter(0));
 
                     default:
-                        lstTasks = new List<Task<decimal>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -989,7 +989,7 @@ namespace Chummer
                         return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp.ElementAtBetter(0)), token);
 
                     default:
-                        lstTasks = new List<Task<decimal>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }

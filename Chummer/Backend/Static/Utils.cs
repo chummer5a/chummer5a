@@ -2013,7 +2013,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 return aobjReturn;
             }
-            List<Task<T>> lstTasks = new List<Task<T>>(MaxParallelBatchSize);
+            List<Task<T>> lstTasks = new List<Task<T>>(Math.Min(intLength, MaxParallelBatchSize));
             int intOffset = 0;
             int intCycleTracker = 0; // Tracking this way is faster than modulo'ing the iterating index
             for (int i = 0; i < intLength; ++i)
@@ -2138,7 +2138,7 @@ namespace Chummer
                 JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    List<Task<T>> lstMainThreadTasks = new List<Task<T>>(MaxParallelBatchSize);
+                    List<Task<T>> lstMainThreadTasks = new List<Task<T>>(Math.Min(intLength, MaxParallelBatchSize));
                     int intMainThreadOffset = 0;
                     int intMainThreadCycleTracker = 0; // Tracking this way is faster than modulo'ing the iterating index
                     for (int i = 0; i < intLength; ++i)
@@ -2188,7 +2188,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 return aobjReturn;
             }
-            List<Task<T>> lstTasks = new List<Task<T>>(MaxParallelBatchSize);
+            List<Task<T>> lstTasks = new List<Task<T>>(Math.Min(intLength, MaxParallelBatchSize));
             int intOffset = 0;
             int intCycleTracker = 0; // Tracking this way is faster than modulo'ing the iterating index
             for (int i = 0; i < intLength; ++i)
@@ -2413,7 +2413,7 @@ namespace Chummer
                 JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    List<Task> lstMainThreadTasks = new List<Task>(MaxParallelBatchSize);
+                    List<Task> lstMainThreadTasks = new List<Task>(Math.Min(lstFuncToRun.Count, MaxParallelBatchSize));
                     int intMainThreadCounter = 0;
                     foreach (Func<Task> funcToRun in lstFuncToRun)
                     {
@@ -2451,7 +2451,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 return;
             }
-            List<Task> lstTasks = new List<Task>(MaxParallelBatchSize);
+            List<Task> lstTasks = new List<Task>(Math.Min(lstFuncToRun.Count, MaxParallelBatchSize));
             int intCounter = 0;
             foreach (Func<Task> funcToRun in lstFuncToRun)
             {
