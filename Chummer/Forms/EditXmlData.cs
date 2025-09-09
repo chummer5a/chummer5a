@@ -21,16 +21,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
-using Org.XmlUnit.Builder;
-using Org.XmlUnit.Diff;
 using NLog;
 using System.Diagnostics;
 
