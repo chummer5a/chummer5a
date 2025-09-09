@@ -18,13 +18,7 @@
  */
 
 using System;
-
-#if DEBUG
-
 using System.Diagnostics;
-
-#endif
-
 using System.Globalization;
 using System.Xml;
 using System.Runtime.CompilerServices;
