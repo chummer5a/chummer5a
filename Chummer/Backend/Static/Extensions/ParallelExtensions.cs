@@ -45,7 +45,7 @@ namespace Chummer
                 foreach (TSource objSource in lstItems)
                 {
                     token.ThrowIfCancellationRequested();
-                    aobjTaskBuffer[i++] = funcCodeToRun(objSource);
+                    aobjTaskBuffer[i++] = funcCodeToRun(objSource) ?? Task.CompletedTask;
                     if (i == Utils.MaxParallelBatchSize)
                     {
                         await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
@@ -87,7 +87,7 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    aobjTaskBuffer[i++] = funcCodeToRun(objEnumerator.Current);
+                    aobjTaskBuffer[i++] = funcCodeToRun(objEnumerator.Current) ?? Task.CompletedTask;
                     if (i == Utils.MaxParallelBatchSize)
                     {
                         await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
@@ -138,7 +138,7 @@ namespace Chummer
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        aobjTaskBuffer[i++] = funcCodeToRun(objEnumerator.Current);
+                        aobjTaskBuffer[i++] = funcCodeToRun(objEnumerator.Current) ?? Task.CompletedTask;
                         if (i == Utils.MaxParallelBatchSize)
                         {
                             await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
@@ -244,7 +244,7 @@ namespace Chummer
                 foreach (TSource objSource in lstItems)
                 {
                     token.ThrowIfCancellationRequested();
-                    aobjTaskBuffer[i++] = funcCodeToRun(objSource);
+                    aobjTaskBuffer[i++] = funcCodeToRun(objSource) ?? Task.FromResult(default(TResult));
                     if (i == Utils.MaxParallelBatchSize)
                     {
                         lstReturn.AddRange(await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false));
@@ -295,7 +295,7 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    aobjTaskBuffer[i++] = funcCodeToRun(objEnumerator.Current);
+                    aobjTaskBuffer[i++] = funcCodeToRun(objEnumerator.Current) ?? Task.FromResult(default(TResult));
                     if (i == Utils.MaxParallelBatchSize)
                     {
                         lstReturn.AddRange(await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false));
@@ -355,7 +355,7 @@ namespace Chummer
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        aobjTaskBuffer[i++] = funcCodeToRun(objEnumerator.Current);
+                        aobjTaskBuffer[i++] = funcCodeToRun(objEnumerator.Current) ?? Task.FromResult(default(TResult));
                         if (i == Utils.MaxParallelBatchSize)
                         {
                             lstReturn.AddRange(await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false));
@@ -417,7 +417,7 @@ namespace Chummer
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        aobjTaskBuffer[i++] = Task.Run(() => funcCodeToRun(objEnumerator.Current), token);
+                        aobjTaskBuffer[i++] = Task.Run(() => funcCodeToRun(objEnumerator.Current), token) ?? Task.FromResult(default(TResult));
                         if (i == Utils.MaxParallelBatchSize)
                         {
                             lstReturn.AddRange(await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false));
@@ -480,7 +480,7 @@ namespace Chummer
                         foreach (TSource objSource in lstItems)
                         {
                             objJoinedToken.ThrowIfCancellationRequested();
-                            aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objSource, objJoinedToken);
+                            aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objSource, objJoinedToken) ?? Task.CompletedTask;
                             if (i == Utils.MaxParallelBatchSize)
                             {
                                 if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
@@ -533,7 +533,7 @@ namespace Chummer
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken);
+                            aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken) ?? Task.CompletedTask;
                             if (i == Utils.MaxParallelBatchSize)
                             {
                                 if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
@@ -595,7 +595,7 @@ namespace Chummer
                             while (objEnumerator.MoveNext())
                             {
                                 token.ThrowIfCancellationRequested();
-                                aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken);
+                                aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken) ?? Task.CompletedTask;
                                 if (i == Utils.MaxParallelBatchSize)
                                 {
                                     if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
@@ -723,7 +723,7 @@ namespace Chummer
                         foreach (TSource objSource in lstItems)
                         {
                             token.ThrowIfCancellationRequested();
-                            aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objSource, objJoinedToken);
+                            aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objSource, objJoinedToken) ?? Task.FromResult(default(TResult));
                             if (i == Utils.MaxParallelBatchSize)
                             {
                                 Task<TResult[]> tskEnsemble = Task.WhenAll(aobjTaskBuffer);
@@ -810,7 +810,7 @@ namespace Chummer
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken);
+                            aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken) ?? Task.FromResult(default(TResult));
                             if (i == Utils.MaxParallelBatchSize)
                             {
                                 Task<TResult[]> tskEnsemble = Task.WhenAll(aobjTaskBuffer);
@@ -906,7 +906,7 @@ namespace Chummer
                             while (objEnumerator.MoveNext())
                             {
                                 token.ThrowIfCancellationRequested();
-                                aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken);
+                                aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(objEnumerator.Current, objJoinedToken) ?? Task.FromResult(default(TResult));
                                 if (i == Utils.MaxParallelBatchSize)
                                 {
                                     Task<TResult[]> tskEnsemble = Task.WhenAll(aobjTaskBuffer);
@@ -1096,7 +1096,7 @@ namespace Chummer
                     for (int j = intLowerBound; j < intUpperBound; ++j)
                     {
                         token.ThrowIfCancellationRequested();
-                        aobjTaskBuffer[i++] = funcCodeToRun(j);
+                        aobjTaskBuffer[i++] = funcCodeToRun(j) ?? Task.CompletedTask;
                         if (i == Utils.MaxParallelBatchSize)
                         {
                             await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
@@ -1152,7 +1152,7 @@ namespace Chummer
                             for (int j = intLowerBound; j < intUpperBound; ++j)
                             {
                                 token.ThrowIfCancellationRequested();
-                                aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(j, objJoinedToken);
+                                aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(j, objJoinedToken) ?? Task.CompletedTask;
                                 if (i == Utils.MaxParallelBatchSize)
                                 {
                                     if (await Task.WhenAny(Task.WhenAll(aobjTaskBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
@@ -1226,7 +1226,7 @@ namespace Chummer
                         for (int j = intLowerBound; j < intUpperBound; ++j)
                         {
                             token.ThrowIfCancellationRequested();
-                            aobjTaskBuffer[i++] = funcCodeToRun(j);
+                            aobjTaskBuffer[i++] = funcCodeToRun(j) ?? Task.FromResult(default(TResult));
                             if (i == Utils.MaxParallelBatchSize)
                             {
                                 TResult[] aobjReturnInner = await Task.WhenAll(aobjTaskBuffer).ConfigureAwait(false);
@@ -1300,7 +1300,7 @@ namespace Chummer
                             for (int j = intLowerBound; j < intUpperBound; ++j)
                             {
                                 token.ThrowIfCancellationRequested();
-                                aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(j, objJoinedToken);
+                                aobjTaskBuffer[i++] = funcCodeToRunWithPotentialBreak(j, objJoinedToken) ?? Task.FromResult(default(TResult));
                                 if (i == Utils.MaxParallelBatchSize)
                                 {
                                     Task<TResult[]> tskEnsemble = Task.WhenAll(aobjTaskBuffer);
