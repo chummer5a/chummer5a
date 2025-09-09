@@ -42,6 +42,11 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 int i = 0;
+                for (; i < Utils.MaxParallelBatchSize; ++i)
+                {
+                    aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
+                }
+                i = 0;
                 foreach (TSource objSource in lstItems)
                 {
                     token.ThrowIfCancellationRequested();
@@ -83,6 +88,11 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 int i = 0;
+                for (; i < Utils.MaxParallelBatchSize; ++i)
+                {
+                    aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
+                }
+                i = 0;
                 IEnumerator objEnumerator = lstItems.GetEnumerator();
                 try
                 {
@@ -132,6 +142,11 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 int i = 0;
+                for (; i < Utils.MaxParallelBatchSize; ++i)
+                {
+                    aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
+                }
+                i = 0;
                 IEnumerator<TSource> objEnumerator = await lstItems.GetEnumeratorAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -185,6 +200,11 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 int i = 0;
+                for (; i < Utils.MaxParallelBatchSize; ++i)
+                {
+                    aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
+                }
+                i = 0;
                 IEnumerator<TSource> objEnumerator = await lstItems.GetEnumeratorAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -241,6 +261,11 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 int i = 0;
+                for (; i < Utils.MaxParallelBatchSize; ++i)
+                {
+                    aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
+                }
+                i = 0;
                 foreach (TSource objSource in lstItems)
                 {
                     token.ThrowIfCancellationRequested();
@@ -291,6 +316,11 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 int i = 0;
+                for (; i < Utils.MaxParallelBatchSize; ++i)
+                {
+                    aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
+                }
+                i = 0;
                 IEnumerator objEnumerator = lstItems.GetEnumerator();
                 try
                 {
@@ -349,6 +379,11 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 int i = 0;
+                for (; i < Utils.MaxParallelBatchSize; ++i)
+                {
+                    aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
+                }
+                i = 0;
                 IEnumerator<TSource> objEnumerator = await lstItems.GetEnumeratorAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -411,6 +446,11 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 int i = 0;
+                for (; i < Utils.MaxParallelBatchSize; ++i)
+                {
+                    aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
+                }
+                i = 0;
                 IEnumerator<TSource> objEnumerator = await lstItems.GetEnumeratorAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -477,6 +517,11 @@ namespace Chummer
                     {
                         objJoinedToken.ThrowIfCancellationRequested();
                         int i = 0;
+                        for (; i < Utils.MaxParallelBatchSize; ++i)
+                        {
+                            aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
+                        }
+                        i = 0;
                         foreach (TSource objSource in lstItems)
                         {
                             objJoinedToken.ThrowIfCancellationRequested();
@@ -529,6 +574,11 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         int i = 0;
+                        for (; i < Utils.MaxParallelBatchSize; ++i)
+                        {
+                            aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
+                        }
+                        i = 0;
                         IEnumerator objEnumerator = lstItems.GetEnumerator();
                         try
                         {
@@ -589,6 +639,11 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         int i = 0;
+                        for (; i < Utils.MaxParallelBatchSize; ++i)
+                        {
+                            aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
+                        }
+                        i = 0;
                         IEnumerator<TSource> objEnumerator = await lstItems.GetEnumeratorAsync(token).ConfigureAwait(false);
                         try
                         {
@@ -653,6 +708,11 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         int i = 0;
+                        for (; i < Utils.MaxParallelBatchSize; ++i)
+                        {
+                            aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
+                        }
+                        i = 0;
                         IEnumerator<TSource> objEnumerator = await lstItems.GetEnumeratorAsync(token).ConfigureAwait(false);
                         try
                         {
@@ -720,6 +780,11 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         int i = 0;
+                        for (; i < Utils.MaxParallelBatchSize; ++i)
+                        {
+                            aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
+                        }
+                        i = 0;
                         foreach (TSource objSource in lstItems)
                         {
                             token.ThrowIfCancellationRequested();
@@ -806,6 +871,11 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         int i = 0;
+                        for (; i < Utils.MaxParallelBatchSize; ++i)
+                        {
+                            aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
+                        }
+                        i = 0;
                         IEnumerator objEnumerator = lstItems.GetEnumerator();
                         try
                         {
@@ -900,6 +970,11 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         int i = 0;
+                        for (; i < Utils.MaxParallelBatchSize; ++i)
+                        {
+                            aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
+                        }
+                        i = 0;
                         IEnumerator<TSource> objEnumerator = await lstItems.GetEnumeratorAsync(token).ConfigureAwait(false);
                         try
                         {
@@ -998,6 +1073,11 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         int i = 0;
+                        for (; i < Utils.MaxParallelBatchSize; ++i)
+                        {
+                            aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
+                        }
+                        i = 0;
                         IEnumerator<TSource> objEnumerator = await lstItems.GetEnumeratorAsync(token).ConfigureAwait(false);
                         try
                         {
@@ -1093,6 +1173,11 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     int i = 0;
+                    for (; i < Utils.MaxParallelBatchSize; ++i)
+                    {
+                        aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
+                    }
+                    i = 0;
                     for (int j = intLowerBound; j < intUpperBound; ++j)
                     {
                         token.ThrowIfCancellationRequested();
@@ -1149,6 +1234,11 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             int i = 0;
+                            for (; i < Utils.MaxParallelBatchSize; ++i)
+                            {
+                                aobjTaskBuffer[i] = Task.CompletedTask; // Ensures that none of these are null, just in case
+                            }
+                            i = 0;
                             for (int j = intLowerBound; j < intUpperBound; ++j)
                             {
                                 token.ThrowIfCancellationRequested();
@@ -1223,6 +1313,11 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         int i = 0;
+                        for (; i < Utils.MaxParallelBatchSize; ++i)
+                        {
+                            aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
+                        }
+                        i = 0;
                         for (int j = intLowerBound; j < intUpperBound; ++j)
                         {
                             token.ThrowIfCancellationRequested();
@@ -1297,6 +1392,11 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             int i = 0;
+                            for (; i < Utils.MaxParallelBatchSize; ++i)
+                            {
+                                aobjTaskBuffer[i] = Task.FromResult(default(TResult)); // Ensures that none of these are null, just in case
+                            }
+                            i = 0;
                             for (int j = intLowerBound; j < intUpperBound; ++j)
                             {
                                 token.ThrowIfCancellationRequested();
