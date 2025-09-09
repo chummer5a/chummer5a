@@ -86,8 +86,9 @@ namespace Chummer
             catch (Exception ex)
             {
                 ex = ex.Demystify();
-                Log.Error(ex, "Error loading XML files");
-                await Program.ShowScrollableMessageBoxAsync(this, ex.ToString(), await LanguageManager.GetStringAsync("String_Error").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
+                string strTitle = await LanguageManager.GetStringAsync("XmlEditor_Error_LoadingFiles").ConfigureAwait(false);
+                Log.Error(ex, strTitle);
+                await Program.ShowScrollableMessageBoxAsync(this, ex.ToString(), strTitle, MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
             }
             finally
             {
@@ -104,14 +105,16 @@ namespace Chummer
             catch (Exception ex)
             {
                 ex = ex.Demystify();
-                Log.Error(ex, "Error loading XML file");
-                await Program.ShowScrollableMessageBoxAsync(this, ex.ToString(), await LanguageManager.GetStringAsync("String_Error").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
+                string strTitle = await LanguageManager.GetStringAsync("XmlEditor_Error_LoadingFile").ConfigureAwait(false);
+                Log.Error(ex, strTitle);
+                await Program.ShowScrollableMessageBoxAsync(this, ex.ToString(), strTitle, MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
             }
         }
 
         private async void cmdApplyAmendment_Click(object sender, EventArgs e)
         {
             CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationToken token = objNewSource.Token;
             CancellationTokenSource objOldSource = Interlocked.Exchange(ref _objApplyAmendmentCancellationTokenSource, objNewSource);
             if (objOldSource != null)
             {
@@ -120,7 +123,7 @@ namespace Chummer
             }
             try
             {
-                await ApplyAmendmentAsync(objNewSource.Token).ConfigureAwait(false);
+                await ApplyAmendmentAsync(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -129,14 +132,23 @@ namespace Chummer
             catch (Exception ex)
             {
                 ex = ex.Demystify();
-                Log.Error(ex, "Error applying amendment");
-                await Program.ShowScrollableMessageBoxAsync(this, ex.ToString(), await LanguageManager.GetStringAsync("String_Error").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
+                try
+                {
+                    string strTitle = await LanguageManager.GetStringAsync("XmlEditor_Error_ApplyingAmendment", token: token).ConfigureAwait(false);
+                    Log.Error(ex, strTitle);
+                    await Program.ShowScrollableMessageBoxAsync(this, ex.ToString(), strTitle, MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    // swallow this
+                }
             }
         }
 
         private async void cmdSaveAmendment_Click(object sender, EventArgs e)
         {
             CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationToken token = objNewSource.Token;
             CancellationTokenSource objOldSource = Interlocked.Exchange(ref _objSaveAmendmentCancellationTokenSource, objNewSource);
             if (objOldSource != null)
             {
@@ -145,7 +157,7 @@ namespace Chummer
             }
             try
             {
-                await SaveAmendmentAsync().ConfigureAwait(false);
+                await SaveAmendmentAsync(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -154,8 +166,16 @@ namespace Chummer
             catch (Exception ex)
             {
                 ex = ex.Demystify();
-                Log.Error(ex, "Error saving amendment");
-                await Program.ShowScrollableMessageBoxAsync(this, ex.ToString(), await LanguageManager.GetStringAsync("String_Error").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
+                try
+                {
+                    string strTitle = await LanguageManager.GetStringAsync("XmlEditor_Error_SavingAmendment", token: token).ConfigureAwait(false);
+                    Log.Error(ex, strTitle);
+                    await Program.ShowScrollableMessageBoxAsync(this, ex.ToString(), strTitle, MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    // swallow this
+                }
             }
         }
 
@@ -195,11 +215,11 @@ namespace Chummer
 
                             if (_blnDirty)
                             {
-                                DialogResult result = MessageBox.Show(
+                                DialogResult result = await Program.ShowScrollableMessageBoxAsync(
                                     await LanguageManager.GetStringAsync("XmlEditor_UnsavedChanges").ConfigureAwait(false),
                                     await LanguageManager.GetStringAsync("XmlEditor_UnsavedChangesTitle").ConfigureAwait(false),
                                     MessageBoxButtons.YesNoCancel,
-                                    MessageBoxIcon.Question);
+                                    MessageBoxIcon.Question).ConfigureAwait(false);
 
                                 switch (result)
                                 {
@@ -212,9 +232,10 @@ namespace Chummer
                                                 objOldSource.Cancel(false);
                                                 objOldSource.Dispose();
                                             }
+                                            CancellationToken objNewSourceToken = objNewSource.Token;
                                             try
                                             {
-                                                await SaveAmendmentAsync().ConfigureAwait(false);
+                                                await SaveAmendmentAsync(objNewSourceToken).ConfigureAwait(false);
                                             }
                                             catch (OperationCanceledException)
                                             {
@@ -224,7 +245,14 @@ namespace Chummer
                                             {
                                                 ex = ex.Demystify();
                                                 Log.Error(ex, "Error saving on form close");
-                                                MessageBox.Show(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_ErrorSaving").ConfigureAwait(false), ex.Message), await LanguageManager.GetStringAsync("String_Error").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                try
+                                                {
+                                                    await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_ErrorSaving").ConfigureAwait(false), ex.Message), await LanguageManager.GetStringAsync("XmlEditor_Error_SavingAmendment", token: objNewSourceToken).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: objNewSourceToken).ConfigureAwait(false);
+                                                }
+                                                catch (OperationCanceledException)
+                                                {
+                                                    // swallow this
+                                                }
                                                 return;
                                             }
                                             break;
@@ -295,27 +323,34 @@ namespace Chummer
                     return;
                 }
 
-                // Get base XML files (exclude amendment files)
-                string[] astrXmlFiles = Directory.GetFiles(strDataPath, "*.xml")
-                    .Where(x => !Path.GetFileName(x).StartsWith("amend_", StringComparison.OrdinalIgnoreCase)
-                             && !Path.GetFileName(x).StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
-                             && !Path.GetFileName(x).StartsWith("override_", StringComparison.OrdinalIgnoreCase))
-                    .Select(Path.GetFileName)
-                    .OrderBy(x => x)
-                    .ToArray();
-
+                // Get base XML files (exclude custom files)
+                List<string> lstXmlFiles = new List<string>();
+                foreach (string strFile in Directory.EnumerateFiles(strDataPath, "*.xml"))
+                {
+                    string strFileName = Path.GetFileName(strFile);
+                    if (!strFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase)
+                        && !strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
+                        && !strFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase))
+                    {
+                        lstXmlFiles.Add(strFile);
+                    }
+                }
+                lstXmlFiles.Sort();
                 await cboXmlFiles.DoThreadSafeAsync(x =>
                 {
                     x.Items.Clear();
-                    x.Items.AddRange(astrXmlFiles);
+                    x.Items.AddRange(lstXmlFiles.ToArray());
                     if (x.Items.Count > 0)
                         x.SelectedIndex = 0;
                 }, token).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                ex = ex.Demystify();
-                Log.Error(ex, "Error loading available XML files");
+                if (!(ex is OperationCanceledException))
+                {
+                    ex = ex.Demystify();
+                    Log.Error(ex, "Error loading available XML files");
+                }
                 throw;
             }
         }
@@ -327,7 +362,7 @@ namespace Chummer
                 string strSelectedFile = await cboXmlFiles.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strSelectedFile))
                 {
-                    await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("XmlEditor_NoFileSelected", token: token).ConfigureAwait(false), LanguageManager.GetString("XmlEditor_NoFileSelectedTitle", token: token), MessageBoxButtons.OK, MessageBoxIcon.Warning, token: token).ConfigureAwait(false);
+                    await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("XmlEditor_NoFileSelected", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("XmlEditor_NoFileSelectedTitle", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Warning, token: token).ConfigureAwait(false);
                     return;
                 }
 
@@ -339,7 +374,7 @@ namespace Chummer
                     string strFilePath = Path.Combine(Utils.GetStartupPath, "data", strSelectedFile);
                     if (!File.Exists(strFilePath))
                     {
-                        await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_FileNotFound", token: token).ConfigureAwait(false), strFilePath), LanguageManager.GetString("XmlEditor_FileNotFoundTitle", token: token), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                        await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_FileNotFound", token: token).ConfigureAwait(false), strFilePath), await LanguageManager.GetStringAsync("XmlEditor_FileNotFoundTitle", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                         return;
                     }
 
@@ -376,8 +411,11 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                ex = ex.Demystify();
-                Log.Error(ex, "Error loading XML file");
+                if (!(ex is OperationCanceledException))
+                {
+                    ex = ex.Demystify();
+                    Log.Error(ex, await LanguageManager.GetStringAsync("XmlEditor_Error_LoadingFile", token: token).ConfigureAwait(false));
+                }
                 throw;
             }
         }
@@ -388,13 +426,13 @@ namespace Chummer
             {
                 if (_objBaseXmlDocument == null)
                 {
-                    await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("XmlEditor_NoBaseXml", token: token).ConfigureAwait(false), LanguageManager.GetString("XmlEditor_NoBaseXmlTitle", token: token), MessageBoxButtons.OK, MessageBoxIcon.Warning, token: token).ConfigureAwait(false);
+                    await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("XmlEditor_NoBaseXml", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("XmlEditor_NoBaseXmlTitle", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Warning, token: token).ConfigureAwait(false);
                     return;
                 }
 
                 if (string.IsNullOrWhiteSpace(txtAmendmentXml.Text))
                 {
-                    await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("XmlEditor_NoAmendment", token: token).ConfigureAwait(false), LanguageManager.GetString("XmlEditor_NoAmendmentTitle", token: token), MessageBoxButtons.OK, MessageBoxIcon.Warning, token: token).ConfigureAwait(false);
+                    await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("XmlEditor_NoAmendment", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("XmlEditor_NoAmendmentTitle", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Warning, token: token).ConfigureAwait(false);
                     return;
                 }
 
@@ -409,24 +447,31 @@ namespace Chummer
                     }
                     catch (XmlException ex)
                     {
-                        await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_InvalidXml", token: token).ConfigureAwait(false), ex.Message), LanguageManager.GetString("XmlEditor_InvalidXmlTitle", token: token), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                        await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_InvalidXml", token: token).ConfigureAwait(false), ex.Message), await LanguageManager.GetStringAsync("XmlEditor_InvalidXmlTitle", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                         return;
                     }
 
                     // Create a copy of the base XML to apply amendments to
                     _objResultXmlDocument = new XmlDocument();
                     _objResultXmlDocument.LoadXml(_strBaseXmlContent);
-
                     // Apply the amendments using the same logic as XmlManager
-                    await ApplyAmendmentOperationsAsync(_objResultXmlDocument, _objAmendmentXmlDocument, token).ConfigureAwait(false);
-
-                    _strResultXmlContent = _objResultXmlDocument.OuterXml;
-
-                    // Update the UI
-                    string strResultText = FormatXml(_strResultXmlContent);
-                    await txtResultXml.DoThreadSafeAsync(x => x.Text = strResultText, token).ConfigureAwait(false);
-                    await cmdSaveAmendment.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
-
+                    Exception exFromAmend = await ApplyAmendmentOperationsAsync(_objResultXmlDocument, _objAmendmentXmlDocument, token).ConfigureAwait(false);
+                    if (exFromAmend == default)
+                    {
+                        _strResultXmlContent = _objResultXmlDocument.OuterXml;
+                        // Update the UI
+                        string strResultText = FormatXml(_strResultXmlContent);
+                        await txtResultXml.DoThreadSafeAsync(x => x.Text = strResultText, token).ConfigureAwait(false);
+                        await cmdSaveAmendment.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        _objResultXmlDocument = null;
+                        _strResultXmlContent = string.Empty;
+                        string strResultText = await LanguageManager.GetStringAsync("XmlEditor_Error_ApplyingAmendment", token: token).ConfigureAwait(false) + Environment.NewLine + exFromAmend.ToString();
+                        await txtResultXml.DoThreadSafeAsync(x => x.Text = strResultText, token).ConfigureAwait(false);
+                        await cmdSaveAmendment.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                    }
                     // Generate diff
                     await UpdateDiffPreviewAsync(token).ConfigureAwait(false);
                 }
@@ -437,8 +482,12 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                ex = ex.Demystify();
-                Log.Error(ex, "Error applying amendment");
+                if (!(ex is OperationCanceledException))
+                {
+                    ex = ex.Demystify();
+                    Log.Error(ex, await LanguageManager.GetStringAsync("XmlEditor_Error_ApplyingAmendment", token: token).ConfigureAwait(false));
+                    await cmdSaveAmendment.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                }
                 throw;
             }
         }
@@ -485,8 +534,11 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                ex = ex.Demystify();
-                Log.Error(ex, "Error saving amendment");
+                if (!(ex is OperationCanceledException))
+                {
+                    ex = ex.Demystify();
+                    Log.Error(ex, await LanguageManager.GetStringAsync("XmlEditor_Error_SavingAmendment", token: token).ConfigureAwait(false));
+                }
                 throw;
             }
         }
@@ -524,10 +576,10 @@ namespace Chummer
                     await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is OperationCanceledException))
             {
                 ex = ex.Demystify();
-                Log.Error(ex, "Error updating diff preview");
+                Log.Error(ex, await LanguageManager.GetStringAsync("XmlEditor_Error_UpdatingDiff", token: token).ConfigureAwait(false));
                 string strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_ErrorGeneratingDiff", token: token).ConfigureAwait(false), ex.Message);
                 await txtDiffPreview.DoThreadSafeAsync(x =>
                 {
@@ -554,7 +606,7 @@ namespace Chummer
                     sbdOutput.AppendLine();
 
                     // Compare the documents and generate a clean diff
-                    await CompareXmlDocumentsAsync(objBaseDoc, objResultDoc, sbdOutput, "", token).ConfigureAwait(false);
+                    await CompareXmlDocumentsAsync(objBaseDoc, objResultDoc, sbdOutput, string.Empty, token).ConfigureAwait(false);
 
                     if (sbdOutput.Length <= 30) // Only header was added
                     {
@@ -565,7 +617,7 @@ namespace Chummer
                     return sbdOutput.ToString();
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is OperationCanceledException))
             {
                 ex = ex.Demystify();
                 Log.Error(ex, "Error generating clean diff");
@@ -581,7 +633,7 @@ namespace Chummer
                 // Compare root elements
                 await CompareXmlNodesAsync(objBaseDoc.DocumentElement, objResultDoc.DocumentElement, sbdOutput, strCurrentPath, token).ConfigureAwait(false);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is OperationCanceledException))
             {
                 ex = ex.Demystify();
                 Log.Error(ex, "Error comparing XML documents");
@@ -618,7 +670,7 @@ namespace Chummer
                 // Compare text nodes
                 if (objBaseNode.NodeType == XmlNodeType.Text && objResultNode.NodeType == XmlNodeType.Text)
                 {
-                    if (objBaseNode.Value != objResultNode.Value)
+                    if (!string.Equals(objBaseNode.Value, objResultNode.Value, StringComparison.Ordinal))
                     {
                         sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Modified", token: token).ConfigureAwait(false), strNodePath).AppendLine();
                         sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), FormatXmlNode(objBaseNode, token)).AppendLine();
@@ -633,66 +685,79 @@ namespace Chummer
                     // Compare attributes
                     if (objBaseNode.Attributes != null || objResultNode.Attributes != null)
                     {
-                        var baseAttribs = objBaseNode.Attributes?.Cast<XmlAttribute>().ToDictionary(a => a.Name, a => a.Value) ?? new Dictionary<string, string>();
-                        var resultAttribs = objResultNode.Attributes?.Cast<XmlAttribute>().ToDictionary(a => a.Name, a => a.Value) ?? new Dictionary<string, string>();
-
-                        foreach (var kvp in baseAttribs)
+                        Dictionary<string, string> baseAttribs = new Dictionary<string, string>(objBaseNode.Attributes?.Count ?? 0);
+                        foreach (XmlAttribute objAttribute in objBaseNode.Attributes)
                         {
-                            if (!resultAttribs.TryGetValue(kvp.Key, out string value))
+                            baseAttribs.Add(objAttribute.Name, objAttribute.Value);
+                        }
+                        Dictionary<string, string> resultAttribs = new Dictionary<string, string>(objResultNode.Attributes?.Count ?? 0);
+                        foreach (XmlAttribute objAttribute in objResultNode.Attributes)
+                        {
+                            resultAttribs.Add(objAttribute.Name, objAttribute.Value);
+                        }
+
+                        foreach (KeyValuePair<string, string> kvp in baseAttribs)
+                        {
+                            if (!resultAttribs.TryGetValue(kvp.Key, out string value) || !resultAttribs.Remove(kvp.Key))
                             {
                                 sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_RemovedAttribute", token: token).ConfigureAwait(false), strNodePath, kvp.Key, kvp.Value).AppendLine();
                             }
-                            else if (value != kvp.Value)
+                            else if (!string.Equals(value, kvp.Value, StringComparison.Ordinal))
                             {
                                 sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_ModifiedAttribute", token: token).ConfigureAwait(false), strNodePath, kvp.Key).AppendLine();
                                 sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), '\"' + kvp.Value + '\"').AppendLine();
                                 sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_NewValue", token: token).ConfigureAwait(false), '\"' + value + '\"').AppendLine();
-                                
                             }
                         }
 
-                        foreach (var kvp in resultAttribs)
+                        foreach (KeyValuePair<string, string> kvp in resultAttribs)
                         {
-                            if (!baseAttribs.ContainsKey(kvp.Key))
-                            {
-                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_AddedAttribute", token: token).ConfigureAwait(false), strNodePath, kvp.Key, kvp.Value).AppendLine();
-                            }
+                            sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_AddedAttribute", token: token).ConfigureAwait(false), strNodePath, kvp.Key, kvp.Value).AppendLine();
                         }
                     }
 
                     // Compare text content first (for elements with only text content)
-                    var baseTextNodes = objBaseNode.ChildNodes.Cast<XmlNode>().Where(n => n.NodeType == XmlNodeType.Text).ToList();
-                    var resultTextNodes = objResultNode.ChildNodes.Cast<XmlNode>().Where(n => n.NodeType == XmlNodeType.Text).ToList();
-                    
-                    if (baseTextNodes.Count > 0 || resultTextNodes.Count > 0)
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBaseText))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdResultText))
                     {
-                        string strBaseText = string.Join("", baseTextNodes.Select(n => n.Value));
-                        string strResultText = string.Join("", resultTextNodes.Select(n => n.Value));
-                        
-                        if (strBaseText != strResultText)
+                        foreach (XmlNode objNode in objBaseNode.ChildNodes)
                         {
-                            sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Modified", token: token).ConfigureAwait(false), strNodePath).AppendLine();
-                            sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), '\"' + strBaseText + '\"').AppendLine();
-                            sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_NewValue", token: token).ConfigureAwait(false), '\"' + strResultText + '\"').AppendLine();
+                            if (objNode.NodeType == XmlNodeType.Text)
+                                sbdBaseText.Append(objNode.Value);
+                        }
+                        foreach (XmlNode objNode in objResultNode.ChildNodes)
+                        {
+                            if (objNode.NodeType == XmlNodeType.Text)
+                                sbdResultText.Append(objNode.Value);
+                        }
+
+                        if (sbdBaseText.Length > 0 || sbdResultText.Length > 0)
+                        {
+                            string strBaseText = sbdBaseText.ToString();
+                            string strResultText = sbdResultText.ToString();
+
+                            if (!string.Equals(strBaseText, strResultText, StringComparison.Ordinal))
+                            {
+                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Modified", token: token).ConfigureAwait(false), strNodePath).AppendLine();
+                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), '\"' + strBaseText + '\"').AppendLine();
+                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_NewValue", token: token).ConfigureAwait(false), '\"' + strResultText + '\"').AppendLine();
+                            }
                         }
                     }
 
                     // Compare child element nodes
-                    var baseChildren = objBaseNode.ChildNodes.Cast<XmlNode>().Where(n => n.NodeType == XmlNodeType.Element).ToList();
-                    var resultChildren = objResultNode.ChildNodes.Cast<XmlNode>().Where(n => n.NodeType == XmlNodeType.Element).ToList();
-
                     // Group children by their identifying attributes or content
-                    var baseGroups = GroupChildNodes(baseChildren);
-                    var resultGroups = GroupChildNodes(resultChildren);
+                    Dictionary<string, XmlNode> baseGroups = GroupChildNodes(objBaseNode.ChildNodes);
+                    Dictionary<string, XmlNode> resultGroups = GroupChildNodes(objResultNode.ChildNodes);
 
                     // Find added, removed, and modified nodes
-                    foreach (var kvp in resultGroups)
+                    foreach (KeyValuePair<string, XmlNode> kvp in resultGroups)
                     {
-                        if (!baseGroups.TryGetValue(kvp.Key, out XmlNode value))
+                        if (!baseGroups.TryGetValue(kvp.Key, out XmlNode value) || !baseGroups.Remove(kvp.Key))
                         {
                             string strChildPath = GetNodePath(kvp.Value, strNodePath);
                             sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Added", token: token).ConfigureAwait(false), strChildPath).AppendLine();
-                            sbdOutput.AppendLine("  " + await FormatXmlNode(kvp.Value, token).ConfigureAwait(false));
+                            sbdOutput.Append("  " + await FormatXmlNode(kvp.Value, token).ConfigureAwait(false));
                         }
                         else
                         {
@@ -700,18 +765,15 @@ namespace Chummer
                         }
                     }
 
-                    foreach (var kvp in baseGroups)
+                    foreach (KeyValuePair<string, XmlNode> kvp in baseGroups)
                     {
-                        if (!resultGroups.ContainsKey(kvp.Key))
-                        {
-                            string strChildPath = GetNodePath(kvp.Value, strNodePath);
-                            sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Removed", token: token).ConfigureAwait(false), strChildPath).AppendLine();
-                            sbdOutput.AppendLine("  " + await FormatXmlNode(kvp.Value, token).ConfigureAwait(false));
-                        }
+                        string strChildPath = GetNodePath(kvp.Value, strNodePath);
+                        sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Removed", token: token).ConfigureAwait(false), strChildPath).AppendLine();
+                        sbdOutput.AppendLine("  " + await FormatXmlNode(kvp.Value, token).ConfigureAwait(false));
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is OperationCanceledException))
             {
                 ex = ex.Demystify();
                 Log.Error(ex, "Error comparing XML nodes");
@@ -719,12 +781,15 @@ namespace Chummer
             }
         }
 
-        private static Dictionary<string, XmlNode> GroupChildNodes(List<XmlNode> childNodes)
+        private static Dictionary<string, XmlNode> GroupChildNodes(XmlNodeList childNodes)
         {
-            var groups = new Dictionary<string, XmlNode>();
-            
-            foreach (var node in childNodes)
+            if (childNodes == null)
+                return new Dictionary<string, XmlNode>(0);
+            Dictionary<string, XmlNode> groups = new Dictionary<string, XmlNode>(childNodes.Count);
+            foreach (XmlNode node in childNodes)
             {
+                if (node.NodeType != XmlNodeType.Element)
+                    continue;
                 // Try to find an ID attribute first
                 string strKey = node.Attributes?["id"]?.Value;
                 
@@ -807,7 +872,7 @@ namespace Chummer
                 
                 return node.ToString();
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is OperationCanceledException))
             {
                 ex = ex.Demystify();
                 Log.Error(ex, await LanguageManager.GetStringAsync("XmlEditor_ErrorFormattingNode", token: token).ConfigureAwait(false));
@@ -848,52 +913,36 @@ namespace Chummer
             return _strXmlElementTemplate;
         }
 
-        private static Task ApplyAmendmentOperationsAsync(XmlDocument xmlTargetDoc, XmlDocument xmlAmendmentDoc, CancellationToken token = default)
+        private static async Task<Exception> ApplyAmendmentOperationsAsync(XmlDocument xmlTargetDoc, XmlDocument xmlAmendmentDoc, CancellationToken token = default)
         {
-            try
+            token.ThrowIfCancellationRequested();
+            using (XmlNodeList xmlNodeList = xmlAmendmentDoc.SelectNodes("/chummer/*"))
             {
-                // Use the actual XmlManager.AmendNodeChildren method via reflection.
-                // Might be better to make that method public in XmlManager but it's not a common operation.
-                var amendNodeChildrenMethod = typeof(XmlManager).GetMethod("AmendNodeChildren", 
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-
-                if (amendNodeChildrenMethod != null)
+                token.ThrowIfCancellationRequested();
+                if (xmlNodeList?.Count > 0)
                 {
-                    using (XmlNodeList xmlNodeList = xmlAmendmentDoc.SelectNodes("/chummer/*"))
+                    token.ThrowIfCancellationRequested();
+                    foreach (XmlNode objNode in xmlNodeList)
                     {
-                        if (xmlNodeList?.Count > 0)
+                        token.ThrowIfCancellationRequested();
+                        try
                         {
-                            foreach (XmlNode objNode in xmlNodeList)
+                            if (await Task.Run(() => XmlManager.AmendNodeChildren(xmlTargetDoc, objNode, "/chummer", token: token), token).ConfigureAwait(false))
                             {
-                                if (token.IsCancellationRequested)
-                                    return Task.FromCanceled(token);
-                                
-                                // Call the actual XmlManager.AmendNodeChildren method
-                                object[] parameters = { xmlTargetDoc, objNode, "/chummer", null, token };
-                                bool blnResult = (bool)amendNodeChildrenMethod.Invoke(null, parameters);
-                                
-                                if (blnResult)
-                                {
-                                    Log.Info("Applied amendment operation to node: " + objNode.Name);
-                                }
+                                Log.Info("Successfully applied amendment operation to node: " + objNode.Name);
                             }
+                        }
+                        catch (Exception ex) when (!(ex is OperationCanceledException))
+                        {
+                            // Return exceptions so that they can be displayed to the user (and so that we know we ran into one while applying our operation)
+                            ex = ex.Demystify();
+                            Log.Error(ex, await LanguageManager.GetStringAsync("XmlEditor_Error_ApplyingAmendment", token: token).ConfigureAwait(false));
+                            return ex;
                         }
                     }
                 }
-                else
-                {
-                    Log.Warn("Could not access XmlManager.AmendNodeChildren via reflection.");
-                    Utils.BreakIfDebug();
-                }
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                Log.Error(ex, "Error applying amendment operations");
-                throw;
-            }
-
-            return Task.CompletedTask;
+            return default;
         }
 
         #endregion Methods
