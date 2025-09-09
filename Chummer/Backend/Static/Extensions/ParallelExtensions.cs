@@ -254,7 +254,7 @@ namespace Chummer
         public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IEnumerable<TSource> lstItems, Func<TSource, Task<TResult>> funcCodeToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<TResult> lstReturn = new List<TResult>(lstItems is ICollection<TSource> lstItemsCollection ? lstItemsCollection.Count : Utils.MaxParallelBatchSize);
+            List<TResult> lstReturn = new List<TResult>(lstItems is IReadOnlyCollection<TSource> lstItemsCollection ? lstItemsCollection.Count : Utils.MaxParallelBatchSize);
             token.ThrowIfCancellationRequested();
             Task<TResult>[] aobjTaskBuffer = ArrayPool<Task<TResult>>.Shared.Rent(Utils.MaxParallelBatchSize);
             try
@@ -372,7 +372,7 @@ namespace Chummer
         public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IAsyncEnumerable<TSource> lstItems, Func<TSource, Task<TResult>> funcCodeToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<TResult> lstReturn = new List<TResult>(lstItems is IAsyncCollection<TSource> lstItemsCollection ? await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false) : Utils.MaxParallelBatchSize);
+            List<TResult> lstReturn = new List<TResult>(lstItems is IAsyncReadOnlyCollection<TSource> lstItemsCollection ? await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false) : Utils.MaxParallelBatchSize);
             token.ThrowIfCancellationRequested();
             Task<TResult>[] aobjTaskBuffer = ArrayPool<Task<TResult>>.Shared.Rent(Utils.MaxParallelBatchSize);
             try
@@ -439,7 +439,7 @@ namespace Chummer
         public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IAsyncEnumerable<TSource> lstItems, Func<TSource, TResult> funcCodeToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<TResult> lstReturn = new List<TResult>(lstItems is IAsyncCollection<TSource> lstItemsCollection ? await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false) : Utils.MaxParallelBatchSize);
+            List<TResult> lstReturn = new List<TResult>(lstItems is IAsyncReadOnlyCollection<TSource> lstItemsCollection ? await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false) : Utils.MaxParallelBatchSize);
             token.ThrowIfCancellationRequested();
             Task<TResult>[] aobjTaskBuffer = ArrayPool<Task<TResult>>.Shared.Rent(Utils.MaxParallelBatchSize);
             try
@@ -766,7 +766,7 @@ namespace Chummer
         public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IEnumerable<TSource> lstItems, Func<TSource, CancellationToken, Task<TResult>> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<TResult> lstReturn = new List<TResult>(lstItems is ICollection<TSource> lstItemsCollection ? lstItemsCollection.Count : Utils.MaxParallelBatchSize);
+            List<TResult> lstReturn = new List<TResult>(lstItems is IReadOnlyCollection<TSource> lstItemsCollection ? lstItemsCollection.Count : Utils.MaxParallelBatchSize);
             token.ThrowIfCancellationRequested();
             using (CancellationTokenSource objBreakLoop = new CancellationTokenSource())
             {
@@ -956,7 +956,7 @@ namespace Chummer
         public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IAsyncEnumerable<TSource> lstItems, Func<TSource, CancellationToken, Task<TResult>> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<TResult> lstReturn = new List<TResult>(lstItems is IAsyncCollection<TSource> lstItemsCollection ? await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false) : Utils.MaxParallelBatchSize);
+            List<TResult> lstReturn = new List<TResult>(lstItems is IAsyncReadOnlyCollection<TSource> lstItemsCollection ? await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false) : Utils.MaxParallelBatchSize);
             token.ThrowIfCancellationRequested();
             using (CancellationTokenSource objBreakLoop = new CancellationTokenSource())
             {
@@ -1059,7 +1059,7 @@ namespace Chummer
         public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IAsyncEnumerable<TSource> lstItems, Func<TSource, CancellationToken, TResult> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<TResult> lstReturn = new List<TResult>(lstItems is IAsyncCollection<TSource> lstItemsCollection ? await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false) : Utils.MaxParallelBatchSize);
+            List<TResult> lstReturn = new List<TResult>(lstItems is IAsyncReadOnlyCollection<TSource> lstItemsCollection ? await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false) : Utils.MaxParallelBatchSize);
             token.ThrowIfCancellationRequested();
             using (CancellationTokenSource objBreakLoop = new CancellationTokenSource())
             {
