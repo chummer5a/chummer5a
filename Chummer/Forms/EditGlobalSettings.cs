@@ -228,7 +228,9 @@ namespace Chummer
             }
             catch (ArgumentOutOfRangeException ex)
             {
+                ex = ex.Demystify();
                 Log.Error(ex, "How the hell? Give me the callstack! " + ex);
+                Utils.BreakIfDebug();
             }
         }
 

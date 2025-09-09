@@ -125,6 +125,7 @@ namespace Chummer
 #else
                 string errorMsg = "Tried to read missing field \"" + field + '\"';
 #endif
+                ex = ex.Demystify();
                 Log.Error(ex, errorMsg);
                 //Finally, we have to assign an out parameter something, so default
                 //null or 0 most likely
