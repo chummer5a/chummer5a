@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,6 +44,7 @@ namespace Chummer
         private string _strForceSpell = string.Empty;
         private bool _blnCanGenericSpellBeFree;
         private bool _blnCanTouchOnlySpellBeFree;
+        private bool _blnAllowLimitedSpellsForBareHandedAdept;
         private static string _strSelectCategory = string.Empty;
 
         private readonly XPathNavigator _xmlBaseSpellDataNode;
@@ -82,6 +84,8 @@ namespace Chummer
             (bool blnCanTouchOnlySpellBeFree, bool blnCanGenericSpellBeFree) = await _objCharacter.AllowFreeSpellsAsync().ConfigureAwait(false);
             _blnCanTouchOnlySpellBeFree = blnCanTouchOnlySpellBeFree;
             _blnCanGenericSpellBeFree = blnCanGenericSpellBeFree;
+            _blnAllowLimitedSpellsForBareHandedAdept = await (await _objCharacter.GetSettingsAsync()).GetAllowLimitedSpellsForBareHandedAdeptAsync().ConfigureAwait(false);
+
             await txtSearch.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
             // Populate the Category list.
             foreach (XPathNavigator objXmlCategory in _xmlBaseSpellDataNode.SelectAndCacheExpression(
@@ -119,6 +123,7 @@ namespace Chummer
             // Don't show the Extended Spell checkbox if the option to Extend any Detection Spell is disabled.
             bool blnExtendedVisible = await (await _objCharacter.GetSettingsAsync()).GetExtendAnyDetectionSpellAsync().ConfigureAwait(false);
             await chkExtended.DoThreadSafeAsync(x => x.Visible = blnExtendedVisible).ConfigureAwait(false);
+            
             _blnLoading = false;
             await BuildSpellList(await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false)).ConfigureAwait(false);
         }
@@ -813,6 +818,16 @@ namespace Chummer
                     x.Enabled = false;
                 }, token: token).ConfigureAwait(false);
                 blnBarehandedAdept = true;
+
+                // Show/hide Limited checkbox based on settings
+                bool blnLimitedVisible = await (await _objCharacter.GetSettingsAsync()).GetAllowLimitedSpellsForBareHandedAdeptAsync().ConfigureAwait(false);
+
+                await chkLimited.DoThreadSafeAsync(x =>
+                {
+                    x.Enabled = blnLimitedVisible;
+                    if (!x.Enabled)
+                        x.Checked = false;
+                }, token: token).ConfigureAwait(false);
             }
             else
             {
@@ -824,7 +839,12 @@ namespace Chummer
                     x.Enabled = FreeOnly;
                 }, token: token).ConfigureAwait(false);
                 blnBarehandedAdept = false;
+                await chkLimited.DoThreadSafeAsync(x =>
+                {
+                    x.Enabled = true;
+                }, token: token).ConfigureAwait(false);
             }
+
             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strRange = await strRange

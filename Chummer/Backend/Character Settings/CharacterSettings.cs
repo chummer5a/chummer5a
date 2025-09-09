@@ -79,6 +79,7 @@ namespace Chummer
         private bool _blnExceedPositiveQualities;
         private bool _blnExceedPositiveQualitiesCostDoubled;
         private bool _blnExtendAnyDetectionSpell;
+        private bool _blnAllowLimitedSpellsForBareHandedAdept;
         private bool _blnDroneArmorMultiplierEnabled;
         private bool _blnFreeSpiritPowerPointsMAG;
         private bool _blnNoArmorEncumbrance;
@@ -1973,6 +1974,10 @@ namespace Chummer
                     objWriter.WriteElementString("extendanydetectionspell",
                                                     _blnExtendAnyDetectionSpell.ToString(
                                                         GlobalSettings.InvariantCultureInfo));
+                    // <allowlimitedspells />
+                    objWriter.WriteElementString("allowlimitedspellsforbarehandedadept",
+                                                    _blnAllowLimitedSpellsForBareHandedAdept.ToString(
+                                                        GlobalSettings.InvariantCultureInfo));
                     //<dontusecyberlimbcalculation />
                     objWriter.WriteElementString("dontusecyberlimbcalculation",
                                                     _blnDontUseCyberlimbCalculation.ToString(
@@ -2810,6 +2815,10 @@ namespace Chummer
                             _blnExtendAnyDetectionSpell.ToString(
                                 GlobalSettings.InvariantCultureInfo), token: token)
                         .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("allowlimitedspellsforbarehandedadept",
+                            _blnAllowLimitedSpellsForBareHandedAdept.ToString(
+                                GlobalSettings.InvariantCultureInfo), token: token)
+                        .ConfigureAwait(false);
                     //<dontusecyberlimbcalculation />
                     await objWriter.WriteElementStringAsync("dontusecyberlimbcalculation",
                             _blnDontUseCyberlimbCalculation.ToString(
@@ -3637,6 +3646,8 @@ namespace Chummer
                                                   ref _blnAllowPointBuySpecializationsOnKarmaSkills);
                 // Whether any Detection Spell can be taken as Extended range version.
                 objXmlNode.TryGetBoolFieldQuickly("extendanydetectionspell", ref _blnExtendAnyDetectionSpell);
+                // Whether Adepts can take Limited Spells as Barehanded Adept Powers.
+                objXmlNode.TryGetBoolFieldQuickly("allowlimitedspellsforbarehandedadept", ref _blnAllowLimitedSpellsForBareHandedAdept);
                 // Whether cyberlimbs are used for augmented attribute calculation.
                 objXmlNode.TryGetBoolFieldQuickly("dontusecyberlimbcalculation", ref _blnDontUseCyberlimbCalculation);
                 // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
@@ -4466,6 +4477,9 @@ namespace Chummer
 
                 //House Rule: The DicePenalty per sustained spell or form
                 objXmlNode.TryGetInt32FieldQuickly("dicepenaltysustaining", ref _intDicePenaltySustaining);
+
+                // Whether Adepts can take Limited Spells as Barehanded Adept Powers.
+                objXmlNode.TryGetBoolFieldQuickly("allowlimitedspellsforbarehandedadept", ref _blnAllowLimitedSpellsForBareHandedAdept);
 
                 // Initiative dice
                 objXmlNode.TryGetInt32FieldQuickly("mininitiativedice", ref _intMinInitiativeDice);
@@ -12815,6 +12829,90 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _blnExtendAnyDetectionSpell;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether the UI should allow selecting Limited versions of spells (e.g. for Barehanded Adept).
+        /// </summary>
+        public bool AllowLimitedSpellsForBareHandedAdept
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _blnAllowLimitedSpellsForBareHandedAdept;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (_blnAllowLimitedSpellsForBareHandedAdept == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnAllowLimitedSpellsForBareHandedAdept = value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether the UI should allow selecting Limited versions of spells (e.g. for Barehanded Adept).
+        /// </summary>
+        public async Task<bool> GetAllowLimitedSpellsForBareHandedAdeptAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnAllowLimitedSpellsForBareHandedAdept;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether the UI should allow selecting Limited versions of spells (e.g. for Barehanded Adept).
+        /// </summary>
+        public async Task SetAllowLimitedSpellsForBareHandedAdeptAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnAllowLimitedSpellsForBareHandedAdept == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            token.ThrowIfCancellationRequested();
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnAllowLimitedSpellsForBareHandedAdept == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnAllowLimitedSpellsForBareHandedAdept = value;
+                    await OnPropertyChangedAsync(nameof(AllowLimitedSpellsForBareHandedAdept), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {

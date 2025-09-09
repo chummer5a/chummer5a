@@ -347,6 +347,7 @@ namespace Chummer
             this.chkSpecialKarmaCost = new Chummer.ColorableCheckBox();
             this.chkAllowTechnomancerSchooling = new Chummer.ColorableCheckBox();
             this.chkAllowInitiation = new Chummer.ColorableCheckBox();
+            this.chkAllowLimitedSpellsForBareHandedAdept = new Chummer.ColorableCheckBox();
             this.chkMysAdeptSecondMAGAttribute = new Chummer.ColorableCheckBox();
             this.chkIgnoreArt = new Chummer.ColorableCheckBox();
             this.lblBoundSpiritLimit = new Chummer.LabelWithToolTip();
@@ -5559,6 +5560,7 @@ namespace Chummer
             this.tlpHouseRulesMagicResonance.Controls.Add(this.chkMysAdPp, 0, 2);
             this.tlpHouseRulesMagicResonance.Controls.Add(this.chkPrioritySpellsAsAdeptPowers, 0, 3);
             this.tlpHouseRulesMagicResonance.Controls.Add(this.chkExtendAnyDetectionSpell, 0, 4);
+            this.tlpHouseRulesMagicResonance.Controls.Add(this.chkAllowLimitedSpellsForBareHandedAdept, 0, 5);
             this.tlpHouseRulesMagicResonance.Controls.Add(this.chkIncreasedImprovedAbilityModifier, 0, 5);
             this.tlpHouseRulesMagicResonance.Controls.Add(this.chkIgnoreComplexFormLimit, 0, 9);
             this.tlpHouseRulesMagicResonance.Controls.Add(this.chkSpecialKarmaCost, 0, 6);
@@ -5646,6 +5648,20 @@ namespace Chummer
             this.chkExtendAnyDetectionSpell.Tag = "Checkbox_Options_ExtendAnyDetectionSpell";
             this.chkExtendAnyDetectionSpell.Text = "Allow any Detection Spell to be taken as Extended range version";
             this.chkExtendAnyDetectionSpell.UseVisualStyleBackColor = true;
+            // chkAllowLimitedSpellsForBareHandedAdept
+            // 
+            this.chkAllowLimitedSpellsForBareHandedAdept.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkAllowLimitedSpellsForBareHandedAdept.AutoSize = true;
+            this.tlpHouseRulesMagicResonance.SetColumnSpan(this.chkAllowLimitedSpellsForBareHandedAdept, 2);
+            this.chkAllowLimitedSpellsForBareHandedAdept.DefaultColorScheme = true;
+            this.chkAllowLimitedSpellsForBareHandedAdept.Location = new System.Drawing.Point(3, 129);
+            this.chkAllowLimitedSpellsForBareHandedAdept.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkAllowLimitedSpellsForBareHandedAdept.Name = "chkAllowLimitedSpellsForBareHandedAdept";
+            this.chkAllowLimitedSpellsForBareHandedAdept.Size = new System.Drawing.Size(200, 17);
+            this.chkAllowLimitedSpellsForBareHandedAdept.TabIndex = 41;
+            this.chkAllowLimitedSpellsForBareHandedAdept.Tag = "Checkbox_Options_AllowLimitedSpellsForBareHandedAdept";
+            this.chkAllowLimitedSpellsForBareHandedAdept.Text = "Allow selecting Limited versions of spells as a Barehanded Adept";
+            this.chkAllowLimitedSpellsForBareHandedAdept.UseVisualStyleBackColor = true;
             // 
             // chkIncreasedImprovedAbilityModifier
             // 
@@ -6495,6 +6511,7 @@ namespace Chummer
         private ColorableCheckBox chkSpecialKarmaCost;
         private ColorableCheckBox chkMoreLethalGameplay;
         private ColorableCheckBox chkExtendAnyDetectionSpell;
+        private ColorableCheckBox chkAllowLimitedSpellsForBareHandedAdept;
         private ColorableCheckBox chkAllowSkillRegrouping;
         private ColorableCheckBox chkNoArmorEncumbrance;
         private ColorableCheckBox chkIncreasedImprovedAbilityModifier;

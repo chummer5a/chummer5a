@@ -2581,6 +2581,13 @@ namespace Chummer
                 (x, y) => x.CheckedChanged += y,
                 x => x.GetExtendAnyDetectionSpellAsync(token),
                 (x, y) => x.SetExtendAnyDetectionSpellAsync(y, token), token).ConfigureAwait(false);
+            await chkAllowLimitedSpellsForBareHandedAdept.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.AllowLimitedSpellsForBareHandedAdept),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetAllowLimitedSpellsForBareHandedAdeptAsync(token),
+                (x, y) => x.SetAllowLimitedSpellsForBareHandedAdeptAsync(y, token), token).ConfigureAwait(false);
             await chkAllowCyberwareESSDiscounts.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,

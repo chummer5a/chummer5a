@@ -11111,5 +11111,9 @@
   &lt;/elements&gt;\n
 &lt;/chummer&gt;</text>
     </string>
+    <string>
+      <key>Checkbox_Options_AllowLimitedSpellsForBareHandedAdept</key>
+      <text>Allow selecting Limited versions of spells for Barehanded Adept</text>
+    </string>
   </strings>
 </chummer>
