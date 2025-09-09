@@ -797,12 +797,11 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strKey))
                 {
                     strKey = node.Attributes?["name"]?.Value;
-                }
-                
-                // If still no key, use the node name with index
-                if (string.IsNullOrEmpty(strKey))
-                {
-                    strKey = node.Name + '_' + groups.Count.ToString(GlobalSettings.InvariantCultureInfo);
+                    // If still no key, use the node name with index
+                    if (string.IsNullOrEmpty(strKey))
+                    {
+                        strKey = node.Name + '_' + groups.Count.ToString(GlobalSettings.InvariantCultureInfo);
+                    }
                 }
                 
                 groups[strKey] = node;
