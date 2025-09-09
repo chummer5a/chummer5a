@@ -2328,21 +2328,23 @@ namespace Chummer
                 JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    List<Task> lstMainThreadTasks = new List<Task>(MaxParallelBatchSize);
-                    int intMainThreadCounter = 0;
-                    foreach (Func<Task> funcToRun in lstFuncToRun)
+                    using (new FetchSafelyFromSafeObjectPool<List<Task>>(TaskListPool, out List<Task> lstMainThreadTasks))
                     {
-                        await Task.Yield().ConfigureAwait(true);
-                        lstMainThreadTasks.Add(Task.Run(funcToRun, token));
-                        if (++intMainThreadCounter != MaxParallelBatchSize)
-                            continue;
-                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
-                        lstMainThreadTasks.Clear();
-                        intMainThreadCounter = 0;
-                    }
+                        int intMainThreadCounter = 0;
+                        foreach (Func<Task> funcToRun in lstFuncToRun)
+                        {
+                            await Task.Yield().ConfigureAwait(true);
+                            lstMainThreadTasks.Add(Task.Run(funcToRun, token));
+                            if (++intMainThreadCounter != MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
+                            lstMainThreadTasks.Clear();
+                            intMainThreadCounter = 0;
+                        }
 
-                    await Task.Yield().ConfigureAwait(true);
-                    await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
+                        await Task.Yield().ConfigureAwait(true);
+                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
+                    }
                 });
                 token.ThrowIfCancellationRequested();
                 return;
@@ -2366,26 +2368,28 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 return;
             }
-            List<Task> lstTasks = new List<Task>(MaxParallelBatchSize);
-            int intCounter = 0;
-            foreach (Func<Task> funcToRun in lstFuncToRun)
+            using (new FetchSafelyFromSafeObjectPool<List<Task>>(TaskListPool, out List<Task> lstTasks))
             {
-                lstTasks.Add(Task.Run(funcToRun, token));
-                if (++intCounter != MaxParallelBatchSize)
-                    continue;
-                Task tskLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
-                while (!tskLoop.IsCompleted)
+                int intCounter = 0;
+                foreach (Func<Task> funcToRun in lstFuncToRun)
+                {
+                    lstTasks.Add(Task.Run(funcToRun, token));
+                    if (++intCounter != MaxParallelBatchSize)
+                        continue;
+                    Task tskLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
+                    while (!tskLoop.IsCompleted)
+                        SafeSleep(token);
+                    if (tskLoop.Exception != null)
+                        throw tskLoop.Exception;
+                    lstTasks.Clear();
+                    intCounter = 0;
+                }
+                Task objTask = Task.Run(() => Task.WhenAll(lstTasks), token);
+                while (!objTask.IsCompleted)
                     SafeSleep(token);
-                if (tskLoop.Exception != null)
-                    throw tskLoop.Exception;
-                lstTasks.Clear();
-                intCounter = 0;
+                if (objTask.Exception != null)
+                    throw objTask.Exception;
             }
-            Task objTask = Task.Run(() => Task.WhenAll(lstTasks), token);
-            while (!objTask.IsCompleted)
-                SafeSleep(token);
-            if (objTask.Exception != null)
-                throw objTask.Exception;
         }
 
         /// <summary>
@@ -2413,21 +2417,23 @@ namespace Chummer
                 JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    List<Task> lstMainThreadTasks = new List<Task>(Math.Min(lstFuncToRun.Count, MaxParallelBatchSize));
-                    int intMainThreadCounter = 0;
-                    foreach (Func<Task> funcToRun in lstFuncToRun)
+                    using (new FetchSafelyFromSafeObjectPool<List<Task>>(TaskListPool, out List<Task> lstMainThreadTasks))
                     {
-                        await Task.Yield().ConfigureAwait(true);
-                        lstMainThreadTasks.Add(Task.Run(funcToRun, token));
-                        if (++intMainThreadCounter != MaxParallelBatchSize)
-                            continue;
-                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
-                        lstMainThreadTasks.Clear();
-                        intMainThreadCounter = 0;
-                    }
+                        int intMainThreadCounter = 0;
+                        foreach (Func<Task> funcToRun in lstFuncToRun)
+                        {
+                            await Task.Yield().ConfigureAwait(true);
+                            lstMainThreadTasks.Add(Task.Run(funcToRun, token));
+                            if (++intMainThreadCounter != MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
+                            lstMainThreadTasks.Clear();
+                            intMainThreadCounter = 0;
+                        }
 
-                    await Task.Yield().ConfigureAwait(true);
-                    await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
+                        await Task.Yield().ConfigureAwait(true);
+                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
+                    }
                 });
                 token.ThrowIfCancellationRequested();
                 return;
@@ -2451,26 +2457,28 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 return;
             }
-            List<Task> lstTasks = new List<Task>(Math.Min(lstFuncToRun.Count, MaxParallelBatchSize));
-            int intCounter = 0;
-            foreach (Func<Task> funcToRun in lstFuncToRun)
+            using (new FetchSafelyFromSafeObjectPool<List<Task>>(TaskListPool, out List<Task> lstTasks))
             {
-                lstTasks.Add(Task.Run(funcToRun, token));
-                if (++intCounter != MaxParallelBatchSize)
-                    continue;
-                Task tskLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
-                while (!tskLoop.IsCompleted)
+                int intCounter = 0;
+                foreach (Func<Task> funcToRun in lstFuncToRun)
+                {
+                    lstTasks.Add(Task.Run(funcToRun, token));
+                    if (++intCounter != MaxParallelBatchSize)
+                        continue;
+                    Task tskLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
+                    while (!tskLoop.IsCompleted)
+                        SafeSleep(token);
+                    if (tskLoop.Exception != null)
+                        throw tskLoop.Exception;
+                    lstTasks.Clear();
+                    intCounter = 0;
+                }
+                Task objTask = Task.Run(() => Task.WhenAll(lstTasks), token);
+                while (!objTask.IsCompleted)
                     SafeSleep(token);
-                if (tskLoop.Exception != null)
-                    throw tskLoop.Exception;
-                lstTasks.Clear();
-                intCounter = 0;
+                if (objTask.Exception != null)
+                    throw objTask.Exception;
             }
-            Task objTask = Task.Run(() => Task.WhenAll(lstTasks), token);
-            while (!objTask.IsCompleted)
-                SafeSleep(token);
-            if (objTask.Exception != null)
-                throw objTask.Exception;
         }
 #pragma warning restore VSTHRD104, VSTHRD002 // Offer async methods
 

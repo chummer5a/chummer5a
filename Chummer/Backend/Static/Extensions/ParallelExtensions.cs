@@ -1153,7 +1153,6 @@ namespace Chummer
                         int intBufferSize = Math.Min(intLoopLength, Utils.MaxParallelBatchSize);
                         using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                         {
-                            lstBuffer.Capacity = intBufferSize;
                             token.ThrowIfCancellationRequested();
                             int i = 0;
                             for (int j = intLowerBound; j < intUpperBound; ++j)

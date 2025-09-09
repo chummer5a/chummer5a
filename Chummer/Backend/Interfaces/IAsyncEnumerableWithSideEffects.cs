@@ -286,81 +286,81 @@ namespace Chummer
         public static async Task ForEachWithSideEffectsParallelAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
-                : new List<Task>(Utils.MaxParallelBatchSize);
-            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
-            try
+            using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstTasks))
             {
-                bool blnMoveNext = objEnumerator.MoveNext();
-                while (blnMoveNext)
+                IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+                try
                 {
-                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    bool blnMoveNext = objEnumerator.MoveNext();
+                    while (blnMoveNext)
                     {
-                        token.ThrowIfCancellationRequested();
-                        T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(() => objFuncToRun.Invoke(objCurrent), token));
-                        blnMoveNext = objEnumerator.MoveNext();
-                    }
+                        for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            T objCurrent = objEnumerator.Current;
+                            lstTasks.Add(Task.Run(() => objFuncToRun.Invoke(objCurrent), token));
+                            blnMoveNext = objEnumerator.MoveNext();
+                        }
 
-                    if (blnMoveNext)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                        token.ThrowIfCancellationRequested();
-                        lstTasks.Clear();
+                        if (blnMoveNext)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            lstTasks.Clear();
+                        }
                     }
+                    token.ThrowIfCancellationRequested();
+                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
                 }
             }
-            finally
-            {
-                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
-                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
-                else
-                    objEnumerator.Dispose();
-            }
-            token.ThrowIfCancellationRequested();
-            await Task.WhenAll(lstTasks).ConfigureAwait(false);
         }
 
         public static async Task ForEachWithSideEffectsParallelAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task> objFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
-                : new List<Task>(Utils.MaxParallelBatchSize);
-            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
-            try
+            using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstTasks))
             {
-                bool blnMoveNext = objEnumerator.MoveNext();
-                while (blnMoveNext)
+                IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+                try
                 {
-                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    bool blnMoveNext = objEnumerator.MoveNext();
+                    while (blnMoveNext)
                     {
-                        token.ThrowIfCancellationRequested();
-                        T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(() => objFuncToRun.Invoke(objCurrent), token));
-                        blnMoveNext = objEnumerator.MoveNext();
-                    }
+                        for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            T objCurrent = objEnumerator.Current;
+                            lstTasks.Add(Task.Run(() => objFuncToRun.Invoke(objCurrent), token));
+                            blnMoveNext = objEnumerator.MoveNext();
+                        }
 
-                    if (blnMoveNext)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                        token.ThrowIfCancellationRequested();
-                        lstTasks.Clear();
+                        if (blnMoveNext)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            lstTasks.Clear();
+                        }
                     }
+                    token.ThrowIfCancellationRequested();
+                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
                 }
             }
-            finally
-            {
-                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
-                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
-                else
-                    objEnumerator.Dispose();
-            }
-            token.ThrowIfCancellationRequested();
-            await Task.WhenAll(lstTasks).ConfigureAwait(false);
         }
 
         public static async Task ForEachWithSideEffectsParallelAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
@@ -381,62 +381,62 @@ namespace Chummer
             using (token.Register(() => objSource.Cancel(false)))
             {
                 CancellationToken objToken = objSource.Token;
-                List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                    ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(objToken).ConfigureAwait(false)))
-                    : new List<Task>(Utils.MaxParallelBatchSize);
-                IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
-                try
+                using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstTasks))
                 {
-                    bool blnMoveNext = objEnumerator.MoveNext();
-                    while (blnMoveNext)
+                    IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                        bool blnMoveNext = objEnumerator.MoveNext();
+                        while (blnMoveNext)
                         {
-                            token.ThrowIfCancellationRequested();
-                            T objCurrent = objEnumerator.Current;
-                            lstTasks.Add(DoLoopTask());
-                            async Task DoLoopTask()
-                            {
-                                bool blnReturn = await Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent), objToken).ConfigureAwait(false);
-                                if (blnReturn)
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    objSource.Cancel(false);
-                            }
-                            blnMoveNext = objEnumerator.MoveNext();
-                        }
-
-                        if (blnMoveNext)
-                        {
-                            token.ThrowIfCancellationRequested();
-                            try
-                            {
-                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                            }
-                            catch (OperationCanceledException)
+                            for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                             {
                                 token.ThrowIfCancellationRequested();
-                                return;
+                                T objCurrent = objEnumerator.Current;
+                                lstTasks.Add(DoLoopTask());
+                                async Task DoLoopTask()
+                                {
+                                    bool blnReturn = await Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent), objToken).ConfigureAwait(false);
+                                    if (blnReturn)
+                                        // ReSharper disable once AccessToDisposedClosure
+                                        objSource.Cancel(false);
+                                }
+                                blnMoveNext = objEnumerator.MoveNext();
                             }
+
+                            if (blnMoveNext)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                try
+                                {
+                                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    return;
+                                }
+                                token.ThrowIfCancellationRequested();
+                                lstTasks.Clear();
+                            }
+                        }
+
+                        try
+                        {
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
                             token.ThrowIfCancellationRequested();
-                            lstTasks.Clear();
                         }
                     }
-                }
-                finally
-                {
-                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
-                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
-                    else
-                        objEnumerator.Dispose();
-                }
-
-                try
-                {
-                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    token.ThrowIfCancellationRequested();
+                    finally
+                    {
+                        if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                            await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                        else
+                            objEnumerator.Dispose();
+                    }
                 }
             }
         }
@@ -449,62 +449,62 @@ namespace Chummer
             using (token.Register(() => objSource.Cancel(false)))
             {
                 CancellationToken objToken = objSource.Token;
-                List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                    ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(objToken).ConfigureAwait(false)))
-                    : new List<Task>(Utils.MaxParallelBatchSize);
-                IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
-                try
+                using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstTasks))
                 {
-                    bool blnMoveNext = objEnumerator.MoveNext();
-                    while (blnMoveNext)
+                    IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                        bool blnMoveNext = objEnumerator.MoveNext();
+                        while (blnMoveNext)
                         {
-                            token.ThrowIfCancellationRequested();
-                            T objCurrent = objEnumerator.Current;
-                            lstTasks.Add(DoLoopTask());
-                            async Task DoLoopTask()
-                            {
-                                bool blnReturn = await Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent), objToken).ConfigureAwait(false);
-                                if (blnReturn)
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    objSource.Cancel(false);
-                            }
-                            blnMoveNext = objEnumerator.MoveNext();
-                        }
-
-                        if (blnMoveNext)
-                        {
-                            token.ThrowIfCancellationRequested();
-                            try
-                            {
-                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                            }
-                            catch (OperationCanceledException)
+                            for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                             {
                                 token.ThrowIfCancellationRequested();
-                                return;
+                                T objCurrent = objEnumerator.Current;
+                                lstTasks.Add(DoLoopTask());
+                                async Task DoLoopTask()
+                                {
+                                    bool blnReturn = await Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent), objToken).ConfigureAwait(false);
+                                    if (blnReturn)
+                                        // ReSharper disable once AccessToDisposedClosure
+                                        objSource.Cancel(false);
+                                }
+                                blnMoveNext = objEnumerator.MoveNext();
                             }
+
+                            if (blnMoveNext)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                try
+                                {
+                                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    return;
+                                }
+                                token.ThrowIfCancellationRequested();
+                                lstTasks.Clear();
+                            }
+                        }
+
+                        try
+                        {
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
                             token.ThrowIfCancellationRequested();
-                            lstTasks.Clear();
                         }
                     }
-                }
-                finally
-                {
-                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
-                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
-                    else
-                        objEnumerator.Dispose();
-                }
-
-                try
-                {
-                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    token.ThrowIfCancellationRequested();
+                    finally
+                    {
+                        if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                            await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                        else
+                            objEnumerator.Dispose();
+                    }
                 }
             }
         }
@@ -527,62 +527,62 @@ namespace Chummer
             using (token.Register(() => objSource.Cancel(false)))
             {
                 CancellationToken objToken = objSource.Token;
-                List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                    ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(objToken).ConfigureAwait(false)))
-                    : new List<Task>(Utils.MaxParallelBatchSize);
-                IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
-                try
+                using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstTasks))
                 {
-                    bool blnMoveNext = objEnumerator.MoveNext();
-                    while (blnMoveNext)
+                    IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                        bool blnMoveNext = objEnumerator.MoveNext();
+                        while (blnMoveNext)
                         {
-                            token.ThrowIfCancellationRequested();
-                            T objCurrent = objEnumerator.Current;
-                            lstTasks.Add(DoLoopTask());
-                            async Task DoLoopTask()
-                            {
-                                bool blnReturn = await Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent, objToken), objToken).ConfigureAwait(false);
-                                if (blnReturn)
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    objSource.Cancel(false);
-                            }
-                            blnMoveNext = objEnumerator.MoveNext();
-                        }
-
-                        if (blnMoveNext)
-                        {
-                            token.ThrowIfCancellationRequested();
-                            try
-                            {
-                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                            }
-                            catch (OperationCanceledException)
+                            for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                             {
                                 token.ThrowIfCancellationRequested();
-                                return;
+                                T objCurrent = objEnumerator.Current;
+                                lstTasks.Add(DoLoopTask());
+                                async Task DoLoopTask()
+                                {
+                                    bool blnReturn = await Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent, objToken), objToken).ConfigureAwait(false);
+                                    if (blnReturn)
+                                        // ReSharper disable once AccessToDisposedClosure
+                                        objSource.Cancel(false);
+                                }
+                                blnMoveNext = objEnumerator.MoveNext();
                             }
+
+                            if (blnMoveNext)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                try
+                                {
+                                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    return;
+                                }
+                                token.ThrowIfCancellationRequested();
+                                lstTasks.Clear();
+                            }
+                        }
+
+                        try
+                        {
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
                             token.ThrowIfCancellationRequested();
-                            lstTasks.Clear();
                         }
                     }
-                }
-                finally
-                {
-                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
-                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
-                    else
-                        objEnumerator.Dispose();
-                }
-
-                try
-                {
-                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    token.ThrowIfCancellationRequested();
+                    finally
+                    {
+                        if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                            await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                        else
+                            objEnumerator.Dispose();
+                    }
                 }
             }
         }
@@ -595,62 +595,62 @@ namespace Chummer
             using (token.Register(() => objSource.Cancel(false)))
             {
                 CancellationToken objToken = objSource.Token;
-                List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                    ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(objToken).ConfigureAwait(false)))
-                    : new List<Task>(Utils.MaxParallelBatchSize);
-                IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
-                try
+                using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstTasks))
                 {
-                    bool blnMoveNext = objEnumerator.MoveNext();
-                    while (blnMoveNext)
+                    IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                        bool blnMoveNext = objEnumerator.MoveNext();
+                        while (blnMoveNext)
                         {
-                            token.ThrowIfCancellationRequested();
-                            T objCurrent = objEnumerator.Current;
-                            lstTasks.Add(DoLoopTask());
-                            async Task DoLoopTask()
-                            {
-                                bool blnReturn = await Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent, objToken), objToken).ConfigureAwait(false);
-                                if (blnReturn)
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    objSource.Cancel(false);
-                            }
-                            blnMoveNext = objEnumerator.MoveNext();
-                        }
-
-                        if (blnMoveNext)
-                        {
-                            token.ThrowIfCancellationRequested();
-                            try
-                            {
-                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                            }
-                            catch (OperationCanceledException)
+                            for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                             {
                                 token.ThrowIfCancellationRequested();
-                                return;
+                                T objCurrent = objEnumerator.Current;
+                                lstTasks.Add(DoLoopTask());
+                                async Task DoLoopTask()
+                                {
+                                    bool blnReturn = await Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent, objToken), objToken).ConfigureAwait(false);
+                                    if (blnReturn)
+                                        // ReSharper disable once AccessToDisposedClosure
+                                        objSource.Cancel(false);
+                                }
+                                blnMoveNext = objEnumerator.MoveNext();
                             }
+
+                            if (blnMoveNext)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                try
+                                {
+                                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    return;
+                                }
+                                token.ThrowIfCancellationRequested();
+                                lstTasks.Clear();
+                            }
+                        }
+
+                        try
+                        {
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
                             token.ThrowIfCancellationRequested();
-                            lstTasks.Clear();
                         }
                     }
-                }
-                finally
-                {
-                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
-                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
-                    else
-                        objEnumerator.Dispose();
-                }
-
-                try
-                {
-                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    token.ThrowIfCancellationRequested();
+                    finally
+                    {
+                        if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                            await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                        else
+                            objEnumerator.Dispose();
+                    }
                 }
             }
         }
