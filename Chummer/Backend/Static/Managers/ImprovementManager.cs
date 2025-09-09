@@ -6113,7 +6113,7 @@ namespace Chummer
                              dicChangedProperties)
                     {
                         token.ThrowIfCancellationRequested();
-                        kvpChangedProperties.Key.OnMultiplePropertiesChanged(kvpChangedProperties.Value.ToList());
+                        kvpChangedProperties.Key.OnMultiplePropertiesChanged(kvpChangedProperties.Value);
                     }
                 }
                 finally
@@ -6169,7 +6169,7 @@ namespace Chummer
                              dicChangedProperties)
                     {
                         token.ThrowIfCancellationRequested();
-                        kvpChangedProperties.Key.OnMultiplePropertiesChanged(kvpChangedProperties.Value.ToList());
+                        kvpChangedProperties.Key.OnMultiplePropertiesChanged(kvpChangedProperties.Value);
                     }
                 }
                 finally
@@ -6252,7 +6252,7 @@ namespace Chummer
                              dicChangedProperties)
                     {
                         token.ThrowIfCancellationRequested();
-                        await kvpChangedProperties.Key.OnMultiplePropertiesChangedAsync(kvpChangedProperties.Value.ToList(), token).ConfigureAwait(false);
+                        await kvpChangedProperties.Key.OnMultiplePropertiesChangedAsync(kvpChangedProperties.Value, token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -6308,7 +6308,7 @@ namespace Chummer
                              dicChangedProperties)
                     {
                         token.ThrowIfCancellationRequested();
-                        await kvpChangedProperties.Key.OnMultiplePropertiesChangedAsync(kvpChangedProperties.Value.ToList(), token).ConfigureAwait(false);
+                        await kvpChangedProperties.Key.OnMultiplePropertiesChangedAsync(kvpChangedProperties.Value, token).ConfigureAwait(false);
                     }
                 }
                 finally

@@ -253,7 +253,7 @@ namespace Chummer.Backend.Equipment
                     foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in
                              dicChangedProperties)
                     {
-                        await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
+                        await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value, token).ConfigureAwait(false);
                     }
                 }
                 finally

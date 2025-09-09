@@ -658,7 +658,7 @@ namespace Chummer.Backend.Equipment
                                      dicChangedProperties)
                             {
                                 await kvpToProcess.Key
-                                    .OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token)
+                                    .OnMultiplePropertiesChangedAsync(kvpToProcess.Value, token)
                                     .ConfigureAwait(false);
                             }
                         }
@@ -5686,7 +5686,7 @@ namespace Chummer.Backend.Equipment
                         foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in
                                  dicChangedProperties)
                         {
-                            kvpToProcess.Key.OnMultiplePropertiesChanged(kvpToProcess.Value.ToList());
+                            kvpToProcess.Key.OnMultiplePropertiesChanged(kvpToProcess.Value);
                         }
                     }
                     finally
@@ -5902,7 +5902,7 @@ namespace Chummer.Backend.Equipment
                         foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in
                                  dicChangedProperties)
                         {
-                            await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token)
+                            await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value, token)
                                 .ConfigureAwait(false);
                         }
                     }
