@@ -1557,7 +1557,7 @@ namespace Chummer
             }
         }
 
-        private static bool DoProcessCustomDataFiles(XmlDocument xmlFile, XmlDocument xmlDataDoc, string strLoopPath, string strFileName, SearchOption eSearchOption = SearchOption.AllDirectories, CancellationToken token = default)
+        private static bool DoProcessCustomDataFiles(XmlDocument xmlFile, XmlDocument xmlDataDoc, string strLoopPath, string strFileName, SearchOption eSearchOption = SearchOption.AllDirectories, bool blnCacheFileExceptions = true, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             bool blnReturn = false;
@@ -1659,7 +1659,8 @@ namespace Chummer
                     Log.Warn(e);
                     Utils.BreakIfDebug();
 #endif
-                    s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
+                    if (blnCacheFileExceptions)
+                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
                 }
             }
 
@@ -1806,7 +1807,8 @@ namespace Chummer
                     Log.Warn(e);
                     Utils.BreakIfDebug();
 #endif
-                    s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
+                    if (blnCacheFileExceptions)
+                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
                 }
             }
 
@@ -1842,12 +1844,13 @@ namespace Chummer
                     Log.Warn(e);
                     Utils.BreakIfDebug();
 #endif
-                    s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
+                    if (blnCacheFileExceptions)
+                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
                 }
             }
 
             // Report any new errors now.
-            if (lstPossibleCustomFiles.Any(x => s_DicCustomFilePathsWithExceptions.ContainsKey(x)))
+            if (blnCacheFileExceptions && lstPossibleCustomFiles.Any(x => s_DicCustomFilePathsWithExceptions.ContainsKey(x)))
             {
                 string strTitle = LanguageManager.GetString("MessageTitle_Load_Error_Generic", token: token);
                 string strMessage = LanguageManager.GetString("Message_Load_Error_CustomFile", token: token);
@@ -1867,7 +1870,7 @@ namespace Chummer
             return blnReturn;
         }
 
-        private static async Task<bool> DoProcessCustomDataFilesAsync(XmlDocument xmlFile, XmlDocument xmlDataDoc, string strLoopPath, string strFileName, SearchOption eSearchOption = SearchOption.AllDirectories, CancellationToken token = default)
+        private static async Task<bool> DoProcessCustomDataFilesAsync(XmlDocument xmlFile, XmlDocument xmlDataDoc, string strLoopPath, string strFileName, SearchOption eSearchOption = SearchOption.AllDirectories, bool blnCacheFileExceptions = true, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             bool blnReturn = false;
@@ -1970,7 +1973,8 @@ namespace Chummer
                     Log.Warn(e);
                     Utils.BreakIfDebug();
 #endif
-                    s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
+                    if (blnCacheFileExceptions)
+                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
                 }
             }
 
@@ -2117,7 +2121,8 @@ namespace Chummer
                     Log.Warn(e);
                     Utils.BreakIfDebug();
 #endif
-                    s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
+                    if (blnCacheFileExceptions)
+                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
                 }
             }
 
@@ -2153,12 +2158,13 @@ namespace Chummer
                     Log.Warn(e);
                     Utils.BreakIfDebug();
 #endif
-                    s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
+                    if (blnCacheFileExceptions)
+                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
                 }
             }
 
             // Report any new errors now.
-            if (lstPossibleCustomFiles.Any(x => s_DicCustomFilePathsWithExceptions.ContainsKey(x)))
+            if (blnCacheFileExceptions && lstPossibleCustomFiles.Any(x => s_DicCustomFilePathsWithExceptions.ContainsKey(x)))
             {
                 string strTitle = await LanguageManager.GetStringAsync("MessageTitle_Load_Error_Generic", token: token).ConfigureAwait(false);
                 string strMessage = await LanguageManager.GetStringAsync("Message_Load_Error_CustomFile", token: token).ConfigureAwait(false);
