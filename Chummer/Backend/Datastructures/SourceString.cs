@@ -280,7 +280,7 @@ namespace Chummer
         {
             if (GetHashCode() != other.GetHashCode())
                 return false;
-            return Language == other.Language && Code == other.Code && Page == other.Page;
+            return string.Equals(Language, other.Language, StringComparison.OrdinalIgnoreCase) && string.Equals(Code, other.Code, StringComparison.Ordinal) && Page == other.Page;
         }
 
         public override bool Equals(object obj)
