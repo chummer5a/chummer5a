@@ -768,31 +768,56 @@ namespace Chummer
                     CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                     try
                     {
-                        bool blnCustomList
-                            = !(await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token).ConfigureAwait(false) == 0
-                                && string.IsNullOrEmpty(
-                                    await cboFile.DoThreadSafeFuncAsync(
-                                        x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)));
+                        string strFileFilter
+                                    = await cboFile.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(),
+                                                                          token).ConfigureAwait(false) ?? string.Empty;
+                        string strSearchFilter
+                                = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+                        bool blnCustomList = !string.IsNullOrEmpty(strFileFilter) || !string.IsNullOrEmpty(strSearchFilter);
                         List<ListItem> lstFilteredItems = blnCustomList ? Utils.ListItemListPool.Get() : _lstItems;
                         try
                         {
                             if (blnCustomList)
                             {
-                                string strFileFilter
-                                    = await cboFile.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(),
-                                                                          token).ConfigureAwait(false) ?? string.Empty;
-                                string strSearchFilter
-                                    = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
-                                foreach (ListItem objItem in _lstItems)
+                                if (!string.IsNullOrEmpty(strFileFilter))
                                 {
-                                    token.ThrowIfCancellationRequested();
-                                    if (!(objItem.Value is MasterIndexEntry objItemEntry))
-                                        continue;
-                                    if (!string.IsNullOrEmpty(strFileFilter)
-                                        && !objItemEntry.FileNames.Contains(strFileFilter))
-                                        continue;
                                     if (!string.IsNullOrEmpty(strSearchFilter))
                                     {
+                                        foreach (ListItem objItem in _lstItems)
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            if (!(objItem.Value is MasterIndexEntry objItemEntry) || !objItemEntry.FileNames.Contains(strFileFilter))
+                                                continue;
+                                            string strDisplayNameNoFile = objItemEntry.DisplayName;
+                                            if (strDisplayNameNoFile.EndsWith(".xml]", StringComparison.OrdinalIgnoreCase))
+                                                strDisplayNameNoFile = strDisplayNameNoFile
+                                                                       .Substring(0, strDisplayNameNoFile.LastIndexOf('['))
+                                                                       .Trim();
+                                            if (strDisplayNameNoFile.IndexOf(strSearchFilter,
+                                                                             StringComparison.OrdinalIgnoreCase)
+                                                == -1)
+                                                continue;
+
+                                            lstFilteredItems.Add(objItem);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (ListItem objItem in _lstItems)
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            if (objItem.Value is MasterIndexEntry objItemEntry && objItemEntry.FileNames.Contains(strFileFilter))
+                                                lstFilteredItems.Add(objItem);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (ListItem objItem in _lstItems)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        if (!(objItem.Value is MasterIndexEntry objItemEntry))
+                                            continue;
                                         string strDisplayNameNoFile = objItemEntry.DisplayName;
                                         if (strDisplayNameNoFile.EndsWith(".xml]", StringComparison.OrdinalIgnoreCase))
                                             strDisplayNameNoFile = strDisplayNameNoFile
@@ -802,9 +827,9 @@ namespace Chummer
                                                                          StringComparison.OrdinalIgnoreCase)
                                             == -1)
                                             continue;
-                                    }
 
-                                    lstFilteredItems.Add(objItem);
+                                        lstFilteredItems.Add(objItem);
+                                    }
                                 }
                             }
 
