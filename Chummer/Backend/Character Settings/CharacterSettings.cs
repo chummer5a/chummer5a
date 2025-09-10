@@ -49,6 +49,249 @@ namespace Chummer
 
     public sealed class CharacterSettings : INotifyMultiplePropertiesChangedAsync, IHasName, IHasLockObject
     {
+        private static class CharacterSettingsSerialization
+        {
+            public static void WriteTaggedProperties(CharacterSettings settings, XmlWriter objWriter)
+            {
+                // Group properties by their parent element (for nested elements)
+                var nestedGroups = new Dictionary<string, List<(PropertyInfo prop, SettingsElementAttribute tag)>>();
+                var flatProperties = new List<(PropertyInfo prop, SettingsElementAttribute tag)>();
+
+                foreach (PropertyInfo prop in typeof(CharacterSettings).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                {
+                    var tag = prop.GetCustomAttribute<SettingsElementAttribute>();
+                    if (tag == null || !prop.CanRead)
+                        continue;
+
+                    if (tag.IsNested)
+                    {
+                        string parentName = tag.ParentElementName;
+                        if (!nestedGroups.ContainsKey(parentName))
+                            nestedGroups[parentName] = new List<(PropertyInfo, SettingsElementAttribute)>();
+                        nestedGroups[parentName].Add((prop, tag));
+                    }
+                    else
+                    {
+                        flatProperties.Add((prop, tag));
+                    }
+                }
+
+                // Write flat properties first
+                foreach (var (prop, tag) in flatProperties)
+                {
+                    object value;
+                    using (settings.LockObject.EnterReadLock())
+                    {
+                        value = prop.GetValue(settings);
+                    }
+                    if (value == null)
+                        continue;
+                    string strValue = ConvertToString(value, prop.PropertyType);
+                    if (strValue != null)
+                        objWriter.WriteElementString(tag.ElementName, strValue);
+                }
+
+                // Write nested properties grouped by parent element
+                foreach (var kvp in nestedGroups)
+                {
+                    string parentName = kvp.Key;
+                    var properties = kvp.Value;
+                    
+                    // Check if any property has a non-null value
+                    bool hasValues = false;
+                    var values = new List<(string childName, string value)>();
+                    
+                    using (settings.LockObject.EnterReadLock())
+                    {
+                        foreach (var (prop, tag) in properties)
+                        {
+                            object value = prop.GetValue(settings);
+                            if (value != null)
+                            {
+                                string strValue = ConvertToString(value, prop.PropertyType);
+                                if (strValue != null)
+                                {
+                                    values.Add((tag.ChildElementName, strValue));
+                                    hasValues = true;
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (hasValues)
+                    {
+                            objWriter.WriteStartElement(parentName);
+                            foreach (var (childName, value) in values)
+                            {
+                                objWriter.WriteElementString(childName, value);
+                            }
+                            objWriter.WriteEndElement();
+                    }
+                }
+            }
+
+            public static async Task WriteTaggedPropertiesAsync(CharacterSettings settings, XmlWriter objWriter, CancellationToken token)
+            {
+                // Group properties by their parent element (for nested elements)
+                var nestedGroups = new Dictionary<string, List<(PropertyInfo prop, SettingsElementAttribute tag)>>();
+                var flatProperties = new List<(PropertyInfo prop, SettingsElementAttribute tag)>();
+
+                foreach (PropertyInfo prop in typeof(CharacterSettings).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                {
+                    var tag = prop.GetCustomAttribute<SettingsElementAttribute>();
+                    if (tag == null || !prop.CanRead)
+                        continue;
+
+                    if (tag.IsNested)
+                    {
+                        string parentName = tag.ParentElementName;
+                        if (!nestedGroups.ContainsKey(parentName))
+                            nestedGroups[parentName] = new List<(PropertyInfo, SettingsElementAttribute)>();
+                        nestedGroups[parentName].Add((prop, tag));
+                    }
+                    else
+                    {
+                        flatProperties.Add((prop, tag));
+                    }
+                }
+
+                // Write flat properties first
+                foreach (var (prop, tag) in flatProperties)
+                {
+                    object value;
+                    IAsyncDisposable objLocker = await settings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        value = prop.GetValue(settings);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                    if (value == null)
+                        continue;
+                    string strValue = ConvertToString(value, prop.PropertyType);
+                    if (strValue != null)
+                        await objWriter.WriteElementStringAsync(tag.ElementName, strValue, token: token).ConfigureAwait(false);
+                }
+
+                // Write nested properties grouped by parent element
+                foreach (var kvp in nestedGroups)
+                {
+                    string parentName = kvp.Key;
+                    var properties = kvp.Value;
+                    
+                    // Check if any property has a non-null value
+                    bool hasValues = false;
+                    var values = new List<(string childName, string value)>();
+                    
+                    IAsyncDisposable objLocker = await settings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        foreach (var (prop, tag) in properties)
+                        {
+                            object value = prop.GetValue(settings);
+                            if (value != null)
+                            {
+                                string strValue = ConvertToString(value, prop.PropertyType);
+                                if (strValue != null)
+                                {
+                                    values.Add((tag.ChildElementName, strValue));
+                                    hasValues = true;
+                                }
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                    
+                    if (hasValues)
+                    {
+                        try
+                        {
+                            await objWriter.WriteStartElementAsync(parentName, token: token).ConfigureAwait(false);
+                            foreach (var (childName, value) in values)
+                            {
+                                await objWriter.WriteElementStringAsync(childName, value, token: token).ConfigureAwait(false);
+                            }
+                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                        }
+                        catch (InvalidOperationException ex) when (ex.Message.Contains("EndRootElement"))
+                        {
+                            // If we can't write nested elements due to XML writer state,
+                            // write them as flat elements instead
+                            foreach (var (childName, value) in values)
+                            {
+                                await objWriter.WriteElementStringAsync(childName, value, token: token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                }
+            }
+
+            public static void ReadTaggedProperties(CharacterSettings settings, System.Xml.XmlNode node)
+            {
+                if (node == null)
+                    return;
+                foreach (PropertyInfo prop in typeof(CharacterSettings).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                {
+                    var tag = prop.GetCustomAttribute<SettingsElementAttribute>();
+                    if (tag == null || !prop.CanWrite)
+                        continue;
+                    
+                    System.Xml.XmlNode elem;
+                    if (tag.IsNested)
+                    {
+                        // For nested elements, use the full path
+                        elem = node.SelectSingleNode(tag.ElementName);
+                    }
+                    else
+                    {
+                        // For flat elements, use the element name directly
+                        elem = node.SelectSingleNode(tag.ElementName);
+                    }
+                    
+                    if (elem == null)
+                        continue;
+                    if (TryParse(elem.InnerText, prop.PropertyType, out object parsed))
+                    {
+                        using (settings.LockObject.EnterWriteLock())
+                            prop.SetValue(settings, parsed);
+                    }
+                }
+            }
+
+            private static string ConvertToString(object value, Type type)
+            {
+                if (type == typeof(string)) return (string)value;
+                if (type == typeof(bool)) return ((bool)value).ToString(GlobalSettings.InvariantCultureInfo);
+                if (type.IsEnum) return value.ToString();
+                if (type == typeof(int) || type == typeof(long) || type == typeof(short) ||
+                    type == typeof(decimal) || type == typeof(double) || type == typeof(float))
+                    return Convert.ToString(value, GlobalSettings.InvariantCultureInfo);
+                return value?.ToString();
+            }
+
+            private static bool TryParse(string s, Type target, out object result)
+            {
+                try
+                {
+                    if (target == typeof(string)) { result = s; return true; }
+                    if (target == typeof(bool)) { result = bool.Parse(s); return true; }
+                    if (target.IsEnum) { result = Enum.Parse(target, s, true); return true; }
+                    if (target == typeof(int)) { result = int.Parse(s, GlobalSettings.InvariantCultureInfo); return true; }
+                    if (target == typeof(long)) { result = long.Parse(s, GlobalSettings.InvariantCultureInfo); return true; }
+                    if (target == typeof(short)) { result = short.Parse(s, GlobalSettings.InvariantCultureInfo); return true; }
+                    if (target == typeof(decimal)) { result = decimal.Parse(s, GlobalSettings.InvariantCultureInfo); return true; }
+                    if (target == typeof(double)) { result = double.Parse(s, GlobalSettings.InvariantCultureInfo); return true; }
+                    if (target == typeof(float)) { result = float.Parse(s, GlobalSettings.InvariantCultureInfo); return true; }
+                }
+                catch { }
+                result = null; return false;
+            }
+        }
         private Guid _guiSourceId = Guid.Empty;
         private string _strFileName = string.Empty;
         private string _strName = "Standard";
@@ -88,7 +331,6 @@ namespace Chummer
         private bool _blnIgnoreComplexFormLimit;
         private bool _blnUnarmedImprovementsApplyToWeapons;
         private bool _blnLicenseRestrictedItems;
-        private bool _blnMaximumArmorModifications;
         private bool _blnMetatypeCostsKarma = true;
         private bool _blnMoreLethalGameplay;
         private bool _blnMultiplyForbiddenCost;
@@ -1313,7 +1555,6 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _blnIgnoreComplexFormLimit.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnUnarmedImprovementsApplyToWeapons.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnLicenseRestrictedItems.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnMaximumArmorModifications.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnMetatypeCostsKarma.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnMoreLethalGameplay.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnMultiplyForbiddenCost.GetHashCode();
@@ -1500,7 +1741,6 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _blnIgnoreComplexFormLimit.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnUnarmedImprovementsApplyToWeapons.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnLicenseRestrictedItems.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnMaximumArmorModifications.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnMetatypeCostsKarma.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnMoreLethalGameplay.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnMultiplyForbiddenCost.GetHashCode();
@@ -1711,565 +1951,13 @@ namespace Chummer
                     objWriter.WriteElementString(
                         "id",
                         blnClearSourceGuid ? Utils.GuidEmptyString : _guiSourceId.ToString("D", GlobalSettings.InvariantCultureInfo));
-                    // <name />
-                    objWriter.WriteElementString("name", _strName);
-
-                    // <licenserestricted />
-                    objWriter.WriteElementString("licenserestricted",
-                                                    _blnLicenseRestrictedItems.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <morelethalgameplay />
-                    objWriter.WriteElementString("morelethalgameplay",
-                                                    _blnMoreLethalGameplay.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <spiritforcebasedontotalmag />
-                    objWriter.WriteElementString("spiritforcebasedontotalmag",
-                                                    _blnSpiritForceBasedOnTotalMAG.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <nuyenperbpwftm />
-                    objWriter.WriteElementString("nuyenperbpwftm",
-                                                    _decNuyenPerBPWftM.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <nuyenperbpwftp />
-                    objWriter.WriteElementString("nuyenperbpwftp",
-                                                    _decNuyenPerBPWftP.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <UnarmedImprovementsApplyToWeapons />
-                    objWriter.WriteElementString("unarmedimprovementsapplytoweapons",
-                                                    _blnUnarmedImprovementsApplyToWeapons.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <allowinitiationincreatemode />
-                    objWriter.WriteElementString("allowinitiationincreatemode",
-                                                    _blnAllowInitiationInCreateMode.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <usepointsonbrokengroups />
-                    objWriter.WriteElementString("usepointsonbrokengroups",
-                                                    _blnUsePointsOnBrokenGroups.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <dontdoublequalities />
-                    objWriter.WriteElementString("dontdoublequalities",
-                                                    _blnDontDoubleQualityPurchaseCost.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <dontdoublequalities />
-                    objWriter.WriteElementString("dontdoublequalityrefunds",
-                                                    _blnDontDoubleQualityRefundCost.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <ignoreart />
-                    objWriter.WriteElementString("ignoreart",
-                                                    _blnIgnoreArt.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <cyberlegmovement />
-                    objWriter.WriteElementString("cyberlegmovement",
-                                                    _blnCyberlegMovement.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <contactpointsexpression />
-                    objWriter.WriteElementString("contactpointsexpression", _strContactPointsExpression);
-                    // <knowledgepointsexpression />
-                    objWriter.WriteElementString("knowledgepointsexpression", _strKnowledgePointsExpression);
-                    // <chargenkarmatonuyenexpression />
-                    objWriter.WriteElementString("chargenkarmatonuyenexpression",
-                                                    _strChargenKarmaToNuyenExpression);
-                    // <boundspiritexpression />
-                    objWriter.WriteElementString("boundspiritexpression", _strBoundSpiritExpression);
-                    // <registeredspriteexpression />
-                    objWriter.WriteElementString("registeredspriteexpression", _strRegisteredSpriteExpression);
-                    // <essencemodifierpostexpression />
-                    objWriter.WriteElementString("essencemodifierpostexpression", _strEssenceModifierPostExpression);
-                    // <liftlimitexpression />
-                    objWriter.WriteElementString("liftlimitexpression", _strLiftLimitExpression);
-                    // <carrylimitexpression />
-                    objWriter.WriteElementString("carrylimitexpression", _strCarryLimitExpression);
-                    // <encumbranceintervalexpression />
-                    objWriter.WriteElementString("encumbranceintervalexpression",
-                                                    _strEncumbranceIntervalExpression);
-                    // <doencumbrancepenaltyphysicallimit />
-                    objWriter.WriteElementString("doencumbrancepenaltyphysicallimit",
-                                                    _blnDoEncumbrancePenaltyPhysicalLimit.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <doencumbrancepenaltymovementspeed />
-                    objWriter.WriteElementString("doencumbrancepenaltymovementspeed",
-                                                    _blnDoEncumbrancePenaltyMovementSpeed.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <doencumbrancepenaltyagility />
-                    objWriter.WriteElementString("doencumbrancepenaltyagility",
-                                                    _blnDoEncumbrancePenaltyAgility.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <doencumbrancepenaltyreaction />
-                    objWriter.WriteElementString("doencumbrancepenaltyreaction",
-                                                    _blnDoEncumbrancePenaltyReaction.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <doencumbrancepenaltywoundmodifier />
-                    objWriter.WriteElementString("doencumbrancepenaltywoundmodifier",
-                                                    _blnDoEncumbrancePenaltyWoundModifier.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <encumbrancepenaltyphysicallimit />
-                    objWriter.WriteElementString("encumbrancepenaltyphysicallimit",
-                                                    _intEncumbrancePenaltyPhysicalLimit.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <encumbrancepenaltymovementspeed />
-                    objWriter.WriteElementString("encumbrancepenaltymovementspeed",
-                                                    _intEncumbrancePenaltyMovementSpeed.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <encumbrancepenaltyagility />
-                    objWriter.WriteElementString("encumbrancepenaltyagility",
-                                                    _intEncumbrancePenaltyAgility.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <encumbrancepenaltyreaction />
-                    objWriter.WriteElementString("encumbrancepenaltyreaction",
-                                                    _intEncumbrancePenaltyReaction.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <encumbrancepenaltywoundmodifier />
-                    objWriter.WriteElementString("encumbrancepenaltywoundmodifier",
-                                                    _intEncumbrancePenaltyWoundModifier.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <dronearmormultiplierenabled />
-                    objWriter.WriteElementString("dronearmormultiplierenabled",
-                                                    _blnDroneArmorMultiplierEnabled.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <dronearmorflatnumber />
-                    objWriter.WriteElementString("dronearmorflatnumber",
-                                                    _intDroneArmorMultiplier.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <nosinglearmorencumbrance />
-                    objWriter.WriteElementString("nosinglearmorencumbrance",
-                                                    _blnNoSingleArmorEncumbrance.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <ignorecomplexformlimit />
-                    objWriter.WriteElementString("ignorecomplexformlimit",
-                                                    _blnIgnoreComplexFormLimit.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <noarmorencumbrance />
-                    objWriter.WriteElementString("noarmorencumbrance",
-                                                    _blnNoArmorEncumbrance.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <uncappedarmoraccessorybonuses />
-                    objWriter.WriteElementString("uncappedarmoraccessorybonuses",
-                                                    _blnUncappedArmorAccessoryBonuses.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <esslossreducesmaximumonly />
-                    objWriter.WriteElementString("esslossreducesmaximumonly",
-                                                    _blnESSLossReducesMaximumOnly.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <allowskillregrouping />
-                    objWriter.WriteElementString("allowskillregrouping",
-                                                    _blnAllowSkillRegrouping.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <specializationsbreakskillgroups />
-                    objWriter.WriteElementString("specializationsbreakskillgroups",
-                                                    _blnSpecializationsBreakSkillGroups.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <metatypecostskarma />
-                    objWriter.WriteElementString("metatypecostskarma",
-                                                    _blnMetatypeCostsKarma.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <metatypecostskarmamultiplier />
-                    objWriter.WriteElementString("metatypecostskarmamultiplier",
-                                                    _intMetatypeCostMultiplier.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <limbcount />
-                    objWriter.WriteElementString("limbcount",
-                                                    _intLimbCount.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <excludelimbslot />
-                    objWriter.WriteElementString("excludelimbslot", _strExcludeLimbSlot);
-                    // <allowcyberwareessdiscounts />
-                    objWriter.WriteElementString("allowcyberwareessdiscounts",
-                                                    _blnAllowCyberwareESSDiscounts.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <maximumarmormodifications />
-                    objWriter.WriteElementString("maximumarmormodifications",
-                                                    _blnMaximumArmorModifications.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <armordegredation />
-                    objWriter.WriteElementString("armordegredation",
-                                                    _blnArmorDegradation.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <specialkarmacostbasedonshownvalue />
-                    objWriter.WriteElementString("specialkarmacostbasedonshownvalue",
-                                                    _blnSpecialKarmaCostBasedOnShownValue.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <exceedpositivequalities />
-                    objWriter.WriteElementString("exceedpositivequalities",
-                                                    _blnExceedPositiveQualities.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <exceedpositivequalitiescostdoubled />
-                    objWriter.WriteElementString("exceedpositivequalitiescostdoubled",
-                                                    _blnExceedPositiveQualitiesCostDoubled.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-
-                    objWriter.WriteElementString("mysaddppcareer",
-                        _blnMysAdeptAllowPpCareer.ToString(
-                            GlobalSettings.InvariantCultureInfo));
-
-                    // <mysadeptsecondmagattribute />
-                    objWriter.WriteElementString("mysadeptsecondmagattribute",
-                                                    _blnMysAdeptSecondMAGAttribute.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-
-                    // <exceednegativequalities />
-                    objWriter.WriteElementString("exceednegativequalities",
-                                                    _blnExceedNegativeQualities.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <exceednegativequalitiesnobonus />
-                    objWriter.WriteElementString("exceednegativequalitiesnobonus",
-                                                    _blnExceedNegativeQualitiesNoBonus.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <multiplyrestrictedcost />
-                    objWriter.WriteElementString("multiplyrestrictedcost",
-                                                    _blnMultiplyRestrictedCost.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <multiplyforbiddencost />
-                    objWriter.WriteElementString("multiplyforbiddencost",
-                                                    _blnMultiplyForbiddenCost.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <restrictedcostmultiplier />
-                    objWriter.WriteElementString("restrictedcostmultiplier",
-                                                    _intRestrictedCostMultiplier.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <forbiddencostmultiplier />
-                    objWriter.WriteElementString("forbiddencostmultiplier",
-                                                    _intForbiddenCostMultiplier.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <donotroundessenceinternally />
-                    objWriter.WriteElementString("donotroundessenceinternally",
-                                                    _blnDoNotRoundEssenceInternally.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <enableenemytracking />
-                    objWriter.WriteElementString("enableenemytracking",
-                                                    _blnEnableEnemyTracking.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <enemykarmaqualitylimit />
-                    objWriter.WriteElementString("enemykarmaqualitylimit",
-                                                    _blnEnemyKarmaQualityLimit.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <nuyenformat />
-                    objWriter.WriteElementString("nuyenformat", _strNuyenFormat);
-                    // <weightformat />
-                    objWriter.WriteElementString("weightformat", _strWeightFormat);
-                    // <essencedecimals />
-                    objWriter.WriteElementString("essenceformat", _strEssenceFormat);
-                    // <enforcecapacity />
-                    objWriter.WriteElementString("enforcecapacity",
-                                                    _blnEnforceCapacity.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <restrictrecoil />
-                    objWriter.WriteElementString("restrictrecoil",
-                                                    _blnRestrictRecoil.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <unrestrictednuyen />
-                    objWriter.WriteElementString("unrestrictednuyen",
-                                                    _blnUnrestrictedNuyen.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <allowhigherstackedfoci />
-                    objWriter.WriteElementString("allowhigherstackedfoci",
-                                                    _blnAllowHigherStackedFoci.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <alloweditpartofbaseweapon />
-                    objWriter.WriteElementString("alloweditpartofbaseweapon",
-                                                    _blnAllowEditPartOfBaseWeapon.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <breakskillgroupsincreatemode />
-                    objWriter.WriteElementString("breakskillgroupsincreatemode",
-                                                    _blnStrictSkillGroupsInCreateMode.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <allowpointbuyspecializationsonkarmaskills />
-                    objWriter.WriteElementString("allowpointbuyspecializationsonkarmaskills",
-                                                    _blnAllowPointBuySpecializationsOnKarmaSkills.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <extendanydetectionspell />
-                    objWriter.WriteElementString("extendanydetectionspell",
-                                                    _blnExtendAnyDetectionSpell.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <allowlimitedspells />
-                    objWriter.WriteElementString("allowlimitedspellsforbarehandedadept",
-                                                    _blnAllowLimitedSpellsForBareHandedAdept.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    //<dontusecyberlimbcalculation />
-                    objWriter.WriteElementString("dontusecyberlimbcalculation",
-                                                    _blnDontUseCyberlimbCalculation.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <alternatemetatypeattributekarma />
-                    objWriter.WriteElementString("alternatemetatypeattributekarma",
-                                                    _blnAlternateMetatypeAttributeKarma.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <reversekarmapriorityorder />
-                    objWriter.WriteElementString("reverseattributepriorityorder",
-                        _blnReverseAttributePriorityOrder.ToString(
-                            GlobalSettings.InvariantCultureInfo));
-                    // <allowbiowaresuites />
-                    objWriter.WriteElementString("allowbiowaresuites",
-                                                    _blnAllowBiowareSuites.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <freespiritpowerpointsmag />
-                    objWriter.WriteElementString("freespiritpowerpointsmag",
-                                                    _blnFreeSpiritPowerPointsMAG.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <compensateskillgroupkarmadifference />
-                    objWriter.WriteElementString("compensateskillgroupkarmadifference",
-                                                    _blnCompensateSkillGroupKarmaDifference.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <autobackstory />
-                    objWriter.WriteElementString("autobackstory",
-                                                    _blnAutomaticBackstory.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <freemartialartspecialization />
-                    objWriter.WriteElementString("freemartialartspecialization",
-                                                    _blnFreeMartialArtSpecialization.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <priorityspellsasadeptpowers />
-                    objWriter.WriteElementString("priorityspellsasadeptpowers",
-                                                    _blnPrioritySpellsAsAdeptPowers.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <usecalculatedpublicawareness />
-                    objWriter.WriteElementString("usecalculatedpublicawareness",
-                                                    _blnUseCalculatedPublicAwareness.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <increasedimprovedabilitymodifier />
-                    objWriter.WriteElementString("increasedimprovedabilitymodifier",
-                                                    _blnIncreasedImprovedAbilityMultiplier.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <allowfreegrids />
-                    objWriter.WriteElementString("allowfreegrids",
-                                                    _blnAllowFreeGrids.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <allowtechnomancerschooling />
-                    objWriter.WriteElementString("allowtechnomancerschooling",
-                                                    _blnAllowTechnomancerSchooling.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <cyberlimbattributebonuscapoverride />
-                    objWriter.WriteElementString("cyberlimbattributebonuscapoverride",
-                                                    _blnCyberlimbAttributeBonusCapOverride.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <cyberlimbattributebonuscap />
-                    objWriter.WriteElementString("cyberlimbattributebonuscap",
-                                                    _intCyberlimbAttributeBonusCap.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <unclampattributeminimum />
-                    objWriter.WriteElementString("unclampattributeminimum",
-                                                    _blnUnclampAttributeMinimum.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <dronemods />
-                    objWriter.WriteElementString("dronemods",
-                                                    _blnDroneMods.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <dronemodsmaximumpilot />
-                    objWriter.WriteElementString("dronemodsmaximumpilot",
-                                                    _blnDroneModsMaximumPilot.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <maxnumbermaxattributescreate />
-                    objWriter.WriteElementString("maxnumbermaxattributescreate",
-                                                    _intMaxNumberMaxAttributesCreate.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <maxskillratingcreate />
-                    objWriter.WriteElementString("maxskillratingcreate",
-                                                    _intMaxSkillRatingCreate.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <maxknowledgeskillratingcreate />
-                    objWriter.WriteElementString("maxknowledgeskillratingcreate",
-                                                    _intMaxKnowledgeSkillRatingCreate.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <maxskillrating />
-                    objWriter.WriteElementString("maxskillrating",
-                                                    _intMaxSkillRating.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <maxknowledgeskillrating />
-                    objWriter.WriteElementString("maxknowledgeskillrating",
-                                                    _intMaxKnowledgeSkillRating.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-
-                    // <dicepenaltysustaining />
-                    objWriter.WriteElementString("dicepenaltysustaining",
-                                                    _intDicePenaltySustaining.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-
-                    // <mininitiativedice />
-                    objWriter.WriteElementString("mininitiativedice",
-                                                    _intMinInitiativeDice.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <maxinitiativedice />
-                    objWriter.WriteElementString("maxinitiativedice",
-                                                    _intMaxInitiativeDice.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <minastralinitiativedice />
-                    objWriter.WriteElementString("minastralinitiativedice",
-                                                    _intMinAstralInitiativeDice.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <maxastralinitiativedice />
-                    objWriter.WriteElementString("maxastralinitiativedice",
-                                                    _intMaxAstralInitiativeDice.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <mincoldsiminitiativedice />
-                    objWriter.WriteElementString("mincoldsiminitiativedice",
-                                                    _intMinColdSimInitiativeDice.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <maxcoldsiminitiativedice />
-                    objWriter.WriteElementString("maxcoldsiminitiativedice",
-                                                    _intMaxColdSimInitiativeDice.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <minhotsiminitiativedice />
-                    objWriter.WriteElementString("minhotsiminitiativedice",
-                                                    _intMinHotSimInitiativeDice.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <maxhotsiminitiativedice />
-                    objWriter.WriteElementString("maxhotsiminitiativedice",
-                                                    _intMaxHotSimInitiativeDice.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
 
                     token.ThrowIfCancellationRequested();
 
-                    // <karmacost>
-                    objWriter.WriteStartElement("karmacost");
-                    // <karmaattribute />
-                    objWriter.WriteElementString("karmaattribute",
-                                                    _intKarmaAttribute.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaquality />
-                    objWriter.WriteElementString("karmaquality",
-                                                    _intKarmaQuality.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaspecialization />
-                    objWriter.WriteElementString("karmaspecialization",
-                                                    _intKarmaSpecialization.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmaknospecialization />
-                    objWriter.WriteElementString("karmaknospecialization",
-                                                    _intKarmaKnoSpecialization.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmanewknowledgeskill />
-                    objWriter.WriteElementString("karmanewknowledgeskill",
-                                                    _intKarmaNewKnowledgeSkill.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmanewactiveskill />
-                    objWriter.WriteElementString("karmanewactiveskill",
-                                                    _intKarmaNewActiveSkill.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmanewskillgroup />
-                    objWriter.WriteElementString("karmanewskillgroup",
-                                                    _intKarmaNewSkillGroup.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmaimproveknowledgeskill />
-                    objWriter.WriteElementString("karmaimproveknowledgeskill",
-                                                    _intKarmaImproveKnowledgeSkill.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmaimproveactiveskill />
-                    objWriter.WriteElementString("karmaimproveactiveskill",
-                                                    _intKarmaImproveActiveSkill.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmaimproveskillgroup />
-                    objWriter.WriteElementString("karmaimproveskillgroup",
-                                                    _intKarmaImproveSkillGroup.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmaspell />
-                    objWriter.WriteElementString("karmaspell",
-                                                    _intKarmaSpell.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaenhancement />
-                    objWriter.WriteElementString("karmaenhancement",
-                                                    _intKarmaEnhancement.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmanewcomplexform />
-                    objWriter.WriteElementString("karmanewcomplexform",
-                                                    _intKarmaNewComplexForm.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmanewaiprogram />
-                    objWriter.WriteElementString("karmanewaiprogram",
-                                                    _intKarmaNewAIProgram.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmanewaiadvancedprogram />
-                    objWriter.WriteElementString("karmanewaiadvancedprogram",
-                                                    _intKarmaNewAIAdvancedProgram.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmacontact />
-                    objWriter.WriteElementString("karmacontact",
-                                                    _intKarmaContact.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaenemy />
-                    objWriter.WriteElementString("karmaenemy",
-                                                    _intKarmaEnemy.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmacarryover />
-                    objWriter.WriteElementString("karmacarryover",
-                                                    _intKarmaCarryover.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaspirit />
-                    objWriter.WriteElementString("karmaspirit",
-                                                    _intKarmaSpirit.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmamaneuver />
-                    objWriter.WriteElementString("karmatechnique",
-                                                    _intKarmaTechnique.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmainitiation />
-                    objWriter.WriteElementString("karmainitiation",
-                                                    _intKarmaInitiation.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmainitiationflat />
-                    objWriter.WriteElementString("karmainitiationflat",
-                                                    _intKarmaInitiationFlat.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmametamagic />
-                    objWriter.WriteElementString("karmametamagic",
-                                                    _intKarmaMetamagic.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmajoingroup />
-                    objWriter.WriteElementString("karmajoingroup",
-                                                    _intKarmaJoinGroup.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaleavegroup />
-                    objWriter.WriteElementString("karmaleavegroup",
-                                                    _intKarmaLeaveGroup.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaalchemicalfocus />
-                    objWriter.WriteElementString("karmaalchemicalfocus",
-                                                    _intKarmaAlchemicalFocus.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmabanishingfocus />
-                    objWriter.WriteElementString("karmabanishingfocus",
-                                                    _intKarmaBanishingFocus.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmabindingfocus />
-                    objWriter.WriteElementString("karmabindingfocus",
-                                                    _intKarmaBindingFocus.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmacenteringfocus />
-                    objWriter.WriteElementString("karmacenteringfocus",
-                                                    _intKarmaCenteringFocus.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmacounterspellingfocus />
-                    objWriter.WriteElementString("karmacounterspellingfocus",
-                                                    _intKarmaCounterspellingFocus.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmadisenchantingfocus />
-                    objWriter.WriteElementString("karmadisenchantingfocus",
-                                                    _intKarmaDisenchantingFocus.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmaflexiblesignaturefocus />
-                    objWriter.WriteElementString("karmaflexiblesignaturefocus",
-                                                    _intKarmaFlexibleSignatureFocus.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmamaskingfocus />
-                    objWriter.WriteElementString("karmamaskingfocus",
-                                                    _intKarmaMaskingFocus.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmapowerfocus />
-                    objWriter.WriteElementString("karmapowerfocus",
-                                                    _intKarmaPowerFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaqifocus />
-                    objWriter.WriteElementString("karmaqifocus",
-                                                    _intKarmaQiFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaritualspellcastingfocus />
-                    objWriter.WriteElementString("karmaritualspellcastingfocus",
-                                                    _intKarmaRitualSpellcastingFocus.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmaspellcastingfocus />
-                    objWriter.WriteElementString("karmaspellcastingfocus",
-                                                    _intKarmaSpellcastingFocus.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmaspellshapingfocus />
-                    objWriter.WriteElementString("karmaspellshapingfocus",
-                                                    _intKarmaSpellShapingFocus.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmasummoningfocus />
-                    objWriter.WriteElementString("karmasummoningfocus",
-                                                    _intKarmaSummoningFocus.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmasustainingfocus />
-                    objWriter.WriteElementString("karmasustainingfocus",
-                                                    _intKarmaSustainingFocus.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmaweaponfocus />
-                    objWriter.WriteElementString("karmaweaponfocus",
-                                                    _intKarmaWeaponFocus.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmaweaponfocus />
-                    objWriter.WriteElementString("karmamysadpp",
-                                                    _intKarmaMysticAdeptPowerPoint.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <karmaspiritfettering />
-                    objWriter.WriteElementString("karmaspiritfettering",
-                                                    _intKarmaSpiritFettering.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // </karmacost>
-                    objWriter.WriteEndElement();
+
+                    // auto-write tagged properties before closing settings
+                    CharacterSettingsSerialization.WriteTaggedProperties(this, objWriter);
+                    token.ThrowIfCancellationRequested();
 
                     XPathNodeIterator lstAllowedBooksCodes = XmlManager
                                                                 .LoadXPath("books.xml",
@@ -2328,35 +2016,6 @@ namespace Chummer
 
                     // <buildmethod />
                     objWriter.WriteElementString("buildmethod", _eBuildMethod.ToString());
-                    // <buildpoints />
-                    objWriter.WriteElementString("buildpoints",
-                                                    _intBuildPoints.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <qualitykarmalimit />
-                    objWriter.WriteElementString("qualitykarmalimit",
-                                                    _intQualityKarmaLimit.ToString(
-                                                        GlobalSettings.InvariantCultureInfo));
-                    // <priorityarray />
-                    objWriter.WriteElementString("priorityarray", _strPriorityArray);
-                    // <prioritytable />
-                    objWriter.WriteElementString("prioritytable", _strPriorityTable);
-                    // <sumtoten />
-                    objWriter.WriteElementString(
-                        "sumtoten", _intSumtoTen.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <availability />
-                    objWriter.WriteElementString("availability",
-                                                    _intAvailability.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <maxmartialarts />
-                    objWriter.WriteElementString("maxmartialarts",
-                        _intMaxMartialArts.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <maxmartialtechniques />
-                    objWriter.WriteElementString("maxmartialtechniques",
-                        _intMaxMartialTechniques.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <nuyencarryover />
-                    objWriter.WriteElementString("nuyencarryover",
-                        _decNuyenCarryover.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <nuyenmaxbp />
-                    objWriter.WriteElementString("nuyenmaxbp",
-                                                    _decNuyenMaximumBP.ToString(GlobalSettings.InvariantCultureInfo));
 
                     token.ThrowIfCancellationRequested();
 
@@ -2466,741 +2125,17 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync(
                         "id",
                         blnClearSourceGuid ? Utils.GuidEmptyString : _guiSourceId.ToString("D", GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    // <name />
-                    await objWriter.WriteElementStringAsync("name", _strName, token: token).ConfigureAwait(false);
 
-                    // <licenserestricted />
-                    await objWriter.WriteElementStringAsync("licenserestricted",
-                            _blnLicenseRestrictedItems.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <morelethalgameplay />
-                    await objWriter.WriteElementStringAsync("morelethalgameplay",
-                            _blnMoreLethalGameplay.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <spiritforcebasedontotalmag />
-                    await objWriter.WriteElementStringAsync("spiritforcebasedontotalmag",
-                            _blnSpiritForceBasedOnTotalMAG.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <nuyenperbpwftm />
-                    await objWriter.WriteElementStringAsync("nuyenperbpwftm",
-                            _decNuyenPerBPWftM.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <nuyenperbpwftp />
-                    await objWriter.WriteElementStringAsync("nuyenperbpwftp",
-                            _decNuyenPerBPWftP.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <UnarmedImprovementsApplyToWeapons />
-                    await objWriter.WriteElementStringAsync("unarmedimprovementsapplytoweapons",
-                            _blnUnarmedImprovementsApplyToWeapons.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <allowinitiationincreatemode />
-                    await objWriter.WriteElementStringAsync("allowinitiationincreatemode",
-                            _blnAllowInitiationInCreateMode.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <usepointsonbrokengroups />
-                    await objWriter.WriteElementStringAsync("usepointsonbrokengroups",
-                            _blnUsePointsOnBrokenGroups.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <dontdoublequalities />
-                    await objWriter.WriteElementStringAsync("dontdoublequalities",
-                            _blnDontDoubleQualityPurchaseCost.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <dontdoublequalities />
-                    await objWriter.WriteElementStringAsync("dontdoublequalityrefunds",
-                            _blnDontDoubleQualityRefundCost.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <ignoreart />
-                    await objWriter.WriteElementStringAsync("ignoreart",
-                            _blnIgnoreArt.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <cyberlegmovement />
-                    await objWriter.WriteElementStringAsync("cyberlegmovement",
-                            _blnCyberlegMovement.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <contactpointsexpression />
-                    await objWriter
-                        .WriteElementStringAsync("contactpointsexpression", _strContactPointsExpression,
-                            token: token).ConfigureAwait(false);
-                    // <knowledgepointsexpression />
-                    await objWriter
-                        .WriteElementStringAsync("knowledgepointsexpression", _strKnowledgePointsExpression,
-                            token: token).ConfigureAwait(false);
-                    // <chargenkarmatonuyenexpression />
-                    await objWriter.WriteElementStringAsync("chargenkarmatonuyenexpression",
-                            _strChargenKarmaToNuyenExpression, token: token)
-                        .ConfigureAwait(false);
-                    // <boundspiritexpression />
-                    await objWriter
-                        .WriteElementStringAsync("boundspiritexpression", _strBoundSpiritExpression, token: token)
-                        .ConfigureAwait(false);
-                    // <registeredspriteexpression />
-                    await objWriter
-                        .WriteElementStringAsync("registeredspriteexpression", _strRegisteredSpriteExpression,
-                            token: token).ConfigureAwait(false);
-                    // <essencemodifierpostexpression />
-                    await objWriter
-                        .WriteElementStringAsync("essencemodifierpostexpression",
-                            _strEssenceModifierPostExpression, token: token)
-                        .ConfigureAwait(false);
-                    // <liftlimitexpression />
-                    await objWriter
-                        .WriteElementStringAsync("liftlimitexpression", _strLiftLimitExpression, token: token)
-                        .ConfigureAwait(false);
-                    // <carrylimitexpression />
-                    await objWriter
-                        .WriteElementStringAsync("carrylimitexpression", _strCarryLimitExpression, token: token)
-                        .ConfigureAwait(false);
-                    // <encumbranceintervalexpression />
-                    await objWriter.WriteElementStringAsync("encumbranceintervalexpression",
-                            _strEncumbranceIntervalExpression, token: token)
-                        .ConfigureAwait(false);
-                    // <doencumbrancepenaltyphysicallimit />
-                    await objWriter.WriteElementStringAsync("doencumbrancepenaltyphysicallimit",
-                            _blnDoEncumbrancePenaltyPhysicalLimit.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <doencumbrancepenaltymovementspeed />
-                    await objWriter.WriteElementStringAsync("doencumbrancepenaltymovementspeed",
-                            _blnDoEncumbrancePenaltyMovementSpeed.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <doencumbrancepenaltyagility />
-                    await objWriter.WriteElementStringAsync("doencumbrancepenaltyagility",
-                            _blnDoEncumbrancePenaltyAgility.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <doencumbrancepenaltyreaction />
-                    await objWriter.WriteElementStringAsync("doencumbrancepenaltyreaction",
-                            _blnDoEncumbrancePenaltyReaction.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <doencumbrancepenaltywoundmodifier />
-                    await objWriter.WriteElementStringAsync("doencumbrancepenaltywoundmodifier",
-                            _blnDoEncumbrancePenaltyWoundModifier.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <encumbrancepenaltyphysicallimit />
-                    await objWriter.WriteElementStringAsync("encumbrancepenaltyphysicallimit",
-                            _intEncumbrancePenaltyPhysicalLimit.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <encumbrancepenaltymovementspeed />
-                    await objWriter.WriteElementStringAsync("encumbrancepenaltymovementspeed",
-                            _intEncumbrancePenaltyMovementSpeed.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <encumbrancepenaltyagility />
-                    await objWriter.WriteElementStringAsync("encumbrancepenaltyagility",
-                            _intEncumbrancePenaltyAgility.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <encumbrancepenaltyreaction />
-                    await objWriter.WriteElementStringAsync("encumbrancepenaltyreaction",
-                            _intEncumbrancePenaltyReaction.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <encumbrancepenaltywoundmodifier />
-                    await objWriter.WriteElementStringAsync("encumbrancepenaltywoundmodifier",
-                            _intEncumbrancePenaltyWoundModifier.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <dronearmormultiplierenabled />
-                    await objWriter.WriteElementStringAsync("dronearmormultiplierenabled",
-                            _blnDroneArmorMultiplierEnabled.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <dronearmorflatnumber />
-                    await objWriter.WriteElementStringAsync("dronearmorflatnumber",
-                            _intDroneArmorMultiplier.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
+
+                    // auto-write tagged properties before closing settings
+                    await CharacterSettingsSerialization.WriteTaggedPropertiesAsync(this, objWriter, token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+
                     // <nosinglearmorencumbrance />
                     await objWriter.WriteElementStringAsync("nosinglearmorencumbrance",
                             _blnNoSingleArmorEncumbrance.ToString(
                                 GlobalSettings.InvariantCultureInfo), token: token)
                         .ConfigureAwait(false);
-                    // <ignorecomplexformlimit />
-                    await objWriter.WriteElementStringAsync("ignorecomplexformlimit",
-                            _blnIgnoreComplexFormLimit.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <noarmorencumbrance />
-                    await objWriter.WriteElementStringAsync("noarmorencumbrance",
-                            _blnNoArmorEncumbrance.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <uncappedarmoraccessorybonuses />
-                    await objWriter.WriteElementStringAsync("uncappedarmoraccessorybonuses",
-                            _blnUncappedArmorAccessoryBonuses.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <esslossreducesmaximumonly />
-                    await objWriter.WriteElementStringAsync("esslossreducesmaximumonly",
-                            _blnESSLossReducesMaximumOnly.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <allowskillregrouping />
-                    await objWriter.WriteElementStringAsync("allowskillregrouping",
-                            _blnAllowSkillRegrouping.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <specializationsbreakskillgroups />
-                    await objWriter.WriteElementStringAsync("specializationsbreakskillgroups",
-                            _blnSpecializationsBreakSkillGroups.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <metatypecostskarma />
-                    await objWriter.WriteElementStringAsync("metatypecostskarma",
-                            _blnMetatypeCostsKarma.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <metatypecostskarmamultiplier />
-                    await objWriter.WriteElementStringAsync("metatypecostskarmamultiplier",
-                            _intMetatypeCostMultiplier.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <limbcount />
-                    await objWriter.WriteElementStringAsync("limbcount",
-                            _intLimbCount.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <excludelimbslot />
-                    await objWriter.WriteElementStringAsync("excludelimbslot", _strExcludeLimbSlot, token: token)
-                        .ConfigureAwait(false);
-                    // <allowcyberwareessdiscounts />
-                    await objWriter.WriteElementStringAsync("allowcyberwareessdiscounts",
-                            _blnAllowCyberwareESSDiscounts.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <maximumarmormodifications />
-                    await objWriter.WriteElementStringAsync("maximumarmormodifications",
-                            _blnMaximumArmorModifications.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <armordegredation />
-                    await objWriter.WriteElementStringAsync("armordegredation",
-                            _blnArmorDegradation.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <specialkarmacostbasedonshownvalue />
-                    await objWriter.WriteElementStringAsync("specialkarmacostbasedonshownvalue",
-                            _blnSpecialKarmaCostBasedOnShownValue.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <exceedpositivequalities />
-                    await objWriter.WriteElementStringAsync("exceedpositivequalities",
-                            _blnExceedPositiveQualities.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <exceedpositivequalitiescostdoubled />
-                    await objWriter.WriteElementStringAsync("exceedpositivequalitiescostdoubled",
-                            _blnExceedPositiveQualitiesCostDoubled.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-
-                    await objWriter.WriteElementStringAsync("mysaddppcareer",
-                            _blnMysAdeptAllowPpCareer.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-
-                    // <mysadeptsecondmagattribute />
-                    await objWriter.WriteElementStringAsync("mysadeptsecondmagattribute",
-                            _blnMysAdeptSecondMAGAttribute.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-
-                    // <exceednegativequalities />
-                    await objWriter.WriteElementStringAsync("exceednegativequalities",
-                            _blnExceedNegativeQualities.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <exceednegativequalitiesnobonus />
-                    await objWriter.WriteElementStringAsync("exceednegativequalitiesnobonus",
-                            _blnExceedNegativeQualitiesNoBonus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <multiplyrestrictedcost />
-                    await objWriter.WriteElementStringAsync("multiplyrestrictedcost",
-                            _blnMultiplyRestrictedCost.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <multiplyforbiddencost />
-                    await objWriter.WriteElementStringAsync("multiplyforbiddencost",
-                            _blnMultiplyForbiddenCost.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <restrictedcostmultiplier />
-                    await objWriter.WriteElementStringAsync("restrictedcostmultiplier",
-                            _intRestrictedCostMultiplier.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <forbiddencostmultiplier />
-                    await objWriter.WriteElementStringAsync("forbiddencostmultiplier",
-                            _intForbiddenCostMultiplier.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <donotroundessenceinternally />
-                    await objWriter.WriteElementStringAsync("donotroundessenceinternally",
-                            _blnDoNotRoundEssenceInternally.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <enableenemytracking />
-                    await objWriter.WriteElementStringAsync("enableenemytracking",
-                            _blnEnableEnemyTracking.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <enemykarmaqualitylimit />
-                    await objWriter.WriteElementStringAsync("enemykarmaqualitylimit",
-                            _blnEnemyKarmaQualityLimit.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <nuyenformat />
-                    await objWriter.WriteElementStringAsync("nuyenformat", _strNuyenFormat, token: token)
-                        .ConfigureAwait(false);
-                    // <weightformat />
-                    await objWriter.WriteElementStringAsync("weightformat", _strWeightFormat, token: token)
-                        .ConfigureAwait(false);
-                    // <essencedecimals />
-                    await objWriter.WriteElementStringAsync("essenceformat", _strEssenceFormat, token: token)
-                        .ConfigureAwait(false);
-                    // <enforcecapacity />
-                    await objWriter.WriteElementStringAsync("enforcecapacity",
-                            _blnEnforceCapacity.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <restrictrecoil />
-                    await objWriter.WriteElementStringAsync("restrictrecoil",
-                            _blnRestrictRecoil.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <unrestrictednuyen />
-                    await objWriter.WriteElementStringAsync("unrestrictednuyen",
-                            _blnUnrestrictedNuyen.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <allowhigherstackedfoci />
-                    await objWriter.WriteElementStringAsync("allowhigherstackedfoci",
-                            _blnAllowHigherStackedFoci.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <alloweditpartofbaseweapon />
-                    await objWriter.WriteElementStringAsync("alloweditpartofbaseweapon",
-                            _blnAllowEditPartOfBaseWeapon.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <breakskillgroupsincreatemode />
-                    await objWriter.WriteElementStringAsync("breakskillgroupsincreatemode",
-                            _blnStrictSkillGroupsInCreateMode.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <allowpointbuyspecializationsonkarmaskills />
-                    await objWriter.WriteElementStringAsync("allowpointbuyspecializationsonkarmaskills",
-                            _blnAllowPointBuySpecializationsOnKarmaSkills.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <extendanydetectionspell />
-                    await objWriter.WriteElementStringAsync("extendanydetectionspell",
-                            _blnExtendAnyDetectionSpell.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("allowlimitedspellsforbarehandedadept",
-                            _blnAllowLimitedSpellsForBareHandedAdept.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    //<dontusecyberlimbcalculation />
-                    await objWriter.WriteElementStringAsync("dontusecyberlimbcalculation",
-                            _blnDontUseCyberlimbCalculation.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <alternatemetatypeattributekarma />
-                    await objWriter.WriteElementStringAsync("alternatemetatypeattributekarma",
-                            _blnAlternateMetatypeAttributeKarma.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <reversekarmapriorityorder />
-                    await objWriter.WriteElementStringAsync("reverseattributepriorityorder",
-                            _blnReverseAttributePriorityOrder.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <allowbiowaresuites />
-                    await objWriter.WriteElementStringAsync("allowbiowaresuites",
-                            _blnAllowBiowareSuites.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <freespiritpowerpointsmag />
-                    await objWriter.WriteElementStringAsync("freespiritpowerpointsmag",
-                            _blnFreeSpiritPowerPointsMAG.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <compensateskillgroupkarmadifference />
-                    await objWriter.WriteElementStringAsync("compensateskillgroupkarmadifference",
-                            _blnCompensateSkillGroupKarmaDifference.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <autobackstory />
-                    await objWriter.WriteElementStringAsync("autobackstory",
-                            _blnAutomaticBackstory.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <freemartialartspecialization />
-                    await objWriter.WriteElementStringAsync("freemartialartspecialization",
-                            _blnFreeMartialArtSpecialization.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <priorityspellsasadeptpowers />
-                    await objWriter.WriteElementStringAsync("priorityspellsasadeptpowers",
-                            _blnPrioritySpellsAsAdeptPowers.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <usecalculatedpublicawareness />
-                    await objWriter.WriteElementStringAsync("usecalculatedpublicawareness",
-                            _blnUseCalculatedPublicAwareness.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <increasedimprovedabilitymodifier />
-                    await objWriter.WriteElementStringAsync("increasedimprovedabilitymodifier",
-                            _blnIncreasedImprovedAbilityMultiplier.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <allowfreegrids />
-                    await objWriter.WriteElementStringAsync("allowfreegrids",
-                            _blnAllowFreeGrids.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <allowtechnomancerschooling />
-                    await objWriter.WriteElementStringAsync("allowtechnomancerschooling",
-                            _blnAllowTechnomancerSchooling.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <cyberlimbattributebonuscapoverride />
-                    await objWriter.WriteElementStringAsync("cyberlimbattributebonuscapoverride",
-                            _blnCyberlimbAttributeBonusCapOverride.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <cyberlimbattributebonuscap />
-                    await objWriter.WriteElementStringAsync("cyberlimbattributebonuscap",
-                            _intCyberlimbAttributeBonusCap.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <unclampattributeminimum />
-                    await objWriter.WriteElementStringAsync("unclampattributeminimum",
-                            _blnUnclampAttributeMinimum.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <dronemods />
-                    await objWriter.WriteElementStringAsync("dronemods",
-                            _blnDroneMods.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <dronemodsmaximumpilot />
-                    await objWriter.WriteElementStringAsync("dronemodsmaximumpilot",
-                            _blnDroneModsMaximumPilot.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <maxnumbermaxattributescreate />
-                    await objWriter.WriteElementStringAsync("maxnumbermaxattributescreate",
-                            _intMaxNumberMaxAttributesCreate.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <maxskillratingcreate />
-                    await objWriter.WriteElementStringAsync("maxskillratingcreate",
-                            _intMaxSkillRatingCreate.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <maxknowledgeskillratingcreate />
-                    await objWriter.WriteElementStringAsync("maxknowledgeskillratingcreate",
-                            _intMaxKnowledgeSkillRatingCreate.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <maxskillrating />
-                    await objWriter.WriteElementStringAsync("maxskillrating",
-                            _intMaxSkillRating.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <maxknowledgeskillrating />
-                    await objWriter.WriteElementStringAsync("maxknowledgeskillrating",
-                            _intMaxKnowledgeSkillRating.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-
-                    // <dicepenaltysustaining />
-                    await objWriter.WriteElementStringAsync("dicepenaltysustaining",
-                            _intDicePenaltySustaining.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-
-                    // <mininitiativedice />
-                    await objWriter.WriteElementStringAsync("mininitiativedice",
-                            _intMinInitiativeDice.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <maxinitiativedice />
-                    await objWriter.WriteElementStringAsync("maxinitiativedice",
-                            _intMaxInitiativeDice.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <minastralinitiativedice />
-                    await objWriter.WriteElementStringAsync("minastralinitiativedice",
-                            _intMinAstralInitiativeDice.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <maxastralinitiativedice />
-                    await objWriter.WriteElementStringAsync("maxastralinitiativedice",
-                            _intMaxAstralInitiativeDice.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <mincoldsiminitiativedice />
-                    await objWriter.WriteElementStringAsync("mincoldsiminitiativedice",
-                            _intMinColdSimInitiativeDice.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <maxcoldsiminitiativedice />
-                    await objWriter.WriteElementStringAsync("maxcoldsiminitiativedice",
-                            _intMaxColdSimInitiativeDice.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <minhotsiminitiativedice />
-                    await objWriter.WriteElementStringAsync("minhotsiminitiativedice",
-                            _intMinHotSimInitiativeDice.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <maxhotsiminitiativedice />
-                    await objWriter.WriteElementStringAsync("maxhotsiminitiativedice",
-                            _intMaxHotSimInitiativeDice.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-
-                    // <karmacost>
-                    await objWriter.WriteStartElementAsync("karmacost", token: token).ConfigureAwait(false);
-                    // <karmaattribute />
-                    await objWriter.WriteElementStringAsync("karmaattribute",
-                            _intKarmaAttribute.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaquality />
-                    await objWriter.WriteElementStringAsync("karmaquality",
-                            _intKarmaQuality.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaspecialization />
-                    await objWriter.WriteElementStringAsync("karmaspecialization",
-                            _intKarmaSpecialization.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaknospecialization />
-                    await objWriter.WriteElementStringAsync("karmaknospecialization",
-                            _intKarmaKnoSpecialization.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmanewknowledgeskill />
-                    await objWriter.WriteElementStringAsync("karmanewknowledgeskill",
-                            _intKarmaNewKnowledgeSkill.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmanewactiveskill />
-                    await objWriter.WriteElementStringAsync("karmanewactiveskill",
-                            _intKarmaNewActiveSkill.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmanewskillgroup />
-                    await objWriter.WriteElementStringAsync("karmanewskillgroup",
-                            _intKarmaNewSkillGroup.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaimproveknowledgeskill />
-                    await objWriter.WriteElementStringAsync("karmaimproveknowledgeskill",
-                            _intKarmaImproveKnowledgeSkill.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaimproveactiveskill />
-                    await objWriter.WriteElementStringAsync("karmaimproveactiveskill",
-                            _intKarmaImproveActiveSkill.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaimproveskillgroup />
-                    await objWriter.WriteElementStringAsync("karmaimproveskillgroup",
-                            _intKarmaImproveSkillGroup.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaspell />
-                    await objWriter.WriteElementStringAsync("karmaspell",
-                            _intKarmaSpell.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaenhancement />
-                    await objWriter.WriteElementStringAsync("karmaenhancement",
-                            _intKarmaEnhancement.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmanewcomplexform />
-                    await objWriter.WriteElementStringAsync("karmanewcomplexform",
-                            _intKarmaNewComplexForm.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmanewaiprogram />
-                    await objWriter.WriteElementStringAsync("karmanewaiprogram",
-                            _intKarmaNewAIProgram.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmanewaiadvancedprogram />
-                    await objWriter.WriteElementStringAsync("karmanewaiadvancedprogram",
-                            _intKarmaNewAIAdvancedProgram.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmacontact />
-                    await objWriter.WriteElementStringAsync("karmacontact",
-                            _intKarmaContact.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaenemy />
-                    await objWriter.WriteElementStringAsync("karmaenemy",
-                            _intKarmaEnemy.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmacarryover />
-                    await objWriter.WriteElementStringAsync("karmacarryover",
-                            _intKarmaCarryover.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaspirit />
-                    await objWriter.WriteElementStringAsync("karmaspirit",
-                            _intKarmaSpirit.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmamaneuver />
-                    await objWriter.WriteElementStringAsync("karmatechnique",
-                            _intKarmaTechnique.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmainitiation />
-                    await objWriter.WriteElementStringAsync("karmainitiation",
-                            _intKarmaInitiation.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmainitiationflat />
-                    await objWriter.WriteElementStringAsync("karmainitiationflat",
-                            _intKarmaInitiationFlat.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmametamagic />
-                    await objWriter.WriteElementStringAsync("karmametamagic",
-                            _intKarmaMetamagic.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmajoingroup />
-                    await objWriter.WriteElementStringAsync("karmajoingroup",
-                            _intKarmaJoinGroup.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaleavegroup />
-                    await objWriter.WriteElementStringAsync("karmaleavegroup",
-                            _intKarmaLeaveGroup.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaalchemicalfocus />
-                    await objWriter.WriteElementStringAsync("karmaalchemicalfocus",
-                            _intKarmaAlchemicalFocus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmabanishingfocus />
-                    await objWriter.WriteElementStringAsync("karmabanishingfocus",
-                            _intKarmaBanishingFocus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmabindingfocus />
-                    await objWriter.WriteElementStringAsync("karmabindingfocus",
-                            _intKarmaBindingFocus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmacenteringfocus />
-                    await objWriter.WriteElementStringAsync("karmacenteringfocus",
-                            _intKarmaCenteringFocus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmacounterspellingfocus />
-                    await objWriter.WriteElementStringAsync("karmacounterspellingfocus",
-                            _intKarmaCounterspellingFocus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmadisenchantingfocus />
-                    await objWriter.WriteElementStringAsync("karmadisenchantingfocus",
-                            _intKarmaDisenchantingFocus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaflexiblesignaturefocus />
-                    await objWriter.WriteElementStringAsync("karmaflexiblesignaturefocus",
-                            _intKarmaFlexibleSignatureFocus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmamaskingfocus />
-                    await objWriter.WriteElementStringAsync("karmamaskingfocus",
-                            _intKarmaMaskingFocus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmapowerfocus />
-                    await objWriter.WriteElementStringAsync("karmapowerfocus",
-                            _intKarmaPowerFocus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaqifocus />
-                    await objWriter.WriteElementStringAsync("karmaqifocus",
-                            _intKarmaQiFocus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaritualspellcastingfocus />
-                    await objWriter.WriteElementStringAsync("karmaritualspellcastingfocus",
-                            _intKarmaRitualSpellcastingFocus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaspellcastingfocus />
-                    await objWriter.WriteElementStringAsync("karmaspellcastingfocus",
-                            _intKarmaSpellcastingFocus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaspellshapingfocus />
-                    await objWriter.WriteElementStringAsync("karmaspellshapingfocus",
-                            _intKarmaSpellShapingFocus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmasummoningfocus />
-                    await objWriter.WriteElementStringAsync("karmasummoningfocus",
-                            _intKarmaSummoningFocus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmasustainingfocus />
-                    await objWriter.WriteElementStringAsync("karmasustainingfocus",
-                            _intKarmaSustainingFocus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaweaponfocus />
-                    await objWriter.WriteElementStringAsync("karmaweaponfocus",
-                            _intKarmaWeaponFocus.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaweaponfocus />
-                    await objWriter.WriteElementStringAsync("karmamysadpp",
-                            _intKarmaMysticAdeptPowerPoint.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <karmaspiritfettering />
-                    await objWriter.WriteElementStringAsync("karmaspiritfettering",
-                            _intKarmaSpiritFettering.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // </karmacost>
-                    await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                     XPathNodeIterator lstAllowedBooksCodes = (await XmlManager
                             .LoadXPathAsync("books.xml",
@@ -3267,47 +2202,6 @@ namespace Chummer
                     // <buildpoints />
                     await objWriter.WriteElementStringAsync("buildpoints",
                             _intBuildPoints.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <qualitykarmalimit />
-                    await objWriter.WriteElementStringAsync("qualitykarmalimit",
-                            _intQualityKarmaLimit.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <priorityarray />
-                    await objWriter.WriteElementStringAsync("priorityarray", _strPriorityArray, token: token)
-                        .ConfigureAwait(false);
-                    // <prioritytable />
-                    await objWriter.WriteElementStringAsync("prioritytable", _strPriorityTable, token: token)
-                        .ConfigureAwait(false);
-                    // <sumtoten />
-                    await objWriter.WriteElementStringAsync(
-                            "sumtoten", _intSumtoTen.ToString(GlobalSettings.InvariantCultureInfo),
-                            token: token)
-                        .ConfigureAwait(false);
-                    // <availability />
-                    await objWriter.WriteElementStringAsync("availability",
-                            _intAvailability.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <maxmartialarts />
-                    await objWriter.WriteElementStringAsync("maxmartialarts",
-                            _intMaxMartialArts.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <maxmartialtechniques />
-                    await objWriter.WriteElementStringAsync("maxmartialtechniques",
-                            _intMaxMartialTechniques.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <nuyencarryover />
-                    await objWriter.WriteElementStringAsync("nuyencarryover",
-                            _decNuyenCarryover.ToString(
-                                GlobalSettings.InvariantCultureInfo), token: token)
-                        .ConfigureAwait(false);
-                    // <nuyenmaxbp />
-                    await objWriter.WriteElementStringAsync("nuyenmaxbp",
-                            _decNuyenMaximumBP.ToString(
                                 GlobalSettings.InvariantCultureInfo), token: token)
                         .ConfigureAwait(false);
 
@@ -3411,14 +2305,6 @@ namespace Chummer
             {
                 if (objXmlNode.TryGetStringFieldQuickly("id", ref strId) && Guid.TryParse(strId, out Guid guidTemp))
                     _guiSourceId = guidTemp;
-                // Setting name.
-                objXmlNode.TryGetStringFieldQuickly("name", ref _strName);
-                // License Restricted items.
-                objXmlNode.TryGetBoolFieldQuickly("licenserestricted", ref _blnLicenseRestrictedItems);
-                // More Lethal Gameplay.
-                objXmlNode.TryGetBoolFieldQuickly("morelethalgameplay", ref _blnMoreLethalGameplay);
-                // Spirit Force Based on Total MAG.
-                objXmlNode.TryGetBoolFieldQuickly("spiritforcebasedontotalmag", ref _blnSpiritForceBasedOnTotalMAG);
                 // Nuyen per Build Point
                 if (!objXmlNode.TryGetDecFieldQuickly("nuyenperbpwftm", ref _decNuyenPerBPWftM))
                 {
@@ -3428,25 +2314,16 @@ namespace Chummer
                 else
                     objXmlNode.TryGetDecFieldQuickly("nuyenperbpwftp", ref _decNuyenPerBPWftP);
 
-                // Knucks use Unarmed
-                objXmlNode.TryGetBoolFieldQuickly("unarmedimprovementsapplytoweapons",
-                                                  ref _blnUnarmedImprovementsApplyToWeapons);
-                // Allow Initiation in Create Mode
-                objXmlNode.TryGetBoolFieldQuickly("allowinitiationincreatemode", ref _blnAllowInitiationInCreateMode);
-                // Use Points on Broken Groups
-                objXmlNode.TryGetBoolFieldQuickly("usepointsonbrokengroups", ref _blnUsePointsOnBrokenGroups);
-                // Don't Double the Cost of purchasing Qualities in Career Mode
-                objXmlNode.TryGetBoolFieldQuickly("dontdoublequalities", ref _blnDontDoubleQualityPurchaseCost);
-                // Don't Double the Cost of removing Qualities in Career Mode
-                objXmlNode.TryGetBoolFieldQuickly("dontdoublequalityrefunds", ref _blnDontDoubleQualityRefundCost);
-                // Ignore Art Requirements from Street Grimoire
-                objXmlNode.TryGetBoolFieldQuickly("ignoreart", ref _blnIgnoreArt);
-                // Use Cyberleg Stats for Movement
-                objXmlNode.TryGetBoolFieldQuickly("cyberlegmovement", ref _blnCyberlegMovement);
-                // XPath expression for contact points
+                // Auto-load any tagged properties (attribute-driven)
+                try
+                {
+                    CharacterSettingsSerialization.ReadTaggedProperties(this, objXmlNode.UnderlyingObject as System.Xml.XmlNode);
+                }
+                catch { }
+
+                // Legacy shim for contact points expression
                 if (!objXmlNode.TryGetStringFieldQuickly("contactpointsexpression", ref _strContactPointsExpression))
                 {
-                    // Legacy shim
                     int intTemp = 3;
                     bool blnTemp = false;
                     strTemp = "{CHAUnaug}";
@@ -3458,11 +2335,10 @@ namespace Chummer
                         = strTemp + " * " + intTemp.ToString(GlobalSettings.InvariantCultureInfo);
                 }
 
-                // XPath expression for knowledge points
+                // Legacy shim for knowledge points expression
                 if (!objXmlNode.TryGetStringFieldQuickly("knowledgepointsexpression",
                                                          ref _strKnowledgePointsExpression))
                 {
-                    // Legacy shim
                     int intTemp = 2;
                     bool blnTemp = false;
                     strTemp = "({INTUnaug} + {LOGUnaug})";
@@ -3490,108 +2366,12 @@ namespace Chummer
                     _strChargenKarmaToNuyenExpression = '(' + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
                 }
 
-                // Various expressions used to determine certain character stats
+                // Legacy shim for registered sprite expression
                 if (!objXmlNode.TryGetStringFieldQuickly("registeredspriteexpression", ref _strRegisteredSpriteExpression))
                     objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression); // Legacy shim
-                objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
-                objXmlNode.TryGetStringFieldQuickly("essencemodifierpostexpression", ref _strEssenceModifierPostExpression);
-                objXmlNode.TryGetStringFieldQuickly("liftlimitexpression", ref _strLiftLimitExpression);
-                objXmlNode.TryGetStringFieldQuickly("carrylimitexpression", ref _strCarryLimitExpression);
-                objXmlNode.TryGetStringFieldQuickly("encumbranceintervalexpression",
-                                                    ref _strEncumbranceIntervalExpression);
-                // Whether to apply certain penalties to encumbrance and, if so, how much per tick
-                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyphysicallimit",
-                                                  ref _blnDoEncumbrancePenaltyPhysicalLimit);
-                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltymovementspeed",
-                                                  ref _blnDoEncumbrancePenaltyMovementSpeed);
-                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyagility", ref _blnDoEncumbrancePenaltyAgility);
-                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyreaction", ref _blnDoEncumbrancePenaltyReaction);
-                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltywoundmodifier",
-                                                  ref _blnDoEncumbrancePenaltyWoundModifier);
-                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyphysicallimit",
-                                                   ref _intEncumbrancePenaltyPhysicalLimit);
-                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltymovementspeed",
-                                                   ref _intEncumbrancePenaltyMovementSpeed);
-                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyagility", ref _intEncumbrancePenaltyAgility);
-                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyreaction", ref _intEncumbrancePenaltyReaction);
-                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltywoundmodifier",
-                                                   ref _intEncumbrancePenaltyWoundModifier);
-                // Drone Armor Multiplier Enabled
-                objXmlNode.TryGetBoolFieldQuickly("dronearmormultiplierenabled", ref _blnDroneArmorMultiplierEnabled);
-                // Drone Armor Multiplier Value
-                objXmlNode.TryGetInt32FieldQuickly("dronearmorflatnumber", ref _intDroneArmorMultiplier);
-                // No Single Armor Encumbrance
-                objXmlNode.TryGetBoolFieldQuickly("nosinglearmorencumbrance", ref _blnNoSingleArmorEncumbrance);
-                // Ignore Armor Encumbrance
-                objXmlNode.TryGetBoolFieldQuickly("noarmorencumbrance", ref _blnNoArmorEncumbrance);
-                // Do not cap armor bonuses from accessories
-                objXmlNode.TryGetBoolFieldQuickly("uncappedarmoraccessorybonuses",
-                                                  ref _blnUncappedArmorAccessoryBonuses);
-                // Ignore Complex Form Limit
-                objXmlNode.TryGetBoolFieldQuickly("ignorecomplexformlimit", ref _blnIgnoreComplexFormLimit);
-                // Essence Loss Reduces Maximum Only.
-                objXmlNode.TryGetBoolFieldQuickly("esslossreducesmaximumonly", ref _blnESSLossReducesMaximumOnly);
-                // Allow Skill Regrouping.
-                objXmlNode.TryGetBoolFieldQuickly("allowskillregrouping", ref _blnAllowSkillRegrouping);
-                // Whether skill specializations break skill groups.
-                objXmlNode.TryGetBoolFieldQuickly("specializationsbreakskillgroups",
-                                                  ref _blnSpecializationsBreakSkillGroups);
-                // Metatype Costs Karma.
-                objXmlNode.TryGetBoolFieldQuickly("metatypecostskarma", ref _blnMetatypeCostsKarma);
-                // Allow characters to spend karma before attribute points.
-                objXmlNode.TryGetBoolFieldQuickly("reverseattributepriorityorder",
-                                                  ref _blnReverseAttributePriorityOrder);
-                // Metatype Costs Karma Multiplier.
-                objXmlNode.TryGetInt32FieldQuickly("metatypecostskarmamultiplier", ref _intMetatypeCostMultiplier);
-                // Limb Count.
-                objXmlNode.TryGetInt32FieldQuickly("limbcount", ref _intLimbCount);
-                // Exclude Limb Slot.
-                objXmlNode.TryGetStringFieldQuickly("excludelimbslot", ref _strExcludeLimbSlot);
-                // Allow Cyberware Essence Cost Discounts.
-                objXmlNode.TryGetBoolFieldQuickly("allowcyberwareessdiscounts", ref _blnAllowCyberwareESSDiscounts);
-                // Use Maximum Armor Modifications.
-                objXmlNode.TryGetBoolFieldQuickly("maximumarmormodifications", ref _blnMaximumArmorModifications);
-                // Allow Armor Degradation.
-                objXmlNode.TryGetBoolFieldQuickly("armordegredation", ref _blnArmorDegradation);
-                // Whether Karma costs for increasing Special Attributes is based on the shown value instead of actual value.
-                objXmlNode.TryGetBoolFieldQuickly("specialkarmacostbasedonshownvalue",
-                                                  ref _blnSpecialKarmaCostBasedOnShownValue);
-                // Allow more than 35 BP in Positive Qualities.
-                objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalities", ref _blnExceedPositiveQualities);
-                // Double all positive qualities in excess of the limit
-                objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalitiescostdoubled",
-                                                  ref _blnExceedPositiveQualitiesCostDoubled);
-
-                objXmlNode.TryGetBoolFieldQuickly("mysaddppcareer", ref _blnMysAdeptAllowPpCareer);
-
-                // Split MAG for Mystic Adepts so that they have a separate MAG rating for Adept Powers instead of using the special PP rules for mystic adepts
-                objXmlNode.TryGetBoolFieldQuickly("mysadeptsecondmagattribute", ref _blnMysAdeptSecondMAGAttribute);
-
-                // Grant a free specialization when taking a martial art.
-                objXmlNode.TryGetBoolFieldQuickly("freemartialartspecialization", ref _blnFreeMartialArtSpecialization);
-                // Can spend spells from Magic priority as power points
-                objXmlNode.TryGetBoolFieldQuickly("priorityspellsasadeptpowers", ref _blnPrioritySpellsAsAdeptPowers);
-                // Allow more than 35 BP in Negative Qualities.
-                objXmlNode.TryGetBoolFieldQuickly("exceednegativequalities", ref _blnExceedNegativeQualities);
-                // Character can still only receive 35 BP from Negative Qualities (though they can still add as many as they'd like).
+                // Legacy shim for exceednegativequalitieslimit
                 if (!objXmlNode.TryGetBoolFieldQuickly("exceednegativequalitiesnobonus", ref _blnExceedNegativeQualitiesNoBonus))
                     objXmlNode.TryGetBoolFieldQuickly("exceednegativequalitieslimit", ref _blnExceedNegativeQualitiesNoBonus);
-                // Whether Restricted items have their cost multiplied.
-                objXmlNode.TryGetBoolFieldQuickly("multiplyrestrictedcost", ref _blnMultiplyRestrictedCost);
-                // Whether Forbidden items have their cost multiplied.
-                objXmlNode.TryGetBoolFieldQuickly("multiplyforbiddencost", ref _blnMultiplyForbiddenCost);
-                // Restricted cost multiplier.
-                objXmlNode.TryGetInt32FieldQuickly("restrictedcostmultiplier", ref _intRestrictedCostMultiplier);
-                // Forbidden cost multiplier.
-                objXmlNode.TryGetInt32FieldQuickly("forbiddencostmultiplier", ref _intForbiddenCostMultiplier);
-                // Only round essence when its value is displayed
-                objXmlNode.TryGetBoolFieldQuickly("donotroundessenceinternally", ref _blnDoNotRoundEssenceInternally);
-                // Allow use of enemies
-                objXmlNode.TryGetBoolFieldQuickly("enableenemytracking", ref _blnEnableEnemyTracking);
-                // Have enemies contribute to negative quality limit
-                objXmlNode.TryGetBoolFieldQuickly("enemykarmaqualitylimit", ref _blnEnemyKarmaQualityLimit);
-                // Format in which nuyen values are displayed
-                objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
                 // Format in which weight values are displayed
                 if (objXmlNode.TryGetStringFieldQuickly("weightformat", ref _strWeightFormat))
                 {
@@ -3604,7 +2384,6 @@ namespace Chummer
                 if (!objXmlNode.TryGetStringFieldQuickly("essenceformat", ref _strEssenceFormat))
                 {
                     int intTemp = 2;
-                    // Number of decimal places to round to when calculating Essence.
                     objXmlNode.TryGetInt32FieldQuickly("essencedecimals", ref intTemp);
                     EssenceDecimals = intTemp;
                 }
@@ -3627,57 +2406,11 @@ namespace Chummer
                         }
                     }
                 }
-
-                // Whether Capacity limits should be enforced.
-                objXmlNode.TryGetBoolFieldQuickly("enforcecapacity", ref _blnEnforceCapacity);
-                // Whether Recoil modifiers are restricted (AR 148).
-                objXmlNode.TryGetBoolFieldQuickly("restrictrecoil", ref _blnRestrictRecoil);
-                // Whether character are not restricted to the number of points they can invest in Nuyen.
-                objXmlNode.TryGetBoolFieldQuickly("unrestrictednuyen", ref _blnUnrestrictedNuyen);
-                // Whether Stacked Foci can go a combined Force higher than 6.
-                objXmlNode.TryGetBoolFieldQuickly("allowhigherstackedfoci", ref _blnAllowHigherStackedFoci);
-                // Whether the user can change the status of a Weapon Mod or Accessory being part of the base Weapon.
-                objXmlNode.TryGetBoolFieldQuickly("alloweditpartofbaseweapon", ref _blnAllowEditPartOfBaseWeapon);
-                // Whether the user can break Skill Groups while in Create Mode.
-                objXmlNode.TryGetBoolFieldQuickly("breakskillgroupsincreatemode",
-                                                  ref _blnStrictSkillGroupsInCreateMode);
-                // Whether the user is allowed to buy specializations with skill points for skills only bought with karma.
-                objXmlNode.TryGetBoolFieldQuickly("allowpointbuyspecializationsonkarmaskills",
-                                                  ref _blnAllowPointBuySpecializationsOnKarmaSkills);
-                // Whether any Detection Spell can be taken as Extended range version.
-                objXmlNode.TryGetBoolFieldQuickly("extendanydetectionspell", ref _blnExtendAnyDetectionSpell);
-                // Whether Adepts can take Limited Spells as Barehanded Adept Powers.
-                objXmlNode.TryGetBoolFieldQuickly("allowlimitedspellsforbarehandedadept", ref _blnAllowLimitedSpellsForBareHandedAdept);
-                // Whether cyberlimbs are used for augmented attribute calculation.
-                objXmlNode.TryGetBoolFieldQuickly("dontusecyberlimbcalculation", ref _blnDontUseCyberlimbCalculation);
-                // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
-                objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma",
-                                                  ref _blnAlternateMetatypeAttributeKarma);
-                // Whether Bioware Suites can be created and added.
-                objXmlNode.TryGetBoolFieldQuickly("allowbiowaresuites", ref _blnAllowBiowareSuites);
-                // House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
-                objXmlNode.TryGetBoolFieldQuickly("freespiritpowerpointsmag", ref _blnFreeSpiritPowerPointsMAG);
-                // House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
-                objXmlNode.TryGetBoolFieldQuickly("compensateskillgroupkarmadifference",
-                                                  ref _blnCompensateSkillGroupKarmaDifference);
-                // Optional Rule: Whether Life Modules should automatically create a character back story.
-                objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _blnAutomaticBackstory);
-                // House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
-                objXmlNode.TryGetBoolFieldQuickly("usecalculatedpublicawareness", ref _blnUseCalculatedPublicAwareness);
-                // House Rule: Whether Improved Ability should be capped at 0.5 (false) or 1.5 (true) of the target skill's Learned Rating.
-                objXmlNode.TryGetBoolFieldQuickly("increasedimprovedabilitymodifier",
-                                                  ref _blnIncreasedImprovedAbilityMultiplier);
-                // House Rule: Whether lifestyles will give free grid subscriptions found in HT to players.
-                objXmlNode.TryGetBoolFieldQuickly("allowfreegrids", ref _blnAllowFreeGrids);
-                // House Rule: Whether Technomancers should be allowed to receive Schooling discounts in the same manner as Awakened.
-                objXmlNode.TryGetBoolFieldQuickly("allowtechnomancerschooling", ref _blnAllowTechnomancerSchooling);
-                // House Rule: Maximum value that cyberlimbs can have as a bonus on top of their Customization.
-                objXmlNode.TryGetInt32FieldQuickly("cyberlimbattributebonuscap", ref _intCyberlimbAttributeBonusCap);
+                // Shim for cyberlimb attribute bonus cap not present in settings.
                 if (!objXmlNode.TryGetBoolFieldQuickly("cyberlimbattributebonuscapoverride",
                                                        ref _blnCyberlimbAttributeBonusCapOverride))
                     _blnCyberlimbAttributeBonusCapOverride = _intCyberlimbAttributeBonusCap == 4;
                 // House/Optional Rule: Attribute values are allowed to go below 0 due to Essence Loss.
-                objXmlNode.TryGetBoolFieldQuickly("unclampattributeminimum", ref _blnUnclampAttributeMinimum);
                 // Following two settings used to be stored in global options, so they are fetched from the registry if they are not present
                 // Use Rigger 5.0 drone mods
                 if (!objXmlNode.TryGetBoolFieldQuickly("dronemods", ref _blnDroneMods))
@@ -3698,10 +2431,7 @@ namespace Chummer
                 }
 
                 // Maximum skill rating in character creation
-                objXmlNode.TryGetInt32FieldQuickly("maxskillratingcreate", ref _intMaxSkillRatingCreate);
                 // Maximum knowledge skill rating in character creation
-                objXmlNode.TryGetInt32FieldQuickly("maxknowledgeskillratingcreate",
-                                                   ref _intMaxKnowledgeSkillRatingCreate);
                 // Maximum skill rating
                 if (objXmlNode.TryGetInt32FieldQuickly("maxskillrating", ref _intMaxSkillRating)
                     && _intMaxSkillRatingCreate > _intMaxSkillRating)
@@ -3710,78 +2440,6 @@ namespace Chummer
                 if (objXmlNode.TryGetInt32FieldQuickly("maxknowledgeskillrating", ref _intMaxKnowledgeSkillRating)
                     && _intMaxKnowledgeSkillRatingCreate > _intMaxKnowledgeSkillRating)
                     _intMaxKnowledgeSkillRatingCreate = _intMaxKnowledgeSkillRating;
-
-                //House Rule: The DicePenalty per sustained spell or form
-                objXmlNode.TryGetInt32FieldQuickly("dicepenaltysustaining", ref _intDicePenaltySustaining);
-
-                // Initiative dice
-                objXmlNode.TryGetInt32FieldQuickly("mininitiativedice", ref _intMinInitiativeDice);
-                objXmlNode.TryGetInt32FieldQuickly("maxinitiativedice", ref _intMaxInitiativeDice);
-                objXmlNode.TryGetInt32FieldQuickly("minastralinitiativedice", ref _intMinAstralInitiativeDice);
-                objXmlNode.TryGetInt32FieldQuickly("maxastralinitiativedice", ref _intMaxAstralInitiativeDice);
-                objXmlNode.TryGetInt32FieldQuickly("mincoldsiminitiativedice", ref _intMinColdSimInitiativeDice);
-                objXmlNode.TryGetInt32FieldQuickly("maxcoldsiminitiativedice", ref _intMaxColdSimInitiativeDice);
-                objXmlNode.TryGetInt32FieldQuickly("minhotsiminitiativedice", ref _intMinHotSimInitiativeDice);
-                objXmlNode.TryGetInt32FieldQuickly("maxhotsiminitiativedice", ref _intMaxHotSimInitiativeDice);
-
-                XPathNavigator xmlKarmaCostNode = objXmlNode.SelectSingleNodeAndCacheExpression("karmacost", token);
-                // Attempt to populate the Karma values.
-                if (xmlKarmaCostNode != null)
-                {
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaknospecialization", ref _intKarmaKnoSpecialization);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveknowledgeskill",
-                                                             ref _intKarmaImproveKnowledgeSkill);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveactiveskill",
-                                                             ref _intKarmaImproveActiveSkill);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveskillgroup", ref _intKarmaImproveSkillGroup);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspell", ref _intKarmaSpell);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewcomplexform", ref _intKarmaNewComplexForm);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewaiprogram", ref _intKarmaNewAIProgram);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewaiadvancedprogram",
-                                                             ref _intKarmaNewAIAdvancedProgram);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacontact", ref _intKarmaContact);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaenemy", ref _intKarmaEnemy);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacarryover", ref _intKarmaCarryover);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspirit", ref _intKarmaSpirit);
-                    if (!xmlKarmaCostNode.TryGetInt32FieldQuickly("karmatechnique", ref _intKarmaTechnique))
-                        xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamaneuver", ref _intKarmaTechnique);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmainitiation", ref _intKarmaInitiation);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmainitiationflat", ref _intKarmaInitiationFlat);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmametamagic", ref _intKarmaMetamagic);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmajoingroup", ref _intKarmaJoinGroup);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamysadpp", ref _intKarmaMysticAdeptPowerPoint);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspiritfettering", ref _intKarmaSpiritFettering);
-
-                    // Attempt to load the Karma costs for Foci.
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaalchemicalfocus", ref _intKarmaAlchemicalFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmabanishingfocus", ref _intKarmaBanishingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmabindingfocus", ref _intKarmaBindingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacenteringfocus", ref _intKarmaCenteringFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacounterspellingfocus",
-                                                             ref _intKarmaCounterspellingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmadisenchantingfocus",
-                                                             ref _intKarmaDisenchantingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaflexiblesignaturefocus",
-                                                             ref _intKarmaFlexibleSignatureFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamaskingfocus", ref _intKarmaMaskingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmapowerfocus", ref _intKarmaPowerFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaqifocus", ref _intKarmaQiFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaritualspellcastingfocus",
-                                                             ref _intKarmaRitualSpellcastingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspellcastingfocus", ref _intKarmaSpellcastingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspellshapingfocus", ref _intKarmaSpellShapingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmasummoningfocus", ref _intKarmaSummoningFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmasustainingfocus", ref _intKarmaSustainingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaweaponfocus", ref _intKarmaWeaponFocus);
-                }
 
                 XPathNavigator xmlLegacyCharacterNavigator = null;
                 // Legacy sweep by looking at MRU
@@ -4071,20 +2729,16 @@ namespace Chummer
                     _eBuildMethod = eBuildMethod;
                 if (!objXmlNode.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints);
+                // Legacy shim for quality karma limit with fallback logic
                 if (!objXmlNode.TryGetInt32FieldQuickly("qualitykarmalimit", ref _intQualityKarmaLimit)
                     && BuildMethodUsesPriorityTables)
                     _intQualityKarmaLimit = _intBuildPoints;
-                objXmlNode.TryGetStringFieldQuickly("priorityarray", ref _strPriorityArray);
-                objXmlNode.TryGetStringFieldQuickly("prioritytable", ref _strPriorityTable);
-                objXmlNode.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
                 if (!objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("availability", ref _intAvailability);
                 if (!objXmlNode.TryGetInt32FieldQuickly("maxmartialarts", ref _intMaxMartialArts))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("maxmartialarts", ref _intMaxMartialArts);
                 if (!objXmlNode.TryGetInt32FieldQuickly("maxmartialtechniques", ref _intMaxMartialTechniques))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("maxmartialtechniques", ref _intMaxMartialTechniques);
-                objXmlNode.TryGetDecFieldQuickly("nuyencarryover", ref _decNuyenCarryover);
-                objXmlNode.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
 
                 _setBannedWareGrades.Clear();
                 foreach (XPathNavigator xmlGrade in objXmlNode.SelectAndCacheExpression("bannedwaregrades/grade", token))
@@ -4175,14 +2829,6 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (objXmlNode.TryGetStringFieldQuickly("id", ref strId) && Guid.TryParse(strId, out Guid guidTemp))
                     _guiSourceId = guidTemp;
-                // Setting name.
-                objXmlNode.TryGetStringFieldQuickly("name", ref _strName);
-                // License Restricted items.
-                objXmlNode.TryGetBoolFieldQuickly("licenserestricted", ref _blnLicenseRestrictedItems);
-                // More Lethal Gameplay.
-                objXmlNode.TryGetBoolFieldQuickly("morelethalgameplay", ref _blnMoreLethalGameplay);
-                // Spirit Force Based on Total MAG.
-                objXmlNode.TryGetBoolFieldQuickly("spiritforcebasedontotalmag", ref _blnSpiritForceBasedOnTotalMAG);
                 // Nuyen per Build Point
                 if (!objXmlNode.TryGetDecFieldQuickly("nuyenperbpwftm", ref _decNuyenPerBPWftM))
                 {
@@ -4192,21 +2838,6 @@ namespace Chummer
                 else
                     objXmlNode.TryGetDecFieldQuickly("nuyenperbpwftp", ref _decNuyenPerBPWftP);
 
-                // Knucks use Unarmed
-                objXmlNode.TryGetBoolFieldQuickly("unarmedimprovementsapplytoweapons",
-                                                  ref _blnUnarmedImprovementsApplyToWeapons);
-                // Allow Initiation in Create Mode
-                objXmlNode.TryGetBoolFieldQuickly("allowinitiationincreatemode", ref _blnAllowInitiationInCreateMode);
-                // Use Points on Broken Groups
-                objXmlNode.TryGetBoolFieldQuickly("usepointsonbrokengroups", ref _blnUsePointsOnBrokenGroups);
-                // Don't Double the Cost of purchasing Qualities in Career Mode
-                objXmlNode.TryGetBoolFieldQuickly("dontdoublequalities", ref _blnDontDoubleQualityPurchaseCost);
-                // Don't Double the Cost of removing Qualities in Career Mode
-                objXmlNode.TryGetBoolFieldQuickly("dontdoublequalityrefunds", ref _blnDontDoubleQualityRefundCost);
-                // Ignore Art Requirements from Street Grimoire
-                objXmlNode.TryGetBoolFieldQuickly("ignoreart", ref _blnIgnoreArt);
-                // Use Cyberleg Stats for Movement
-                objXmlNode.TryGetBoolFieldQuickly("cyberlegmovement", ref _blnCyberlegMovement);
                 // XPath expression for contact points
                 if (!objXmlNode.TryGetStringFieldQuickly("contactpointsexpression", ref _strContactPointsExpression))
                 {
@@ -4222,11 +2853,10 @@ namespace Chummer
                         = strTemp + " * " + intTemp.ToString(GlobalSettings.InvariantCultureInfo);
                 }
 
-                // XPath expression for knowledge points
+                // Legacy shim for knowledge points expression
                 if (!objXmlNode.TryGetStringFieldQuickly("knowledgepointsexpression",
                                                          ref _strKnowledgePointsExpression))
                 {
-                    // Legacy shim
                     int intTemp = 2;
                     bool blnTemp = false;
                     strTemp = "({INTUnaug} + {LOGUnaug})";
@@ -4254,110 +2884,13 @@ namespace Chummer
                     _strChargenKarmaToNuyenExpression = '(' + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
                 }
 
-                // Various expressions used to determine certain character stats
+                // Legacy shim for registered sprite expression
                 if (!objXmlNode.TryGetStringFieldQuickly("registeredspriteexpression", ref _strRegisteredSpriteExpression))
-                    objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression); // Legacy shim
-                objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
-                objXmlNode.TryGetStringFieldQuickly("essencemodifierpostexpression", ref _strEssenceModifierPostExpression);
-                objXmlNode.TryGetStringFieldQuickly("liftlimitexpression", ref _strLiftLimitExpression);
-                objXmlNode.TryGetStringFieldQuickly("carrylimitexpression", ref _strCarryLimitExpression);
-                objXmlNode.TryGetStringFieldQuickly("encumbranceintervalexpression",
-                                                    ref _strEncumbranceIntervalExpression);
-                // Whether to apply certain penalties to encumbrance and, if so, how much per tick
-                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyphysicallimit",
-                                                  ref _blnDoEncumbrancePenaltyPhysicalLimit);
-                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltymovementspeed",
-                                                  ref _blnDoEncumbrancePenaltyMovementSpeed);
-                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyagility", ref _blnDoEncumbrancePenaltyAgility);
-                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyreaction", ref _blnDoEncumbrancePenaltyReaction);
-                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltywoundmodifier",
-                                                  ref _blnDoEncumbrancePenaltyWoundModifier);
-                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyphysicallimit",
-                                                   ref _intEncumbrancePenaltyPhysicalLimit);
-                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltymovementspeed",
-                                                   ref _intEncumbrancePenaltyMovementSpeed);
-                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyagility", ref _intEncumbrancePenaltyAgility);
-                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyreaction", ref _intEncumbrancePenaltyReaction);
-                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltywoundmodifier",
-                                                   ref _intEncumbrancePenaltyWoundModifier);
-                // Drone Armor Multiplier Enabled
-                objXmlNode.TryGetBoolFieldQuickly("dronearmormultiplierenabled", ref _blnDroneArmorMultiplierEnabled);
-                // Drone Armor Multiplier Value
-                objXmlNode.TryGetInt32FieldQuickly("dronearmorflatnumber", ref _intDroneArmorMultiplier);
-                // No Single Armor Encumbrance
-                objXmlNode.TryGetBoolFieldQuickly("nosinglearmorencumbrance", ref _blnNoSingleArmorEncumbrance);
-                // Ignore Armor Encumbrance
-                objXmlNode.TryGetBoolFieldQuickly("noarmorencumbrance", ref _blnNoArmorEncumbrance);
-                // Do not cap armor bonuses from accessories
-                objXmlNode.TryGetBoolFieldQuickly("uncappedarmoraccessorybonuses",
-                                                  ref _blnUncappedArmorAccessoryBonuses);
-                // Ignore Complex Form Limit
-                objXmlNode.TryGetBoolFieldQuickly("ignorecomplexformlimit", ref _blnIgnoreComplexFormLimit);
-                // Essence Loss Reduces Maximum Only.
-                objXmlNode.TryGetBoolFieldQuickly("esslossreducesmaximumonly", ref _blnESSLossReducesMaximumOnly);
-                // Allow Skill Regrouping.
-                objXmlNode.TryGetBoolFieldQuickly("allowskillregrouping", ref _blnAllowSkillRegrouping);
-                // Whether skill specializations break skill groups.
-                objXmlNode.TryGetBoolFieldQuickly("specializationsbreakskillgroups",
-                                                  ref _blnSpecializationsBreakSkillGroups);
-                // Metatype Costs Karma.
-                objXmlNode.TryGetBoolFieldQuickly("metatypecostskarma", ref _blnMetatypeCostsKarma);
-                // Allow characters to spend karma before attribute points.
-                objXmlNode.TryGetBoolFieldQuickly("reverseattributepriorityorder",
-                                                  ref _blnReverseAttributePriorityOrder);
-                // Metatype Costs Karma Multiplier.
-                objXmlNode.TryGetInt32FieldQuickly("metatypecostskarmamultiplier", ref _intMetatypeCostMultiplier);
-                // Limb Count.
-                objXmlNode.TryGetInt32FieldQuickly("limbcount", ref _intLimbCount);
-                // Exclude Limb Slot.
-                objXmlNode.TryGetStringFieldQuickly("excludelimbslot", ref _strExcludeLimbSlot);
-                // Allow Cyberware Essence Cost Discounts.
-                objXmlNode.TryGetBoolFieldQuickly("allowcyberwareessdiscounts", ref _blnAllowCyberwareESSDiscounts);
-                // Use Maximum Armor Modifications.
-                objXmlNode.TryGetBoolFieldQuickly("maximumarmormodifications", ref _blnMaximumArmorModifications);
-                // Allow Armor Degradation.
-                objXmlNode.TryGetBoolFieldQuickly("armordegredation", ref _blnArmorDegradation);
-                // Whether Karma costs for increasing Special Attributes is based on the shown value instead of actual value.
-                objXmlNode.TryGetBoolFieldQuickly("specialkarmacostbasedonshownvalue",
-                                                  ref _blnSpecialKarmaCostBasedOnShownValue);
-                // Allow more than 35 BP in Positive Qualities.
-                objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalities", ref _blnExceedPositiveQualities);
-                // Double all positive qualities in excess of the limit
-                objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalitiescostdoubled",
-                                                  ref _blnExceedPositiveQualitiesCostDoubled);
-
-                objXmlNode.TryGetBoolFieldQuickly("mysaddppcareer", ref _blnMysAdeptAllowPpCareer);
-
-                // Split MAG for Mystic Adepts so that they have a separate MAG rating for Adept Powers instead of using the special PP rules for mystic adepts
-                objXmlNode.TryGetBoolFieldQuickly("mysadeptsecondmagattribute", ref _blnMysAdeptSecondMAGAttribute);
-
-                // Grant a free specialization when taking a martial art.
-                objXmlNode.TryGetBoolFieldQuickly("freemartialartspecialization", ref _blnFreeMartialArtSpecialization);
-                // Can spend spells from Magic priority as power points
-                objXmlNode.TryGetBoolFieldQuickly("priorityspellsasadeptpowers", ref _blnPrioritySpellsAsAdeptPowers);
-                // Allow more than 35 BP in Negative Qualities.
-                objXmlNode.TryGetBoolFieldQuickly("exceednegativequalities", ref _blnExceedNegativeQualities);
-                // Character can still only receive 35 BP from Negative Qualities (though they can still add as many as they'd like).
+                    objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
                 if (!objXmlNode.TryGetBoolFieldQuickly("exceednegativequalitiesnobonus",
                                                        ref _blnExceedNegativeQualitiesNoBonus))
                     objXmlNode.TryGetBoolFieldQuickly("exceednegativequalitieslimit",
                                                       ref _blnExceedNegativeQualitiesNoBonus);
-                // Whether Restricted items have their cost multiplied.
-                objXmlNode.TryGetBoolFieldQuickly("multiplyrestrictedcost", ref _blnMultiplyRestrictedCost);
-                // Whether Forbidden items have their cost multiplied.
-                objXmlNode.TryGetBoolFieldQuickly("multiplyforbiddencost", ref _blnMultiplyForbiddenCost);
-                // Restricted cost multiplier.
-                objXmlNode.TryGetInt32FieldQuickly("restrictedcostmultiplier", ref _intRestrictedCostMultiplier);
-                // Forbidden cost multiplier.
-                objXmlNode.TryGetInt32FieldQuickly("forbiddencostmultiplier", ref _intForbiddenCostMultiplier);
-                // Only round essence when its value is displayed
-                objXmlNode.TryGetBoolFieldQuickly("donotroundessenceinternally", ref _blnDoNotRoundEssenceInternally);
-                // Allow use of enemies
-                objXmlNode.TryGetBoolFieldQuickly("enableenemytracking", ref _blnEnableEnemyTracking);
-                // Have enemies contribute to negative quality limit
-                objXmlNode.TryGetBoolFieldQuickly("enemykarmaqualitylimit", ref _blnEnemyKarmaQualityLimit);
-                // Format in which nuyen values are displayed
-                objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
                 // Format in which weight values are displayed
                 if (objXmlNode.TryGetStringFieldQuickly("weightformat", ref _strWeightFormat))
                 {
@@ -4394,54 +2927,12 @@ namespace Chummer
                     }
                 }
 
-                // Whether Capacity limits should be enforced.
-                objXmlNode.TryGetBoolFieldQuickly("enforcecapacity", ref _blnEnforceCapacity);
-                // Whether Recoil modifiers are restricted (AR 148).
-                objXmlNode.TryGetBoolFieldQuickly("restrictrecoil", ref _blnRestrictRecoil);
-                // Whether character are not restricted to the number of points they can invest in Nuyen.
-                objXmlNode.TryGetBoolFieldQuickly("unrestrictednuyen", ref _blnUnrestrictedNuyen);
-                // Whether Stacked Foci can go a combined Force higher than 6.
-                objXmlNode.TryGetBoolFieldQuickly("allowhigherstackedfoci", ref _blnAllowHigherStackedFoci);
-                // Whether the user can change the status of a Weapon Mod or Accessory being part of the base Weapon.
-                objXmlNode.TryGetBoolFieldQuickly("alloweditpartofbaseweapon", ref _blnAllowEditPartOfBaseWeapon);
-                // Whether the user can break Skill Groups while in Create Mode.
-                objXmlNode.TryGetBoolFieldQuickly("breakskillgroupsincreatemode",
-                                                  ref _blnStrictSkillGroupsInCreateMode);
-                // Whether the user is allowed to buy specializations with skill points for skills only bought with karma.
-                objXmlNode.TryGetBoolFieldQuickly("allowpointbuyspecializationsonkarmaskills",
-                                                  ref _blnAllowPointBuySpecializationsOnKarmaSkills);
-                // Whether any Detection Spell can be taken as Extended range version.
-                objXmlNode.TryGetBoolFieldQuickly("extendanydetectionspell", ref _blnExtendAnyDetectionSpell);
-                // Whether cyberlimbs are used for augmented attribute calculation.
-                objXmlNode.TryGetBoolFieldQuickly("dontusecyberlimbcalculation", ref _blnDontUseCyberlimbCalculation);
-                // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
-                objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma",
-                                                  ref _blnAlternateMetatypeAttributeKarma);
-                // Whether Bioware Suites can be created and added.
-                objXmlNode.TryGetBoolFieldQuickly("allowbiowaresuites", ref _blnAllowBiowareSuites);
-                // House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
-                objXmlNode.TryGetBoolFieldQuickly("freespiritpowerpointsmag", ref _blnFreeSpiritPowerPointsMAG);
-                // House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
-                objXmlNode.TryGetBoolFieldQuickly("compensateskillgroupkarmadifference",
-                                                  ref _blnCompensateSkillGroupKarmaDifference);
-                // Optional Rule: Whether Life Modules should automatically create a character back story.
-                objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _blnAutomaticBackstory);
-                // House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
-                objXmlNode.TryGetBoolFieldQuickly("usecalculatedpublicawareness", ref _blnUseCalculatedPublicAwareness);
-                // House Rule: Whether Improved Ability should be capped at 0.5 (false) or 1.5 (true) of the target skill's Learned Rating.
-                objXmlNode.TryGetBoolFieldQuickly("increasedimprovedabilitymodifier",
-                                                  ref _blnIncreasedImprovedAbilityMultiplier);
                 // House Rule: Whether lifestyles will give free grid subscriptions found in HT to players.
-                objXmlNode.TryGetBoolFieldQuickly("allowfreegrids", ref _blnAllowFreeGrids);
                 // House Rule: Whether Technomancers should be allowed to receive Schooling discounts in the same manner as Awakened.
-                objXmlNode.TryGetBoolFieldQuickly("allowtechnomancerschooling", ref _blnAllowTechnomancerSchooling);
-                // House Rule: Maximum value that cyberlimbs can have as a bonus on top of their Customization.
-                objXmlNode.TryGetInt32FieldQuickly("cyberlimbattributebonuscap", ref _intCyberlimbAttributeBonusCap);
                 if (!objXmlNode.TryGetBoolFieldQuickly("cyberlimbattributebonuscapoverride",
                                                        ref _blnCyberlimbAttributeBonusCapOverride))
                     _blnCyberlimbAttributeBonusCapOverride = _intCyberlimbAttributeBonusCap == 4;
                 // House/Optional Rule: Attribute values are allowed to go below 0 due to Essence Loss.
-                objXmlNode.TryGetBoolFieldQuickly("unclampattributeminimum", ref _blnUnclampAttributeMinimum);
                 // Following two settings used to be stored in global options, so they are fetched from the registry if they are not present
                 // Use Rigger 5.0 drone mods
                 if (!objXmlNode.TryGetBoolFieldQuickly("dronemods", ref _blnDroneMods))
@@ -4462,10 +2953,7 @@ namespace Chummer
                 }
 
                 // Maximum skill rating in character creation
-                objXmlNode.TryGetInt32FieldQuickly("maxskillratingcreate", ref _intMaxSkillRatingCreate);
                 // Maximum knowledge skill rating in character creation
-                objXmlNode.TryGetInt32FieldQuickly("maxknowledgeskillratingcreate",
-                                                   ref _intMaxKnowledgeSkillRatingCreate);
                 // Maximum skill rating
                 if (objXmlNode.TryGetInt32FieldQuickly("maxskillrating", ref _intMaxSkillRating)
                     && _intMaxSkillRatingCreate > _intMaxSkillRating)
@@ -4474,81 +2962,6 @@ namespace Chummer
                 if (objXmlNode.TryGetInt32FieldQuickly("maxknowledgeskillrating", ref _intMaxKnowledgeSkillRating)
                     && _intMaxKnowledgeSkillRatingCreate > _intMaxKnowledgeSkillRating)
                     _intMaxKnowledgeSkillRatingCreate = _intMaxKnowledgeSkillRating;
-
-                //House Rule: The DicePenalty per sustained spell or form
-                objXmlNode.TryGetInt32FieldQuickly("dicepenaltysustaining", ref _intDicePenaltySustaining);
-
-                // Whether Adepts can take Limited Spells as Barehanded Adept Powers.
-                objXmlNode.TryGetBoolFieldQuickly("allowlimitedspellsforbarehandedadept", ref _blnAllowLimitedSpellsForBareHandedAdept);
-
-                // Initiative dice
-                objXmlNode.TryGetInt32FieldQuickly("mininitiativedice", ref _intMinInitiativeDice);
-                objXmlNode.TryGetInt32FieldQuickly("maxinitiativedice", ref _intMaxInitiativeDice);
-                objXmlNode.TryGetInt32FieldQuickly("minastralinitiativedice", ref _intMinAstralInitiativeDice);
-                objXmlNode.TryGetInt32FieldQuickly("maxastralinitiativedice", ref _intMaxAstralInitiativeDice);
-                objXmlNode.TryGetInt32FieldQuickly("mincoldsiminitiativedice", ref _intMinColdSimInitiativeDice);
-                objXmlNode.TryGetInt32FieldQuickly("maxcoldsiminitiativedice", ref _intMaxColdSimInitiativeDice);
-                objXmlNode.TryGetInt32FieldQuickly("minhotsiminitiativedice", ref _intMinHotSimInitiativeDice);
-                objXmlNode.TryGetInt32FieldQuickly("maxhotsiminitiativedice", ref _intMaxHotSimInitiativeDice);
-
-                XPathNavigator xmlKarmaCostNode = objXmlNode.SelectSingleNodeAndCacheExpression("karmacost", token);
-                // Attempt to populate the Karma values.
-                if (xmlKarmaCostNode != null)
-                {
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaknospecialization", ref _intKarmaKnoSpecialization);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveknowledgeskill",
-                                                             ref _intKarmaImproveKnowledgeSkill);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveactiveskill",
-                                                             ref _intKarmaImproveActiveSkill);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveskillgroup", ref _intKarmaImproveSkillGroup);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspell", ref _intKarmaSpell);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewcomplexform", ref _intKarmaNewComplexForm);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewaiprogram", ref _intKarmaNewAIProgram);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewaiadvancedprogram",
-                                                             ref _intKarmaNewAIAdvancedProgram);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacontact", ref _intKarmaContact);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaenemy", ref _intKarmaEnemy);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacarryover", ref _intKarmaCarryover);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspirit", ref _intKarmaSpirit);
-                    if (!xmlKarmaCostNode.TryGetInt32FieldQuickly("karmatechnique", ref _intKarmaTechnique))
-                        xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamaneuver", ref _intKarmaTechnique);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmainitiation", ref _intKarmaInitiation);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmainitiationflat", ref _intKarmaInitiationFlat);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmametamagic", ref _intKarmaMetamagic);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmajoingroup", ref _intKarmaJoinGroup);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamysadpp", ref _intKarmaMysticAdeptPowerPoint);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspiritfettering", ref _intKarmaSpiritFettering);
-
-                    // Attempt to load the Karma costs for Foci.
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaalchemicalfocus", ref _intKarmaAlchemicalFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmabanishingfocus", ref _intKarmaBanishingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmabindingfocus", ref _intKarmaBindingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacenteringfocus", ref _intKarmaCenteringFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacounterspellingfocus",
-                                                             ref _intKarmaCounterspellingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmadisenchantingfocus",
-                                                             ref _intKarmaDisenchantingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaflexiblesignaturefocus",
-                                                             ref _intKarmaFlexibleSignatureFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamaskingfocus", ref _intKarmaMaskingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmapowerfocus", ref _intKarmaPowerFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaqifocus", ref _intKarmaQiFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaritualspellcastingfocus",
-                                                             ref _intKarmaRitualSpellcastingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspellcastingfocus", ref _intKarmaSpellcastingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspellshapingfocus", ref _intKarmaSpellShapingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmasummoningfocus", ref _intKarmaSummoningFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmasustainingfocus", ref _intKarmaSustainingFocus);
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaweaponfocus", ref _intKarmaWeaponFocus);
-                }
 
                 XPathNavigator xmlLegacyCharacterNavigator = null;
                 // Legacy sweep by looking at MRU
@@ -4854,20 +3267,16 @@ namespace Chummer
                     _eBuildMethod = eBuildMethod;
                 if (!objXmlNode.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints);
+                // Legacy shim for quality karma limit with fallback logic
                 if (!objXmlNode.TryGetInt32FieldQuickly("qualitykarmalimit", ref _intQualityKarmaLimit)
                     && BuildMethodUsesPriorityTables)
                     _intQualityKarmaLimit = _intBuildPoints;
-                objXmlNode.TryGetStringFieldQuickly("priorityarray", ref _strPriorityArray);
-                objXmlNode.TryGetStringFieldQuickly("prioritytable", ref _strPriorityTable);
-                objXmlNode.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
                 if (!objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("availability", ref _intAvailability);
                 if (!objXmlNode.TryGetInt32FieldQuickly("maxmartialarts", ref _intMaxMartialArts))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("maxmartialarts", ref _intMaxMartialArts);
                 if (!objXmlNode.TryGetInt32FieldQuickly("maxmartialtechniques", ref _intMaxMartialTechniques))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("maxmartialtechniques", ref _intMaxMartialTechniques);
-                objXmlNode.TryGetDecFieldQuickly("nuyencarryover", ref _decNuyenCarryover);
-                objXmlNode.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
 
                 _setBannedWareGrades.Clear();
                 foreach (XPathNavigator xmlGrade in objXmlNode.SelectAndCacheExpression("bannedwaregrades/grade", token))
@@ -4986,6 +3395,7 @@ namespace Chummer
         /// <summary>
         /// The priority configuration used in Priority mode.
         /// </summary>
+        [SettingsElement("priorityarray")]
         public string PriorityArray
         {
             get
@@ -5042,6 +3452,7 @@ namespace Chummer
         /// <summary>
         /// The priority table used in Priority or Sum-to-Ten mode.
         /// </summary>
+        [SettingsElement("prioritytable")]
         public string PriorityTable
         {
             get
@@ -5098,6 +3509,7 @@ namespace Chummer
         /// <summary>
         /// The total value of priorities used in Sum-to-Ten mode.
         /// </summary>
+        [SettingsElement("sumtoten")]
         public int SumtoTen
         {
             get
@@ -5167,6 +3579,7 @@ namespace Chummer
         /// <summary>
         /// Amount of Karma that is used to create the character.
         /// </summary>
+        [SettingsElement("buildpoints")]
         public int BuildKarma
         {
             get
@@ -5236,6 +3649,7 @@ namespace Chummer
         /// <summary>
         /// Limit on the amount of karma that can be spent at creation on qualities
         /// </summary>
+        [SettingsElement("qualitykarmalimit")]
         public int QualityKarmaLimit
         {
             get
@@ -5305,6 +3719,7 @@ namespace Chummer
         /// <summary>
         /// Maximum item Availability for new characters.
         /// </summary>
+        [SettingsElement("availability")]
         public int MaximumAvailability
         {
             get
@@ -5374,6 +3789,7 @@ namespace Chummer
         /// <summary>
         /// Maximum number of martial arts that for new characters.
         /// </summary>
+        [SettingsElement("maxmartialarts")]
         public int MaximumMartialArts
         {
             get
@@ -5443,6 +3859,7 @@ namespace Chummer
         /// <summary>
         /// Maximum number of martial techniques on a martial art for new characters.
         /// </summary>
+        [SettingsElement("maxmartialtechniques")]
         public int MaximumMartialTechniques
         {
             get
@@ -5512,6 +3929,7 @@ namespace Chummer
         /// <summary>
         /// Maximum number of Build Points that can be spent on Nuyen.
         /// </summary>
+        [SettingsElement("nuyenmaxbp")]
         public decimal NuyenMaximumBP
         {
             get
@@ -6838,6 +5256,7 @@ namespace Chummer
         /// <summary>
         /// Whether the More Lethal Gameplay optional rule is enabled.
         /// </summary>
+        [SettingsElement("morelethalgameplay")]
         public bool MoreLethalGameplay
         {
             get
@@ -6923,6 +5342,7 @@ namespace Chummer
         /// <summary>
         /// Whether to require licensing restricted items.
         /// </summary>
+        [SettingsElement("licenserestricted")]
         public bool LicenseRestricted
         {
             get
@@ -7008,6 +5428,7 @@ namespace Chummer
         /// <summary>
         /// Whether a Spirit's Maximum Force is based on the character's total MAG.
         /// </summary>
+        [SettingsElement("spiritforcebasedontotalmag")]
         public bool SpiritForceBasedOnTotalMAG
         {
             get
@@ -7051,6 +5472,7 @@ namespace Chummer
         /// <summary>
         /// Amount of Nuyen gained per BP spent when Working for the Man.
         /// </summary>
+        [SettingsElement("nuyenperbpwftm")]
         public decimal NuyenPerBPWftM
         {
             get
@@ -7136,6 +5558,7 @@ namespace Chummer
         /// <summary>
         /// Amount of Nuyen spent per BP gained when Working for the People.
         /// </summary>
+        [SettingsElement("nuyenperbpwftp")]
         public decimal NuyenPerBPWftP
         {
             get
@@ -7221,6 +5644,7 @@ namespace Chummer
         /// <summary>
         /// Whether UnarmedAP, UnarmedReach and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
         /// </summary>
+        [SettingsElement("unarmedimprovementsapplytoweapons")]
         public bool UnarmedImprovementsApplyToWeapons
         {
             get
@@ -7305,6 +5729,7 @@ namespace Chummer
         /// <summary>
         /// Whether characters may use Initiation/Submersion in Create mode.
         /// </summary>
+        [SettingsElement("allowinitiationincreatemode")]
         public bool AllowInitiationInCreateMode
         {
             get
@@ -7378,6 +5803,7 @@ namespace Chummer
         /// <summary>
         /// Whether characters can spend skill points on broken groups.
         /// </summary>
+        [SettingsElement("usepointsonbrokengroups")]
         public bool UsePointsOnBrokenGroups
         {
             get
@@ -7462,6 +5888,7 @@ namespace Chummer
         /// <summary>
         /// Whether characters in Career Mode should pay double for qualities.
         /// </summary>
+        [SettingsElement("dontdoublequalities")]
         public bool DontDoubleQualityPurchases
         {
             get
@@ -7546,6 +5973,7 @@ namespace Chummer
         /// <summary>
         /// Whether characters in Career Mode should pay double for removing Negative Qualities.
         /// </summary>
+        [SettingsElement("dontdoublequalityrefunds")]
         public bool DontDoubleQualityRefunds
         {
             get
@@ -7630,6 +6058,7 @@ namespace Chummer
         /// <summary>
         /// Whether to ignore the art requirements from street grimoire.
         /// </summary>
+        [SettingsElement("ignoreart")]
         public bool IgnoreArt
         {
             get
@@ -7714,6 +6143,7 @@ namespace Chummer
         /// <summary>
         /// Whether to ignore the limit on Complex Forms in Career mode.
         /// </summary>
+        [SettingsElement("ignorecomplexformlimit")]
         public bool IgnoreComplexFormLimit
         {
             get
@@ -7798,6 +6228,7 @@ namespace Chummer
         /// <summary>
         /// Whether to use stats from Cyberlegs when calculating movement rates
         /// </summary>
+        [SettingsElement("cyberlegmovement")]
         public bool CyberlegMovement
         {
             get
@@ -7882,6 +6313,7 @@ namespace Chummer
         /// <summary>
         /// Allow Mystic Adepts to increase their power points during career mode
         /// </summary>
+        [SettingsElement("mysaddppcareer")]
         public bool MysAdeptAllowPpCareer
         {
             get
@@ -8016,6 +6448,7 @@ namespace Chummer
         /// <summary>
         /// Split MAG for Mystic Adepts so that they have a separate MAG rating for Adept Powers instead of using the special PP rules for mystic adepts
         /// </summary>
+        [SettingsElement("mysadeptsecondmagattribute")]
         public bool MysAdeptSecondMAGAttribute
         {
             get
@@ -8183,6 +6616,7 @@ namespace Chummer
         /// <summary>
         /// The XPath expression to use to determine how many contact points the character has
         /// </summary>
+        [SettingsElement("contactpointsexpression")]
         public string ContactPointsExpression
         {
             get
@@ -8242,6 +6676,7 @@ namespace Chummer
         /// <summary>
         /// The XPath expression to use to determine how many knowledge points the character has
         /// </summary>
+        [SettingsElement("knowledgepointsexpression")]
         public string KnowledgePointsExpression
         {
             get
@@ -8301,6 +6736,7 @@ namespace Chummer
         /// <summary>
         /// The XPath expression to use to determine how much nuyen the character gets at character creation
         /// </summary>
+        [SettingsElement("chargenkarmatonuyenexpression")]
         public string ChargenKarmaToNuyenExpression
         {
             get
@@ -8375,6 +6811,7 @@ namespace Chummer
         /// <summary>
         /// The XPath expression to use to determine how many spirits a character can bind
         /// </summary>
+        [SettingsElement("boundspiritexpression")]
         public string BoundSpiritExpression
         {
             get
@@ -8434,6 +6871,7 @@ namespace Chummer
         /// <summary>
         /// The XPath expression to use to determine how many sprites a character can register
         /// </summary>
+        [SettingsElement("registeredspriteexpression")]
         public string RegisteredSpriteExpression
         {
             get
@@ -8493,6 +6931,7 @@ namespace Chummer
         /// <summary>
         /// The XPath expression to use (if any) to modify Essence modifiers after they have all been collected
         /// </summary>
+        [SettingsElement("essencemodifierpostexpression")]
         public string EssenceModifierPostExpression
         {
             get
@@ -8552,6 +6991,7 @@ namespace Chummer
         /// <summary>
         /// The Drone Body multiplier for maximal Armor
         /// </summary>
+        [SettingsElement("dronearmorflatnumber")]
         public int DroneArmorMultiplier
         {
             get
@@ -8620,6 +7060,7 @@ namespace Chummer
         /// <summary>
         /// Whether Armor
         /// </summary>
+        [SettingsElement("dronearmormultiplierenabled")]
         public bool DroneArmorMultiplierEnabled
         {
             get
@@ -8740,6 +7181,7 @@ namespace Chummer
         /// <summary>
         /// House Rule: Ignore Armor Encumbrance entirely.
         /// </summary>
+        [SettingsElement("noarmorencumbrance")]
         public bool NoArmorEncumbrance
         {
             get
@@ -8825,6 +7267,7 @@ namespace Chummer
         /// <summary>
         /// House Rule: Do not cap armor bonuses from accessories.
         /// </summary>
+        [SettingsElement("uncappedarmoraccessorybonuses")]
         public bool UncappedArmorAccessoryBonuses
         {
             get
@@ -8910,6 +7353,7 @@ namespace Chummer
         /// <summary>
         /// Whether Essence loss only reduces MAG/RES maximum value, not the current value.
         /// </summary>
+        [SettingsElement("esslossreducesmaximumonly")]
         public bool ESSLossReducesMaximumOnly
         {
             get
@@ -8995,6 +7439,7 @@ namespace Chummer
         /// <summary>
         /// Whether characters are allowed to put points into a Skill Group again once it is broken and all Ratings are the same.
         /// </summary>
+        [SettingsElement("allowskillregrouping")]
         public bool AllowSkillRegrouping
         {
             get
@@ -9080,6 +7525,7 @@ namespace Chummer
         /// <summary>
         /// Whether specializations in an active skill (permanently) break a skill group.
         /// </summary>
+        [SettingsElement("specializationsbreakskillgroups")]
         public bool SpecializationsBreakSkillGroups
         {
             get
@@ -9242,6 +7688,7 @@ namespace Chummer
         /// <summary>
         /// Setting name.
         /// </summary>
+        [SettingsElement("name")]
         public string Name
         {
             get
@@ -9373,6 +7820,7 @@ namespace Chummer
         /// <summary>
         /// Whether Metatypes cost Karma equal to their BP when creating a character with Karma.
         /// </summary>
+        [SettingsElement("metatypecostskarma")]
         public bool MetatypeCostsKarma
         {
             get
@@ -9398,6 +7846,7 @@ namespace Chummer
         /// <summary>
         /// Multiplier for Metatype Karma Costs when converting from BP to Karma.
         /// </summary>
+        [SettingsElement("metatypecostskarmamultiplier")]
         public int MetatypeCostsKarmaMultiplier
         {
             get
@@ -9466,6 +7915,7 @@ namespace Chummer
         /// <summary>
         /// Number of Limbs a standard character has.
         /// </summary>
+        [SettingsElement("limbcount")]
         public int LimbCount
         {
             get
@@ -9534,6 +7984,7 @@ namespace Chummer
         /// <summary>
         /// Exclude a particular Limb Slot from count towards the Limb Count.
         /// </summary>
+        [SettingsElement("excludelimbslot")]
         public string ExcludeLimbSlot
         {
             get
@@ -9602,6 +8053,7 @@ namespace Chummer
         /// <summary>
         /// Allow Cyberware Essence cost discounts.
         /// </summary>
+        [SettingsElement("allowcyberwareessdiscounts")]
         public bool AllowCyberwareESSDiscounts
         {
             get
@@ -9686,6 +8138,7 @@ namespace Chummer
         /// <summary>
         /// Whether Armor Degradation is allowed.
         /// </summary>
+        [SettingsElement("armordegredation")]
         public bool ArmorDegradation
         {
             get
@@ -9770,6 +8223,7 @@ namespace Chummer
         /// <summary>
         /// If true, karma costs will not decrease from reductions due to essence loss. Effectively, essence loss becomes an augmented modifier, not one that alters minima and maxima.
         /// </summary>
+        [SettingsElement("specialkarmacostbasedonshownvalue")]
         public bool SpecialKarmaCostBasedOnShownValue
         {
             get
@@ -9854,6 +8308,7 @@ namespace Chummer
         /// <summary>
         /// Whether characters can have more than 25 BP in Positive Qualities.
         /// </summary>
+        [SettingsElement("exceedpositivequalities")]
         public bool ExceedPositiveQualities
         {
             get
@@ -9980,6 +8435,7 @@ namespace Chummer
         /// <summary>
         /// If true, the karma cost of qualities is doubled after the initial 25.
         /// </summary>
+        [SettingsElement("exceedpositivequalitiescostdoubled")]
         public bool ExceedPositiveQualitiesCostDoubled
         {
             get
@@ -10064,6 +8520,7 @@ namespace Chummer
         /// <summary>
         /// Whether characters can have more than 25 BP in Negative Qualities.
         /// </summary>
+        [SettingsElement("exceednegativequalities")]
         public bool ExceedNegativeQualities
         {
             get
@@ -10191,6 +8648,7 @@ namespace Chummer
         /// <summary>
         /// If true, the character will not receive additional BP from Negative Qualities past the initial 25
         /// </summary>
+        [SettingsElement("exceednegativequalitiesnobonus")]
         public bool ExceedNegativeQualitiesNoBonus
         {
             get
@@ -10275,6 +8733,7 @@ namespace Chummer
         /// <summary>
         /// Whether Restricted items have their cost multiplied.
         /// </summary>
+        [SettingsElement("multiplyrestrictedcost")]
         public bool MultiplyRestrictedCost
         {
             get
@@ -10300,6 +8759,7 @@ namespace Chummer
         /// <summary>
         /// Whether Forbidden items have their cost multiplied.
         /// </summary>
+        [SettingsElement("multiplyforbiddencost")]
         public bool MultiplyForbiddenCost
         {
             get
@@ -10325,6 +8785,7 @@ namespace Chummer
         /// <summary>
         /// Cost multiplier for Restricted items.
         /// </summary>
+        [SettingsElement("restrictedcostmultiplier")]
         public int RestrictedCostMultiplier
         {
             get
@@ -10345,6 +8806,7 @@ namespace Chummer
         /// <summary>
         /// Cost multiplier for Forbidden items.
         /// </summary>
+        [SettingsElement("forbiddencostmultiplier")]
         public int ForbiddenCostMultiplier
         {
             get
@@ -10640,6 +9102,7 @@ namespace Chummer
         /// <summary>
         /// Format in which nuyen values should be displayed (does not include nuyen symbol).
         /// </summary>
+        [SettingsElement("nuyenformat")]
         public string NuyenFormat
         {
             get
@@ -10709,6 +9172,7 @@ namespace Chummer
         /// <summary>
         /// Format in which weight values should be displayed (does not include kg units).
         /// </summary>
+        [SettingsElement("weightformat")]
         public string WeightFormat
         {
             get
@@ -10906,6 +9370,7 @@ namespace Chummer
         /// <summary>
         /// The XPath expression to use to determine the maximum weight the character can lift in kg
         /// </summary>
+        [SettingsElement("liftlimitexpression")]
         public string LiftLimitExpression
         {
             get
@@ -10966,6 +9431,7 @@ namespace Chummer
         /// <summary>
         /// The XPath expression to use to determine the maximum weight the character can carry in kg
         /// </summary>
+        [SettingsElement("carrylimitexpression")]
         public string CarryLimitExpression
         {
             get
@@ -11026,6 +9492,7 @@ namespace Chummer
         /// <summary>
         /// The XPath expression to use to determine the amount of weight necessary to increase encumbrance penalties by one tick
         /// </summary>
+        [SettingsElement("encumbranceintervalexpression")]
         public string EncumbranceIntervalExpression
         {
             get
@@ -11086,6 +9553,7 @@ namespace Chummer
         /// <summary>
         /// Should we apply a penalty to Physical Limit from encumbrance?
         /// </summary>
+        [SettingsElement("doencumbrancepenaltyphysicallimit")]
         public bool DoEncumbrancePenaltyPhysicalLimit
         {
             get
@@ -11171,6 +9639,7 @@ namespace Chummer
         /// <summary>
         /// The penalty to Physical Limit that should come from one encumbrance tick
         /// </summary>
+        [SettingsElement("encumbrancepenaltyphysicallimit")]
         public int EncumbrancePenaltyPhysicalLimit
         {
             get
@@ -11240,6 +9709,7 @@ namespace Chummer
         /// <summary>
         /// Should we apply a penalty to Movement Speeds from encumbrance?
         /// </summary>
+        [SettingsElement("doencumbrancepenaltymovementspeed")]
         public bool DoEncumbrancePenaltyMovementSpeed
         {
             get
@@ -11325,6 +9795,7 @@ namespace Chummer
         /// <summary>
         /// The penalty to Movement Speeds that should come from one encumbrance tick
         /// </summary>
+        [SettingsElement("encumbrancepenaltymovementspeed")]
         public int EncumbrancePenaltyMovementSpeed
         {
             get
@@ -11394,6 +9865,7 @@ namespace Chummer
         /// <summary>
         /// Should we apply a penalty to Agility from encumbrance?
         /// </summary>
+        [SettingsElement("doencumbrancepenaltyagility")]
         public bool DoEncumbrancePenaltyAgility
         {
             get
@@ -11479,6 +9951,7 @@ namespace Chummer
         /// <summary>
         /// The penalty to Agility that should come from one encumbrance tick
         /// </summary>
+        [SettingsElement("encumbrancepenaltyagility")]
         public int EncumbrancePenaltyAgility
         {
             get
@@ -11548,6 +10021,7 @@ namespace Chummer
         /// <summary>
         /// Should we apply a penalty to Reaction from encumbrance?
         /// </summary>
+        [SettingsElement("doencumbrancepenaltyreaction")]
         public bool DoEncumbrancePenaltyReaction
         {
             get
@@ -11633,6 +10107,7 @@ namespace Chummer
         /// <summary>
         /// The penalty to Reaction that should come from one encumbrance tick
         /// </summary>
+        [SettingsElement("encumbrancepenaltyreaction")]
         public int EncumbrancePenaltyReaction
         {
             get
@@ -11702,6 +10177,7 @@ namespace Chummer
         /// <summary>
         /// Should we apply a penalty to Physical Active and Weapon skills from encumbrance?
         /// </summary>
+        [SettingsElement("doencumbrancepenaltywoundmodifier")]
         public bool DoEncumbrancePenaltyWoundModifier
         {
             get
@@ -11787,6 +10263,7 @@ namespace Chummer
         /// <summary>
         /// The penalty to Physical Active and Weapon skills that should come from one encumbrance tick
         /// </summary>
+        [SettingsElement("encumbrancepenaltywoundmodifier")]
         public int EncumbrancePenaltyWoundModifier
         {
             get
@@ -11858,6 +10335,7 @@ namespace Chummer
         /// <summary>
         /// Number of decimal places to round to when calculating Essence.
         /// </summary>
+        [SettingsElement("essencedecimals")]
         public int EssenceDecimals
         {
             get
@@ -11984,6 +10462,7 @@ namespace Chummer
         /// <summary>
         /// Display format for Essence.
         /// </summary>
+        [SettingsElement("essenceformat")]
         public string EssenceFormat
         {
             get
@@ -12071,6 +10550,7 @@ namespace Chummer
         /// <summary>
         /// Only round essence when its value is displayed
         /// </summary>
+        [SettingsElement("donotroundessenceinternally")]
         public bool DontRoundEssenceInternally
         {
             get
@@ -12155,6 +10635,7 @@ namespace Chummer
         /// <summary>
         /// Allow Enemies to be bought and tracked like in 4e?
         /// </summary>
+        [SettingsElement("enableenemytracking")]
         public bool EnableEnemyTracking
         {
             get
@@ -12239,6 +10720,7 @@ namespace Chummer
         /// <summary>
         /// Do Enemies count towards Negative Quality Karma limit in create mode?
         /// </summary>
+        [SettingsElement("enemykarmaqualitylimit")]
         public bool EnemyKarmaQualityLimit
         {
             get
@@ -12324,6 +10806,7 @@ namespace Chummer
         /// <summary>
         /// Whether Capacity limits should be enforced.
         /// </summary>
+        [SettingsElement("enforcecapacity")]
         public bool EnforceCapacity
         {
             get
@@ -12409,6 +10892,7 @@ namespace Chummer
         /// <summary>
         /// Whether Recoil modifiers are restricted (AR 148).
         /// </summary>
+        [SettingsElement("restrictrecoil")]
         public bool RestrictRecoil
         {
             get
@@ -12494,6 +10978,7 @@ namespace Chummer
         /// <summary>
         /// Whether characters are unrestricted in the number of points they can invest in Nuyen.
         /// </summary>
+        [SettingsElement("unrestrictednuyen")]
         public bool UnrestrictedNuyen
         {
             get
@@ -12578,6 +11063,7 @@ namespace Chummer
         /// <summary>
         /// Whether Stacked Foci can have a combined Force higher than 6.
         /// </summary>
+        [SettingsElement("allowhigherstackedfoci")]
         public bool AllowHigherStackedFoci
         {
             get
@@ -12603,6 +11089,7 @@ namespace Chummer
         /// <summary>
         /// Whether the user can change the Part of Base Weapon flag for a Weapon Accessory or Mod.
         /// </summary>
+        [SettingsElement("alloweditpartofbaseweapon")]
         public bool AllowEditPartOfBaseWeapon
         {
             get
@@ -12628,6 +11115,7 @@ namespace Chummer
         /// <summary>
         /// Whether the user is allowed to break Skill Groups while in Create Mode.
         /// </summary>
+        [SettingsElement("breakskillgroupsincreatemode")]
         public bool StrictSkillGroupsInCreateMode
         {
             get
@@ -12712,6 +11200,7 @@ namespace Chummer
         /// <summary>
         /// Whether the user is allowed to buy specializations with skill points for skills only bought with karma.
         /// </summary>
+        [SettingsElement("allowpointbuyspecializationsonkarmaskills")]
         public bool AllowPointBuySpecializationsOnKarmaSkills
         {
             get
@@ -12797,6 +11286,7 @@ namespace Chummer
         /// <summary>
         /// Whether any Detection Spell can be taken as Extended range version.
         /// </summary>
+        [SettingsElement("extendanydetectionspell")]
         public bool ExtendAnyDetectionSpell
         {
             get
@@ -12839,6 +11329,7 @@ namespace Chummer
         /// <summary>
         /// Whether the UI should allow selecting Limited versions of spells (e.g. for Barehanded Adept).
         /// </summary>
+        [SettingsElement("allowlimitedspellsforbarehandedadept")]
         public bool AllowLimitedSpellsForBareHandedAdept
         {
             get
@@ -12965,6 +11456,7 @@ namespace Chummer
         /// <summary>
         /// Whether cyberlimbs stats are used in attribute calculation
         /// </summary>
+        [SettingsElement("dontusecyberlimbcalculation")]
         public bool DontUseCyberlimbCalculation
         {
             get
@@ -13049,6 +11541,7 @@ namespace Chummer
         /// <summary>
         /// House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
         /// </summary>
+        [SettingsElement("alternatemetatypeattributekarma")]
         public bool AlternateMetatypeAttributeKarma
         {
             get
@@ -13133,6 +11626,7 @@ namespace Chummer
         /// <summary>
         /// House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
         /// </summary>
+        [SettingsElement("compensateskillgroupkarmadifference")]
         public bool CompensateSkillGroupKarmaDifference
         {
             get
@@ -13217,6 +11711,7 @@ namespace Chummer
         /// <summary>
         /// Whether Bioware Suites can be added and created.
         /// </summary>
+        [SettingsElement("allowbiowaresuites")]
         public bool AllowBiowareSuites
         {
             get
@@ -13242,6 +11737,7 @@ namespace Chummer
         /// <summary>
         /// House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
         /// </summary>
+        [SettingsElement("freespiritpowerpointsmag")]
         public bool FreeSpiritPowerPointsMAG
         {
             get
@@ -13326,6 +11822,7 @@ namespace Chummer
         /// <summary>
         /// House rule: Attribute values are clamped to 0 or are allowed to go below 0 due to Essence Loss.
         /// </summary>
+        [SettingsElement("unclampattributeminimum")]
         public bool UnclampAttributeMinimum
         {
             get
@@ -13351,6 +11848,7 @@ namespace Chummer
         /// <summary>
         /// Use Rigger 5.0 drone modding rules
         /// </summary>
+        [SettingsElement("dronemods")]
         public bool DroneMods
         {
             get
@@ -13435,6 +11933,7 @@ namespace Chummer
         /// <summary>
         /// Apply drone mod attribute maximum rule to Pilot, too
         /// </summary>
+        [SettingsElement("dronemodsmaximumpilot")]
         public bool DroneModsMaximumPilot
         {
             get
@@ -13520,6 +12019,7 @@ namespace Chummer
         /// <summary>
         /// Maximum number of attributes at metatype maximum in character creation
         /// </summary>
+        [SettingsElement("maxnumbermaxattributescreate")]
         public int MaxNumberMaxAttributesCreate
         {
             get
@@ -13588,6 +12088,7 @@ namespace Chummer
         /// <summary>
         /// Maximum skill rating in character creation
         /// </summary>
+        [SettingsElement("maxskillratingcreate")]
         public int MaxSkillRatingCreate
         {
             get
@@ -13656,6 +12157,7 @@ namespace Chummer
         /// <summary>
         /// Maximum knowledge skill rating in character creation
         /// </summary>
+        [SettingsElement("maxknowledgeskillratingcreate")]
         public int MaxKnowledgeSkillRatingCreate
         {
             get
@@ -13724,6 +12226,7 @@ namespace Chummer
         /// <summary>
         /// Maximum skill rating
         /// </summary>
+        [SettingsElement("maxskillrating")]
         public int MaxSkillRating
         {
             get
@@ -13810,6 +12313,7 @@ namespace Chummer
         /// <summary>
         /// Maximum knowledge skill rating
         /// </summary>
+        [SettingsElement("maxknowledgeskillrating")]
         public int MaxKnowledgeSkillRating
         {
             get
@@ -13897,6 +12401,7 @@ namespace Chummer
         /// <summary>
         /// Whether Life Modules should automatically generate a character background.
         /// </summary>
+        [SettingsElement("autobackstory")]
         public bool AutomaticBackstory
         {
             get
@@ -13940,6 +12445,7 @@ namespace Chummer
         /// <summary>
         /// Whether to use the rules from SR4 to calculate Public Awareness.
         /// </summary>
+        [SettingsElement("usecalculatedpublicawareness")]
         public bool UseCalculatedPublicAwareness
         {
             get
@@ -14026,6 +12532,7 @@ namespace Chummer
         /// <summary>
         /// Whether Martial Arts grant a free specialization in a skill.
         /// </summary>
+        [SettingsElement("freemartialartspecialization")]
         public bool FreeMartialArtSpecialization
         {
             get
@@ -14111,6 +12618,7 @@ namespace Chummer
         /// <summary>
         /// Whether Spells from Magic Priority can also be spent on power points.
         /// </summary>
+        [SettingsElement("priorityspellsasadeptpowers")]
         public bool PrioritySpellsAsAdeptPowers
         {
             get
@@ -14237,6 +12745,7 @@ namespace Chummer
         /// <summary>
         /// Allows characters to spend their Karma before Priority Points.
         /// </summary>
+        [SettingsElement("reverseattributepriorityorder")]
         public bool ReverseAttributePriorityOrder
         {
             get
@@ -14322,6 +12831,7 @@ namespace Chummer
         /// <summary>
         /// Whether the Improved Ability power (SR5 309) should be capped at 0.5 of current Rating or 1.5 of current Rating.
         /// </summary>
+        [SettingsElement("increasedimprovedabilitymultiplier")]
         public bool IncreasedImprovedAbilityMultiplier
         {
             get
@@ -14406,6 +12916,7 @@ namespace Chummer
         /// <summary>
         /// Whether lifestyles will automatically give free grid subscriptions found in (HT)
         /// </summary>
+        [SettingsElement("allowfreegrids")]
         public bool AllowFreeGrids
         {
             get
@@ -14490,6 +13001,7 @@ namespace Chummer
         /// <summary>
         /// Whether Technomancers are allowed to use the Schooling discount on their initiations in the same manner as awakened.
         /// </summary>
+        [SettingsElement("allowtechnomancerschooling")]
         public bool AllowTechnomancerSchooling
         {
             get
@@ -14574,6 +13086,7 @@ namespace Chummer
         /// <summary>
         /// Override the maximum value of bonuses that can affect cyberlimbs.
         /// </summary>
+        [SettingsElement("cyberlimbattributebonuscapoverride")]
         public bool CyberlimbAttributeBonusCapOverride
         {
             get
@@ -14665,6 +13178,7 @@ namespace Chummer
         /// <summary>
         /// Maximum value of bonuses that can affect cyberlimbs.
         /// </summary>
+        [SettingsElement("CyberlimbAttributeBonusCap")]
         public int CyberlimbAttributeBonusCap
         {
             get
@@ -14734,6 +13248,7 @@ namespace Chummer
         /// <summary>
         /// The Dice Penalty per Spell
         /// </summary>
+        [SettingsElement("dicepenaltysustaining")]
         public int DicePenaltySustaining
         {
             get
@@ -14758,6 +13273,7 @@ namespace Chummer
         /// <summary>
         /// Minimum number of initiative dice
         /// </summary>
+        [SettingsElement("mininitiativedice")]
         public int MinInitiativeDice
         {
             get
@@ -14827,6 +13343,7 @@ namespace Chummer
         /// <summary>
         /// Maximum number of initiative dice
         /// </summary>
+        [SettingsElement("maxinitiativedice")]
         public int MaxInitiativeDice
         {
             get
@@ -14896,6 +13413,7 @@ namespace Chummer
         /// <summary>
         /// Minimum number of initiative dice in Astral
         /// </summary>
+        [SettingsElement("minastralinitiativedice")]
         public int MinAstralInitiativeDice
         {
             get
@@ -14965,6 +13483,7 @@ namespace Chummer
         /// <summary>
         /// Maximum number of initiative dice in Astral
         /// </summary>
+        [SettingsElement("maxastralinitiativedice")]
         public int MaxAstralInitiativeDice
         {
             get
@@ -15034,6 +13553,7 @@ namespace Chummer
         /// <summary>
         /// Minimum number of initiative dice in cold sim VR
         /// </summary>
+        [SettingsElement("mincoldsiminitiativedice")]
         public int MinColdSimInitiativeDice
         {
             get
@@ -15103,6 +13623,7 @@ namespace Chummer
         /// <summary>
         /// Maximum number of initiative dice in cold sim VR
         /// </summary>
+        [SettingsElement("maxcoldsiminitiativedice")]
         public int MaxColdSimInitiativeDice
         {
             get
@@ -15172,6 +13693,7 @@ namespace Chummer
         /// <summary>
         /// Minimum number of initiative dice in hot sim VR
         /// </summary>
+        [SettingsElement("minhotsiminitiativedice")]
         public int MinHotSimInitiativeDice
         {
             get
@@ -15241,6 +13763,7 @@ namespace Chummer
         /// <summary>
         /// Maximum number of initiative dice in hot sim VR
         /// </summary>
+        [SettingsElement("maxhotsiminitiativedice")]
         public int MaxHotSimInitiativeDice
         {
             get
@@ -15314,6 +13837,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to improve an Attribute = New Rating X this value.
         /// </summary>
+        [SettingsElement("karmacost/karmaattribute")]
         public int KarmaAttribute
         {
             get
@@ -15382,6 +13906,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to purchase a Quality = BP Cost x this value.
         /// </summary>
+        [SettingsElement("karmacost/karmaquality")]
         public int KarmaQuality
         {
             get
@@ -15450,6 +13975,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to purchase a Specialization for an active skill = this value.
         /// </summary>
+        [SettingsElement("karmacost/karmaspecialization")]
         public int KarmaSpecialization
         {
             get
@@ -15518,6 +14044,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to purchase a Specialization for a knowledge skill = this value.
         /// </summary>
+        [SettingsElement("karmacost/karmaknospecialization")]
         public int KarmaKnowledgeSpecialization
         {
             get
@@ -15586,6 +14113,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to purchase a new Knowledge Skill = this value.
         /// </summary>
+        [SettingsElement("karmacost/karmanewknowledgeskill")]
         public int KarmaNewKnowledgeSkill
         {
             get
@@ -15654,6 +14182,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to purchase a new Active Skill = this value.
         /// </summary>
+        [SettingsElement("karmacost/karmanewactiveskill")]
         public int KarmaNewActiveSkill
         {
             get
@@ -15722,6 +14251,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to purchase a new Skill Group = this value.
         /// </summary>
+        [SettingsElement("karmacost/karmanewskillgroup")]
         public int KarmaNewSkillGroup
         {
             get
@@ -15790,6 +14320,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to improve a Knowledge Skill = New Rating x this value.
         /// </summary>
+        [SettingsElement("karmacost/karmaimproveknowledgeskill")]
         public int KarmaImproveKnowledgeSkill
         {
             get
@@ -15858,6 +14389,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to improve an Active Skill = New Rating x this value.
         /// </summary>
+        [SettingsElement("karmacost/karmaimproveactiveskill")]
         public int KarmaImproveActiveSkill
         {
             get
@@ -15926,6 +14458,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to improve a Skill Group = New Rating x this value.
         /// </summary>
+        [SettingsElement("karmacost/karmaimproveskillgroup")]
         public int KarmaImproveSkillGroup
         {
             get
@@ -15994,6 +14527,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for each Spell = this value.
         /// </summary>
+        [SettingsElement("karmacost/karmaspell")]
         public int KarmaSpell
         {
             get
@@ -16062,6 +14596,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for each Enhancement = this value.
         /// </summary>
+        [SettingsElement("karmacost/karmaenhancement")]
         public int KarmaEnhancement
         {
             get
@@ -16130,6 +14665,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for a new Complex Form = this value.
         /// </summary>
+        [SettingsElement("karmacost/karmanewcomplexform")]
         public int KarmaNewComplexForm
         {
             get
@@ -16198,6 +14734,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for a new AI Program
         /// </summary>
+        [SettingsElement("karmacost/karmanewaiprogram")]
         public int KarmaNewAIProgram
         {
             get
@@ -16266,6 +14803,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for a new AI Advanced Program
         /// </summary>
+        [SettingsElement("karmacost/karmanewaiadvancedprogram")]
         public int KarmaNewAIAdvancedProgram
         {
             get
@@ -16334,6 +14872,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for a Contact = (Connection + Loyalty) x this value.
         /// </summary>
+        [SettingsElement("karmacost/karmacontact")]
         public int KarmaContact
         {
             get
@@ -16402,6 +14941,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for an Enemy = (Connection + Loyalty) x this value.
         /// </summary>
+        [SettingsElement("karmacost/karmaenemy")]
         public int KarmaEnemy
         {
             get
@@ -16470,6 +15010,7 @@ namespace Chummer
         /// <summary>
         /// Maximum amount of remaining Karma that is carried over to the character once they are created.
         /// </summary>
+        [SettingsElement("karmacost/karmacarryover")]
         public int KarmaCarryover
         {
             get
@@ -16538,6 +15079,7 @@ namespace Chummer
         /// <summary>
         /// Maximum amount of remaining Nuyen that is carried over to the character once they are created.
         /// </summary>
+        [SettingsElement("nuyencarryover")]
         public decimal NuyenCarryover
         {
             get
@@ -16622,6 +15164,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for a Spirit = this value.
         /// </summary>
+        [SettingsElement("karmacost/karmaspirit")]
         public int KarmaSpirit
         {
             get
@@ -16690,6 +15233,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for a Martial Arts Technique = this value.
         /// </summary>
+        [SettingsElement("karmacost/karmatechnique")]
         public int KarmaTechnique
         {
             get
@@ -16758,6 +15302,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for an Initiation = KarmaInitiationFlat + (New Rating x this value).
         /// </summary>
+        [SettingsElement("karmacost/karmainitiation")]
         public int KarmaInitiation
         {
             get
@@ -16826,6 +15371,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for an Initiation = this value + (New Rating x KarmaInitiation).
         /// </summary>
+        [SettingsElement("karmacost/karmainitiationflat")]
         public int KarmaInitiationFlat
         {
             get
@@ -16894,6 +15440,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for a Metamagic = this value.
         /// </summary>
+        [SettingsElement("karmacost/karmametamagic")]
         public int KarmaMetamagic
         {
             get
@@ -16962,6 +15509,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to join a Group = this value.
         /// </summary>
+        [SettingsElement("karmacost/karmajoingroup")]
         public int KarmaJoinGroup
         {
             get
@@ -17030,6 +15578,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost to leave a Group = this value.
         /// </summary>
+        [SettingsElement("karmacost/karmaleavegroup")]
         public int KarmaLeaveGroup
         {
             get
@@ -17098,6 +15647,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Alchemical Foci.
         /// </summary>
+        [SettingsElement("karmacost/karmaalchemicalfocus")]
         public int KarmaAlchemicalFocus
         {
             get
@@ -17166,6 +15716,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Banishing Foci.
         /// </summary>
+        [SettingsElement("karmacost/karmabanishingfocus")]
         public int KarmaBanishingFocus
         {
             get
@@ -17234,6 +15785,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Binding Foci.
         /// </summary>
+        [SettingsElement("karmacost/karmabindingfocus")]
         public int KarmaBindingFocus
         {
             get
@@ -17302,6 +15854,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Centering Foci.
         /// </summary>
+        [SettingsElement("karmacost/karmacenteringfocus")]
         public int KarmaCenteringFocus
         {
             get
@@ -17370,6 +15923,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Counterspelling Foci.
         /// </summary>
+        [SettingsElement("karmacost/karmacounterspellingfocus")]
         public int KarmaCounterspellingFocus
         {
             get
@@ -17438,6 +15992,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Disenchanting Foci.
         /// </summary>
+        [SettingsElement("karmacost/karmadisenchantingfocus")]
         public int KarmaDisenchantingFocus
         {
             get
@@ -17506,6 +16061,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Flexible Signature Foci.
         /// </summary>
+        [SettingsElement("karmacost/karmaflexiblesignaturefocus")]
         public int KarmaFlexibleSignatureFocus
         {
             get
@@ -17574,6 +16130,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Masking Foci.
         /// </summary>
+        [SettingsElement("karmacost/karmamaskingfocus")]
         public int KarmaMaskingFocus
         {
             get
@@ -17642,6 +16199,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Power Foci.
         /// </summary>
+        [SettingsElement("karmacost/karmapowerfocus")]
         public int KarmaPowerFocus
         {
             get
@@ -17707,6 +16265,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Qi Foci.
         /// </summary>
+        [SettingsElement("karmacost/karmaqifocus")]
         public int KarmaQiFocus
         {
             get
@@ -17772,6 +16331,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Ritual Spellcasting Foci.
         /// </summary>
+        [SettingsElement("karmacost/karmaritualspellcastingfocus")]
         public int KarmaRitualSpellcastingFocus
         {
             get
@@ -17840,6 +16400,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Spellcasting Foci.
         /// </summary>
+        [SettingsElement("karmacost/karmaspellcastingfocus")]
         public int KarmaSpellcastingFocus
         {
             get
@@ -17908,6 +16469,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Spell Shaping Foci.
         /// </summary>
+        [SettingsElement("karmacost/karmaspellshapingfocus")]
         public int KarmaSpellShapingFocus
         {
             get
@@ -17976,6 +16538,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Summoning Foci.
         /// </summary>
+        [SettingsElement("karmacost/karmasummoningfocus")]
         public int KarmaSummoningFocus
         {
             get
@@ -18044,6 +16607,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Sustaining Foci.
         /// </summary>
+        [SettingsElement("karmacost/karmasustainingfocus")]
         public int KarmaSustainingFocus
         {
             get
@@ -18112,6 +16676,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for Weapon Foci.
         /// </summary>
+        [SettingsElement("karmacost/karmaweaponfocus")]
         public int KarmaWeaponFocus
         {
             get
@@ -18180,6 +16745,7 @@ namespace Chummer
         /// <summary>
         /// How much Karma a single Power Point costs for a Mystic Adept.
         /// </summary>
+        [SettingsElement("karmacost/karmamysadpp")]
         public int KarmaMysticAdeptPowerPoint
         {
             get
@@ -18248,6 +16814,7 @@ namespace Chummer
         /// <summary>
         /// Karma cost for fetting a spirit (gets multiplied by Force).
         /// </summary>
+        [SettingsElement("karmacost/karmaspiritfettering")]
         public int KarmaSpiritFettering
         {
             get
@@ -18320,6 +16887,7 @@ namespace Chummer
         /// <summary>
         /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
         /// </summary>
+        [SettingsElement("karmamaginitiationgrouppercent")]
         public decimal KarmaMAGInitiationGroupPercent
         {
             get
@@ -18363,6 +16931,7 @@ namespace Chummer
         /// <summary>
         /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if a member of a Group.
         /// </summary>
+        [SettingsElement("karmaresinitiationgrouppercent")]
         public decimal KarmaRESInitiationGroupPercent
         {
             get
@@ -18406,6 +16975,7 @@ namespace Chummer
         /// <summary>
         /// Percentage by which adding an Initiate Grade to an Awakened is discounted if performing an Ordeal.
         /// </summary>
+        [SettingsElement("karmamaginitiationordealpercent")]
         public decimal KarmaMAGInitiationOrdealPercent
         {
             get
@@ -18449,6 +17019,7 @@ namespace Chummer
         /// <summary>
         /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
         /// </summary>
+        [SettingsElement("karmaresinitiationordealpercent")]
         public decimal KarmaRESInitiationOrdealPercent
         {
             get
@@ -18492,6 +17063,7 @@ namespace Chummer
         /// <summary>
         /// Percentage by which adding an Initiate Grade to an Awakened is discounted if receiving schooling.
         /// </summary>
+        [SettingsElement("karmamaginitiationschoolingpercent")]
         public decimal KarmaMAGInitiationSchoolingPercent
         {
             get
@@ -18535,6 +17107,7 @@ namespace Chummer
         /// <summary>
         /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if receiving schooling.
         /// </summary>
+        [SettingsElement("karmaresinitiationschoolingpercent")]
         public decimal KarmaRESInitiationSchoolingPercent
         {
             get
