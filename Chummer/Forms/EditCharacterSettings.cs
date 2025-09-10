@@ -713,9 +713,11 @@ namespace Chummer
                     return;
                 }
 
-                if (_blnForceMasterIndexRepopulateOnClose && Program.MainForm.MasterIndex != null)
+                if (_blnForceMasterIndexRepopulateOnClose)
                 {
-                    await Program.MainForm.MasterIndex.ForceRepopulateCharacterSettings().ConfigureAwait(false);
+                    MasterIndex frmMasterIndex = Program.MainForm?.MasterIndex;
+                    if (frmMasterIndex != null)
+                        await frmMasterIndex.ForceRepopulateCharacterSettings().ConfigureAwait(false);
                 }
 
                 // Now we close the original caller (weird async FormClosing event issue workaround)
