@@ -1509,7 +1509,6 @@ namespace Chummer.Backend.Equipment
                     bool blnAllowRight = true;
                     // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
                     // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
-                    // Not using async-await because this is trivial code and I do not want to infect everything that calls this with async as well.
                     Utils.RunWithoutThreadLock(
                         () =>
                         {
@@ -1691,9 +1690,7 @@ namespace Chummer.Backend.Equipment
 
                     bool blnAllowLeft = true;
                     bool blnAllowRight = true;
-                    // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
-                    // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
-                    // Not using async-await because this is trivial code and I do not want to infect everything that calls this with async as well.
+                    // Potentially expensive checks that can (and therefore should) be parallelized.
                     await Task.WhenAll(
                         Task.Run(async () =>
                         {

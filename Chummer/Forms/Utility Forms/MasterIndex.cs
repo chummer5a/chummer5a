@@ -498,7 +498,6 @@ namespace Chummer
                                         ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading
                                             = new ConcurrentBag<ListItem>();
                                         IReadOnlyList<string> lstCustomDataPaths = await _objSelectedSetting.GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
-                                        // Prevents locking the UI thread while still benefiting from static scheduling of Parallel.ForEach
                                         // Preload all data first to prevent weird locking issues with the rest of the program
                                         await ParallelExtensions.ForEachAsync(_astrFileNames, strFile => XmlManager.LoadXPathAsync(strFile, lstCustomDataPaths), token).ConfigureAwait(false);
                                         await ParallelExtensions.ForEachAsync(_astrFileNames, async strFileName =>

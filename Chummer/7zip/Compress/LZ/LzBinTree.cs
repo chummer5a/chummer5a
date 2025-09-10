@@ -728,7 +728,7 @@ namespace SevenZip.Compression.LZ
             unchecked
             {
                 int subValue = _pos - _cyclicBufferSize;
-                Parallel.Invoke(
+                Chummer.Utils.RunWithoutThreadLock(
                     () => NormalizeLinksParallel(_son, _cyclicBufferSize * 2, (uint)subValue),
                     () => NormalizeLinksParallel(_hash, (int)_hashSizeSum, (uint)subValue),
                     () => ReduceOffsets(subValue)

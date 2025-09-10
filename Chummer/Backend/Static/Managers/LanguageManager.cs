@@ -1208,8 +1208,7 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdUnusedMessage))
                 {
-                    // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
-                    // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
+                    // Potentially expensive checks that can (and therefore should) be parallelized.
                     await Task.WhenAll(
                         Task.Run(() =>
                         {

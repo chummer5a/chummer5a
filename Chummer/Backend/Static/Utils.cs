@@ -2003,14 +2003,22 @@ namespace Chummer
             }
             if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
             {
-                token.ThrowIfCancellationRequested();
-                ParallelOptions objOptions = new ParallelOptions
+                if (token == CancellationToken.None)
                 {
-                    CancellationToken = token
-                };
-                Parallel.For(0, intLength, objOptions, () => new Tuple<T, int>(default, 0),
-                    (i, x, y) => new Tuple<T, int>(lstFuncToRun.ElementAtBetter(i).Invoke(), i), x => aobjReturn[x.Item2] = x.Item1);
-                token.ThrowIfCancellationRequested();
+                    Parallel.For(0, intLength, () => new Tuple<T, int>(default, 0),
+                        (i, x, y) => new Tuple<T, int>(lstFuncToRun.ElementAtBetter(i).Invoke(), i), x => aobjReturn[x.Item2] = x.Item1);
+                }
+                else
+                {
+                    token.ThrowIfCancellationRequested();
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.For(0, intLength, objOptions, () => new Tuple<T, int>(default, 0),
+                        (i, x, y) => new Tuple<T, int>(lstFuncToRun.ElementAtBetter(i).Invoke(), i), x => aobjReturn[x.Item2] = x.Item1);
+                    token.ThrowIfCancellationRequested();
+                }
                 return aobjReturn;
             }
             List<Task<T>> lstTasks = new List<Task<T>>(Math.Min(intLength, MaxParallelBatchSize));
@@ -2170,22 +2178,38 @@ namespace Chummer
             }
             if (!EverDoEvents)
             {
-                token.ThrowIfCancellationRequested();
-                ParallelOptions objOptions = new ParallelOptions
+                if (token == CancellationToken.None)
                 {
-                    CancellationToken = token
-                };
-                Parallel.For(0, intLength, objOptions, () => new Tuple<T, int>(default, 0), (i, x, y) =>
+                    Parallel.For(0, intLength, () => new Tuple<T, int>(default, 0), (i, x, y) =>
+                    {
+                        Task<T> objSyncTask = lstFuncToRun.ElementAtBetter(i).Invoke();
+                        if (objSyncTask.Status == TaskStatus.Created)
+                            objSyncTask.RunSynchronously();
+                        T objInnerReturn = objSyncTask.GetAwaiter().GetResult();
+                        if (objSyncTask.Exception != null)
+                            throw objSyncTask.Exception;
+                        return new Tuple<T, int>(objInnerReturn, i);
+                    }, x => aobjReturn[x.Item2] = x.Item1);
+                }
+                else
                 {
-                    Task<T> objSyncTask = lstFuncToRun.ElementAtBetter(i).Invoke();
-                    if (objSyncTask.Status == TaskStatus.Created)
-                        objSyncTask.RunSynchronously();
-                    T objInnerReturn = objSyncTask.GetAwaiter().GetResult();
-                    if (objSyncTask.Exception != null)
-                        throw objSyncTask.Exception;
-                    return new Tuple<T, int>(objInnerReturn, i);
-                }, x => aobjReturn[x.Item2] = x.Item1);
-                token.ThrowIfCancellationRequested();
+                    token.ThrowIfCancellationRequested();
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.For(0, intLength, objOptions, () => new Tuple<T, int>(default, 0), (i, x, y) =>
+                    {
+                        Task<T> objSyncTask = lstFuncToRun.ElementAtBetter(i).Invoke();
+                        if (objSyncTask.Status == TaskStatus.Created)
+                            objSyncTask.RunSynchronously();
+                        T objInnerReturn = objSyncTask.GetAwaiter().GetResult();
+                        if (objSyncTask.Exception != null)
+                            throw objSyncTask.Exception;
+                        return new Tuple<T, int>(objInnerReturn, i);
+                    }, x => aobjReturn[x.Item2] = x.Item1);
+                    token.ThrowIfCancellationRequested();
+                }
                 return aobjReturn;
             }
             List<Task<T>> lstTasks = new List<Task<T>>(Math.Min(intLength, MaxParallelBatchSize));
@@ -2351,21 +2375,36 @@ namespace Chummer
             }
             if (!EverDoEvents)
             {
-                token.ThrowIfCancellationRequested();
-                ParallelOptions objOptions = new ParallelOptions
+                if (token == CancellationToken.None)
                 {
-                    CancellationToken = token
-                };
-                Parallel.ForEach(lstFuncToRun, objOptions, funcToRun =>
+                    Parallel.ForEach(lstFuncToRun, funcToRun =>
+                    {
+                        Task objSyncTask = funcToRun.Invoke();
+                        if (objSyncTask.Status == TaskStatus.Created)
+                            objSyncTask.RunSynchronously();
+                        objSyncTask.GetAwaiter().GetResult();
+                        if (objSyncTask.Exception != null)
+                            throw objSyncTask.Exception;
+                    });
+                }
+                else
                 {
-                    Task objSyncTask = funcToRun.Invoke();
-                    if (objSyncTask.Status == TaskStatus.Created)
-                        objSyncTask.RunSynchronously();
-                    objSyncTask.GetAwaiter().GetResult();
-                    if (objSyncTask.Exception != null)
-                        throw objSyncTask.Exception;
-                });
-                token.ThrowIfCancellationRequested();
+                    token.ThrowIfCancellationRequested();
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.ForEach(lstFuncToRun, objOptions, funcToRun =>
+                    {
+                        Task objSyncTask = funcToRun.Invoke();
+                        if (objSyncTask.Status == TaskStatus.Created)
+                            objSyncTask.RunSynchronously();
+                        objSyncTask.GetAwaiter().GetResult();
+                        if (objSyncTask.Exception != null)
+                            throw objSyncTask.Exception;
+                    });
+                    token.ThrowIfCancellationRequested();
+                }
                 return;
             }
             using (new FetchSafelyFromSafeObjectPool<List<Task>>(TaskListPool, out List<Task> lstTasks))
@@ -2440,21 +2479,36 @@ namespace Chummer
             }
             if (!EverDoEvents)
             {
-                token.ThrowIfCancellationRequested();
-                ParallelOptions objOptions = new ParallelOptions
+                if (token == CancellationToken.None)
                 {
-                    CancellationToken = token
-                };
-                Parallel.ForEach(lstFuncToRun, objOptions, funcToRun =>
+                    Parallel.ForEach(lstFuncToRun, funcToRun =>
+                    {
+                        Task objSyncTask = funcToRun.Invoke();
+                        if (objSyncTask.Status == TaskStatus.Created)
+                            objSyncTask.RunSynchronously();
+                        objSyncTask.GetAwaiter().GetResult();
+                        if (objSyncTask.Exception != null)
+                            throw objSyncTask.Exception;
+                    });
+                }
+                else
                 {
-                    Task objSyncTask = funcToRun.Invoke();
-                    if (objSyncTask.Status == TaskStatus.Created)
-                        objSyncTask.RunSynchronously();
-                    objSyncTask.GetAwaiter().GetResult();
-                    if (objSyncTask.Exception != null)
-                        throw objSyncTask.Exception;
-                });
-                token.ThrowIfCancellationRequested();
+                    token.ThrowIfCancellationRequested();
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.ForEach(lstFuncToRun, objOptions, funcToRun =>
+                    {
+                        Task objSyncTask = funcToRun.Invoke();
+                        if (objSyncTask.Status == TaskStatus.Created)
+                            objSyncTask.RunSynchronously();
+                        objSyncTask.GetAwaiter().GetResult();
+                        if (objSyncTask.Exception != null)
+                            throw objSyncTask.Exception;
+                    });
+                    token.ThrowIfCancellationRequested();
+                }
                 return;
             }
             using (new FetchSafelyFromSafeObjectPool<List<Task>>(TaskListPool, out List<Task> lstTasks))
