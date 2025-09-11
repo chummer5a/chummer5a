@@ -112,6 +112,7 @@ Application Changes:
 - The armor encumbrance setting for armor mods now works properly, and the armor encumbrance setting for armors now works properly when a character has no regular armor equipped.
 - Implemented a form for editing and previewing amend data files directly from within the program. This form can be accessed through the Tools menu by selecting the Xml Editor option.
 - Added a house rule to enable Barehanded Adept to take spells as Limited through a fetish. RAW indicates that these spells would not normally be available to Barehanded Adepts as a Limited spell is not acquired through the same mechanism.
+- Implemented an essence filter for the SelectCyberware form to allow filtering available Cyberware. 
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://jackpoint.live/index.php?topic=31750.msg544923#msg544923.
@@ -380,6 +381,9 @@ Changed/New Strings:
 - XmlEditor_ErrorFormattingNode
 - XmlEditor_AmendmentTemplate
 - Checkbox_Options_AllowLimitedSpellsForBareHandedAdept
+- Label_MaxEssence
+- String_RestrictedItemsHiddenEssence
+- Checkbox_HideOverEssenceLimit
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage

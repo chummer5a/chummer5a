@@ -1698,6 +1698,43 @@ namespace Chummer
                             }
                         }
 
+                        // Essence filtering
+                        bool blnHideOverEssenceLimit = await chkHideOverEssenceLimit
+                                                           .DoThreadSafeFuncAsync(x => x.Checked, token: token)
+                                                           .ConfigureAwait(false);
+                        if (blnHideOverEssenceLimit)
+                        {
+                            decimal decMaxEssence = await nudMaxEssence
+                                                       .DoThreadSafeFuncAsync(x => x.Value, token: token)
+                                                       .ConfigureAwait(false);
+                            
+                            // Calculate the essence cost of this cyberware
+                            string strEssenceExpr = xmlCyberware.SelectSingleNodeAndCacheExpression("ess", token: token)?.Value ?? "0";
+                            strEssenceExpr = strEssenceExpr.ProcessFixedValuesString(intMinRating);
+                            
+                            decimal decEssenceCost = 0;
+                            if (!string.IsNullOrEmpty(strEssenceExpr) && !decimal.TryParse(strEssenceExpr, out decEssenceCost))
+                            {
+                                (decimal decValue, bool blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strEssenceExpr, intMinRating, intMinRating, token).ConfigureAwait(false);
+                                if (blnIsSuccess)
+                                    decEssenceCost = decValue;
+                                else
+                                    decEssenceCost = 0;
+                            }
+                            
+                            // Apply essence discount if applicable
+                            if (decEssenceCost > 0 && _decESSMultiplier != 1.0m)
+                            {
+                                decEssenceCost *= _decESSMultiplier;
+                            }
+                            
+                            if (decEssenceCost > decMaxEssence)
+                            {
+                                ++intOverLimit;
+                                continue;
+                            }
+                        }
+
                         string strId = xmlCyberware.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                         if (!string.IsNullOrEmpty(strId))
                             lstCyberwares.Add(new ListItem(
@@ -1717,7 +1754,7 @@ namespace Chummer
                         lstCyberwares.Add(new ListItem(string.Empty,
                                                        string.Format(GlobalSettings.CultureInfo,
                                                                      await LanguageManager.GetStringAsync(
-                                                                             "String_RestrictedItemsHidden",
+                                                                             "String_RestrictedItemsHiddenEssence",
                                                                              token: token)
                                                                          .ConfigureAwait(false),
                                                                      intOverLimit)));

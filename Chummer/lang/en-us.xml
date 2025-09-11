@@ -8770,6 +8770,18 @@
       <key>Message_BannedGrade</key>
       <text>You've selected a Grade that is banned by your gameplay options. Please select a valid Grade.</text>
     </string>
+    <string>
+      <key>String_RestrictedItemsHiddenEssence</key>
+      <text>* {0} item(s) are hidden by Cost, Availability or Essence limits *</text>
+    </string>
+    <string>
+      <key>Checkbox_HideOverEssenceLimit</key>
+      <text>Hide Items Over Essence Limit</text>
+    </string>
+    <string>
+      <key>Label_MaxEssence</key>
+      <text>Max Essence:</text>
+    </string>
     <!-- End Region-->
     <!-- Region Select Cyberware Suite Window -->
     <string>
