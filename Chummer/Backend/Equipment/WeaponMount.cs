@@ -64,6 +64,7 @@ namespace Chummer.Backend.Equipment
         private string _strCost = string.Empty;
         private string _strLocation = string.Empty;
         private string _strAllowedWeapons = string.Empty;
+        private string _strWeaponFilter = string.Empty;
         private int _intSortOrder;
         private bool _blnStolen;
         private XmlNode _objCachedMyXmlNode;
@@ -236,6 +237,7 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("limit", ref _strLimit);
             objXmlMod.TryGetInt32FieldQuickly("slots", ref _intSlots);
             objXmlMod.TryGetStringFieldQuickly("weaponcategories", ref _strAllowedWeaponCategories);
+            objXmlMod.TryGetStringFieldQuickly("weaponfilter", ref _strWeaponFilter);
             objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
             if (objXmlMod.TryGetInt32FieldQuickly("weaponcapacity", ref _intWeaponCapacity) && IsWeaponsFull)
                 // If you ever hit this, you done fucked up. Make sure that weapon mounts cannot actually equip more weapons than they're allowed in the first place
@@ -417,6 +419,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("equipped", _blnEquipped.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("weaponmountcategories", _strAllowedWeaponCategories);
+            objWriter.WriteElementString("weaponfilter", _strWeaponFilter);
             objWriter.WriteElementString("weaponcapacity", _intWeaponCapacity.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in _lstWeapons)
@@ -490,6 +493,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("limit", ref _strLimit);
             objNode.TryGetInt32FieldQuickly("slots", ref _intSlots);
             objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strAllowedWeaponCategories);
+            objNode.TryGetStringFieldQuickly("weaponfilter", ref _strWeaponFilter);
             objNode.TryGetStringFieldQuickly("allowedweapons", ref _strAllowedWeapons);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
@@ -1037,6 +1041,16 @@ namespace Chummer.Backend.Equipment
         {
             set => _strAllowedWeaponCategories = value;
             get => _strAllowedWeaponCategories;
+        }
+
+        /// <summary>
+        /// XPath filter expression for additional weapon filtering beyond categories.
+        /// This allows for flexible filtering on any weapon property (reach, type, damage, etc.).
+        /// </summary>
+        public string WeaponFilter
+        {
+            get => _strWeaponFilter;
+            set => _strWeaponFilter = value;
         }
 
         public string AllowedWeapons
@@ -2214,8 +2228,6 @@ namespace Chummer.Backend.Equipment
         private string _strCost;
         private string _strCategory;
         private int _intSlots;
-        private string _strAllowedWeaponCategories;
-        private string _strAllowedWeapons;
         private bool _blnIncludedInParent;
         private WeaponMount _objMyMount;
 
@@ -2260,8 +2272,6 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlMod.TryGetInt32FieldQuickly("slots", ref _intSlots);
-            objXmlMod.TryGetStringFieldQuickly("weaponcategories", ref _strAllowedWeaponCategories);
-            objXmlMod.TryGetStringFieldQuickly("weapons", ref _strAllowedWeapons);
             objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
 
             // Check for a Variable Cost.
@@ -2423,8 +2433,6 @@ namespace Chummer.Backend.Equipment
             }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetInt32FieldQuickly("slots", ref _intSlots);
-            objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strAllowedWeaponCategories);
-            objNode.TryGetStringFieldQuickly("allowedweapons", ref _strAllowedWeapons);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             objNode.TryGetBoolFieldQuickly("includedinparent", ref _blnIncludedInParent);
@@ -2454,8 +2462,6 @@ namespace Chummer.Backend.Equipment
             }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetInt32FieldQuickly("slots", ref _intSlots);
-            objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strAllowedWeaponCategories);
-            objNode.TryGetStringFieldQuickly("allowedweapons", ref _strAllowedWeapons);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             objNode.TryGetBoolFieldQuickly("includedinparent", ref _blnIncludedInParent);

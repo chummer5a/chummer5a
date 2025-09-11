@@ -42,6 +42,7 @@ namespace Chummer
         private bool _blnAddAgain;
         private bool _blnBlackMarketDiscount;
         private HashSet<string> _setLimitToCategories;
+        private string _strWeaponFilter = string.Empty;
         private static string _strSelectCategory = string.Empty;
         private readonly Character _objCharacter;
         private readonly XmlDocument _objXmlDocument;
@@ -998,6 +999,16 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Additional XPath filter expression for weapon filtering beyond categories.
+        /// This allows for flexible filtering on any weapon property (reach, type, damage, etc.).
+        /// </summary>
+        public string WeaponFilter
+        {
+            get => _strWeaponFilter;
+            set => _strWeaponFilter = value;
+        }
+
         public Weapon ParentWeapon { get; set; }
 
         public HashSet<string> Mounts => _setMounts;
@@ -1064,6 +1075,10 @@ namespace Chummer
 
                         if (!string.IsNullOrEmpty(txtSearch.Text))
                             sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
+                        // Apply additional weapon filter if specified
+                        if (!string.IsNullOrEmpty(_strWeaponFilter))
+                            sbdFilter.Append(" and (").Append(_strWeaponFilter).Append(')');
 
                         if (sbdFilter.Length > 0)
                             strFilter = '[' + sbdFilter.ToString() + ']';

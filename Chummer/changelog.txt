@@ -113,6 +113,7 @@ Application Changes:
 - Implemented a form for editing and previewing amend data files directly from within the program. This form can be accessed through the Tools menu by selecting the Xml Editor option.
 - Added a house rule to enable Barehanded Adept to take spells as Limited through a fetish. RAW indicates that these spells would not normally be available to Barehanded Adepts as a Limited spell is not acquired through the same mechanism.
 - Implemented an essence filter for the SelectCyberware form to allow filtering available Cyberware. 
+- Implemented an xpath filter for Weapon Mounts to further refine the available weapons. This uses the weaponfilter property, which takes an XPath expression that is evaluated against each weapon in the database. If the expression returns true, the weapon is shown as available for the mount. As an example, the Mini weapon mount uses ((type != "Melee") or (type = "Melee" and reach = "0")) to exclude melee weapons with reach greater than 0.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://jackpoint.live/index.php?topic=31750.msg544923#msg544923.
@@ -178,6 +179,7 @@ Data Changes:
 - Added a customdata entry to change the Krime Stopper II to use the Shotguns category instead of Heavy Pistols.
 - Fixed Cannon Shot gun not loading due to incorrectu nderbarrel. Closes #5212
 - Corrected and/or added the effects of the following The Complete Trog qualities: Community Connection, Nasty Trog, Trog Artisan, Trog Historian, Trog Leader, Trog Networker, Bad Credit. Existing characters with these qualities will need to reapply their improvements to see any changes.
+- Added xpath filter using the new weaponfilter property for the Micro weapon accessory mount to only show Melee weapons that have Reach 0.
 
 Fixes implemented by BM123499
 

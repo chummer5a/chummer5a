@@ -14713,6 +14713,7 @@
         </weaponmountdetails>
       </required>
       <weaponcategories>Tasers,Holdouts,Light Pistols,Grenades,Blades,Clubs</weaponcategories>
+      <weaponfilter>((type != "Melee") or (type = "Melee" and reach = "0"))</weaponfilter>
     </weaponmount>
     <weaponmount>
       <id>9ee5e112-8ced-4266-9141-02ef18e33f43</id>

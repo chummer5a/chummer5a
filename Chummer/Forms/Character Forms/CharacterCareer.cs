@@ -11414,7 +11414,10 @@ namespace Chummer
                            {
                                LimitToCategories = objMod == null
                                    ? objWeaponMount.AllowedWeaponCategories
-                                   : objMod.WeaponMountCategories
+                                   : objMod.WeaponMountCategories,
+                               WeaponFilter = objMod == null
+                                   ? objWeaponMount.WeaponFilter
+                                   : string.Empty
                            }, token).ConfigureAwait(false))
                 {
                     if (await frmPickWeapon.ShowDialogSafeAsync(this, token).ConfigureAwait(false) ==
