@@ -3373,7 +3373,7 @@ namespace Chummer
                                 if (lstToProcess != null && await lstToProcess.AnyAsync(
                                         x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                     continue;
-                                if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500)
+                                if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 7500 : 7000)
                                     && await Program.ShowScrollableMessageBoxAsync(
                                         string.Format(GlobalSettings.CultureInfo, strTooManyHandles, objCharacter.CharacterName),
                                         strTooManyHandlesTitle,
