@@ -322,8 +322,14 @@ namespace Chummer
         private static readonly Lazy<string> s_strGetAutosavesFolderPath
             = new Lazy<string>(() => Path.Combine(GetStartupPath, "saves", "autosave"));
 
+        private static readonly Lazy<string> s_strGetBackupSavesFolderPath
+            = new Lazy<string>(() => Path.Combine(GetStartupPath, "saves", "backup"));
+
         private static readonly Lazy<string> s_strGetDataFolderPath
             = new Lazy<string>(() => Path.Combine(GetStartupPath, "data"));
+
+        private static readonly Lazy<string> s_strGetCustomDataFolderPath
+            = new Lazy<string>(() => Path.Combine(GetStartupPath, "customdata"));
 
         private static readonly Lazy<string> s_strGetLiveCustomDataFolderPath
             = new Lazy<string>(() => Path.Combine(GetStartupPath, "livecustomdata"));
@@ -344,7 +350,11 @@ namespace Chummer
 
         public static string GetEscapedStartupPath => s_strGetEscapedStartupPath.Value;
 
+        public static string GetBackupSavesFolderPath => s_strGetBackupSavesFolderPath.Value;
+
         public static string GetAutosavesFolderPath => s_strGetAutosavesFolderPath.Value;
+
+        public static string GetCustomDataFolderPath => s_strGetCustomDataFolderPath.Value;
 
         public static string GetLiveCustomDataFolderPath => s_strGetLiveCustomDataFolderPath.Value;
 

@@ -22052,11 +22052,11 @@ namespace Chummer
                         {
                             // Create a pre-Career Mode backup of the character.
                             // Make sure the backup directory exists.
-                            if (!Directory.Exists(Path.Combine(Utils.GetStartupPath, "saves", "backup")))
+                            if (!Directory.Exists(Utils.GetBackupSavesFolderPath))
                             {
                                 try
                                 {
-                                    Directory.CreateDirectory(Path.Combine(Utils.GetStartupPath, "saves", "backup"));
+                                    Directory.CreateDirectory(Utils.GetBackupSavesFolderPath);
                                 }
                                 catch (UnauthorizedAccessException)
                                 {
@@ -22091,7 +22091,7 @@ namespace Chummer
                             if (CharacterObject.FileName?.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase) ==
                                 true)
                                 strNewName += "lz";
-                            strNewName = Path.Combine(Utils.GetStartupPath, "saves", "backup", strNewName);
+                            strNewName = Path.Combine(Utils.GetBackupSavesFolderPath, strNewName);
 
                             CursorWait objCursorWait =
                                 await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);

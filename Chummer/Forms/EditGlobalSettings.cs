@@ -283,7 +283,7 @@ namespace Chummer
                 }
 
                 string strFilePath
-                    = Path.Combine(Utils.GetStartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
+                    = Path.Combine(Utils.GetLanguageFolderPath, "results_" + strSelectedLanguage + ".xml");
                 await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(_objSelectedCultureInfo,

@@ -82,7 +82,7 @@ namespace Chummer
                 return;
             }
 
-            string strPath = Path.Combine(Utils.GetStartupPath, "data", txtFileName.Text);
+            string strPath = Path.Combine(Utils.GetDataFolderPath, strFileName);
 
             bool blnNewFile = !File.Exists(strPath);
 

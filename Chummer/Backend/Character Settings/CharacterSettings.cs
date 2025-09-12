@@ -2299,7 +2299,7 @@ namespace Chummer
 
                     token.ThrowIfCancellationRequested();
 
-                    string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
+                    string strCustomDataRootPath = Utils.GetCustomDataFolderPath;
 
                     // <customdatadirectorynames>
                     objWriter.WriteStartElement("customdatadirectorynames");
@@ -3227,7 +3227,7 @@ namespace Chummer
 
                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
-                    string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
+                    string strCustomDataRootPath = Utils.GetCustomDataFolderPath;
 
                     // <customdatadirectorynames>
                     await objWriter.WriteStartElementAsync("customdatadirectorynames", token: token)

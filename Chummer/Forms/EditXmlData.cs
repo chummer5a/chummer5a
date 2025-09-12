@@ -366,7 +366,7 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     // Load the base XML document (without amendments)
-                    string strFilePath = Path.Combine(Utils.GetStartupPath, "data", strSelectedFile);
+                    string strFilePath = Path.Combine(Utils.GetDataFolderPath, strSelectedFile);
                     if (!File.Exists(strFilePath))
                     {
                         await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_FileNotFound", token: token).ConfigureAwait(false), strFilePath), await LanguageManager.GetStringAsync("XmlEditor_FileNotFoundTitle", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);

@@ -50,7 +50,7 @@ namespace Chummer
         {
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
-            string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalSettings.DefaultLanguage + ".xml");
+            string strFilePath = Path.Combine(Utils.GetLanguageFolderPath, GlobalSettings.DefaultLanguage + ".xml");
             if (File.Exists(strFilePath))
             {
                 try
@@ -1151,7 +1151,7 @@ namespace Chummer
                     {
                         // Load the English version.
                         string strFilePath
-                            = Path.Combine(Utils.GetStartupPath, "lang", GlobalSettings.DefaultLanguage + ".xml");
+                            = Path.Combine(Utils.GetLanguageFolderPath, GlobalSettings.DefaultLanguage + ".xml");
                         try
                         {
                             XPathDocument objEnglishDocument = await XPathDocumentExtensions
@@ -1178,7 +1178,7 @@ namespace Chummer
                     Task.Run(async () =>
                     {
                         // Load the selected language version.
-                        string strLangPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
+                        string strLangPath = Path.Combine(Utils.GetLanguageFolderPath, "lang", strLanguage + ".xml");
                         try
                         {
                             XPathDocument objLanguageDocument = await XPathDocumentExtensions
@@ -2722,9 +2722,9 @@ namespace Chummer
 
         public LanguageData(string strLanguage)
         {
-            string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
+            string strFilePath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage + ".xml");
             if (!File.Exists(strFilePath))
-                strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage.ToLowerInvariant() + ".xml");
+                strFilePath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage.ToLowerInvariant() + ".xml");
             if (File.Exists(strFilePath))
             {
                 try
@@ -2791,9 +2791,9 @@ namespace Chummer
             }
 
             // Check to see if the data translation file for the selected language exists.
-            string strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + "_data.xml");
+            string strDataPath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage + "_data.xml");
             if (!File.Exists(strDataPath))
-                strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage.ToLowerInvariant() + "_data.xml");
+                strDataPath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage.ToLowerInvariant() + "_data.xml");
             if (File.Exists(strDataPath))
             {
                 try
@@ -2843,9 +2843,9 @@ namespace Chummer
         public static async Task<LanguageData> CreateAsync(string strLanguage, CancellationToken token = default)
         {
             LanguageData objReturn = new LanguageData();
-            string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
+            string strFilePath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage + ".xml");
             if (!File.Exists(strFilePath))
-                strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage.ToLowerInvariant() + ".xml");
+                strFilePath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage.ToLowerInvariant() + ".xml");
             if (File.Exists(strFilePath))
             {
                 try
@@ -2912,9 +2912,9 @@ namespace Chummer
             }
 
             // Check to see if the data translation file for the selected language exists.
-            string strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + "_data.xml");
+            string strDataPath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage + "_data.xml");
             if (!File.Exists(strDataPath))
-                strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage.ToLowerInvariant() + "_data.xml");
+                strDataPath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage.ToLowerInvariant() + "_data.xml");
             if (File.Exists(strDataPath))
             {
                 try
