@@ -791,7 +791,7 @@ namespace Chummer
                                     break;
 
                                 default:
-                                    sbdReturn.Append(LanguageManager.GetString("String_Desc" + strDescriptor.Trim(),
+                                    sbdReturn.Append(LanguageManager.GetString("String_Desc" + strDescriptor,
                                                                                strLanguage));
                                     break;
                             }
@@ -880,7 +880,7 @@ namespace Chummer
 
                                 default:
                                     sbdReturn.Append(await LanguageManager.GetStringAsync(
-                                                         "String_Desc" + strDescriptor.Trim(),
+                                                         "String_Desc" + strDescriptor,
                                                          strLanguage, token: token).ConfigureAwait(false));
                                     break;
                             }

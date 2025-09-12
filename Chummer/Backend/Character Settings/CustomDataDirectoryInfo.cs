@@ -861,7 +861,7 @@ namespace Chummer
                                                      : kvp.Key);
                 }
 
-                return sbdDisplayAuthors.ToString().Trim();
+                return sbdDisplayAuthors.ToTrimmedString();
             }
         }
 
@@ -881,7 +881,7 @@ namespace Chummer
                                                      : kvp.Key);
                 }
 
-                return sbdDisplayAuthors.ToString().Trim();
+                return sbdDisplayAuthors.ToTrimmedString();
             }
         }
 

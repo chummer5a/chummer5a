@@ -804,14 +804,27 @@ namespace Chummer
         /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
         public static IEnumerable<string> SplitNoAlloc(this string strInput, params char[] achrSplit)
         {
+            return SplitNoAlloc(strInput, StringSplitOptions.None, achrSplit);
+        }
+
+        /// <summary>
+        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="achrSplit">Characters to use for splitting.</param>
+        /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
+        public static IEnumerable<string> SplitNoAlloc(this string strInput, StringSplitOptions eSplitOptions, params char[] achrSplit)
+        {
             if (string.IsNullOrEmpty(strInput))
             {
-                yield return string.Empty;
+                if (eSplitOptions != StringSplitOptions.RemoveEmptyEntries)
+                    yield return string.Empty;
                 yield break;
             }
             if (achrSplit.Length == 0)
             {
-                yield return strInput;
+                if (eSplitOptions != StringSplitOptions.RemoveEmptyEntries)
+                    yield return strInput;
                 yield break;
             }
             int intLoopLength;
@@ -821,7 +834,13 @@ namespace Chummer
                 if (intLoopLength < 0)
                     intLoopLength = strInput.Length;
                 intLoopLength -= intStart;
-                yield return intLoopLength != 0 ? strInput.Substring(intStart, intLoopLength) : string.Empty;
+                if (intLoopLength == 0)
+                {
+                    if (eSplitOptions != StringSplitOptions.RemoveEmptyEntries)
+                        yield return string.Empty;
+                }
+                else
+                    yield return strInput.Substring(intStart, intLoopLength);
             }
         }
 

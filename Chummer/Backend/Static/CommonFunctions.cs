@@ -2724,7 +2724,7 @@ namespace Chummer
                     }
 
                     token.ThrowIfCancellationRequested();
-                    strReturn = sbdResultContent.ToString().Trim();
+                    strReturn = sbdResultContent.ToTrimmedString();
                 }
             }
 

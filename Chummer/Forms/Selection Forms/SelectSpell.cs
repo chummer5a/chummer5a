@@ -591,7 +591,8 @@ namespace Chummer
                     foreach (string strDescriptor in strDescriptors.SplitNoAlloc(
                                  ',', StringSplitOptions.RemoveEmptyEntries))
                     {
-                        switch (strDescriptor.Trim())
+                        string strTrimmedDescriptor = strDescriptor.Trim();
+                        switch (strTrimmedDescriptor)
                         {
                             case "Alchemical Preparation":
                                 blnAlchemicalFound = true;
@@ -620,7 +621,7 @@ namespace Chummer
                                 break;
 
                             default:
-                                sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_Desc" + strDescriptor.Trim(), token: token).ConfigureAwait(false));
+                                sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_Desc" + strTrimmedDescriptor, token: token).ConfigureAwait(false));
                                 break;
                         }
 

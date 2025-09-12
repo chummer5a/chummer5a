@@ -748,5 +748,41 @@ namespace Chummer
             }
             return sbdInput;
         }
+
+        /// <summary>
+        /// Version of StringBuilder.ToString() that returns a trimmed version of the string.
+        /// Faster than doing .ToString().Trim() because it takes advantage of StringBuilder internals that can modify string contents quickly without needing to allocate new strings.
+        /// </summary>
+        /// <param name="sbdInput">StringBuilder containing the string to be trimmed and returned.</param>
+        /// <returns>The trimmed version of the string inside of <paramref name="sbdInput"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToTrimmedString([NotNull] this StringBuilder sbdInput)
+        {
+            int intLength = sbdInput.Length;
+            if (intLength == 0)
+                return sbdInput.ToString();
+
+            int intIndex;
+            for (intIndex = intLength - 1; intIndex >= 0; --intIndex)
+            {
+                if (!char.IsWhiteSpace(sbdInput[intIndex]))
+                    break;
+            }
+
+            ++intIndex;
+            if (intIndex < intLength)
+                sbdInput.Length = intLength = intIndex;
+
+            if (intLength == 0)
+                return sbdInput.ToString();
+
+            for (intIndex = 0; intIndex < intLength; ++intIndex)
+            {
+                if (!char.IsWhiteSpace(sbdInput[intIndex]))
+                    return sbdInput.ToString(intIndex, intLength - intIndex);
+            }
+
+            return sbdInput.ToString();
+        }
     }
 }

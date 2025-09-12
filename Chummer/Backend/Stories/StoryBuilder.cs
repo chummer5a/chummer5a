@@ -157,11 +157,11 @@ namespace Chummer
                 if (innerText.StartsWith('$') && innerText.IndexOf(' ') < 0)
                 {
                     words = (await Macro(innerText, xmlBaseMacrosNode, token).ConfigureAwait(false)).SplitNoAlloc(
-                        ' ', '\n', '\r', '\t');
+                        StringSplitOptions.RemoveEmptyEntries, ' ', '\n', '\r', '\t');
                 }
                 else
                 {
-                    words = innerText.SplitNoAlloc(' ', '\n', '\r', '\t');
+                    words = innerText.SplitNoAlloc(StringSplitOptions.RemoveEmptyEntries, ' ', '\n', '\r', '\t');
                 }
 
                 bool mfix = false;

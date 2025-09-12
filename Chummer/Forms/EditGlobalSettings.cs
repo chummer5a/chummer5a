@@ -2746,7 +2746,7 @@ namespace Chummer
                                      StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase))
                         {
                             token.ThrowIfCancellationRequested();
-                            if (!string.IsNullOrEmpty(strLine))
+                            if (!string.IsNullOrWhiteSpace(strLine))
                                 sbdAllLines.AppendLine(strLine.Trim());
                         }
                     }

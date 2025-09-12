@@ -834,43 +834,46 @@ namespace Chummer
             return string.IsNullOrEmpty(strCurrentPath) ? strNodeName : strCurrentPath + '/' + strNodeName;
         }
 
-        private static async Task<string> FormatXmlNode(XmlNode node, CancellationToken token = default)
+        private static async Task<string> FormatXmlNode(XmlNode xmlNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             try
             {
-                if (node.NodeType == XmlNodeType.Text)
+                if (xmlNode.NodeType == XmlNodeType.Text)
                 {
-                    return '\"' + node.Value + '\"';
+                    return '\"' + xmlNode.Value + '\"';
                 }
                 
-                if (node.NodeType == XmlNodeType.Element)
+                if (xmlNode.NodeType == XmlNodeType.Element)
                 {
                     // Create a temporary document to format just this node
-                    XmlDocument tempDoc = new XmlDocument();
-                    XmlNode importedNode = tempDoc.ImportNode(node, true);
-                    tempDoc.AppendChild(importedNode);
-                    
+                    XmlDocument objTempDoc = new XmlDocument();
+                    XmlNode xmlImportedNode = objTempDoc.ImportNode(xmlNode, true);
+                    objTempDoc.AppendChild(xmlImportedNode);
+
                     // Format the XML and get the inner content
-                    using (StringWriter stringWriter = new StringWriter())
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                     {
-                        using (XmlTextWriter xmlWriter = new XmlTextWriter(stringWriter))
+                        using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
                         {
-                            xmlWriter.Formatting = Formatting.Indented;
-                            xmlWriter.Indentation = 2;
-                            importedNode.WriteTo(xmlWriter);
+                            using (XmlTextWriter objXmlWriter = new XmlTextWriter(objStringWriter))
+                            {
+                                objXmlWriter.Formatting = Formatting.Indented;
+                                objXmlWriter.Indentation = 2;
+                                xmlImportedNode.WriteTo(objXmlWriter);
+                            }
                         }
-                        return stringWriter.ToString().Trim();
+                        return sbdReturn.ToTrimmedString();
                     }
                 }
                 
-                return node.ToString();
+                return xmlNode.ToString();
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))
             {
                 ex = ex.Demystify();
                 Log.Error(ex, await LanguageManager.GetStringAsync("XmlEditor_ErrorFormattingNode", token: token).ConfigureAwait(false));
-                return node.ToString();
+                return xmlNode.ToString();
             }
         }
 
@@ -880,15 +883,18 @@ namespace Chummer
             {
                 XmlDocument objDoc = new XmlDocument();
                 objDoc.LoadXml(strXml);
-                using (StringWriter objStringWriter = new StringWriter())
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
-                    using (XmlTextWriter objXmlWriter = new XmlTextWriter(objStringWriter))
+                    using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
                     {
-                        objXmlWriter.Formatting = Formatting.Indented;
-                        objXmlWriter.Indentation = 2;
-                        objDoc.WriteTo(objXmlWriter);
+                        using (XmlTextWriter objXmlWriter = new XmlTextWriter(objStringWriter))
+                        {
+                            objXmlWriter.Formatting = Formatting.Indented;
+                            objXmlWriter.Indentation = 2;
+                            objDoc.WriteTo(objXmlWriter);
+                        }
                     }
-                    return objStringWriter.ToString();
+                    return sbdReturn.ToTrimmedString();
                 }
             }
             catch

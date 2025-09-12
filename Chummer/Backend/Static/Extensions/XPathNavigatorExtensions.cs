@@ -172,7 +172,7 @@ namespace Chummer
                                     XPathNavigator objCheckTypeAttribute = xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@checktype", token);
                                     bool blnCheckAll = objCheckTypeAttribute?.Value == "all";
                                     blnOperationChildNodeResult = blnCheckAll;
-                                    string strOperationChildNodeText = xmlOperationChildNode.Value;
+                                    string strOperationChildNodeText = xmlOperationChildNode.Value.Trim();
                                     bool blnOperationChildNodeEmpty = string.IsNullOrWhiteSpace(strOperationChildNodeText);
 
                                     foreach (XPathNavigator xmlTargetNode in objXmlTargetNodeList)
@@ -194,7 +194,7 @@ namespace Chummer
                                         }
                                         else
                                         {
-                                            string strTargetNodeText = xmlTargetNode.Value;
+                                            string strTargetNodeText = xmlTargetNode.Value.Trim();
                                             bool blnTargetNodeEmpty = string.IsNullOrWhiteSpace(strTargetNodeText);
                                             if (blnTargetNodeEmpty || blnOperationChildNodeEmpty)
                                             {
@@ -255,7 +255,7 @@ namespace Chummer
                                                         }
                                                     default:
                                                         boolSubNodeResult =
-                                                            (strTargetNodeText.Trim() == strOperationChildNodeText.Trim())
+                                                            (strTargetNodeText == strOperationChildNodeText)
                                                             != blnInvert;
                                                         break;
                                                 }
