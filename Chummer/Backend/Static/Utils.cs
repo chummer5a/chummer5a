@@ -2759,14 +2759,14 @@ namespace Chummer
         /// </summary>
         [CLSCompliant(false)]
         public static SafeObjectPool<List<Task>> TaskListPool { get; }
-            = new SafeObjectPool<List<Task>>(Math.Max(MaxParallelBatchSize, ushort.MaxValue + 1), () => new List<Task>(), x => x.Clear());
+            = new SafeObjectPool<List<Task>>(() => new List<Task>(MaxParallelBatchSize), x => x.Clear());
 
         /// <summary>
         /// Memory Pool for empty hash sets of strings. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
         /// </summary>
         [CLSCompliant(false)]
         public static SafeObjectPool<HashSet<string>> StringHashSetPool { get; }
-            = new SafeObjectPool<HashSet<string>>(Math.Max(MaxParallelBatchSize, ushort.MaxValue + 1), () => new HashSet<string>(), x => x.Clear());
+            = new SafeObjectPool<HashSet<string>>(Math.Max(MaxParallelBatchSize, 4 * (byte.MaxValue + 1)), () => new HashSet<string>(), x => x.Clear());
 
         /// <summary>
         /// Memory Pool for stopwatches. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
