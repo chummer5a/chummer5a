@@ -745,6 +745,7 @@ namespace Chummer
                                         {
                                             Program.ShowScrollableMessageBox(
                                                 string.Format(
+                                                    GlobalSettings.CultureInfo,
                                                     LanguageManager.GetString("Message_Duplicate_CustomDataDirectory"),
                                                     objExistingInfo.Name, objCustomDataDirectory.Name),
                                                 LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectory"),
@@ -812,6 +813,7 @@ namespace Chummer
                                 {
                                     Program.ShowScrollableMessageBox(
                                         string.Format(
+                                            GlobalSettings.CultureInfo,
                                             LanguageManager.GetString("Message_Duplicate_CustomDataDirectory"),
                                             objExistingInfo.Name, objCustomDataDirectory.Name),
                                         LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectory"),

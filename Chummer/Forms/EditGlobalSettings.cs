@@ -751,6 +751,7 @@ namespace Chummer
                 {
                     await Program.ShowScrollableMessageBoxAsync(this,
                         string.Format(
+                            _objSelectedCultureInfo,
                             await LanguageManager.GetStringAsync(
                                 "Message_Duplicate_CustomDataDirectoryPath",
                                 _strSelectedLanguage).ConfigureAwait(false),
@@ -774,6 +775,7 @@ namespace Chummer
                             {
                                 await Program.ShowScrollableMessageBoxAsync(
                                     string.Format(
+                                        GlobalSettings.CultureInfo,
                                         await LanguageManager.GetStringAsync(
                                             "Message_Duplicate_CustomDataDirectory").ConfigureAwait(false),
                                         objExistingInfo.Name, objNewCustomDataDirectory.Name),
@@ -808,6 +810,7 @@ namespace Chummer
                                                              StringComparison.OrdinalIgnoreCase))
                     && await Program.ShowScrollableMessageBoxAsync(this,
                         string.Format(
+                            _objSelectedCultureInfo,
                             await LanguageManager.GetStringAsync(
                                 "Message_Duplicate_CustomDataDirectoryName",
                                 _strSelectedLanguage).ConfigureAwait(false),
@@ -885,6 +888,7 @@ namespace Chummer
                                                               StringComparison.OrdinalIgnoreCase)) &&
                     await Program.ShowScrollableMessageBoxAsync(this,
                         string.Format(
+                            _objSelectedCultureInfo,
                             await LanguageManager.GetStringAsync(
                                 "Message_Duplicate_CustomDataDirectoryName",
                                 _strSelectedLanguage).ConfigureAwait(false), objNewInfo.Name),
@@ -1204,6 +1208,7 @@ namespace Chummer
                 catch
                 {
                     await Program.ShowScrollableMessageBoxAsync(this, string.Format(
+                            _objSelectedCultureInfo,
                             await LanguageManager.GetStringAsync(
                                 "Message_Options_FileIsNotPDF",
                                 _strSelectedLanguage, token: token).ConfigureAwait(false),

@@ -12204,6 +12204,7 @@ namespace Chummer.Backend.Equipment
                     return;
 
                 string strDescription = string.Format(
+                    GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("Message_SelectNumberOfCharges", token: token)
                                          .ConfigureAwait(false),
                     await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));

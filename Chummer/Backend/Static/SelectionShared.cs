@@ -149,7 +149,7 @@ namespace Chummer
                                     LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", token: token),
                                     strLocalName),
                                 // ReSharper disable once MethodHasAsyncOverload
-                                string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
+                                string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
@@ -159,7 +159,7 @@ namespace Chummer
                                     await LanguageManager.GetStringAsync("Message_SelectGeneric_ChargenRestriction", token: token)
                                         .ConfigureAwait(false),
                                     strLocalName),
-                                string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
+                                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
                                     .ConfigureAwait(false), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                         }
@@ -184,7 +184,7 @@ namespace Chummer
                                     LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", token: token),
                                     strLocalName),
                                 // ReSharper disable once MethodHasAsyncOverload
-                                string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
+                                string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
@@ -194,7 +194,7 @@ namespace Chummer
                                     await LanguageManager.GetStringAsync("Message_SelectGeneric_CareerOnlyRestriction", token: token)
                                         .ConfigureAwait(false),
                                     strLocalName),
-                                string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
+                                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
                                     .ConfigureAwait(false), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                         }
@@ -217,7 +217,7 @@ namespace Chummer
                                     LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction", token: token),
                                     strLocalName),
                                 // ReSharper disable once MethodHasAsyncOverload
-                                string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
+                                string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
@@ -227,7 +227,7 @@ namespace Chummer
                                     await LanguageManager.GetStringAsync("Message_SelectGeneric_PriorityRestriction", token: token)
                                         .ConfigureAwait(false),
                                     strLocalName),
-                                string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
+                                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
                                     .ConfigureAwait(false), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                         }
@@ -542,7 +542,7 @@ namespace Chummer
                                         LanguageManager.GetString("Message_SelectGeneric_Limit", token: token),
                                         strLocalName, intLimit == 0 ? 1 : intLimit),
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", token: token), strLocalName),
+                                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", token: token), strLocalName),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
@@ -552,7 +552,7 @@ namespace Chummer
                                         await LanguageManager.GetStringAsync("Message_SelectGeneric_Limit", token: token)
                                             .ConfigureAwait(false),
                                         strLocalName, intLimit == 0 ? 1 : intLimit),
-                                    string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Limit", token: token)
+                                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Limit", token: token)
                                         .ConfigureAwait(false), strLocalName),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                             }
@@ -592,7 +592,7 @@ namespace Chummer
                                             LanguageManager.GetString("Message_SelectGeneric_Restriction", token: token),
                                             strLocalName) + strName,
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
+                                        string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 }
                                 else
@@ -602,7 +602,7 @@ namespace Chummer
                                             await LanguageManager.GetStringAsync("Message_SelectGeneric_Restriction", token: token)
                                                 .ConfigureAwait(false),
                                             strLocalName) + strName,
-                                        string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
+                                        string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
                                             .ConfigureAwait(false), strLocalName),
                                         MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                                 }
@@ -737,7 +737,7 @@ namespace Chummer
                                         LanguageManager.GetString("Message_SelectGeneric_Restriction", token: token),
                                         strLocalName) + sbdRequirement,
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
+                                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
@@ -747,7 +747,7 @@ namespace Chummer
                                         await LanguageManager.GetStringAsync("Message_SelectGeneric_Restriction", token: token)
                                             .ConfigureAwait(false),
                                         strLocalName) + sbdRequirement,
-                                    string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
+                                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
                                         .ConfigureAwait(false), strLocalName),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                             }

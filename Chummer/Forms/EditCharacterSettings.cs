@@ -321,6 +321,7 @@ namespace Chummer
                     {
                         DialogResult eCreateDuplicateSetting = await Program.ShowScrollableMessageBoxAsync(
                             string.Format(
+                                GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync("Message_CharacterOptions_DuplicateSettingName")
                                     .ConfigureAwait(false),
                                 strSelectedName),
