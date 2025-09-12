@@ -694,6 +694,16 @@
       <page>Adjusts the value for one of the character's Knowledge Skills by the value entered. Positive numbers increase the Knowledge Skill. Negative numbers decrease the Knowledge Skill. Select a Knowledge Skill to affect by clicking the Select Value button. The modifier can be applied to the Knowledge Skill's Rating by selecting Apply to Rating, otherwise the modifier is applied as a dice pool modifier.</page>
     </improvement>
     <improvement>
+      <name>Enable Skill Movement</name>
+      <id>skillenablemovement</id>
+      <internal>skillenablemovement</internal>
+      <fields>
+        <field>SelectSkill</field>
+      </fields>
+      <xml><![CDATA[{select}]]></xml>
+      <page>Enables a skill that requires fly or swim movement even if the character doesn't have that movement type. This allows skills like Flight to be used even without a flight speed, or Swimming to be used without a swim speed.</page>
+    </improvement>
+    <improvement>
       <name>Ignore Condition Monitor Penalty, Stun</name>
       <id>ignorecmpenaltystun</id>
       <internal>ignorecmpenaltystun</internal>

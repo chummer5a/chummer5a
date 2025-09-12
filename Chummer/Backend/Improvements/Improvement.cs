@@ -364,6 +364,7 @@ namespace Chummer
             WeaponRangeModifier,
             ReplaceSkillSpell,
             Availability,
+            SkillEnableMovement, // Enables skills that require fly/swim movement even without that movement type
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
@@ -3024,6 +3025,55 @@ namespace Chummer
                 }
                     break;
 
+                case ImprovementType.SkillEnableMovement:
+                {
+                    if (lstExtraImprovedName?.Count > 0)
+                    {
+                        foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                        {
+                            string strKey = objTargetSkill.DictionaryKey;
+                            if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
+                            {
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.Enabled));
+                            }
+                        }
+
+                        foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                        {
+                            string strKey = objTargetSkill.DictionaryKey;
+                            if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey)
+                                                       || ImprovedName == objTargetSkill.InternalId
+                                                       || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
+                            {
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.Enabled));
+                            }
+                            else
+                            {
+                                string strDisplayName = objTargetSkill.CurrentDisplayName;
+                                if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.Enabled));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Skill objTargetSkill =
+                            _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == ImprovedName)
+                            ?? _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
+                                x.InternalId == ImprovedName || x.DictionaryKey == ImprovedName
+                                                             || x.CurrentDisplayName == ImprovedName);
+                        if (objTargetSkill != null)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.Enabled));
+                        }
+                    }
+                }
+                    break;
+
                 case ImprovementType.SkillCategorySpecializationKarmaCost:
                 case ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
                 {
@@ -5607,6 +5657,57 @@ namespace Chummer
                         break;
                     }
                 case ImprovementType.SkillDisable:
+                    {
+                        if (lstExtraTarget?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == Target || lstExtraTarget.Contains(strKey))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.Enabled)));
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == Target || lstExtraTarget.Contains(strKey)
+                                                     || Target == objTargetSkill.InternalId
+                                                     || lstExtraTarget.Contains(objTargetSkill.InternalId))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.Enabled)));
+                                }
+                                else
+                                {
+                                    string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    if (strDisplayName == Target || lstExtraTarget.Contains(strDisplayName))
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objTargetSkill,
+                                            nameof(Skill.Enabled)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Skill objTargetSkill =
+                                await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(
+                                    async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false)
+                                ?? await _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(async x =>
+                                    x.InternalId == Target || await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == Target
+                                                           || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == Target, token).ConfigureAwait(false);
+                            if (objTargetSkill != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.Enabled)));
+                            }
+                        }
+                    }
+                    break;
+
+                case ImprovementType.SkillEnableMovement:
                     {
                         if (lstExtraTarget?.Count > 0)
                         {

@@ -6635,6 +6635,15 @@ namespace Chummer
             return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillDisable, _strUnique, token: token);
         }
 
+        public Task skillenablemovement(XmlNode bonusNode, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (bonusNode == null)
+                return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
+            return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillEnableMovement, _strUnique, token: token);
+        }
+
         public Task skillgroupdisable(XmlNode bonusNode, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)

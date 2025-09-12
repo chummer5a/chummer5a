@@ -3005,6 +3005,7 @@ namespace Chummer.Backend.Skills
 
                         case Improvement.ImprovementType.Skill:
                         case Improvement.ImprovementType.SkillDisable:
+                        case Improvement.ImprovementType.SkillEnableMovement:
                             if (objImprovement.ImprovedName == strNameToUse)
                             {
                                 yield return objImprovement;
@@ -3140,6 +3141,7 @@ namespace Chummer.Backend.Skills
 
                             case Improvement.ImprovementType.Skill:
                             case Improvement.ImprovementType.SkillDisable:
+                            case Improvement.ImprovementType.SkillEnableMovement:
                                 if (objImprovement.ImprovedName == strNameToUse)
                                 {
                                     lstReturn.Add(objImprovement);
@@ -3871,29 +3873,43 @@ namespace Chummer.Backend.Skills
 
                     if (RequiresFlyMovement)
                     {
-                        string strMovementString = CharacterObject.GetFly(GlobalSettings.InvariantCultureInfo,
-                                                                          GlobalSettings.DefaultLanguage);
-                        if (string.IsNullOrEmpty(strMovementString)
-                            || strMovementString == "0"
-                            || strMovementString.Contains(LanguageManager.GetString("String_ModeSpecial",
-                                                              GlobalSettings.DefaultLanguage)))
+                        // Check if there's an improvement that enables this skill despite movement requirements
+                        if (ImprovementManager
+                            .GetCachedImprovementListForValueOf(CharacterObject,
+                                                                Improvement.ImprovementType.SkillEnableMovement,
+                                                                DictionaryKey).Count == 0)
                         {
-                            _intCachedEnabled = 0;
-                            return false;
+                            string strMovementString = CharacterObject.GetFly(GlobalSettings.InvariantCultureInfo,
+                                                                              GlobalSettings.DefaultLanguage);
+                            if (string.IsNullOrEmpty(strMovementString)
+                                || strMovementString == "0"
+                                || strMovementString.Contains(LanguageManager.GetString("String_ModeSpecial",
+                                                                  GlobalSettings.DefaultLanguage)))
+                            {
+                                _intCachedEnabled = 0;
+                                return false;
+                            }
                         }
                     }
 
                     if (RequiresSwimMovement)
                     {
-                        string strMovementString = CharacterObject.GetSwim(GlobalSettings.InvariantCultureInfo,
-                                                                           GlobalSettings.DefaultLanguage);
-                        if (string.IsNullOrEmpty(strMovementString)
-                            || strMovementString == "0"
-                            || strMovementString.Contains(LanguageManager.GetString("String_ModeSpecial",
-                                                              GlobalSettings.DefaultLanguage)))
+                        // Check if there's an improvement that enables this skill despite movement requirements
+                        if (ImprovementManager
+                            .GetCachedImprovementListForValueOf(CharacterObject,
+                                                                Improvement.ImprovementType.SkillEnableMovement,
+                                                                DictionaryKey).Count == 0)
                         {
-                            _intCachedEnabled = 0;
-                            return false;
+                            string strMovementString = CharacterObject.GetSwim(GlobalSettings.InvariantCultureInfo,
+                                                                               GlobalSettings.DefaultLanguage);
+                            if (string.IsNullOrEmpty(strMovementString)
+                                || strMovementString == "0"
+                                || strMovementString.Contains(LanguageManager.GetString("String_ModeSpecial",
+                                                                  GlobalSettings.DefaultLanguage)))
+                            {
+                                _intCachedEnabled = 0;
+                                return false;
+                            }
                         }
                     }
 
@@ -3969,38 +3985,56 @@ namespace Chummer.Backend.Skills
 
                 if (RequiresFlyMovement)
                 {
-                    string strMovementString
-                        = await CharacterObject
-                                .GetFlyAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token)
-                                .ConfigureAwait(false);
-                    if (string.IsNullOrEmpty(strMovementString)
-                        || strMovementString == "0"
-                        || strMovementString.Contains(
-                            await LanguageManager
-                                  .GetStringAsync("String_ModeSpecial", GlobalSettings.DefaultLanguage, token: token)
-                                  .ConfigureAwait(false)))
+                    // Check if there's an improvement that enables this skill despite movement requirements
+                    if ((await ImprovementManager
+                             .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                                      Improvement.ImprovementType.SkillEnableMovement,
+                                                                      await GetDictionaryKeyAsync(token)
+                                                                          .ConfigureAwait(false), token: token)
+                             .ConfigureAwait(false)).Count == 0)
                     {
-                        _intCachedEnabled = 0;
-                        return false;
+                        string strMovementString
+                            = await CharacterObject
+                                    .GetFlyAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token)
+                                    .ConfigureAwait(false);
+                        if (string.IsNullOrEmpty(strMovementString)
+                            || strMovementString == "0"
+                            || strMovementString.Contains(
+                                await LanguageManager
+                                      .GetStringAsync("String_ModeSpecial", GlobalSettings.DefaultLanguage, token: token)
+                                      .ConfigureAwait(false)))
+                        {
+                            _intCachedEnabled = 0;
+                            return false;
+                        }
                     }
                 }
 
                 if (RequiresSwimMovement)
                 {
-                    string strMovementString
-                        = await CharacterObject
-                                .GetSwimAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage,
-                                              token)
-                                .ConfigureAwait(false);
-                    if (string.IsNullOrEmpty(strMovementString)
-                        || strMovementString == "0"
-                        || strMovementString.Contains(
-                            await LanguageManager
-                                  .GetStringAsync("String_ModeSpecial", GlobalSettings.DefaultLanguage, token: token)
-                                  .ConfigureAwait(false)))
+                    // Check if there's an improvement that enables this skill despite movement requirements
+                    if ((await ImprovementManager
+                             .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                                      Improvement.ImprovementType.SkillEnableMovement,
+                                                                      await GetDictionaryKeyAsync(token)
+                                                                          .ConfigureAwait(false), token: token)
+                             .ConfigureAwait(false)).Count == 0)
                     {
-                        _intCachedEnabled = 0;
-                        return false;
+                        string strMovementString
+                            = await CharacterObject
+                                    .GetSwimAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage,
+                                                  token)
+                                    .ConfigureAwait(false);
+                        if (string.IsNullOrEmpty(strMovementString)
+                            || strMovementString == "0"
+                            || strMovementString.Contains(
+                                await LanguageManager
+                                      .GetStringAsync("String_ModeSpecial", GlobalSettings.DefaultLanguage, token: token)
+                                      .ConfigureAwait(false)))
+                        {
+                            _intCachedEnabled = 0;
+                            return false;
+                        }
                     }
                 }
 

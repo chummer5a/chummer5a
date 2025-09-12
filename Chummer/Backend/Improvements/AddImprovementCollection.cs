@@ -6300,6 +6300,13 @@ namespace Chummer
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillDisable, _strUnique);
         }
 
+        public void skillenablemovement(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillEnableMovement, _strUnique);
+        }
+
         public void skillgroupdisable(XmlNode bonusNode)
         {
             if (bonusNode == null)
