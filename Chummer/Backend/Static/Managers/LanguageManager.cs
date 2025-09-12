@@ -1901,97 +1901,32 @@ namespace Chummer
                                 CancellationToken innerToken = default)
                             {
                                 innerToken.ThrowIfCancellationRequested();
-                                List<Task<string>> lstTasks = new List<Task<string>>(Utils.MaxParallelBatchSize);
                                 foreach (IReadOnlyCollection<Tuple<string, XPathExpression, Func<XPathNavigator, string>,
                                              Func<XPathNavigator, string>>> aobjPaths
                                          in s_LstAXPathsToSearch)
                                 {
                                     innerToken.ThrowIfCancellationRequested();
-                                    lstTasks.Clear();
                                     IEnumerable<Tuple<string, XPathExpression, Func<XPathNavigator, string>,
                                         Func<XPathNavigator, string>>> lstToSearch
                                         = !string.IsNullOrEmpty(strPreferredFileName)
                                             ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
                                                 StringComparison.OrdinalIgnoreCase))
                                             : aobjPaths;
-                                    int i = 0;
-                                    foreach (Tuple<string, XPathExpression, Func<XPathNavigator, string>,
-                                                 Func<XPathNavigator, string>> tupLoop in lstToSearch)
+                                    string strInnerReturn = string.Empty;
+                                    await ParallelExtensions.ForEachAsync(lstToSearch, async (tupLoop, objSource) =>
                                     {
-                                        if (innerToken.IsCancellationRequested)
-                                            i = Utils.MaxParallelBatchSize;
-                                        else
+                                        if (objSource.IsCancellationRequested)
+                                            return;
+                                        string strLoop = await FetchAndReturnString(tupLoop.Item1, lstInnerCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
+                                                    tupLoop.Item4, innerToken).ConfigureAwait(false);
+                                        if (!string.IsNullOrEmpty(strLoop))
                                         {
-                                            lstTasks.Add(Task.Run(
-                                                () => FetchAndReturnString(tupLoop.Item1, lstInnerCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
-                                                    tupLoop.Item4, innerToken), innerToken));
-                                            ++i;
+                                            objSource.Cancel(false);
+                                            strInnerReturn = strLoop;
                                         }
-                                        if (i == Utils.MaxParallelBatchSize)
-                                        {
-                                            i = 0;
-                                            try
-                                            {
-                                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                                            }
-                                            catch (OperationCanceledException) when (!token.IsCancellationRequested)
-                                            {
-                                                // swallow this because it means it's our found item token canceling out
-                                            }
-
-                                            if (objFoundItemToken.IsCancellationRequested)
-                                            {
-                                                foreach (Task<string> tskLoop in lstTasks)
-                                                {
-                                                    if (!tskLoop.IsCanceled)
-                                                    {
-                                                        try
-                                                        {
-                                                            string strLoop = await tskLoop.ConfigureAwait(false);
-                                                            if (!string.IsNullOrEmpty(strLoop))
-                                                                return strLoop;
-                                                        }
-                                                        catch (OperationCanceledException)
-                                                        {
-                                                            // swallow this
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            innerToken.ThrowIfCancellationRequested();
-                                            lstTasks.Clear();
-                                        }
-                                    }
-
-                                    try
-                                    {
-                                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                                    }
-                                    catch (OperationCanceledException) when (!token.IsCancellationRequested)
-                                    {
-                                        // swallow this because it means it's our found item token canceling out
-                                    }
-
-                                    if (objFoundItemToken.IsCancellationRequested)
-                                    {
-                                        foreach (Task<string> tskLoop in lstTasks)
-                                        {
-                                            if (!tskLoop.IsCanceled)
-                                            {
-                                                try
-                                                {
-                                                    string strLoop = await tskLoop.ConfigureAwait(false);
-                                                    if (!string.IsNullOrEmpty(strLoop))
-                                                        return strLoop;
-                                                }
-                                                catch (OperationCanceledException)
-                                                {
-                                                    // swallow this
-                                                }
-                                            }
-                                        }
-                                    }
+                                    }, innerToken).ConfigureAwait(false);
+                                    if (objFoundItemToken.IsCancellationRequested && !string.IsNullOrEmpty(strInnerReturn))
+                                        return strInnerReturn;
                                 }
 
                                 return string.Empty;
@@ -2469,97 +2404,32 @@ namespace Chummer
                                 CancellationToken innerToken = default)
                 {
                     innerToken.ThrowIfCancellationRequested();
-                    List<Task<string>> lstTasks = new List<Task<string>>(Utils.MaxParallelBatchSize);
                     foreach (IReadOnlyCollection<Tuple<string, XPathExpression, Func<XPathNavigator, string>,
                                  Func<XPathNavigator, string>>> aobjPaths
                              in s_LstAXPathsToSearch)
                     {
                         innerToken.ThrowIfCancellationRequested();
-                        lstTasks.Clear();
                         IEnumerable<Tuple<string, XPathExpression, Func<XPathNavigator, string>,
                             Func<XPathNavigator, string>>> lstToSearch
                             = !string.IsNullOrEmpty(strPreferredFileName)
                                 ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
                                     StringComparison.OrdinalIgnoreCase))
                                 : aobjPaths;
-                        int i = 0;
-                        foreach (Tuple<string, XPathExpression, Func<XPathNavigator, string>,
-                                     Func<XPathNavigator, string>> tupLoop in lstToSearch)
+                        string strInnerReturn = string.Empty;
+                        await ParallelExtensions.ForEachAsync(lstToSearch, async (tupLoop, objSource) =>
                         {
-                            if (innerToken.IsCancellationRequested)
-                                i = Utils.MaxParallelBatchSize;
-                            else
+                            if (objSource.IsCancellationRequested)
+                                return;
+                            string strLoop = await FetchAndReturnString(tupLoop.Item1, lstInnerCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
+                                        tupLoop.Item4, innerToken).ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(strLoop))
                             {
-                                lstTasks.Add(Task.Run(
-                                    () => FetchAndReturnString(tupLoop.Item1, lstInnerCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
-                                        tupLoop.Item4, innerToken), innerToken));
-                                ++i;
+                                objSource.Cancel(false);
+                                strInnerReturn = strLoop;
                             }
-                            if (i == Utils.MaxParallelBatchSize)
-                            {
-                                i = 0;
-                                try
-                                {
-                                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                                }
-                                catch (OperationCanceledException) when (!token.IsCancellationRequested)
-                                {
-                                    // swallow this because it means it's our found item token canceling out
-                                }
-
-                                if (objFoundItemToken.IsCancellationRequested)
-                                {
-                                    foreach (Task<string> tskLoop in lstTasks)
-                                    {
-                                        if (!tskLoop.IsCanceled)
-                                        {
-                                            try
-                                            {
-                                                string strLoop = await tskLoop.ConfigureAwait(false);
-                                                if (!string.IsNullOrEmpty(strLoop))
-                                                    return strLoop;
-                                            }
-                                            catch (OperationCanceledException)
-                                            {
-                                                // swallow this
-                                            }
-                                        }
-                                    }
-                                }
-
-                                innerToken.ThrowIfCancellationRequested();
-                                lstTasks.Clear();
-                            }
-                        }
-
-                        try
-                        {
-                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                        }
-                        catch (OperationCanceledException) when (!token.IsCancellationRequested)
-                        {
-                            // swallow this because it means it's our found item token canceling out
-                        }
-
-                        if (objFoundItemToken.IsCancellationRequested)
-                        {
-                            foreach (Task<string> tskLoop in lstTasks)
-                            {
-                                if (!tskLoop.IsCanceled)
-                                {
-                                    try
-                                    {
-                                        string strLoop = await tskLoop.ConfigureAwait(false);
-                                        if (!string.IsNullOrEmpty(strLoop))
-                                            return strLoop;
-                                    }
-                                    catch (OperationCanceledException)
-                                    {
-                                        // swallow this
-                                    }
-                                }
-                            }
-                        }
+                        }, innerToken).ConfigureAwait(false);
+                        if (objFoundItemToken.IsCancellationRequested && !string.IsNullOrEmpty(strInnerReturn))
+                            return strInnerReturn;
                     }
 
                     return string.Empty;
