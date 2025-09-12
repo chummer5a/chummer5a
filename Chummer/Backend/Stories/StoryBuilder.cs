@@ -96,40 +96,20 @@ namespace Chummer
                 string[] story = ArrayPool<string>.Shared.Rent(modules.Count);
                 try
                 {
-                    Task<string>[] atskStoryTasks = ArrayPool<Task<string>>.Shared.Rent(modules.Count);
-                    try
-                    {
-                        XPathNavigator xmlBaseMacrosNode = xdoc
+                    XPathNavigator xmlBaseMacrosNode = xdoc
                             .SelectSingleNodeAndCacheExpression(
                                 "/chummer/storybuilder/macros", token: token);
-                        //Actually "write" the story
-                        for (int i = 0; i < modules.Count; ++i)
-                        {
-                            int intLocal = i;
-                            atskStoryTasks[i] = Task.Run(async () =>
-                            {
-                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                           out StringBuilder sbdTemp))
-                                {
-                                    return (await Write(sbdTemp, modules[intLocal]["story"]?.InnerText ?? string.Empty, 5,
-                                        xmlBaseMacrosNode, token).ConfigureAwait(false)).ToString();
-                                }
-                            }, token);
-                        }
-
-                        await Task.WhenAll(atskStoryTasks).ConfigureAwait(false);
-
-                        for (int i = 0; i < modules.Count; ++i)
-                        {
-                            story[i] = await atskStoryTasks[i].ConfigureAwait(false);
-                        }
-                    }
-                    finally
+                    await ParallelExtensions.ForAsync(0, modules.Count, async i =>
                     {
-                        ArrayPool<Task<string>>.Shared.Return(atskStoryTasks);
-                    }
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                           out StringBuilder sbdTemp))
+                        {
+                            story[i] = (await Write(sbdTemp, modules[i]["story"]?.InnerText ?? string.Empty, 5,
+                                xmlBaseMacrosNode, token).ConfigureAwait(false)).ToTrimmedString();
+                        }
+                    }, token).ConfigureAwait(false);
 
-                    return string.Join(Environment.NewLine + Environment.NewLine, story);
+                    return string.Join(Environment.NewLine + Environment.NewLine, story, 0, modules.Count);
                 }
                 finally
                 {

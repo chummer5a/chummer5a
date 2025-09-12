@@ -2671,19 +2671,14 @@ namespace Chummer
                            = await Program.CreateAndShowProgressBarAsync(string.Empty,
                                                                          Character.NumLoadingSections * s.Length, _objGenericToken).ConfigureAwait(false))
                     {
-                        Task<Character>[] tskCharacterLoads = new Task<Character>[s.Length];
                         // Array instead of concurrent bag because we want to preserve order
-                        for (int i = 0; i < s.Length; ++i)
+                        await ParallelExtensions.ForAsync(0, s.Length, async i =>
                         {
-                            string strFile = s[i];
                             // ReSharper disable once AccessToDisposedClosure
-                            tskCharacterLoads[i]
-                                = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken), _objGenericToken);
-                        }
-
-                        await Task.WhenAll(tskCharacterLoads).ConfigureAwait(false);
-                        for (int i = 0; i < lstCharacters.Length; ++i)
-                            lstCharacters[i] = await tskCharacterLoads[i].ConfigureAwait(false);
+                            lstCharacters[i]
+                                = await Program.LoadCharacterAsync(s[i], frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken)
+                                    .ConfigureAwait(false);
+                        }, _objGenericToken).ConfigureAwait(false);
                     }
 
                     await OpenCharacterList(lstCharacters, token: _objGenericToken).ConfigureAwait(false);
@@ -3267,20 +3262,13 @@ namespace Chummer
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                     {
-                        Task<Character>[] tskCharacterLoads = new Task<Character>[lstFilesToOpen.Count];
-                        for (int i = 0; i < lstFilesToOpen.Count; ++i)
+                        await ParallelExtensions.ForAsync(0, lstFilesToOpen.Count, async i =>
                         {
-                            string strFile = lstFilesToOpen[i];
                             // ReSharper disable once AccessToDisposedClosure
-                            tskCharacterLoads[i]
-                                = Task.Run(
-                                    () => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar.MyForm,
-                                                                     token: _objGenericToken), _objGenericToken);
-                        }
-
-                        await Task.WhenAll(tskCharacterLoads).ConfigureAwait(false);
-                        for (int i = 0; i < lstCharacters.Length; ++i)
-                            lstCharacters[i] = await tskCharacterLoads[i].ConfigureAwait(false);
+                            lstCharacters[i]
+                                = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken)
+                                    .ConfigureAwait(false);
+                        }, _objGenericToken).ConfigureAwait(false);
                     }
 
                     await OpenCharacterList(lstCharacters, token: _objGenericToken).ConfigureAwait(false);
@@ -3490,20 +3478,13 @@ namespace Chummer
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                     {
-                        Task<Character>[] tskCharacterLoads = new Task<Character>[lstFilesToOpen.Count];
-                        for (int i = 0; i < lstFilesToOpen.Count; ++i)
+                        await ParallelExtensions.ForAsync(0, lstFilesToOpen.Count, async i =>
                         {
-                            string strFile = lstFilesToOpen[i];
                             // ReSharper disable once AccessToDisposedClosure
-                            tskCharacterLoads[i]
-                                = Task.Run(
-                                    () => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar.MyForm,
-                                                                     token: _objGenericToken), _objGenericToken);
-                        }
-
-                        await Task.WhenAll(tskCharacterLoads).ConfigureAwait(false);
-                        for (int i = 0; i < lstCharacters.Length; ++i)
-                            lstCharacters[i] = await tskCharacterLoads[i].ConfigureAwait(false);
+                            lstCharacters[i]
+                                = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken)
+                                    .ConfigureAwait(false);
+                        }, _objGenericToken).ConfigureAwait(false);
                     }
 
                     await OpenCharacterListForPrinting(lstCharacters, token: _objGenericToken).ConfigureAwait(false);
@@ -3737,20 +3718,13 @@ namespace Chummer
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                     {
-                        Task<Character>[] tskCharacterLoads = new Task<Character>[lstFilesToOpen.Count];
-                        for (int i = 0; i < lstFilesToOpen.Count; ++i)
+                        await ParallelExtensions.ForAsync(0, lstFilesToOpen.Count, async i =>
                         {
-                            string strFile = lstFilesToOpen[i];
                             // ReSharper disable once AccessToDisposedClosure
-                            tskCharacterLoads[i]
-                                = Task.Run(
-                                    () => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar.MyForm,
-                                                                     token: _objGenericToken), _objGenericToken);
-                        }
-
-                        await Task.WhenAll(tskCharacterLoads).ConfigureAwait(false);
-                        for (int i = 0; i < lstCharacters.Length; ++i)
-                            lstCharacters[i] = await tskCharacterLoads[i].ConfigureAwait(false);
+                            lstCharacters[i]
+                                = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken)
+                                    .ConfigureAwait(false);
+                        }, _objGenericToken).ConfigureAwait(false);
                     }
 
                     await OpenCharacterListForExport(lstCharacters, token: _objGenericToken).ConfigureAwait(false);
