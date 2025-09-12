@@ -809,9 +809,9 @@ namespace Chummer
                                                                 ? SearchOption.AllDirectories
                                                                 : SearchOption.TopDirectoryOnly);
             token.ThrowIfCancellationRequested();
+            int intReturn = 1;
             if (blnSync)
             {
-                int intReturn = 1;
                 RunWithoutThreadLock(() =>
                 {
                     Parallel.ForEach(astrFilesToDelete, () => true,
@@ -822,21 +822,21 @@ namespace Chummer
                                              Interlocked.Exchange(ref intReturn, 0);
                                      });
                 }, token);
-                return intReturn > 0;
             }
-
-            Task<bool>[] atskSuccesses = new Task<bool>[astrFilesToDelete.Length];
-            for (int i = 0; i < astrFilesToDelete.Length; i++)
+            else
             {
-                string strToDelete = astrFilesToDelete[i];
-                atskSuccesses[i] = FileExtensions.SafeDeleteAsync(strToDelete, false, intTimeout, token);
+                await ParallelExtensions.ForEachAsync(astrFilesToDelete, async (strToDelete, t) =>
+                {
+                    if (t.IsCancellationRequested)
+                        return;
+                    if (!await FileExtensions.SafeDeleteAsync(strToDelete, false, intTimeout, token))
+                    {
+                        t.Cancel(false);
+                        Interlocked.Exchange(ref intReturn, 0);
+                    }
+                }, token).ConfigureAwait(false);
             }
-            foreach (Task<bool> x in atskSuccesses)
-            {
-                if (!await x.ConfigureAwait(false))
-                    return false;
-            }
-            return true;
+            return intReturn > 0;
         }
 
         /// <summary>
