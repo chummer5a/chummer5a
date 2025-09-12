@@ -4927,7 +4927,8 @@ namespace Chummer.Backend.Skills
             {
                 if (_dicCachedStringSpec.TryGetValue(strLanguage, out string strReturn))
                     return strReturn;
-                strReturn = string.Join(", ", Specializations.Select(x => x.DisplayName(strLanguage)));
+                string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+                strReturn = string.Join(',' + strSpace, Specializations.Select(x => x.DisplayName(strLanguage)));
 
                 _dicCachedStringSpec.Add(strLanguage, strReturn);
 
@@ -4943,8 +4944,9 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 if (_dicCachedStringSpec.TryGetValue(strLanguage, out string strReturn))
                     return strReturn;
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
                 strReturn = await StringExtensions
-                    .JoinAsync(", ", (await GetSpecializationsAsync(token).ConfigureAwait(false)).Select(x => x.DisplayNameAsync(strLanguage, token)), token)
+                    .JoinAsync(',' + strSpace, (await GetSpecializationsAsync(token).ConfigureAwait(false)).Select(x => x.DisplayNameAsync(strLanguage, token)), token)
                     .ConfigureAwait(false);
 
                 _dicCachedStringSpec.Add(strLanguage, strReturn);

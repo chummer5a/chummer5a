@@ -105,7 +105,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(SelectedValue))
                 SelectedValue = selectedValue;
             else
-                SelectedValue += ", " + selectedValue;
+                SelectedValue += ", " + selectedValue; // Do not use localized value for space because we expect the selected value to be in English
             return CreateImprovementAsync(selectedValue, _objImprovementSource, SourceName, improvementType, _strUnique, token: token);
         }
 
@@ -2188,7 +2188,7 @@ namespace Chummer
                 }
                 else
                 {
-                    SelectedValue += ", " + objSelectedContact.Name;
+                    SelectedValue += ',' + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + await objSelectedContact.GetNameAsync(token).ConfigureAwait(false);
                 }
             }
         }
@@ -6489,7 +6489,7 @@ namespace Chummer
                             if (string.IsNullOrEmpty(SelectedValue))
                                 SelectedValue = strSelected;
                             else
-                                SelectedValue += ", " + strSelected;
+                                SelectedValue += ", " + strSelected; // Do not use localized value for space because we expect the selected value to be in English
                         }
 
                         await CreateImprovementAsync(strSelected, _objImprovementSource, SourceName, impType,
