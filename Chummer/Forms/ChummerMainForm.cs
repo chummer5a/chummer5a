@@ -66,26 +66,17 @@ namespace Chummer
         private readonly CancellationToken _objGenericToken;
         private readonly DebuggableSemaphoreSlim _objFormOpeningSemaphore = new DebuggableSemaphoreSlim();
 
-        public string MainTitle
+        public async Task<string> GetMainTitleAsync(CancellationToken token = default)
         {
-            get
-            {
-                try
-                {
-                    string strSpace = LanguageManager.GetString("String_Space", token: _objGenericToken);
-                    string strTitle = Application.ProductName + strSpace + '-' + strSpace
-                                      + LanguageManager.GetString("String_Version", token: _objGenericToken) + strSpace
-                                      + _strCurrentVersion;
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            return Application.ProductName + strSpace + '-' + strSpace
+                + await LanguageManager.GetStringAsync("String_Version", token: token).ConfigureAwait(false) + strSpace
 #if DEBUG
-                    strTitle += " DEBUG BUILD";
+                + _strCurrentVersion + " DEBUG BUILD";
+#else
+                + _strCurrentVersion;
 #endif
-                    return strTitle;
-                }
-                catch (OperationCanceledException)
-                {
-                    return string.Empty;
-                }
-            }
         }
 
         public bool IsClosing => _intFormClosing > 0;
@@ -706,7 +697,8 @@ namespace Chummer
                                     "The error " + intErrorCode + " occurred while attempting to unblock WM_COPYDATA.");
                             }
 
-                            await this.DoThreadSafeAsync(x => x.Text = MainTitle, token: _objGenericToken)
+                            string strMainTitle = await GetMainTitleAsync(_objGenericToken).ConfigureAwait(false);
+                            await this.DoThreadSafeAsync(x => x.Text = strMainTitle, token: _objGenericToken)
                                       .ConfigureAwait(false);
                             dlgOpenFile.Filter
                                 = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: _objGenericToken)
