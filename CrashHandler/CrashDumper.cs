@@ -181,9 +181,9 @@ namespace CrashHandler
                 SetProgress(CrashDumperProgress.Compressing);
                 await CrashLogWriter.WriteLineAsync("Creating .zip file").ConfigureAwait(false);
                 await CrashLogWriter.FlushAsync().ConfigureAwait(false);
+                string strFileName = Path.Combine(Utils.GetStartupPath, CrashDumpName + ".zip");
                 await Task.Run(() => ZipFile.CreateFromDirectory(WorkingDirectory,
-                                                                 Path.Combine(Utils.GetStartupPath, CrashDumpName)
-                                                                 + ".zip",
+                                                                 strFileName,
                                                                  CompressionLevel.Optimal, false, Encoding.UTF8)).ConfigureAwait(false);
                 await CrashLogWriter.WriteLineAsync("Zip file created").ConfigureAwait(false);
                 await CrashLogWriter.FlushAsync().ConfigureAwait(false);
@@ -251,11 +251,7 @@ namespace CrashHandler
                 };
 
                 const NativeMethods.MINIDUMP_TYPE dtype = NativeMethods.MINIDUMP_TYPE.MiniDumpWithPrivateReadWriteMemory |
-                                                          NativeMethods.MINIDUMP_TYPE.MiniDumpWithDataSegs |
-                                                          NativeMethods.MINIDUMP_TYPE.MiniDumpWithHandleData |
-                                                          NativeMethods.MINIDUMP_TYPE.MiniDumpWithFullMemoryInfo |
-                                                          NativeMethods.MINIDUMP_TYPE.MiniDumpWithThreadInfo |
-                                                          NativeMethods.MINIDUMP_TYPE.MiniDumpWithUnloadedModules;
+                                                          NativeMethods.MINIDUMP_TYPE.MiniDumpWithDataSegs;
 
                 bool extraInfo = !(exceptionInfo == IntPtr.Zero || threadId == 0 || !debugger);
 
