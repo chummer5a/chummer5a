@@ -1695,7 +1695,7 @@ namespace Chummer
             //Chummer looks for data in cwd, to be able to move exe (legacy+bootstrapper uses this)
 
             if (Directory.Exists(Utils.GetDataFolderPath)
-                && Directory.Exists(Path.Combine(Utils.GetStartupPath, "lang")))
+                && Directory.Exists(Utils.GetLanguageFolderPath))
             {
                 //both normally used data dirs present (add file loading abstraction to the list)
                 //so do nothing

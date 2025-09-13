@@ -103,7 +103,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(SelectedValue))
                 SelectedValue = selectedValue;
             else
-                SelectedValue += ", " + selectedValue;
+                SelectedValue += ", " + selectedValue; // Do not use localized value for space because we expect the selected value to be in English
             return CreateImprovement(selectedValue, _objImprovementSource, SourceName, improvementType, _strUnique);
         }
 
@@ -2113,7 +2113,7 @@ namespace Chummer
                 }
                 else
                 {
-                    SelectedValue += ", " + objSelectedContact.Name;
+                    SelectedValue += ',' + LanguageManager.GetString("String_Space") + objSelectedContact.Name;
                 }
             }
         }
@@ -6178,7 +6178,7 @@ namespace Chummer
                             if (string.IsNullOrEmpty(SelectedValue))
                                 SelectedValue = frmSelect.MyForm.SelectedItem;
                             else
-                                SelectedValue += ", " + frmSelect.MyForm.SelectedItem;
+                                SelectedValue += ", " + frmSelect.MyForm.SelectedItem; // Do not use localized value for space because we expect the selected value to be in English
                         }
 
                         CreateImprovement(frmSelect.MyForm.SelectedItem, _objImprovementSource, SourceName, impType,

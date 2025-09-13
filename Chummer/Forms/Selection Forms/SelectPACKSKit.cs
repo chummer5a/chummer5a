@@ -133,7 +133,8 @@ namespace Chummer
 
                     if (sbdCategoryFilter.Length > 0)
                     {
-                        strFilter += " and (" + sbdCategoryFilter.ToString().TrimEndOnce(" or ") + ')';
+                        sbdCategoryFilter.Length -= 4;
+                        strFilter += " and (" + sbdCategoryFilter.ToString() + ')';
                     }
                 }
             }

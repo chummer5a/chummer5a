@@ -4273,23 +4273,15 @@ namespace Chummer
                                           .ConfigureAwait(false))
                     {
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false);
-                        Task<Character>[] tskLoadingTasks = new Task<Character>[intClones];
-                        for (int i = 0; i < intClones; ++i)
+                        // Await structure prevents UI thread lock-ups if the LoadCharacter() function shows any messages
+                        await ParallelExtensions.ForAsync(0, intClones, async i =>
                         {
                             string strNewName = strAlias + strSpace + i.ToString(GlobalSettings.CultureInfo);
-                            tskLoadingTasks[i]
-                                // ReSharper disable once AccessToDisposedClosure
-                                = Task.Run(
-                                    () => Program.LoadCharacterAsync(strFileName, strNewName, true,
+                            lstClones[i] = await Program.LoadCharacterAsync(strFileName, strNewName, true,
                                                                      // ReSharper disable once AccessToDisposedClosure
                                                                      frmLoadingBar: frmLoadingBar.MyForm,
-                                                                     token: GenericToken), GenericToken);
-                        }
-
-                        // Await structure prevents UI thread lock-ups if the LoadCharacter() function shows any messages
-                        await Task.WhenAll(tskLoadingTasks).ConfigureAwait(false);
-                        for (int i = 0; i < intClones; ++i)
-                            lstClones[i] = await tskLoadingTasks[i].ConfigureAwait(false);
+                                                                     token: GenericToken).ConfigureAwait(false);
+                        }, GenericToken).ConfigureAwait(false);
                     }
 
                     await Program.OpenCharacterList(lstClones, false, GenericToken).ConfigureAwait(false);

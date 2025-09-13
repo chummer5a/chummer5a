@@ -1230,8 +1230,8 @@ namespace Chummer
             int intFavoritesCount = lstFavorites.Count;
             int intRecentsCount = lstRecents.Count;
 
-            TreeNode[] lstFavoritesNodes = intFavoritesCount > 0 ? new TreeNode[intFavoritesCount] : null;
-            TreeNode[] lstRecentsNodes = intRecentsCount > 0 ? new TreeNode[intRecentsCount] : null;
+            TreeNode[] lstFavoritesNodes = intFavoritesCount > 0 ? new TreeNode[intFavoritesCount] : Array.Empty<TreeNode>();
+            TreeNode[] lstRecentsNodes = intRecentsCount > 0 ? new TreeNode[intRecentsCount] : Array.Empty<TreeNode>();
             System.IAsyncDisposable objLocker = await _objCachePurgeReaderWriterLock.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -1239,84 +1239,62 @@ namespace Chummer
                 if (intFavoritesCount > 0 || intRecentsCount > 0)
                 {
                     token.ThrowIfCancellationRequested();
-                    Task<TreeNode>[] atskCachingTasks = new Task<TreeNode>[intFavoritesCount + intRecentsCount];
-
-                    for (int i = 0; i < intFavoritesCount; ++i)
-                    {
-                        int iLocal = i;
-                        atskCachingTasks[i]
-                            = Task.Run(() => CacheCharacter(lstFavorites[iLocal], token: token), token);
-                    }
-
-                    for (int i = 0; i < intRecentsCount; ++i)
-                    {
-                        int iLocal = i;
-                        atskCachingTasks[intFavoritesCount + i]
-                            = Task.Run(() => CacheCharacter(lstRecents[iLocal], token: token), token);
-                    }
 
                     try
                     {
-                        await Task.WhenAll(atskCachingTasks).ConfigureAwait(false);
+                        await ParallelExtensions.ForAsync(0, intFavoritesCount, async i =>
+                        {
+                            lstFavoritesNodes[i] = await CacheCharacter(lstFavorites[i], token: token).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
+                        await ParallelExtensions.ForAsync(0, intRecentsCount, async i =>
+                        {
+                            lstRecentsNodes[i] = await CacheCharacter(lstRecents[i], token: token).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
                         //swallow this
                     }
 
-                    if (lstFavoritesNodes != null)
-                    {
-                        for (int i = 0; i < intFavoritesCount; ++i)
-                        {
-                            lstFavoritesNodes[i] = await atskCachingTasks[i].ConfigureAwait(false);
-                        }
+                    token.ThrowIfCancellationRequested();
 
-                        if (objFavoriteNode != null)
+                    if (lstFavoritesNodes?.Length > 0 && objFavoriteNode != null)
+                    {
+                        foreach (TreeNode objNode in lstFavoritesNodes)
                         {
-                            foreach (TreeNode objNode in lstFavoritesNodes)
+                            token.ThrowIfCancellationRequested();
+                            if (objNode == null)
+                                continue;
+                            TreeView treFavoriteNode = objFavoriteNode.TreeView;
+                            if (treFavoriteNode != null)
                             {
-                                token.ThrowIfCancellationRequested();
-                                if (objNode == null)
+                                if (treFavoriteNode.IsNullOrDisposed())
                                     continue;
-                                TreeView treFavoriteNode = objFavoriteNode.TreeView;
-                                if (treFavoriteNode != null)
-                                {
-                                    if (treFavoriteNode.IsNullOrDisposed())
-                                        continue;
-                                    await treFavoriteNode.DoThreadSafeAsync(
-                                        () => objFavoriteNode.Nodes.Add(objNode), token).ConfigureAwait(false);
-                                }
-                                else
-                                    objFavoriteNode.Nodes.Add(objNode);
+                                await treFavoriteNode.DoThreadSafeAsync(
+                                    () => objFavoriteNode.Nodes.Add(objNode), token).ConfigureAwait(false);
                             }
+                            else
+                                objFavoriteNode.Nodes.Add(objNode);
                         }
                     }
 
-                    if (lstRecentsNodes != null)
+                    if (lstRecentsNodes?.Length > 0 && objRecentNode != null)
                     {
-                        for (int i = 0; i < intRecentsCount; ++i)
+                        foreach (TreeNode objNode in lstRecentsNodes)
                         {
-                            lstRecentsNodes[i] = await atskCachingTasks[intFavoritesCount + i].ConfigureAwait(false);
-                        }
-
-                        if (objRecentNode != null)
-                        {
-                            foreach (TreeNode objNode in lstRecentsNodes)
+                            token.ThrowIfCancellationRequested();
+                            if (objNode == null)
+                                continue;
+                            TreeView treRecentNode = objRecentNode.TreeView;
+                            if (treRecentNode != null)
                             {
-                                token.ThrowIfCancellationRequested();
-                                if (objNode == null)
+                                if (treRecentNode.IsNullOrDisposed())
                                     continue;
-                                TreeView treRecentNode = objRecentNode.TreeView;
-                                if (treRecentNode != null)
-                                {
-                                    if (treRecentNode.IsNullOrDisposed())
-                                        continue;
-                                    await treRecentNode.DoThreadSafeAsync(
-                                        () => objRecentNode.Nodes.Add(objNode), token).ConfigureAwait(false);
-                                }
-                                else
-                                    objRecentNode.Nodes.Add(objNode);
+                                await treRecentNode.DoThreadSafeAsync(
+                                    () => objRecentNode.Nodes.Add(objNode), token).ConfigureAwait(false);
                             }
+                            else
+                                objRecentNode.Nodes.Add(objNode);
                         }
                     }
                 }
@@ -1338,7 +1316,7 @@ namespace Chummer
                             {
                                 treList.Nodes.Insert(0, objFavoriteNode);
                             }
-                            else if (lstFavoritesNodes != null)
+                            else if (lstFavoritesNodes?.Length > 0)
                             {
                                 try
                                 {
@@ -1364,7 +1342,7 @@ namespace Chummer
                             {
                                 treList.Nodes.Insert((objFavoriteNode != null).ToInt32(), objRecentNode);
                             }
-                            else if (lstRecentsNodes != null)
+                            else if (lstRecentsNodes?.Length > 0)
                             {
                                 try
                                 {

@@ -50,7 +50,7 @@ namespace Chummer
         {
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
-            string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalSettings.DefaultLanguage + ".xml");
+            string strFilePath = Path.Combine(Utils.GetLanguageFolderPath, GlobalSettings.DefaultLanguage + ".xml");
             if (File.Exists(strFilePath))
             {
                 try
@@ -1151,7 +1151,7 @@ namespace Chummer
                     {
                         // Load the English version.
                         string strFilePath
-                            = Path.Combine(Utils.GetStartupPath, "lang", GlobalSettings.DefaultLanguage + ".xml");
+                            = Path.Combine(Utils.GetLanguageFolderPath, GlobalSettings.DefaultLanguage + ".xml");
                         try
                         {
                             XPathDocument objEnglishDocument = await XPathDocumentExtensions
@@ -1178,7 +1178,7 @@ namespace Chummer
                     Task.Run(async () =>
                     {
                         // Load the selected language version.
-                        string strLangPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
+                        string strLangPath = Path.Combine(Utils.GetLanguageFolderPath, "lang", strLanguage + ".xml");
                         try
                         {
                             XPathDocument objLanguageDocument = await XPathDocumentExtensions
@@ -1435,13 +1435,6 @@ namespace Chummer
                 : Utils.SafelyRunSynchronously(
                     () => TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile, token),
                     token);
-            /*
-            // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
-            // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
-            // TODO: Do this overhaul.
-            : Utils.RunWithoutThreadLock(
-                () => TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile));
-            */
         }
 
         /// <summary>
@@ -1908,97 +1901,32 @@ namespace Chummer
                                 CancellationToken innerToken = default)
                             {
                                 innerToken.ThrowIfCancellationRequested();
-                                List<Task<string>> lstTasks = new List<Task<string>>(Utils.MaxParallelBatchSize);
                                 foreach (IReadOnlyCollection<Tuple<string, XPathExpression, Func<XPathNavigator, string>,
                                              Func<XPathNavigator, string>>> aobjPaths
                                          in s_LstAXPathsToSearch)
                                 {
                                     innerToken.ThrowIfCancellationRequested();
-                                    lstTasks.Clear();
                                     IEnumerable<Tuple<string, XPathExpression, Func<XPathNavigator, string>,
                                         Func<XPathNavigator, string>>> lstToSearch
                                         = !string.IsNullOrEmpty(strPreferredFileName)
                                             ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
                                                 StringComparison.OrdinalIgnoreCase))
                                             : aobjPaths;
-                                    int i = 0;
-                                    foreach (Tuple<string, XPathExpression, Func<XPathNavigator, string>,
-                                                 Func<XPathNavigator, string>> tupLoop in lstToSearch)
+                                    string strInnerReturn = string.Empty;
+                                    await ParallelExtensions.ForEachAsync(lstToSearch, async (tupLoop, objSource) =>
                                     {
-                                        if (innerToken.IsCancellationRequested)
-                                            i = Utils.MaxParallelBatchSize;
-                                        else
+                                        if (objSource.IsCancellationRequested)
+                                            return;
+                                        string strLoop = await FetchAndReturnString(tupLoop.Item1, lstInnerCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
+                                                    tupLoop.Item4, innerToken).ConfigureAwait(false);
+                                        if (!string.IsNullOrEmpty(strLoop))
                                         {
-                                            lstTasks.Add(Task.Run(
-                                                () => FetchAndReturnString(tupLoop.Item1, lstInnerCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
-                                                    tupLoop.Item4, innerToken), innerToken));
-                                            ++i;
+                                            objSource.Cancel(false);
+                                            strInnerReturn = strLoop;
                                         }
-                                        if (i == Utils.MaxParallelBatchSize)
-                                        {
-                                            i = 0;
-                                            try
-                                            {
-                                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                                            }
-                                            catch (OperationCanceledException) when (!token.IsCancellationRequested)
-                                            {
-                                                // swallow this because it means it's our found item token canceling out
-                                            }
-
-                                            if (objFoundItemToken.IsCancellationRequested)
-                                            {
-                                                foreach (Task<string> tskLoop in lstTasks)
-                                                {
-                                                    if (!tskLoop.IsCanceled)
-                                                    {
-                                                        try
-                                                        {
-                                                            string strLoop = await tskLoop.ConfigureAwait(false);
-                                                            if (!string.IsNullOrEmpty(strLoop))
-                                                                return strLoop;
-                                                        }
-                                                        catch (OperationCanceledException)
-                                                        {
-                                                            // swallow this
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            innerToken.ThrowIfCancellationRequested();
-                                            lstTasks.Clear();
-                                        }
-                                    }
-
-                                    try
-                                    {
-                                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                                    }
-                                    catch (OperationCanceledException) when (!token.IsCancellationRequested)
-                                    {
-                                        // swallow this because it means it's our found item token canceling out
-                                    }
-
-                                    if (objFoundItemToken.IsCancellationRequested)
-                                    {
-                                        foreach (Task<string> tskLoop in lstTasks)
-                                        {
-                                            if (!tskLoop.IsCanceled)
-                                            {
-                                                try
-                                                {
-                                                    string strLoop = await tskLoop.ConfigureAwait(false);
-                                                    if (!string.IsNullOrEmpty(strLoop))
-                                                        return strLoop;
-                                                }
-                                                catch (OperationCanceledException)
-                                                {
-                                                    // swallow this
-                                                }
-                                            }
-                                        }
-                                    }
+                                    }, innerToken).ConfigureAwait(false);
+                                    if (objFoundItemToken.IsCancellationRequested && !string.IsNullOrEmpty(strInnerReturn))
+                                        return strInnerReturn;
                                 }
 
                                 return string.Empty;
@@ -2069,13 +1997,6 @@ namespace Chummer
                 : Utils.SafelyRunSynchronously(
                     () => ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile,
                                                          token), token);
-            /*
-            // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
-            // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
-            // TODO: Do this overhaul.
-            : Utils.RunWithoutThreadLock(
-                () => ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile));
-            */
         }
 
         /// <summary>
@@ -2483,97 +2404,32 @@ namespace Chummer
                                 CancellationToken innerToken = default)
                 {
                     innerToken.ThrowIfCancellationRequested();
-                    List<Task<string>> lstTasks = new List<Task<string>>(Utils.MaxParallelBatchSize);
                     foreach (IReadOnlyCollection<Tuple<string, XPathExpression, Func<XPathNavigator, string>,
                                  Func<XPathNavigator, string>>> aobjPaths
                              in s_LstAXPathsToSearch)
                     {
                         innerToken.ThrowIfCancellationRequested();
-                        lstTasks.Clear();
                         IEnumerable<Tuple<string, XPathExpression, Func<XPathNavigator, string>,
                             Func<XPathNavigator, string>>> lstToSearch
                             = !string.IsNullOrEmpty(strPreferredFileName)
                                 ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
                                     StringComparison.OrdinalIgnoreCase))
                                 : aobjPaths;
-                        int i = 0;
-                        foreach (Tuple<string, XPathExpression, Func<XPathNavigator, string>,
-                                     Func<XPathNavigator, string>> tupLoop in lstToSearch)
+                        string strInnerReturn = string.Empty;
+                        await ParallelExtensions.ForEachAsync(lstToSearch, async (tupLoop, objSource) =>
                         {
-                            if (innerToken.IsCancellationRequested)
-                                i = Utils.MaxParallelBatchSize;
-                            else
+                            if (objSource.IsCancellationRequested)
+                                return;
+                            string strLoop = await FetchAndReturnString(tupLoop.Item1, lstInnerCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
+                                        tupLoop.Item4, innerToken).ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(strLoop))
                             {
-                                lstTasks.Add(Task.Run(
-                                    () => FetchAndReturnString(tupLoop.Item1, lstInnerCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
-                                        tupLoop.Item4, innerToken), innerToken));
-                                ++i;
+                                objSource.Cancel(false);
+                                strInnerReturn = strLoop;
                             }
-                            if (i == Utils.MaxParallelBatchSize)
-                            {
-                                i = 0;
-                                try
-                                {
-                                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                                }
-                                catch (OperationCanceledException) when (!token.IsCancellationRequested)
-                                {
-                                    // swallow this because it means it's our found item token canceling out
-                                }
-
-                                if (objFoundItemToken.IsCancellationRequested)
-                                {
-                                    foreach (Task<string> tskLoop in lstTasks)
-                                    {
-                                        if (!tskLoop.IsCanceled)
-                                        {
-                                            try
-                                            {
-                                                string strLoop = await tskLoop.ConfigureAwait(false);
-                                                if (!string.IsNullOrEmpty(strLoop))
-                                                    return strLoop;
-                                            }
-                                            catch (OperationCanceledException)
-                                            {
-                                                // swallow this
-                                            }
-                                        }
-                                    }
-                                }
-
-                                innerToken.ThrowIfCancellationRequested();
-                                lstTasks.Clear();
-                            }
-                        }
-
-                        try
-                        {
-                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                        }
-                        catch (OperationCanceledException) when (!token.IsCancellationRequested)
-                        {
-                            // swallow this because it means it's our found item token canceling out
-                        }
-
-                        if (objFoundItemToken.IsCancellationRequested)
-                        {
-                            foreach (Task<string> tskLoop in lstTasks)
-                            {
-                                if (!tskLoop.IsCanceled)
-                                {
-                                    try
-                                    {
-                                        string strLoop = await tskLoop.ConfigureAwait(false);
-                                        if (!string.IsNullOrEmpty(strLoop))
-                                            return strLoop;
-                                    }
-                                    catch (OperationCanceledException)
-                                    {
-                                        // swallow this
-                                    }
-                                }
-                            }
-                        }
+                        }, innerToken).ConfigureAwait(false);
+                        if (objFoundItemToken.IsCancellationRequested && !string.IsNullOrEmpty(strInnerReturn))
+                            return strInnerReturn;
                     }
 
                     return string.Empty;
@@ -2866,9 +2722,9 @@ namespace Chummer
 
         public LanguageData(string strLanguage)
         {
-            string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
+            string strFilePath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage + ".xml");
             if (!File.Exists(strFilePath))
-                strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage.ToLowerInvariant() + ".xml");
+                strFilePath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage.ToLowerInvariant() + ".xml");
             if (File.Exists(strFilePath))
             {
                 try
@@ -2935,9 +2791,9 @@ namespace Chummer
             }
 
             // Check to see if the data translation file for the selected language exists.
-            string strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + "_data.xml");
+            string strDataPath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage + "_data.xml");
             if (!File.Exists(strDataPath))
-                strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage.ToLowerInvariant() + "_data.xml");
+                strDataPath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage.ToLowerInvariant() + "_data.xml");
             if (File.Exists(strDataPath))
             {
                 try
@@ -2987,9 +2843,9 @@ namespace Chummer
         public static async Task<LanguageData> CreateAsync(string strLanguage, CancellationToken token = default)
         {
             LanguageData objReturn = new LanguageData();
-            string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
+            string strFilePath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage + ".xml");
             if (!File.Exists(strFilePath))
-                strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage.ToLowerInvariant() + ".xml");
+                strFilePath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage.ToLowerInvariant() + ".xml");
             if (File.Exists(strFilePath))
             {
                 try
@@ -3056,9 +2912,9 @@ namespace Chummer
             }
 
             // Check to see if the data translation file for the selected language exists.
-            string strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + "_data.xml");
+            string strDataPath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage + "_data.xml");
             if (!File.Exists(strDataPath))
-                strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage.ToLowerInvariant() + "_data.xml");
+                strDataPath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage.ToLowerInvariant() + "_data.xml");
             if (File.Exists(strDataPath))
             {
                 try

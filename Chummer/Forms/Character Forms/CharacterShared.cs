@@ -8782,6 +8782,7 @@ namespace Chummer
 
                         if (!await CommonFunctions.ConfirmDeleteAsync(
                                     string.Format(
+                                        GlobalSettings.CultureInfo,
                                         await LanguageManager.GetStringAsync("Message_DeleteSustainedSpell",
                                             token: token).ConfigureAwait(false),
                                         await objSustainedObject.GetCurrentDisplayNameAsync(token)
@@ -10216,7 +10217,7 @@ namespace Chummer
                             if (!File.Exists(strFileName))
                             {
                                 await Program
-                                    .ShowScrollableMessageBoxAsync(string.Format(strErrorString, strFileName),
+                                    .ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo, strErrorString, strFileName),
                                         icon: MessageBoxIcon.Error,
                                         token: token)
                                     .ConfigureAwait(false);
@@ -10238,7 +10239,7 @@ namespace Chummer
                                     {
                                         bmpMugshot = null;
                                         await Program
-                                            .ShowScrollableMessageBoxAsync(string.Format(strFormatErrorString, strFileName),
+                                            .ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo, strFormatErrorString, strFileName),
                                                 icon: MessageBoxIcon.Error,
                                                 token: token)
                                             .ConfigureAwait(false);

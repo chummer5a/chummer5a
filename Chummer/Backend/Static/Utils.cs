@@ -322,8 +322,14 @@ namespace Chummer
         private static readonly Lazy<string> s_strGetAutosavesFolderPath
             = new Lazy<string>(() => Path.Combine(GetStartupPath, "saves", "autosave"));
 
+        private static readonly Lazy<string> s_strGetBackupSavesFolderPath
+            = new Lazy<string>(() => Path.Combine(GetStartupPath, "saves", "backup"));
+
         private static readonly Lazy<string> s_strGetDataFolderPath
             = new Lazy<string>(() => Path.Combine(GetStartupPath, "data"));
+
+        private static readonly Lazy<string> s_strGetCustomDataFolderPath
+            = new Lazy<string>(() => Path.Combine(GetStartupPath, "customdata"));
 
         private static readonly Lazy<string> s_strGetLiveCustomDataFolderPath
             = new Lazy<string>(() => Path.Combine(GetStartupPath, "livecustomdata"));
@@ -344,7 +350,11 @@ namespace Chummer
 
         public static string GetEscapedStartupPath => s_strGetEscapedStartupPath.Value;
 
+        public static string GetBackupSavesFolderPath => s_strGetBackupSavesFolderPath.Value;
+
         public static string GetAutosavesFolderPath => s_strGetAutosavesFolderPath.Value;
+
+        public static string GetCustomDataFolderPath => s_strGetCustomDataFolderPath.Value;
 
         public static string GetLiveCustomDataFolderPath => s_strGetLiveCustomDataFolderPath.Value;
 
@@ -809,9 +819,9 @@ namespace Chummer
                                                                 ? SearchOption.AllDirectories
                                                                 : SearchOption.TopDirectoryOnly);
             token.ThrowIfCancellationRequested();
+            int intReturn = 1;
             if (blnSync)
             {
-                int intReturn = 1;
                 RunWithoutThreadLock(() =>
                 {
                     Parallel.ForEach(astrFilesToDelete, () => true,
@@ -822,21 +832,21 @@ namespace Chummer
                                              Interlocked.Exchange(ref intReturn, 0);
                                      });
                 }, token);
-                return intReturn > 0;
             }
-
-            Task<bool>[] atskSuccesses = new Task<bool>[astrFilesToDelete.Length];
-            for (int i = 0; i < astrFilesToDelete.Length; i++)
+            else
             {
-                string strToDelete = astrFilesToDelete[i];
-                atskSuccesses[i] = FileExtensions.SafeDeleteAsync(strToDelete, false, intTimeout, token);
+                await ParallelExtensions.ForEachAsync(astrFilesToDelete, async (strToDelete, t) =>
+                {
+                    if (t.IsCancellationRequested)
+                        return;
+                    if (!await FileExtensions.SafeDeleteAsync(strToDelete, false, intTimeout, token))
+                    {
+                        t.Cancel(false);
+                        Interlocked.Exchange(ref intReturn, 0);
+                    }
+                }, token).ConfigureAwait(false);
             }
-            foreach (Task<bool> x in atskSuccesses)
-            {
-                if (!await x.ConfigureAwait(false))
-                    return false;
-            }
-            return true;
+            return intReturn > 0;
         }
 
         /// <summary>
@@ -2759,14 +2769,14 @@ namespace Chummer
         /// </summary>
         [CLSCompliant(false)]
         public static SafeObjectPool<List<Task>> TaskListPool { get; }
-            = new SafeObjectPool<List<Task>>(Math.Max(MaxParallelBatchSize, ushort.MaxValue + 1), () => new List<Task>(), x => x.Clear());
+            = new SafeObjectPool<List<Task>>(() => new List<Task>(MaxParallelBatchSize), x => x.Clear());
 
         /// <summary>
         /// Memory Pool for empty hash sets of strings. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
         /// </summary>
         [CLSCompliant(false)]
         public static SafeObjectPool<HashSet<string>> StringHashSetPool { get; }
-            = new SafeObjectPool<HashSet<string>>(Math.Max(MaxParallelBatchSize, ushort.MaxValue + 1), () => new HashSet<string>(), x => x.Clear());
+            = new SafeObjectPool<HashSet<string>>(Math.Max(MaxParallelBatchSize, 4 * (byte.MaxValue + 1)), () => new HashSet<string>(), x => x.Clear());
 
         /// <summary>
         /// Memory Pool for stopwatches. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.

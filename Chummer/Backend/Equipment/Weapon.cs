@@ -704,7 +704,7 @@ namespace Chummer.Backend.Equipment
             XmlElement objRangeNode = objXmlWeapon["range"];
             if (objRangeNode != null)
             {
-                _strRange = objRangeNode.InnerText;
+                _strRange = objRangeNode.InnerText.Trim();
                 string strMultiply = objRangeNode.Attributes["multiply"]?.InnerText;
                 if (!string.IsNullOrEmpty(strMultiply))
                 {
@@ -712,7 +712,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            objXmlWeapon.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange);
+            if (objXmlWeapon.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange))
+                _strAlternateRange = _strAlternateRange.Trim();
 
             objXmlWeapon.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
             objXmlWeapon.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
@@ -1517,22 +1518,27 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("weaponname", ref _strWeaponName);
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
-            objNode.TryGetStringFieldQuickly("range", ref _strRange);
+            if (objNode.TryGetStringFieldQuickly("range", ref _strRange))
+            {
+                _strRange = _strRange.Trim();
+                if (_strRange == "Hold-Outs")
+                {
+                    _strRange = "Holdouts";
+                }
+            }
             objNode.TryGetStringFieldQuickly("mount", ref _strMount);
             objNode.TryGetStringFieldQuickly("extramount", ref _strExtraMount);
-            if (_strRange == "Hold-Outs")
-            {
-                _strRange = "Holdouts";
-            }
 
             if (!objNode.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange))
             {
                 string strAlternateRange = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["alternaterange"]?.InnerText;
                 if (!string.IsNullOrEmpty(strAlternateRange))
                 {
-                    _strAlternateRange = strAlternateRange;
+                    _strAlternateRange = strAlternateRange.Trim();
                 }
             }
+            else
+                _strAlternateRange = _strAlternateRange.Trim();
 
             objNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
             objNode.TryGetStringFieldQuickly("useskillspec", ref _strUseSkillSpec);
@@ -5311,7 +5317,7 @@ namespace Chummer.Backend.Equipment
                     sbdReturn.Append(strThisAmmo).Append(strSpace);
                 }
 
-                strReturn = sbdReturn.ToString().Trim();
+                strReturn = sbdReturn.ToTrimmedString();
             }
 
             if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -7898,13 +7904,13 @@ namespace Chummer.Backend.Equipment
         public string Range
         {
             get => _strRange;
-            set => _strRange = value;
+            set => _strRange = value.Trim();
         }
 
         public string AlternateRange
         {
             get => _strAlternateRange;
-            set => _strAlternateRange = value;
+            set => _strAlternateRange = value.Trim();
         }
 
         public string CurrentDisplayRange => DisplayRange(GlobalSettings.Language);
@@ -8070,7 +8076,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayAlternateRange(string strLanguage)
         {
-            string strRange = AlternateRange.Trim();
+            string strRange = AlternateRange;
             if (!string.IsNullOrEmpty(strRange) &&
                 !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
@@ -8102,7 +8108,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<string> DisplayAlternateRangeAsync(string strLanguage, CancellationToken token = default)
         {
-            string strRange = AlternateRange.Trim();
+            string strRange = AlternateRange;
             if (!string.IsNullOrEmpty(strRange) &&
                 !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
@@ -12198,6 +12204,7 @@ namespace Chummer.Backend.Equipment
                     return;
 
                 string strDescription = string.Format(
+                    GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("Message_SelectNumberOfCharges", token: token)
                                          .ConfigureAwait(false),
                     await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));

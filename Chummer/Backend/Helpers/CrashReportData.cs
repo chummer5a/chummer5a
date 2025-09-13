@@ -123,7 +123,7 @@ namespace Chummer
                 try
                 {
                     //Keep this multiple places for good measure
-                    report.AppendFormat("Crash ID = {0:B}", Id);
+                    report.AppendFormat(GlobalSettings.InvariantCultureInfo, "Crash ID = {0:B}", Id);
                     report.AppendLine();
                     //We want to know what crash happened on
 #if DEBUG

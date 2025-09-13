@@ -76,7 +76,7 @@ namespace Chummer
             }
             _objGenericCancellationTokenSource.Cancel(false);
             // ReSharper disable once MethodSupportsCancellation
-            await CleanUpOldCharacters(CancellationToken.None).ConfigureAwait(false);
+            await CleanUpOldCharacters(Interlocked.Exchange(ref _aobjCharacters, null), CancellationToken.None).ConfigureAwait(false);
         }
 
         private async void cmdSelectCharacter_Click(object sender, EventArgs e)
@@ -323,16 +323,13 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     // Parallelized load because this is one major bottleneck.
                     Character[] lstCharacters = new Character[intNodesCount];
-                    Task<Character>[] tskLoadingTasks = new Task<Character>[intNodesCount];
-                    for (int i = 0; i < tskLoadingTasks.Length; ++i)
+                    await ParallelExtensions.ForAsync(0, intNodesCount, async i =>
                     {
-                        int i1 = i;
                         string strLoopFile
-                            = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes[i1].Tag.ToString(), token).ConfigureAwait(false);
-                        tskLoadingTasks[i]
-                            = Task.Run(() => InnerLoad(strLoopFile, token), token);
-                    }
-
+                            = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes[i].Tag.ToString(), token).ConfigureAwait(false);
+                        lstCharacters[i] = await InnerLoad(strLoopFile, token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                    
                     async Task<Character> InnerLoad(string strLoopFile, CancellationToken innerToken = default)
                     {
                         innerToken.ThrowIfCancellationRequested();
@@ -350,14 +347,8 @@ namespace Chummer
                         return objReturn;
                     }
 
-                    await Task.WhenAll(tskLoadingTasks).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
-                    for (int i = 0; i < lstCharacters.Length; ++i)
-                        lstCharacters[i] = await tskLoadingTasks[i].ConfigureAwait(false);
-                    token.ThrowIfCancellationRequested();
-                    await CleanUpOldCharacters(token).ConfigureAwait(false);
-                    token.ThrowIfCancellationRequested();
-                    _aobjCharacters = lstCharacters;
+                    await CleanUpOldCharacters(Interlocked.Exchange(ref _aobjCharacters, lstCharacters), token).ConfigureAwait(false);
 
                     if (_frmPrintView == null)
                     {
@@ -389,10 +380,10 @@ namespace Chummer
             }
         }
 
-        private async Task CleanUpOldCharacters(CancellationToken token = default)
+        private async Task CleanUpOldCharacters(Character[] aobjCharacters, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!(_aobjCharacters?.Length > 0))
+            if (!(aobjCharacters?.Length > 0))
                 return;
             // Dispose of any characters who were previous loaded but are no longer needed and don't have any linked characters
             bool blnAnyChanges = true;
@@ -400,7 +391,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 blnAnyChanges = false;
-                foreach (Character objCharacter in _aobjCharacters)
+                foreach (Character objCharacter in aobjCharacters)
                 {
                     if (!await Program.OpenCharacters.ContainsAsync(objCharacter, token: token).ConfigureAwait(false)
                         || await Program.OpenCharacters.AnyAsync(async x => (await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token).ConfigureAwait(false)

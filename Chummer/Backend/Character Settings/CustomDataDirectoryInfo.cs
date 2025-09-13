@@ -320,6 +320,7 @@ namespace Chummer
                                 if (blnMismatch)
                                 {
                                     sbdReturn.AppendFormat(
+                                            GlobalSettings.CultureInfo,
                                             LanguageManager.GetString("Tooltip_Dependency_VersionMismatch", token: token),
                                             lstEnabledCustomData[0].CurrentDisplayName, dependency.CurrentDisplayName)
                                         .AppendLine();
@@ -346,7 +347,7 @@ namespace Chummer
                                 < lstEnabledCustomDataDirectoryInfos.FindLastIndex(
                                     x => lstEnabledCustomData.Contains(x)))
                             {
-                                sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder", token: token),
+                                sbdReturn.AppendFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder", token: token),
                                     lstEnabledCustomData[0].Name, Name).AppendLine();
                             }
                         }
@@ -420,6 +421,7 @@ namespace Chummer
                                 if (blnMismatch)
                                 {
                                     sbdReturn.AppendFormat(
+                                            GlobalSettings.CultureInfo,
                                             await LanguageManager
                                                 .GetStringAsync("Tooltip_Dependency_VersionMismatch", token: token)
                                                 .ConfigureAwait(false),
@@ -451,6 +453,7 @@ namespace Chummer
                                     x => lstEnabledCustomData.Contains(x)))
                             {
                                 sbdReturn.AppendFormat(
+                                    GlobalSettings.CultureInfo,
                                     await LanguageManager
                                         .GetStringAsync("Tooltip_Dependency_BadLoadOrder", token: token)
                                         .ConfigureAwait(false),
@@ -533,7 +536,7 @@ namespace Chummer
                         //if the version is within the version range add it to the list.
                         if (objInfoToDisplay != default)
                         {
-                            sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch", token: token),
+                            sbdReturn.AppendFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch", token: token),
                                 objInfoToDisplay.CurrentDisplayName, incompatibility.CurrentDisplayName).AppendLine();
                         }
                     }
@@ -606,6 +609,7 @@ namespace Chummer
                         if (objInfoToDisplay != default)
                         {
                             sbdReturn.AppendFormat(
+                                GlobalSettings.CultureInfo,
                                 await LanguageManager
                                     .GetStringAsync("Tooltip_Incompatibility_VersionMismatch", token: token)
                                     .ConfigureAwait(false),
@@ -861,7 +865,7 @@ namespace Chummer
                                                      : kvp.Key);
                 }
 
-                return sbdDisplayAuthors.ToString().Trim();
+                return sbdDisplayAuthors.ToTrimmedString();
             }
         }
 
@@ -881,7 +885,7 @@ namespace Chummer
                                                      : kvp.Key);
                 }
 
-                return sbdDisplayAuthors.ToString().Trim();
+                return sbdDisplayAuthors.ToTrimmedString();
             }
         }
 

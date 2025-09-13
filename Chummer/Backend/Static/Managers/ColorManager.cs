@@ -452,7 +452,12 @@ namespace Chummer
             void ApplyButtonStyle()
             {
                 // Buttons look weird if colored based on anything other than the default color scheme in dark mode
-                objControl.DoThreadSafe((x, y) => x.ForeColor = SystemColors.ControlText, token);
+                objControl.DoThreadSafe((x, y) =>
+                {
+                    x.ForeColor = SystemColors.ControlText;
+                    if (x is ButtonBase z)
+                        z.UseVisualStyleBackColor = true;
+                }, token);
             }
             switch (objControl)
             {
@@ -928,7 +933,12 @@ namespace Chummer
             Task ApplyButtonStyle()
             {
                 // Buttons look weird if colored based on anything other than the default color scheme in dark mode
-                return objControl.DoThreadSafeAsync(x => x.ForeColor = SystemColors.ControlText, token);
+                return objControl.DoThreadSafeAsync(x =>
+                {
+                    x.ForeColor = SystemColors.ControlText;
+                    if (x is ButtonBase z)
+                        z.UseVisualStyleBackColor = true;
+                }, token);
             }
             switch (objControl)
             {

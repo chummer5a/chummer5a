@@ -745,6 +745,7 @@ namespace Chummer
                                         {
                                             Program.ShowScrollableMessageBox(
                                                 string.Format(
+                                                    GlobalSettings.CultureInfo,
                                                     LanguageManager.GetString("Message_Duplicate_CustomDataDirectory"),
                                                     objExistingInfo.Name, objCustomDataDirectory.Name),
                                                 LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectory"),
@@ -778,7 +779,7 @@ namespace Chummer
             }
 
             // Add in default customdata directory's paths
-            string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
+            string strCustomDataRootPath = Utils.GetCustomDataFolderPath;
             if (Directory.Exists(strCustomDataRootPath))
             {
                 foreach (string strLoopDirectoryPath in Directory.EnumerateDirectories(strCustomDataRootPath))
@@ -812,6 +813,7 @@ namespace Chummer
                                 {
                                     Program.ShowScrollableMessageBox(
                                         string.Format(
+                                            GlobalSettings.CultureInfo,
                                             LanguageManager.GetString("Message_Duplicate_CustomDataDirectory"),
                                             objExistingInfo.Name, objCustomDataDirectory.Name),
                                         LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectory"),
