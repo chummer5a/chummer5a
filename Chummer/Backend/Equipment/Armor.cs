@@ -397,7 +397,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (!objXmlArmorNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance))
+            if (!objXmlArmorNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance) &&
+                !objXmlArmorNode.TryGetBoolFieldQuickly("emcumbrance", ref _blnEncumbrance))
                 _blnEncumbrance = true;
             _nodBonus = objXmlArmorNode["bonus"];
             _nodWirelessBonus = objXmlArmorNode["wirelessbonus"];
@@ -922,7 +923,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("maxrating", _strMaxRating);
             objWriter.WriteElementString("ratinglabel", _strRatingLabel);
             objWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("emcumbrance", _blnEncumbrance.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("encumbrance", _blnEncumbrance.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteStartElement("armormods");
             foreach (ArmorMod objMod in _lstArmorMods)
             {
