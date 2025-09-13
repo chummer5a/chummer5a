@@ -800,13 +800,13 @@ namespace Chummer
             // 
             // mnuXmlEditor
             // 
-            this.mnuXmlEditor.Image = global::Chummer.Properties.Resources.add_16;
-            this.mnuXmlEditor.ImageDpi120 = global::Chummer.Properties.Resources.add_20;
-            this.mnuXmlEditor.ImageDpi144 = global::Chummer.Properties.Resources.add_24;
-            this.mnuXmlEditor.ImageDpi192 = global::Chummer.Properties.Resources.add_32;
-            this.mnuXmlEditor.ImageDpi288 = global::Chummer.Properties.Resources.add_48;
-            this.mnuXmlEditor.ImageDpi384 = global::Chummer.Properties.Resources.add_64;
-            this.mnuXmlEditor.ImageDpi96 = global::Chummer.Properties.Resources.add_16;
+            this.mnuXmlEditor.Image = global::Chummer.Properties.Resources.track_changes_edit_16;
+            this.mnuXmlEditor.ImageDpi120 = global::Chummer.Properties.Resources.track_changes_edit_20;
+            this.mnuXmlEditor.ImageDpi144 = global::Chummer.Properties.Resources.track_changes_edit_24;
+            this.mnuXmlEditor.ImageDpi192 = global::Chummer.Properties.Resources.track_changes_edit_32;
+            this.mnuXmlEditor.ImageDpi288 = global::Chummer.Properties.Resources.track_changes_edit_48;
+            this.mnuXmlEditor.ImageDpi384 = global::Chummer.Properties.Resources.track_changes_edit_64;
+            this.mnuXmlEditor.ImageDpi96 = global::Chummer.Properties.Resources.track_changes_edit_16;
             this.mnuXmlEditor.Name = "mnuXmlEditor";
             this.mnuXmlEditor.Size = new System.Drawing.Size(180, 22);
             this.mnuXmlEditor.Tag = "Menu_Main_XmlEditor";
@@ -888,7 +888,7 @@ namespace Chummer
             this.mnuReportBug.ImageDpi384 = global::Chummer.Properties.Resources.bug_64;
             this.mnuReportBug.ImageDpi96 = global::Chummer.Properties.Resources.bug_16;
             this.mnuReportBug.Name = "mnuReportBug";
-            this.mnuReportBug.Size = new System.Drawing.Size(217, 22);
+            this.mnuReportBug.Size = new System.Drawing.Size(180, 22);
             this.mnuReportBug.Tag = "Menu_Main_ReportBug";
             this.mnuReportBug.Text = "Report a &Bug";
             this.mnuReportBug.Click += new System.EventHandler(this.mnuReportBug_Click);
