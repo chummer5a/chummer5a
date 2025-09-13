@@ -516,7 +516,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("included", _blnIncludedInArmor.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("equipped", _blnEquipped.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("extra", _strExtra);
-            objWriter.WriteElementString("emcumbrance", _blnEncumbrance.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("encumbrance", _blnEncumbrance.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalSettings.InvariantCultureInfo));
             if (_guiWeaponID != Guid.Empty)
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString("D", GlobalSettings.InvariantCultureInfo));
@@ -603,7 +603,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-            if (!objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance))
+            if (!objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance)
+                && !objNode.TryGetBoolFieldQuickly("emcumbrance", ref _blnEncumbrance))
                 _blnEncumbrance = true;
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
