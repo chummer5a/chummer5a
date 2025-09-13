@@ -259,15 +259,14 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (_blnNeedToRegeneratePersistents)
                     await GeneratePersistentsAsync(objCulture, strLanguage, token).ConfigureAwait(false);
-                string[] astrModuleOutputStrings = null;
+                IAsyncDisposable objLocker2 = await Modules.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    IAsyncDisposable objLocker2 = await Modules.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    int intCount = await Modules.GetCountAsync(token).ConfigureAwait(false);
+                    string[] astrModuleOutputStrings = ArrayPool<string>.Shared.Rent(intCount);
                     try
                     {
-                        token.ThrowIfCancellationRequested();
-                        int intCount = await Modules.GetCountAsync(token).ConfigureAwait(false);
-                        astrModuleOutputStrings = ArrayPool<string>.Shared.Rent(intCount);
                         for (int i = 0; i < intCount; ++i)
                         {
                             astrModuleOutputStrings[i]
@@ -275,18 +274,18 @@ namespace Chummer
                                     .PrintModule(objCulture, strLanguage, token)
                                     .ConfigureAwait(false);
                         }
+
+                        return string.Join(string.Empty, astrModuleOutputStrings, 0, intCount);
                     }
                     finally
                     {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        if (astrModuleOutputStrings != null)
+                            ArrayPool<string>.Shared.Return(astrModuleOutputStrings);
                     }
-
-                    return string.Concat(astrModuleOutputStrings);
                 }
                 finally
                 {
-                    if (astrModuleOutputStrings != null)
-                        ArrayPool<string>.Shared.Return(astrModuleOutputStrings);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
