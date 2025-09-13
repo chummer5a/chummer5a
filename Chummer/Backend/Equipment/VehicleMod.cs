@@ -2477,7 +2477,7 @@ namespace Chummer.Backend.Equipment
                 if (WeaponMountParent != null)
                     WeaponMountParent.Mods.Remove(this);
                 else
-                    Parent.Mods.Remove(this);
+                    Parent?.Mods.Remove(this);
             }
 
             decimal decReturn = Weapons.AsEnumerableWithSideEffects().Sum(x => x.DeleteWeapon(false))
@@ -2495,7 +2495,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (WeaponMountParent != null)
                     await WeaponMountParent.Mods.RemoveAsync(this, token).ConfigureAwait(false);
-                else
+                else if (Parent != null)
                     await Parent.Mods.RemoveAsync(this, token).ConfigureAwait(false);
             }
 

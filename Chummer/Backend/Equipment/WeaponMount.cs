@@ -1865,7 +1865,7 @@ namespace Chummer.Backend.Equipment
         public decimal DeleteWeaponMount(bool blnDoRemoval = true)
         {
             if (blnDoRemoval)
-                Parent.WeaponMounts.Remove(this);
+                Parent?.WeaponMounts.Remove(this);
 
             decimal decReturn = Weapons.AsEnumerableWithSideEffects().Sum(x => x.DeleteWeapon(false))
                                 + Mods.AsEnumerableWithSideEffects().Sum(x => x.DeleteVehicleMod(false));
@@ -1878,7 +1878,7 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> DeleteWeaponMountAsync(bool blnDoRemoval = true,
                                                                CancellationToken token = default)
         {
-            if (blnDoRemoval)
+            if (blnDoRemoval && Parent != null)
                 await Parent.WeaponMounts.RemoveAsync(this, token).ConfigureAwait(false);
 
             decimal decReturn = await Weapons.SumWithSideEffectsAsync(x => x.DeleteWeaponAsync(false, token), token)

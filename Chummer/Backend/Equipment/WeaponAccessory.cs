@@ -2503,7 +2503,7 @@ namespace Chummer.Backend.Equipment
         public decimal DeleteWeaponAccessory(bool blnDoRemoval = true)
         {
             if (blnDoRemoval)
-                Parent.WeaponAccessories.Remove(this);
+                Parent?.WeaponAccessories.Remove(this);
             // Remove any children the Gear may have.
             decimal decReturn = GearChildren.AsEnumerableWithSideEffects().Sum(x => x.DeleteGear(false));
 
@@ -2514,7 +2514,7 @@ namespace Chummer.Backend.Equipment
 
         public async Task<decimal> DeleteWeaponAccessoryAsync(bool blnDoRemoval = true, CancellationToken token = default)
         {
-            if (blnDoRemoval)
+            if (blnDoRemoval && Parent != null)
                 await Parent.WeaponAccessories.RemoveAsync(this, token).ConfigureAwait(false);
             // Remove any children the Gear may have.
             decimal decReturn = await GearChildren.SumWithSideEffectsAsync(x => x.DeleteGearAsync(false, token), token).ConfigureAwait(false);
