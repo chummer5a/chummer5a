@@ -284,7 +284,27 @@ namespace Chummer
         private static bool _blnPrintSkillsWithZeroRating = true;
         private static bool _blnInsertPdfNotesIfAvailable = true;
 
-        public const int MaxStackLimit = 1024;
+        /// <summary>
+        /// Maximum size of a stackalloc'ed array for an 8-bit type (byte, sbyte, bool)
+        /// </summary>
+        public const int MaxStackLimit8BitTypes = 4096;
+        /// <summary>
+        /// Maximum size of a stackalloc'ed array for a 16-bit type (short, ushort, char)
+        /// </summary>
+        public const int MaxStackLimit16BitTypes = MaxStackLimit8BitTypes * sizeof(byte) / sizeof(short);
+        /// <summary>
+        /// Maximum size of a stackalloc'ed array for a 32-bit type (int, uint, float)
+        /// </summary>
+        public const int MaxStackLimit32BitTypes = MaxStackLimit8BitTypes * sizeof(byte) / sizeof(int);
+        /// <summary>
+        /// Maximum size of a stackalloc'ed array for a 64-bit type (long, ulong, double)
+        /// </summary>
+        public const int MaxStackLimit64BitTypes = MaxStackLimit8BitTypes * sizeof(byte) / sizeof(long);
+        /// <summary>
+        /// Maximum size of a stackalloc'ed array for a 128-bit type (decimal)
+        /// </summary>
+        public const int MaxStackLimit128BitTypes = MaxStackLimit8BitTypes * sizeof(byte) / sizeof(decimal);
+
         private static bool _blnShowCharacterCustomDataWarning;
 
         public static ThreadSafeCachedRandom RandomGenerator { get; } = new ThreadSafeCachedRandom(new XoRoShiRo128starstar(), true);

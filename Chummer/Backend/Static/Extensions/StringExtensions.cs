@@ -120,7 +120,7 @@ namespace Chummer
             int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
-            if (intLength > GlobalSettings.MaxStackLimit)
+            if (intLength > GlobalSettings.MaxStackLimit16BitTypes)
             {
                 string strReturn;
                 using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))
@@ -175,7 +175,7 @@ namespace Chummer
             int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
-            if (intLength > GlobalSettings.MaxStackLimit)
+            if (intLength > GlobalSettings.MaxStackLimit16BitTypes)
             {
                 string strReturn;
                 using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))
@@ -1517,7 +1517,7 @@ namespace Chummer
                 return strInput;
             if (funcIsWhiteSpace == null)
                 funcIsWhiteSpace = x => char.IsWhiteSpace(x) && !char.IsControl(x);
-            if (intLength > GlobalSettings.MaxStackLimit)
+            if (intLength > GlobalSettings.MaxStackLimit16BitTypes)
             {
                 string strReturn;
                 using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))

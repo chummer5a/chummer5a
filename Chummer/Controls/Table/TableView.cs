@@ -50,7 +50,7 @@ namespace Chummer.UI.Table
                     try
                     {
                         int intCount = _table._columns.Count;
-                        int[] aintSharedWidths = intCount > GlobalSettings.MaxStackLimit
+                        int[] aintSharedWidths = intCount > GlobalSettings.MaxStackLimit32BitTypes
                             ? ArrayPool<int>.Shared.Rent(intCount)
                             : null;
                         try
