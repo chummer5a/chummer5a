@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -48,12 +49,19 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(length));
             if (length == 0)
                 return;
-            T[] aobjSorted = new T[length];
-            for (int i = 0; i < length; ++i)
-                aobjSorted[i] = lstCollection[index + i];
-            Array.Sort(aobjSorted, objComparer);
-            for (int i = 0; i < aobjSorted.Length; ++i)
-                lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), index + i);
+            T[] aobjSorted = ArrayPool<T>.Shared.Rent(length);
+            try
+            {
+                for (int i = 0; i < length; ++i)
+                    aobjSorted[i] = lstCollection[index + i];
+                Array.Sort(aobjSorted, 0, length, objComparer);
+                for (int i = 0; i < length; ++i)
+                    lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), index + i);
+            }
+            finally
+            {
+                ArrayPool<T>.Shared.Return(aobjSorted);
+            }
         }
 
         /// <summary>
@@ -68,11 +76,12 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            T[] aobjSorted = new T[lstCollection.Count];
-            for (int i = 0; i < lstCollection.Count; ++i)
+            int intCollectionSize = lstCollection.Count;
+            T[] aobjSorted = new T[intCollectionSize];
+            for (int i = 0; i < intCollectionSize; ++i)
                 aobjSorted[i] = lstCollection[i];
             Array.Sort(aobjSorted, funcComparison);
-            for (int i = 0; i < aobjSorted.Length; ++i)
+            for (int i = 0; i < intCollectionSize; ++i)
                 lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), i);
         }
 
@@ -89,15 +98,23 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            T[] aobjSorted = new T[lstCollection.Count];
-            for (int i = 0; i < lstCollection.Count; ++i)
-                aobjSorted[i] = lstCollection[i];
-            if (objComparer != null)
-                Array.Sort(aobjSorted, objComparer);
-            else
-                Array.Sort(aobjSorted);
-            for (int i = 0; i < aobjSorted.Length; ++i)
-                lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), i);
+            int intCollectionSize = lstCollection.Count;
+            T[] aobjSorted = ArrayPool<T>.Shared.Rent(intCollectionSize);
+            try
+            {
+                for (int i = 0; i < intCollectionSize; ++i)
+                    aobjSorted[i] = lstCollection[i];
+                if (objComparer != null)
+                    Array.Sort(aobjSorted, 0, intCollectionSize, objComparer);
+                else
+                    Array.Sort(aobjSorted, 0, intCollectionSize);
+                for (int i = 0; i < intCollectionSize; ++i)
+                    lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), i);
+            }
+            finally
+            {
+                ArrayPool<T>.Shared.Return(aobjSorted);
+            }
         }
     }
 }
