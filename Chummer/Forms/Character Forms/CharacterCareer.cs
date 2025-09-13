@@ -7766,10 +7766,10 @@ namespace Chummer
                                    .GetAsync(
                                        () => new CreateExpense(CharacterObjectSettings)
                                        {
-                                           Mode = ExpenseType.Nuyen,
                                            KarmaNuyenExchangeString = strText
                                        }, GenericToken).ConfigureAwait(false))
                         {
+                            await frmNewExpense.MyForm.SetModeAsync(ExpenseType.Nuyen, GenericToken).ConfigureAwait(false);
                             if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                                 == DialogResult.Cancel)
                                 return;
@@ -7846,10 +7846,10 @@ namespace Chummer
                                    .GetAsync(
                                        () => new CreateExpense(CharacterObjectSettings)
                                        {
-                                           Mode = ExpenseType.Nuyen,
                                            KarmaNuyenExchangeString = strText
                                        }, GenericToken).ConfigureAwait(false))
                         {
+                            await frmNewExpense.MyForm.SetModeAsync(ExpenseType.Nuyen, GenericToken).ConfigureAwait(false);
                             if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                                 == DialogResult.Cancel)
                                 return;
@@ -14477,7 +14477,7 @@ namespace Chummer
                         if (objCyberwareParent == null)
                         {
                             //frmPickCyberware.SetGrade = "Standard";
-                            frmPickCyberware.MyForm.MaximumCapacity = objMod.CapacityRemaining;
+                            await frmPickCyberware.MyForm.SetMaximumCapacityAsync(await objMod.GetCapacityRemainingAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                             frmPickCyberware.MyForm.Subsystems = objMod.Subsystems;
                             using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string> setDisallowedMounts))
@@ -14534,7 +14534,7 @@ namespace Chummer
                             // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
                             if (!objCyberwareParent.Capacity.Contains('[') || objCyberwareParent.Capacity.Contains("/["))
                             {
-                                frmPickCyberware.MyForm.MaximumCapacity = await objCyberwareParent.GetCapacityRemainingAsync(GenericToken).ConfigureAwait(false);
+                                await frmPickCyberware.MyForm.SetMaximumCapacityAsync(await objCyberwareParent.GetCapacityRemainingAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
 
                                 // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
                                 if (await CharacterObjectSettings.GetEnforceCapacityAsync(GenericToken).ConfigureAwait(false) && frmPickCyberware.MyForm.MaximumCapacity < 0)
@@ -19679,7 +19679,6 @@ namespace Chummer
                 using (ThreadSafeForm<CreateExpense> frmEditExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
                            () => new CreateExpense(CharacterObjectSettings)
                            {
-                               Mode = ExpenseType.Nuyen,
                                Reason = objExpense.Reason,
                                Amount = objExpense.Amount,
                                Refund = objExpense.Refund,
@@ -19688,6 +19687,7 @@ namespace Chummer
                                IsInEditMode = true
                            }, GenericToken).ConfigureAwait(false))
                 {
+                    await frmEditExpense.MyForm.SetModeAsync(ExpenseType.Nuyen, GenericToken).ConfigureAwait(false);
                     frmEditExpense.MyForm.LockFields(blnAllowEdit);
 
                     if (await frmEditExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
@@ -23594,6 +23594,11 @@ namespace Chummer
             }
         }
 
+        protected override Task<string> GetFormModeAsync(CancellationToken token = default)
+        {
+            return LanguageManager.GetStringAsync("Title_CareerMode", token: token);
+        }
+
         /// <summary>
         /// Open the Select Cyberware window and handle adding to the Tree and Character.
         /// </summary>
@@ -23825,8 +23830,8 @@ namespace Chummer
                             if (!objSelectedCyberware.Capacity.Contains('[') ||
                                 objSelectedCyberware.Capacity.Contains("/["))
                             {
-                                frmPickCyberware.MyForm.MaximumCapacity = await objSelectedCyberware
-                                    .GetCapacityRemainingAsync(token).ConfigureAwait(false);
+                                await frmPickCyberware.MyForm.SetMaximumCapacityAsync(await objSelectedCyberware
+                                    .GetCapacityRemainingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
 
                                 // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
                                 if (await CharacterObjectSettings.GetEnforceCapacityAsync(token)
@@ -24136,7 +24141,7 @@ namespace Chummer
                                 !objSelectedGear.Capacity.Contains('[')
                                 || objSelectedGear.Capacity.Contains("/["))
                             {
-                                frmPickGear.MyForm.MaximumCapacity = await objSelectedGear.GetCapacityRemainingAsync(token).ConfigureAwait(false);
+                                await frmPickGear.MyForm.SetMaximumCapacityAsync(await objSelectedGear.GetCapacityRemainingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
 
                                 // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
                                 if (await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false) && frmPickGear.MyForm.MaximumCapacity < 0)
@@ -24444,7 +24449,7 @@ namespace Chummer
                             if (objSelectedGear != null && (!objSelectedGear.Capacity.Contains('[')
                                                             || objSelectedGear.Capacity.Contains("/[")))
                             {
-                                frmPickGear.MyForm.MaximumCapacity = await objSelectedGear.GetCapacityRemainingAsync(token).ConfigureAwait(false);
+                                await frmPickGear.MyForm.SetMaximumCapacityAsync(await objSelectedGear.GetCapacityRemainingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
 
                                 // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
                                 if (await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false) && frmPickGear.MyForm.MaximumCapacity < 0)
@@ -24463,8 +24468,8 @@ namespace Chummer
                             }
                             else if (objSelectedMod != null)
                             {
-                                frmPickGear.MyForm.MaximumCapacity = await objSelectedMod
-                                    .GetGearCapacityRemainingAsync(token).ConfigureAwait(false);
+                                await frmPickGear.MyForm.SetMaximumCapacityAsync(await objSelectedMod
+                                    .GetGearCapacityRemainingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
 
                                 // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
                                 if (await CharacterObjectSettings.GetEnforceCapacityAsync(token)

@@ -19,6 +19,8 @@
 
 using System;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -185,6 +187,39 @@ namespace Chummer
                     lblPercent.Visible = false;
                 }
             }
+        }
+
+        public async Task SetModeAsync(ExpenseType value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (InterlockedExtensions.Exchange(ref _eMode, value) == value)
+                return;
+            string strAmountText;
+            string strText;
+            string strRefundText;
+            bool blnPercentVisible;
+            if (value == ExpenseType.Nuyen)
+            {
+                strAmountText = await LanguageManager.GetStringAsync("Label_Expense_NuyenAmount", token: token).ConfigureAwait(false);
+                strText = await LanguageManager.GetStringAsync("Title_Expense_Nuyen", token: token).ConfigureAwait(false);
+                strRefundText = await LanguageManager.GetStringAsync("Checkbox_Expense_RefundNuyen", token: token).ConfigureAwait(false);
+                blnPercentVisible = true;
+            }
+            else
+            {
+                strAmountText = await LanguageManager.GetStringAsync("Label_Expense_KarmaAmount", token: token).ConfigureAwait(false);
+                strText = await LanguageManager.GetStringAsync("Title_Expense_Karma", token: token).ConfigureAwait(false);
+                strRefundText = string.Empty;
+                blnPercentVisible = false;
+            }
+            await this.DoThreadSafeAsync(() =>
+            {
+                lblKarma.Text = strAmountText;
+                Text = strText;
+                chkRefund.Text = strRefundText;
+                nudPercent.Visible = blnPercentVisible;
+                lblPercent.Visible = blnPercentVisible;
+            }, token).ConfigureAwait(false);
         }
 
         public bool KarmaNuyenExchange { get; set; }

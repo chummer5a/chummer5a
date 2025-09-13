@@ -8952,7 +8952,7 @@ namespace Chummer
                             if (objCyberwareParent == null)
                             {
                                 //frmPickCyberware.SetGrade = "Standard";
-                                frmPickCyberware.MyForm.MaximumCapacity = await objMod.GetCapacityRemainingAsync(GenericToken).ConfigureAwait(false);
+                                await frmPickCyberware.MyForm.SetMaximumCapacityAsync(await objMod.GetCapacityRemainingAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                                 frmPickCyberware.MyForm.Subsystems = objMod.Subsystems;
                                 using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                            out HashSet<string> setDisallowedMounts))
@@ -9011,7 +9011,7 @@ namespace Chummer
                                     || objCyberwareParent.Capacity.Contains("/["))
                                 {
                                     frmPickCyberware.MyForm.Subsystems = objCyberwareParent.AllowedSubsystems;
-                                    frmPickCyberware.MyForm.MaximumCapacity = await objCyberwareParent.GetCapacityRemainingAsync(GenericToken).ConfigureAwait(false);
+                                    await frmPickCyberware.MyForm.SetMaximumCapacityAsync(await objCyberwareParent.GetCapacityRemainingAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
 
                                     // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
                                     if (await CharacterObjectSettings.GetEnforceCapacityAsync(GenericToken).ConfigureAwait(false)
@@ -17505,6 +17505,11 @@ namespace Chummer
             }
         }
 
+        protected override Task<string> GetFormModeAsync(CancellationToken token = default)
+        {
+            return LanguageManager.GetStringAsync("Title_CreateNewCharacter", token: token);
+        }
+
         /// <summary>
         /// Save the Character.
         /// </summary>
@@ -17950,8 +17955,8 @@ namespace Chummer
                             if (!objSelectedCyberware.Capacity.Contains('[') ||
                                 objSelectedCyberware.Capacity.Contains("/["))
                             {
-                                frmPickCyberware.MyForm.MaximumCapacity = await objSelectedCyberware
-                                    .GetCapacityRemainingAsync(token).ConfigureAwait(false);
+                                await frmPickCyberware.MyForm.SetMaximumCapacityAsync(await objSelectedCyberware
+                                    .GetCapacityRemainingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                             }
 
                             string strLoopHasModularMount = await objSelectedCyberware.GetHasModularMountAsync(token)
@@ -18234,8 +18239,7 @@ namespace Chummer
                                 || objSelectedGear.Capacity.Contains("/[")))
                         {
                             // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
-                            frmPickGear.MyForm.MaximumCapacity = await objSelectedGear.GetCapacityRemainingAsync(token)
-                                .ConfigureAwait(false);
+                            await frmPickGear.MyForm.SetMaximumCapacityAsync(await objSelectedGear.GetCapacityRemainingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(strCategories))
                                 frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
                         }
@@ -18414,11 +18418,11 @@ namespace Chummer
                         {
                             // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
                             if (objSelectedGear?.Capacity.Contains('[') == false)
-                                frmPickGear.MyForm.MaximumCapacity = await objSelectedGear
-                                    .GetCapacityRemainingAsync(token).ConfigureAwait(false);
+                                await frmPickGear.MyForm.SetMaximumCapacityAsync(await objSelectedGear
+                                    .GetCapacityRemainingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                             else if (objSelectedMod != null)
-                                frmPickGear.MyForm.MaximumCapacity = await objSelectedMod
-                                    .GetGearCapacityRemainingAsync(token).ConfigureAwait(false);
+                                await frmPickGear.MyForm.SetMaximumCapacityAsync(await objSelectedMod
+                                    .GetGearCapacityRemainingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         }
 
                         // Make sure the dialogue window was not canceled.

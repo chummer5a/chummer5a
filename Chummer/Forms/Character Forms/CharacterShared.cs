@@ -11009,6 +11009,13 @@ namespace Chummer
 
         protected virtual string FormMode => string.Empty;
 
+        protected virtual Task<string> GetFormModeAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            return Task.FromResult(string.Empty);
+        }
+
         /// <summary>
         /// Update the Window title to show the Character's name and unsaved changes status.
         /// </summary>
@@ -11044,11 +11051,12 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (Text.EndsWith('*') == IsDirty && blnCanSkip)
+                if (blnCanSkip && (await this.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false)).EndsWith('*') == IsDirty)
                     return;
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                string strTitle = CharacterObject.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '('
-                                  + CharacterObjectSettings.Name + ')';
+                string strTitle = await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false) + strSpace + '-' + strSpace
+                    + await GetFormModeAsync(token).ConfigureAwait(false) + strSpace
+                    + '(' + await CharacterObjectSettings.GetNameAsync(token).ConfigureAwait(false) + ')';
                 if (IsDirty)
                     strTitle += '*';
                 await this.DoThreadSafeAsync(x => x.Text = strTitle, token).ConfigureAwait(false);
