@@ -39566,7 +39566,7 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 using (LockObject.EnterReadLock())
-                    return string.Concat(LanguageManager.GetString("Label_Options_Maximum"),
+                    return StringExtensions.ConcatFast(LanguageManager.GetString("Label_Options_Maximum"),
                                          strSpace, "(", LanguageManager.GetString("String_LimitMentalShort"),
                                          strSpace, "[", LimitMental.ToString(GlobalSettings.CultureInfo), "],",
                                          strSpace, LanguageManager.GetString("String_LimitSocialShort"),
@@ -39582,7 +39582,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return string.Concat(await LanguageManager.GetStringAsync("Label_Options_Maximum", token: token).ConfigureAwait(false),
+                return StringExtensions.ConcatFast(await LanguageManager.GetStringAsync("Label_Options_Maximum", token: token).ConfigureAwait(false),
                     strSpace, "(", await LanguageManager.GetStringAsync("String_LimitMentalShort", token: token).ConfigureAwait(false),
                     strSpace, "[", (await GetLimitMentalAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), "],",
                     strSpace, await LanguageManager.GetStringAsync("String_LimitSocialShort", token: token).ConfigureAwait(false),
@@ -39655,10 +39655,9 @@ namespace Chummer
                     if (IsAI)
                     {
                         Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
-                        return string.Concat(LanguageManager.GetString("String_Handling"),
+                        return StringExtensions.ConcatFast(LanguageManager.GetString("String_Handling"),
                                              strSpace, "[",
-                                             (objHomeNodeVehicle?.Handling ?? 0).ToString(GlobalSettings.CultureInfo),
-                                             "]");
+                                             (objHomeNodeVehicle?.Handling ?? 0).ToString(GlobalSettings.CultureInfo), "]");
                     }
 
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
@@ -39703,10 +39702,9 @@ namespace Chummer
                 if (await GetIsAIAsync(token).ConfigureAwait(false))
                 {
                     Vehicle objHomeNodeVehicle = await GetHomeNodeAsync(token).ConfigureAwait(false) as Vehicle;
-                    return string.Concat(await LanguageManager.GetStringAsync("String_Handling", token: token).ConfigureAwait(false),
+                    return StringExtensions.ConcatFast(await LanguageManager.GetStringAsync("String_Handling", token: token).ConfigureAwait(false),
                         strSpace, "[",
-                        (objHomeNodeVehicle?.Handling ?? 0).ToString(GlobalSettings.CultureInfo),
-                        "]");
+                        (objHomeNodeVehicle?.Handling ?? 0).ToString(GlobalSettings.CultureInfo), "]");
                 }
 
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,

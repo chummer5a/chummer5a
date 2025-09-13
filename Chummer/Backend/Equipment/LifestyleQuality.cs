@@ -442,7 +442,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("source", _strSource);
                 objWriter.WriteElementString("page", _strPage);
                 objWriter.WriteElementString("allowed", _setAllowedFreeLifestyles.Count > 0
-                                                 ? string.Join(",", _setAllowedFreeLifestyles)
+                                                 ? StringExtensions.JoinFast(",", _setAllowedFreeLifestyles)
                                                  : string.Empty);
                 if (Bonus != null)
                     objWriter.WriteRaw("<bonus>" + Bonus.InnerXml + "</bonus>");

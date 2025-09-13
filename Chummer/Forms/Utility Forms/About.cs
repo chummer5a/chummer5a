@@ -117,7 +117,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strReturn5))
                 strReturn5 = AssemblyDescription;
             await txtDescription.DoThreadSafeAsync(x => x.Text = strReturn5).ConfigureAwait(false);
-            await txtContributors.DoThreadSafeAsync(x => x.Text += Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, Properties.Contributors.Usernames)
+            await txtContributors.DoThreadSafeAsync(x => x.Text += Environment.NewLine + Environment.NewLine + StringExtensions.JoinFast(Environment.NewLine, Properties.Contributors.Usernames)
                                                                    + Environment.NewLine + "/u/Iridios").ConfigureAwait(false);
             string strDisclaimer = await LanguageManager.GetStringAsync("About_Label_Disclaimer_Text").ConfigureAwait(false);
             await txtDisclaimer.DoThreadSafeAsync(x => x.Text = strDisclaimer).ConfigureAwait(false);

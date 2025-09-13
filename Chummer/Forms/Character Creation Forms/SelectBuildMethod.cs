@@ -430,7 +430,7 @@ namespace Chummer
                     string strQualityKarma = (await objSelectedGameplayOption.GetQualityKarmaLimitAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                     await lblQualityKarma.DoThreadSafeAsync(x => x.Text = strQualityKarma, token).ConfigureAwait(false);
 
-                    string strBookList = await objSelectedGameplayOption.TranslatedBookListAsync(string.Join(";",
+                    string strBookList = await objSelectedGameplayOption.TranslatedBookListAsync(StringExtensions.JoinFast(";",
                         await objSelectedGameplayOption.GetBooksAsync(token).ConfigureAwait(false)), token: token).ConfigureAwait(false);
                     if (string.IsNullOrEmpty(strBookList))
                         strBookList = strNone;

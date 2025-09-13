@@ -1211,7 +1211,7 @@ namespace Chummer
                                                                    "Message_NonGuidIdWarning", token: token),
                                                                lstItemsWithMalformedIDs.Count,
                                                                strFileName,
-                                                               string.Join(
+                                                               StringExtensions.JoinFast(
                                                                    Environment.NewLine, lstItemsWithMalformedIDs)));
             }
         }

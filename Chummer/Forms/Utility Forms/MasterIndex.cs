@@ -632,7 +632,7 @@ namespace Chummer
                                                                     objItem.Value, string.Format(
                                                                         GlobalSettings.CultureInfo,
                                                                         strFormat, objItem.Name,
-                                                                        string.Join(
+                                                                        StringExtensions.JoinFast(
                                                                             ',' + strSpace, objEntry.FileNames)));
                                                                 _lstItems.Add(
                                                                     objItemToAdd); // Not using AddRange because of potential memory issues
@@ -652,7 +652,7 @@ namespace Chummer
                                                                         objToRename.Value, string.Format(
                                                                             GlobalSettings.CultureInfo,
                                                                             strFormat, objExistingEntry.DisplayName,
-                                                                            string.Join(
+                                                                            StringExtensions.JoinFast(
                                                                                 ',' + strSpace,
                                                                                 objExistingEntry.FileNames)));
                                                                     _lstItems.Add(
