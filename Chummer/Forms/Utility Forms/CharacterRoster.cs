@@ -44,8 +44,7 @@ namespace Chummer
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
 
-        private readonly FileSystemWatcher _watcherCharacterRosterFolderRawSaves;
-        private readonly FileSystemWatcher _watcherCharacterRosterFolderCompressedSaves;
+        private readonly FileSystemWatcher _watcherCharacterRosterFolderSaves;
         private readonly DebuggableSemaphoreSlim _objCharacterRosterFolderWatcherSemaphore;
         private readonly AsyncFriendlyReaderWriterLock _objCachePurgeReaderWriterLock = new AsyncFriendlyReaderWriterLock();
         private Task _tskMostRecentlyUsedsRefresh;
@@ -67,11 +66,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(GlobalSettings.CharacterRosterPath) && Directory.Exists(GlobalSettings.CharacterRosterPath))
             {
                 _objCharacterRosterFolderWatcherSemaphore = new DebuggableSemaphoreSlim();
-                _watcherCharacterRosterFolderRawSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5")
-                    {
-                        IncludeSubdirectories = true
-                    };
-                _watcherCharacterRosterFolderCompressedSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5lz")
+                _watcherCharacterRosterFolderSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5*")
                     {
                         IncludeSubdirectories = true
                     };
@@ -97,8 +92,7 @@ namespace Chummer
                         objOldCancellationTokenSource.Dispose();
                     }
                     _objGenericFormClosingCancellationTokenSource.Dispose();
-                    _watcherCharacterRosterFolderRawSaves.Dispose();
-                    _watcherCharacterRosterFolderCompressedSaves.Dispose();
+                    _watcherCharacterRosterFolderSaves.Dispose();
                     _objCharacterRosterFolderWatcherSemaphore.Dispose();
                     _objCachePurgeReaderWriterLock.Dispose();
                 };
@@ -169,22 +163,15 @@ namespace Chummer
                     x.NodeMouseDoubleClick += treCharacterList_OnDefaultDoubleClick;
                 }, token).ConfigureAwait(false);
                 OnMyMouseDown += OnDefaultMouseDown;
-                if (_watcherCharacterRosterFolderRawSaves != null)
+                if (_watcherCharacterRosterFolderSaves != null)
                 {
-                    _watcherCharacterRosterFolderRawSaves.BeginInit();
-                    _watcherCharacterRosterFolderRawSaves.Changed += RefreshSingleWatchNode;
-                    _watcherCharacterRosterFolderRawSaves.Created += RefreshWatchList;
-                    _watcherCharacterRosterFolderRawSaves.Deleted += DeleteSingleWatchNode;
-                    _watcherCharacterRosterFolderRawSaves.Renamed += RefreshWatchList;
-                    _watcherCharacterRosterFolderRawSaves.EnableRaisingEvents = true;
-                    _watcherCharacterRosterFolderRawSaves.EndInit();
-                    _watcherCharacterRosterFolderCompressedSaves.BeginInit();
-                    _watcherCharacterRosterFolderCompressedSaves.Changed += RefreshSingleWatchNode;
-                    _watcherCharacterRosterFolderCompressedSaves.Created += RefreshWatchList;
-                    _watcherCharacterRosterFolderCompressedSaves.Deleted += DeleteSingleWatchNode;
-                    _watcherCharacterRosterFolderCompressedSaves.Renamed += RefreshWatchList;
-                    _watcherCharacterRosterFolderCompressedSaves.EnableRaisingEvents = true;
-                    _watcherCharacterRosterFolderCompressedSaves.EndInit();
+                    _watcherCharacterRosterFolderSaves.BeginInit();
+                    _watcherCharacterRosterFolderSaves.Changed += RefreshSingleWatchNode;
+                    _watcherCharacterRosterFolderSaves.Created += RefreshWatchList;
+                    _watcherCharacterRosterFolderSaves.Deleted += DeleteSingleWatchNode;
+                    _watcherCharacterRosterFolderSaves.Renamed += RefreshWatchList;
+                    _watcherCharacterRosterFolderSaves.EnableRaisingEvents = true;
+                    _watcherCharacterRosterFolderSaves.EndInit();
                 }
             }
             else
@@ -218,18 +205,13 @@ namespace Chummer
                 }, token).ConfigureAwait(false);
                 OnMyMouseDown = null;
 
-                if (_watcherCharacterRosterFolderRawSaves != null)
+                if (_watcherCharacterRosterFolderSaves != null)
                 {
-                    _watcherCharacterRosterFolderRawSaves.EnableRaisingEvents = false;
-                    _watcherCharacterRosterFolderRawSaves.Changed -= RefreshSingleWatchNode;
-                    _watcherCharacterRosterFolderRawSaves.Created -= RefreshWatchList;
-                    _watcherCharacterRosterFolderRawSaves.Deleted -= DeleteSingleWatchNode;
-                    _watcherCharacterRosterFolderRawSaves.Renamed -= RefreshWatchList;
-                    _watcherCharacterRosterFolderCompressedSaves.EnableRaisingEvents = false;
-                    _watcherCharacterRosterFolderCompressedSaves.Changed -= RefreshSingleWatchNode;
-                    _watcherCharacterRosterFolderCompressedSaves.Created -= RefreshWatchList;
-                    _watcherCharacterRosterFolderCompressedSaves.Deleted -= DeleteSingleWatchNode;
-                    _watcherCharacterRosterFolderCompressedSaves.Renamed -= RefreshWatchList;
+                    _watcherCharacterRosterFolderSaves.EnableRaisingEvents = false;
+                    _watcherCharacterRosterFolderSaves.Changed -= RefreshSingleWatchNode;
+                    _watcherCharacterRosterFolderSaves.Created -= RefreshWatchList;
+                    _watcherCharacterRosterFolderSaves.Deleted -= DeleteSingleWatchNode;
+                    _watcherCharacterRosterFolderSaves.Renamed -= RefreshWatchList;
                 }
             }
 
@@ -253,6 +235,8 @@ namespace Chummer
 
         private async void DeleteSingleWatchNode(object sender, FileSystemEventArgs e)
         {
+            if (!e.Name.EndsWith(".chum5") && !e.Name.EndsWith(".chum5lz"))
+                return;
             try
             {
                 if (e.ChangeType == WatcherChangeTypes.Deleted)
@@ -302,6 +286,8 @@ namespace Chummer
 
         private async void RefreshSingleWatchNode(object sender, FileSystemEventArgs e)
         {
+            if (!e.Name.EndsWith(".chum5") && !e.Name.EndsWith(".chum5lz"))
+                return;
             try
             {
                 if (e.ChangeType == WatcherChangeTypes.Changed)
@@ -1391,14 +1377,12 @@ namespace Chummer
                 try
                 {
                     foreach (string strFile in Directory
-                                               .EnumerateFiles(GlobalSettings.CharacterRosterPath, "*.chum5",
-                                                               SearchOption.AllDirectories)
-                                               .Concat(Directory.EnumerateFiles(
-                                                           GlobalSettings.CharacterRosterPath, "*.chum5lz",
-                                                           SearchOption.AllDirectories)))
+                                               .EnumerateFiles(GlobalSettings.CharacterRosterPath, "*.chum5*",
+                                                               SearchOption.AllDirectories))
                     {
                         token.ThrowIfCancellationRequested();
-
+                        if (!strFile.EndsWith(".chum5") && !strFile.EndsWith(".chum5lz"))
+                            continue;
                         FileInfo objInfo = new FileInfo(strFile);
                         string strDirectoryFullName = objInfo.Directory?.FullName ?? string.Empty;
                         if (string.IsNullOrEmpty(strDirectoryFullName)

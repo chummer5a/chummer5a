@@ -763,13 +763,11 @@ namespace Chummer
                                             foreach (string strAutosave in Directory
                                                          .EnumerateFiles(
                                                              Utils.GetAutosavesFolderPath,
-                                                             "*.chum5",
-                                                             SearchOption.AllDirectories)
-                                                         .Concat(Directory.EnumerateFiles(
-                                                             Utils.GetAutosavesFolderPath,
-                                                             "*.chum5lz",
-                                                             SearchOption.AllDirectories)))
+                                                             "*.chum5*",
+                                                             SearchOption.AllDirectories))
                                             {
+                                                if (!strAutosave.EndsWith(".chum5") && !strAutosave.EndsWith(".chum5lz"))
+                                                    continue;
                                                 FileInfo objAutosave;
                                                 try
                                                 {
@@ -4343,12 +4341,11 @@ namespace Chummer
                                     FileInfo objMostRecentAutosave = null;
                                     foreach (string strAutosave in Directory.EnumerateFiles(
                                                  Utils.GetAutosavesFolderPath,
-                                                 "*.chum5", SearchOption.AllDirectories).Concat(
-                                                 Directory.EnumerateFiles(
-                                                     Utils.GetAutosavesFolderPath,
-                                                     "*.chum5lz", SearchOption.AllDirectories)))
+                                                 "*.chum5*", SearchOption.AllDirectories))
                                     {
                                         _objGenericToken.ThrowIfCancellationRequested();
+                                        if (!strAutosave.EndsWith(".chum5") && !strAutosave.EndsWith(".chum5lz"))
+                                            continue;
                                         FileInfo objAutosave;
                                         try
                                         {
