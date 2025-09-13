@@ -12522,20 +12522,20 @@ namespace Chummer
                                 ?.TotalForce ?? 0;
                         }
 
-                        List<string> lstActiveIds = new List<string>();
-                        await treViewToUse.DoThreadSafeAsync(y =>
+                        List<string> lstActiveIds = await treViewToUse.DoThreadSafeFuncAsync(y =>
                         {
+                            List<string> lstInnerReturn = new List<string>(y.Nodes.Count);
                             // Run through the list of items. Count the number of Foci the character would have bonded including this one, plus the total Force of all checked Foci.
                             foreach (TreeNode objNode in y.Nodes)
                             {
                                 if (objNode.Checked)
                                 {
-                                    string strNodeId = objNode.Tag.ToString();
-                                    ++intFociCount;
-                                    lstActiveIds.Add(strNodeId);
+                                    lstInnerReturn.Add(objNode.Tag.ToString());
                                 }
                             }
+                            return lstInnerReturn;
                         }, GenericToken).ConfigureAwait(false);
+                        intFociCount += lstActiveIds.Count;
 
                         foreach (string strNodeId in lstActiveIds)
                         {
@@ -25148,9 +25148,17 @@ namespace Chummer
                     using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                Utils.ListItemListPool, out List<ListItem> lstModularMounts))
                     {
-                        lstModularMounts.AddRange(await CharacterObject
+                        List<ListItem> lstModularCyberlimbList = await CharacterObject
                             .ConstructModularCyberlimbListAsync(
-                                objModularCyberware, GenericToken).ConfigureAwait(false));
+                                objModularCyberware, true, GenericToken).ConfigureAwait(false);
+                        try
+                        {
+                            lstModularMounts.AddRange(lstModularCyberlimbList);
+                        }
+                        finally
+                        {
+                            Utils.ListItemListPool.Return(ref lstModularCyberlimbList);
+                        }
                         //Mounted cyberware should always be allowed to be dismounted.
                         //Unmounted cyberware requires that a valid mount be present.
                         if (!await objModularCyberware.GetIsModularCurrentlyEquippedAsync(GenericToken)
@@ -25295,9 +25303,17 @@ namespace Chummer
                     using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                Utils.ListItemListPool, out List<ListItem> lstModularMounts))
                     {
-                        lstModularMounts.AddRange(await CharacterObject
+                        List<ListItem> lstModularCyberlimbList = await CharacterObject
                             .ConstructModularCyberlimbListAsync(
-                                objModularCyberware, GenericToken).ConfigureAwait(false));
+                                objModularCyberware, true, GenericToken).ConfigureAwait(false);
+                        try
+                        {
+                            lstModularMounts.AddRange(lstModularCyberlimbList);
+                        }
+                        finally
+                        {
+                            Utils.ListItemListPool.Return(ref lstModularCyberlimbList);
+                        }
                         //Mounted cyberware should always be allowed to be dismounted.
                         //Unmounted cyberware requires that a valid mount be present.
                         if (!await objModularCyberware.GetIsModularCurrentlyEquippedAsync(GenericToken)

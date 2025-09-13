@@ -111,6 +111,34 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Get a HashCode representing the contents of an enumerable (instead of just of the pointer to the location where the enumerable would start)
+        /// </summary>
+        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <param name="lstItems">The collection containing the contents</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
+        public static int GetEnsembleHashCode<T>(this IEnumerable<T> lstItems, int intCount, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstItems == null || intCount <= 0)
+                return 0;
+            unchecked
+            {
+                // uint to prevent overflows
+                uint result = 19u;
+                foreach (T item in lstItems)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (--intCount < 0)
+                        break;
+                    result = result * 31u + (uint)item.GetHashCode();
+                }
+
+                return (int)result;
+            }
+        }
+
+        /// <summary>
         /// Get a HashCode representing the contents of an enumerable (instead of just of the pointer to the location where the enumerable would start) in a way where the order of the items is irrelevant
         /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
         /// </summary>
@@ -130,6 +158,35 @@ namespace Chummer
                 foreach (T item in lstItems)
                 {
                     token.ThrowIfCancellationRequested();
+                    result += (uint)item.GetHashCode();
+                }
+
+                return (int)(19u + result * 31u);
+            }
+        }
+
+        /// <summary>
+        /// Get a HashCode representing the contents of an enumerable (instead of just of the pointer to the location where the enumerable would start) in a way where the order of the items is irrelevant
+        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
+        /// </summary>
+        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <param name="lstItems">The collection containing the contents</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
+        public static int GetOrderInvariantEnsembleHashCode<T>(this IEnumerable<T> lstItems, int intCount, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstItems == null || intCount <= 0)
+                return 0;
+            // uint to prevent overflows
+            unchecked
+            {
+                uint result = 0;
+                foreach (T item in lstItems)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (--intCount < 0)
+                        break;
                     result += (uint)item.GetHashCode();
                 }
 

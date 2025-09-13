@@ -21,6 +21,7 @@
 using System;
 using System.Collections;
 using System.Globalization;
+using System.Text;
 
 namespace SevenZip.CommandLineParser
 {
@@ -103,11 +104,11 @@ namespace SevenZip.CommandLineParser
                     }
                 }
                 if (maxLen == kNoLen)
-                    throw new Exception("maxLen == kNoLen");
+                    throw new ArgumentException("maxLen == kNoLen");
                 SwitchResult matchedSwitch = _switches[matchedSwitchIndex];
                 SwitchForm switchForm = switchForms[matchedSwitchIndex];
                 if (!switchForm.Multi && matchedSwitch.ThereIs)
-                    throw new Exception("switch must be single");
+                    throw new ArgumentException("switch must be single");
                 matchedSwitch.ThereIs = true;
                 pos += maxLen;
                 int tailSize = len - pos;
@@ -129,7 +130,7 @@ namespace SevenZip.CommandLineParser
                     case SwitchType.PostChar:
                         {
                             if (tailSize < switchForm.MinLen)
-                                throw new Exception("switch is not full");
+                                throw new ArgumentException("switch is not full");
                             const int kEmptyCharValue = -1;
                             if (tailSize == 0)
                                 matchedSwitch.PostCharIndex = kEmptyCharValue;
@@ -152,22 +153,25 @@ namespace SevenZip.CommandLineParser
                         {
                             int minLen = switchForm.MinLen;
                             if (tailSize < minLen)
-                                throw new Exception("switch is not full");
+                                throw new ArgumentException("switch is not full");
                             if (type == SwitchType.UnLimitedPostString)
                             {
                                 matchedSwitch.PostStrings.Add(srcString.Substring(pos));
                                 return true;
                             }
-                            string stringSwitch = srcString.Substring(pos, minLen);
-                            pos += minLen;
-                            for (int i = minLen; i < switchForm.MaxLen && pos < len; i++, pos++)
+                            using (new Chummer.FetchSafelyFromObjectPool<StringBuilder>(Chummer.Utils.StringBuilderPool, out StringBuilder sbdSwitch))
                             {
-                                char c = srcString[pos];
-                                if (IsItSwitchChar(c))
-                                    break;
-                                stringSwitch += c;
+                                sbdSwitch.Append(srcString, pos, minLen);
+                                pos += minLen;
+                                for (int i = minLen; i < switchForm.MaxLen && pos < len; i++, pos++)
+                                {
+                                    char c = srcString[pos];
+                                    if (IsItSwitchChar(c))
+                                        break;
+                                    sbdSwitch.Append(c);
+                                }
+                                matchedSwitch.PostStrings.Add(sbdSwitch.ToString());
                             }
-                            matchedSwitch.PostStrings.Add(stringSwitch);
                             break;
                         }
                 }

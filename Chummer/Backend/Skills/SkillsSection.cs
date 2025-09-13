@@ -737,7 +737,7 @@ namespace Chummer.Backend.Skills
             using (LockObject.EnterUpgradeableReadLock(token))
             {
                 token.ThrowIfCancellationRequested();
-                List<Tuple<Skill, bool>> lstSkillsToAdd = new List<Tuple<Skill, bool>>();
+                List<Tuple<Skill, bool>> lstSkillsToAdd = new List<Tuple<Skill, bool>>(64);
                 try
                 {
                     lstSkillsToAdd.AddRange(GetActiveSkillsFromData(eFilterOption, true, strName, token));
@@ -1229,8 +1229,6 @@ namespace Chummer.Backend.Skills
         internal async Task<List<Skill>> FetchExistingSkillsByFilterAsync(FilterOption eFilterOption, string strName = "", CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<Skill> lstReturn = new List<Skill>();
-            token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -1246,6 +1244,7 @@ namespace Chummer.Backend.Skills
                     {
                         if (xmlSkillList?.Count > 0)
                         {
+                            List<Skill> lstReturn = new List<Skill>(xmlSkillList.Count);
                             foreach (XmlNode xmlSkill in xmlSkillList)
                             {
                                 token.ThrowIfCancellationRequested();
@@ -1300,6 +1299,7 @@ namespace Chummer.Backend.Skills
                                     }
                                 }
                             }
+                            return lstReturn;
                         }
                     }
                 }
@@ -1308,7 +1308,7 @@ namespace Chummer.Backend.Skills
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-            return lstReturn;
+            return new List<Skill>();
         }
 
         private ReadOnlyDictionary<string, string> _dicKnowledgeSkillCategoriesMap;  //Categories to their attribute
@@ -2376,7 +2376,7 @@ namespace Chummer.Backend.Skills
                                 if (!_objCharacter.Created)
                                 {
                                     // zero out any skillgroups whose skills did not make the final cut
-                                    foreach (SkillGroup objSkillGroup in SkillGroups.ToList())
+                                    foreach (SkillGroup objSkillGroup in SkillGroups.AsEnumerableWithSideEffects())
                                     {
                                         token.ThrowIfCancellationRequested();
                                         if (!objSkillGroup.SkillList.Any(x => _dicSkills.ContainsKey(x.DictionaryKey)))
@@ -2394,7 +2394,7 @@ namespace Chummer.Backend.Skills
                                 else if (_objCharacter.Settings.AllowSkillRegrouping)
                                 {
                                     // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
-                                    foreach (SkillGroup g in SkillGroups.ToList())
+                                    foreach (SkillGroup g in SkillGroups.AsEnumerableWithSideEffects())
                                     {
                                         token.ThrowIfCancellationRequested();
                                         g.OnMultiplePropertyChanged(nameof(SkillGroup.SkillList), nameof(SkillGroup.HasAnyBreakingSkills));
@@ -2403,7 +2403,7 @@ namespace Chummer.Backend.Skills
                                 else
                                 {
                                     // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
-                                    foreach (SkillGroup g in SkillGroups.ToList())
+                                    foreach (SkillGroup g in SkillGroups.AsEnumerableWithSideEffects())
                                     {
                                         token.ThrowIfCancellationRequested();
                                         g.OnPropertyChanged(nameof(SkillGroup.SkillList));
@@ -2413,8 +2413,7 @@ namespace Chummer.Backend.Skills
                             else if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                             {
                                 // zero out any skillgroups whose skills did not make the final cut
-                                foreach (SkillGroup objSkillGroup in await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ToListAsync(token)
-                                             .ConfigureAwait(false))
+                                await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async objSkillGroup =>
                                 {
                                     token.ThrowIfCancellationRequested();
                                     if (!await objSkillGroup.SkillList.AnyAsync(
@@ -2432,28 +2431,19 @@ namespace Chummer.Backend.Skills
                                         await objSkillGroup.OnPropertyChangedAsync(nameof(SkillGroup.SkillList), token)
                                             .ConfigureAwait(false);
                                     }
-                                }
+                                }, token).ConfigureAwait(false);
                             }
                             else if (_objCharacter.Settings.AllowSkillRegrouping)
                             {
                                 // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
-                                foreach (SkillGroup objSkillGroup in await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ToListAsync(token)
-                                             .ConfigureAwait(false))
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    await objSkillGroup.OnMultiplePropertyChangedAsync(token, nameof(SkillGroup.SkillList), nameof(SkillGroup.HasAnyBreakingSkills)).ConfigureAwait(false);
-                                }
+                                await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(objSkillGroup =>
+                                    objSkillGroup.OnMultiplePropertyChangedAsync(token, nameof(SkillGroup.SkillList), nameof(SkillGroup.HasAnyBreakingSkills)), token).ConfigureAwait(false);
                             }
                             else
                             {
                                 // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
-                                foreach (SkillGroup objSkillGroup in await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ToListAsync(token)
-                                             .ConfigureAwait(false))
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    await objSkillGroup.OnPropertyChangedAsync(nameof(SkillGroup.SkillList), token)
-                                        .ConfigureAwait(false);
-                                }
+                                await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(objSkillGroup =>
+                                    objSkillGroup.OnPropertyChangedAsync(nameof(SkillGroup.SkillList), token), token).ConfigureAwait(false);
                             }
 
                             //Workaround for probably breaking compability between earlier beta builds
@@ -4074,7 +4064,7 @@ namespace Chummer.Backend.Skills
             {
                 if (GlobalSettings.LiveCustomData)
                 {
-                    List<ListItem> lstReturn = new List<ListItem>();
+                    List<ListItem> lstReturn = new List<ListItem>(byte.MaxValue);
                     XPathNavigator xmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml");
                     foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression(
                                  "/chummer/knowledgeskills/skill"))
@@ -4103,7 +4093,7 @@ namespace Chummer.Backend.Skills
 
                     using (_objDefaultKnowledgeSkillsLock.EnterWriteLock())
                     {
-                        _lstDefaultKnowledgeSkills = new List<ListItem>();
+                        _lstDefaultKnowledgeSkills = new List<ListItem>(byte.MaxValue);
                         XPathNavigator xmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml");
                         foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression(
                                      "/chummer/knowledgeskills/skill"))
@@ -4127,7 +4117,7 @@ namespace Chummer.Backend.Skills
         {
             if (GlobalSettings.LiveCustomData)
             {
-                List<ListItem> lstReturn = new List<ListItem>();
+                List<ListItem> lstReturn = new List<ListItem>(byte.MaxValue);
                 XPathNavigator xmlSkillsDocument =
                     await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
                 foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression(
@@ -4167,7 +4157,7 @@ namespace Chummer.Backend.Skills
                     await _objDefaultKnowledgeSkillsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    _lstDefaultKnowledgeSkills = new List<ListItem>();
+                    _lstDefaultKnowledgeSkills = new List<ListItem>(byte.MaxValue);
                     XPathNavigator xmlSkillsDocument =
                         await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
                     foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression(
@@ -4206,7 +4196,7 @@ namespace Chummer.Backend.Skills
             {
                 if (GlobalSettings.LiveCustomData)
                 {
-                    List<ListItem> lstReturn = new List<ListItem>();
+                    List<ListItem> lstReturn = new List<ListItem>(8);
                     XPathNavigator xmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml");
                     foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.SelectAndCacheExpression(
                                  "/chummer/categories/category[@type = \"knowledge\"]"))
@@ -4235,7 +4225,7 @@ namespace Chummer.Backend.Skills
 
                     using (_objKnowledgeTypesLock.EnterWriteLock())
                     {
-                        _lstKnowledgeTypes = new List<ListItem>();
+                        _lstKnowledgeTypes = new List<ListItem>(8);
                         XPathNavigator xmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml");
                         foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.SelectAndCacheExpression(
                                      "/chummer/categories/category[@type = \"knowledge\"]"))
@@ -4258,7 +4248,7 @@ namespace Chummer.Backend.Skills
         {
             if (GlobalSettings.LiveCustomData)
             {
-                List<ListItem> lstReturn = new List<ListItem>();
+                List<ListItem> lstReturn = new List<ListItem>(8);
                 XPathNavigator xmlSkillsDocument =
                     await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
                 foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.SelectAndCacheExpression(
@@ -4298,7 +4288,7 @@ namespace Chummer.Backend.Skills
                     await _objDefaultKnowledgeSkillsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    _lstKnowledgeTypes = new List<ListItem>();
+                    _lstKnowledgeTypes = new List<ListItem>(8);
                     XPathNavigator xmlSkillsDocument =
                         await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
                     foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.SelectAndCacheExpression(

@@ -33,7 +33,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -668,7 +667,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 // First remove all existing bindings
-                foreach (CharacterAttrib objAttribute in GetAllAttributes(token).ToList()) // ToList needed because otherwise we would be in a non-upgradeable read lock when the attribute write lock attempts to set an upgradeable read lock
+                foreach (CharacterAttrib objAttribute in GetAllAttributesForModification(token))
                 {
                     switch (objAttribute.Abbrev)
                     {
@@ -807,7 +806,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 // First remove all existing bindings
-                foreach (CharacterAttrib objAttribute in await GetAllAttributesAsync(token).ConfigureAwait(false))
+                foreach (CharacterAttrib objAttribute in await GetAllAttributesForModificationAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     switch (objAttribute.Abbrev)
@@ -11184,7 +11183,7 @@ namespace Chummer
                             {
                                 if (!Created)
                                 {
-                                    foreach (CharacterAttrib objAttrib in GetAllAttributes(token).ToList())
+                                    foreach (CharacterAttrib objAttrib in GetAllAttributesForModification(token))
                                     {
                                         while (objAttrib.Base > 0 && objAttrib.KarmaMaximum < 0)
                                         {
@@ -11197,7 +11196,7 @@ namespace Chummer
                             }
                             else if (!await GetCreatedAsync(token).ConfigureAwait(false))
                             {
-                                foreach (CharacterAttrib objAttrib in await GetAllAttributesAsync(token).ConfigureAwait(false))
+                                foreach (CharacterAttrib objAttrib in await GetAllAttributesForModificationAsync(token).ConfigureAwait(false))
                                 {
                                     while (await objAttrib.GetBaseAsync(token).ConfigureAwait(false) > 0 &&
                                            await objAttrib.GetKarmaMaximumAsync(token).ConfigureAwait(false) < 0)
@@ -16758,76 +16757,83 @@ namespace Chummer
         /// </summary>
         /// <param name="objModularCyberware">Cyberware for which to construct the list.</param>
         /// <param name="token">CancellationToken to listen to.</param>
-        public async Task<List<ListItem>> ConstructModularCyberlimbListAsync([NotNull] Cyberware objModularCyberware,
+        public async Task<List<ListItem>> ConstructModularCyberlimbListAsync([NotNull] Cyberware objModularCyberware, bool blnUsePool = false,
             CancellationToken token = default)
         {
-            List<ListItem> lstReturn = new List<ListItem>(3)
-            {
-                new ListItem("None",
-                    await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false))
-            };
-
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            List<ListItem> lstReturn = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(3);
             try
             {
-                token.ThrowIfCancellationRequested();
-                Grade objGrade = await objModularCyberware.GetGradeAsync(token).ConfigureAwait(false);
-                await (await (await GetCyberwareAsync(token).ConfigureAwait(false))
-                    .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, null), token).ConfigureAwait(false);
+                lstReturn.Add(new ListItem("None",
+                        await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false)));
 
-                await (await GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopVehicle =>
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    await objLoopVehicle.Mods.ForEachAsync(async objLoopVehicleMod =>
-                    {
-                        await (await objLoopVehicleMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token)
-                            .ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, objLoopVehicleMod), token).ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    Grade objGrade = await objModularCyberware.GetGradeAsync(token).ConfigureAwait(false);
+                    await (await (await GetCyberwareAsync(token).ConfigureAwait(false))
+                        .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, null), token).ConfigureAwait(false);
 
-                    await objLoopVehicle.WeaponMounts.ForEachAsync(objLoopWeaponMount =>
+                    await (await GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopVehicle =>
                     {
-                        return objLoopWeaponMount.Mods.ForEachAsync(async objLoopVehicleMod =>
+                        await objLoopVehicle.Mods.ForEachAsync(async objLoopVehicleMod =>
                         {
                             await (await objLoopVehicleMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token)
                                 .ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, objLoopVehicleMod), token).ConfigureAwait(false);
-                        }, token);
+                        }, token).ConfigureAwait(false);
+
+                        await objLoopVehicle.WeaponMounts.ForEachAsync(objLoopWeaponMount =>
+                        {
+                            return objLoopWeaponMount.Mods.ForEachAsync(async objLoopVehicleMod =>
+                            {
+                                await (await objLoopVehicleMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token)
+                                    .ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, objLoopVehicleMod), token).ConfigureAwait(false);
+                            }, token);
+                        }, token).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
-                }, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-
-            return lstReturn;
-
-            async Task ProcessCyberware(Cyberware objLoopCyberware, Grade objGrade, VehicleMod objVehicleMod)
-            {
-                // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                if (await objModularCyberware.PlugsIntoTargetCyberwareAsync(objLoopCyberware, token).ConfigureAwait(false)
-                    && objLoopCyberware.Location == objModularCyberware.Location
-                    && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name ==
-                    objGrade.Name
-                    && objLoopCyberware != objModularCyberware
-                    // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                    && !await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync(
-                            x => x.PlugsIntoTargetCyberwareAsync(objLoopCyberware, token), token)
-                        .ConfigureAwait(false))
-                {
-                    string strName = objVehicleMod != null
-                        ? await objVehicleMod.Parent.GetCurrentDisplayNameAsync(token)
-                              .ConfigureAwait(false) + strSpace
-                        : string.Empty;
-                    Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
-                    if (objLoopParent != null)
-                        strName += strSpace + await objLoopParent.GetCurrentDisplayNameAsync(token)
-                                  .ConfigureAwait(false);
-                    else if (objVehicleMod != null)
-                        strName += strSpace + await objVehicleMod.GetCurrentDisplayNameAsync(token)
-                                  .ConfigureAwait(false);
-                    lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                 }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+
+                return lstReturn;
+
+                async Task ProcessCyberware(Cyberware objLoopCyberware, Grade objGrade, VehicleMod objVehicleMod)
+                {
+                    // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
+                    if (await objModularCyberware.PlugsIntoTargetCyberwareAsync(objLoopCyberware, token).ConfigureAwait(false)
+                        && objLoopCyberware.Location == objModularCyberware.Location
+                        && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name ==
+                        objGrade.Name
+                        && objLoopCyberware != objModularCyberware
+                        // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                        && !await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync(
+                                x => x.PlugsIntoTargetCyberwareAsync(objLoopCyberware, token), token)
+                            .ConfigureAwait(false))
+                    {
+                        string strName = objVehicleMod != null
+                            ? await objVehicleMod.Parent.GetCurrentDisplayNameAsync(token)
+                                  .ConfigureAwait(false) + strSpace
+                            : string.Empty;
+                        Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
+                        if (objLoopParent != null)
+                            strName += strSpace + await objLoopParent.GetCurrentDisplayNameAsync(token)
+                                      .ConfigureAwait(false);
+                        else if (objVehicleMod != null)
+                            strName += strSpace + await objVehicleMod.GetCurrentDisplayNameAsync(token)
+                                      .ConfigureAwait(false);
+                        lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                    }
+                }
+            }
+            catch
+            {
+                if (blnUsePool)
+                    Utils.ListItemListPool.Return(ref lstReturn);
+                throw;
             }
         }
 
@@ -18614,7 +18620,7 @@ namespace Chummer
                                                       x.Descriptors.Contains("Spell")), token: token)
                             .ConfigureAwait(false))
                     {
-                        List<string> lstIds = new List<string>();
+                        List<string> lstIds = new List<string>(await lstSpells.GetCountAsync(token).ConfigureAwait(false));
                         await lstSpells.ForEachAsync(x => lstIds.Add(x.InternalId), token).ConfigureAwait(false);
                         await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.Spell,
                             lstIds, token: token).ConfigureAwait(false);
@@ -18720,7 +18726,7 @@ namespace Chummer
                 ThreadSafeBindingList<Power> lstPowers = await GetPowersAsync(token).ConfigureAwait(false);
                 if (await lstPowers.AllAsync(async x => await x.GetFreeLevelsAsync(token).ConfigureAwait(false) == 0 && await x.GetFreePointsAsync(token).ConfigureAwait(false) == 0, token).ConfigureAwait(false))
                 {
-                    List<string> lstIds = new List<string>();
+                    List<string> lstIds = new List<string>(await lstPowers.GetCountAsync(token).ConfigureAwait(false));
                     await lstPowers.ForEachAsync(x => lstIds.Add(x.InternalId), token).ConfigureAwait(false);
                     IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
@@ -19123,7 +19129,7 @@ namespace Chummer
                     await GetCritterPowersAsync(token).ConfigureAwait(false);
                 if (await lstCritterPowers.AllAsync(x => x.Grade >= 0, token: token).ConfigureAwait(false))
                 {
-                    List<string> lstIds = new List<string>();
+                    List<string> lstIds = new List<string>(await lstCritterPowers.GetCountAsync(token).ConfigureAwait(false));
                     await lstCritterPowers.ForEachAsync(x => lstIds.Add(x.InternalId), token).ConfigureAwait(false);
                     IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
@@ -24507,6 +24513,68 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+        }
+
+        /// <summary>
+        /// Get all of a Character's CharacterAttributes.
+        /// </summary>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public IEnumerable<CharacterAttrib> GetAllAttributesForModification(CancellationToken token = default)
+        {
+            using (LockObject.EnterUpgradeableReadLock(token))
+            {
+                foreach (CharacterAttrib objAttribute in AttributeSection.AllAttributes)
+                {
+                    token.ThrowIfCancellationRequested();
+                    yield return objAttribute;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get all of a Character's CharacterAttributes.
+        /// </summary>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task<List<CharacterAttrib>> GetAllAttributesForModificationAsync(CancellationToken token = default)
+        {
+            // Regular GetAllAttributesAsync already works for modifications because it closes the non-upgradeable read lock before returning its list
+            return GetAllAttributesAsync(token);
+        }
+
+        /// <summary>
+        /// Get all CharacterAttributes that have a particular abbreviation.
+        /// </summary>
+        /// <param name="strAttribute">CharacterAttribute name to retrieve.</param>
+        /// <param name="blnExplicit">Whether to force looking for a specific attribute name.
+        /// Mostly expected to be used for gutting Mystic Adept power points.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public IEnumerable<CharacterAttrib> GetAllForModificationAttributes(string strAttribute, bool blnExplicit = false, CancellationToken token = default)
+        {
+            using (AttributeSection.LockObject.EnterUpgradeableReadLock(token))
+            {
+                if (strAttribute == "MAGAdept" && (!IsMysticAdept || !Settings.MysAdeptSecondMAGAttribute)
+                                               && !blnExplicit)
+                    strAttribute = "MAG";
+                foreach (CharacterAttrib objAttribute in AttributeSection.AllAttributes)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (objAttribute.Abbrev == strAttribute)
+                        yield return objAttribute;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get all CharacterAttributes that have a particular abbreviation.
+        /// </summary>
+        /// <param name="strAttribute">CharacterAttribute name to retrieve.</param>
+        /// <param name="blnExplicit">Whether to force looking for a specific attribute name.
+        /// Mostly expected to be used for gutting Mystic Adept power points.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task<List<CharacterAttrib>> GetAllAttributesForModificationAsync(string strAttribute, bool blnExplicit = false, CancellationToken token = default)
+        {
+            // Regular GetAllAttributesAsync already works for modifications because it closes the non-upgradeable read lock before returning its list
+            return GetAllAttributesAsync(strAttribute, blnExplicit, token);
         }
 
         /// <summary>
@@ -32519,7 +32587,7 @@ namespace Chummer
         {
             using (LockObject.EnterReadLock())
             {
-                List<Improvement> lstRelevantImprovements = new List<Improvement>();
+                List<Improvement> lstRelevantImprovements = new List<Improvement>(Improvements.Count);
                 foreach (Improvement objLoopImprovement in Improvements)
                 {
                     if (objLoopImprovement.Enabled
@@ -32595,7 +32663,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                List<Improvement> lstRelevantImprovements = new List<Improvement>();
+                List<Improvement> lstRelevantImprovements = new List<Improvement>(await Improvements.GetCountAsync(token).ConfigureAwait(false));
                 await Improvements.ForEachAsync(objLoopImprovement =>
                 {
                     if (objLoopImprovement.Enabled
@@ -51049,9 +51117,7 @@ namespace Chummer
                                                     {
                                                         token.ThrowIfCancellationRequested();
                                                         // Trim away the newlines and empty spaces at the beginning and end of lines
-                                                        strLine = strLine.Trim('\n', '\r', ' ').Trim();
-
-                                                        lstTextStatBlockLines.Add(strLine);
+                                                        lstTextStatBlockLines.Add(strLine.Trim('\n', '\r', ' ').Trim());
                                                     }
                                                 }
                                             }

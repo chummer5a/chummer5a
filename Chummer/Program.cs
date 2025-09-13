@@ -320,7 +320,7 @@ namespace Chummer
                         // were made in an older version (i.e. an older assembly)
                         string strProfileOptimizationName
                             = "chummerprofile_" + Utils.CurrentChummerVersion + ".profile";
-                        List<string> lstToDelete = new List<string>();
+                        List<string> lstToDelete = new List<string>(1);
                         foreach (string strProfileFile in Directory.EnumerateFiles(Utils.GetStartupPath, "*.profile"))
                         {
                             if (!string.Equals(strProfileFile, strProfileOptimizationName,

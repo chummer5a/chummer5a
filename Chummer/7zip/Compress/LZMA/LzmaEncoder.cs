@@ -789,7 +789,7 @@ namespace SevenZip.Compression.LZMA
             int index;
             unchecked
             {
-                index = 0 - _repDistances[0] - 1 - 1;
+                index = -2 - _repDistances[0];
             }
             byte matchByte = _matchFinder.GetIndexByte(index);
 
@@ -1004,7 +1004,7 @@ namespace SevenZip.Compression.LZMA
                     uint curPrice = _optimum[cur].Price;
 
                     currentByte = _matchFinder.GetIndexByte(0 - 1);
-                    matchByte = _matchFinder.GetIndexByte(0 - reps[0] - 1 - 1);
+                    matchByte = _matchFinder.GetIndexByte(-2 - reps[0]);
 
                     posState = position & _posStateMask;
 
@@ -1302,7 +1302,7 @@ namespace SevenZip.Compression.LZMA
             }
 
             byte currentByte = _matchFinder.GetIndexByte(0 - 1);
-            int index = 0 - _repDistances[0] - 1 - 1;
+            int index = -2 - _repDistances[0];
             byte matchByte = _matchFinder.GetIndexByte(index);
 
             if (lenMain < 2 && currentByte != matchByte && repLens[repMaxIndex] < 2)
@@ -1515,7 +1515,7 @@ namespace SevenZip.Compression.LZMA
                     uint curPrice = _optimum[cur].Price;
 
                     currentByte = _matchFinder.GetIndexByte(0 - 1);
-                    matchByte = _matchFinder.GetIndexByte(0 - reps[0] - 1 - 1);
+                    matchByte = _matchFinder.GetIndexByte(-2 - reps[0]);
 
                     posState = position & _posStateMask;
 

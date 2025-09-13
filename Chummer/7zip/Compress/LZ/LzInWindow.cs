@@ -238,7 +238,7 @@ namespace SevenZip.Compression.LZ
                     const int size = sizeof(ulong);
                     if (limit >= size)
                     {
-                        int longLimit = limit - size + 1;
+                        int longLimit = limit - (size - 1);
                         while (i < longLimit && *(ulong*)(p1 + i) == *(ulong*)(p2 + i))
                         {
                             i += size;

@@ -396,6 +396,7 @@ namespace Chummer
                     continue;
                 lstFiles.Add(strFile);
             }
+            lstFiles.Sort();
             return lstFiles.ToArray();
         });
 

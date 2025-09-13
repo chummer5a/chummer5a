@@ -18474,20 +18474,20 @@ namespace Chummer
                             }
                         }
 
-                        List<string> lstActiveIds = new List<string>();
-                        await treViewToUse.DoThreadSafeAsync(y =>
+                        List<string> lstActiveIds = await treViewToUse.DoThreadSafeFuncAsync(y =>
                         {
+                            List<string> lstInnerReturn = new List<string>(y.Nodes.Count);
                             // Run through the list of items. Count the number of Foci the character would have bonded including this one, plus the total Force of all checked Foci.
                             foreach (TreeNode objNode in y.Nodes)
                             {
                                 if (objNode.Checked)
                                 {
-                                    string strNodeId = objNode.Tag.ToString();
-                                    ++intFociCount;
-                                    lstActiveIds.Add(strNodeId);
+                                    lstInnerReturn.Add(objNode.Tag.ToString());
                                 }
                             }
+                            return lstInnerReturn;
                         }, GenericToken).ConfigureAwait(false);
+                        intFociCount += lstActiveIds.Count;
 
                         foreach (string strNodeId in lstActiveIds)
                         {
@@ -19810,29 +19810,29 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(objImprovement.ImprovedName))
                             sbdValue.AppendLine(await LanguageManager
                                               .GetStringAsync("Label_CreateImprovementSelectedValue", token: token)
-                                              .ConfigureAwait(false) + strSpace
-                                                                     + objImprovement.ImprovedName);
+                                              .ConfigureAwait(false)).Append(strSpace
+                                                                     ).Append(objImprovement.ImprovedName);
                         if (objImprovement.Rating != 0)
                             sbdValue.AppendLine(await LanguageManager.GetStringAsync("Label_Rating", token: token)
-                                                             .ConfigureAwait(false) + strSpace
-                                + objImprovement.Rating.ToString(GlobalSettings.CultureInfo));
+                                                             .ConfigureAwait(false)).Append(strSpace
+                                ).Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo));
                         if (objImprovement.Value != 0)
                             sbdValue.AppendLine(await LanguageManager.GetStringAsync("Label_CreateImprovementValue", token: token)
-                                                             .ConfigureAwait(false) + strSpace
-                                + objImprovement.Value.ToString(GlobalSettings.CultureInfo));
+                                                             .ConfigureAwait(false)).Append(strSpace
+                                ).Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo));
                         if (objImprovement.Minimum != 0)
                             sbdValue.AppendLine(await LanguageManager.GetStringAsync("Label_CreateImprovementMinimum", token: token)
-                                                             .ConfigureAwait(false) + strSpace
-                                + objImprovement.Minimum.ToString(GlobalSettings.CultureInfo));
+                                                             .ConfigureAwait(false)).Append(strSpace
+                                ).Append(objImprovement.Minimum.ToString(GlobalSettings.CultureInfo));
                         if (objImprovement.Maximum != 0)
                             sbdValue.AppendLine(await LanguageManager.GetStringAsync("Label_CreateImprovementMaximum", token: token)
-                                                             .ConfigureAwait(false) + strSpace
-                                + objImprovement.Maximum.ToString(GlobalSettings.CultureInfo));
+                                                             .ConfigureAwait(false)).Append(strSpace
+                                ).Append(objImprovement.Maximum.ToString(GlobalSettings.CultureInfo));
                         if (objImprovement.Augmented != 0)
                             sbdValue.AppendLine(await LanguageManager
                                               .GetStringAsync("Label_CreateImprovementAugmented", token: token)
-                                              .ConfigureAwait(false) + strSpace
-                                                                     + objImprovement.Augmented.ToString(
+                                              .ConfigureAwait(false)).Append(strSpace
+                                                                     ).Append(objImprovement.Augmented.ToString(
                                                                          GlobalSettings.CultureInfo));
                         strValue = sbdValue.ToString();
                     }
@@ -28921,9 +28921,17 @@ namespace Chummer
                     using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                Utils.ListItemListPool, out List<ListItem> lstModularMounts))
                     {
-                        lstModularMounts.AddRange(await CharacterObject
+                        List<ListItem> lstModularCyberlimbList = await CharacterObject
                             .ConstructModularCyberlimbListAsync(
-                                objModularCyberware, GenericToken).ConfigureAwait(false));
+                                objModularCyberware, true, GenericToken).ConfigureAwait(false);
+                        try
+                        {
+                            lstModularMounts.AddRange(lstModularCyberlimbList);
+                        }
+                        finally
+                        {
+                            Utils.ListItemListPool.Return(ref lstModularCyberlimbList);
+                        }
                         //Mounted cyberware should always be allowed to be dismounted.
                         //Unmounted cyberware requires that a valid mount be present.
                         if (!await objModularCyberware.GetIsModularCurrentlyEquippedAsync(GenericToken)
@@ -29061,9 +29069,17 @@ namespace Chummer
                     using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                Utils.ListItemListPool, out List<ListItem> lstModularMounts))
                     {
-                        lstModularMounts.AddRange(await CharacterObject
+                        List<ListItem> lstModularCyberlimbList = await CharacterObject
                             .ConstructModularCyberlimbListAsync(
-                                objModularCyberware, GenericToken).ConfigureAwait(false));
+                                objModularCyberware, true, GenericToken).ConfigureAwait(false);
+                        try
+                        {
+                            lstModularMounts.AddRange(lstModularCyberlimbList);
+                        }
+                        finally
+                        {
+                            Utils.ListItemListPool.Return(ref lstModularCyberlimbList);
+                        }
                         //Mounted cyberware should always be allowed to be dismounted.
                         //Unmounted cyberware requires that a valid mount be present.
                         if (!await objModularCyberware.GetIsModularCurrentlyEquippedAsync(GenericToken)

@@ -61,7 +61,7 @@ namespace Codaxy.WkHtmlToPdf
         }
     }
 
-    public readonly struct PdfOutput
+    public readonly struct PdfOutput : IEquatable<PdfOutput>
     {
         public string OutputFilePath { get; }
         public Stream OutputStream { get; }
@@ -75,6 +75,30 @@ namespace Codaxy.WkHtmlToPdf
             OutputStream = objOutputStream;
             OutputCallback = funcOutputCallback;
             OutputCallbackAsync = funcOutputCallbackAsync;
+        }
+
+        public bool Equals(PdfOutput other)
+        {
+            return OutputFilePath.Equals(other.OutputFilePath) && OutputStream.Equals(other.OutputStream) && OutputCallback.Equals(other.OutputCallback) && OutputCallbackAsync.Equals(other.OutputCallbackAsync);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is PdfOutput objCasted && Equals(objCasted);
+        }
+        public static bool operator ==(PdfOutput left, PdfOutput right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(PdfOutput left, PdfOutput right)
+        {
+            return !(left == right);
+        }
+
+        public override int GetHashCode()
+        {
+            return (OutputFilePath, OutputStream, OutputCallback, OutputCallbackAsync).GetHashCode();
         }
     }
 
@@ -99,7 +123,7 @@ namespace Codaxy.WkHtmlToPdf
         public string FooterFontName { get; set; }
     }
 
-    public readonly struct PdfConvertEnvironment
+    public readonly struct PdfConvertEnvironment : IEquatable<PdfConvertEnvironment>
     {
         public string WkHtmlToPdfPath { get; }
         public string TempFolderPath { get; }
@@ -113,6 +137,31 @@ namespace Codaxy.WkHtmlToPdf
             TempFolderPath = string.IsNullOrWhiteSpace(strTempFolderPath) || !Directory.Exists(strTempFolderPath) ? Utils.GetTempPath() : strTempFolderPath;
             Timeout = intTimeout;
             Debug = blnDebug;
+        }
+
+        public bool Equals(PdfConvertEnvironment other)
+        {
+            return WkHtmlToPdfPath == other.WkHtmlToPdfPath && TempFolderPath == other.TempFolderPath && Timeout == other.Timeout && Debug == other.Debug;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is PdfConvertEnvironment objCasted && Equals(objCasted);
+        }
+
+        public override int GetHashCode()
+        {
+            return (WkHtmlToPdfPath, TempFolderPath, Timeout, Debug).GetHashCode();
+        }
+
+        public static bool operator ==(PdfConvertEnvironment left, PdfConvertEnvironment right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(PdfConvertEnvironment left, PdfConvertEnvironment right)
+        {
+            return !(left == right);
         }
     }
 

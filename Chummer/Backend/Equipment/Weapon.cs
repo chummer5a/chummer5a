@@ -6113,7 +6113,7 @@ namespace Chummer.Backend.Equipment
                 yield break;
             }
             int intOldValue;
-            Dictionary<string, int> dicMounts = new Dictionary<string, int>();
+            Dictionary<string, int> dicMounts = new Dictionary<string, int>(8);
             foreach (string strMount in strSlots.SplitNoAlloc(
                                 '/', StringSplitOptions.RemoveEmptyEntries))
             {
@@ -6194,9 +6194,9 @@ namespace Chummer.Backend.Equipment
                         }
                     : new List<string>();
             }
-            List<string> lstReturn = new List<string>(blnWithInternalAndNone ? 3 : 1);
+            List<string> lstReturn = new List<string>(8);
             int intOldValue;
-            Dictionary<string, int> dicMounts = new Dictionary<string, int>();
+            Dictionary<string, int> dicMounts = new Dictionary<string, int>(8);
             foreach (string strMount in strSlots.SplitNoAlloc(
                              '/', StringSplitOptions.RemoveEmptyEntries))
             {
@@ -7380,7 +7380,7 @@ namespace Chummer.Backend.Equipment
                         sbdBonusAccuracy.Append('(').Append(strAccuracyAdd.TrimStart('+')).Append(')');
                 }
 
-                List<string> lstNonStackingAccessoryBonuses = new List<string>();
+                List<string> lstNonStackingAccessoryBonuses = new List<string>(WeaponAccessories.Count);
                 foreach (WeaponAccessory objWeaponAccessory in WeaponAccessories)
                 {
                     if (objWeaponAccessory.Equipped)
@@ -7620,8 +7620,8 @@ namespace Chummer.Backend.Equipment
                         sbdBonusAccuracy.Append('(').Append(strAccuracyAdd.TrimStart('+')).Append(')');
                 }
 
-                List<string> lstNonStackingAccessoryBonuses = new List<string>();
-                foreach (WeaponAccessory objWeaponAccessory in WeaponAccessories)
+                List<string> lstNonStackingAccessoryBonuses = new List<string>(await WeaponAccessories.GetCountAsync(token).ConfigureAwait(false));
+                await WeaponAccessories.ForEachAsync(async objWeaponAccessory =>
                 {
                     if (objWeaponAccessory.Equipped)
                     {
@@ -7666,11 +7666,11 @@ namespace Chummer.Backend.Equipment
                             }
                         }
                     }
-                }
+                }, token).ConfigureAwait(false);
                 // Underbarrel weapons that come with their parent weapon (and are of the same type) should inherit the parent weapon's built-in smartgun features
                 if (IncludedInWeapon && Parent != null && RangeType == Parent.RangeType)
                 {
-                    foreach (WeaponAccessory objWeaponAccessory in Parent.WeaponAccessories)
+                    await Parent.WeaponAccessories.ForEachAsync(async objWeaponAccessory =>
                     {
                         if (objWeaponAccessory.Name.StartsWith("Smartgun", StringComparison.Ordinal)
                             && objWeaponAccessory.IncludedInWeapon && objWeaponAccessory.Equipped)
@@ -7685,7 +7685,7 @@ namespace Chummer.Backend.Equipment
                                 lstNonStackingAccessoryBonuses.Add(strLoopAccuracy);
                             }
                         }
-                    }
+                    }, token).ConfigureAwait(false);
                 }
                 if (lstNonStackingAccessoryBonuses.Count > 0)
                 {
@@ -9954,8 +9954,9 @@ namespace Chummer.Backend.Equipment
                         decimal decDicePool = wa.DicePool;
                         if (decDicePool != 0)
                         {
-                            sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                strSpace, wa.CurrentDisplayName, decDicePool.ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo));
+                            sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                .Append(wa.CurrentDisplayName).Append(strSpace).Append('(')
+                                .Append(decDicePool.ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo)).Append(')');
                         }
 
                         if (WirelessOn && wa.WirelessOn && wa.WirelessWeaponBonus != null)
@@ -10547,8 +10548,9 @@ namespace Chummer.Backend.Equipment
                     decimal decDicePool = await wa.GetDicePoolAsync(token).ConfigureAwait(false);
                     if (decDicePool != 0)
                     {
-                        sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})", strSpace,
-                            await wa.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), decDicePool.ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo));
+                        sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                .Append(await wa.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
+                                .Append(decDicePool.ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo)).Append(')');
                     }
                     if (WirelessOn && wa.WirelessOn && wa.WirelessWeaponBonus != null)
                     {

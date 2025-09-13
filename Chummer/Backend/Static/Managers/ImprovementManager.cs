@@ -228,7 +228,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 s_DictionaryCachedValues.AddOrUpdate(objCheckKey,
                                                      x => new Tuple<decimal, List<Improvement>>(
-                                                         decimal.MinValue, new List<Improvement>()),
+                                                         decimal.MinValue, new List<Improvement>(8)),
                                                      (x, y) =>
                                                      {
                                                          y.Item2.Clear();
@@ -238,7 +238,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 s_DictionaryCachedAugmentedValues.AddOrUpdate(objCheckKey,
                                                               x => new Tuple<decimal, List<Improvement>>(
-                                                                  decimal.MinValue, new List<Improvement>()),
+                                                                  decimal.MinValue, new List<Improvement>(8)),
                                                               (x, y) =>
                                                               {
                                                                   y.Item2.Clear();
@@ -716,7 +716,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(funcValueGetter));
 
             if (objCharacter == null)
-                return new Tuple<decimal, List<Improvement>>(0, new List<Improvement>());
+                return new Tuple<decimal, List<Improvement>>(0, new List<Improvement>(8));
 
             if (string.IsNullOrWhiteSpace(strImprovedName))
                 strImprovedName = string.Empty;
@@ -745,7 +745,9 @@ namespace Chummer
                 bool blnFetchAndCacheResults = !blnAddToRating && blnUnconditionalOnly;
 
                 // If we've got a value cached for the default ValueOf call for an improvementType, let's just return that
-                List<Improvement> lstUsedImprovements = new List<Improvement>();
+                List<Improvement> lstUsedImprovements = new List<Improvement>(blnSync
+                    ? objCharacter.Improvements.Count
+                    : await objCharacter.Improvements.GetCountAsync(token).ConfigureAwait(false));
                 if (blnFetchAndCacheResults)
                 {
                     if (dicCachedValuesToUse != null)
@@ -780,7 +782,7 @@ namespace Chummer
                                         if (objEmergencyReleaseToken.IsCancellationRequested)
                                         {
                                             Utils.BreakIfDebug();
-                                            return new Tuple<decimal, List<Improvement>>(0, new List<Improvement>());
+                                            return new Tuple<decimal, List<Improvement>>(0, new List<Improvement>(8));
                                         }
 
                                         throw;
@@ -819,7 +821,7 @@ namespace Chummer
                                             {
                                                 Utils.BreakIfDebug();
                                                 return new Tuple<decimal, List<Improvement>>(
-                                                    0, new List<Improvement>());
+                                                    0, new List<Improvement>(8));
                                             }
 
                                             throw;
@@ -895,11 +897,11 @@ namespace Chummer
                         // The more often this sort of value is used, the more caching is necessary and the more often we will break here,
                         // and the annoyance of constantly having your debugger break here should push you to adding in caching functionality.
                         Utils.BreakIfDebug();
-                        lstUsedImprovements = new List<Improvement>();
+                        lstUsedImprovements.Clear();
                     }
                 }
                 else
-                    lstUsedImprovements = new List<Improvement>();
+                    lstUsedImprovements.Clear();
 
                 try
                 {
@@ -992,7 +994,7 @@ namespace Chummer
                                 else
                                 {
                                     dicUniquePairs.Add(strLoopImprovedName,
-                                                       new List<Tuple<string, Improvement>>(1)
+                                                       new List<Tuple<string, Improvement>>(lstImprovementsToConsider.Count)
                                                        {
                                                            new Tuple<string, Improvement>(strUniqueName, objImprovement)
                                                        });
@@ -1001,7 +1003,7 @@ namespace Chummer
                                 if (!dicValues.ContainsKey(strLoopImprovedName))
                                 {
                                     dicValues.Add(strLoopImprovedName, 0);
-                                    dicImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>());
+                                    dicImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>(lstImprovementsToConsider.Count));
                                 }
                             }
                             else if (dicValues.TryGetValue(strLoopImprovedName, out decimal decExistingValue))
@@ -1013,11 +1015,11 @@ namespace Chummer
                             {
                                 dicValues.Add(strLoopImprovedName, funcValueGetter(objImprovement));
                                 dicImprovementsForValues.Add(strLoopImprovedName,
-                                                             new List<Improvement>(1) { objImprovement });
+                                                             new List<Improvement>(lstImprovementsToConsider.Count) { objImprovement });
                             }
                         }
 
-                        List<Improvement> lstInnerLoopImprovements = new List<Improvement>(1);
+                        List<Improvement> lstInnerLoopImprovements = new List<Improvement>(lstImprovementsToConsider.Count);
                         foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
                         {
                             string strLoopImprovedName = objLoopValuePair.Key;
@@ -1175,7 +1177,7 @@ namespace Chummer
                                 else
                                 {
                                     dicUniquePairs.Add(strLoopImprovedName,
-                                                       new List<Tuple<string, Improvement>>(1)
+                                                       new List<Tuple<string, Improvement>>(lstImprovementsToConsider.Count)
                                                        {
                                                            new Tuple<string, Improvement>(strUniqueName, objImprovement)
                                                        });
@@ -1184,7 +1186,7 @@ namespace Chummer
                                 if (!dicCustomValues.ContainsKey(strLoopImprovedName))
                                 {
                                     dicCustomValues.Add(strLoopImprovedName, 0);
-                                    dicCustomImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>());
+                                    dicCustomImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>(lstImprovementsToConsider.Count));
                                 }
                             }
                             else if (dicCustomValues.TryGetValue(strLoopImprovedName, out decimal decExistingValue))
@@ -1197,7 +1199,7 @@ namespace Chummer
                             {
                                 dicCustomValues.Add(strLoopImprovedName, funcValueGetter(objImprovement));
                                 dicCustomImprovementsForValues.Add(strLoopImprovedName,
-                                                                   new List<Improvement>(1) { objImprovement });
+                                                                   new List<Improvement>(lstImprovementsToConsider.Count) { objImprovement });
                             }
                         }
 
@@ -1233,7 +1235,7 @@ namespace Chummer
                                     if (decHighest != decimal.MinValue)
                                     {
                                         decLoopValue += decHighest;
-                                        (lstLoopImprovements ?? (lstLoopImprovements = new List<Improvement>(1))).Add(
+                                        (lstLoopImprovements ?? (lstLoopImprovements = new List<Improvement>(lstImprovementsToConsider.Count))).Add(
                                             objHighestImprovement);
                                     }
                                 }
@@ -1297,7 +1299,7 @@ namespace Chummer
                                     List<Improvement> lstTemp = dicCachedValuesToUse.TryGetValue(
                                         objLoopCacheKey, out Tuple<decimal, List<Improvement>> tupTemp)
                                         ? tupTemp.Item2
-                                        : new List<Improvement>();
+                                        : new List<Improvement>(tupNewValue.Item2.Count);
 
                                     if (!ReferenceEquals(lstTemp, tupNewValue.Item2))
                                     {
@@ -4335,7 +4337,7 @@ namespace Chummer
                             strSourceName + ' ');
                     }
 
-                    objImprovementList = new List<Improvement>();
+                    objImprovementList = new List<Improvement>(objCharacter.Improvements.Count);
                     foreach (Improvement objImprovement in objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveSource != objImprovementSource)
@@ -4404,7 +4406,7 @@ namespace Chummer
                             strSourceName + ' ');
                     }
 
-                    objImprovementList = new List<Improvement>();
+                    objImprovementList = new List<Improvement>(objCharacter.Improvements.Count);
                     foreach (Improvement objImprovement in objCharacter.Improvements)
                     {
                         if (!lstImprovementSources.Contains(objImprovement.ImproveSource))
@@ -4587,7 +4589,7 @@ namespace Chummer
                             strSourceName + ' ');
                     }
 
-                    objImprovementList = new List<Improvement>();
+                    objImprovementList = new List<Improvement>(await objCharacter.Improvements.GetCountAsync(token).ConfigureAwait(false));
                     await objCharacter.Improvements.ForEachAsync(objImprovement =>
                     {
                         if (objImprovement.ImproveSource != objImprovementSource)
@@ -4664,7 +4666,7 @@ namespace Chummer
                             strSourceName + ' ');
                     }
 
-                    objImprovementList = new List<Improvement>();
+                    objImprovementList = new List<Improvement>(await objCharacter.Improvements.GetCountAsync(token).ConfigureAwait(false));
                     await objCharacter.Improvements.ForEachAsync(objImprovement =>
                     {
                         if (!lstImprovementSources.Contains(objImprovement.ImproveSource))

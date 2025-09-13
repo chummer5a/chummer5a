@@ -174,7 +174,7 @@ namespace SevenZip.Compression.LZ
                 // Do equality comparisons 8 bytes at a time to speed things up
                 if (lenLimit >= size)
                 {
-                    int longLenLimit = lenLimit - size + 1;
+                    int longLenLimit = lenLimit - (size - 1);
                     while (len < longLenLimit && *(ulong*)(p1 + len) == *(ulong*)(p2 + len))
                     {
                         len += size;
@@ -202,7 +202,7 @@ namespace SevenZip.Compression.LZ
                 // Do equality comparisons 8 bytes at a time to speed things up
                 if (lenLimit >= size)
                 {
-                    int longLenLimit = lenLimit - size + 1;
+                    int longLenLimit = lenLimit - (size - 1);
                     while (len < longLenLimit && *(ulong*)(p1 + len) == *(ulong*)(p2 + len))
                     {
                         token.ThrowIfCancellationRequested();
@@ -686,12 +686,11 @@ namespace SevenZip.Compression.LZ
             {
                 for (uint i = 0; i < numItems; i++)
                 {
-                    uint value = items[i];
+                    ref uint value = ref items[i];
                     if (value <= subValue)
                         value = kEmptyHashValue;
                     else
                         value -= subValue;
-                    items[i] = value;
                 }
             }
         }
@@ -702,12 +701,11 @@ namespace SevenZip.Compression.LZ
             {
                 unchecked
                 {
-                    uint value = items[i];
+                    ref uint value = ref items[i];
                     if (value <= subValue)
                         value = kEmptyHashValue;
                     else
                         value -= subValue;
-                    items[i] = value;
                 }
             });
         }

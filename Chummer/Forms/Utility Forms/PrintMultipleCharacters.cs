@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -26,7 +27,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class PrintMultipleCharacters : Form
+    public partial class PrintMultipleCharacters : Form, IHasCharacterObjects
     {
         private CancellationTokenSource _objPrinterCancellationTokenSource;
         private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
@@ -34,6 +35,10 @@ namespace Chummer
         private Task _tskPrinter;
         private Character[] _aobjCharacters;
         private CharacterSheetViewer _frmPrintView;
+
+        public IEnumerable<Character> CharacterObjects => _aobjCharacters;
+
+        public Character CharacterObject => _aobjCharacters.Length > 0 ? _aobjCharacters[0] : null;
 
         #region Control Events
 
@@ -359,12 +364,12 @@ namespace Chummer
                             return objReturn;
                         }, token).ConfigureAwait(false);
                         await _frmPrintView.SetSelectedSheet("Game Master Summary", token).ConfigureAwait(false);
-                        await _frmPrintView.SetCharacters(token, _aobjCharacters).ConfigureAwait(false);
+                        await _frmPrintView.SetCharacters(token, lstCharacters).ConfigureAwait(false);
                         await _frmPrintView.DoThreadSafeAsync(x => x.Show(), token).ConfigureAwait(false);
                     }
                     else
                     {
-                        await _frmPrintView.SetCharacters(token, _aobjCharacters).ConfigureAwait(false);
+                        await _frmPrintView.SetCharacters(token, lstCharacters).ConfigureAwait(false);
                         await _frmPrintView.DoThreadSafeAsync(x => x.Activate(), token).ConfigureAwait(false);
                     }
                 }
@@ -380,7 +385,7 @@ namespace Chummer
             }
         }
 
-        private async Task CleanUpOldCharacters(Character[] aobjCharacters, CancellationToken token = default)
+        private static async Task CleanUpOldCharacters(Character[] aobjCharacters, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!(aobjCharacters?.Length > 0))

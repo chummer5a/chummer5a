@@ -524,8 +524,9 @@ namespace Chummer
                 MenuStrip objMenuStrip = await frmForm.DoThreadSafeFuncAsync((x, y) => x.MainMenuStrip, token).ConfigureAwait(false);
                 if (objMenuStrip != null)
                 {
-                    List<Tuple<ToolStripItem, string>> lstTagsToUse = new List<Tuple<ToolStripItem, string>>();
-                    foreach (ToolStripItem tssItem in await objMenuStrip.DoThreadSafeFuncAsync((x, y) => x.Items, token).ConfigureAwait(false))
+                    ToolStripItemCollection lstItems = await objMenuStrip.DoThreadSafeFuncAsync((x, y) => x.Items, token).ConfigureAwait(false);
+                    List<Tuple<ToolStripItem, string>> lstTagsToUse = new List<Tuple<ToolStripItem, string>>(lstItems.Count);
+                    foreach (ToolStripItem tssItem in lstItems)
                         lstTagsToUse.AddRange(await TranslateToolStripItemsRecursivelyPrepAsync(objMenuStrip, tssItem, strIntoLanguage, eIntoRightToLeft, token).ConfigureAwait(false));
                     foreach ((ToolStripItem objControl, string strTag) in lstTagsToUse)
                     {
@@ -577,8 +578,9 @@ namespace Chummer
                         }
                     case ToolStrip tssStrip:
                         {
-                            List<Tuple<ToolStripItem, string>> lstTagsToUse = new List<Tuple<ToolStripItem, string>>();
-                            foreach (ToolStripItem tssItem in await tssStrip.DoThreadSafeFuncAsync((x, y) => x.Items, token).ConfigureAwait(false))
+                            ToolStripItemCollection lstItems = await tssStrip.DoThreadSafeFuncAsync((x, y) => x.Items, token).ConfigureAwait(false);
+                            List<Tuple<ToolStripItem, string>> lstTagsToUse = new List<Tuple<ToolStripItem, string>>(lstItems.Count);
+                            foreach (ToolStripItem tssItem in lstItems)
                                 lstTagsToUse.AddRange(await TranslateToolStripItemsRecursivelyPrepAsync(tssStrip, tssItem, strIntoLanguage, eIntoRightToLeft, token).ConfigureAwait(false));
                             foreach ((ToolStripItem objControl, string strTag) in lstTagsToUse)
                             {
@@ -589,7 +591,7 @@ namespace Chummer
                         }
                     case ListView lstList:
                         {
-                            List<Tuple<ColumnHeader, string>> lstTagsToUse = new List<Tuple<ColumnHeader, string>>();
+                            List<Tuple<ColumnHeader, string>> lstTagsToUse = new List<Tuple<ColumnHeader, string>>(await lstList.DoThreadSafeFuncAsync(x => x.Columns.Count, token).ConfigureAwait(false));
                             await lstList.DoThreadSafeAsync((x, y) =>
                             {
                                 foreach (ColumnHeader objHeader in x.Columns)
@@ -613,7 +615,7 @@ namespace Chummer
                         }
                     case TabControl objTabControl:
                         {
-                            List<Tuple<TabPage, string>> lstTagsToUse = new List<Tuple<TabPage, string>>();
+                            List<Tuple<TabPage, string>> lstTagsToUse = new List<Tuple<TabPage, string>>(await objTabControl.DoThreadSafeFuncAsync((x, y) => x.TabCount, token).ConfigureAwait(false));
                             foreach (TabPage tabPage in await objTabControl.DoThreadSafeFuncAsync((x, y) => x.TabPages, token).ConfigureAwait(false))
                             {
                                 await tabPage.DoThreadSafeAsync((x, y) =>
@@ -672,7 +674,7 @@ namespace Chummer
 
                     case TreeView treTree:
                         {
-                            List<Tuple<TreeNode, string>> lstTagsToUse = new List<Tuple<TreeNode, string>>();
+                            List<Tuple<TreeNode, string>> lstTagsToUse = new List<Tuple<TreeNode, string>>(await treTree.DoThreadSafeFuncAsync(x => x.Nodes.Count, token).ConfigureAwait(false));
                             await treTree.DoThreadSafeAsync((x, y) =>
                             {
                                 foreach (TreeNode objNode in x.Nodes)
@@ -702,7 +704,7 @@ namespace Chummer
                         }
                     case DataGridView objDataGridView:
                         {
-                            List<Tuple<DataGridViewTextBoxColumn, string>> lstTagsToUse = new List<Tuple<DataGridViewTextBoxColumn, string>>();
+                            List<Tuple<DataGridViewTextBoxColumn, string>> lstTagsToUse = new List<Tuple<DataGridViewTextBoxColumn, string>>(await objDataGridView.DoThreadSafeFuncAsync(x => x.ColumnCount, token).ConfigureAwait(false));
                             await objDataGridView.DoThreadSafeAsync((x, y) =>
                             {
                                 foreach (DataGridViewTextBoxColumn objColumn in x.Columns)
@@ -782,7 +784,7 @@ namespace Chummer
                                                                                                                  CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<Tuple<ToolStripItem, string>> lstReturn = new List<Tuple<ToolStripItem, string>>();
+            List<Tuple<ToolStripItem, string>> lstReturn = new List<Tuple<ToolStripItem, string>>(byte.MaxValue);
             if (tssItem == null)
                 return lstReturn;
             if (string.IsNullOrEmpty(strIntoLanguage))

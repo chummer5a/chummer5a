@@ -75,6 +75,7 @@ namespace Chummer
             Disposed += (sender, args) => objCancellationRegistration.Dispose();
             _objCharacter.MultiplePropertiesChangedAsync += CharacterPropertyChanged;
             dlgSaveFile = new SaveFileDialog();
+            dlgSaveFile.DefaultExt = "chum5";
             Load += OnLoad;
             Program.MainForm.OpenCharacterEditorForms?.Add(this);
             string name = "Show_Form_" + GetType();

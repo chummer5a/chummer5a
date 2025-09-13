@@ -3382,17 +3382,45 @@ namespace Chummer.Backend.Attributes
         private async Task OnCharacterChanged(object sender, MultiplePropertiesChangedEventArgs e,
             CancellationToken token = default)
         {
-            List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(Character.Karma)))
-                lstProperties.Add(nameof(CanUpgradeCareer));
-            if (e.PropertyNames.Contains(nameof(Character.EffectiveBuildMethodUsesPriorityTables)))
-                lstProperties.Add(nameof(BaseUnlocked));
-            if (e.PropertyNames.Contains(nameof(Character.LimbCount)))
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setProperties))
             {
-                CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
-                if (!await objSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false)
-                    && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev)
-                    && await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
+                if (e.PropertyNames.Contains(nameof(Character.Karma)))
+                    setProperties.Add(nameof(CanUpgradeCareer));
+                if (e.PropertyNames.Contains(nameof(Character.EffectiveBuildMethodUsesPriorityTables)))
+                    setProperties.Add(nameof(BaseUnlocked));
+                if (e.PropertyNames.Contains(nameof(Character.LimbCount)))
+                {
+                    CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                    if (!await objSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false)
+                        && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev)
+                        && await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
+                                async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
+                                                      await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                                                          .ConfigureAwait(false) &&
+                                                      !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                          await objCyberware
+                                                              .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
+                            .ConfigureAwait(false))
+                    {
+                        setProperties.Add(nameof(TotalValue));
+                    }
+                }
+
+                if (setProperties.Count > 0)
+                    await OnMultiplePropertiesChangedAsync(setProperties, token).ConfigureAwait(false);
+            }
+        }
+
+        private async Task OnCharacterSettingsPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setProperties))
+            {
+                if (e.PropertyNames.Contains(nameof(CharacterSettings.DontUseCyberlimbCalculation)) && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
+                {
+                    CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                    if (await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
                             async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
                                                   await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
                                                       .ConfigureAwait(false) &&
@@ -3400,68 +3428,48 @@ namespace Chummer.Backend.Attributes
                                                       await objCyberware
                                                           .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
                         .ConfigureAwait(false))
-                {
-                    lstProperties.Add(nameof(TotalValue));
+                    {
+                        setProperties.Add(nameof(TotalValue));
+                        setProperties.Add(nameof(HasModifiers));
+                    }
                 }
-            }
 
-            if (lstProperties.Count > 0)
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
-        }
-
-        private async Task OnCharacterSettingsPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
-        {
-            List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(CharacterSettings.DontUseCyberlimbCalculation)) &&
-                Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
-            {
-                CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
-                if (await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
-                        async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                              await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
-                                                  .ConfigureAwait(false) &&
-                                              !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
-                                                  await objCyberware
-                                                      .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
-                    .ConfigureAwait(false))
+                if ((e.PropertyNames.Contains(nameof(CharacterSettings.CyberlimbAttributeBonusCap))
+                     || e.PropertyNames.Contains(nameof(CharacterSettings.ExcludeLimbSlot))) &&
+                    !setProperties.Contains(nameof(TotalValue)) && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
-                    lstProperties.Add(nameof(TotalValue));
-                    lstProperties.Add(nameof(HasModifiers));
+                    CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                    if (await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
+                            async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
+                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                                                      .ConfigureAwait(false) &&
+                                                  !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                      await objCyberware
+                                                          .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
+                        .ConfigureAwait(false))
+                    {
+                        setProperties.Add(nameof(TotalValue));
+                    }
                 }
-            }
 
-            if ((e.PropertyNames.Contains(nameof(CharacterSettings.CyberlimbAttributeBonusCap))
-                 || e.PropertyNames.Contains(nameof(CharacterSettings.ExcludeLimbSlot))) &&
-                !lstProperties.Contains(nameof(TotalValue)) && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
-            {
-                CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
-                if (await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
-                        async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                              await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
-                                                  .ConfigureAwait(false) &&
-                                              !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
-                                                  await objCyberware
-                                                      .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
-                    .ConfigureAwait(false))
+                if (e.PropertyNames.Contains(nameof(CharacterSettings.UnclampAttributeMinimum)))
                 {
-                    lstProperties.Add(nameof(TotalValue));
+                    setProperties.Add(nameof(RawMinimum));
                 }
-            }
 
-            if (e.PropertyNames.Contains(nameof(CharacterSettings.UnclampAttributeMinimum)))
-            {
-                lstProperties.Add(nameof(RawMinimum));
-            }
+                if (e.PropertyNames.Contains(nameof(CharacterSettings.KarmaAttribute))
+                    || e.PropertyNames.Contains(nameof(CharacterSettings.AlternateMetatypeAttributeKarma)))
+                {
+                    setProperties.Add(nameof(UpgradeKarmaCost));
+                    setProperties.Add(nameof(TotalKarmaCost));
+                }
+                else if (e.PropertyNames.Contains(nameof(CharacterSettings.ReverseAttributePriorityOrder)))
+                {
+                    setProperties.Add(nameof(TotalKarmaCost));
+                }
 
-            if (e.PropertyNames.Contains(nameof(CharacterSettings.KarmaAttribute))
-                || e.PropertyNames.Contains(nameof(CharacterSettings.AlternateMetatypeAttributeKarma)))
-            {
-                lstProperties.Add(nameof(UpgradeKarmaCost));
-                lstProperties.Add(nameof(TotalKarmaCost));
-            }
-            else if (e.PropertyNames.Contains(nameof(CharacterSettings.ReverseAttributePriorityOrder)))
-            {
-                lstProperties.Add(nameof(TotalKarmaCost));
+                if (setProperties.Count > 0)
+                    await OnMultiplePropertiesChangedAsync(setProperties, token).ConfigureAwait(false);
             }
         }
 

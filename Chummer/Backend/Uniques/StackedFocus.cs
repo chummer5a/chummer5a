@@ -553,7 +553,7 @@ namespace Chummer
                 {
                     foreach (Gear objGear in Gear)
                     {
-                        sbdReturn.Append(objGear.DisplayName(objCulture, strLanguage)).Append(',' + strSpace);
+                        sbdReturn.Append(objGear.DisplayName(objCulture, strLanguage)).Append(',').Append(strSpace);
                     }
                 }
 
@@ -581,7 +581,7 @@ namespace Chummer
                     await Gear.ForEachAsync(async objGear =>
                     {
                         sbdReturn.Append(await objGear.DisplayNameAsync(objCulture, strLanguage, token: token)
-                                                      .ConfigureAwait(false)).Append(',' + strSpace);
+                                                      .ConfigureAwait(false)).Append(',').Append(strSpace);
                     }, token).ConfigureAwait(false);
                 }
                 finally

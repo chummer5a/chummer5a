@@ -27,7 +27,7 @@ namespace Chummer
     /// Syntactic Sugar for wrapping a ArrayPool{T}'s Rent() and Return() methods into something that hooks into `using`
     /// and that guarantees that pooled objects will be returned
     /// </summary>
-    public readonly struct FetchSafelyFromArrayPool<T> : IDisposable
+    public readonly struct FetchSafelyFromArrayPool<T> : IDisposable, IEquatable<FetchSafelyFromArrayPool<T>>
     {
         private readonly ArrayPool<T> _objMyArrayPool;
         private readonly T[] _objMyArrayValue;
@@ -44,6 +44,30 @@ namespace Chummer
         public void Dispose()
         {
             _objMyArrayPool?.Return(_objMyArrayValue);
+        }
+
+        public bool Equals(FetchSafelyFromArrayPool<T> other)
+        {
+            return _objMyArrayPool.Equals(other._objMyArrayPool) && _objMyArrayValue.Equals(other._objMyArrayValue);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is FetchSafelyFromArrayPool<T> objCasted && Equals(objCasted);
+        }
+        public static bool operator ==(FetchSafelyFromArrayPool<T> left, FetchSafelyFromArrayPool<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(FetchSafelyFromArrayPool<T> left, FetchSafelyFromArrayPool<T> right)
+        {
+            return !(left == right);
+        }
+
+        public override int GetHashCode()
+        {
+            return (_objMyArrayPool, _objMyArrayValue).GetHashCode();
         }
     }
 }

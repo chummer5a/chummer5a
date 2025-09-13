@@ -228,48 +228,21 @@ namespace Chummer.Backend.Equipment
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            List<Cyberware> lstNewItems = e.NewItems?.OfType<Cyberware>().ToList() ?? new List<Cyberware>();
-                            foreach (Cyberware objNewItem in lstNewItems)
-                                await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
+                            List<Cyberware> lstNewItems = e.NewItems?.OfType<Cyberware>().ToList();
+                            if (lstNewItems != null)
+                            {
+                                foreach (Cyberware objNewItem in lstNewItems)
+                                    await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
+                            }
                             break;
                         }
 
                         case NotifyCollectionChangedAction.Remove:
                         {
-                            List<Cyberware> lstOldItems = e.OldItems?.OfType<Cyberware>().ToList() ?? new List<Cyberware>();
-                            foreach (Cyberware objOldItem in lstOldItems)
+                            List<Cyberware> lstOldItems = e.OldItems?.OfType<Cyberware>().ToList();
+                            if (lstOldItems != null)
                             {
-                                try
-                                {
-                                    IAsyncDisposable objLocker2 = await objOldItem.LockObject
-                                        .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                                    try
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        if (await objOldItem.GetParentAsync(token).ConfigureAwait(false) == this)
-                                            await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
-                                    }
-                                    finally
-                                    {
-                                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                                    }
-                                }
-                                catch (ObjectDisposedException)
-                                {
-                                    //swallow this
-                                }
-                            }
-
-                            break;
-                        }
-
-                        case NotifyCollectionChangedAction.Replace:
-                        {
-                            HashSet<Cyberware> setNewItems = e.NewItems.OfType<Cyberware>().ToHashSet();
-                            List<Cyberware> lstOldItems = e.OldItems?.OfType<Cyberware>().ToList() ?? new List<Cyberware>();
-                            foreach (Cyberware objOldItem in lstOldItems)
-                            {
-                                if (!setNewItems.Contains(objOldItem))
+                                foreach (Cyberware objOldItem in lstOldItems)
                                 {
                                     try
                                     {
@@ -289,6 +262,42 @@ namespace Chummer.Backend.Equipment
                                     catch (ObjectDisposedException)
                                     {
                                         //swallow this
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
+
+                        case NotifyCollectionChangedAction.Replace:
+                        {
+                            HashSet<Cyberware> setNewItems = e.NewItems.OfType<Cyberware>().ToHashSet();
+                            List<Cyberware> lstOldItems = e.OldItems?.OfType<Cyberware>().ToList();
+                            if (lstOldItems != null)
+                            {
+                                foreach (Cyberware objOldItem in lstOldItems)
+                                {
+                                    if (!setNewItems.Contains(objOldItem))
+                                    {
+                                        try
+                                        {
+                                            IAsyncDisposable objLocker2 = await objOldItem.LockObject
+                                                .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                token.ThrowIfCancellationRequested();
+                                                if (await objOldItem.GetParentAsync(token).ConfigureAwait(false) == this)
+                                                    await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
+                                            }
+                                            finally
+                                            {
+                                                await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                            }
+                                        }
+                                        catch (ObjectDisposedException)
+                                        {
+                                            //swallow this
+                                        }
                                     }
                                 }
                             }
@@ -322,116 +331,122 @@ namespace Chummer.Backend.Equipment
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            List<Cyberware> lstNewItems = e.NewItems?.OfType<Cyberware>().ToList() ?? new List<Cyberware>();
-                            foreach (Cyberware objNewItem in lstNewItems)
+                            List<Cyberware> lstNewItems = e.NewItems?.OfType<Cyberware>().ToList();
+                            if (lstNewItems != null)
                             {
-                                await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
+                                foreach (Cyberware objNewItem in lstNewItems)
+                                {
+                                    await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
                                     if (await objNewItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
-                                {
-                                    if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh
-                                                                    && (!string.IsNullOrEmpty(Weight)
-                                                                        || !string.IsNullOrEmpty(objNewItem.Weight)
-                                                                        || objNewItem.GearChildren.DeepAny(
-                                                                            x => x.Children,
-                                                                            x => !string.IsNullOrEmpty(x.Weight))
-                                                                        || objNewItem.Children.DeepAny(
-                                                                            x => x.Children,
-                                                                            y => !string.IsNullOrEmpty(y.Weight)
-                                                                                || y.GearChildren.DeepAny(
-                                                                                    x => x.Children,
-                                                                                    x => !string
-                                                                                        .IsNullOrEmpty(x.Weight)))))
-                                        blnDoEncumbranceRefresh = true;
-                                    lstImprovementSourcesToProcess.Add(objNewItem);
-                                }
-
-                                if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count
-                                    && Parent?.InheritAttributes != false && await GetParentVehicleAsync(token).ConfigureAwait(false) == null &&
-                                    !await _objCharacter.Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) && await GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                    !(await _objCharacter.Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(await GetLimbSlotAsync(token).ConfigureAwait(false)))
-                                {
-                                    if (InheritAttributes)
                                     {
-                                        setAttributesToRefresh.AddRange(CyberlimbAttributeAbbrevs);
+                                        if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh
+                                                                        && (!string.IsNullOrEmpty(Weight)
+                                                                            || !string.IsNullOrEmpty(objNewItem.Weight)
+                                                                            || objNewItem.GearChildren.DeepAny(
+                                                                                x => x.Children,
+                                                                                x => !string.IsNullOrEmpty(x.Weight))
+                                                                            || objNewItem.Children.DeepAny(
+                                                                                x => x.Children,
+                                                                                y => !string.IsNullOrEmpty(y.Weight)
+                                                                                    || y.GearChildren.DeepAny(
+                                                                                        x => x.Children,
+                                                                                        x => !string
+                                                                                            .IsNullOrEmpty(x.Weight)))))
+                                            blnDoEncumbranceRefresh = true;
+                                        lstImprovementSourcesToProcess.Add(objNewItem);
                                     }
-                                    else
+
+                                    if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count
+                                        && Parent?.InheritAttributes != false && await GetParentVehicleAsync(token).ConfigureAwait(false) == null &&
+                                        !await _objCharacter.Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) && await GetIsLimbAsync(token).ConfigureAwait(false) &&
+                                        !(await _objCharacter.Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(await GetLimbSlotAsync(token).ConfigureAwait(false)))
                                     {
-                                        foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
-                                                 s_AttributeAffectingCyberwares)
+                                        if (InheritAttributes)
                                         {
-                                            if (!setAttributesToRefresh.Contains(kvpToCheck.Key)
-                                                && kvpToCheck.Value.Contains(objNewItem.Name))
-                                                setAttributesToRefresh.Add(kvpToCheck.Key);
+                                            setAttributesToRefresh.AddRange(CyberlimbAttributeAbbrevs);
+                                        }
+                                        else
+                                        {
+                                            foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
+                                                        s_AttributeAffectingCyberwares)
+                                            {
+                                                if (!setAttributesToRefresh.Contains(kvpToCheck.Key)
+                                                    && kvpToCheck.Value.Contains(objNewItem.Name))
+                                                    setAttributesToRefresh.Add(kvpToCheck.Key);
+                                            }
                                         }
                                     }
+
+                                    if (!blnDoEssenceImprovementsRefresh && (GetParentAsync(token) == null || await GetAddToParentESSAsync(token).ConfigureAwait(false)) &&
+                                        string.IsNullOrEmpty(await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) && await GetParentVehicleAsync(token).ConfigureAwait(false) == null)
+                                        blnDoEssenceImprovementsRefresh = true;
                                 }
 
-                                if (!blnDoEssenceImprovementsRefresh && (GetParentAsync(token) == null || await GetAddToParentESSAsync(token).ConfigureAwait(false)) &&
-                                    string.IsNullOrEmpty(await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) && await GetParentVehicleAsync(token).ConfigureAwait(false) == null)
-                                    blnDoEssenceImprovementsRefresh = true;
+                                await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
+                                blnDoRedlinerRefresh = true;
                             }
-
-                            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
-                            blnDoRedlinerRefresh = true;
                             break;
                         }
 
                         case NotifyCollectionChangedAction.Remove:
                         {
-                            List<Cyberware> lstOldItems = e.OldItems?.OfType<Cyberware>().ToList() ?? new List<Cyberware>();
-                            foreach (Cyberware objOldItem in lstOldItems)
+                            List<Cyberware> lstOldItems = e.OldItems?.OfType<Cyberware>().ToList();
+                            if (lstOldItems != null)
                             {
-                                if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh
-                                                                && await objOldItem
-                                                                    .GetIsModularCurrentlyEquippedAsync(token)
-                                                                    .ConfigureAwait(false)
-                                                                && (!string.IsNullOrEmpty(Weight)
-                                                                    || !string.IsNullOrEmpty(objOldItem.Weight)
-                                                                    || objOldItem.GearChildren.DeepAny(
-                                                                        x => x.Children,
-                                                                        x => !string.IsNullOrEmpty(x.Weight))
-                                                                    || objOldItem.Children.DeepAny(
-                                                                        x => x.Children,
-                                                                        y => !string.IsNullOrEmpty(y.Weight)
-                                                                             || y.GearChildren.DeepAny(
-                                                                                 x => x.Children,
-                                                                                 x => !string
-                                                                                     .IsNullOrEmpty(x.Weight)))))
+                                foreach (Cyberware objOldItem in lstOldItems)
                                 {
-                                    blnDoEncumbranceRefresh = true;
-                                }
-
-                                if (await objOldItem.GetParentAsync(token).ConfigureAwait(false) == this)
-                                    await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
-
-                                if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count
-                                    && Parent?.InheritAttributes != false && await GetParentVehicleAsync(token).ConfigureAwait(false) == null &&
-                                    !await _objCharacter.Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) && await GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                    !(await _objCharacter.Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(await GetLimbSlotAsync(token).ConfigureAwait(false)))
-                                {
-                                    if (InheritAttributes)
+                                    if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh
+                                                                    && await objOldItem
+                                                                        .GetIsModularCurrentlyEquippedAsync(token)
+                                                                        .ConfigureAwait(false)
+                                                                    && (!string.IsNullOrEmpty(Weight)
+                                                                        || !string.IsNullOrEmpty(objOldItem.Weight)
+                                                                        || objOldItem.GearChildren.DeepAny(
+                                                                            x => x.Children,
+                                                                            x => !string.IsNullOrEmpty(x.Weight))
+                                                                        || objOldItem.Children.DeepAny(
+                                                                            x => x.Children,
+                                                                            y => !string.IsNullOrEmpty(y.Weight)
+                                                                                    || y.GearChildren.DeepAny(
+                                                                                        x => x.Children,
+                                                                                        x => !string
+                                                                                            .IsNullOrEmpty(x.Weight)))))
                                     {
-                                        setAttributesToRefresh.AddRange(CyberlimbAttributeAbbrevs);
+                                        blnDoEncumbranceRefresh = true;
                                     }
-                                    else
+
+                                    if (await objOldItem.GetParentAsync(token).ConfigureAwait(false) == this)
+                                        await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
+
+                                    if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count
+                                        && Parent?.InheritAttributes != false && await GetParentVehicleAsync(token).ConfigureAwait(false) == null &&
+                                        !await _objCharacter.Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) && await GetIsLimbAsync(token).ConfigureAwait(false) &&
+                                        !(await _objCharacter.Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(await GetLimbSlotAsync(token).ConfigureAwait(false)))
                                     {
-                                        foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
-                                                 s_AttributeAffectingCyberwares)
+                                        if (InheritAttributes)
                                         {
-                                            if (!setAttributesToRefresh.Contains(kvpToCheck.Key)
-                                                && kvpToCheck.Value.Contains(objOldItem.Name))
-                                                setAttributesToRefresh.Add(kvpToCheck.Key);
+                                            setAttributesToRefresh.AddRange(CyberlimbAttributeAbbrevs);
+                                        }
+                                        else
+                                        {
+                                            foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
+                                                        s_AttributeAffectingCyberwares)
+                                            {
+                                                if (!setAttributesToRefresh.Contains(kvpToCheck.Key)
+                                                    && kvpToCheck.Value.Contains(objOldItem.Name))
+                                                    setAttributesToRefresh.Add(kvpToCheck.Key);
+                                            }
                                         }
                                     }
+
+                                    if (!blnDoEssenceImprovementsRefresh && (GetParentAsync(token) == null || await GetAddToParentESSAsync(token).ConfigureAwait(false)) &&
+                                        string.IsNullOrEmpty(await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) && await GetParentVehicleAsync(token).ConfigureAwait(false) == null)
+                                        blnDoEssenceImprovementsRefresh = true;
                                 }
 
-                                if (!blnDoEssenceImprovementsRefresh && (GetParentAsync(token) == null || await GetAddToParentESSAsync(token).ConfigureAwait(false)) &&
-                                    string.IsNullOrEmpty(await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) && await GetParentVehicleAsync(token).ConfigureAwait(false) == null)
-                                    blnDoEssenceImprovementsRefresh = true;
+                                await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
+                                blnDoRedlinerRefresh = true;
                             }
-
-                            await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
-                            blnDoRedlinerRefresh = true;
                             break;
                         }
 
@@ -439,58 +454,61 @@ namespace Chummer.Backend.Equipment
                         {
                             // ReSharper disable once AssignNullToNotNullAttribute
                             HashSet<Cyberware> setNewItems = e.NewItems.OfType<Cyberware>().ToHashSet();
-                            List<Cyberware> lstOldItems = e.OldItems?.OfType<Cyberware>().ToList() ?? new List<Cyberware>();
-                            foreach (Cyberware objOldItem in lstOldItems)
+                            List<Cyberware> lstOldItems = e.OldItems?.OfType<Cyberware>().ToList();
+                            if (lstOldItems != null)
                             {
-                                if (setNewItems.Contains(objOldItem))
-                                    continue;
-                                if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh
-                                                                && await objOldItem
-                                                                    .GetIsModularCurrentlyEquippedAsync(token)
-                                                                    .ConfigureAwait(false)
-                                                                && (!string.IsNullOrEmpty(Weight)
-                                                                    || !string.IsNullOrEmpty(objOldItem.Weight)
-                                                                    || objOldItem.GearChildren.DeepAny(
-                                                                        x => x.Children,
-                                                                        x => !string.IsNullOrEmpty(x.Weight))
-                                                                    || objOldItem.Children.DeepAny(
-                                                                        x => x.Children,
-                                                                        y => !string.IsNullOrEmpty(y.Weight)
-                                                                             || y.GearChildren.DeepAny(
-                                                                                 x => x.Children,
-                                                                                 x => !string
-                                                                                     .IsNullOrEmpty(x.Weight)))))
+                                foreach (Cyberware objOldItem in lstOldItems)
                                 {
-                                    blnDoEncumbranceRefresh = true;
-                                }
-
-                                if (await objOldItem.GetParentAsync(token).ConfigureAwait(false) == this)
-                                    await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
-
-                                if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count
-                                    && Parent?.InheritAttributes != false && await GetParentVehicleAsync(token).ConfigureAwait(false) == null &&
-                                    !await _objCharacter.Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) && await GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                    !(await _objCharacter.Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(await GetLimbSlotAsync(token).ConfigureAwait(false)))
-                                {
-                                    if (await GetInheritAttributesAsync(token).ConfigureAwait(false))
+                                    if (setNewItems.Contains(objOldItem))
+                                        continue;
+                                    if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh
+                                                                    && await objOldItem
+                                                                        .GetIsModularCurrentlyEquippedAsync(token)
+                                                                        .ConfigureAwait(false)
+                                                                    && (!string.IsNullOrEmpty(Weight)
+                                                                        || !string.IsNullOrEmpty(objOldItem.Weight)
+                                                                        || objOldItem.GearChildren.DeepAny(
+                                                                            x => x.Children,
+                                                                            x => !string.IsNullOrEmpty(x.Weight))
+                                                                        || objOldItem.Children.DeepAny(
+                                                                            x => x.Children,
+                                                                            y => !string.IsNullOrEmpty(y.Weight)
+                                                                                    || y.GearChildren.DeepAny(
+                                                                                        x => x.Children,
+                                                                                        x => !string
+                                                                                            .IsNullOrEmpty(x.Weight)))))
                                     {
-                                        setAttributesToRefresh.AddRange(CyberlimbAttributeAbbrevs);
+                                        blnDoEncumbranceRefresh = true;
                                     }
-                                    else
+
+                                    if (await objOldItem.GetParentAsync(token).ConfigureAwait(false) == this)
+                                        await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
+
+                                    if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count
+                                        && Parent?.InheritAttributes != false && await GetParentVehicleAsync(token).ConfigureAwait(false) == null &&
+                                        !await _objCharacter.Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) && await GetIsLimbAsync(token).ConfigureAwait(false) &&
+                                        !(await _objCharacter.Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(await GetLimbSlotAsync(token).ConfigureAwait(false)))
                                     {
-                                        foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
-                                                 s_AttributeAffectingCyberwares)
+                                        if (await GetInheritAttributesAsync(token).ConfigureAwait(false))
                                         {
-                                            if (!setAttributesToRefresh.Contains(kvpToCheck.Key)
-                                                && kvpToCheck.Value.Contains(objOldItem.Name))
-                                                setAttributesToRefresh.Add(kvpToCheck.Key);
+                                            setAttributesToRefresh.AddRange(CyberlimbAttributeAbbrevs);
+                                        }
+                                        else
+                                        {
+                                            foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
+                                                        s_AttributeAffectingCyberwares)
+                                            {
+                                                if (!setAttributesToRefresh.Contains(kvpToCheck.Key)
+                                                    && kvpToCheck.Value.Contains(objOldItem.Name))
+                                                    setAttributesToRefresh.Add(kvpToCheck.Key);
+                                            }
                                         }
                                     }
-                                }
 
-                                if (!blnDoEssenceImprovementsRefresh && (GetParentAsync(token) == null || await GetAddToParentESSAsync(token).ConfigureAwait(false)) &&
-                                    string.IsNullOrEmpty(await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) && await GetParentVehicleAsync(token).ConfigureAwait(false) == null)
-                                    blnDoEssenceImprovementsRefresh = true;
+                                    if (!blnDoEssenceImprovementsRefresh && (GetParentAsync(token) == null || await GetAddToParentESSAsync(token).ConfigureAwait(false)) &&
+                                        string.IsNullOrEmpty(await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) && await GetParentVehicleAsync(token).ConfigureAwait(false) == null)
+                                        blnDoEssenceImprovementsRefresh = true;
+                                }
                             }
 
                             foreach (Cyberware objNewItem in setNewItems)

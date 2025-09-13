@@ -2878,28 +2878,29 @@ namespace Chummer
             }
         }
 
-        private Task LinkedCharacterOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+        private async Task LinkedCharacterOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(Character.CharacterName)))
-                lstProperties.Add(nameof(CritterName));
-            if (e.PropertyNames.Contains(nameof(Character.Mugshots)))
-                lstProperties.Add(nameof(Mugshots));
-            if (e.PropertyNames.Contains(nameof(Character.MainMugshot)))
-                lstProperties.Add(nameof(MainMugshot));
-            if (e.PropertyNames.Contains(nameof(Character.MainMugshotIndex)))
-                lstProperties.Add(nameof(MainMugshotIndex));
-            if (e.PropertyNames.Contains(nameof(Character.AllowSpriteFettering)))
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setProperties))
             {
-                _intCachedAllowFettering = int.MinValue;
-                lstProperties.Add(nameof(AllowFettering));
-                lstProperties.Add(nameof(Fettered));
-            }
+                if (e.PropertyNames.Contains(nameof(Character.CharacterName)))
+                    setProperties.Add(nameof(CritterName));
+                if (e.PropertyNames.Contains(nameof(Character.Mugshots)))
+                    setProperties.Add(nameof(Mugshots));
+                if (e.PropertyNames.Contains(nameof(Character.MainMugshot)))
+                    setProperties.Add(nameof(MainMugshot));
+                if (e.PropertyNames.Contains(nameof(Character.MainMugshotIndex)))
+                    setProperties.Add(nameof(MainMugshotIndex));
+                if (e.PropertyNames.Contains(nameof(Character.AllowSpriteFettering)))
+                {
+                    _intCachedAllowFettering = int.MinValue;
+                    setProperties.Add(nameof(AllowFettering));
+                    setProperties.Add(nameof(Fettered));
+                }
 
-            return lstProperties.Count > 0
-                ? OnMultiplePropertiesChangedAsync(lstProperties, token)
-                : Task.CompletedTask;
+                if (setProperties.Count > 0)
+                    await OnMultiplePropertiesChangedAsync(setProperties, token).ConfigureAwait(false);
+            }
         }
 
         #endregion Properties

@@ -27,7 +27,7 @@ namespace Chummer
     /// Syntactic Sugar for wrapping a ObjectPool{T}'s Get() and Return() methods into something that hooks into `using`
     /// and that guarantees that pooled objects will be returned
     /// </summary>
-    public readonly struct FetchSafelyFromObjectPool<T> : IDisposable where T : class
+    public readonly struct FetchSafelyFromObjectPool<T> : IDisposable, IEquatable<FetchSafelyFromObjectPool<T>> where T : class
     {
         private readonly ObjectPool<T> _objMyPool;
         private readonly T _objMyValue;
@@ -44,6 +44,31 @@ namespace Chummer
         public void Dispose()
         {
             _objMyPool?.Return(_objMyValue);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is FetchSafelyFromObjectPool<T> objCasted && Equals(objCasted);
+        }
+
+        public bool Equals(FetchSafelyFromObjectPool<T> other)
+        {
+            return _objMyPool.Equals(other._objMyPool) && _objMyValue == other._objMyValue;
+        }
+
+        public override int GetHashCode()
+        {
+            return (_objMyPool, _objMyValue).GetHashCode();
+        }
+
+        public static bool operator ==(FetchSafelyFromObjectPool<T> left, FetchSafelyFromObjectPool<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(FetchSafelyFromObjectPool<T> left, FetchSafelyFromObjectPool<T> right)
+        {
+            return !(left == right);
         }
     }
 }

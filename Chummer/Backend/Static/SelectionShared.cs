@@ -3324,7 +3324,7 @@ namespace Chummer
                     }
                     else
                     {
-                        List<Weapon> lstWeapons = new List<Weapon>();
+                        List<Weapon> lstWeapons = new List<Weapon>(2 * await (await objCharacter.GetWeaponsAsync(token)).GetCountAsync(token).ConfigureAwait(false));
                         foreach (Weapon objWeapon in await (await objCharacter.GetWeaponsAsync(token)
                                      .ConfigureAwait(false)).GetAllDescendantsAsync(
                                      x => x.UnderbarrelWeapons, token).ConfigureAwait(false))

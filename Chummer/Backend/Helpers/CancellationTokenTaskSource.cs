@@ -29,12 +29,12 @@ namespace Chummer
     /// https://github.com/StephenCleary/AsyncEx/blob/master/src/Nito.AsyncEx.Tasks/CancellationTokenTaskSource.cs
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public readonly struct CancellationTokenTaskSource<T> : IDisposable
+    public readonly struct CancellationTokenTaskSource<T> : IDisposable, IEquatable<CancellationTokenTaskSource<T>>
     {
         /// <summary>
         /// The cancellation token registration, if any. This is <c>null</c> if the registration was not necessary.
         /// </summary>
-        private readonly IDisposable objTokenRegistration;
+        private readonly IDisposable _objTokenRegistration;
 
         /// <summary>
         /// Creates a task for the specified cancellation token, registering with the token if necessary.
@@ -45,11 +45,11 @@ namespace Chummer
             if (token.IsCancellationRequested)
             {
                 Task = System.Threading.Tasks.Task.FromCanceled<T>(token);
-                objTokenRegistration = null;
+                _objTokenRegistration = null;
                 return;
             }
             TaskCompletionSource<T> objTaskCompletionSource = new TaskCompletionSource<T>();
-            objTokenRegistration = token.Register(() => objTaskCompletionSource.TrySetCanceled(token), false);
+            _objTokenRegistration = token.Register(() => objTaskCompletionSource.TrySetCanceled(token), false);
             Task = objTaskCompletionSource.Task;
         }
 
@@ -63,7 +63,31 @@ namespace Chummer
         /// </summary>
         public void Dispose()
         {
-            objTokenRegistration?.Dispose();
+            _objTokenRegistration?.Dispose();
+        }
+
+        public bool Equals(CancellationTokenTaskSource<T> other)
+        {
+            return _objTokenRegistration == other._objTokenRegistration;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is CancellationTokenTaskSource<T> objCasted && Equals(objCasted);
+        }
+        public static bool operator ==(CancellationTokenTaskSource<T> left, CancellationTokenTaskSource<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(CancellationTokenTaskSource<T> left, CancellationTokenTaskSource<T> right)
+        {
+            return !(left == right);
+        }
+
+        public override int GetHashCode()
+        {
+            return _objTokenRegistration?.GetHashCode() ?? 0;
         }
     }
 }

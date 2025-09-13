@@ -344,7 +344,7 @@ namespace Chummer
                                         objNode.Tag = objNewCache;
                                     }
                                 }, objTokenToUse).ConfigureAwait(false);
-                                List<CharacterCache> lstToKeep = new List<CharacterCache>();
+                                List<CharacterCache> lstToKeep = new List<CharacterCache>(setCachesToDispose.Count);
                                 foreach (CharacterCache objCache in setCachesToDispose)
                                 {
                                     objTokenToUse.ThrowIfCancellationRequested();
@@ -429,6 +429,7 @@ namespace Chummer
                     }
 
                     objTemp = new CancellationTokenSource();
+                    CancellationToken objTempToken = objTemp.Token;
                     objCurrent = Interlocked.CompareExchange(
                         ref _objWatchFolderRefreshCancellationTokenSource,
                         objTemp, null);
@@ -436,9 +437,10 @@ namespace Chummer
                     {
                         objTemp.Dispose();
                         objTemp = objCurrent;
+                        objTempToken = objTemp.Token;
                     }
 
-                    Task tskNewWatchFolderRefresh = LoadWatchFolderCharacters(objTemp.Token);
+                    Task tskNewWatchFolderRefresh = LoadWatchFolderCharacters(objTempToken);
                     Task tskOldWatchFolderRefresh = Interlocked.Exchange(ref _tskWatchFolderRefresh, tskNewRecentlyUsedsRefresh);
                     if (tskOldWatchFolderRefresh != null)
                     {
@@ -456,11 +458,11 @@ namespace Chummer
                     {
                         await Task.WhenAll(tskNewRecentlyUsedsRefresh, tskNewWatchFolderRefresh).ConfigureAwait(false);
                         IReadOnlyList<IPlugin> lstPlugins = await Program.PluginLoader
-                                     .GetMyActivePluginsAsync(objTemp.Token)
+                                     .GetMyActivePluginsAsync(objTempToken)
                                      .ConfigureAwait(false);
                         if (lstPlugins.Count > 0)
                         {
-                            await ParallelExtensions.ForEachAsync(lstPlugins, objPlugin => RefreshPluginNodesAsync(objPlugin, objTemp.Token), objTemp.Token).ConfigureAwait(false);
+                            await ParallelExtensions.ForEachAsync(lstPlugins, objPlugin => RefreshPluginNodesAsync(objPlugin, objTempToken), objTempToken).ConfigureAwait(false);
                         }
                     }
                     catch (OperationCanceledException)
@@ -1135,7 +1137,7 @@ namespace Chummer
                   + await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false)
                   + Environment.NewLine;
 
-            Dictionary<TreeNode, string> dicNodeNames = new Dictionary<TreeNode, string>();
+            Dictionary<TreeNode, string> dicNodeNames = new Dictionary<TreeNode, string>(3 + _dicSavedCharacterCaches.Count);
             foreach (TreeNode objCharacterNode in await treCharacterList
                                                         .DoThreadSafeFuncAsync(
                                                             x => x.Nodes.Cast<TreeNode>()
@@ -1695,7 +1697,7 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     // Done in two steps because we want the entire ConcurrentDictionary read-locked via the enumerator while we collect the caches we want to purge
-                    List<string> lstToPurge = new List<string>();
+                    List<string> lstToPurge = new List<string>(_dicSavedCharacterCaches.Count);
                     foreach (KeyValuePair<string, CharacterCache> kvpCache in _dicSavedCharacterCaches)
                     {
                         token.ThrowIfCancellationRequested();

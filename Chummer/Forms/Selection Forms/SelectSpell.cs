@@ -44,7 +44,6 @@ namespace Chummer
         private string _strForceSpell = string.Empty;
         private bool _blnCanGenericSpellBeFree;
         private bool _blnCanTouchOnlySpellBeFree;
-        private bool _blnAllowLimitedSpellsForBareHandedAdept;
         private static string _strSelectCategory = string.Empty;
 
         private readonly XPathNavigator _xmlBaseSpellDataNode;
@@ -84,8 +83,7 @@ namespace Chummer
             (bool blnCanTouchOnlySpellBeFree, bool blnCanGenericSpellBeFree) = await _objCharacter.AllowFreeSpellsAsync().ConfigureAwait(false);
             _blnCanTouchOnlySpellBeFree = blnCanTouchOnlySpellBeFree;
             _blnCanGenericSpellBeFree = blnCanGenericSpellBeFree;
-            _blnAllowLimitedSpellsForBareHandedAdept = await (await _objCharacter.GetSettingsAsync()).GetAllowLimitedSpellsForBareHandedAdeptAsync().ConfigureAwait(false);
-
+            
             await txtSearch.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
             // Populate the Category list.
             foreach (XPathNavigator objXmlCategory in _xmlBaseSpellDataNode.SelectAndCacheExpression(
@@ -704,7 +702,7 @@ namespace Chummer
 
             string strSelectedSpellName = xmlSpell.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? string.Empty;
             string strSelectedSpellCategory = xmlSpell.SelectSingleNodeAndCacheExpression("category", token)?.Value ?? string.Empty;
-            List<Improvement> lstDrainRelevantImprovements = new List<Improvement>();
+            List<Improvement> lstDrainRelevantImprovements = new List<Improvement>(await _objCharacter.Improvements.GetCountAsync(token).ConfigureAwait(false));
             using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                               out HashSet<string> setDescriptors))
             {
@@ -821,7 +819,7 @@ namespace Chummer
                 blnBarehandedAdept = true;
 
                 // Show/hide Limited checkbox based on settings
-                bool blnLimitedVisible = await (await _objCharacter.GetSettingsAsync()).GetAllowLimitedSpellsForBareHandedAdeptAsync().ConfigureAwait(false);
+                bool blnLimitedVisible = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetAllowLimitedSpellsForBareHandedAdeptAsync(token).ConfigureAwait(false);
 
                 await chkLimited.DoThreadSafeAsync(x =>
                 {

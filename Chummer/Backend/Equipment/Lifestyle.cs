@@ -4111,8 +4111,8 @@ namespace Chummer.Backend.Equipment
                             && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == strBaseLifestyle));
                     if (lstOnceOffImprovements.Count > 0)
                     {
-                        Dictionary<string, List<Improvement>> dicGenericOnceOffImprovementsByUnique = new Dictionary<string, List<Improvement>>();
-                        Dictionary<string, List<Improvement>> dicSpecificOnceOffImprovementsByUnique = new Dictionary<string, List<Improvement>>();
+                        Dictionary<string, List<Improvement>> dicGenericOnceOffImprovementsByUnique = new Dictionary<string, List<Improvement>>(lstOnceOffImprovements.Count);
+                        Dictionary<string, List<Improvement>> dicSpecificOnceOffImprovementsByUnique = new Dictionary<string, List<Improvement>>(lstOnceOffImprovements.Count);
                         foreach (Improvement objImprovement in lstOnceOffImprovements)
                         {
                             string strUnique = objImprovement.UniqueName;
@@ -4123,7 +4123,7 @@ namespace Chummer.Backend.Equipment
                                 lstLoop.Add(objImprovement);
                             else
                             {
-                                lstLoop = new List<Improvement>
+                                lstLoop = new List<Improvement>(lstOnceOffImprovements.Count)
                                     {
                                         objImprovement
                                     };
@@ -4297,7 +4297,7 @@ namespace Chummer.Backend.Equipment
                 }
                 if (blnIncorporateOnceOffAdjustments)
                 {
-                    List<Improvement> lstOnceOffImprovements = new List<Improvement>();
+                    List<Improvement> lstOnceOffImprovements = new List<Improvement>(await _objCharacter.Improvements.GetCountAsync(token).ConfigureAwait(false));
                     if (StyleType == LifestyleType.Standard)
                     {
                         await _objCharacter.Improvements.ForEachAsync(x =>
@@ -4320,8 +4320,8 @@ namespace Chummer.Backend.Equipment
                     }
                     if (lstOnceOffImprovements.Count > 0)
                     {
-                        Dictionary<string, List<Improvement>> dicGenericOnceOffImprovementsByUnique = new Dictionary<string, List<Improvement>>();
-                        Dictionary<string, List<Improvement>> dicSpecificOnceOffImprovementsByUnique = new Dictionary<string, List<Improvement>>();
+                        Dictionary<string, List<Improvement>> dicGenericOnceOffImprovementsByUnique = new Dictionary<string, List<Improvement>>(lstOnceOffImprovements.Count);
+                        Dictionary<string, List<Improvement>> dicSpecificOnceOffImprovementsByUnique = new Dictionary<string, List<Improvement>>(lstOnceOffImprovements.Count);
                         foreach (Improvement objImprovement in lstOnceOffImprovements)
                         {
                             string strUnique = objImprovement.UniqueName;
@@ -4332,7 +4332,7 @@ namespace Chummer.Backend.Equipment
                                 lstLoop.Add(objImprovement);
                             else
                             {
-                                lstLoop = new List<Improvement>
+                                lstLoop = new List<Improvement>(lstOnceOffImprovements.Count)
                                     {
                                         objImprovement
                                     };

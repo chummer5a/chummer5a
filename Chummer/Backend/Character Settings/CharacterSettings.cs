@@ -3593,10 +3593,9 @@ namespace Chummer
                 // Format in which nuyen values are displayed
                 objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
                 // Format in which weight values are displayed
-                if (objXmlNode.TryGetStringFieldQuickly("weightformat", ref _strWeightFormat))
+                if (objXmlNode.TryGetStringFieldQuickly("weightformat", ref _strWeightFormat) && _strWeightFormat.IndexOf('.') == -1)
                 {
-                    if (_strWeightFormat.IndexOf('.') == -1)
-                        _strWeightFormat += ".###";
+                    _strWeightFormat += ".###";
                 }
 
                 // Format in which essence values should be displayed (and to which they should be rounded)
@@ -4366,10 +4365,9 @@ namespace Chummer
                 // Format in which nuyen values are displayed
                 objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
                 // Format in which weight values are displayed
-                if (objXmlNode.TryGetStringFieldQuickly("weightformat", ref _strWeightFormat))
+                if (objXmlNode.TryGetStringFieldQuickly("weightformat", ref _strWeightFormat) && _strWeightFormat.IndexOf('.') == -1)
                 {
-                    if (_strWeightFormat.IndexOf('.') == -1)
-                        _strWeightFormat += ".###";
+                    _strWeightFormat += ".###";
                 }
 
                 // Format in which essence values should be displayed (and to which they should be rounded)

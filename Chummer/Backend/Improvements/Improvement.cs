@@ -1071,8 +1071,8 @@ namespace Chummer
                         List<string> lstAddonImprovedNames = null;
                         if (lstExtraImprovedName != null)
                         {
-                            lstAddonImprovedNames = new List<string>();
-                            foreach (string strExtraAttribute in lstExtraImprovedName.Where(x => x.EndsWith("Base", StringComparison.Ordinal)).ToList())
+                            lstAddonImprovedNames = new List<string>(lstExtraImprovedName.Count);
+                            foreach (string strExtraAttribute in lstExtraImprovedName.Where(x => x.EndsWith("Base", StringComparison.Ordinal)))
                             {
                                 lstAddonImprovedNames.Add(strExtraAttribute.TrimEndOnce("Base", true));
                             }
@@ -3649,7 +3649,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<Tuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn =
-                new List<Tuple<INotifyMultiplePropertiesChangedAsync, string>>();
+                new List<Tuple<INotifyMultiplePropertiesChangedAsync, string>>(8);
             switch (eOverrideType != ImprovementType.None ? eOverrideType : ImproveType)
             {
                 case ImprovementType.Attribute:
@@ -3689,8 +3689,8 @@ namespace Chummer
                             List<string> lstAddonImprovedNames = null;
                             if (lstExtraImprovedName != null)
                             {
-                                lstAddonImprovedNames = new List<string>();
-                                foreach (string strExtraAttribute in lstExtraImprovedName.Where(x => x.EndsWith("Base", StringComparison.Ordinal)).ToList())
+                                lstAddonImprovedNames = new List<string>(lstExtraImprovedName.Count);
+                                foreach (string strExtraAttribute in lstExtraImprovedName.Where(x => x.EndsWith("Base", StringComparison.Ordinal)))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     lstAddonImprovedNames.Add(strExtraAttribute.TrimEndOnce("Base", true));

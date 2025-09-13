@@ -319,18 +319,7 @@ namespace Chummer
                 }
 
                 // Get base XML files (exclude custom files)
-                List<string> lstXmlFiles = new List<string>();
-                foreach (string strFile in Directory.EnumerateFiles(strDataPath, "*.xml"))
-                {
-                    string strFileName = Path.GetFileName(strFile);
-                    if (!strFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase)
-                        && !strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
-                        && !strFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase))
-                    {
-                        lstXmlFiles.Add(strFile);
-                    }
-                }
-                lstXmlFiles.Sort();
+                List<string> lstXmlFiles = new List<string>(Utils.BasicDataFileNames);
                 await cboXmlFiles.DoThreadSafeAsync(x =>
                 {
                     x.Items.Clear();
@@ -507,8 +496,9 @@ namespace Chummer
 
                 using (SaveFileDialog dlgSave = new SaveFileDialog())
                 {
-                    dlgSave.Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*";
+                    dlgSave.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml", token: token).ConfigureAwait(false) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
                     dlgSave.FileName = "amend_" + strSelectedFile;
+                    dlgSave.DefaultExt = "xml";
                     dlgSave.Title = await LanguageManager.GetStringAsync("XmlEditor_SaveTitle", token: token).ConfigureAwait(false);
 
                     if (dlgSave.ShowDialog(this) == DialogResult.OK)
@@ -650,7 +640,7 @@ namespace Chummer
                 if (objBaseNode == null && objResultNode != null)
                 {
                     sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Added", token: token).ConfigureAwait(false), strNodePath).AppendLine();
-                    sbdOutput.AppendLine("  " + await FormatXmlNode(objResultNode, token).ConfigureAwait(false));
+                    sbdOutput.AppendLine("  ").Append(await FormatXmlNode(objResultNode, token).ConfigureAwait(false));
                     return;
                 }
 
@@ -658,7 +648,7 @@ namespace Chummer
                 if (objBaseNode != null && objResultNode == null)
                 {
                     sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Removed", token: token).ConfigureAwait(false), strNodePath).AppendLine();
-                    sbdOutput.AppendLine("  " + await FormatXmlNode(objBaseNode, token).ConfigureAwait(false));
+                    sbdOutput.AppendLine("  ").Append(await FormatXmlNode(objBaseNode, token).ConfigureAwait(false));
                     return;
                 }
 
@@ -752,7 +742,7 @@ namespace Chummer
                         {
                             string strChildPath = GetNodePath(kvp.Value, strNodePath);
                             sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Added", token: token).ConfigureAwait(false), strChildPath).AppendLine();
-                            sbdOutput.Append("  " + await FormatXmlNode(kvp.Value, token).ConfigureAwait(false));
+                            sbdOutput.Append("  ").Append(await FormatXmlNode(kvp.Value, token).ConfigureAwait(false));
                         }
                         else
                         {
@@ -764,7 +754,7 @@ namespace Chummer
                     {
                         string strChildPath = GetNodePath(kvp.Value, strNodePath);
                         sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Removed", token: token).ConfigureAwait(false), strChildPath).AppendLine();
-                        sbdOutput.AppendLine("  " + await FormatXmlNode(kvp.Value, token).ConfigureAwait(false));
+                        sbdOutput.AppendLine("  ").Append(await FormatXmlNode(kvp.Value, token).ConfigureAwait(false));
                     }
                 }
             }

@@ -3388,27 +3388,28 @@ namespace Chummer
             }
         }
 
-        private Task LinkedCharacterOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e,
+        private async Task LinkedCharacterOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e,
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(Character.CharacterName)))
-                lstProperties.Add(nameof(Name));
-            if (e.PropertyNames.Contains(nameof(Character.Age)))
-                lstProperties.Add(nameof(Age));
-            if (e.PropertyNames.Contains(nameof(Character.Metatype)) ||
-                e.PropertyNames.Contains(nameof(Character.Metavariant)))
-                lstProperties.Add(nameof(Metatype));
-            if (e.PropertyNames.Contains(nameof(Character.Mugshots)))
-                lstProperties.Add(nameof(Mugshots));
-            if (e.PropertyNames.Contains(nameof(Character.MainMugshot)))
-                lstProperties.Add(nameof(MainMugshot));
-            if (e.PropertyNames.Contains(nameof(Character.MainMugshotIndex)))
-                lstProperties.Add(nameof(MainMugshotIndex));
-            return lstProperties.Count > 0
-                ? OnMultiplePropertiesChangedAsync(lstProperties, token)
-                : Task.CompletedTask;
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setProperties))
+            {
+                if (e.PropertyNames.Contains(nameof(Character.CharacterName)))
+                    setProperties.Add(nameof(Name));
+                if (e.PropertyNames.Contains(nameof(Character.Age)))
+                    setProperties.Add(nameof(Age));
+                if (e.PropertyNames.Contains(nameof(Character.Metatype)) ||
+                    e.PropertyNames.Contains(nameof(Character.Metavariant)))
+                    setProperties.Add(nameof(Metatype));
+                if (e.PropertyNames.Contains(nameof(Character.Mugshots)))
+                    setProperties.Add(nameof(Mugshots));
+                if (e.PropertyNames.Contains(nameof(Character.MainMugshot)))
+                    setProperties.Add(nameof(MainMugshot));
+                if (e.PropertyNames.Contains(nameof(Character.MainMugshotIndex)))
+                    setProperties.Add(nameof(MainMugshotIndex));
+                if (setProperties.Count > 0)
+                    await OnMultiplePropertiesChangedAsync(setProperties, token).ConfigureAwait(false);
+            }
         }
 
         #endregion Properties

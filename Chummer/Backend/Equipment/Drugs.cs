@@ -1679,7 +1679,7 @@ namespace Chummer.Backend.Equipment
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             string strNamePrefix = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false) + strSpace + '-' +
                                    strSpace;
-            List<Improvement> lstImprovements = new List<Improvement>();
+            List<Improvement> lstImprovements = new List<Improvement>(16);
             foreach (KeyValuePair<string, decimal> kvpAttribute in await GetAttributesAsync(token).ConfigureAwait(false))
             {
                 if (kvpAttribute.Value != 0)

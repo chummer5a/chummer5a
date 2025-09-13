@@ -84,7 +84,7 @@ namespace Chummer
         private async Task<TreeNode[]> BuildList(XPathNodeIterator lstXmlNodes, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<TreeNode> lstTreeNodes = new List<TreeNode>();
+            List<TreeNode> lstTreeNodes = new List<TreeNode>(5);
             bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
             AsyncLazy<string> strBookPath = new AsyncLazy<string>(async () => await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false), Utils.JoinableTaskFactory);
             foreach (XPathNavigator xmlNode in lstXmlNodes)

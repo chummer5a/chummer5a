@@ -2657,7 +2657,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                List<Improvement> lstReturn = new List<Improvement>();
+                List<Improvement> lstReturn = new List<Improvement>(await _objCharacter.Improvements.GetCountAsync(token).ConfigureAwait(false));
                 await _objCharacter.Improvements.ForEachWithBreakAsync(async objImprovement =>
                 {
                     if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) != true)

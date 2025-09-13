@@ -2621,9 +2621,9 @@ namespace Chummer
             string strPath, ConcurrentDictionary<string, Tuple<string, int>> dicPatternsToMatch, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<SourcebookInfo> lstReturn = new List<SourcebookInfo>();
             if (dicPatternsToMatch.IsEmpty)
-                return lstReturn;
+                return new List<SourcebookInfo>();
+            List<SourcebookInfo> lstReturn = new List<SourcebookInfo>(dicPatternsToMatch.Count);
             PdfReader objPdfReader = null;
             PdfDocument objPdfDocument = null;
             try
