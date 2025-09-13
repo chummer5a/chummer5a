@@ -32,37 +32,37 @@ namespace Chummer
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.gpbFileSelection = new System.Windows.Forms.GroupBox();
             this.tlpFileSelection = new System.Windows.Forms.TableLayoutPanel();
-            this.lblXmlFile = new System.Windows.Forms.Label();
-            this.cmdLoadXml = new System.Windows.Forms.Button();
+            this.cmdLoadBaseXml = new System.Windows.Forms.Button();
             this.cboXmlFiles = new Chummer.ElasticComboBox();
+            this.splitContainerTop = new System.Windows.Forms.SplitContainer();
             this.gpbBaseXml = new System.Windows.Forms.GroupBox();
             this.txtBaseXml = new System.Windows.Forms.TextBox();
+            this.splitContainerBottom = new System.Windows.Forms.SplitContainer();
             this.gpbAmendmentXml = new System.Windows.Forms.GroupBox();
             this.tlpAmendment = new System.Windows.Forms.TableLayoutPanel();
             this.txtAmendmentXml = new System.Windows.Forms.TextBox();
+            this.cmdPreviewAmendment = new System.Windows.Forms.Button();
             this.cmdSaveAmendment = new System.Windows.Forms.Button();
-            this.cmdApplyAmendment = new System.Windows.Forms.Button();
+            this.lblWikiLink = new System.Windows.Forms.LinkLabel();
             this.gpbResult = new System.Windows.Forms.GroupBox();
+            this.splitResult = new System.Windows.Forms.SplitContainer();
             this.txtResultXml = new System.Windows.Forms.TextBox();
             this.txtDiffPreview = new System.Windows.Forms.TextBox();
-            this.splitContainerTop = new System.Windows.Forms.SplitContainer();
-            this.splitContainerBottom = new System.Windows.Forms.SplitContainer();
-            this.splitResult = new System.Windows.Forms.SplitContainer();
             this.tlpMain.SuspendLayout();
             this.gpbFileSelection.SuspendLayout();
             this.tlpFileSelection.SuspendLayout();
-            this.gpbBaseXml.SuspendLayout();
-            this.gpbAmendmentXml.SuspendLayout();
-            this.tlpAmendment.SuspendLayout();
-            this.gpbResult.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerTop)).BeginInit();
             this.splitContainerTop.Panel1.SuspendLayout();
             this.splitContainerTop.Panel2.SuspendLayout();
             this.splitContainerTop.SuspendLayout();
+            this.gpbBaseXml.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerBottom)).BeginInit();
             this.splitContainerBottom.Panel1.SuspendLayout();
             this.splitContainerBottom.Panel2.SuspendLayout();
             this.splitContainerBottom.SuspendLayout();
+            this.gpbAmendmentXml.SuspendLayout();
+            this.tlpAmendment.SuspendLayout();
+            this.gpbResult.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitResult)).BeginInit();
             this.splitResult.Panel1.SuspendLayout();
             this.splitResult.Panel2.SuspendLayout();
@@ -96,19 +96,19 @@ namespace Chummer
             this.gpbFileSelection.Size = new System.Drawing.Size(778, 48);
             this.gpbFileSelection.TabIndex = 0;
             this.gpbFileSelection.TabStop = false;
-            this.gpbFileSelection.Text = "Base XML File Selection";
+            this.gpbFileSelection.Tag = "Label_SelectBaseXmlFile";
+            this.gpbFileSelection.Text = "Select Base XML File";
             // 
             // tlpFileSelection
             // 
             this.tlpFileSelection.AutoSize = true;
             this.tlpFileSelection.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpFileSelection.ColumnCount = 3;
-            this.tlpFileSelection.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpFileSelection.ColumnCount = 2;
             this.tlpFileSelection.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpFileSelection.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpFileSelection.Controls.Add(this.lblXmlFile, 0, 0);
-            this.tlpFileSelection.Controls.Add(this.cmdLoadXml, 2, 0);
-            this.tlpFileSelection.Controls.Add(this.cboXmlFiles, 1, 0);
+            this.tlpFileSelection.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpFileSelection.Controls.Add(this.cmdLoadBaseXml, 1, 0);
+            this.tlpFileSelection.Controls.Add(this.cboXmlFiles, 0, 0);
             this.tlpFileSelection.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpFileSelection.Location = new System.Drawing.Point(3, 16);
             this.tlpFileSelection.Name = "tlpFileSelection";
@@ -117,40 +117,50 @@ namespace Chummer
             this.tlpFileSelection.Size = new System.Drawing.Size(772, 29);
             this.tlpFileSelection.TabIndex = 0;
             // 
-            // lblXmlFile
+            // cmdLoadBaseXml
             // 
-            this.lblXmlFile.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblXmlFile.AutoSize = true;
-            this.lblXmlFile.Location = new System.Drawing.Point(3, 8);
-            this.lblXmlFile.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblXmlFile.Name = "lblXmlFile";
-            this.lblXmlFile.Size = new System.Drawing.Size(53, 13);
-            this.lblXmlFile.TabIndex = 0;
-            this.lblXmlFile.Text = "Base File:";
-            // 
-            // cmdLoadXml
-            // 
-            this.cmdLoadXml.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cmdLoadXml.AutoSize = true;
-            this.cmdLoadXml.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdLoadXml.Location = new System.Drawing.Point(701, 3);
-            this.cmdLoadXml.Name = "cmdLoadXml";
-            this.cmdLoadXml.Size = new System.Drawing.Size(68, 23);
-            this.cmdLoadXml.TabIndex = 2;
-            this.cmdLoadXml.Text = "Load Base";
-            this.cmdLoadXml.UseVisualStyleBackColor = true;
-            this.cmdLoadXml.Click += new System.EventHandler(this.cmdLoadXml_Click);
+            this.cmdLoadBaseXml.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmdLoadBaseXml.AutoSize = true;
+            this.cmdLoadBaseXml.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdLoadBaseXml.Location = new System.Drawing.Point(676, 3);
+            this.cmdLoadBaseXml.Name = "cmdLoadBaseXml";
+            this.cmdLoadBaseXml.Size = new System.Drawing.Size(93, 23);
+            this.cmdLoadBaseXml.TabIndex = 2;
+            this.cmdLoadBaseXml.Tag = "Button_LoadBaseXml";
+            this.cmdLoadBaseXml.Text = "Load Base XML";
+            this.cmdLoadBaseXml.UseVisualStyleBackColor = true;
+            this.cmdLoadBaseXml.Click += new System.EventHandler(this.cmdLoadXml_Click);
             // 
             // cboXmlFiles
             // 
             this.cboXmlFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboXmlFiles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboXmlFiles.FormattingEnabled = true;
-            this.cboXmlFiles.Location = new System.Drawing.Point(62, 4);
+            this.cboXmlFiles.Location = new System.Drawing.Point(3, 4);
             this.cboXmlFiles.Name = "cboXmlFiles";
-            this.cboXmlFiles.Size = new System.Drawing.Size(633, 21);
+            this.cboXmlFiles.Size = new System.Drawing.Size(667, 21);
             this.cboXmlFiles.TabIndex = 1;
             this.cboXmlFiles.TooltipText = "";
+            // 
+            // splitContainerTop
+            // 
+            this.splitContainerTop.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.splitContainerTop.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainerTop.ForeColor = System.Drawing.SystemColors.InactiveCaption;
+            this.splitContainerTop.Location = new System.Drawing.Point(3, 57);
+            this.splitContainerTop.Name = "splitContainerTop";
+            this.splitContainerTop.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainerTop.Panel1
+            // 
+            this.splitContainerTop.Panel1.Controls.Add(this.gpbBaseXml);
+            // 
+            // splitContainerTop.Panel2
+            // 
+            this.splitContainerTop.Panel2.Controls.Add(this.splitContainerBottom);
+            this.splitContainerTop.Size = new System.Drawing.Size(778, 501);
+            this.splitContainerTop.SplitterDistance = 150;
+            this.splitContainerTop.TabIndex = 4;
             // 
             // gpbBaseXml
             // 
@@ -165,6 +175,7 @@ namespace Chummer
             this.gpbBaseXml.Size = new System.Drawing.Size(778, 150);
             this.gpbBaseXml.TabIndex = 1;
             this.gpbBaseXml.TabStop = false;
+            this.gpbBaseXml.Tag = "Label_BaseXml";
             this.gpbBaseXml.Text = "Base XML (Read-Only)";
             // 
             // txtBaseXml
@@ -181,6 +192,25 @@ namespace Chummer
             this.txtBaseXml.TabIndex = 0;
             this.txtBaseXml.WordWrap = false;
             // 
+            // splitContainerBottom
+            // 
+            this.splitContainerBottom.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainerBottom.Location = new System.Drawing.Point(0, 0);
+            this.splitContainerBottom.Margin = new System.Windows.Forms.Padding(0);
+            this.splitContainerBottom.Name = "splitContainerBottom";
+            this.splitContainerBottom.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainerBottom.Panel1
+            // 
+            this.splitContainerBottom.Panel1.Controls.Add(this.gpbAmendmentXml);
+            // 
+            // splitContainerBottom.Panel2
+            // 
+            this.splitContainerBottom.Panel2.Controls.Add(this.gpbResult);
+            this.splitContainerBottom.Size = new System.Drawing.Size(778, 347);
+            this.splitContainerBottom.SplitterDistance = 197;
+            this.splitContainerBottom.TabIndex = 0;
+            // 
             // gpbAmendmentXml
             // 
             this.gpbAmendmentXml.AutoSize = true;
@@ -194,6 +224,7 @@ namespace Chummer
             this.gpbAmendmentXml.Size = new System.Drawing.Size(778, 197);
             this.gpbAmendmentXml.TabIndex = 2;
             this.gpbAmendmentXml.TabStop = false;
+            this.gpbAmendmentXml.Tag = "Label_AmendmentXml";
             this.gpbAmendmentXml.Text = "Amendment XML (Edit Here)";
             // 
             // tlpAmendment
@@ -205,8 +236,9 @@ namespace Chummer
             this.tlpAmendment.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpAmendment.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpAmendment.Controls.Add(this.txtAmendmentXml, 0, 0);
-            this.tlpAmendment.Controls.Add(this.cmdApplyAmendment, 0, 1);
+            this.tlpAmendment.Controls.Add(this.cmdPreviewAmendment, 0, 1);
             this.tlpAmendment.Controls.Add(this.cmdSaveAmendment, 2, 1);
+            this.tlpAmendment.Controls.Add(this.lblWikiLink, 1, 1);
             this.tlpAmendment.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpAmendment.Location = new System.Drawing.Point(3, 16);
             this.tlpAmendment.Name = "tlpAmendment";
@@ -233,6 +265,20 @@ namespace Chummer
             this.txtAmendmentXml.WordWrap = false;
             this.txtAmendmentXml.TextChanged += new System.EventHandler(this.txtAmendmentXml_TextChanged);
             // 
+            // cmdPreviewAmendment
+            // 
+            this.cmdPreviewAmendment.AutoSize = true;
+            this.cmdPreviewAmendment.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdPreviewAmendment.Enabled = false;
+            this.cmdPreviewAmendment.Location = new System.Drawing.Point(3, 152);
+            this.cmdPreviewAmendment.Name = "cmdPreviewAmendment";
+            this.cmdPreviewAmendment.Size = new System.Drawing.Size(150, 23);
+            this.cmdPreviewAmendment.TabIndex = 0;
+            this.cmdPreviewAmendment.Tag = "Button_PreviewAmendment";
+            this.cmdPreviewAmendment.Text = "Preview Amendment Effects";
+            this.cmdPreviewAmendment.UseVisualStyleBackColor = true;
+            this.cmdPreviewAmendment.Click += new System.EventHandler(this.cmdPreviewAmendment_Click);
+            // 
             // cmdSaveAmendment
             // 
             this.cmdSaveAmendment.AutoSize = true;
@@ -242,22 +288,24 @@ namespace Chummer
             this.cmdSaveAmendment.Name = "cmdSaveAmendment";
             this.cmdSaveAmendment.Size = new System.Drawing.Size(132, 23);
             this.cmdSaveAmendment.TabIndex = 1;
+            this.cmdSaveAmendment.Tag = "Button_SaveAmendment";
             this.cmdSaveAmendment.Text = "Save Amendment to File";
             this.cmdSaveAmendment.UseVisualStyleBackColor = true;
             this.cmdSaveAmendment.Click += new System.EventHandler(this.cmdSaveAmendment_Click);
             // 
-            // cmdApplyAmendment
+            // lblWikiLink
             // 
-            this.cmdApplyAmendment.AutoSize = true;
-            this.cmdApplyAmendment.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdApplyAmendment.Enabled = false;
-            this.cmdApplyAmendment.Location = new System.Drawing.Point(3, 152);
-            this.cmdApplyAmendment.Name = "cmdApplyAmendment";
-            this.cmdApplyAmendment.Size = new System.Drawing.Size(150, 23);
-            this.cmdApplyAmendment.TabIndex = 0;
-            this.cmdApplyAmendment.Text = "Preview Amendment Effects";
-            this.cmdApplyAmendment.UseVisualStyleBackColor = true;
-            this.cmdApplyAmendment.Click += new System.EventHandler(this.cmdApplyAmendment_Click);
+            this.lblWikiLink.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWikiLink.AutoSize = true;
+            this.lblWikiLink.Location = new System.Drawing.Point(159, 157);
+            this.lblWikiLink.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWikiLink.Name = "lblWikiLink";
+            this.lblWikiLink.Size = new System.Drawing.Size(175, 13);
+            this.lblWikiLink.TabIndex = 2;
+            this.lblWikiLink.TabStop = true;
+            this.lblWikiLink.Tag = "Label_AmendSystemDocumentation";
+            this.lblWikiLink.Text = "Amendment System Documentation";
+            this.lblWikiLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblWikiLink_LinkClicked);
             // 
             // gpbResult
             // 
@@ -272,7 +320,28 @@ namespace Chummer
             this.gpbResult.Size = new System.Drawing.Size(778, 146);
             this.gpbResult.TabIndex = 3;
             this.gpbResult.TabStop = false;
+            this.gpbResult.Tag = "Label_ResultAndDiffPreview";
             this.gpbResult.Text = "Result and Diff Preview";
+            // 
+            // splitResult
+            // 
+            this.splitResult.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.splitResult.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitResult.ForeColor = System.Drawing.SystemColors.InactiveCaption;
+            this.splitResult.Location = new System.Drawing.Point(3, 16);
+            this.splitResult.Margin = new System.Windows.Forms.Padding(0);
+            this.splitResult.Name = "splitResult";
+            // 
+            // splitResult.Panel1
+            // 
+            this.splitResult.Panel1.Controls.Add(this.txtResultXml);
+            // 
+            // splitResult.Panel2
+            // 
+            this.splitResult.Panel2.Controls.Add(this.txtDiffPreview);
+            this.splitResult.Size = new System.Drawing.Size(772, 127);
+            this.splitResult.SplitterDistance = 385;
+            this.splitResult.TabIndex = 1;
             // 
             // txtResultXml
             // 
@@ -302,65 +371,6 @@ namespace Chummer
             this.txtDiffPreview.TabIndex = 1;
             this.txtDiffPreview.WordWrap = false;
             // 
-            // splitContainerTop
-            // 
-            this.splitContainerTop.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.splitContainerTop.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainerTop.ForeColor = System.Drawing.SystemColors.InactiveCaption;
-            this.splitContainerTop.Location = new System.Drawing.Point(3, 57);
-            this.splitContainerTop.Name = "splitContainerTop";
-            this.splitContainerTop.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainerTop.Panel1
-            // 
-            this.splitContainerTop.Panel1.Controls.Add(this.gpbBaseXml);
-            // 
-            // splitContainerTop.Panel2
-            // 
-            this.splitContainerTop.Panel2.Controls.Add(this.splitContainerBottom);
-            this.splitContainerTop.Size = new System.Drawing.Size(778, 501);
-            this.splitContainerTop.SplitterDistance = 150;
-            this.splitContainerTop.TabIndex = 4;
-            // 
-            // splitContainerBottom
-            // 
-            this.splitContainerBottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainerBottom.Location = new System.Drawing.Point(0, 0);
-            this.splitContainerBottom.Margin = new System.Windows.Forms.Padding(0);
-            this.splitContainerBottom.Name = "splitContainerBottom";
-            this.splitContainerBottom.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainerBottom.Panel1
-            // 
-            this.splitContainerBottom.Panel1.Controls.Add(this.gpbAmendmentXml);
-            // 
-            // splitContainerBottom.Panel2
-            // 
-            this.splitContainerBottom.Panel2.Controls.Add(this.gpbResult);
-            this.splitContainerBottom.Size = new System.Drawing.Size(778, 347);
-            this.splitContainerBottom.SplitterDistance = 197;
-            this.splitContainerBottom.TabIndex = 0;
-            // 
-            // splitResult
-            // 
-            this.splitResult.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.splitResult.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitResult.ForeColor = System.Drawing.SystemColors.InactiveCaption;
-            this.splitResult.Location = new System.Drawing.Point(3, 16);
-            this.splitResult.Margin = new System.Windows.Forms.Padding(0);
-            this.splitResult.Name = "splitResult";
-            // 
-            // splitResult.Panel1
-            // 
-            this.splitResult.Panel1.Controls.Add(this.txtResultXml);
-            // 
-            // splitResult.Panel2
-            // 
-            this.splitResult.Panel2.Controls.Add(this.txtDiffPreview);
-            this.splitResult.Size = new System.Drawing.Size(772, 127);
-            this.splitResult.SplitterDistance = 385;
-            this.splitResult.TabIndex = 1;
-            // 
             // EditXmlData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -371,7 +381,8 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EditXmlData";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "XML Amendment Developer";
+            this.Tag = "Title_XmlAmendmentEditor";
+            this.Text = "XML Amendment Editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.EditXmlData_FormClosing);
             this.Load += new System.EventHandler(this.EditXmlData_Load);
             this.tlpMain.ResumeLayout(false);
@@ -380,24 +391,24 @@ namespace Chummer
             this.gpbFileSelection.PerformLayout();
             this.tlpFileSelection.ResumeLayout(false);
             this.tlpFileSelection.PerformLayout();
-            this.gpbBaseXml.ResumeLayout(false);
-            this.gpbBaseXml.PerformLayout();
-            this.gpbAmendmentXml.ResumeLayout(false);
-            this.gpbAmendmentXml.PerformLayout();
-            this.tlpAmendment.ResumeLayout(false);
-            this.tlpAmendment.PerformLayout();
-            this.gpbResult.ResumeLayout(false);
             this.splitContainerTop.Panel1.ResumeLayout(false);
             this.splitContainerTop.Panel1.PerformLayout();
             this.splitContainerTop.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerTop)).EndInit();
             this.splitContainerTop.ResumeLayout(false);
+            this.gpbBaseXml.ResumeLayout(false);
+            this.gpbBaseXml.PerformLayout();
             this.splitContainerBottom.Panel1.ResumeLayout(false);
             this.splitContainerBottom.Panel1.PerformLayout();
             this.splitContainerBottom.Panel2.ResumeLayout(false);
             this.splitContainerBottom.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerBottom)).EndInit();
             this.splitContainerBottom.ResumeLayout(false);
+            this.gpbAmendmentXml.ResumeLayout(false);
+            this.gpbAmendmentXml.PerformLayout();
+            this.tlpAmendment.ResumeLayout(false);
+            this.tlpAmendment.PerformLayout();
+            this.gpbResult.ResumeLayout(false);
             this.splitResult.Panel1.ResumeLayout(false);
             this.splitResult.Panel1.PerformLayout();
             this.splitResult.Panel2.ResumeLayout(false);
@@ -413,15 +424,14 @@ namespace Chummer
         private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.GroupBox gpbFileSelection;
         private System.Windows.Forms.TableLayoutPanel tlpFileSelection;
-        private System.Windows.Forms.Label lblXmlFile;
         private Chummer.ElasticComboBox cboXmlFiles;
-        private System.Windows.Forms.Button cmdLoadXml;
+        private System.Windows.Forms.Button cmdLoadBaseXml;
         private System.Windows.Forms.GroupBox gpbBaseXml;
         private System.Windows.Forms.TextBox txtBaseXml;
         private System.Windows.Forms.GroupBox gpbAmendmentXml;
         private System.Windows.Forms.TableLayoutPanel tlpAmendment;
         private System.Windows.Forms.TextBox txtAmendmentXml;
-        private System.Windows.Forms.Button cmdApplyAmendment;
+        private System.Windows.Forms.Button cmdPreviewAmendment;
         private System.Windows.Forms.Button cmdSaveAmendment;
         private System.Windows.Forms.GroupBox gpbResult;
         private System.Windows.Forms.TextBox txtResultXml;
@@ -429,5 +439,6 @@ namespace Chummer
         private System.Windows.Forms.SplitContainer splitContainerTop;
         private System.Windows.Forms.SplitContainer splitContainerBottom;
         private System.Windows.Forms.SplitContainer splitResult;
+        private System.Windows.Forms.LinkLabel lblWikiLink;
     }
 }

@@ -1580,7 +1580,7 @@
     </string>
     <string>
       <key>Menu_Main_XmlEditor</key>
-      <text>&amp;XML Editor</text>
+      <text>&amp;XML Amendment Editor</text>
     </string>
     <string>
       <key>Menu_Main_HeroLabImporter</key>
@@ -10922,6 +10922,42 @@
       <text>Missing Gameplay Option</text>
     </string>
     <!-- XML Editor Strings -->
+    <string>
+      <key>Title_XmlAmendmentEditor</key>
+      <text>XML Amendment Editor</text>
+    </string>
+    <string>
+      <key>Label_SelectBaseXmlFile</key>
+      <text>Select Base XML File</text>
+    </string>
+    <string>
+      <key>Button_LoadBaseXml</key>
+      <text>Load Base XML</text>
+    </string>
+    <string>
+      <key>Label_BaseXml</key>
+      <text>Base XML (Read-Only)</text>
+    </string>
+    <string>
+      <key>Label_AmendmentXml</key>
+      <text>Amendment XML (Edit Here)</text>
+    </string>
+    <string>
+      <key>Button_PreviewAmendment</key>
+      <text>Preview Amendment Effects</text>
+    </string>
+    <string>
+      <key>Button_SaveAmendment</key>
+      <text>Save Amendment to File</text>
+    </string>
+    <string>
+      <key>Label_AmendSystemDocumentation</key>
+      <text>Amendment System Documentation</text>
+    </string>
+    <string>
+      <key>Label_ResultAndDiffPreview</key>
+      <text>Result and Diff Preview</text>
+    </string>
     <string>
       <key>XmlEditor_Error_LoadingFiles</key>
       <text>Error loading XML files</text>

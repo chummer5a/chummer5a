@@ -106,7 +106,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdApplyAmendment_Click(object sender, EventArgs e)
+        private async void cmdPreviewAmendment_Click(object sender, EventArgs e)
         {
             CancellationTokenSource objNewSource = new CancellationTokenSource();
             CancellationToken token = objNewSource.Token;
@@ -179,7 +179,7 @@ namespace Chummer
             if (!_blnLoading)
             {
                 _blnDirty = true;
-                cmdApplyAmendment.Enabled = _objBaseXmlDocument != null && !string.IsNullOrWhiteSpace(txtAmendmentXml.Text);
+                cmdPreviewAmendment.Enabled = _objBaseXmlDocument != null && !string.IsNullOrWhiteSpace(txtAmendmentXml.Text);
             }
         }
 
@@ -376,7 +376,7 @@ namespace Chummer
                         // Update the UI
                         await txtBaseXml.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                         await txtAmendmentXml.DoThreadSafeAsync(x => x.Text = strTemplate, token).ConfigureAwait(false);
-                        await cmdApplyAmendment.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                        await cmdPreviewAmendment.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                         await cmdSaveAmendment.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                         await this.DoThreadSafeAsync(x => x.Text = strTitle, token).ConfigureAwait(false);
                         // Clear result areas
@@ -933,6 +933,11 @@ namespace Chummer
                 }
             }
             return default;
+        }
+
+        private void lblWikiLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo("https://github.com/chummer5a/chummer5a/wiki/Custom-Data-Files#amend-data-files") { UseShellExecute = true });
         }
 
         #endregion Methods
