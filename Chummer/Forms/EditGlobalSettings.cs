@@ -2392,10 +2392,10 @@ namespace Chummer
                     sw.Start();
                     XPathNavigator objBooks = await tskLoadBooks.ConfigureAwait(false);
                     string[] astrFiles = Directory.GetFiles(strSelectedPath, "*.pdf", eOption);
-                    ConcurrentDictionary<string, Tuple<string, int>> dicPatternsToMatch
-                        = new ConcurrentDictionary<string, Tuple<string, int>>();
-                    ConcurrentDictionary<string, Tuple<string, int>> dicBackupPatternsToMatch
-                        = new ConcurrentDictionary<string, Tuple<string, int>>();
+                    ConcurrentDictionary<string, ValueTuple<string, int>> dicPatternsToMatch
+                        = new ConcurrentDictionary<string, ValueTuple<string, int>>();
+                    ConcurrentDictionary<string, ValueTuple<string, int>> dicBackupPatternsToMatch
+                        = new ConcurrentDictionary<string, ValueTuple<string, int>>();
                     foreach (XPathNavigator objBook in objBooks
                                  .SelectAndCacheExpression(
                                      "/chummer/books/book[matches/match/language = "
@@ -2420,7 +2420,7 @@ namespace Chummer
                                 objMatch.SelectSingleNodeAndCacheExpression("page")
                                 ?.Value, out int intMatchPage))
                             continue;
-                        Tuple<string, int> tupValue = new Tuple<string, int>(strMatchText, intMatchPage);
+                        ValueTuple<string, int> tupValue = new ValueTuple<string, int>(strMatchText, intMatchPage);
                         dicPatternsToMatch.AddOrUpdate(strCode, tupValue, (x, y) => tupValue);
                     }
 
@@ -2450,14 +2450,14 @@ namespace Chummer
                             ?.Value;
                         if (string.IsNullOrEmpty(strMatchText))
                             continue;
-                        if (dicPatternsToMatch.TryGetValue(strCode, out Tuple<string, int> tupMainValue)
+                        if (dicPatternsToMatch.TryGetValue(strCode, out ValueTuple<string, int> tupMainValue)
                             && string.Equals(strMatchText, tupMainValue.Item1))
                             continue;
                         if (!int.TryParse(
                                 objMatch.SelectSingleNodeAndCacheExpression("page")
                                 ?.Value, out int intMatchPage))
                             continue;
-                        Tuple<string, int> tupValue = new Tuple<string, int>(strMatchText, intMatchPage);
+                        ValueTuple<string, int> tupValue = new ValueTuple<string, int>(strMatchText, intMatchPage);
                         dicBackupPatternsToMatch.AddOrUpdate(strCode, tupValue, (x, y) => tupValue);
                     }
 
@@ -2511,8 +2511,8 @@ namespace Chummer
         }
 
         private async Task<List<SourcebookInfo>> ScanFilesForPDFTexts(string[] lstFiles,
-                                                                      ConcurrentDictionary<string, Tuple<string, int>> dicPatternsToMatch,
-                                                                      ConcurrentDictionary<string, Tuple<string, int>> dicBackupPatternsToMatch,
+                                                                      ConcurrentDictionary<string, ValueTuple<string, int>> dicPatternsToMatch,
+                                                                      ConcurrentDictionary<string, ValueTuple<string, int>> dicBackupPatternsToMatch,
                                                                       LoadingBar frmProgressBar,
                                                                       CancellationToken token = default)
         {
@@ -2588,7 +2588,7 @@ namespace Chummer
                 }
             }
 
-            async Task<List<SourcebookInfo>> GetSourcebookInfo(string strBookFile, ConcurrentDictionary<string, Tuple<string, int>> dicPatternsToUse, string strProgressBarTextFormat = "")
+            async Task<List<SourcebookInfo>> GetSourcebookInfo(string strBookFile, ConcurrentDictionary<string, ValueTuple<string, int>> dicPatternsToUse, string strProgressBarTextFormat = "")
             {
                 FileInfo objFileInfo = new FileInfo(strBookFile);
                 string strText = string.IsNullOrEmpty(strProgressBarTextFormat)
@@ -2618,7 +2618,7 @@ namespace Chummer
         }
 
         private static async Task<List<SourcebookInfo>> ScanPDFForMatchingText(
-            string strPath, ConcurrentDictionary<string, Tuple<string, int>> dicPatternsToMatch, CancellationToken token = default)
+            string strPath, ConcurrentDictionary<string, ValueTuple<string, int>> dicPatternsToMatch, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (dicPatternsToMatch.IsEmpty)
@@ -2672,7 +2672,7 @@ namespace Chummer
                         string strKey = lstKeysToLoop[i];
                         token.ThrowIfCancellationRequested();
                         // We already got a match elsewhere, skip this going forward
-                        if (!dicPatternsToMatch.TryGetValue(strKey, out Tuple<string, int> tupValue))
+                        if (!dicPatternsToMatch.TryGetValue(strKey, out ValueTuple<string, int> tupValue))
                         {
                             lstKeysToLoop.RemoveAt(i);
                             continue;

@@ -363,14 +363,14 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public async Task<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
+        public async Task<ValueTuple<bool, T>> TryTakeAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 if (_queData.Count == 0)
-                    return new Tuple<bool, T>(false, default);
+                    return new ValueTuple<bool, T>(false, default);
             }
             finally
             {
@@ -394,7 +394,7 @@ namespace Chummer
                         await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
 
-                    return new Tuple<bool, T>(true, objReturn);
+                    return new ValueTuple<bool, T>(true, objReturn);
                 }
             }
             finally
@@ -402,7 +402,7 @@ namespace Chummer
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            return new Tuple<bool, T>(false, default);
+            return new ValueTuple<bool, T>(false, default);
         }
 
         /// <inheritdoc cref="Queue{T}.CopyTo" />

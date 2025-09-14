@@ -234,7 +234,7 @@ namespace Chummer
         private readonly ThreadSafeBindingList<CalendarWeek> _lstCalendar;
         private readonly ThreadSafeObservableCollection<Drug> _lstDrugs;
 
-        private SortedDictionary<decimal, Tuple<string, string>> _dicAvailabilityMap;
+        private SortedDictionary<decimal, ValueTuple<string, string>> _dicAvailabilityMap;
 
         //private readonly List<LifeModule> _lstLifeModules = new List<LifeModule>(10);
         private ConcurrentBag<string> _lstInternalIdsNeedingReapplyImprovements = new ConcurrentBag<string>();
@@ -1211,13 +1211,13 @@ namespace Chummer
                     {
                         List<PropertyChangedEventArgs> lstArgsList = lstProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
-                            = new List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                        List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
+                            = new List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
                         foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {
-                                lstAsyncEventsList.Add(new Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
+                                lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
                         await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
@@ -16898,7 +16898,7 @@ namespace Chummer
             return true;
         }
 
-        public async Task<Tuple<string, int>> CalculateKarmaValue(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
+        public async Task<ValueTuple<string, int>> CalculateKarmaValue(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
         {
             string strColonCharacter = await LanguageManager.GetStringAsync("String_Colon", strLanguage, token: token).ConfigureAwait(false);
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
@@ -17236,7 +17236,7 @@ namespace Chummer
                               .Append((intReturn - intExtraKarmaToRemoveForPointBuyComparison).ToString(
                                           objCulture)).Append(strSpace).Append(strKarmaString);
 
-                    return new Tuple<string, int>(sbdMessage.ToString(), intReturn);
+                    return new ValueTuple<string, int>(sbdMessage.ToString(), intReturn);
                 }
             }
             finally
@@ -22837,7 +22837,7 @@ namespace Chummer
         /// <summary>
         /// Number of free Contact Points (and Friends in High Places Points) the character has used.
         /// </summary>
-        public Tuple<int, int> ContactPointsUsed
+        public ValueTuple<int, int> ContactPointsUsed
         {
             get
             {
@@ -22866,7 +22866,7 @@ namespace Chummer
                         }
                         return 0;
                     });
-                    return new Tuple<int, int>(intPointsInContacts, intHighPlacesFriends);
+                    return new ValueTuple<int, int>(intPointsInContacts, intHighPlacesFriends);
                 }
             }
         }
@@ -22874,7 +22874,7 @@ namespace Chummer
         /// <summary>
         /// Number of free Contact Points (and Friends in High Places Points) the character has used.
         /// </summary>
-        public async Task<Tuple<int, int>> GetContactPointsUsedAsync(CancellationToken token = default)
+        public async Task<ValueTuple<int, int>> GetContactPointsUsedAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -22907,7 +22907,7 @@ namespace Chummer
                     return 0;
                 }, token).ConfigureAwait(false);
 
-                return new Tuple<int, int>(intPointsInContacts, intHighPlacesFriends);
+                return new ValueTuple<int, int>(intPointsInContacts, intHighPlacesFriends);
             }
             finally
             {
@@ -33608,11 +33608,11 @@ namespace Chummer
             return (await GetArmorRatingWithImprovementAsync(eDamageType, token).ConfigureAwait(false)).Item1;
         }
 
-        public async Task<Tuple<int, int, List<Improvement>>> GetArmorRatingWithImprovementAsync(Improvement.ImprovementType eDamageType, CancellationToken token = default)
+        public async Task<ValueTuple<int, int, List<Improvement>>> GetArmorRatingWithImprovementAsync(Improvement.ImprovementType eDamageType, CancellationToken token = default)
         {
             if (eDamageType == Improvement.ImprovementType.None)
             {
-                return new Tuple<int, int, List<Improvement>>(0, 0, new List<Improvement>());
+                return new ValueTuple<int, int, List<Improvement>>(0, 0, new List<Improvement>());
             }
 
             int intFromEquippedArmorImprovements = 0;
@@ -33633,7 +33633,7 @@ namespace Chummer
                 }
 
                 if (lstArmorsToConsider.Count == 0)
-                    return new Tuple<int, int, List<Improvement>>(decBaseArmorImprovement.StandardRound(), intFromEquippedArmorImprovements, lstUsedImprovements);
+                    return new ValueTuple<int, int, List<Improvement>>(decBaseArmorImprovement.StandardRound(), intFromEquippedArmorImprovements, lstUsedImprovements);
                 decimal decGeneralArmorImprovementValue = decBaseArmorImprovement;
                 Dictionary<Armor, decimal> dicArmorImprovementValues
                     = lstArmorsToConsider.ToDictionary(x => x, y => decBaseArmorImprovement);
@@ -33724,7 +33724,7 @@ namespace Chummer
                     ? intHighest
                     : intNakedStackingValue + decGeneralArmorImprovementValue.StandardRound();
 
-                return new Tuple<int, int, List<Improvement>>(intArmor, intFromEquippedArmorImprovements, lstUsedImprovements);
+                return new ValueTuple<int, int, List<Improvement>>(intArmor, intFromEquippedArmorImprovements, lstUsedImprovements);
             }
             finally
             {
@@ -37816,8 +37816,8 @@ namespace Chummer
                         return 0;
                     int intAverageStrength = STR?.TotalValue ?? 0;
                     // Run through the list of Armor currently worn and look at armors that start with '+' since they stack with the highest Armor, but only up to STR.
-                    Dictionary<Armor, Tuple<int, int>> dicArmorStackingValues
-                        = lstArmorsToConsider.ToDictionary(x => x, y => new Tuple<int, int>(0, 0));
+                    Dictionary<Armor, ValueTuple<int, int>> dicArmorStackingValues
+                        = lstArmorsToConsider.ToDictionary(x => x, y => new ValueTuple<int, int>(0, 0));
                     int intNakedEncumbranceValue = 0;
                     foreach (Armor objArmor in lstArmorsToConsider)
                     {
@@ -37843,10 +37843,10 @@ namespace Chummer
                                 (int intI, int intJ) = dicArmorStackingValues[objInnerArmor];
                                 if (objArmor.Encumbrance)
                                     dicArmorStackingValues[objInnerArmor]
-                                        = new Tuple<int, int>(intI + intLoopStack, intJ + intLoopEncumbrance);
+                                        = new ValueTuple<int, int>(intI + intLoopStack, intJ + intLoopEncumbrance);
                                 else
                                     dicArmorStackingValues[objInnerArmor]
-                                        = new Tuple<int, int>(intI + intLoopStack, intJ);
+                                        = new ValueTuple<int, int>(intI + intLoopStack, intJ);
                             }
                             else if (objArmor.ArmorOverrideValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('-'))
                             {
@@ -37856,11 +37856,11 @@ namespace Chummer
                                 {
                                     int intLoopCustomFitEncumbrance = objArmor.GetTotalOverrideArmor(true);
                                     dicArmorStackingValues[objInnerArmor]
-                                        = new Tuple<int, int>(intI + intLoopCustomFitStack,
+                                        = new ValueTuple<int, int>(intI + intLoopCustomFitStack,
                                                               intJ + intLoopCustomFitEncumbrance);
                                 }
                                 else
-                                    dicArmorStackingValues[objInnerArmor] = new Tuple<int, int>(intI + intLoopCustomFitStack, intJ);
+                                    dicArmorStackingValues[objInnerArmor] = new ValueTuple<int, int>(intI + intLoopCustomFitStack, intJ);
                             }
                         }
 
@@ -37873,10 +37873,10 @@ namespace Chummer
                     {
                         foreach (Armor objArmor in lstArmorsToConsider)
                         {
-                            if (dicArmorStackingValues.TryGetValue(objArmor, out Tuple<int, int> tupStack)
+                            if (dicArmorStackingValues.TryGetValue(objArmor, out ValueTuple<int, int> tupStack)
                                 && tupStack.Item1 > intAverageStrength)
                                 dicArmorStackingValues[objArmor]
-                                    = new Tuple<int, int>(intAverageStrength, tupStack.Item2);
+                                    = new ValueTuple<int, int>(intAverageStrength, tupStack.Item2);
                         }
                     }
 
@@ -37927,8 +37927,8 @@ namespace Chummer
                 CharacterAttrib objStrength = await GetAttributeAsync("STR", token: token).ConfigureAwait(false);
                 int intAverageStrength = objStrength != null ? await objStrength.GetTotalValueAsync(token).ConfigureAwait(false) : 0;
                 // Run through the list of Armor currently worn and look at armors that start with '+' since they stack with the highest Armor, but only up to STR.
-                Dictionary<Armor, Tuple<int, int>> dicArmorStackingValues
-                    = lstArmorsToConsider.ToDictionary(x => x, y => new Tuple<int, int>(0, 0));
+                Dictionary<Armor, ValueTuple<int, int>> dicArmorStackingValues
+                    = lstArmorsToConsider.ToDictionary(x => x, y => new ValueTuple<int, int>(0, 0));
                 int intNakedEncumbranceValue = 0;
                 foreach (Armor objArmor in lstArmorsToConsider)
                 {
@@ -37954,10 +37954,10 @@ namespace Chummer
                             (int intI, int intJ) = dicArmorStackingValues[objInnerArmor];
                             if (objArmor.Encumbrance)
                                 dicArmorStackingValues[objInnerArmor]
-                                    = new Tuple<int, int>(intI + intLoopStack, intJ + intLoopEncumbrance);
+                                    = new ValueTuple<int, int>(intI + intLoopStack, intJ + intLoopEncumbrance);
                             else
                                 dicArmorStackingValues[objInnerArmor]
-                                    = new Tuple<int, int>(intI + intLoopStack, intJ);
+                                    = new ValueTuple<int, int>(intI + intLoopStack, intJ);
                         }
                         else if (objArmor.ArmorOverrideValue.StartsWith('+')
                                  || objArmor.ArmorOverrideValue.StartsWith('-'))
@@ -37968,12 +37968,12 @@ namespace Chummer
                             {
                                 int intLoopCustomFitEncumbrance = await objArmor.GetTotalOverrideArmorAsync(false, token).ConfigureAwait(false);
                                 dicArmorStackingValues[objInnerArmor]
-                                    = new Tuple<int, int>(intI + intLoopCustomFitStack,
+                                    = new ValueTuple<int, int>(intI + intLoopCustomFitStack,
                                                           intJ + intLoopCustomFitEncumbrance);
                             }
                             else
                                 dicArmorStackingValues[objInnerArmor]
-                                    = new Tuple<int, int>(intI + intLoopCustomFitStack, intJ);
+                                    = new ValueTuple<int, int>(intI + intLoopCustomFitStack, intJ);
                         }
                     }
 
@@ -37986,10 +37986,10 @@ namespace Chummer
                 {
                     foreach (Armor objArmor in lstArmorsToConsider)
                     {
-                        if (dicArmorStackingValues.TryGetValue(objArmor, out Tuple<int, int> tupStack)
+                        if (dicArmorStackingValues.TryGetValue(objArmor, out ValueTuple<int, int> tupStack)
                             && tupStack.Item1 > intAverageStrength)
                             dicArmorStackingValues[objArmor]
-                                = new Tuple<int, int>(intAverageStrength, tupStack.Item2);
+                                = new ValueTuple<int, int>(intAverageStrength, tupStack.Item2);
                     }
                 }
 
@@ -38574,25 +38574,25 @@ namespace Chummer
         /// <summary>
         /// Returns PhysicalCMThresholdOffset and StunCMThresholdOffset as a pair.
         /// </summary>
-        public Tuple<int, int> CMThresholdOffsets
+        public ValueTuple<int, int> CMThresholdOffsets
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return new Tuple<int, int>(PhysicalCMThresholdOffset, StunCMThresholdOffset);
+                    return new ValueTuple<int, int>(PhysicalCMThresholdOffset, StunCMThresholdOffset);
             }
         }
 
         /// <summary>
         /// Returns PhysicalCMThresholdOffset and StunCMThresholdOffset as a pair.
         /// </summary>
-        public async Task<Tuple<int, int>> GetCMThresholdOffsetsAsync(CancellationToken token = default)
+        public async Task<ValueTuple<int, int>> GetCMThresholdOffsetsAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                return new Tuple<int, int>(await GetPhysicalCMThresholdOffsetAsync(token).ConfigureAwait(false), await GetStunCMThresholdOffsetAsync(token).ConfigureAwait(false));
+                return new ValueTuple<int, int>(await GetPhysicalCMThresholdOffsetAsync(token).ConfigureAwait(false), await GetStunCMThresholdOffsetAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -39192,7 +39192,7 @@ namespace Chummer
         /// <summary>
         /// Calculate the amount of Nuyen the character has remaining in Create mode.
         /// </summary>
-        public Tuple<decimal, decimal> CalculateNuyenCreateMode(CancellationToken token = default)
+        public ValueTuple<decimal, decimal> CalculateNuyenCreateMode(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             decimal decDeductions = 0;
@@ -39236,14 +39236,14 @@ namespace Chummer
                                  + 10000 * InitiationGrades.Count(x => x.Schooling, token);
                 token.ThrowIfCancellationRequested();
                 decimal decReturn = TotalStartingNuyen - decDeductions;
-                return new Tuple<decimal, decimal>(decReturn, decStolenNuyenAllowance - decStolenDeductions);
+                return new ValueTuple<decimal, decimal>(decReturn, decStolenNuyenAllowance - decStolenDeductions);
             }
         }
 
         /// <summary>
         /// Calculate the amount of Nuyen the character has remaining in Create mode.
         /// </summary>
-        public async Task<Tuple<decimal, decimal>> CalculateNuyenCreateModeAsync(CancellationToken token = default)
+        public async Task<ValueTuple<decimal, decimal>> CalculateNuyenCreateModeAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             decimal decDeductions = 0;
@@ -39325,7 +39325,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 decimal decReturn = await GetTotalStartingNuyenAsync(token).ConfigureAwait(false)
                                     - decDeductions;
-                return new Tuple<decimal, decimal>(decReturn, decStolenNuyenAllowance - decStolenDeductions);
+                return new ValueTuple<decimal, decimal>(decReturn, decStolenNuyenAllowance - decStolenDeductions);
             }
             finally
             {
@@ -39340,7 +39340,7 @@ namespace Chummer
         {
             if (Created)
                 return Nuyen;
-            Tuple<decimal, decimal> tupReturn = CalculateNuyenCreateMode();
+            ValueTuple<decimal, decimal> tupReturn = CalculateNuyenCreateMode();
             return blnStolenGear ? tupReturn.Item2 : tupReturn.Item1;
         }
 
@@ -39351,7 +39351,7 @@ namespace Chummer
         {
             if (await GetCreatedAsync(token).ConfigureAwait(false))
                 return await GetNuyenAsync(token).ConfigureAwait(false);
-            Tuple<decimal, decimal> tupReturn = await CalculateNuyenCreateModeAsync(token).ConfigureAwait(false);
+            ValueTuple<decimal, decimal> tupReturn = await CalculateNuyenCreateModeAsync(token).ConfigureAwait(false);
             return blnStolenGear ? tupReturn.Item2 : tupReturn.Item1;
         }
 
@@ -44080,11 +44080,11 @@ namespace Chummer
             {
                 // Find the character's Negotiation total.
                 int intPool = SkillsSection.GetActiveSkill("Negotiation")?.Pool ?? 0;
-                KeyValuePair<decimal, Tuple<string, string>> item = default;
+                KeyValuePair<decimal, ValueTuple<string, string>> item = default;
                 if (GlobalSettings.LiveCustomData)
                 {
-                    SortedDictionary<decimal, Tuple<string, string>> dicAvailabilityMap
-                        = new SortedDictionary<decimal, Tuple<string, string>>();
+                    SortedDictionary<decimal, ValueTuple<string, string>> dicAvailabilityMap
+                        = new SortedDictionary<decimal, ValueTuple<string, string>>();
                     foreach (XPathNavigator objNode in LoadDataXPath("options.xml")
                                  .SelectAndCacheExpression("/chummer/availmap/avail"))
                     {
@@ -44094,7 +44094,7 @@ namespace Chummer
                         {
                             dicAvailabilityMap.Add(
                                 decValue,
-                                new Tuple<string, string>(
+                                new ValueTuple<string, string>(
                                     objNode.SelectSingleNodeAndCacheExpression("duration").Value,
                                     objNode.SelectSingleNodeAndCacheExpression("interval")
                                         .Value));
@@ -44125,9 +44125,9 @@ namespace Chummer
                             {
                                 using (_objAvailabilityMapLock.EnterWriteLock())
                                 {
-                                    SortedDictionary<decimal, Tuple<string, string>> dicAvailabilityMap
+                                    SortedDictionary<decimal, ValueTuple<string, string>> dicAvailabilityMap
                                         = _dicAvailabilityMap
-                                          ?? new SortedDictionary<decimal, Tuple<string, string>>();
+                                          ?? new SortedDictionary<decimal, ValueTuple<string, string>>();
                                     dicAvailabilityMap.Clear();
                                     foreach (XPathNavigator objNode in LoadDataXPath("options.xml")
                                                  .SelectAndCacheExpression("/chummer/availmap/avail"))
@@ -44138,7 +44138,7 @@ namespace Chummer
                                         {
                                             dicAvailabilityMap.Add(
                                                 decValue,
-                                                new Tuple<string, string>(
+                                                new ValueTuple<string, string>(
                                                     objNode.SelectSingleNodeAndCacheExpression("duration").Value,
                                                     objNode.SelectSingleNodeAndCacheExpression("interval")
                                                         .Value));
@@ -44174,11 +44174,11 @@ namespace Chummer
                 // Find the character's Negotiation total.
                 Skill objSkill = await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).GetActiveSkillAsync("Negotiation", token).ConfigureAwait(false);
                 int intPool = objSkill != null ? await objSkill.GetPoolAsync(token).ConfigureAwait(false) : 0;
-                KeyValuePair<decimal, Tuple<string, string>> item = default;
+                KeyValuePair<decimal, ValueTuple<string, string>> item = default;
                 if (GlobalSettings.LiveCustomData)
                 {
-                    SortedDictionary<decimal, Tuple<string, string>> dicAvailabilityMap
-                        = new SortedDictionary<decimal, Tuple<string, string>>();
+                    SortedDictionary<decimal, ValueTuple<string, string>> dicAvailabilityMap
+                        = new SortedDictionary<decimal, ValueTuple<string, string>>();
                     foreach (XPathNavigator objNode in (await LoadDataXPathAsync(
                                  "options.xml", token: token).ConfigureAwait(false))
                              .SelectAndCacheExpression("/chummer/availmap/avail", token))
@@ -44189,7 +44189,7 @@ namespace Chummer
                         {
                             dicAvailabilityMap.Add(
                                 decValue,
-                                new Tuple<string, string>(
+                                new ValueTuple<string, string>(
                                     objNode.SelectSingleNodeAndCacheExpression("duration", token).Value,
                                     objNode.SelectSingleNodeAndCacheExpression("interval", token).Value));
                         }
@@ -44231,9 +44231,9 @@ namespace Chummer
                                 try
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    SortedDictionary<decimal, Tuple<string, string>> dicAvailabilityMap
+                                    SortedDictionary<decimal, ValueTuple<string, string>> dicAvailabilityMap
                                         = _dicAvailabilityMap
-                                          ?? new SortedDictionary<decimal, Tuple<string, string>>();
+                                          ?? new SortedDictionary<decimal, ValueTuple<string, string>>();
                                     dicAvailabilityMap.Clear();
                                     foreach (XPathNavigator objNode in (await LoadDataXPathAsync(
                                                  "options.xml", token: token).ConfigureAwait(false))
@@ -44245,7 +44245,7 @@ namespace Chummer
                                         {
                                             dicAvailabilityMap.Add(
                                                 decValue,
-                                                new Tuple<string, string>(
+                                                new ValueTuple<string, string>(
                                                     objNode.SelectSingleNodeAndCacheExpression("duration", token).Value,
                                                     objNode.SelectSingleNodeAndCacheExpression("interval", token).Value));
                                         }
@@ -44914,7 +44914,7 @@ namespace Chummer
             return strQuality;
         }
 
-        private static Tuple<XmlNode, int> CorrectedUnleveledQualityCommon(string strName, XmlNode xmlRootQualitiesNode)
+        private static ValueTuple<XmlNode, int> CorrectedUnleveledQualityCommon(string strName, XmlNode xmlRootQualitiesNode)
         {
             XmlNode xmlNewQuality = null;
             int intRanks = 0;
@@ -45348,7 +45348,7 @@ namespace Chummer
                     }
             }
 
-            return new Tuple<XmlNode, int>(xmlNewQuality, intRanks);
+            return new ValueTuple<XmlNode, int>(xmlNewQuality, intRanks);
         }
 
         /// <summary>
@@ -49438,7 +49438,7 @@ namespace Chummer
         /// <summary>
         /// Whether the character is allowed to gain free spells that are limited to the Touch range.
         /// </summary>
-        public Tuple<bool, bool> AllowFreeSpells()
+        public ValueTuple<bool, bool> AllowFreeSpells()
         {
             using (LockObject.EnterReadLock())
             {
@@ -49479,7 +49479,7 @@ namespace Chummer
                     spell.FreeBonus && spell.Range != "T" && spell.Range != "T (A)");
                 int intTotalFreeTouchOnlySpellsCount = Spells.Count(spell =>
                     spell.FreeBonus && (spell.Range == "T" || spell.Range == "T (A)"));
-                return new Tuple<bool, bool>(intFreeTouchOnlySpells > intTotalFreeTouchOnlySpellsCount,
+                return new ValueTuple<bool, bool>(intFreeTouchOnlySpells > intTotalFreeTouchOnlySpellsCount,
                     intFreeGenericSpells > intTotalFreeNonTouchSpellsCount +
                     Math.Max(intTotalFreeTouchOnlySpellsCount - intFreeTouchOnlySpells, 0));
             }
@@ -49488,7 +49488,7 @@ namespace Chummer
         /// <summary>
         /// Whether the character is allowed to gain free spells that are limited to the Touch range.
         /// </summary>
-        public async Task<Tuple<bool, bool>> AllowFreeSpellsAsync(CancellationToken token = default)
+        public async Task<ValueTuple<bool, bool>> AllowFreeSpellsAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
@@ -49537,7 +49537,7 @@ namespace Chummer
                     spell.FreeBonus && spell.Range != "T" && spell.Range != "T (A)", token: token).ConfigureAwait(false);
                 int intTotalFreeTouchOnlySpellsCount = await lstSpells.CountAsync(spell =>
                     spell.FreeBonus && (spell.Range == "T" || spell.Range == "T (A)"), token: token).ConfigureAwait(false);
-                return new Tuple<bool, bool>(intFreeTouchOnlySpells > intTotalFreeTouchOnlySpellsCount,
+                return new ValueTuple<bool, bool>(intFreeTouchOnlySpells > intTotalFreeTouchOnlySpellsCount,
                     intFreeGenericSpells > intTotalFreeNonTouchSpellsCount +
                     Math.Max(intTotalFreeTouchOnlySpellsCount - intFreeTouchOnlySpells, 0));
             }
@@ -50830,13 +50830,13 @@ namespace Chummer
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
-                            = new List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                        List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
+                            = new List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
                         foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {
-                                lstAsyncEventsList.Add(new Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
+                                lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
                         await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);

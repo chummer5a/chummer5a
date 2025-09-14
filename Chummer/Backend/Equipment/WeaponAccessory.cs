@@ -172,7 +172,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCreateImprovements">Whether bonuses should be created.</param>
         /// <param name="blnSkipCost">Whether forms asking to determine variable costs should be displayed.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public void Create(XmlNode objXmlAccessory, Tuple<string, string> strMount, int intRating,
+        public void Create(XmlNode objXmlAccessory, ValueTuple<string, string> strMount, int intRating,
             bool blnSkipCost = false, bool blnCreateChildren = true, bool blnCreateImprovements = true, CancellationToken token = default)
         {
             Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlAccessory, strMount, intRating, blnSkipCost,
@@ -189,14 +189,14 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCreateImprovements">Whether bonuses should be created.</param>
         /// <param name="blnSkipCost">Whether forms asking to determine variable costs should be displayed.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public Task CreateAsync(XmlNode objXmlAccessory, Tuple<string, string> strMount, int intRating,
+        public Task CreateAsync(XmlNode objXmlAccessory, ValueTuple<string, string> strMount, int intRating,
             bool blnSkipCost = false, bool blnCreateChildren = true, bool blnCreateImprovements = true, CancellationToken token = default)
         {
             return CreateCoreAsync(false, objXmlAccessory, strMount, intRating, blnSkipCost, blnCreateChildren,
                 blnCreateImprovements, token);
         }
 
-        private async Task CreateCoreAsync(bool blnSync, XmlNode objXmlAccessory, Tuple<string, string> strMount, int intRating,
+        private async Task CreateCoreAsync(bool blnSync, XmlNode objXmlAccessory, ValueTuple<string, string> strMount, int intRating,
             bool blnSkipCost = false, bool blnCreateChildren = true, bool blnCreateImprovements = true, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -213,8 +213,8 @@ namespace Chummer.Backend.Equipment
 
             _blnEquipped = blnCreateImprovements;
             objXmlAccessory.TryGetStringFieldQuickly("name", ref _strName);
-            _strMount = strMount?.Item1 ?? string.Empty;
-            _strExtraMount = strMount?.Item2 ?? string.Empty;
+            _strMount = strMount.Item1 ?? string.Empty;
+            _strExtraMount = strMount.Item2 ?? string.Empty;
             objXmlAccessory.TryGetStringFieldQuickly("addmount", ref _strAddMount);
             objXmlAccessory.TryGetStringFieldQuickly("rating", ref _strMaxRating);
             _intRating = intRating; // Set first to make MaxRatingValue work properly

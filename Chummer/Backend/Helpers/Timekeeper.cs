@@ -32,7 +32,7 @@ namespace Chummer
         private static Logger Log => s_ObjLogger.Value;
         private static readonly Stopwatch s_Time = new Stopwatch();
         private static readonly ConcurrentDictionary<string, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>();
-        private static readonly ConcurrentDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new ConcurrentDictionary<string, Tuple<TimeSpan, int>>();
+        private static readonly ConcurrentDictionary<string, ValueTuple<TimeSpan, int>> s_DictionaryStatistics = new ConcurrentDictionary<string, ValueTuple<TimeSpan, int>>();
 
         static Timekeeper()
         {
@@ -80,8 +80,8 @@ namespace Chummer
                 Debug.WriteLine(strLogEntry);
 #endif
 
-                s_DictionaryStatistics.AddOrUpdate(taskname, x => new Tuple<TimeSpan, int>(final, 1),
-                                                   (x, y) => new Tuple<TimeSpan, int>(
+                s_DictionaryStatistics.AddOrUpdate(taskname, x => new ValueTuple<TimeSpan, int>(final, 1),
+                                                   (x, y) => new ValueTuple<TimeSpan, int>(
                                                        y.Item1 + final, y.Item2 + 1));
             }
             else
@@ -98,7 +98,7 @@ namespace Chummer
                                                           out StringBuilder sbdLog))
             {
                 sbdLog.AppendLine("Time statistics");
-                foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in s_DictionaryStatistics)
+                foreach (KeyValuePair<string, ValueTuple<TimeSpan, int>> keyValuePair in s_DictionaryStatistics)
                 {
                     sbdLog.AppendFormat(GlobalSettings.InvariantCultureInfo, "\t{0}({1}) = {2}{3}",
                                         keyValuePair.Key, keyValuePair.Value.Item2, keyValuePair.Value.Item1,

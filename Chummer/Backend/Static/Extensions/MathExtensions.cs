@@ -307,7 +307,7 @@ namespace Chummer
 
         /// <inheritdoc cref="Math.DivRem(int, int, out int)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Tuple<int, int> DivRem(this int a, int b)
+        public static ValueTuple<int, int> DivRem(this int a, int b)
         {
             // This version is faster than .NET Framework 4.8's implementation, but still slower than if the register storing the division remainder could be fetched directly
             int div;
@@ -356,7 +356,7 @@ namespace Chummer
                 div = a / b;
                 result = a - (div * b);
             }
-            return new Tuple<int, int>(div, result);
+            return new ValueTuple<int, int>(div, result);
         }
 
         /// <inheritdoc cref="Math.DivRem(long, long, out long)"/>
@@ -414,7 +414,7 @@ namespace Chummer
 
         /// <inheritdoc cref="Math.DivRem(long, long, out long)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Tuple<long, long> DivRem(this long a, long b)
+        public static ValueTuple<long, long> DivRem(this long a, long b)
         {
             // This version is faster than .NET Framework 4.8's implementation, but still slower than if the register storing the division remainder could be fetched directly
             long div;
@@ -463,7 +463,7 @@ namespace Chummer
                 div = a / b;
                 result = a - (div * b);
             }
-            return new Tuple<long, long>(div, result);
+            return new ValueTuple<long, long>(div, result);
         }
 
         /// <summary>

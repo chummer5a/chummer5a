@@ -266,7 +266,7 @@ namespace Chummer
         /// <summary>
         /// Mount that was selected in the dialogue.
         /// </summary>
-        public Tuple<string, string> SelectedMount => new Tuple<string, string>(cboMount.SelectedItem?.ToString(), cboExtraMount.SelectedItem?.ToString());
+        public ValueTuple<string, string> SelectedMount => new ValueTuple<string, string>(cboMount.SelectedItem?.ToString(), cboExtraMount.SelectedItem?.ToString());
 
         /// <summary>
         /// Rating of the Accessory.

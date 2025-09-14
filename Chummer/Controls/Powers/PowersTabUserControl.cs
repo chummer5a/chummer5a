@@ -81,7 +81,7 @@ namespace Chummer.UI.Powers
         }
 
         private Character _objCharacter;
-        private List<Tuple<string, Func<Power, CancellationToken, Task<bool>>>> _dropDownList;
+        private List<ValueTuple<string, Func<Power, CancellationToken, Task<bool>>>> _dropDownList;
         private bool _blnSearchMode;
 
         private CancellationToken _objMyToken;
@@ -298,21 +298,21 @@ namespace Chummer.UI.Powers
             }
         }
 
-        private static List<Tuple<string, Func<Power, CancellationToken, Task<bool>>>> GenerateDropdownFilter(
+        private static List<ValueTuple<string, Func<Power, CancellationToken, Task<bool>>>> GenerateDropdownFilter(
             CancellationToken objMyToken = default)
         {
-            List<Tuple<string, Func<Power, CancellationToken, Task<bool>>>> ret = new List<Tuple<string, Func<Power, CancellationToken, Task<bool>>>>(4)
+            List<ValueTuple<string, Func<Power, CancellationToken, Task<bool>>>> ret = new List<ValueTuple<string, Func<Power, CancellationToken, Task<bool>>>>(4)
             {
-                new Tuple<string, Func<Power, CancellationToken, Task<bool>>>(
+                new ValueTuple<string, Func<Power, CancellationToken, Task<bool>>>(
                     LanguageManager.GetString("String_Search", token: objMyToken),
                     null),
-                new Tuple<string, Func<Power, CancellationToken, Task<bool>>>(
+                new ValueTuple<string, Func<Power, CancellationToken, Task<bool>>>(
                     LanguageManager.GetString("String_PowerFilterAll", token: objMyToken),
                     (x, t) => Task.FromResult(true)),
-                new Tuple<string, Func<Power, CancellationToken, Task<bool>>>(
+                new ValueTuple<string, Func<Power, CancellationToken, Task<bool>>>(
                     LanguageManager.GetString("String_PowerFilterRatingAboveZero", token: objMyToken),
                     async (power, t) => await power.GetRatingAsync(t).ConfigureAwait(false) > 0),
-                new Tuple<string, Func<Power, CancellationToken, Task<bool>>>(
+                new ValueTuple<string, Func<Power, CancellationToken, Task<bool>>>(
                     LanguageManager.GetString("String_PowerFilterRatingZero", token: objMyToken),
                     async (power, t) => await power.GetRatingAsync(t).ConfigureAwait(false) == 0)
             };
@@ -323,7 +323,7 @@ namespace Chummer.UI.Powers
                     foreach (XmlNode xmlCategoryNode in xmlPowerCategoryList)
                     {
                         string strName = xmlCategoryNode.InnerText;
-                        ret.Add(new Tuple<string, Predicate<Power>>(
+                        ret.Add(new ValueTuple<string, Predicate<Power>>(
                             LanguageManager.GetString("Label_Category") + LanguageManager.GetString("String_Space") + (xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName),
                             power => power.Category == strName));
                     }
@@ -349,7 +349,7 @@ namespace Chummer.UI.Powers
                     CursorWait objCursorWait = await CursorWait.NewAsync(this, token: objJoinedToken).ConfigureAwait(false);
                     try
                     {
-                        if (!(cboDisplayFilter.SelectedItem is Tuple<string, Func<Power, CancellationToken, Task<bool>>> selectedItem))
+                        if (!(cboDisplayFilter.SelectedItem is ValueTuple<string, Func<Power, CancellationToken, Task<bool>>> selectedItem))
                             return;
                         if (selectedItem.Item2 == null)
                         {

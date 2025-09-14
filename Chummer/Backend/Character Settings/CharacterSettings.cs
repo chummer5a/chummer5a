@@ -504,13 +504,13 @@ namespace Chummer
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
-                            = new List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                        List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
+                            = new List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
                         foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {
-                                lstAsyncEventsList.Add(new Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
+                                lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
                         await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
@@ -3874,8 +3874,8 @@ namespace Chummer
                 // Load Custom Data Directory names.
                 int intTopMostOrder = 0;
                 int intBottomMostOrder = 0;
-                Dictionary<int, Tuple<string, bool>> dicLoadingCustomDataDirectories =
-                    new Dictionary<int, Tuple<string, bool>>(GlobalSettings.CustomDataDirectoryInfos.Count);
+                Dictionary<int, ValueTuple<string, bool>> dicLoadingCustomDataDirectories =
+                    new Dictionary<int, ValueTuple<string, bool>>(GlobalSettings.CustomDataDirectoryInfos.Count);
                 bool blnNeedToProcessInfosWithoutLoadOrder = false;
                 foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression(
                              "customdatadirectorynames/customdatadirectoryname", token))
@@ -3904,7 +3904,7 @@ namespace Chummer
                             intTopMostOrder = Math.Max(intOrder, intTopMostOrder);
                             intBottomMostOrder = Math.Min(intOrder, intBottomMostOrder);
                             dicLoadingCustomDataDirectories.Add(intOrder,
-                                                                new Tuple<string, bool>(
+                                                                new ValueTuple<string, bool>(
                                                                     strDirectoryKey, blnLoopEnabled));
                         }
                         else
@@ -3917,7 +3917,7 @@ namespace Chummer
                     _dicCustomDataDirectoryKeys.Clear();
                     for (int i = intBottomMostOrder; i <= intTopMostOrder; ++i)
                     {
-                        if (!dicLoadingCustomDataDirectories.TryGetValue(i, out Tuple<string, bool> tupLoop))
+                        if (!dicLoadingCustomDataDirectories.TryGetValue(i, out ValueTuple<string, bool> tupLoop))
                             continue;
                         string strDirectoryKey = tupLoop.Item1;
                         string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
@@ -4648,8 +4648,8 @@ namespace Chummer
                 // Load Custom Data Directory names.
                 int intTopMostOrder = 0;
                 int intBottomMostOrder = 0;
-                Dictionary<int, Tuple<string, bool>> dicLoadingCustomDataDirectories =
-                    new Dictionary<int, Tuple<string, bool>>(GlobalSettings.CustomDataDirectoryInfos.Count);
+                Dictionary<int, ValueTuple<string, bool>> dicLoadingCustomDataDirectories =
+                    new Dictionary<int, ValueTuple<string, bool>>(GlobalSettings.CustomDataDirectoryInfos.Count);
                 bool blnNeedToProcessInfosWithoutLoadOrder = false;
                 foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression(
                              "customdatadirectorynames/customdatadirectoryname", token))
@@ -4678,7 +4678,7 @@ namespace Chummer
                             intTopMostOrder = Math.Max(intOrder, intTopMostOrder);
                             intBottomMostOrder = Math.Min(intOrder, intBottomMostOrder);
                             dicLoadingCustomDataDirectories.Add(intOrder,
-                                                                new Tuple<string, bool>(
+                                                                new ValueTuple<string, bool>(
                                                                     strDirectoryKey, blnLoopEnabled));
                         }
                         else
@@ -4694,7 +4694,7 @@ namespace Chummer
                     await _dicCustomDataDirectoryKeys.ClearAsync(token).ConfigureAwait(false);
                     for (int i = intBottomMostOrder; i <= intTopMostOrder; ++i)
                     {
-                        if (!dicLoadingCustomDataDirectories.TryGetValue(i, out Tuple<string, bool> tupLoop))
+                        if (!dicLoadingCustomDataDirectories.TryGetValue(i, out ValueTuple<string, bool> tupLoop))
                             continue;
                         string strDirectoryKey = tupLoop.Item1;
                         string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);

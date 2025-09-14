@@ -512,7 +512,7 @@ namespace Translator
             try
             {
                 cmdCancel.Enabled = false;
-                if (!blnWasCancelled && _objDataDocWithPath != null && _objStringsDocWithPath != null)
+                if (!blnWasCancelled && _objDataDocWithPath.Item1 != null && _objStringsDocWithPath.Item1 != null)
                 {
                     using (FileStream objFileStream
                            = new FileStream(_objStringsDocWithPath.Item2, FileMode.Create, FileAccess.Write,
@@ -547,7 +547,7 @@ namespace Translator
             }
         }
 
-        private Tuple<XmlDocument, string> _objStringsDocWithPath;
+        private ValueTuple<XmlDocument, string> _objStringsDocWithPath;
 
         private void DoStringsProcessing(object sender, DoWorkEventArgs e)
         {
@@ -640,18 +640,18 @@ namespace Translator
                 {
                     MessageBox.Show(ex.ToString());
                     e.Cancel = true;
-                    _objDataDocWithPath = null;
+                    _objDataDocWithPath = default;
                 }
             }
 
             if (_workerStringsProcessor.CancellationPending)
             {
                 e.Cancel = true;
-                _objStringsDocWithPath = null;
+                _objStringsDocWithPath = default;
             }
             else
             {
-                _objStringsDocWithPath = new Tuple<XmlDocument, string>(objDoc, strFilePath);
+                _objStringsDocWithPath = new ValueTuple<XmlDocument, string>(objDoc, strFilePath);
             }
         }
 
@@ -668,7 +668,7 @@ namespace Translator
             pbProcessProgress.PerformStep();
         }
 
-        private Tuple<XmlDocument, string> _objDataDocWithPath;
+        private ValueTuple<XmlDocument, string> _objDataDocWithPath;
 
         private void DoDataProcessing(object sender, DoWorkEventArgs e)
         {
@@ -712,17 +712,17 @@ namespace Translator
             {
                 MessageBox.Show(ex.ToString());
                 e.Cancel = true;
-                _objDataDocWithPath = null;
+                _objDataDocWithPath = default;
             }
 
             if (_workerDataProcessor.CancellationPending)
             {
                 e.Cancel = true;
-                _objDataDocWithPath = null;
+                _objDataDocWithPath = default;
             }
             else
             {
-                _objDataDocWithPath = new Tuple<XmlDocument, string>(objDataDoc, strFilePath);
+                _objDataDocWithPath = new ValueTuple<XmlDocument, string>(objDataDoc, strFilePath);
             }
         }
 

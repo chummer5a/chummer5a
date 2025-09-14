@@ -32,8 +32,8 @@ namespace Chummer
     public static class XslManager
     {
         // Cache of compiled XSLTs to speed up repeated prints of the same character sheet
-        private static readonly ConcurrentDictionary<string, Tuple<DateTime, XslCompiledTransform>> s_dicCompiledTransforms
-            = new ConcurrentDictionary<string, Tuple<DateTime, XslCompiledTransform>>();
+        private static readonly ConcurrentDictionary<string, ValueTuple<DateTime, XslCompiledTransform>> s_dicCompiledTransforms
+            = new ConcurrentDictionary<string, ValueTuple<DateTime, XslCompiledTransform>>();
 
         /// <summary>
         /// Get the compiled Xsl Transform of an Xsl file. Will throw exceptions if anything goes awry.
@@ -79,7 +79,7 @@ namespace Chummer
             XslCompiledTransform objReturn;
 
             if (!s_dicCompiledTransforms.TryGetValue(strXslFilePath,
-                    out Tuple<DateTime, XslCompiledTransform> tupCachedData) ||
+                    out ValueTuple<DateTime, XslCompiledTransform> tupCachedData) ||
                 tupCachedData.Item1 <= datLastWriteTimeUtc)
             {
 #if DEBUG
@@ -96,8 +96,8 @@ namespace Chummer
                     await Task.Run(() => objReturn.Load(strXslFilePath), token).ConfigureAwait(false);
                 }
 
-                Tuple<DateTime, XslCompiledTransform> tupNewValue =
-                    new Tuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn);
+                ValueTuple<DateTime, XslCompiledTransform> tupNewValue =
+                    new ValueTuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn);
                 s_dicCompiledTransforms.AddOrUpdate(strXslFilePath, tupNewValue, (x, y) => tupNewValue);
             }
             else

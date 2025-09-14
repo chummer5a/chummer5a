@@ -1222,12 +1222,12 @@ namespace Chummer.Backend.Equipment
                                         if (blnSync)
                                             // ReSharper disable once MethodHasAsyncOverload
                                             objGearWeapon.Create(objXmlAccessory,
-                                                new Tuple<string, string>(string.Empty, string.Empty),
+                                                new ValueTuple<string, string>(string.Empty, string.Empty),
                                                 intAddWeaponRating,
                                                 blnSkipSelectForms, true, blnCreateImprovements, token);
                                         else
                                             await objGearWeapon.CreateAsync(objXmlAccessory,
-                                                new Tuple<string, string>(string.Empty, string.Empty),
+                                                new ValueTuple<string, string>(string.Empty, string.Empty),
                                                 intAddWeaponRating,
                                                 blnSkipSelectForms, true, blnCreateImprovements, token).ConfigureAwait(false);
                                         objGearWeapon.Cost = "0";

@@ -1190,16 +1190,16 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
-        private Task<Tuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, int intRating, CancellationToken token = default) => ProcessRatingStringAsDecAsync(strExpression, () => Task.FromResult(intRating), token);
+        private Task<ValueTuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, int intRating, CancellationToken token = default) => ProcessRatingStringAsDecAsync(strExpression, () => Task.FromResult(intRating), token);
 
         /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
-        private async Task<Tuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, Func<Task<int>> funcRating, CancellationToken token = default)
+        private async Task<ValueTuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, Func<Task<int>> funcRating, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strExpression))
-                return new Tuple<decimal, bool>(0, true);
+                return new ValueTuple<decimal, bool>(0, true);
             bool blnIsSuccess = true;
             strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
@@ -1270,10 +1270,10 @@ namespace Chummer.Backend.Equipment
                 (blnIsSuccess, objProcess)
                     = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
                 if (blnIsSuccess)
-                    return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
+                    return new ValueTuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
             }
 
-            return new Tuple<decimal, bool>(decValue, blnIsSuccess);
+            return new ValueTuple<decimal, bool>(decValue, blnIsSuccess);
         }
 
         public string RatingLabel

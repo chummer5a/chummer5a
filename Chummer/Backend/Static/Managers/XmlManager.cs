@@ -2194,7 +2194,7 @@ namespace Chummer
         /// <param name="lstExtraNodesToAddIfNotFound">List of extra nodes to add (with their XPaths) if the given amending node would be added if not found, with each entry's node being the parent of the next entry's node. Needed in case of recursing into nodes that don't exist.</param>
         /// <param name="token">CancellationToken to use.</param>
         /// <returns>True if any amends were made, False otherwise.</returns>
-        public static bool AmendNodeChildren(XmlDocument xmlDoc, XmlNode xmlAmendingNode, string strXPath, IList<Tuple<XmlNode, string>> lstExtraNodesToAddIfNotFound = null, CancellationToken token = default)
+        public static bool AmendNodeChildren(XmlDocument xmlDoc, XmlNode xmlAmendingNode, string strXPath, IList<ValueTuple<XmlNode, string>> lstExtraNodesToAddIfNotFound = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             bool blnReturn = false;
@@ -2419,9 +2419,9 @@ namespace Chummer
                             else
                             {
                                 if (lstExtraNodesToAddIfNotFound == null)
-                                    lstExtraNodesToAddIfNotFound = new List<Tuple<XmlNode, string>>(1);
-                                Tuple<XmlNode, string> objMyData =
-                                    new Tuple<XmlNode, string>(xmlAmendingNode, strXPath);
+                                    lstExtraNodesToAddIfNotFound = new List<ValueTuple<XmlNode, string>>(1);
+                                ValueTuple<XmlNode, string> objMyData =
+                                    new ValueTuple<XmlNode, string>(xmlAmendingNode, strXPath);
                                 lstExtraNodesToAddIfNotFound.Add(objMyData);
                                 foreach (XmlNode objChild in lstElementChildren)
                                 {
@@ -2842,7 +2842,7 @@ namespace Chummer
             return (await GetXslFilesFromLocalDirectoryAsync(strLanguage, lstCharacters, true, blnUsePool, token).ConfigureAwait(false)).Item2;
         }
 
-        public static async Task<Tuple<bool, List<ListItem>>> GetXslFilesFromLocalDirectoryAsync(string strLanguage, IEnumerable<Character> lstCharacters, bool blnDoList, bool blnUsePool, CancellationToken token = default)
+        public static async Task<ValueTuple<bool, List<ListItem>>> GetXslFilesFromLocalDirectoryAsync(string strLanguage, IEnumerable<Character> lstCharacters, bool blnDoList, bool blnUsePool, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<ListItem> lstSheets = null;
@@ -2869,7 +2869,7 @@ namespace Chummer
                             if (string.IsNullOrEmpty(strSheetFileName))
                                 continue;
                             if (!blnDoList)
-                                return new Tuple<bool, List<ListItem>>(true, null);
+                                return new ValueTuple<bool, List<ListItem>>(true, null);
                             token.ThrowIfCancellationRequested();
                             if (!setAddedSheetFileNames.Add(strSheetFileName))
                                 continue;
@@ -2899,7 +2899,7 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strSheetFileName))
                             continue;
                         if (!blnDoList)
-                            return new Tuple<bool, List<ListItem>>(true, null);
+                            return new ValueTuple<bool, List<ListItem>>(true, null);
                         token.ThrowIfCancellationRequested();
                         if (!setAddedSheetFileNames.Add(strSheetFileName))
                             continue;
@@ -2919,7 +2919,7 @@ namespace Chummer
                 if (setAddedSheetFileNames != null)
                     Utils.StringHashSetPool.Return(ref setAddedSheetFileNames);
             }
-            return new Tuple<bool, List<ListItem>>(lstSheets != null && lstSheets.Count > 0, lstSheets);
+            return new ValueTuple<bool, List<ListItem>>(lstSheets != null && lstSheets.Count > 0, lstSheets);
         }
 
         /// <summary>

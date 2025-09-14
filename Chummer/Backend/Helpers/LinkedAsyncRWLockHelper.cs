@@ -62,10 +62,10 @@ namespace Chummer
         private static readonly SafeObjectPool<Stack<DebuggableSemaphoreSlim>> s_objSemaphoreStackPool =
             new SafeObjectPool<Stack<DebuggableSemaphoreSlim>>(() => new Stack<DebuggableSemaphoreSlim>(8), x => x.Clear());
 
-        private static readonly SafeObjectPool<Stack<Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>>>
+        private static readonly SafeObjectPool<Stack<ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>>>
             s_objWriterLockHelperStackPool =
-                new SafeObjectPool<Stack<Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>>>(() =>
-                    new Stack<Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>>(8), x => x.Clear());
+                new SafeObjectPool<Stack<ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>>>(() =>
+                    new Stack<ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>>(8), x => x.Clear());
 
         public bool IsDisposed => _intDisposedStatus > 0;
 
@@ -792,9 +792,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (_intDisposedStatus != 0)
                 throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
-            using (new FetchSafelyFromSafeObjectPool<Stack<Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>>>(
+            using (new FetchSafelyFromSafeObjectPool<Stack<ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>>>(
                        s_objWriterLockHelperStackPool,
-                       out Stack<Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>> stkUndo))
+                       out Stack<ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>> stkUndo))
             {
                 try
                 {
@@ -808,7 +808,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         objLoopSemaphore.SafeWait(token);
                         stkUndo.Push(
-                            new Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>(this, objLoopSemaphore));
+                            new ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>(this, objLoopSemaphore));
                         // Since we can only be re-entrant to an upgradeable reader or a writer, both of these will have the semaphore already set, so we don't need to go up the chain
 
                         token.ThrowIfCancellationRequested();
@@ -822,7 +822,7 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             objLoopSemaphore.SafeWait(token);
                             stkUndo.Push(
-                                new Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>(objLoopHelper,
+                                new ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>(objLoopHelper,
                                     objLoopSemaphore));
                             token.ThrowIfCancellationRequested();
                             // Hold Pending Writer Semaphore before reader lock announcement to prevent edge case weird stuff
@@ -877,7 +877,7 @@ namespace Chummer
                             }
 
                             stkUndo.Push(
-                                new Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>(objLoopHelper, null));
+                                new ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>(objLoopHelper, null));
 
                             objLoopHelper = objLoopHelper.ParentLinkedHelper;
                         }
@@ -927,9 +927,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (_intDisposedStatus != 0)
                 throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
-            using (new FetchSafelyFromSafeObjectPool<Stack<Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>>>(
+            using (new FetchSafelyFromSafeObjectPool<Stack<ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>>>(
                        s_objWriterLockHelperStackPool,
-                       out Stack<Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>> stkUndo))
+                       out Stack<ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>> stkUndo))
             {
                 try
                 {
@@ -943,7 +943,7 @@ namespace Chummer
                         // First lock to prevent any more upgradeable read locks (also makes sure only one writer lock is queued at a time)
                         await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
                         stkUndo.Push(
-                            new Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>(this, objLoopSemaphore));
+                            new ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>(this, objLoopSemaphore));
                         // Since we can only be re-entrant to an upgradeable reader or a writer, both of these will have the semaphore already set, so we don't need to go up the chain
 
                         token.ThrowIfCancellationRequested();
@@ -957,7 +957,7 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
                             stkUndo.Push(
-                                new Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>(objLoopHelper,
+                                new ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>(objLoopHelper,
                                     objLoopSemaphore));
                             token.ThrowIfCancellationRequested();
                             // Hold Pending Writer Semaphore before reader lock announcement to prevent edge case weird stuff
@@ -1013,7 +1013,7 @@ namespace Chummer
                             }
 
                             stkUndo.Push(
-                                new Tuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>(objLoopHelper, null));
+                                new ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>(objLoopHelper, null));
 
                             objLoopHelper = objLoopHelper.ParentLinkedHelper;
                         }

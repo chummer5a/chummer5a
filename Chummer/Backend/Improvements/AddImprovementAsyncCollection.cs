@@ -5764,10 +5764,10 @@ namespace Chummer
 
             for (int i = 0; i < powerCount; i++)
             {
-                List<Tuple<string, string>> lstPowerExtraPairs;
+                List<ValueTuple<string, string>> lstPowerExtraPairs;
                 using (XmlNodeList xmlOptionalPowerList = bonusNode.SelectNodes("optionalpower"))
                 {
-                    lstPowerExtraPairs = new List<Tuple<string, string>>(xmlOptionalPowerList?.Count ?? 0);
+                    lstPowerExtraPairs = new List<ValueTuple<string, string>>(xmlOptionalPowerList?.Count ?? 0);
                     if (xmlOptionalPowerList?.Count > 0)
                     {
                         foreach (XmlNode objXmlOptionalPower in xmlOptionalPowerList)
@@ -5775,7 +5775,7 @@ namespace Chummer
                             string strPower = objXmlOptionalPower.InnerText;
                             if (string.IsNullOrEmpty(strForcePower) || strForcePower == strPower)
                             {
-                                lstPowerExtraPairs.Add(new Tuple<string, string>(strPower,
+                                lstPowerExtraPairs.Add(new ValueTuple<string, string>(strPower,
                                     objXmlOptionalPower.Attributes?["select"]?.InnerText));
                             }
                         }

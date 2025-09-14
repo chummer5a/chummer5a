@@ -237,13 +237,13 @@ namespace Chummer.Controls.Shared
         private void ComputeDisplayIndex(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<Tuple<TType, int>> objTTypeList = new List<Tuple<TType, int>>(_lstContentList.Count);
+            List<ValueTuple<TType, int>> objTTypeList = new List<ValueTuple<TType, int>>(_lstContentList.Count);
             for (int i = 0; i < _lstContentList.Count; ++i)
             {
                 ControlWithMetaData objLoopControl = _lstContentList[i];
                 if (objLoopControl.Visible)
                 {
-                    objTTypeList.Add(new Tuple<TType, int>(objLoopControl.Item, i));
+                    objTTypeList.Add(new ValueTuple<TType, int>(objLoopControl.Item, i));
                 }
             }
 
@@ -291,13 +291,13 @@ namespace Chummer.Controls.Shared
         private async Task ComputeDisplayIndexAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<Tuple<TType, int>> objTTypeList = new List<Tuple<TType, int>>(_lstContentList.Count);
+            List<ValueTuple<TType, int>> objTTypeList = new List<ValueTuple<TType, int>>(_lstContentList.Count);
             for (int i = 0; i < _lstContentList.Count; ++i)
             {
                 ControlWithMetaData objLoopControl = _lstContentList[i];
                 if (objLoopControl.Visible)
                 {
-                    objTTypeList.Add(new Tuple<TType, int>(objLoopControl.Item, i));
+                    objTTypeList.Add(new ValueTuple<TType, int>(objLoopControl.Item, i));
                 }
             }
 

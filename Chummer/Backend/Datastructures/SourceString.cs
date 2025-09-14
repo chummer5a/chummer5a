@@ -29,21 +29,21 @@ namespace Chummer
 {
     public readonly struct SourceString : IComparable, IEquatable<SourceString>, IComparable<SourceString>
     {
-        private static readonly ConcurrentDictionary<string, Tuple<string, string>> s_DicCachedStrings = new ConcurrentDictionary<string, Tuple<string, string>>();
+        private static readonly ConcurrentDictionary<string, ValueTuple<string, string>> s_DicCachedStrings = new ConcurrentDictionary<string, ValueTuple<string, string>>();
 
-        private static Tuple<string, string> GetSpaceAndPageStrings(string strLanguage)
+        private static ValueTuple<string, string> GetSpaceAndPageStrings(string strLanguage)
         {
             return s_DicCachedStrings.GetOrAdd(
                 strLanguage,
-                x => new Tuple<string, string>(LanguageManager.GetString("String_Space", x),
+                x => new ValueTuple<string, string>(LanguageManager.GetString("String_Space", x),
                                                LanguageManager.GetString("String_Page", x)));
         }
 
-        private static Task<Tuple<string, string>> GetSpaceAndPageStringsAsync(string strLanguage, CancellationToken token = default)
+        private static Task<ValueTuple<string, string>> GetSpaceAndPageStringsAsync(string strLanguage, CancellationToken token = default)
         {
             return s_DicCachedStrings.GetOrAddAsync(
                 strLanguage,
-                async x => new Tuple<string, string>(await LanguageManager.GetStringAsync("String_Space", x, token: token).ConfigureAwait(false),
+                async x => new ValueTuple<string, string>(await LanguageManager.GetStringAsync("String_Space", x, token: token).ConfigureAwait(false),
                     await LanguageManager.GetStringAsync("String_Page", x, token: token).ConfigureAwait(false)), token);
         }
 

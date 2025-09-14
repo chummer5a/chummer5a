@@ -2687,7 +2687,7 @@ namespace Chummer
         /// Get the number of preferred shown lines for a TextBox control and the maximum height of these lines. Multiply the two to get the preferred height of the control.
         /// </summary>
         /// <param name="txtTextBox">Control to analyze</param>
-        public static Tuple<int, int> MeasureLineHeights(this TextBox txtTextBox)
+        public static ValueTuple<int, int> MeasureLineHeights(this TextBox txtTextBox)
         {
             string[] astrLines = txtTextBox.Lines;
             int intNumDisplayedLines = 0;
@@ -2702,7 +2702,7 @@ namespace Chummer
                     intMaxLineHeight = Math.Max(intMaxLineHeight, objTextSize.Height);
                 }
             }
-            return new Tuple<int, int>(intNumDisplayedLines, intMaxLineHeight);
+            return new ValueTuple<int, int>(intNumDisplayedLines, intMaxLineHeight);
         }
 
         /// <summary>

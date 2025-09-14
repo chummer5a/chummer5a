@@ -911,11 +911,11 @@ namespace Chummer.Backend.Equipment
                                         if (blnSync)
                                             // ReSharper disable once MethodHasAsyncOverload
                                             objMod.Create(objXmlAccessoryNode,
-                                                new Tuple<string, string>(strMount, strExtraMount), 0, blnSkipCost,
+                                                new ValueTuple<string, string>(strMount, strExtraMount), 0, blnSkipCost,
                                                 blnCreateChildren, !blnSkipSelectForms && blnCreateImprovements, token);
                                         else
                                             await objMod.CreateAsync(objXmlAccessoryNode,
-                                                new Tuple<string, string>(strMount, strExtraMount), 0, blnSkipCost,
+                                                new ValueTuple<string, string>(strMount, strExtraMount), 0, blnSkipCost,
                                                 blnCreateChildren, !blnSkipSelectForms && blnCreateImprovements, token).ConfigureAwait(false);
                                         objMod.Cost = "0";
                                         if (blnSync)
@@ -1520,7 +1520,7 @@ namespace Chummer.Backend.Equipment
                                                             WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
                                                             try
                                                             {
-                                                                objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, token: token);
+                                                                objMod.Create(objXmlAccessoryNode, new ValueTuple<string, string>(strMount, strExtraMount), 0, token: token);
                                                                 objMod.Cost = "0";
                                                                 objWeapon.WeaponAccessories.Add(objMod);
                                                             }
@@ -1688,7 +1688,7 @@ namespace Chummer.Backend.Equipment
                                                             WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
                                                             try
                                                             {
-                                                                await objMod.CreateAsync(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, token: token).ConfigureAwait(false);
+                                                                await objMod.CreateAsync(objXmlAccessoryNode, new ValueTuple<string, string>(strMount, strExtraMount), 0, token: token).ConfigureAwait(false);
                                                                 objMod.Cost = "0";
                                                                 await objWeapon.WeaponAccessories.AddAsync(objMod, token).ConfigureAwait(false);
                                                             }
@@ -5425,7 +5425,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async Task<Tuple<Cyberware, VehicleMod>> FindVehicleCyberwareAsync([NotNull] Func<Cyberware, bool> funcPredicate, CancellationToken token = default)
+        public async Task<ValueTuple<Cyberware, VehicleMod>> FindVehicleCyberwareAsync([NotNull] Func<Cyberware, bool> funcPredicate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             Cyberware objReturn = null;
@@ -5439,7 +5439,7 @@ namespace Chummer.Backend.Equipment
                 return false;
             }, token).ConfigureAwait(false);
             if (objReturn != null)
-                return new Tuple<Cyberware, VehicleMod>(objReturn, objReturnMod);
+                return new ValueTuple<Cyberware, VehicleMod>(objReturn, objReturnMod);
 
             await WeaponMounts.ForEachWithBreakAsync(async objMount =>
             {
@@ -5454,7 +5454,7 @@ namespace Chummer.Backend.Equipment
                 return objReturn == null;
             }, token).ConfigureAwait(false);
 
-            return new Tuple<Cyberware, VehicleMod>(objReturn, objReturnMod);
+            return new ValueTuple<Cyberware, VehicleMod>(objReturn, objReturnMod);
         }
 
         /// <summary>
@@ -5501,12 +5501,12 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async Task<Tuple<VehicleMod, WeaponMount>> FindVehicleModAsync([NotNull] Func<VehicleMod, bool> funcPredicate, CancellationToken token = default)
+        public async Task<ValueTuple<VehicleMod, WeaponMount>> FindVehicleModAsync([NotNull] Func<VehicleMod, bool> funcPredicate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             VehicleMod objMod = await Mods.FirstOrDefaultAsync(funcPredicate, token).ConfigureAwait(false);
             if (objMod != null)
-                return new Tuple<VehicleMod, WeaponMount>(objMod, null);
+                return new ValueTuple<VehicleMod, WeaponMount>(objMod, null);
 
             WeaponMount objReturnMount = null;
             await WeaponMounts.ForEachWithBreakAsync(async objMount =>
@@ -5518,7 +5518,7 @@ namespace Chummer.Backend.Equipment
                 return false;
             }, token).ConfigureAwait(false);
 
-            return new Tuple<VehicleMod, WeaponMount>(objMod, objReturnMount);
+            return new ValueTuple<VehicleMod, WeaponMount>(objMod, objReturnMount);
         }
 
         /// <summary>
@@ -5584,14 +5584,14 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async Task<Tuple<Gear, WeaponAccessory, Cyberware>> FindVehicleGearAsync(string strGuid, CancellationToken token = default)
+        public async Task<ValueTuple<Gear, WeaponAccessory, Cyberware>> FindVehicleGearAsync(string strGuid, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
-                return new Tuple<Gear, WeaponAccessory, Cyberware>(null, null, null);
+                return new ValueTuple<Gear, WeaponAccessory, Cyberware>(null, null, null);
             Gear objReturn = await GearChildren.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
             if (objReturn != null)
-                return new Tuple<Gear, WeaponAccessory, Cyberware>(objReturn, null, null);
+                return new ValueTuple<Gear, WeaponAccessory, Cyberware>(objReturn, null, null);
 
             WeaponAccessory objReturnAccessory = null;
             Cyberware objReturnCyberware = null;
@@ -5610,7 +5610,7 @@ namespace Chummer.Backend.Equipment
                 return objReturn == null;
             }, token).ConfigureAwait(false);
 
-            return new Tuple<Gear, WeaponAccessory, Cyberware>(objReturn, objReturnAccessory, objReturnCyberware);
+            return new ValueTuple<Gear, WeaponAccessory, Cyberware>(objReturn, objReturnAccessory, objReturnCyberware);
         }
 
         public int GetBaseMatrixAttribute(string strAttributeName)
@@ -6177,7 +6177,7 @@ namespace Chummer.Backend.Equipment
                     return "0.5";
                 })
                 : new Lazy<string>(() => GetTotalBody(objExcludeMod).ToString(GlobalSettings.InvariantCultureInfo));
-            Lazy<Tuple<string, string>> strHandlingValues = new Lazy<Tuple<string, string>>(() =>
+            Lazy<ValueTuple<string, string>> strHandlingValues = new Lazy<ValueTuple<string, string>>(() =>
             {
                 bool blnFirst = true;
                 string strReturn1 = string.Empty;
@@ -6195,9 +6195,9 @@ namespace Chummer.Backend.Equipment
                         break;
                     }
                 }
-                return new Tuple<string, string>(strReturn1, strReturn2);
+                return new ValueTuple<string, string>(strReturn1, strReturn2);
             });
-            Lazy<Tuple<string, string>> strSpeedValues = new Lazy<Tuple<string, string>>(() =>
+            Lazy<ValueTuple<string, string>> strSpeedValues = new Lazy<ValueTuple<string, string>>(() =>
             {
                 bool blnFirst = true;
                 string strReturn1 = string.Empty;
@@ -6215,9 +6215,9 @@ namespace Chummer.Backend.Equipment
                         break;
                     }
                 }
-                return new Tuple<string, string>(strReturn1, strReturn2);
+                return new ValueTuple<string, string>(strReturn1, strReturn2);
             });
-            Lazy<Tuple<string, string>> strAccelerationValues = new Lazy<Tuple<string, string>>(() =>
+            Lazy<ValueTuple<string, string>> strAccelerationValues = new Lazy<ValueTuple<string, string>>(() =>
             {
                 bool blnFirst = true;
                 string strReturn1 = string.Empty;
@@ -6235,7 +6235,7 @@ namespace Chummer.Backend.Equipment
                         break;
                     }
                 }
-                return new Tuple<string, string>(strReturn1, strReturn2);
+                return new ValueTuple<string, string>(strReturn1, strReturn2);
             });
             Lazy<string> strTotalSensor = new Lazy<string>(() => GetCalculatedSensor(objExcludeMod).ToString(GlobalSettings.InvariantCultureInfo));
             Lazy<string> strTotalArmor = new Lazy<string>(() => GetTotalArmor(objExcludeMod).ToString(GlobalSettings.InvariantCultureInfo));
@@ -6415,7 +6415,7 @@ namespace Chummer.Backend.Equipment
                     return "0.5";
                 }, Utils.JoinableTaskFactory)
                 : new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await GetTotalBodyAsync(objExcludeMod, token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
-            Microsoft.VisualStudio.Threading.AsyncLazy<Tuple<string, string>> strHandlingValues = new Microsoft.VisualStudio.Threading.AsyncLazy<Tuple<string, string>>(async () =>
+            Microsoft.VisualStudio.Threading.AsyncLazy<ValueTuple<string, string>> strHandlingValues = new Microsoft.VisualStudio.Threading.AsyncLazy<ValueTuple<string, string>>(async () =>
             {
                 bool blnFirst = true;
                 string strReturn1 = string.Empty;
@@ -6433,9 +6433,9 @@ namespace Chummer.Backend.Equipment
                         break;
                     }
                 }
-                return new Tuple<string, string>(strReturn1, strReturn2);
+                return new ValueTuple<string, string>(strReturn1, strReturn2);
             }, Utils.JoinableTaskFactory);
-            Microsoft.VisualStudio.Threading.AsyncLazy<Tuple<string, string>> strSpeedValues = new Microsoft.VisualStudio.Threading.AsyncLazy<Tuple<string, string>>(async () =>
+            Microsoft.VisualStudio.Threading.AsyncLazy<ValueTuple<string, string>> strSpeedValues = new Microsoft.VisualStudio.Threading.AsyncLazy<ValueTuple<string, string>>(async () =>
             {
                 bool blnFirst = true;
                 string strReturn1 = string.Empty;
@@ -6453,9 +6453,9 @@ namespace Chummer.Backend.Equipment
                         break;
                     }
                 }
-                return new Tuple<string, string>(strReturn1, strReturn2);
+                return new ValueTuple<string, string>(strReturn1, strReturn2);
             }, Utils.JoinableTaskFactory);
-            Microsoft.VisualStudio.Threading.AsyncLazy<Tuple<string, string>> strAccelerationValues = new Microsoft.VisualStudio.Threading.AsyncLazy<Tuple<string, string>>(async () =>
+            Microsoft.VisualStudio.Threading.AsyncLazy<ValueTuple<string, string>> strAccelerationValues = new Microsoft.VisualStudio.Threading.AsyncLazy<ValueTuple<string, string>>(async () =>
             {
                 bool blnFirst = true;
                 string strReturn1 = string.Empty;
@@ -6473,7 +6473,7 @@ namespace Chummer.Backend.Equipment
                         break;
                     }
                 }
-                return new Tuple<string, string>(strReturn1, strReturn2);
+                return new ValueTuple<string, string>(strReturn1, strReturn2);
             }, Utils.JoinableTaskFactory);
             Microsoft.VisualStudio.Threading.AsyncLazy<string> strTotalSensor = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await GetCalculatedSensorAsync(objExcludeMod, token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
             Microsoft.VisualStudio.Threading.AsyncLazy<string> strTotalArmor = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await GetTotalArmorAsync(objExcludeMod, token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);

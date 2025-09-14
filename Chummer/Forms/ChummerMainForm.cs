@@ -964,8 +964,8 @@ namespace Chummer
                                     }
                                     return x.Items.Count;
                                 }, token: _objGenericToken).ConfigureAwait(false));
-                                List<Tuple<ToolStripItem, string>> lstToTranslate
-                                    = new List<Tuple<ToolStripItem, string>>(intNumItems);
+                                List<ValueTuple<ToolStripItem, string>> lstToTranslate
+                                    = new List<ValueTuple<ToolStripItem, string>>(intNumItems);
                                 foreach (ToolStripItem tssItem in await menuStrip
                                                                         .DoThreadSafeFuncAsync(
                                                                             (x, y) => x.Items, _objGenericToken)
@@ -2624,8 +2624,8 @@ namespace Chummer
                     }
                     return x.Items.Count;
                 }, token: _objGenericToken).ConfigureAwait(false);
-                List<Tuple<ToolStripItem, string>> lstToTranslate
-                    = new List<Tuple<ToolStripItem, string>>(intNumItems);
+                List<ValueTuple<ToolStripItem, string>> lstToTranslate
+                    = new List<ValueTuple<ToolStripItem, string>>(intNumItems);
                 foreach (ToolStripItem tssItem in await menuStrip
                                                         .DoThreadSafeFuncAsync(
                                                             (x, y) => x.Items, _objGenericToken)
@@ -2660,8 +2660,8 @@ namespace Chummer
                         }
                         return x.Items.Count;
                     }, token: _objGenericToken).ConfigureAwait(false);
-                    List<Tuple<ToolStripItem, string>> lstToTranslate
-                        = new List<Tuple<ToolStripItem, string>>(intNumItems);
+                    List<ValueTuple<ToolStripItem, string>> lstToTranslate
+                        = new List<ValueTuple<ToolStripItem, string>>(intNumItems);
                     foreach (ToolStripItem tssItem in await objToolStrip
                                                             .DoThreadSafeFuncAsync(
                                                                 (x, y) => x.Items, _objGenericToken)
@@ -2804,8 +2804,8 @@ namespace Chummer
                 Properties.Settings.Default.WindowState = eWindowState;
                 if (eWindowState == FormWindowState.Normal)
                 {
-                    Tuple<Point, Size> tupBounds = await this
-                        .DoThreadSafeFuncAsync(x => new Tuple<Point, Size>(x.Location, x.Size), CancellationToken.None)
+                    ValueTuple<Point, Size> tupBounds = await this
+                        .DoThreadSafeFuncAsync(x => new ValueTuple<Point, Size>(x.Location, x.Size), CancellationToken.None)
                         .ConfigureAwait(false);
                     Properties.Settings.Default.Location = tupBounds.Item1;
                     Properties.Settings.Default.Size = tupBounds.Item2;
@@ -3599,8 +3599,8 @@ namespace Chummer
                                                                         y => y.WindowState
                                                                              == FormWindowState.Maximized),
                                                                token).ConfigureAwait(false);
-                        List<Tuple<CharacterSheetViewer, Character>> lstNewFormsToProcess
-                            = new List<Tuple<CharacterSheetViewer, Character>>(lstNewCharacters.Count);
+                        List<ValueTuple<CharacterSheetViewer, Character>> lstNewFormsToProcess
+                            = new List<ValueTuple<CharacterSheetViewer, Character>>(lstNewCharacters.Count);
                         string strUI = await LanguageManager.GetStringAsync("String_UI", token: token)
                                                             .ConfigureAwait(false);
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
@@ -3656,7 +3656,7 @@ namespace Chummer
                                         MdiParent = y
                                     };
                                     lstNewFormsToProcess.Add(
-                                        new Tuple<CharacterSheetViewer, Character>(frmViewer, objCharacter));
+                                        new ValueTuple<CharacterSheetViewer, Character>(frmViewer, objCharacter));
                                 }, token: token).ConfigureAwait(false);
 
                                 if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)

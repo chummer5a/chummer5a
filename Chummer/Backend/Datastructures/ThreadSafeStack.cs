@@ -279,13 +279,13 @@ namespace Chummer
             return false;
         }
 
-        public Tuple<bool, T> TryTake()
+        public ValueTuple<bool, T> TryTake()
         {
             using (LockObject.EnterReadLock())
             {
                 if (_stkData.Count == 0)
                 {
-                    return new Tuple<bool, T>(false, default);
+                    return new ValueTuple<bool, T>(false, default);
                 }
             }
             using (LockObject.EnterUpgradeableReadLock())
@@ -295,21 +295,21 @@ namespace Chummer
                     T objReturn;
                     using (LockObject.EnterWriteLock())
                         objReturn = _stkData.Pop();
-                    return new Tuple<bool, T>(true, objReturn);
+                    return new ValueTuple<bool, T>(true, objReturn);
                 }
             }
 
-            return new Tuple<bool, T>(false, default);
+            return new ValueTuple<bool, T>(false, default);
         }
 
-        public async Task<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
+        public async Task<ValueTuple<bool, T>> TryTakeAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 if (_stkData.Count == 0)
-                    return new Tuple<bool, T>(false, default);
+                    return new ValueTuple<bool, T>(false, default);
             }
             finally
             {
@@ -333,7 +333,7 @@ namespace Chummer
                         await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
 
-                    return new Tuple<bool, T>(true, objReturn);
+                    return new ValueTuple<bool, T>(true, objReturn);
                 }
             }
             finally
@@ -341,7 +341,7 @@ namespace Chummer
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            return new Tuple<bool, T>(false, default);
+            return new ValueTuple<bool, T>(false, default);
         }
 
         /// <inheritdoc cref="Stack{T}.ToArray"/>

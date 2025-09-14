@@ -273,7 +273,7 @@ namespace Chummer
                     {
                         using (WeaponAccessory objTemp = new WeaponAccessory(_objCharacter))
                         {
-                            objTemp.Create(objXmlGear, new Tuple<string, string>(string.Empty, string.Empty), 0, true, true, false);
+                            objTemp.Create(objXmlGear, new ValueTuple<string, string>(string.Empty, string.Empty), 0, true, true, false);
 
                             Type objType = objTemp.GetType();
 

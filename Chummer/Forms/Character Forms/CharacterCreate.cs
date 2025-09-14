@@ -5829,11 +5829,11 @@ namespace Chummer
                     --x.Maximum;
                     if (x.Value <= x.Maximum)
                     {
-                        return new Tuple<bool, int>(true, x.ValueAsInt);
+                        return new ValueTuple<bool, int>(true, x.ValueAsInt);
                     }
 
                     x.Value = x.Maximum;
-                    return new Tuple<bool, int>(false, x.ValueAsInt);
+                    return new ValueTuple<bool, int>(false, x.ValueAsInt);
                 }, GenericToken).ConfigureAwait(false);
                 if (blnDoExtra)
                 {
@@ -22835,7 +22835,7 @@ namespace Chummer
                                         try
                                         {
                                             await objMod.CreateAsync(objXmlAccessoryNode,
-                                                new Tuple<string, string>(strMount, strExtraMount), 0,
+                                                new ValueTuple<string, string>(strMount, strExtraMount), 0,
                                                 false, blnCreateChildren, token: token).ConfigureAwait(false);
                                             await objMod.SetParentAsync(objWeapon, token).ConfigureAwait(false);
 
@@ -22898,7 +22898,7 @@ namespace Chummer
                                                     try
                                                     {
                                                         await objMod.CreateAsync(objXmlAccessoryNode,
-                                                            new Tuple<string, string>(strMount, strExtraMount), 0, false,
+                                                            new ValueTuple<string, string>(strMount, strExtraMount), 0, false,
                                                             blnCreateChildren, token: token).ConfigureAwait(false);
                                                         await objMod.SetParentAsync(objWeapon, token).ConfigureAwait(false);
 
@@ -23205,7 +23205,7 @@ namespace Chummer
                                                 try
                                                 {
                                                     await objMod.CreateAsync(objXmlAccessoryNode,
-                                                        new Tuple<string, string>(strMount, strExtraMount),
+                                                        new ValueTuple<string, string>(strMount, strExtraMount),
                                                         0, false, blnCreateChildren, token: token).ConfigureAwait(false);
                                                     await objMod.SetParentAsync(objWeapon, token).ConfigureAwait(false);
 
@@ -23265,7 +23265,7 @@ namespace Chummer
                                                             try
                                                             {
                                                                 await objMod.CreateAsync(objXmlAccessoryNode,
-                                                                    new Tuple<string, string>(strMount, strExtraMount), 0, false,
+                                                                    new ValueTuple<string, string>(strMount, strExtraMount), 0, false,
                                                                     blnCreateChildren, token: token).ConfigureAwait(false);
                                                                 await objMod.SetParentAsync(objWeapon, token).ConfigureAwait(false);
 

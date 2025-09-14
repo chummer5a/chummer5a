@@ -28,7 +28,7 @@ namespace Chummer
     {
         Task<bool> ContainsKeyAsync(TKey key, CancellationToken token = default);
 
-        Task<Tuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default);
+        Task<ValueTuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default);
 
         Task<IReadOnlyCollection<TKey>> GetReadOnlyKeysAsync(CancellationToken token = default);
 

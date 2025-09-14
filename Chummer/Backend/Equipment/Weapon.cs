@@ -851,15 +851,15 @@ namespace Chummer.Backend.Equipment
                                     // ReSharper disable once MethodHasAsyncOverload
                                     objAccessory.Create(objXmlAccessory,
                                         objXmlWeaponAccessory.InnerXml.Contains("<extramount>")
-                                            ? new Tuple<string, string>(objXmlAccessory["mount"].InnerText,
+                                            ? new ValueTuple<string, string>(objXmlAccessory["mount"].InnerText,
                                                 objXmlAccessory["extramount"].InnerText)
-                                            : new Tuple<string, string>(objXmlAccessory["mount"].InnerText, "None"),
+                                            : new ValueTuple<string, string>(objXmlAccessory["mount"].InnerText, "None"),
                                         intAccessoryRating, false, blnCreateChildren, blnCreateImprovements, token);
                                 }
                                 else
                                 {
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    objAccessory.Create(objXmlAccessory, new Tuple<string, string>("Internal", "None"),
+                                    objAccessory.Create(objXmlAccessory, new ValueTuple<string, string>("Internal", "None"),
                                         intAccessoryRating, false, blnCreateChildren, blnCreateImprovements, token);
                                 }
                             }
@@ -867,16 +867,16 @@ namespace Chummer.Backend.Equipment
                             {
                                 await objAccessory.CreateAsync(objXmlAccessory,
                                         objXmlWeaponAccessory.InnerXml.Contains("<extramount>")
-                                            ? new Tuple<string, string>(objXmlAccessory["mount"].InnerText,
+                                            ? new ValueTuple<string, string>(objXmlAccessory["mount"].InnerText,
                                                 objXmlAccessory["extramount"].InnerText)
-                                            : new Tuple<string, string>(objXmlAccessory["mount"].InnerText, "None"),
+                                            : new ValueTuple<string, string>(objXmlAccessory["mount"].InnerText, "None"),
                                         intAccessoryRating, false, blnCreateChildren, blnCreateImprovements, token)
                                     .ConfigureAwait(false);
                             }
                             else
                             {
                                 await objAccessory.CreateAsync(objXmlAccessory,
-                                        new Tuple<string, string>("Internal", "None"),
+                                        new ValueTuple<string, string>("Internal", "None"),
                                         intAccessoryRating, false, blnCreateChildren, blnCreateImprovements, token)
                                     .ConfigureAwait(false);
                             }
@@ -3170,7 +3170,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private Task<Tuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, int intRating, bool blnForRange = false, CancellationToken token = default)
+        private Task<ValueTuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, int intRating, bool blnForRange = false, CancellationToken token = default)
         {
             return ProcessRatingStringAsDecAsync(strExpression, () => Task.FromResult(intRating), blnForRange, token);
         }
@@ -3178,11 +3178,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private async Task<Tuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, Func<Task<int>> funcRating, bool blnForRange = false, CancellationToken token = default)
+        private async Task<ValueTuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, Func<Task<int>> funcRating, bool blnForRange = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strExpression))
-                return new Tuple<decimal, bool>(0, true);
+                return new ValueTuple<decimal, bool>(0, true);
             strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStart('+');
             bool blnIsSuccess = true;
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
@@ -3242,7 +3242,7 @@ namespace Chummer.Backend.Equipment
                     decValue = Convert.ToDecimal((double)objProcess);
             }
 
-            return new Tuple<decimal, bool>(decValue, blnIsSuccess);
+            return new ValueTuple<decimal, bool>(decValue, blnIsSuccess);
         }
 
         /// <summary>
@@ -3602,7 +3602,7 @@ namespace Chummer.Backend.Equipment
             set => _strWeight = value;
         }
 
-        public async Task<Tuple<string, decimal>> DisplayCost(decimal decMarkup = 0.0m, CancellationToken token = default)
+        public async Task<ValueTuple<string, decimal>> DisplayCost(decimal decMarkup = 0.0m, CancellationToken token = default)
         {
             string strReturn = Cost;
             string strFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
@@ -3635,7 +3635,7 @@ namespace Chummer.Backend.Equipment
                     strReturn = decMin.ToString(strFormat, GlobalSettings.CultureInfo) + " - " +
                                 decMax.ToString(strFormat, GlobalSettings.CultureInfo) + strNuyen;
 
-                return new Tuple<string, decimal>(strReturn, decMin);
+                return new ValueTuple<string, decimal>(strReturn, decMin);
             }
 
             decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTotalCost);
@@ -3645,7 +3645,7 @@ namespace Chummer.Backend.Equipment
             if (DiscountCost)
                 decTotalCost *= 0.9m;
 
-            return new Tuple<string, decimal>(decTotalCost.ToString(strFormat, GlobalSettings.CultureInfo) + strNuyen, decTotalCost);
+            return new ValueTuple<string, decimal>(decTotalCost.ToString(strFormat, GlobalSettings.CultureInfo) + strNuyen, decTotalCost);
         }
 
         /// <summary>
@@ -6804,14 +6804,14 @@ namespace Chummer.Backend.Equipment
             return intAP.ToString(objCulture);
         }
 
-        public Tuple<string, string> DisplayTotalRC => TotalRC(GlobalSettings.CultureInfo, GlobalSettings.Language, true);
+        public ValueTuple<string, string> DisplayTotalRC => TotalRC(GlobalSettings.CultureInfo, GlobalSettings.Language, true);
 
-        public Task<Tuple<string, string>> GetDisplayTotalRCAsync(CancellationToken token = default) => TotalRCAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true, token: token);
+        public Task<ValueTuple<string, string>> GetDisplayTotalRCAsync(CancellationToken token = default) => TotalRCAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true, token: token);
 
         /// <summary>
         /// The Weapon's total RC including Accessories and Modifications. The first item is the RC, the second is the tooltip.
         /// </summary>
-        public Tuple<string, string> TotalRC(CultureInfo objCulture, string strLanguage, bool blnWithTooltip = false,
+        public ValueTuple<string, string> TotalRC(CultureInfo objCulture, string strLanguage, bool blnWithTooltip = false,
             bool blnIncludeAmmo = true)
         {
             return Utils.SafelyRunSynchronously(() =>
@@ -6821,7 +6821,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Weapon's total RC including Accessories and Modifications. The first item is the RC, the second is the tooltip.
         /// </summary>
-        public Task<Tuple<string, string>> TotalRCAsync(CultureInfo objCulture, string strLanguage, bool blnWithTooltip = false,
+        public Task<ValueTuple<string, string>> TotalRCAsync(CultureInfo objCulture, string strLanguage, bool blnWithTooltip = false,
             bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             return TotalRCCoreAsync(false, objCulture, strLanguage, blnWithTooltip, blnIncludeAmmo, token);
@@ -6830,7 +6830,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Weapon's total RC including Accessories and Modifications. The first item is the RC, the second is the tooltip.
         /// </summary>
-        private async Task<Tuple<string, string>> TotalRCCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage,
+        private async Task<ValueTuple<string, string>> TotalRCCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage,
             bool blnWithTooltip, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             string strSpace = blnSync
@@ -6841,8 +6841,8 @@ namespace Chummer.Backend.Equipment
             string strRCFull;
             string strRC = RC;
 
-            List<Tuple<string, decimal>> lstRCGroups = new List<Tuple<string, decimal>>(5);
-            List<Tuple<string, decimal>> lstRCDeployGroups = new List<Tuple<string, decimal>>(5);
+            List<ValueTuple<string, decimal>> lstRCGroups = new List<ValueTuple<string, decimal>>(5);
+            List<ValueTuple<string, decimal>> lstRCDeployGroups = new List<ValueTuple<string, decimal>>(5);
             strRC = blnSync
                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                 ? strRC.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
@@ -6927,7 +6927,7 @@ namespace Chummer.Backend.Equipment
                         decimal decItemRC = blnSync
                             ? objAccessory.TotalRC
                             : await objAccessory.GetTotalRCAsync(token).ConfigureAwait(false);
-                        List<Tuple<string, decimal>> lstLoopRCGroup = lstRCGroups;
+                        List<ValueTuple<string, decimal>> lstLoopRCGroup = lstRCGroups;
                         if (objAccessory.RCDeployable)
                         {
                             lstLoopRCGroup = lstRCDeployGroups;
@@ -6935,13 +6935,13 @@ namespace Chummer.Backend.Equipment
 
                         while (lstLoopRCGroup.Count < objAccessory.RCGroup)
                         {
-                            lstLoopRCGroup.Add(new Tuple<string, decimal>(string.Empty, 0));
+                            lstLoopRCGroup.Add(new ValueTuple<string, decimal>(string.Empty, 0));
                         }
 
                         if (lstLoopRCGroup[objAccessory.RCGroup - 1].Item2 < decItemRC)
                         {
                             lstLoopRCGroup[objAccessory.RCGroup - 1]
-                                = new Tuple<string, decimal>(
+                                = new ValueTuple<string, decimal>(
                                     blnSync
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         ? objAccessory.DisplayName(strLanguage)
@@ -7298,7 +7298,7 @@ namespace Chummer.Backend.Equipment
                     strTooltip = sbdRCTip.ToString();
             }
 
-            return new Tuple<string, string>(strRC, strTooltip);
+            return new ValueTuple<string, string>(strRC, strTooltip);
         }
 
         /// <summary>
@@ -13022,7 +13022,7 @@ namespace Chummer.Backend.Equipment
                                     WeaponAccessory objWeaponAccessory = new WeaponAccessory(_objCharacter);
                                     try
                                     {
-                                        objWeaponAccessory.Create(xmlWeaponAccessoryData, new Tuple<string, string>(strMainMount, strExtraMount), xmlWeaponAccessoryToImport.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt ?? 0);
+                                        objWeaponAccessory.Create(xmlWeaponAccessoryData, new ValueTuple<string, string>(strMainMount, strExtraMount), xmlWeaponAccessoryToImport.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt ?? 0);
                                         objWeaponAccessory.Notes = xmlWeaponAccessoryToImport.SelectSingleNodeAndCacheExpression("description")?.Value;
                                         objWeaponAccessory.Parent = this;
                                         WeaponAccessories.Add(objWeaponAccessory);

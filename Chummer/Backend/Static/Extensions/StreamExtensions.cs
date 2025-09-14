@@ -61,7 +61,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objStream">Stream to convert to a byte array.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static Task<Tuple<byte[], int>> ToPooledArrayAsync(this Stream objStream, CancellationToken token = default)
+        public static Task<ValueTuple<byte[], int>> ToPooledArrayAsync(this Stream objStream, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (objStream == null)
@@ -69,7 +69,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objStream));
             }
             return ToPooledArrayAsyncInner();
-            async Task<Tuple<byte[], int>> ToPooledArrayAsyncInner()
+            async Task<ValueTuple<byte[], int>> ToPooledArrayAsyncInner()
             {
                 objStream.Position = 0;
                 int arrayLength = Convert.ToInt32(objStream.Length);
@@ -84,7 +84,7 @@ namespace Chummer
                     ArrayPool<byte>.Shared.Return(achrReturn);
                     throw;
                 }
-                return new Tuple<byte[], int>(achrReturn, arrayLength);
+                return new ValueTuple<byte[], int>(achrReturn, arrayLength);
             }
         }
 

@@ -1609,7 +1609,7 @@ namespace Chummer
                                 (x.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
                             TreeNodeCollection lstReturn = x.Nodes;
                             lstReturn.Clear();
-                            return new Tuple<string, TreeNodeCollection>(strReturn, lstReturn);
+                            return new ValueTuple<string, TreeNodeCollection>(strReturn, lstReturn);
                         }, token).ConfigureAwait(false);
 
                     await CharacterObject.InitiationGrades.ForEachAsync(objGrade => AddToTree(objGrade), token)
@@ -2743,7 +2743,7 @@ namespace Chummer
             SkipUpdate = true;
             try
             {
-                List<Tuple<TreeNode, Task<string>>> lstNames = new List<Tuple<TreeNode, Task<string>>>(intTopLevelNodeCount);
+                List<ValueTuple<TreeNode, Task<string>>> lstNames = new List<ValueTuple<TreeNode, Task<string>>>(intTopLevelNodeCount);
                 TreeNode objSelectedNode = await treQualities.DoThreadSafeFuncAsync(x =>
                 {
                     foreach (TreeNode objQualityTypeNode in x.Nodes)
@@ -2751,7 +2751,7 @@ namespace Chummer
                         foreach (TreeNode objQualityNode in objQualityTypeNode.Nodes)
                         {
                             if (objQualityNode.Tag is Quality objLoopQuality)
-                                lstNames.Add(new Tuple<TreeNode, Task<string>>(
+                                lstNames.Add(new ValueTuple<TreeNode, Task<string>>(
                                                  objQualityNode,
                                                  objLoopQuality.GetCurrentDisplayNameAsync(token)));
                         }
@@ -2759,7 +2759,7 @@ namespace Chummer
 
                     return x.SelectedNode;
                 }, token).ConfigureAwait(false);
-                foreach (Tuple<TreeNode, Task<string>> tupLoop in lstNames)
+                foreach (ValueTuple<TreeNode, Task<string>> tupLoop in lstNames)
                 {
                     string strLoopText = await tupLoop.Item2.ConfigureAwait(false);
                     await treQualities.DoThreadSafeAsync(() => tupLoop.Item1.Text = strLoopText, token).ConfigureAwait(false);
@@ -3037,8 +3037,8 @@ namespace Chummer
 
                     case NotifyCollectionChangedAction.Move:
                     {
-                        List<Tuple<string, TreeNode>> lstMoveNodes =
-                            new List<Tuple<string, TreeNode>>(e.OldItems.Count);
+                        List<ValueTuple<string, TreeNode>> lstMoveNodes =
+                            new List<ValueTuple<string, TreeNode>>(e.OldItems.Count);
                         foreach (string strLocation in e.OldItems)
                         {
                             TreeNode objLocation
@@ -3046,7 +3046,7 @@ namespace Chummer
                                     x => x.FindNode(strLocation, false), token).ConfigureAwait(false);
                             if (objLocation != null)
                             {
-                                lstMoveNodes.Add(new Tuple<string, TreeNode>(strLocation, objLocation));
+                                lstMoveNodes.Add(new ValueTuple<string, TreeNode>(strLocation, objLocation));
                                 objLocation.Remove();
                             }
                         }
@@ -3054,9 +3054,9 @@ namespace Chummer
                         int intNewIndex = e.NewStartingIndex;
                         foreach (string strLocation in e.NewItems)
                         {
-                            Tuple<string, TreeNode> objLocationTuple =
+                            ValueTuple<string, TreeNode> objLocationTuple =
                                 lstMoveNodes.Find(x => x.Item1 == strLocation);
-                            if (objLocationTuple != null)
+                            if (objLocationTuple != default)
                             {
                                 int index = Interlocked.Increment(ref intNewIndex) - 1;
                                 await treImprovements.DoThreadSafeAsync(
@@ -3231,8 +3231,8 @@ namespace Chummer
 
                     case NotifyCollectionChangedAction.Move:
                     {
-                        List<Tuple<Location, TreeNode>> lstMoveNodes =
-                            new List<Tuple<Location, TreeNode>>(e.OldItems.Count);
+                        List<ValueTuple<Location, TreeNode>> lstMoveNodes =
+                            new List<ValueTuple<Location, TreeNode>>(e.OldItems.Count);
                         foreach (Location objLocation in e.OldItems)
                         {
                             TreeNode objNode
@@ -3240,7 +3240,7 @@ namespace Chummer
                                     x => x.FindNodeByTag(objLocation, false), token).ConfigureAwait(false);
                             if (objNode != null)
                             {
-                                lstMoveNodes.Add(new Tuple<Location, TreeNode>(objLocation, objNode));
+                                lstMoveNodes.Add(new ValueTuple<Location, TreeNode>(objLocation, objNode));
                                 await treSelected.DoThreadSafeAsync(() => objNode.Remove(), token).ConfigureAwait(false);
                             }
                         }
@@ -3250,9 +3250,9 @@ namespace Chummer
                             Interlocked.Add(ref intNewIndex, await funcOffset.Invoke().ConfigureAwait(false));
                         foreach (Location objLocation in e.NewItems)
                         {
-                            Tuple<Location, TreeNode> objLocationTuple =
+                            ValueTuple<Location, TreeNode> objLocationTuple =
                                 lstMoveNodes.Find(x => x.Item1 == objLocation);
-                            if (objLocationTuple != null)
+                            if (objLocationTuple != default)
                             {
                                 int index = Interlocked.Increment(ref intNewIndex) - 1;
                                 await treSelected.DoThreadSafeAsync(

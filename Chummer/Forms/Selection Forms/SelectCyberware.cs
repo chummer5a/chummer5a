@@ -2124,11 +2124,11 @@ namespace Chummer
         private readonly Microsoft.VisualStudio.Threading.AsyncLazy<string> _strCachedParentCost;
         private readonly Microsoft.VisualStudio.Threading.AsyncLazy<string> _strCachedParentGearCost;
 
-        private async Task<Tuple<decimal, bool>> ProcessInvariantXPathExpression(XPathNavigator xmlCyberware, string strExpression, int intMinRating, int intRating, CancellationToken token = default)
+        private async Task<ValueTuple<decimal, bool>> ProcessInvariantXPathExpression(XPathNavigator xmlCyberware, string strExpression, int intMinRating, int intRating, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strExpression))
-                return new Tuple<decimal, bool>(0, true);
+                return new ValueTuple<decimal, bool>(0, true);
             bool blnSuccess = true;
             strExpression = strExpression.ProcessFixedValuesString(intRating).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
@@ -2347,10 +2347,10 @@ namespace Chummer
                 (bool blnIsSuccess, object objProcess)
                             = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
                 if (blnIsSuccess)
-                    return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
+                    return new ValueTuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
             }
 
-            return new Tuple<decimal, bool>(decValue, blnSuccess);
+            return new ValueTuple<decimal, bool>(decValue, blnSuccess);
         }
 
         #endregion Methods

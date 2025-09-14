@@ -986,7 +986,7 @@ namespace Chummer
                 {
                     objStartInfo.Start();
                 }
-            }, new Tuple<string, string>(strFileName, strArguments));
+            }, new ValueTuple<string, string>(strFileName, strArguments));
 #pragma warning restore VSTHRD001
         }
 
@@ -2048,8 +2048,8 @@ namespace Chummer
             {
                 if (token == CancellationToken.None)
                 {
-                    Parallel.For(0, intLength, () => new Tuple<T, int>(default, 0),
-                        (i, x, y) => new Tuple<T, int>(lstFuncToRun.ElementAtBetter(i).Invoke(), i), x => aobjReturn[x.Item2] = x.Item1);
+                    Parallel.For(0, intLength, () => new ValueTuple<T, int>(default, 0),
+                        (i, x, y) => new ValueTuple<T, int>(lstFuncToRun.ElementAtBetter(i).Invoke(), i), x => aobjReturn[x.Item2] = x.Item1);
                 }
                 else
                 {
@@ -2058,8 +2058,8 @@ namespace Chummer
                     {
                         CancellationToken = token
                     };
-                    Parallel.For(0, intLength, objOptions, () => new Tuple<T, int>(default, 0),
-                        (i, x, y) => new Tuple<T, int>(lstFuncToRun.ElementAtBetter(i).Invoke(), i), x => aobjReturn[x.Item2] = x.Item1);
+                    Parallel.For(0, intLength, objOptions, () => new ValueTuple<T, int>(default, 0),
+                        (i, x, y) => new ValueTuple<T, int>(lstFuncToRun.ElementAtBetter(i).Invoke(), i), x => aobjReturn[x.Item2] = x.Item1);
                     token.ThrowIfCancellationRequested();
                 }
                 return aobjReturn;
@@ -2223,7 +2223,7 @@ namespace Chummer
             {
                 if (token == CancellationToken.None)
                 {
-                    Parallel.For(0, intLength, () => new Tuple<T, int>(default, 0), (i, x, y) =>
+                    Parallel.For(0, intLength, () => new ValueTuple<T, int>(default, 0), (i, x, y) =>
                     {
                         Task<T> objSyncTask = lstFuncToRun.ElementAtBetter(i).Invoke();
                         if (objSyncTask.Status == TaskStatus.Created)
@@ -2231,7 +2231,7 @@ namespace Chummer
                         T objInnerReturn = objSyncTask.GetAwaiter().GetResult();
                         if (objSyncTask.Exception != null)
                             throw objSyncTask.Exception;
-                        return new Tuple<T, int>(objInnerReturn, i);
+                        return new ValueTuple<T, int>(objInnerReturn, i);
                     }, x => aobjReturn[x.Item2] = x.Item1);
                 }
                 else
@@ -2241,7 +2241,7 @@ namespace Chummer
                     {
                         CancellationToken = token
                     };
-                    Parallel.For(0, intLength, objOptions, () => new Tuple<T, int>(default, 0), (i, x, y) =>
+                    Parallel.For(0, intLength, objOptions, () => new ValueTuple<T, int>(default, 0), (i, x, y) =>
                     {
                         Task<T> objSyncTask = lstFuncToRun.ElementAtBetter(i).Invoke();
                         if (objSyncTask.Status == TaskStatus.Created)
@@ -2249,7 +2249,7 @@ namespace Chummer
                         T objInnerReturn = objSyncTask.GetAwaiter().GetResult();
                         if (objSyncTask.Exception != null)
                             throw objSyncTask.Exception;
-                        return new Tuple<T, int>(objInnerReturn, i);
+                        return new ValueTuple<T, int>(objInnerReturn, i);
                     }, x => aobjReturn[x.Item2] = x.Item1);
                     token.ThrowIfCancellationRequested();
                 }

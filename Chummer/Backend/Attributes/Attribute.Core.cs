@@ -974,14 +974,14 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The CharacterAttribute's combined Minimum and Maximum values (Metatype Min/Max + Modifiers) before essence modifiers are applied.
         /// </summary>
-        public Tuple<int, int> MinimumMaximumNoEssenceLoss(bool blnUseEssenceAtSpecialStart = false)
+        public ValueTuple<int, int> MinimumMaximumNoEssenceLoss(bool blnUseEssenceAtSpecialStart = false)
         {
             using (LockObject.EnterReadLock())
             {
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 {
-                    return new Tuple<int, int>(1, 1);
+                    return new ValueTuple<int, int>(1, 1);
                 }
 
                 int intRawMinimum = MetatypeMinimum;
@@ -1043,14 +1043,14 @@ namespace Chummer.Backend.Attributes
                 if (intTotalMaximum < intTotalMinimum)
                     intTotalMaximum = intTotalMinimum;
 
-                return new Tuple<int, int>(intTotalMinimum, intTotalMaximum);
+                return new ValueTuple<int, int>(intTotalMinimum, intTotalMaximum);
             }
         }
 
         /// <summary>
         /// The CharacterAttribute's combined Minimum and Maximum values (Metatype Min/Max + Modifiers) before essence modifiers are applied.
         /// </summary>
-        public async Task<Tuple<int, int>> MinimumMaximumNoEssenceLossAsync(bool blnUseEssenceAtSpecialStart = false, CancellationToken token = default)
+        public async Task<ValueTuple<int, int>> MinimumMaximumNoEssenceLossAsync(bool blnUseEssenceAtSpecialStart = false, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
@@ -1060,7 +1060,7 @@ namespace Chummer.Backend.Attributes
                 if (await _objCharacter.GetMetatypeCategoryAsync(token).ConfigureAwait(false) == "Cyberzombie"
                     && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 {
-                    return new Tuple<int, int>(1, 1);
+                    return new ValueTuple<int, int>(1, 1);
                 }
 
                 int intRawMaximumBase = await GetMetatypeMaximumAsync(token).ConfigureAwait(false);
@@ -1125,7 +1125,7 @@ namespace Chummer.Backend.Attributes
                 if (intTotalMaximum < intTotalMinimum)
                     intTotalMaximum = intTotalMinimum;
 
-                return new Tuple<int, int>(intTotalMinimum, intTotalMaximum);
+                return new ValueTuple<int, int>(intTotalMinimum, intTotalMaximum);
             }
             finally
             {
@@ -1638,7 +1638,7 @@ namespace Chummer.Backend.Attributes
                             await ProcessCyberlimbsAsync(await _objCharacter.GetCyberwareAsync(token)
                                 .ConfigureAwait(false)).ConfigureAwait(false);
 
-                    Tuple<int, int> ProcessCyberlimbs(IEnumerable<Cyberware> lstToCheck)
+                    ValueTuple<int, int> ProcessCyberlimbs(IEnumerable<Cyberware> lstToCheck)
                     {
                         int intLimbCountReturn = 0;
                         int intLimbTotalReturn = 0;
@@ -1664,10 +1664,10 @@ namespace Chummer.Backend.Attributes
                             }
                         }
 
-                        return new Tuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
+                        return new ValueTuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
                     }
 
-                    async Task<Tuple<int, int>> ProcessCyberlimbsAsync(IAsyncEnumerable<Cyberware> lstToCheck)
+                    async Task<ValueTuple<int, int>> ProcessCyberlimbsAsync(IAsyncEnumerable<Cyberware> lstToCheck)
                     {
                         int intLimbCountReturn = 0;
                         int intLimbTotalReturn = 0;
@@ -1696,7 +1696,7 @@ namespace Chummer.Backend.Attributes
                             }
                         }, token).ConfigureAwait(false);
 
-                        return new Tuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
+                        return new ValueTuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
                     }
 
                     if (intLimbCount > 0)
@@ -2439,8 +2439,8 @@ namespace Chummer.Backend.Attributes
                             = ImprovementManager.GetCachedImprovementListForAugmentedValueOf(
                                 _objCharacter, Improvement.ImprovementType.Attribute, Abbrev);
 
-                        List<Tuple<string, decimal, string>> lstUniquePair =
-                            new List<Tuple<string, decimal, string>>(lstUsedImprovements.Count);
+                        List<ValueTuple<string, decimal, string>> lstUniquePair =
+                            new List<ValueTuple<string, decimal, string>>(lstUsedImprovements.Count);
 
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdModifier))
@@ -2460,7 +2460,7 @@ namespace Chummer.Backend.Attributes
                                     setUniqueNames.Add(strUniqueName);
 
                                     // Add the values to the UniquePair List so we can check them later.
-                                    lstUniquePair.Add(new Tuple<string, decimal, string>(
+                                    lstUniquePair.Add(new ValueTuple<string, decimal, string>(
                                                           strUniqueName,
                                                           objImprovement.Augmented * objImprovement.Rating,
                                                           _objCharacter.GetObjectName(
@@ -2580,7 +2580,7 @@ namespace Chummer.Backend.Attributes
                                     setUniqueNames.Add(strUniqueName);
 
                                     // Add the values to the UniquePair List so we can check them later.
-                                    lstUniquePair.Add(new Tuple<string, decimal, string>(
+                                    lstUniquePair.Add(new ValueTuple<string, decimal, string>(
                                                           strUniqueName,
                                                           objImprovement.Augmented * objImprovement.Rating,
                                                           _objCharacter.GetObjectName(
@@ -2677,8 +2677,8 @@ namespace Chummer.Backend.Attributes
                         = await ImprovementManager.GetCachedImprovementListForAugmentedValueOfAsync(
                             _objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token).ConfigureAwait(false);
 
-                    List<Tuple<string, decimal, string>> lstUniquePair =
-                        new List<Tuple<string, decimal, string>>(lstUsedImprovements.Count);
+                    List<ValueTuple<string, decimal, string>> lstUniquePair =
+                        new List<ValueTuple<string, decimal, string>>(lstUsedImprovements.Count);
 
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdModifier))
@@ -2699,7 +2699,7 @@ namespace Chummer.Backend.Attributes
                                 setUniqueNames.Add(strUniqueName);
 
                                 // Add the values to the UniquePair List so we can check them later.
-                                lstUniquePair.Add(new Tuple<string, decimal, string>(
+                                lstUniquePair.Add(new ValueTuple<string, decimal, string>(
                                                       strUniqueName,
                                                       objImprovement.Augmented * objImprovement.Rating,
                                                       await _objCharacter.GetObjectNameAsync(
@@ -2824,7 +2824,7 @@ namespace Chummer.Backend.Attributes
                                 setUniqueNames.Add(strUniqueName);
 
                                 // Add the values to the UniquePair List so we can check them later.
-                                lstUniquePair.Add(new Tuple<string, decimal, string>(
+                                lstUniquePair.Add(new ValueTuple<string, decimal, string>(
                                                       strUniqueName,
                                                       objImprovement.Augmented * objImprovement.Rating,
                                                       await _objCharacter.GetObjectNameAsync(
@@ -3691,13 +3691,13 @@ namespace Chummer.Backend.Attributes
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
-                            = new List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                        List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
+                            = new List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
                         foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {
-                                lstAsyncEventsList.Add(new Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
+                                lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
                         await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);

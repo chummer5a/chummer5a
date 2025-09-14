@@ -270,14 +270,14 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public async Task<Tuple<bool, KeyValuePair<TKey, TValue>>> TryTakeAsync(CancellationToken token = default)
+        public async Task<ValueTuple<bool, KeyValuePair<TKey, TValue>>> TryTakeAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicData.Count == 0)
-                    return new Tuple<bool, KeyValuePair<TKey, TValue>>(false, default);
+                    return new ValueTuple<bool, KeyValuePair<TKey, TValue>>(false, default);
             }
             finally
             {
@@ -315,9 +315,9 @@ namespace Chummer
             }
 
             return blnTakeSuccessful
-                ? new Tuple<bool, KeyValuePair<TKey, TValue>>(
+                ? new ValueTuple<bool, KeyValuePair<TKey, TValue>>(
                     true, new KeyValuePair<TKey, TValue>(objKeyToTake, objValue))
-                : new Tuple<bool, KeyValuePair<TKey, TValue>>(false, default);
+                : new ValueTuple<bool, KeyValuePair<TKey, TValue>>(false, default);
         }
 
         public async Task<KeyValuePair<TKey, TValue>[]> ToArrayAsync(CancellationToken token = default)
@@ -425,14 +425,14 @@ namespace Chummer
                 return _dicData.TryGetValue(key, out value) && _dicData.Remove(key);
         }
 
-        public async Task<Tuple<bool, TValue>> TryRemoveAsync(TKey key, CancellationToken token = default)
+        public async Task<ValueTuple<bool, TValue>> TryRemoveAsync(TKey key, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 if (!_dicData.TryGetValue(key, out TValue value))
-                    return new Tuple<bool, TValue>(false, value);
+                    return new ValueTuple<bool, TValue>(false, value);
             }
             finally
             {
@@ -443,7 +443,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 bool blnSuccess = _dicData.TryGetValue(key, out TValue value) && _dicData.Remove(key);
-                return new Tuple<bool, TValue>(blnSuccess, value);
+                return new ValueTuple<bool, TValue>(blnSuccess, value);
             }
             finally
             {
@@ -1597,14 +1597,14 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="IDictionary{TKey, TValue}.TryGetValue" />
-        public async Task<Tuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default)
+        public async Task<ValueTuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 bool blnSuccess = _dicData.TryGetValue(key, out TValue value);
-                return new Tuple<bool, TValue>(blnSuccess, value);
+                return new ValueTuple<bool, TValue>(blnSuccess, value);
             }
             finally
             {

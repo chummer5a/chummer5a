@@ -2094,7 +2094,7 @@ namespace Chummer
 
                 if (t?.Tag is CharacterCache objCache && objCache.OnMyKeyDown != null)
                 {
-                    await objCache.OnMyKeyDown(sender, new Tuple<KeyEventArgs, TreeNode>(e, t), _objGenericToken).ConfigureAwait(false);
+                    await objCache.OnMyKeyDown(sender, new ValueTuple<KeyEventArgs, TreeNode>(e, t), _objGenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

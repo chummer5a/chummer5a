@@ -958,7 +958,7 @@ namespace Chummer
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
 
-        private async Task<Tuple<decimal, bool>> ProcessInvariantXPathExpression(string strExpression, int intRating, int intExtraSlots = 0, CancellationToken token = default)
+        private async Task<ValueTuple<decimal, bool>> ProcessInvariantXPathExpression(string strExpression, int intRating, int intExtraSlots = 0, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             bool blnSuccess = true;
@@ -987,10 +987,10 @@ namespace Chummer
                 (bool blnIsSuccess, object objProcess)
                     = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
                 if (blnIsSuccess)
-                    return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
+                    return new ValueTuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
             }
 
-            return new Tuple<decimal, bool>(decValue, blnSuccess);
+            return new ValueTuple<decimal, bool>(decValue, blnSuccess);
         }
 
         #endregion Methods

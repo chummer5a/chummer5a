@@ -7125,11 +7125,11 @@ namespace Chummer
                     --x.Maximum;
                     if (x.Value <= x.Maximum)
                     {
-                        return new Tuple<bool, int>(true, x.ValueAsInt);
+                        return new ValueTuple<bool, int>(true, x.ValueAsInt);
                     }
 
                     x.Value = x.Maximum;
-                    return new Tuple<bool, int>(false, x.ValueAsInt);
+                    return new ValueTuple<bool, int>(false, x.ValueAsInt);
                 }, GenericToken).ConfigureAwait(false);
                 if (blnDoExtra)
                 {

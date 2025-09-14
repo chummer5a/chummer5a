@@ -2942,11 +2942,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private async Task<Tuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, Func<Task<int>> funcRating, CancellationToken token = default)
+        private async Task<ValueTuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, Func<Task<int>> funcRating, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strExpression))
-                return new Tuple<decimal, bool>(0, true);
+                return new ValueTuple<decimal, bool>(0, true);
             bool blnSuccess = true;
             strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
@@ -3092,10 +3092,10 @@ namespace Chummer.Backend.Equipment
                 (bool blnIsSuccess, object objProcess)
                             = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
                 if (blnIsSuccess)
-                    return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
+                    return new ValueTuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
             }
 
-            return new Tuple<decimal, bool>(decValue, blnSuccess);
+            return new ValueTuple<decimal, bool>(decValue, blnSuccess);
         }
 
         /// <summary>
@@ -7311,13 +7311,13 @@ namespace Chummer.Backend.Equipment
                 {
                     List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                         .Select(x => new PropertyChangedEventArgs(x)).ToList();
-                    List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
-                            = new List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                    List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
+                            = new List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
                     foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                     {
                         foreach (PropertyChangedEventArgs objArg in lstArgsList)
                         {
-                            lstAsyncEventsList.Add(new Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
+                            lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                         }
                     }
                     await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);

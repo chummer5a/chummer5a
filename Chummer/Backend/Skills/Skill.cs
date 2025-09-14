@@ -692,12 +692,12 @@ namespace Chummer.Backend.Skills
         /// <param name="objCharacter">The character this skill belongs to</param>
         /// <param name="xmlSkillNode">The XML node describing the skill</param>
         /// <param name="objLoadingSkill">Pre-existing skill object into which to load (if it exists)</param>
-        public static async Task<Tuple<Skill, bool>> LoadAsync(Character objCharacter, XmlNode xmlSkillNode, Skill objLoadingSkill = null, CancellationToken token = default)
+        public static async Task<ValueTuple<Skill, bool>> LoadAsync(Character objCharacter, XmlNode xmlSkillNode, Skill objLoadingSkill = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!xmlSkillNode.TryGetField("suid", Guid.TryParse, out Guid suid))
             {
-                return new Tuple<Skill, bool>(null, false);
+                return new ValueTuple<Skill, bool>(null, false);
             }
 
             bool blnNewSkill = true;
@@ -791,10 +791,10 @@ namespace Chummer.Backend.Skills
                         {
                             xmlSkillDataNode = xmlSkillsDoc.TryGetNodeByNameOrId("/chummer/skills/skill", strName);
                             if (xmlSkillDataNode == null)
-                                return new Tuple<Skill, bool>(null, false);
+                                return new ValueTuple<Skill, bool>(null, false);
                         }
                         else
-                            return new Tuple<Skill, bool>(null, false);
+                            return new ValueTuple<Skill, bool>(null, false);
                     }
 
                     bool blnExotic = false;
@@ -925,7 +925,7 @@ namespace Chummer.Backend.Skills
                     }
                 }
 
-                return new Tuple<Skill, bool>(objLoadingSkill, blnNewSkill);
+                return new ValueTuple<Skill, bool>(objLoadingSkill, blnNewSkill);
             }
             catch
             {
@@ -7499,13 +7499,13 @@ namespace Chummer.Backend.Skills
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
-                            = new List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                        List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
+                            = new List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
                         foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {
-                                lstAsyncEventsList.Add(new Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
+                                lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
                         await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);

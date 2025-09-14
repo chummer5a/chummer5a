@@ -41,7 +41,7 @@ namespace Chummer
             _back[translated] = orginal;
         }
 
-        public void AddRange(IEnumerable<Tuple<T, T>> range)
+        public void AddRange(IEnumerable<ValueTuple<T, T>> range)
         {
             if (range == null)
                 return;

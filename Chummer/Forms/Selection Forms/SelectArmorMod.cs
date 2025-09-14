@@ -580,7 +580,7 @@ namespace Chummer
         private readonly Lazy<string> _strCachedParentOwnWeight;
         private readonly Microsoft.VisualStudio.Threading.AsyncLazy<string> _strCachedParentCapacity;
 
-        private async Task<Tuple<decimal, bool>> ProcessInvariantXPathExpression(string strExpression, int intRating, CancellationToken token = default)
+        private async Task<ValueTuple<decimal, bool>> ProcessInvariantXPathExpression(string strExpression, int intRating, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             bool blnSuccess = true;
@@ -664,10 +664,10 @@ namespace Chummer
                 (bool blnIsSuccess, object objProcess)
                     = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
                 if (blnIsSuccess)
-                    return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
+                    return new ValueTuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
             }
 
-            return new Tuple<decimal, bool>(decValue, blnSuccess);
+            return new ValueTuple<decimal, bool>(decValue, blnSuccess);
         }
 
         #endregion Methods

@@ -116,11 +116,11 @@ namespace SevenZip.Buffer
             return m_Buffer[m_Pos++];
         }
 
-        public async Task<Tuple<bool, byte>> ReadByteAsync(CancellationToken token = default)
+        public async Task<ValueTuple<bool, byte>> ReadByteAsync(CancellationToken token = default)
         {
             if (m_Pos >= m_Limit && !await ReadBlockAsync(token).ConfigureAwait(false))
-                return new Tuple<bool, byte>(false, 0xFF);
-            return new Tuple<bool, byte>(true, m_Buffer[m_Pos++]);
+                return new ValueTuple<bool, byte>(false, 0xFF);
+            return new ValueTuple<bool, byte>(true, m_Buffer[m_Pos++]);
         }
 
         [CLSCompliant(false)]

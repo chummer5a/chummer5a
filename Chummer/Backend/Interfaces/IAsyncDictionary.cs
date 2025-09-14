@@ -41,6 +41,6 @@ namespace Chummer
 
         Task<bool> RemoveAsync(TKey key, CancellationToken token = default);
 
-        Task<Tuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default);
+        Task<ValueTuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default);
     }
 }

@@ -246,13 +246,13 @@ namespace Chummer.Backend.Attributes
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
-                            = new List<Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
+                        List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
+                            = new List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
                         foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {
-                                lstAsyncEventsList.Add(new Tuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
+                                lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
                         await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
@@ -492,8 +492,8 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private readonly ConcurrentDictionary<Tuple<string, AttributeCategory>, CharacterAttrib>
-            _dicAttributes = new ConcurrentDictionary<Tuple<string, AttributeCategory>, CharacterAttrib>();
+        private readonly ConcurrentDictionary<ValueTuple<string, AttributeCategory>, CharacterAttrib>
+            _dicAttributes = new ConcurrentDictionary<ValueTuple<string, AttributeCategory>, CharacterAttrib>();
         private readonly Character _objCharacter;
         private AttributeCategory _eAttributeCategory = AttributeCategory.Standard;
         private readonly ThreadSafeObservableCollection<CharacterAttrib> _lstNormalAttributes;
@@ -586,8 +586,8 @@ namespace Chummer.Backend.Attributes
                     objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                 }
 
-                Tuple<string, AttributeCategory> tupKey =
-                    new Tuple<string, AttributeCategory>(objAttribute.Abbrev,
+                ValueTuple<string, AttributeCategory> tupKey =
+                    new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                         objAttribute.MetatypeCategory);
                 _dicAttributes.TryRemove(tupKey, out _);
                 await objAttribute.DisposeAsync().ConfigureAwait(false);
@@ -605,8 +605,8 @@ namespace Chummer.Backend.Attributes
                     objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                 }
 
-                Tuple<string, AttributeCategory> tupKey =
-                    new Tuple<string, AttributeCategory>(objAttribute.Abbrev,
+                ValueTuple<string, AttributeCategory> tupKey =
+                    new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                         objAttribute.MetatypeCategory);
                 _dicAttributes.TryRemove(tupKey, out _);
                 await objAttribute.DisposeAsync().ConfigureAwait(false);
@@ -622,8 +622,8 @@ namespace Chummer.Backend.Attributes
                 case NotifyCollectionChangedAction.Add:
                     foreach (CharacterAttrib objAttribute in e.NewItems)
                     {
-                        Tuple<string, AttributeCategory> tupKey =
-                            new Tuple<string, AttributeCategory>(objAttribute.Abbrev,
+                        ValueTuple<string, AttributeCategory> tupKey =
+                            new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                                 objAttribute.MetatypeCategory);
                         _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
                         {
@@ -648,8 +648,8 @@ namespace Chummer.Backend.Attributes
                             objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
 
-                        Tuple<string, AttributeCategory> tupKey =
-                            new Tuple<string, AttributeCategory>(objAttribute.Abbrev,
+                        ValueTuple<string, AttributeCategory> tupKey =
+                            new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                                 objAttribute.MetatypeCategory);
                         _dicAttributes.TryRemove(tupKey, out _);
                         await objAttribute.DisposeAsync().ConfigureAwait(false);
@@ -669,8 +669,8 @@ namespace Chummer.Backend.Attributes
                             objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
 
-                        Tuple<string, AttributeCategory> tupKey =
-                            new Tuple<string, AttributeCategory>(objAttribute.Abbrev,
+                        ValueTuple<string, AttributeCategory> tupKey =
+                            new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                                 objAttribute.MetatypeCategory);
                         _dicAttributes.TryRemove(tupKey, out _);
                         await objAttribute.DisposeAsync().ConfigureAwait(false);
@@ -678,8 +678,8 @@ namespace Chummer.Backend.Attributes
 
                     foreach (CharacterAttrib objAttribute in setNewAttribs)
                     {
-                        Tuple<string, AttributeCategory> tupKey =
-                            new Tuple<string, AttributeCategory>(objAttribute.Abbrev,
+                        ValueTuple<string, AttributeCategory> tupKey =
+                            new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                                 objAttribute.MetatypeCategory);
                         _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
                         {
@@ -697,8 +697,8 @@ namespace Chummer.Backend.Attributes
                 case NotifyCollectionChangedAction.Reset:
                     await AttributeList.ForEachAsync(async objAttribute =>
                     {
-                        Tuple<string, AttributeCategory> tupKey =
-                            new Tuple<string, AttributeCategory>(objAttribute.Abbrev,
+                        ValueTuple<string, AttributeCategory> tupKey =
+                            new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                                 objAttribute.MetatypeCategory);
                         _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
                         {
@@ -725,8 +725,8 @@ namespace Chummer.Backend.Attributes
                 case NotifyCollectionChangedAction.Add:
                     foreach (CharacterAttrib objAttribute in e.NewItems)
                     {
-                        Tuple<string, AttributeCategory> tupKey =
-                            new Tuple<string, AttributeCategory>(objAttribute.Abbrev,
+                        ValueTuple<string, AttributeCategory> tupKey =
+                            new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                                 objAttribute.MetatypeCategory);
                         _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
                         {
@@ -751,8 +751,8 @@ namespace Chummer.Backend.Attributes
                             objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
 
-                        Tuple<string, AttributeCategory> tupKey =
-                            new Tuple<string, AttributeCategory>(objAttribute.Abbrev,
+                        ValueTuple<string, AttributeCategory> tupKey =
+                            new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                                 objAttribute.MetatypeCategory);
                         _dicAttributes.TryRemove(tupKey, out _);
                         await objAttribute.DisposeAsync().ConfigureAwait(false);
@@ -772,8 +772,8 @@ namespace Chummer.Backend.Attributes
                             objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
 
-                        Tuple<string, AttributeCategory> tupKey =
-                            new Tuple<string, AttributeCategory>(objAttribute.Abbrev,
+                        ValueTuple<string, AttributeCategory> tupKey =
+                            new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                                 objAttribute.MetatypeCategory);
                         _dicAttributes.TryRemove(tupKey, out _);
                         await objAttribute.DisposeAsync().ConfigureAwait(false);
@@ -781,8 +781,8 @@ namespace Chummer.Backend.Attributes
 
                     foreach (CharacterAttrib objAttribute in setNewAttribs)
                     {
-                        Tuple<string, AttributeCategory> tupKey =
-                            new Tuple<string, AttributeCategory>(objAttribute.Abbrev,
+                        ValueTuple<string, AttributeCategory> tupKey =
+                            new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                                 objAttribute.MetatypeCategory);
                         _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
                         {
@@ -800,8 +800,8 @@ namespace Chummer.Backend.Attributes
                 case NotifyCollectionChangedAction.Reset:
                     await SpecialAttributeList.ForEachAsync(async objAttribute =>
                     {
-                        Tuple<string, AttributeCategory> tupKey =
-                            new Tuple<string, AttributeCategory>(objAttribute.Abbrev,
+                        ValueTuple<string, AttributeCategory> tupKey =
+                            new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                                 objAttribute.MetatypeCategory);
                         _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
                         {
@@ -2177,12 +2177,12 @@ namespace Chummer.Backend.Attributes
             {
                 using (LockObject.EnterReadLock(token))
                 {
-                    Tuple<string, AttributeCategory> tupKey =
-                        new Tuple<string, AttributeCategory>(abbrev, AttributeCategory);
+                    ValueTuple<string, AttributeCategory> tupKey =
+                        new ValueTuple<string, AttributeCategory>(abbrev, AttributeCategory);
                     if (_dicAttributes.TryGetValue(tupKey, out objReturn))
                         return objReturn;
                     _dicAttributes.TryGetValue(
-                        new Tuple<string, AttributeCategory>(abbrev, AttributeCategory.Special),
+                        new ValueTuple<string, AttributeCategory>(abbrev, AttributeCategory.Special),
                         out objReturn);
                 }
             }
@@ -2191,11 +2191,11 @@ namespace Chummer.Backend.Attributes
                 using (LockObject.EnterReadLock(token))
                 {
                     if (_dicAttributes.TryGetValue(
-                            new Tuple<string, AttributeCategory>(abbrev,
+                            new ValueTuple<string, AttributeCategory>(abbrev,
                                 AttributeCategory.Standard), out objReturn))
                         return objReturn;
                     _dicAttributes.TryGetValue(
-                        new Tuple<string, AttributeCategory>(abbrev, AttributeCategory.Special),
+                        new ValueTuple<string, AttributeCategory>(abbrev, AttributeCategory.Special),
                         out objReturn);
                 }
             }
@@ -2214,12 +2214,12 @@ namespace Chummer.Backend.Attributes
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    Tuple<string, AttributeCategory> tupKey =
-                        new Tuple<string, AttributeCategory>(abbrev, await GetAttributeCategoryAsync(token).ConfigureAwait(false));
+                    ValueTuple<string, AttributeCategory> tupKey =
+                        new ValueTuple<string, AttributeCategory>(abbrev, await GetAttributeCategoryAsync(token).ConfigureAwait(false));
                     if (_dicAttributes.TryGetValue(tupKey, out objReturn))
                         return objReturn;
                     _dicAttributes.TryGetValue(
-                        new Tuple<string, AttributeCategory>(abbrev,
+                        new ValueTuple<string, AttributeCategory>(abbrev,
                             AttributeCategory.Special), out objReturn);
                 }
                 finally
@@ -2235,11 +2235,11 @@ namespace Chummer.Backend.Attributes
                 {
                     token.ThrowIfCancellationRequested();
                     if (_dicAttributes.TryGetValue(
-                            new Tuple<string, AttributeCategory>(abbrev,
+                            new ValueTuple<string, AttributeCategory>(abbrev,
                                 AttributeCategory.Standard), out objReturn))
                         return objReturn;
                     _dicAttributes.TryGetValue(
-                        new Tuple<string, AttributeCategory>(abbrev,
+                        new ValueTuple<string, AttributeCategory>(abbrev,
                             AttributeCategory.Special), out objReturn);
                 }
                 finally

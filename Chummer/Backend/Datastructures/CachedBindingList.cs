@@ -376,13 +376,13 @@ namespace Chummer
                 if (_setBeforeRemoveAsync.Count > 0)
                 {
                     List<RemovingOldEventArgs> lstArgsList = new List<RemovingOldEventArgs>(Items.Count);
-                    List<Tuple<AsyncBeforeRemoveEventHandler, RemovingOldEventArgs>> lstAsyncEventsList
-                            = new List<Tuple<AsyncBeforeRemoveEventHandler, RemovingOldEventArgs>>(lstArgsList.Count * _setBeforeRemoveAsync.Count);
+                    List<ValueTuple<AsyncBeforeRemoveEventHandler, RemovingOldEventArgs>> lstAsyncEventsList
+                            = new List<ValueTuple<AsyncBeforeRemoveEventHandler, RemovingOldEventArgs>>(lstArgsList.Count * _setBeforeRemoveAsync.Count);
                     foreach (AsyncBeforeRemoveEventHandler objEvent in _setBeforeRemoveAsync)
                     {
                         for (int j = 0; j < Items.Count; ++j)
                         {
-                            lstAsyncEventsList.Add(new Tuple<AsyncBeforeRemoveEventHandler, RemovingOldEventArgs>(objEvent, new RemovingOldEventArgs(Items[j], j)));
+                            lstAsyncEventsList.Add(new ValueTuple<AsyncBeforeRemoveEventHandler, RemovingOldEventArgs>(objEvent, new RemovingOldEventArgs(Items[j], j)));
                         }
                     }
                     await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);

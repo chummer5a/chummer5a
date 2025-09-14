@@ -87,11 +87,11 @@ namespace Chummer.Backend.Skills
             return IsExoticSkillNameTuple(objCharacter, strSkillName, token).Item1;
         }
 
-        public static Tuple<bool, string> IsExoticSkillNameTuple(Character objCharacter, string strSkillName, CancellationToken token = default)
+        public static ValueTuple<bool, string> IsExoticSkillNameTuple(Character objCharacter, string strSkillName, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strSkillName))
-                return new Tuple<bool, string>(false, string.Empty);
+                return new ValueTuple<bool, string>(false, string.Empty);
             XPathNodeIterator objXPathNameData = objCharacter.LoadDataXPath("skills.xml", token: token)
                                                              .SelectAndCacheExpression(
                                                                  "/chummer/skills/skill[exotic = 'True']/name", token);
@@ -100,10 +100,10 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 if (strSkillName.StartsWith(objData.Value, StringComparison.OrdinalIgnoreCase))
                 {
-                    return new Tuple<bool, string>(true, objData.Value);
+                    return new ValueTuple<bool, string>(true, objData.Value);
                 }
             }
-            return new Tuple<bool, string>(false, string.Empty);
+            return new ValueTuple<bool, string>(false, string.Empty);
         }
 
         public static async Task<bool> IsExoticSkillNameAsync(Character objCharacter, string strSkillName,
@@ -112,12 +112,12 @@ namespace Chummer.Backend.Skills
             return (await IsExoticSkillNameTupleAsync(objCharacter, strSkillName, token).ConfigureAwait(false)).Item1;
         }
 
-        public static async Task<Tuple<bool, string>> IsExoticSkillNameTupleAsync(Character objCharacter, string strSkillName,
+        public static async Task<ValueTuple<bool, string>> IsExoticSkillNameTupleAsync(Character objCharacter, string strSkillName,
                                                                    CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strSkillName))
-                return new Tuple<bool, string>(false, string.Empty);
+                return new ValueTuple<bool, string>(false, string.Empty);
             XPathNodeIterator objXPathNameData
                 = (await objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
                         .SelectAndCacheExpression("/chummer/skills/skill[exotic = 'True']/name", token);
@@ -125,10 +125,10 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 if (strSkillName.StartsWith(objData.Value, StringComparison.OrdinalIgnoreCase))
-                    return new Tuple<bool, string>(true, objData.Value);
+                    return new ValueTuple<bool, string>(true, objData.Value);
             }
 
-            return new Tuple<bool, string>(false, string.Empty);
+            return new ValueTuple<bool, string>(false, string.Empty);
         }
 
         public override bool IsExoticSkill => true;

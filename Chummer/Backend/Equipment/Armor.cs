@@ -1733,7 +1733,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private Task<Tuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, int intRating, CancellationToken token = default)
+        private Task<ValueTuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, int intRating, CancellationToken token = default)
         {
             return ProcessRatingStringAsDecAsync(strExpression, () => Task.FromResult(intRating), token);
         }
@@ -1741,11 +1741,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private async Task<Tuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, Func<Task<int>> funcRating, CancellationToken token = default)
+        private async Task<ValueTuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, Func<Task<int>> funcRating, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strExpression))
-                return new Tuple<decimal, bool>(0, true);
+                return new ValueTuple<decimal, bool>(0, true);
             bool blnIsSuccess = true;
             strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
@@ -1771,7 +1771,7 @@ namespace Chummer.Backend.Equipment
                     decValue = Convert.ToDecimal((double)objProcess);
             }
 
-            return new Tuple<decimal, bool>(decValue, blnIsSuccess);
+            return new ValueTuple<decimal, bool>(decValue, blnIsSuccess);
         }
 
         /// <summary>
@@ -1883,7 +1883,7 @@ namespace Chummer.Backend.Equipment
             set => _strWeight = value;
         }
 
-        public async Task<Tuple<string, decimal>> DisplayCost(bool blnUseRating = true, decimal decMarkup = 0.0m, CancellationToken token = default)
+        public async Task<ValueTuple<string, decimal>> DisplayCost(bool blnUseRating = true, decimal decMarkup = 0.0m, CancellationToken token = default)
         {
             decimal decItemCost = 0;
             string strReturn = Cost;
@@ -1919,7 +1919,7 @@ namespace Chummer.Backend.Equipment
                     strReturn = decMin.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + " - " + decMax.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyenSymbol;
 
                 decItemCost = decMin;
-                return new Tuple<string, decimal>(strReturn, decItemCost);
+                return new ValueTuple<string, decimal>(strReturn, decItemCost);
             }
 
             if (blnUseRating)
@@ -1934,10 +1934,10 @@ namespace Chummer.Backend.Equipment
                 decItemCost = decTotalCost;
                 string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                 strReturn = decTotalCost.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyenSymbol;
-                return new Tuple<string, decimal>(strReturn, decItemCost);
+                return new ValueTuple<string, decimal>(strReturn, decItemCost);
             }
 
-            return new Tuple<string, decimal>(await strReturn.CheapReplaceAsync("Rating", () => LanguageManager.GetStringAsync(RatingLabel, token: token), token: token).ConfigureAwait(false) + strNuyenSymbol, decItemCost);
+            return new ValueTuple<string, decimal>(await strReturn.CheapReplaceAsync("Rating", () => LanguageManager.GetStringAsync(RatingLabel, token: token), token: token).ConfigureAwait(false) + strNuyenSymbol, decItemCost);
         }
 
         private SourceString _objCachedSourceDetail;

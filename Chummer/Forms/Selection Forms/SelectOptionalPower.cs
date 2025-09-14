@@ -29,11 +29,11 @@ namespace Chummer
         private string _strReturnPower = string.Empty;
         private string _strReturnExtra = string.Empty;
         private readonly Character _objCharacter;
-        private readonly List<Tuple<string, string>> _lstPowerExtraPairs;
+        private readonly List<ValueTuple<string, string>> _lstPowerExtraPairs;
 
         #region Control Events
 
-        public SelectOptionalPower(Character objCharacter, params Tuple<string, string>[] lstPowerExtraPairs)
+        public SelectOptionalPower(Character objCharacter, params ValueTuple<string, string>[] lstPowerExtraPairs)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
@@ -45,7 +45,7 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (cboPower.SelectedValue is Tuple<string, string> objSelectedItem)
+            if (cboPower.SelectedValue is ValueTuple<string, string> objSelectedItem)
             {
                 _strReturnPower = objSelectedItem.Item1;
                 _strReturnExtra = objSelectedItem.Item2;
@@ -65,7 +65,7 @@ namespace Chummer
                         : await _objCharacter.TranslateExtraAsync(strPowerName).ConfigureAwait(false)
                           + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false) + '('
                           + await _objCharacter.TranslateExtraAsync(strPowerExtra).ConfigureAwait(false) + ')';
-                    lstPowerItems.Add(new ListItem(new Tuple<string, string>(strPowerName, strPowerExtra), strName));
+                    lstPowerItems.Add(new ListItem(new ValueTuple<string, string>(strPowerName, strPowerExtra), strName));
                 }
 
                 await cboPower.PopulateWithListItemsAsync(lstPowerItems).ConfigureAwait(false);
@@ -74,7 +74,7 @@ namespace Chummer
                 else if (lstPowerItems.Count == 1)
                 {
                     if (await cboPower.DoThreadSafeFuncAsync(x => x.SelectedValue).ConfigureAwait(false) is
-                        Tuple<string, string> objSelectedItem)
+                        ValueTuple<string, string> objSelectedItem)
                     {
                         _strReturnPower = objSelectedItem.Item1;
                         _strReturnExtra = objSelectedItem.Item2;
