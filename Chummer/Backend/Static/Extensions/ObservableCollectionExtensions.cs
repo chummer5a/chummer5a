@@ -77,12 +77,19 @@ namespace Chummer
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
             int intCollectionSize = lstCollection.Count;
-            T[] aobjSorted = new T[intCollectionSize];
-            for (int i = 0; i < intCollectionSize; ++i)
-                aobjSorted[i] = lstCollection[i];
-            Array.Sort(aobjSorted, funcComparison);
-            for (int i = 0; i < intCollectionSize; ++i)
-                lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), i);
+            T[] aobjSorted = ArrayPool<T>.Shared.Rent(intCollectionSize);
+            try
+            {
+                for (int i = 0; i < intCollectionSize; ++i)
+                    aobjSorted[i] = lstCollection[i];
+                Array.Sort(aobjSorted, 0, intCollectionSize, new FunctorComparer<T>(funcComparison));
+                for (int i = 0; i < intCollectionSize; ++i)
+                    lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), i);
+            }
+            finally
+            {
+                ArrayPool<T>.Shared.Return(aobjSorted);
+            }
         }
 
         /// <summary>

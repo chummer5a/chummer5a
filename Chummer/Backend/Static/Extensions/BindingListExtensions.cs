@@ -135,69 +135,76 @@ namespace Chummer
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
             int intCollectionSize = lstCollection.Count;
-            T[] aobjSorted = new T[intCollectionSize];
-            for (int i = 0; i < intCollectionSize; ++i)
-                aobjSorted[i] = lstCollection[i];
-            Array.Sort(aobjSorted, funcComparison);
-            if (!lstCollection.RaiseListChangedEvents)
-            {
-                for (int i = 0; i < intCollectionSize; ++i)
-                {
-                    lstCollection[i] = aobjSorted[i];
-                }
-
-                return;
-            }
-            // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-            int intResetThreshold = intCollectionSize / 2;
-            int intCountChanges = 0;
-            // Not BitArray because read/write performance is much more important here than memory footprint
-            bool[] ablnItemChanged = intCollectionSize > GlobalSettings.MaxStackLimit8BitTypes
-                ? ArrayPool<bool>.Shared.Rent(intCollectionSize)
-                : null;
+            T[] aobjSorted = ArrayPool<T>.Shared.Rent(intCollectionSize);
             try
             {
-#pragma warning disable IDE0029 // Use coalesce expression
-                Span<bool> pblnItemChanged = ablnItemChanged != null
-                    ? ablnItemChanged
-                    : stackalloc bool[intCollectionSize];
-#pragma warning restore IDE0029 // Use coalesce expression
-                // We're going to disable events while we work with the list, then call them all at once at the end
-                lstCollection.RaiseListChangedEvents = false;
-                try
+                for (int i = 0; i < intCollectionSize; ++i)
+                    aobjSorted[i] = lstCollection[i];
+                Array.Sort(aobjSorted, 0, intCollectionSize, new FunctorComparer<T>(funcComparison));
+                if (!lstCollection.RaiseListChangedEvents)
                 {
                     for (int i = 0; i < intCollectionSize; ++i)
                     {
-                        T objLoop = aobjSorted[i];
-                        if (ReferenceEquals(objLoop, lstCollection[i]))
-                            continue;
-                        pblnItemChanged[i] = true;
-                        ++intCountChanges;
-                        lstCollection[i] = objLoop;
+                        lstCollection[i] = aobjSorted[i];
+                    }
+
+                    return;
+                }
+                // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+                int intResetThreshold = intCollectionSize / 2;
+                int intCountChanges = 0;
+                // Not BitArray because read/write performance is much more important here than memory footprint
+                bool[] ablnItemChanged = intCollectionSize > GlobalSettings.MaxStackLimit8BitTypes
+                    ? ArrayPool<bool>.Shared.Rent(intCollectionSize)
+                    : null;
+                try
+                {
+#pragma warning disable IDE0029 // Use coalesce expression
+                    Span<bool> pblnItemChanged = ablnItemChanged != null
+                        ? ablnItemChanged
+                        : stackalloc bool[intCollectionSize];
+#pragma warning restore IDE0029 // Use coalesce expression
+                    // We're going to disable events while we work with the list, then call them all at once at the end
+                    lstCollection.RaiseListChangedEvents = false;
+                    try
+                    {
+                        for (int i = 0; i < intCollectionSize; ++i)
+                        {
+                            T objLoop = aobjSorted[i];
+                            if (ReferenceEquals(objLoop, lstCollection[i]))
+                                continue;
+                            pblnItemChanged[i] = true;
+                            ++intCountChanges;
+                            lstCollection[i] = objLoop;
+                        }
+                    }
+                    finally
+                    {
+                        lstCollection.RaiseListChangedEvents = true;
+                    }
+
+                    if (intCountChanges >= intResetThreshold)
+                    {
+                        lstCollection.ResetBindings();
+                    }
+                    else
+                    {
+                        for (int i = 0; i < intCollectionSize; ++i)
+                        {
+                            if (pblnItemChanged[i])
+                                lstCollection.ResetItem(i);
+                        }
                     }
                 }
                 finally
                 {
-                    lstCollection.RaiseListChangedEvents = true;
-                }
-
-                if (intCountChanges >= intResetThreshold)
-                {
-                    lstCollection.ResetBindings();
-                }
-                else
-                {
-                    for (int i = 0; i < intCollectionSize; ++i)
-                    {
-                        if (pblnItemChanged[i])
-                            lstCollection.ResetItem(i);
-                    }
+                    if (ablnItemChanged != null)
+                        ArrayPool<bool>.Shared.Return(ablnItemChanged);
                 }
             }
             finally
             {
-                if (ablnItemChanged != null)
-                    ArrayPool<bool>.Shared.Return(ablnItemChanged);
+                ArrayPool<T>.Shared.Return(aobjSorted);
             }
         }
 

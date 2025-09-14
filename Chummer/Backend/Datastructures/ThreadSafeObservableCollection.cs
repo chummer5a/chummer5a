@@ -784,29 +784,36 @@ namespace Chummer
                 if (intCollectionSize == 0)
                     return;
                 IDisposable[] aobjLockers = _lstData[0] is IHasLockObject ? new IDisposable[intCollectionSize] : null;
-                T[] aobjSorted = new T[intCollectionSize];
-                for (int i = 0; i < intCollectionSize; ++i)
-                {
-                    T objLoop = _lstData[i];
-                    aobjSorted[i] = objLoop;
-                    if (aobjLockers != null)
-                        aobjLockers[i] = (objLoop as IHasLockObject)?.LockObject.EnterReadLock();
-                }
-
-                Array.Sort(aobjSorted, comparison);
-
-                if (aobjLockers != null)
-                {
-                    foreach (IDisposable objLocker in aobjLockers)
-                    {
-                        objLocker.Dispose();
-                    }
-                }
-
-                using (LockObject.EnterWriteLock())
+                T[] aobjSorted = ArrayPool<T>.Shared.Rent(intCollectionSize);
+                try
                 {
                     for (int i = 0; i < intCollectionSize; ++i)
-                        _lstData.Move(_lstData.IndexOf(aobjSorted[i]), i);
+                    {
+                        T objLoop = _lstData[i];
+                        aobjSorted[i] = objLoop;
+                        if (aobjLockers != null)
+                            aobjLockers[i] = (objLoop as IHasLockObject)?.LockObject.EnterReadLock();
+                    }
+
+                    Array.Sort(aobjSorted, 0, intCollectionSize, new FunctorComparer<T>(comparison));
+
+                    if (aobjLockers != null)
+                    {
+                        foreach (IDisposable objLocker in aobjLockers)
+                        {
+                            objLocker.Dispose();
+                        }
+                    }
+
+                    using (LockObject.EnterWriteLock())
+                    {
+                        for (int i = 0; i < intCollectionSize; ++i)
+                            _lstData.Move(_lstData.IndexOf(aobjSorted[i]), i);
+                    }
+                }
+                finally
+                {
+                    ArrayPool<T>.Shared.Return(aobjSorted);
                 }
             }
         }
@@ -1091,46 +1098,53 @@ namespace Chummer
                     await _lstData.GetValueAtAsync(0, token).ConfigureAwait(false) is IHasLockObject
                         ? new Stack<IAsyncDisposable>(intCount)
                         : null;
-                T[] aobjSorted = new T[intCount];
-                token.ThrowIfCancellationRequested();
+                T[] aobjSorted = ArrayPool<T>.Shared.Rent(intCount);
                 try
                 {
-                    for (int i = 0; i < intCount; ++i)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        T objLoop = await _lstData.GetValueAtAsync(i, token).ConfigureAwait(false);
-                        aobjSorted[i] = objLoop;
-                        if (stkLockers != null && objLoop is IHasLockObject objLoopWithLocker)
-                            stkLockers.Push(await objLoopWithLocker.LockObject.EnterReadLockAsync(token)
-                                .ConfigureAwait(false));
-                    }
-
                     token.ThrowIfCancellationRequested();
-                    Array.Sort(aobjSorted, comparison);
-                }
-                finally
-                {
-                    if (stkLockers != null)
+                    try
                     {
-                        while (stkLockers.Count > 0)
+                        for (int i = 0; i < intCount; ++i)
                         {
-                            IAsyncDisposable objLocker3 = stkLockers.Pop();
-                            if (objLocker3 != null)
-                                await objLocker3.DisposeAsync().ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            T objLoop = await _lstData.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            aobjSorted[i] = objLoop;
+                            if (stkLockers != null && objLoop is IHasLockObject objLoopWithLocker)
+                                stkLockers.Push(await objLoopWithLocker.LockObject.EnterReadLockAsync(token)
+                                    .ConfigureAwait(false));
+                        }
+
+                        token.ThrowIfCancellationRequested();
+                        Array.Sort(aobjSorted, 0, intCount, new FunctorComparer<T>(comparison));
+                    }
+                    finally
+                    {
+                        if (stkLockers != null)
+                        {
+                            while (stkLockers.Count > 0)
+                            {
+                                IAsyncDisposable objLocker3 = stkLockers.Pop();
+                                if (objLocker3 != null)
+                                    await objLocker3.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
                     }
-                }
 
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    for (int i = 0; i < intCount; ++i)
-                        await _lstData.MoveAsync(await _lstData.IndexOfAsync(aobjSorted[i], token).ConfigureAwait(false), i, token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        for (int i = 0; i < intCount; ++i)
+                            await _lstData.MoveAsync(await _lstData.IndexOfAsync(aobjSorted[i], token).ConfigureAwait(false), i, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
                 finally
                 {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    ArrayPool<T>.Shared.Return(aobjSorted);
                 }
             }
             finally
