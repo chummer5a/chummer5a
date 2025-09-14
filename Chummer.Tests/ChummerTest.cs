@@ -17,6 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+// Uncomment this define to turn on code that is useful for trying to find, diagnose, and squash memory leaks, though it will slow down unit tests considerably
+//#define MEMORYTESTING
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -98,56 +101,70 @@ namespace Chummer.Tests
         [TestMethod]
         public void Test00_ColorTest()
         {
-            Debug.WriteLine("Unit test initialized for: Test00_ColorTest()");
-            Color objColorLightGrayInDarkMode = ColorManager.GenerateDarkModeColor(Color.LightGray);
-            float fltLightGrayLightness = Color.LightGray.GetBrightness();
-            float fltLightGrayDarkModeLightness = objColorLightGrayInDarkMode.GetBrightness();
-            Assert.IsGreaterThan(fltLightGrayDarkModeLightness, fltLightGrayLightness);
+            try
+            {
+                Debug.WriteLine("Unit test initialized for: Test00_ColorTest()");
+                Color objColorLightGrayInDarkMode = ColorManager.GenerateDarkModeColor(Color.LightGray);
+                float fltLightGrayLightness = Color.LightGray.GetBrightness();
+                float fltLightGrayDarkModeLightness = objColorLightGrayInDarkMode.GetBrightness();
+                Assert.IsGreaterThan(fltLightGrayDarkModeLightness, fltLightGrayLightness);
 
-            Color objColorBlackInvert = ColorManager.GenerateInverseDarkModeColor(Color.Black);
-            Color objColorBlackInvertDark = ColorManager.GenerateDarkModeColor(objColorBlackInvert);
-            float fltBlackHue = Color.Black.GetHue();
-            float fltBlackInvertDarkHue = objColorBlackInvertDark.GetHue();
-            Assert.AreEqual(fltBlackInvertDarkHue, fltBlackHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
-            Color objColorBlackInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorBlackInvertDark);
-            Color objColorBlackInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorBlackInvertDarkInvert);
-            Assert.IsTrue(objColorBlackInvertDark == objColorBlackInvertDarkInvertDark);
+                Color objColorBlackInvert = ColorManager.GenerateInverseDarkModeColor(Color.Black);
+                Color objColorBlackInvertDark = ColorManager.GenerateDarkModeColor(objColorBlackInvert);
+                float fltBlackHue = Color.Black.GetHue();
+                float fltBlackInvertDarkHue = objColorBlackInvertDark.GetHue();
+                Assert.AreEqual(fltBlackInvertDarkHue, fltBlackHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+                Color objColorBlackInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorBlackInvertDark);
+                Color objColorBlackInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorBlackInvertDarkInvert);
+                Assert.IsTrue(objColorBlackInvertDark == objColorBlackInvertDarkInvertDark);
 
-            Color objColorWhiteInvert = ColorManager.GenerateInverseDarkModeColor(Color.White);
-            Color objColorWhiteInvertDark = ColorManager.GenerateDarkModeColor(objColorWhiteInvert);
-            float fltWhiteHue = Color.White.GetHue();
-            float fltWhiteInvertDarkHue = objColorWhiteInvertDark.GetHue();
-            Assert.AreEqual(fltWhiteInvertDarkHue, fltWhiteHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
-            Color objColorWhiteInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorWhiteInvertDark);
-            Color objColorWhiteInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorWhiteInvertDarkInvert);
-            Assert.IsTrue(objColorWhiteInvertDark == objColorWhiteInvertDarkInvertDark);
+                Color objColorWhiteInvert = ColorManager.GenerateInverseDarkModeColor(Color.White);
+                Color objColorWhiteInvertDark = ColorManager.GenerateDarkModeColor(objColorWhiteInvert);
+                float fltWhiteHue = Color.White.GetHue();
+                float fltWhiteInvertDarkHue = objColorWhiteInvertDark.GetHue();
+                Assert.AreEqual(fltWhiteInvertDarkHue, fltWhiteHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+                Color objColorWhiteInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorWhiteInvertDark);
+                Color objColorWhiteInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorWhiteInvertDarkInvert);
+                Assert.IsTrue(objColorWhiteInvertDark == objColorWhiteInvertDarkInvertDark);
 
-            Color objColorRedInvert = ColorManager.GenerateInverseDarkModeColor(Color.Red);
-            Color objColorRedInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvert);
-            float fltRedHue = Color.Red.GetHue();
-            float fltRedInvertDarkHue = objColorRedInvertDark.GetHue();
-            Assert.AreEqual(fltRedInvertDarkHue, fltRedHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
-            Color objColorRedInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorRedInvertDark);
-            Color objColorRedInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvertDarkInvert);
-            Assert.IsTrue(objColorRedInvertDark == objColorRedInvertDarkInvertDark);
+                Color objColorRedInvert = ColorManager.GenerateInverseDarkModeColor(Color.Red);
+                Color objColorRedInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvert);
+                float fltRedHue = Color.Red.GetHue();
+                float fltRedInvertDarkHue = objColorRedInvertDark.GetHue();
+                Assert.AreEqual(fltRedInvertDarkHue, fltRedHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+                Color objColorRedInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorRedInvertDark);
+                Color objColorRedInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvertDarkInvert);
+                Assert.IsTrue(objColorRedInvertDark == objColorRedInvertDarkInvertDark);
 
-            Color objColorChocolateInvert = ColorManager.GenerateInverseDarkModeColor(Color.Chocolate);
-            Color objColorChocolateInvertDark = ColorManager.GenerateDarkModeColor(objColorChocolateInvert);
-            float fltChocolateHue = Color.Chocolate.GetHue();
-            float fltChocolateInvertDarkHue = objColorChocolateInvertDark.GetHue();
-            Assert.AreEqual(fltChocolateInvertDarkHue, fltChocolateHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
-            Color objColorChocolateInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorChocolateInvertDark);
-            Color objColorChocolateInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorChocolateInvertDarkInvert);
-            Assert.IsTrue(objColorChocolateInvertDark == objColorChocolateInvertDarkInvertDark);
+                Color objColorChocolateInvert = ColorManager.GenerateInverseDarkModeColor(Color.Chocolate);
+                Color objColorChocolateInvertDark = ColorManager.GenerateDarkModeColor(objColorChocolateInvert);
+                float fltChocolateHue = Color.Chocolate.GetHue();
+                float fltChocolateInvertDarkHue = objColorChocolateInvertDark.GetHue();
+                Assert.AreEqual(fltChocolateInvertDarkHue, fltChocolateHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+                Color objColorChocolateInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorChocolateInvertDark);
+                Color objColorChocolateInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorChocolateInvertDarkInvert);
+                Assert.IsTrue(objColorChocolateInvertDark == objColorChocolateInvertDarkInvertDark);
+            }
+            catch (Exception ex)
+            {
+                ex = ex.Demystify();
+                Assert.Fail(ex.Message);
+            }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
         public void Test01_LoadContent()
         {
-            Debug.WriteLine("Unit test initialized for: Test01_LoadContent()");
             try
             {
+                Debug.WriteLine("Unit test initialized for: Test01_LoadContent()");
                 // Attempt to cache all XML files that are used the most.
                 Utils.RunWithoutThreadLock(() => ParallelExtensions.ForEachAsync(Utils.BasicDataFileNames, strLoopFile => CacheCommonFileAsync(strLoopFile), TestContext.CancellationTokenSource.Token), token: TestContext.CancellationTokenSource.Token);
                 async Task CacheCommonFileAsync(string strFile)
@@ -167,15 +184,21 @@ namespace Chummer.Tests
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
             }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
         public void Test02_LoadCharacters()
         {
-            Debug.WriteLine("Unit test initialized for: Test02_LoadCharacters()");
             try
             {
+                Debug.WriteLine("Unit test initialized for: Test02_LoadCharacters()");
                 List<Character> lstCharacters = new List<Character>(CommonTestData.TestFileInfos.Length);
                 foreach (Character objCharacter in GetTestCharacters(TestContext.CancellationTokenSource.Token))
                 {
@@ -196,9 +219,9 @@ namespace Chummer.Tests
         [TestMethod]
         public void Test03_SaveAsChum5lz()
         {
-            Debug.WriteLine("Unit test initialized for: Test03_SaveAsChum5lz()");
             try
             {
+                Debug.WriteLine("Unit test initialized for: Test03_SaveAsChum5lz()");
                 foreach (Character objCharacter in GetTestCharacters(TestContext.CancellationTokenSource.Token))
                 {
                     string strFileName = Path.GetFileName(objCharacter.FileName) ?? "Unknown";
@@ -224,15 +247,21 @@ namespace Chummer.Tests
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
             }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
         public void Test04_LoadThenSaveIsDeterministic()
         {
-            Debug.WriteLine("Unit test initialized for: Test04_LoadThenSaveIsDeterministic()");
             try
             {
+                Debug.WriteLine("Unit test initialized for: Test04_LoadThenSaveIsDeterministic()");
                 DefaultNodeMatcher objDiffNodeMatcher = new DefaultNodeMatcher(ElementSelectors.ByNameAndText);
                 foreach (Character objCharacterControl in GetTestCharacters(TestContext.CancellationTokenSource.Token))
                 {
@@ -244,48 +273,59 @@ namespace Chummer.Tests
                     Debug.WriteLine("Checking " + strFileName);
                     // Second Load-Save cycle
                     string strDestinationTest = Path.Combine(CommonTestData.TestPathInfo.FullName, "(Test) " + strFileName);
-                    Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl), token: TestContext.CancellationTokenSource.Token); // No using here because we value execution time much more than memory usage
-                    SaveCharacter(objCharacterTest, strDestinationTest, token: TestContext.CancellationTokenSource.Token);
-
+                    Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl), token: TestContext.CancellationTokenSource.Token);
+#if MEMORYTESTING
                     try
                     {
-                        // Check to see that character after first load cycle is consistent with character after second
-                        using (FileStream controlFileStream =
-                               File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
-                        using (FileStream testFileStream =
-                               File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
-                        {
-                            Diff myDiff = DiffBuilder
-                                .Compare(controlFileStream)
-                                .WithTest(testFileStream)
-                                .CheckForSimilar()
-                                .WithNodeFilter(x =>
-                                    // image loading and unloading is not going to be deterministic due to compression algorithms
-                                    x.Name != "mugshot"
-                                    // Improvements list's order can be nondeterministic because improvements that get (re)generated on character load happen in a parallelized way
-                                    && x.Name != "improvement")
-                                .WithNodeMatcher(objDiffNodeMatcher)
-                                // Improvements list's order can be nondeterministic because improvements that get (re)generated on character load happen in a parallelized way
-                                .WithDifferenceEvaluator((x, y) =>
-                                    string.Equals(x.ControlDetails.Target?.Name, "improvements", StringComparison.OrdinalIgnoreCase)
-                                        ? EvaluateNodeWithChildrenIgnoringOrder(x, y)
-                                        : DifferenceEvaluators.Default(x, y))
-                                .IgnoreWhitespace()
-                                .Build();
-                            foreach (Difference diff in myDiff.Differences)
-                            {
-                                Console.WriteLine(diff.Comparison);
-                                Console.WriteLine();
-                            }
+#endif
+                        SaveCharacter(objCharacterTest, strDestinationTest, token: TestContext.CancellationTokenSource.Token);
 
-                            Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
+                        try
+                        {
+                            // Check to see that character after first load cycle is consistent with character after second
+                            using (FileStream controlFileStream =
+                                   File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
+                            using (FileStream testFileStream =
+                                   File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
+                            {
+                                Diff myDiff = DiffBuilder
+                                    .Compare(controlFileStream)
+                                    .WithTest(testFileStream)
+                                    .CheckForSimilar()
+                                    .WithNodeFilter(x =>
+                                        // image loading and unloading is not going to be deterministic due to compression algorithms
+                                        x.Name != "mugshot"
+                                        // Improvements list's order can be nondeterministic because improvements that get (re)generated on character load happen in a parallelized way
+                                        && x.Name != "improvement")
+                                    .WithNodeMatcher(objDiffNodeMatcher)
+                                    // Improvements list's order can be nondeterministic because improvements that get (re)generated on character load happen in a parallelized way
+                                    .WithDifferenceEvaluator((x, y) =>
+                                        string.Equals(x.ControlDetails.Target?.Name, "improvements", StringComparison.OrdinalIgnoreCase)
+                                            ? EvaluateNodeWithChildrenIgnoringOrder(x, y)
+                                            : DifferenceEvaluators.Default(x, y))
+                                    .IgnoreWhitespace()
+                                    .Build();
+                                foreach (Difference diff in myDiff.Differences)
+                                {
+                                    Console.WriteLine(diff.Comparison);
+                                    Console.WriteLine();
+                                }
+
+                                Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
+                            }
                         }
+                        catch (XmlSchemaException e)
+                        {
+                            e = e.Demystify();
+                            Assert.Fail("Unexpected validation failure: " + e.Message);
+                        }
+#if MEMORYTESTING
                     }
-                    catch (XmlSchemaException e)
+                    finally
                     {
-                        e = e.Demystify();
-                        Assert.Fail("Unexpected validation failure: " + e.Message);
+                        objCharacterTest.Dispose();
                     }
+#endif
                 }
 
                 ComparisonResult EvaluateNodeWithChildrenIgnoringOrder(Comparison objComparison, ComparisonResult eOutcome)
@@ -339,14 +379,20 @@ namespace Chummer.Tests
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
             }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         [TestMethod]
         public void Test05_LoadThenPrint()
         {
-            Debug.WriteLine("Unit test initialized for: Test05_LoadThenPrint()");
             try
             {
+                Debug.WriteLine("Unit test initialized for: Test05_LoadThenPrint()");
                 List<string> lstExportLanguages = new List<string>(11);
                 foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
                 {
@@ -381,35 +427,62 @@ namespace Chummer.Tests
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
             }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
         public void Test06_BasicStartup()
         {
-            Debug.WriteLine("Unit test initialized for: Test06_BasicStartup()");
-            ChummerMainForm frmOldMainForm = Program.MainForm;
-            ChummerMainForm frmTestForm = null;
-            // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
             try
             {
-                Utils.IsUnitTestForUI = true;
-                frmTestForm = Utils.RunOnMainThread(() => new ChummerMainForm(true, true)
+                Debug.WriteLine("Unit test initialized for: Test06_BasicStartup()");
+                ChummerMainForm frmOldMainForm = Program.MainForm;
+                ChummerMainForm frmTestForm = null;
+                // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
+                try
                 {
-                    ShowInTaskbar =
-                        false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
-                }, token: TestContext.CancellationTokenSource.Token);
-                Program.MainForm = frmTestForm; // Set program Main form to Unit test version
-                frmTestForm.DoThreadSafe(x =>
-                {
-                    x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+                    Utils.IsUnitTestForUI = true;
+                    frmTestForm = Utils.RunOnMainThread(() => new ChummerMainForm(true, true)
+                    {
+                        ShowInTaskbar =
+                            false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
+                    }, token: TestContext.CancellationTokenSource.Token);
+                    Program.MainForm = frmTestForm; // Set program Main form to Unit test version
+                    frmTestForm.DoThreadSafe(x =>
+                    {
+                        x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
 #if DEBUG
-                    x.SendToBack();
+                        x.SendToBack();
 #endif
-                }, TestContext.CancellationTokenSource.Token);
-                while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                    }, TestContext.CancellationTokenSource.Token);
+                    while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                    {
+                        Utils.SafeSleep(TestContext.CancellationTokenSource.Token);
+                    }
+                }
+                finally
                 {
-                    Utils.SafeSleep(TestContext.CancellationTokenSource.Token);
+                    try
+                    {
+                        frmTestForm?.DoThreadSafe(x => x.Close(), TestContext.CancellationTokenSource.Token);
+                    }
+                    catch (Exception e)
+                    {
+                        e = e.Demystify();
+                        string strErrorMessage = "Encountered (non-fatal) exception while disposing of main form." + Environment.NewLine
+                            + e.Message;
+                        Debug.WriteLine(strErrorMessage);
+                        Console.WriteLine(strErrorMessage);
+                        Utils.BreakIfDebug();
+                    }
+                    Program.MainForm = frmOldMainForm;
+                    Utils.IsUnitTestForUI = false;
                 }
             }
             catch (Exception ex)
@@ -417,146 +490,154 @@ namespace Chummer.Tests
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
             }
+#if MEMORYTESTING
             finally
             {
-                try
-                {
-                    frmTestForm?.DoThreadSafe(x => x.Close(), TestContext.CancellationTokenSource.Token);
-                }
-                catch (Exception e)
-                {
-                    e = e.Demystify();
-                    string strErrorMessage = "Encountered (non-fatal) exception while disposing of main form." + Environment.NewLine
-                        + e.Message;
-                    Debug.WriteLine(strErrorMessage);
-                    Console.WriteLine(strErrorMessage);
-                    Utils.BreakIfDebug();
-                }
-                Program.MainForm = frmOldMainForm;
-                Utils.IsUnitTestForUI = false;
+                TestContext.CancellationTokenSource.Dispose();
             }
+#endif
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
         public void Test07_LoadCharacterForms()
         {
-            Debug.WriteLine("Unit test initialized for: Test07_LoadCharacterForms()");
-            ChummerMainForm frmOldMainForm = Program.MainForm;
-            ChummerMainForm frmTestForm = null;
-            // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
             try
             {
-                Utils.IsUnitTestForUI = true;
-                frmTestForm = Utils.RunOnMainThread(() => new ChummerMainForm(true, true)
+                Debug.WriteLine("Unit test initialized for: Test07_LoadCharacterForms()");
+                ChummerMainForm frmOldMainForm = Program.MainForm;
+                ChummerMainForm frmTestForm = null;
+                // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
+                try
                 {
-                    ShowInTaskbar =
-                        false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
-                }, token: TestContext.CancellationTokenSource.Token);
-                Program.MainForm = frmTestForm; // Set program Main form to Unit test version
-                frmTestForm.DoThreadSafe(x =>
-                {
-                    x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
-#if DEBUG
-                    x.SendToBack();
-#endif
-                }, TestContext.CancellationTokenSource.Token);
-                while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
-                {
-                    Utils.SafeSleep(TestContext.CancellationTokenSource.Token);
-                }
-
-                Debug.WriteLine("Main form loaded");
-                foreach (Character objCharacter in GetTestCharacters(TestContext.CancellationTokenSource.Token))
-                {
-                    string strFileName = Path.GetFileName(objCharacter.FileName) ?? "Unknown";
-                    Debug.WriteLine("Checking " + strFileName);
-                    string strDummyFileName = Path.Combine(CommonTestData.TestPathInfo.FullName,
-                        "(UnitTest07Dummy) "
-                        + Path.GetFileNameWithoutExtension(objCharacter.FileName)
-                        + ".txt");
-                    using (File.Create(strDummyFileName, byte.MaxValue,
-                               FileOptions
-                                   .DeleteOnClose)) // Create this so that we can track how far along the Unit Test is even if we don't have a debugger attached
+                    Utils.IsUnitTestForUI = true;
+                    frmTestForm = Utils.RunOnMainThread(() => new ChummerMainForm(true, true)
                     {
-                        try
+                        ShowInTaskbar =
+                            false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
+                    }, token: TestContext.CancellationTokenSource.Token);
+                    Program.MainForm = frmTestForm; // Set program Main form to Unit test version
+                    frmTestForm.DoThreadSafe(x =>
+                    {
+                        x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+#if DEBUG
+                        x.SendToBack();
+#endif
+                    }, TestContext.CancellationTokenSource.Token);
+                    while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                    {
+                        Utils.SafeSleep(TestContext.CancellationTokenSource.Token);
+                    }
+
+                    Debug.WriteLine("Main form loaded");
+                    foreach (Character objCharacter in GetTestCharacters(TestContext.CancellationTokenSource.Token))
+                    {
+                        string strFileName = Path.GetFileName(objCharacter.FileName) ?? "Unknown";
+                        Debug.WriteLine("Checking " + strFileName);
+                        string strDummyFileName = Path.Combine(CommonTestData.TestPathInfo.FullName,
+                            "(UnitTest07Dummy) "
+                            + Path.GetFileNameWithoutExtension(objCharacter.FileName)
+                            + ".txt");
+                        using (File.Create(strDummyFileName, byte.MaxValue,
+                                   FileOptions
+                                       .DeleteOnClose)) // Create this so that we can track how far along the Unit Test is even if we don't have a debugger attached
                         {
-                            bool blnFormClosed = false;
-                            bool blnCreated = objCharacter.Created;
-                            // ReSharper disable once AccessToDisposedClosure
-                            CharacterShared frmCharacterForm = Program.MainForm.DoThreadSafeFunc(
-                                () => blnCreated
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    ? (CharacterShared)new CharacterCareer(objCharacter)
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    : new CharacterCreate(objCharacter), TestContext.CancellationTokenSource.Token);
                             try
                             {
-                                frmCharacterForm.DoThreadSafe(x =>
-                                {
-                                    x.FormClosed += (sender, args) => blnFormClosed = true;
-                                    x.MdiParent = frmTestForm;
-                                    x.ShowInTaskbar = false;
-                                    x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
-#if DEBUG
-                                    x.SendToBack();
-#endif
-                                }, TestContext.CancellationTokenSource.Token);
-                                while
-                                    (!frmCharacterForm
-                                        .IsFinishedInitializing) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
-                                {
-                                    Utils.SafeSleep(TestContext.CancellationTokenSource.Token);
-                                }
-                            }
-                            finally
-                            {
+                                bool blnFormClosed = false;
+                                bool blnCreated = objCharacter.Created;
+                                // ReSharper disable once AccessToDisposedClosure
+                                CharacterShared frmCharacterForm = Program.MainForm.DoThreadSafeFunc(
+                                    () => blnCreated
+                                        // ReSharper disable once AccessToDisposedClosure
+                                        ? (CharacterShared)new CharacterCareer(objCharacter)
+                                        // ReSharper disable once AccessToDisposedClosure
+                                        : new CharacterCreate(objCharacter), TestContext.CancellationTokenSource.Token);
                                 try
                                 {
-                                    frmCharacterForm.DoThreadSafe(x => x.Close(), TestContext.CancellationTokenSource.Token);
+                                    frmCharacterForm.DoThreadSafe(x =>
+                                    {
+                                        x.FormClosed += (sender, args) => blnFormClosed = true;
+                                        x.MdiParent = frmTestForm;
+                                        x.ShowInTaskbar = false;
+                                        x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+#if DEBUG
+                                        x.SendToBack();
+#endif
+                                    }, TestContext.CancellationTokenSource.Token);
                                     while
-                                        (!blnFormClosed &&
-                                         !frmCharacterForm
-                                             .IsDisposed) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                        (!frmCharacterForm
+                                            .IsFinishedInitializing) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                                     {
                                         Utils.SafeSleep(TestContext.CancellationTokenSource.Token);
                                     }
                                 }
-                                catch (ApplicationException e)
+                                finally
                                 {
-                                    e = e.Demystify();
-                                    string strErrorMessage
-                                        = "Encountered (non-fatal) exception while disposing of character form."
-                                          + Environment.NewLine
-                                          + e.Message;
-                                    Debug.WriteLine(strErrorMessage);
-                                    Console.WriteLine(strErrorMessage);
-                                    Program.OpenCharacters.Remove(objCharacter);
-                                }
-                                catch (InvalidOperationException e)
-                                {
-                                    e = e.Demystify();
-                                    string strErrorMessage
-                                        = "Encountered (non-fatal) exception while disposing of character form."
-                                          + Environment.NewLine
-                                          + e.Message;
-                                    Debug.WriteLine(strErrorMessage);
-                                    Console.WriteLine(strErrorMessage);
-                                    Program.OpenCharacters.Remove(objCharacter);
+                                    try
+                                    {
+                                        frmCharacterForm.DoThreadSafe(x => x.Close(), TestContext.CancellationTokenSource.Token);
+                                        while
+                                            (!blnFormClosed &&
+                                             !frmCharacterForm
+                                                 .IsDisposed) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                        {
+                                            Utils.SafeSleep(TestContext.CancellationTokenSource.Token);
+                                        }
+                                    }
+                                    catch (ApplicationException e)
+                                    {
+                                        e = e.Demystify();
+                                        string strErrorMessage
+                                            = "Encountered (non-fatal) exception while disposing of character form."
+                                              + Environment.NewLine
+                                              + e.Message;
+                                        Debug.WriteLine(strErrorMessage);
+                                        Console.WriteLine(strErrorMessage);
+                                        Program.OpenCharacters.Remove(objCharacter);
+                                    }
+                                    catch (InvalidOperationException e)
+                                    {
+                                        e = e.Demystify();
+                                        string strErrorMessage
+                                            = "Encountered (non-fatal) exception while disposing of character form."
+                                              + Environment.NewLine
+                                              + e.Message;
+                                        Debug.WriteLine(strErrorMessage);
+                                        Console.WriteLine(strErrorMessage);
+                                        Program.OpenCharacters.Remove(objCharacter);
+                                    }
                                 }
                             }
-                        }
-                        catch (Exception e)
-                        {
-                            e = e.Demystify();
-                            string strErrorMessage
-                                = "Exception while loading form for " + strFileName + ":";
-                            strErrorMessage += Environment.NewLine + e;
-                            Debug.WriteLine(strErrorMessage);
-                            Console.WriteLine(strErrorMessage);
-                            Assert.Fail(strErrorMessage);
+                            catch (Exception e)
+                            {
+                                e = e.Demystify();
+                                string strErrorMessage
+                                    = "Exception while loading form for " + strFileName + ":";
+                                strErrorMessage += Environment.NewLine + e;
+                                Debug.WriteLine(strErrorMessage);
+                                Console.WriteLine(strErrorMessage);
+                                Assert.Fail(strErrorMessage);
+                            }
                         }
                     }
+                }
+                finally
+                {
+                    try
+                    {
+                        frmTestForm?.DoThreadSafe(x => x.Close(), TestContext.CancellationTokenSource.Token);
+                    }
+                    catch (Exception e)
+                    {
+                        string strErrorMessage = "Encountered (non-fatal) exception while disposing of main form." + Environment.NewLine
+                            + e.Message;
+                        Debug.WriteLine(strErrorMessage);
+                        Console.WriteLine(strErrorMessage);
+                        Utils.BreakIfDebug();
+                    }
+                    Program.MainForm = frmOldMainForm;
+                    Utils.IsUnitTestForUI = false;
                 }
             }
             catch (Exception ex)
@@ -564,23 +645,12 @@ namespace Chummer.Tests
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
             }
+#if MEMORYTESTING
             finally
             {
-                try
-                {
-                    frmTestForm?.DoThreadSafe(x => x.Close(), TestContext.CancellationTokenSource.Token);
-                }
-                catch (Exception e)
-                {
-                    string strErrorMessage = "Encountered (non-fatal) exception while disposing of main form." + Environment.NewLine
-                        + e.Message;
-                    Debug.WriteLine(strErrorMessage);
-                    Console.WriteLine(strErrorMessage);
-                    Utils.BreakIfDebug();
-                }
-                Program.MainForm = frmOldMainForm;
-                Utils.IsUnitTestForUI = false;
+                TestContext.CancellationTokenSource.Dispose();
             }
+#endif
         }
 
         /// <summary>
