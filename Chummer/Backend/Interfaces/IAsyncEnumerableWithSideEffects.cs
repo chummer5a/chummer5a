@@ -378,7 +378,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             using (CancellationTokenSource objSource = new CancellationTokenSource())
             // ReSharper disable once AccessToDisposedClosure
-            using (token.Register(() => objSource.Cancel(false)))
+            using (token.Register(x => ((CancellationTokenSource)x).Cancel(false), objSource, false))
             {
                 CancellationToken objToken = objSource.Token;
                 using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstTasks))
@@ -446,7 +446,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             using (CancellationTokenSource objSource = new CancellationTokenSource())
             // ReSharper disable once AccessToDisposedClosure
-            using (token.Register(() => objSource.Cancel(false)))
+            using (token.Register(x => ((CancellationTokenSource)x).Cancel(false), objSource, false))
             {
                 CancellationToken objToken = objSource.Token;
                 using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstTasks))
@@ -524,7 +524,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             using (CancellationTokenSource objSource = new CancellationTokenSource())
             // ReSharper disable once AccessToDisposedClosure
-            using (token.Register(() => objSource.Cancel(false)))
+            using (token.Register(x => ((CancellationTokenSource)x).Cancel(false), objSource, false))
             {
                 CancellationToken objToken = objSource.Token;
                 using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstTasks))
@@ -592,7 +592,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             using (CancellationTokenSource objSource = new CancellationTokenSource())
             // ReSharper disable once AccessToDisposedClosure
-            using (token.Register(() => objSource.Cancel(false)))
+            using (token.Register(x => ((CancellationTokenSource)x).Cancel(false), objSource, false))
             {
                 CancellationToken objToken = objSource.Token;
                 using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstTasks))

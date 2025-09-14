@@ -619,7 +619,7 @@ namespace Chummer
                 await txtText.DoThreadSafeAsync(x => x.Text = strGeneratingData, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 XmlDocument objNewDocument;
-                using (token.Register(() => _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false)))
+                using (token.Register(x => ((CancellationTokenSource)x).Cancel(false), _objCharacterXmlGeneratorCancellationTokenSource, false))
                 {
                     objNewDocument = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
                                                                            _objCharacterXmlGeneratorCancellationTokenSource

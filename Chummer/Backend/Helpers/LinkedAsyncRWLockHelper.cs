@@ -47,7 +47,7 @@ namespace Chummer
         private DebuggableSemaphoreSlim _objHasChildrenSemaphore; // Used to prevent disposing a helper until it has no more children left
 
         private readonly LinkedAsyncRWLockHelper _objParentLinkedHelper;
-        private readonly CancellationTokenSource _objDisposalTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _objDisposalTokenSource;
         private readonly CancellationToken _objDisposalToken;
 
         public DebuggableSemaphoreSlim PendingWriterSemaphore => _objPendingWriterSemaphore;
@@ -76,6 +76,7 @@ namespace Chummer
 #else
             objParent?.AddChild();
 #endif
+            _objDisposalTokenSource = new CancellationTokenSource();
             _objDisposalToken = _objDisposalTokenSource.Token;
             if (blnGetFromPool)
             {

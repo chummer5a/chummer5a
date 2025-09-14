@@ -1095,27 +1095,35 @@ namespace Chummer
         public static Task StartStaTask(Action func, CancellationToken token)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
-            Thread thread = new Thread(() =>
+            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs, false);
+            try
             {
-                try
+                Thread thread = new Thread(() =>
                 {
-                    func.Invoke();
-                    // This is needed because SetResult always needs a return type
-                    tcs.TrySetResult(true);
-                }
-                catch (Exception e)
-                {
-                    tcs.TrySetException(e);
-                }
-                finally
-                {
-                    objRegistration.Dispose();
-                }
-            });
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            return tcs.Task;
+                    try
+                    {
+                        func.Invoke();
+                        // This is needed because SetResult always needs a return type
+                        tcs.TrySetResult(true);
+                    }
+                    catch (Exception e)
+                    {
+                        tcs.TrySetException(e);
+                    }
+                    finally
+                    {
+                        objRegistration.Dispose();
+                    }
+                });
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+                return tcs.Task;
+            }
+            catch
+            {
+                objRegistration.Dispose();
+                throw;
+            }
         }
 
         /// <summary>
@@ -1125,25 +1133,33 @@ namespace Chummer
         public static Task<T> StartStaTask<T>(Func<T> func, CancellationToken token)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
-            Thread thread = new Thread(() =>
+            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs, false);
+            try
             {
-                try
+                Thread thread = new Thread(() =>
                 {
-                    tcs.TrySetResult(func());
-                }
-                catch (Exception e)
-                {
-                    tcs.TrySetException(e);
-                }
-                finally
-                {
-                    objRegistration.Dispose();
-                }
-            });
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            return tcs.Task;
+                    try
+                    {
+                        tcs.TrySetResult(func());
+                    }
+                    catch (Exception e)
+                    {
+                        tcs.TrySetException(e);
+                    }
+                    finally
+                    {
+                        objRegistration.Dispose();
+                    }
+                });
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+                return tcs.Task;
+            }
+            catch
+            {
+                objRegistration.Dispose();
+                throw;
+            }
         }
 
         /// <summary>
@@ -1153,28 +1169,36 @@ namespace Chummer
         public static Task StartStaTask(Task func, CancellationToken token)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
-            Thread thread = new Thread(RunFunction);
-            async void RunFunction()
+            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs, false);
+            try
             {
-                try
+                Thread thread = new Thread(RunFunction);
+                async void RunFunction()
                 {
-                    await func.ConfigureAwait(true);
-                    // This is needed because SetResult always needs a return type
-                    tcs.TrySetResult(true);
+                    try
+                    {
+                        await func.ConfigureAwait(true);
+                        // This is needed because SetResult always needs a return type
+                        tcs.TrySetResult(true);
+                    }
+                    catch (Exception e)
+                    {
+                        tcs.TrySetException(e);
+                    }
+                    finally
+                    {
+                        objRegistration.Dispose();
+                    }
                 }
-                catch (Exception e)
-                {
-                    tcs.TrySetException(e);
-                }
-                finally
-                {
-                    objRegistration.Dispose();
-                }
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+                return tcs.Task;
             }
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            return tcs.Task;
+            catch
+            {
+                objRegistration.Dispose();
+                throw;
+            }
         }
 
         /// <summary>
@@ -1184,26 +1208,34 @@ namespace Chummer
         public static Task<T> StartStaTask<T>(Task<T> func, CancellationToken token)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
-            Thread thread = new Thread(RunFunction);
-            async void RunFunction()
+            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs, false);
+            try
             {
-                try
+                Thread thread = new Thread(RunFunction);
+                async void RunFunction()
                 {
-                    tcs.TrySetResult(await func.ConfigureAwait(true));
+                    try
+                    {
+                        tcs.TrySetResult(await func.ConfigureAwait(true));
+                    }
+                    catch (Exception e)
+                    {
+                        tcs.TrySetException(e);
+                    }
+                    finally
+                    {
+                        objRegistration.Dispose();
+                    }
                 }
-                catch (Exception e)
-                {
-                    tcs.TrySetException(e);
-                }
-                finally
-                {
-                    objRegistration.Dispose();
-                }
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+                return tcs.Task;
             }
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            return tcs.Task;
+            catch
+            {
+                objRegistration.Dispose();
+                throw;
+            }
         }
 
         /// <summary>
@@ -2801,7 +2833,7 @@ namespace Chummer
         /// </summary>
         [CLSCompliant(false)]
         public static SafeDisposableObjectPool<DebuggableSemaphoreSlim> SemaphorePool { get; }
-            = new SafeDisposableObjectPool<DebuggableSemaphoreSlim>(Math.Max(MaxParallelBatchSize, ushort.MaxValue + 1), () => new DebuggableSemaphoreSlim());
+            = new SafeDisposableObjectPool<DebuggableSemaphoreSlim>(Math.Max(MaxParallelBatchSize, 4 * (byte.MaxValue + 1)), () => new DebuggableSemaphoreSlim());
 
         /// <summary>
         /// RecyclableMemoryStreamManager to be used for all RecyclableMemoryStream constructors.

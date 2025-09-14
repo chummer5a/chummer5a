@@ -961,7 +961,8 @@ namespace Chummer
             return !blnReturnError ? string.Empty : strKey + " not found; check language file for string";
         }
 
-        private static readonly char[] s_CurlyBrackets = "{}".ToCharArray();
+        // Treat as ReadOnlyCollection please, it's only not that because key string methods cannot use a ReadOnlyCollection as their argument
+        private static readonly char[] s_CurlyBrackets = new[] { '{', '}' };
 
         /// <summary>
         /// Processes a compound string that contains both plaintext and references to localized strings

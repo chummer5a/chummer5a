@@ -498,11 +498,12 @@ namespace Chummer.Backend.Skills
                     return;
                 CancellationTokenSource objNewSource = new CancellationTokenSource();
                 CancellationToken objToken = objNewSource.Token;
-                using (token.Register(() =>
+                using (token.Register(x =>
                        {
-                           objNewSource.Cancel(false);
-                           objNewSource.Dispose();
-                       }))
+                           CancellationTokenSource objToCancel = (CancellationTokenSource)x;
+                           objToCancel.Cancel(false);
+                           objToCancel.Dispose();
+                       }, objNewSource, false))
                 {
                     IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try

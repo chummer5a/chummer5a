@@ -37,7 +37,7 @@ namespace Chummer
             TaskCompletionSource<int> objTaskCompletionSource = new TaskCompletionSource<int>();
             if (token != default)
             {
-                using (token.Register(() => objTaskCompletionSource.TrySetCanceled(token)))
+                using (token.Register(x => ((TaskCompletionSource<int>)x).TrySetCanceled(token), objTaskCompletionSource, false))
                 {
                     objProcess.EnableRaisingEvents = true;
                     objProcess.Exited += (sender, args) => objTaskCompletionSource.TrySetResult(objProcess.ExitCode);

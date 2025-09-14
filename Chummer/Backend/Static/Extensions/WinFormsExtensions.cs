@@ -114,7 +114,7 @@ namespace Chummer
                 return Utils.RunOnMainThreadAsync(() => frmForm.ShowDialog(owner), token);
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
-            using (token.Register(() => objCompletionSource.TrySetCanceled(token)))
+            using (token.Register(x => ((TaskCompletionSource<DialogResult>)x).TrySetCanceled(token), objCompletionSource, false))
             {
                 void BeginShow(Form frmInner)
                 {
@@ -176,13 +176,27 @@ namespace Chummer
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
             CancellationTokenRegistration objCancelRegistration
-                = token.Register(() => objCompletionSource.TrySetCanceled(token));
-            frmForm.BeginInvoke(new Action(() =>
+                = token.Register(x => ((TaskCompletionSource<DialogResult>)x).TrySetCanceled(token), objCompletionSource, false);
+            try
             {
-                objCompletionSource.SetResult(frmForm.ShowDialog(owner));
+                frmForm.BeginInvoke(new Action(() =>
+                {
+                    try
+                    {
+                        objCompletionSource.SetResult(frmForm.ShowDialog(owner));
+                    }
+                    finally
+                    {
+                        objCancelRegistration.Dispose();
+                    }
+                }));
+                return objCompletionSource.Task;
+            }
+            catch
+            {
                 objCancelRegistration.Dispose();
-            }));
-            return objCompletionSource.Task;
+                throw;
+            }
         }
 
         /// <summary>
@@ -215,11 +229,19 @@ namespace Chummer
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
             CancellationTokenRegistration objCancelRegistration
-                = token.Register(() => objCompletionSource.TrySetCanceled(token));
+                = token.Register(x => ((TaskCompletionSource<DialogResult>)x).TrySetCanceled(token), objCompletionSource, false);
             void BeginShow(Form frmInner)
             {
-                frmInner.Shown += FormOnShown;
-                frmInner.Show(owner);
+                try
+                {
+                    frmInner.Shown += FormOnShown;
+                    frmInner.Show(owner);
+                }
+                catch
+                {
+                    objCancelRegistration.Dispose();
+                    throw;
+                }
                 void FormOnShown(object sender, EventArgs args)
                 {
                     frmForm.DoThreadSafe(x => x.Close(), token);
@@ -228,9 +250,17 @@ namespace Chummer
                 }
             }
 
-            Action<Form> funcBegin = BeginShow;
-            frmForm.BeginInvoke(funcBegin, frmForm);
-            return objCompletionSource.Task;
+            try
+            {
+                Action<Form> funcBegin = BeginShow;
+                frmForm.BeginInvoke(funcBegin, frmForm);
+                return objCompletionSource.Task;
+            }
+            catch
+            {
+                objCancelRegistration.Dispose();
+                throw;
+            }
         }
 
         /// <summary>

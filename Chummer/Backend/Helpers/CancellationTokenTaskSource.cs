@@ -49,7 +49,7 @@ namespace Chummer
                 return;
             }
             TaskCompletionSource<T> objTaskCompletionSource = new TaskCompletionSource<T>();
-            _objTokenRegistration = token.Register(() => objTaskCompletionSource.TrySetCanceled(token), false);
+            _objTokenRegistration = token.Register(x => ((TaskCompletionSource<T>)x).TrySetCanceled(token), objTaskCompletionSource, false);
             Task = objTaskCompletionSource.Task;
         }
 

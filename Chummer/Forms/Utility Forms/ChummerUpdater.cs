@@ -1348,7 +1348,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 try
                 {
-                    using (token.Register(() => _clientDownloader.CancelAsync()))
+                    using (token.Register(x => ((WebClient)x).CancelAsync(), _clientDownloader, false))
                         await _clientDownloader.DownloadFileTaskAsync(uriDownloadFileAddress, _strTempLatestVersionZipPath).ConfigureAwait(false);
                 }
                 catch (WebException ex)

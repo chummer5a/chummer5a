@@ -41,6 +41,34 @@ namespace Chummer
             return string.Equals(strInput, Utils.GuidEmptyString, StringComparison.OrdinalIgnoreCase);
         }
 
+        public static char[] ToPooledCharArray(this string strInput, out int intLength)
+        {
+            intLength = strInput.Length;
+            char[] achrReturn = ArrayPool<char>.Shared.Rent(intLength);
+            try
+            {
+                if (intLength > 0)
+                {
+                    int intMemoryLength = intLength * sizeof(char);
+                    unsafe
+                    {
+                        fixed (char* smem = strInput)
+                        fixed (char* dmem = achrReturn)
+                        {
+                            Buffer.MemoryCopy((byte*)smem, (byte*)dmem, intMemoryLength, intMemoryLength);
+                        }
+                    }
+                }
+
+                return achrReturn;
+            }
+            catch
+            {
+                ArrayPool<char>.Shared.Return(achrReturn);
+                throw;
+            }
+        }
+
         /// <summary>
         /// Version of string.Concat that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
@@ -3905,14 +3933,11 @@ namespace Chummer
             return strInput;
         }
 
+        // Treat as ReadOnlyCollection please, they are only not that because key string methods cannot use a ReadOnlyCollection as their argument
         private static readonly char[] s_achrWhiteSpaceAndQuotes = new[] { ' ', '\u00a0', '\u0085', '\t', '\n', '\v', '\f', '\r', '\"' };
-        
         private static readonly char[] s_achrParentheses = new[] { '(', ')' };
-
         private static readonly char[] s_achrOpenParenthesesComma = new[] { '(', ',' };
-
         private static readonly char[] s_achrClosedParenthesesComma = new[] { ')', ',' };
-
         private static readonly char[] s_achrXmlInvalidUnicodeChars = new[]
         {
             '\u0000',

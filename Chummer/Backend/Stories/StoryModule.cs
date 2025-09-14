@@ -435,6 +435,10 @@ namespace Chummer
             }
         }
 
+        // Treat as ReadOnlyCollection please, it's only not that because key string methods cannot use a ReadOnlyCollection as their argument
+        private static readonly char[] s_achrAlwaysTrimForXmlNameFriendly = new[]
+            {' ', '$', '/', '?', ',', '\'', '\"', ';', ':', '(', ')', '[', ']', '|', '\\', '+', '=', '`', '~', '!', '@', '#', '%', '^', '&', '*', '¥'};
+
         public async Task<string> ProcessSingleMacro(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -460,13 +464,14 @@ namespace Chummer
                     }
                     case "$XmlNameFriendly":
                     {
-                        return strArguments
-                               .FastEscape(' ', '$', '/', '?', ',', '\'', '\"', ';', ':', '(', ')', '[', ']', '|', '\\',
-                                           '+', '=', '`', '~', '!', '@', '#', '%', '^', '&', '*')
-                               .FastEscape((await LanguageManager
-                                                  .GetStringAsync("String_NuyenSymbol", strLanguage, token: token)
-                                                  .ConfigureAwait(false))
-                                           .ToCharArray()).ToLower(objCulture);
+                        string strReturn = strArguments
+                               .FastEscape(s_achrAlwaysTrimForXmlNameFriendly);
+                        string strNuyenSymbol = await LanguageManager
+                                            .GetStringAsync("String_NuyenSymbol", strLanguage, token: token)
+                                            .ConfigureAwait(false);
+                        if (strNuyenSymbol.Any(x => !s_achrAlwaysTrimForXmlNameFriendly.Contains(x)))
+                            strReturn = strReturn.FastEscape(strNuyenSymbol.ToCharArray()); // Cannot use Pooled version because the padded values can have characters we don't want escaped
+                        return strReturn.ToLower(objCulture);
                     }
                     case "$CharacterName":
                     {

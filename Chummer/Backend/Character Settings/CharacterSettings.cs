@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -10544,17 +10545,31 @@ namespace Chummer
                     int intCurrentNuyenDecimals = MinNuyenDecimals;
                     if (intNewNuyenDecimals < intCurrentNuyenDecimals)
                     {
-                        char[] achrNuyenFormat = NuyenFormat.ToCharArray();
-                        for (int i = intDecimalPlaces + 1 + intNewNuyenDecimals; i < achrNuyenFormat.Length; ++i)
-                            achrNuyenFormat[i] = '0';
-                        NuyenFormat = new string(achrNuyenFormat);
+                        char[] achrNuyenFormat = NuyenFormat.ToPooledCharArray(out int intLength);
+                        try
+                        {
+                            for (int i = intDecimalPlaces + 1 + intNewNuyenDecimals; i < intLength; ++i)
+                                achrNuyenFormat[i] = '0';
+                            NuyenFormat = new string(achrNuyenFormat, 0, intLength);
+                        }
+                        finally
+                        {
+                            ArrayPool<char>.Shared.Return(achrNuyenFormat);
+                        }
                     }
                     else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
                     {
-                        char[] achrNuyenFormat = NuyenFormat.ToCharArray();
-                        for (int i = 1; i < intNewNuyenDecimals; ++i)
-                            achrNuyenFormat[intDecimalPlaces + i] = '0';
-                        NuyenFormat = new string(achrNuyenFormat);
+                        char[] achrNuyenFormat = NuyenFormat.ToPooledCharArray(out int intLength);
+                        try
+                        {
+                            for (int i = 1; i < intNewNuyenDecimals; ++i)
+                                achrNuyenFormat[intDecimalPlaces + i] = '0';
+                            NuyenFormat = new string(achrNuyenFormat, 0, intLength);
+                        }
+                        finally
+                        {
+                            ArrayPool<char>.Shared.Return(achrNuyenFormat);
+                        }
                     }
                 }
             }
@@ -10617,17 +10632,31 @@ namespace Chummer
                 int intCurrentNuyenDecimals = await GetMinNuyenDecimalsAsync(token).ConfigureAwait(false);
                 if (intNewNuyenDecimals < intCurrentNuyenDecimals)
                 {
-                    char[] achrNuyenFormat = strNuyenFormat.ToCharArray();
-                    for (int i = intDecimalPlaces + 1 + intNewNuyenDecimals; i < achrNuyenFormat.Length; ++i)
-                        achrNuyenFormat[i] = '0';
-                    await SetNuyenFormatAsync(new string(achrNuyenFormat), token).ConfigureAwait(false);
+                    char[] achrNuyenFormat = strNuyenFormat.ToPooledCharArray(out int intLength);
+                    try
+                    {
+                        for (int i = intDecimalPlaces + 1 + intNewNuyenDecimals; i < intLength; ++i)
+                            achrNuyenFormat[i] = '0';
+                        await SetNuyenFormatAsync(new string(achrNuyenFormat, 0, intLength), token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        ArrayPool<char>.Shared.Return(achrNuyenFormat);
+                    }
                 }
                 else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
                 {
-                    char[] achrNuyenFormat = strNuyenFormat.ToCharArray();
-                    for (int i = 1; i < intNewNuyenDecimals; ++i)
-                        achrNuyenFormat[intDecimalPlaces + i] = '0';
-                    await SetNuyenFormatAsync(new string(achrNuyenFormat), token).ConfigureAwait(false);
+                    char[] achrNuyenFormat = NuyenFormat.ToPooledCharArray(out int intLength);
+                    try
+                    {
+                        for (int i = 1; i < intNewNuyenDecimals; ++i)
+                            achrNuyenFormat[intDecimalPlaces + i] = '0';
+                        await SetNuyenFormatAsync(new string(achrNuyenFormat, 0, intLength), token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        ArrayPool<char>.Shared.Return(achrNuyenFormat);
+                    }
                 }
             }
             finally

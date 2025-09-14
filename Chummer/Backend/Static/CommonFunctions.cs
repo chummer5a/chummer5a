@@ -124,6 +124,7 @@ namespace Chummer
             return sbdExpression.Enumerate().AsParallel().Contains('{');
         }
 
+        // Treat as ReadOnlyCollection please, it's only not that because key string methods cannot use a ReadOnlyCollection as their argument
         private static readonly char[] s_achrUppercaseLatinCharsAndOpenCurlyBracket = new[]
         {
             '{', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
