@@ -115,6 +115,7 @@ Application Changes:
 - Implemented an essence filter for the SelectCyberware form to allow filtering available Cyberware. 
 - Implemented an xpath filter for Weapon Mounts to further refine the available weapons. This uses the weaponfilter property, which takes an XPath expression that is evaluated against each weapon in the database. If the expression returns true, the weapon is shown as available for the mount. As an example, the Mini weapon mount uses ((type != "Melee") or (type = "Melee" and reach = "0")) to exclude melee weapons with reach greater than 0.
 - Implemented skillenablemovement improvement. This is used to enable skills that are usually kept disabled by movement types (i.e. Flight requiring a movement speed type that includes Flight speed)
+- Refactored how CharacterSettings are saved and loaded. Should make adding new settings easier in the future.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://jackpoint.live/index.php?topic=31750.msg544923#msg544923.
