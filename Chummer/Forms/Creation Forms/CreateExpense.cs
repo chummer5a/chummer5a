@@ -34,6 +34,7 @@ namespace Chummer
         private string _strReason;
         private decimal _decAmount;
         private DateTime _datSelectedDate;
+        private DateTime _datSelectedInGameDate;
 
         #region Control Events
 
@@ -62,6 +63,7 @@ namespace Chummer
             }
 
             datDate.Value = DateTime.Now;
+            datInGameDate.Value = DateTime.Now;
         }
 
         private async void cmdOK_Click(object sender, EventArgs e)
@@ -89,6 +91,7 @@ namespace Chummer
                 if (_eMode == ExpenseType.Nuyen)
                     _decAmount *= nudPercent.Value / 100.0m;
                 _datSelectedDate = await datDate.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false);
+                _datSelectedInGameDate = await datInGameDate.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false);
                 _strReason = await txtDescription.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
                 _blnRefund = await chkRefund.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false);
                 _blnForceCareerVisible = await chkForceCareerVisible.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false);
@@ -160,6 +163,15 @@ namespace Chummer
         {
             get => _datSelectedDate;
             set => datDate.Value = value;
+        }
+
+        /// <summary>
+        /// The selected in-game date for the expense.
+        /// </summary>
+        public DateTime SelectedInGameDate
+        {
+            get => _datSelectedInGameDate;
+            set => datInGameDate.Value = value;
         }
 
         /// <summary>
@@ -284,6 +296,21 @@ namespace Chummer
                 x.Text = KarmaNuyenExchangeString;
             }).ConfigureAwait(false);
             await chkForceCareerVisible.DoThreadSafeAsync(x => x.Enabled = chkKarmaNuyenExchange.Checked).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Initialize the form with default values including setting in-game date from character settings.
+        /// </summary>
+        /// <param name="objCharacter">Character to get settings from.</param>
+        /// <param name="token">Cancellation token.</param>
+        public async Task InitializeAsync(Character objCharacter, CancellationToken token = default)
+        {
+            if (!IsInEditMode && objCharacter != null)
+            {
+                CharacterSettings objSettings = await objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
+                DateTime datDefaultInGameDate = await objSettings.GetDefaultInGameDateAsync(token).ConfigureAwait(false);
+                await datInGameDate.DoThreadSafeAsync(x => x.Value = datDefaultInGameDate, token).ConfigureAwait(false);
+            }
         }
     }
 }

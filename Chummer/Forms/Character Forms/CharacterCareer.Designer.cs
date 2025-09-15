@@ -1278,6 +1278,7 @@ namespace Chummer
             this.cmdKarmaSpent = new System.Windows.Forms.Button();
             this.lstKarma = new System.Windows.Forms.ListView();
             this.colKarmaDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colKarmaInGameDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colKarmaAmount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colKarmaReason = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cmdKarmaEdit = new System.Windows.Forms.Button();
@@ -1290,6 +1291,7 @@ namespace Chummer
             this.cmdNuyenSpent = new System.Windows.Forms.Button();
             this.lstNuyen = new System.Windows.Forms.ListView();
             this.colNuyenDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colNuyenInGameDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colNuyenAmount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colNuyenReason = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cmdNuyenEdit = new System.Windows.Forms.Button();
@@ -20992,6 +20994,7 @@ namespace Chummer
             // 
             this.lstKarma.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colKarmaDate,
+            this.colKarmaInGameDate,
             this.colKarmaAmount,
             this.colKarmaReason});
             this.tlpKarma.SetColumnSpan(this.lstKarma, 5);
@@ -21014,6 +21017,12 @@ namespace Chummer
             this.colKarmaDate.Tag = "String_Date";
             this.colKarmaDate.Text = "Date";
             this.colKarmaDate.Width = 130;
+            // 
+            // colKarmaInGameDate
+            // 
+            this.colKarmaInGameDate.Tag = "String_InGameDate";
+            this.colKarmaInGameDate.Text = "In-Game Date";
+            this.colKarmaInGameDate.Width = 100;
             // 
             // colKarmaAmount
             // 
@@ -21160,6 +21169,7 @@ namespace Chummer
             // 
             this.lstNuyen.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colNuyenDate,
+            this.colNuyenInGameDate,
             this.colNuyenAmount,
             this.colNuyenReason});
             this.tlpNuyen.SetColumnSpan(this.lstNuyen, 5);
@@ -21182,6 +21192,12 @@ namespace Chummer
             this.colNuyenDate.Tag = "String_Date";
             this.colNuyenDate.Text = "Date";
             this.colNuyenDate.Width = 130;
+            // 
+            // colNuyenInGameDate
+            // 
+            this.colNuyenInGameDate.Tag = "String_InGameDate";
+            this.colNuyenInGameDate.Text = "In-Game Date";
+            this.colNuyenInGameDate.Width = 100;
             // 
             // colNuyenAmount
             // 
@@ -23731,6 +23747,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdKarmaGained;
         private System.Windows.Forms.ListView lstKarma;
         private System.Windows.Forms.ColumnHeader colKarmaDate;
+        private System.Windows.Forms.ColumnHeader colKarmaInGameDate;
         private System.Windows.Forms.ColumnHeader colKarmaAmount;
         private System.Windows.Forms.ColumnHeader colKarmaReason;
         private System.Windows.Forms.Button cmdKarmaSpent;
@@ -23738,6 +23755,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdNuyenEdit;
         private System.Windows.Forms.ListView lstNuyen;
         private System.Windows.Forms.ColumnHeader colNuyenDate;
+        private System.Windows.Forms.ColumnHeader colNuyenInGameDate;
         private System.Windows.Forms.ColumnHeader colNuyenAmount;
         private System.Windows.Forms.ColumnHeader colNuyenReason;
         private System.Windows.Forms.Button cmdNuyenSpent;

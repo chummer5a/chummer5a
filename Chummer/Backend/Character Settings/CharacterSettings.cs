@@ -498,6 +498,7 @@ namespace Chummer
         private int _intMaxMartialTechniques = 5;
         private decimal _decNuyenCarryover = 5000;
         private int _intKarmaCarryover = 7;
+        private DateTime _datDefaultInGameDate = new DateTime(2072, 1, 1);
 
         // Dictionary of id (or names) of custom data directories, ordered by load order with the second value element being whether it's enabled
         private readonly LockingTypedOrderedDictionary<string, bool> _dicCustomDataDirectoryKeys;
@@ -15175,6 +15176,77 @@ namespace Chummer
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Default in-game date for new expenses.
+        /// </summary>
+        [SettingsElement("defaultingamedate")]
+        public DateTime DefaultInGameDate
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _datDefaultInGameDate;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (_datDefaultInGameDate != value)
+                    {
+                        _datDefaultInGameDate = value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Default in-game date for new expenses.
+        /// </summary>
+        public async Task<DateTime> GetDefaultInGameDateAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _datDefaultInGameDate;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Default in-game date for new expenses.
+        /// </summary>
+        public async Task SetDefaultInGameDateAsync(DateTime value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_datDefaultInGameDate != value)
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _datDefaultInGameDate = value;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
             }
             finally

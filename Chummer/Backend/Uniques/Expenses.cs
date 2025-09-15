@@ -20,6 +20,7 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -238,6 +239,7 @@ namespace Chummer
         private Guid _guiID;
         private readonly Character _objCharacter;
         private DateTime _datDate;
+        private DateTime _datInGameDate;
         private decimal _decAmount;
         private string _strReason = string.Empty;
         private ExpenseType _eExpenseType;
@@ -289,8 +291,68 @@ namespace Chummer
             _decAmount = decAmount;
             _strReason = strReason;
             _datDate = datDate;
+            
+            // Find the most recent expense of the same type to use as default in-game date
+            ExpenseLogEntry objMostRecentExpense = _objCharacter.ExpenseEntries
+                .Where(x => x.Type == objExpenseType)
+                .OrderByDescending(x => x.Date)
+                .FirstOrDefault();
+            
+            _datInGameDate = objMostRecentExpense?.InGameDate ?? _objCharacter.Settings.DefaultInGameDate;
             _eExpenseType = objExpenseType;
             _blnRefund = blnRefund;
+
+            return this; //Allow chaining
+        }
+
+        /// <summary>
+        /// Create a new Expense Log Entry with separate in-game date.
+        /// </summary>
+        /// <param name="decAmount">Amount of the Karma/Nuyen expense.</param>
+        /// <param name="strReason">Reason for the Karma/Nuyen change.</param>
+        /// <param name="objExpenseType">Type of expense, either Karma or Nuyen.</param>
+        /// <param name="datDate">Date and time of the Expense.</param>
+        /// <param name="datInGameDate">In-game date of the Expense.</param>
+        /// <param name="blnRefund">Whether this expense is a Karma refund.</param>
+        public ExpenseLogEntry Create(decimal decAmount, string strReason, ExpenseType objExpenseType, DateTime datDate, DateTime datInGameDate, bool blnRefund = false)
+        {
+            _decAmount = decAmount;
+            _strReason = strReason;
+            _datDate = datDate;
+            _datInGameDate = datInGameDate;
+            _eExpenseType = objExpenseType;
+            _blnRefund = blnRefund;
+
+            return this; //Allow chaining
+        }
+
+        /// <summary>
+        /// Create a new Expense Log Entry using character settings default in-game date.
+        /// </summary>
+        /// <param name="decAmount">Amount of the Karma/Nuyen expense.</param>
+        /// <param name="strReason">Reason for the Karma/Nuyen change.</param>
+        /// <param name="objExpenseType">Type of expense, either Karma or Nuyen.</param>
+        /// <param name="datDate">Date and time of the Expense.</param>
+        /// <param name="blnRefund">Whether this expense is a Karma refund.</param>
+        /// <param name="token">Cancellation token.</param>
+        public async Task<ExpenseLogEntry> CreateAsync(decimal decAmount, string strReason, ExpenseType objExpenseType, DateTime datDate, bool blnRefund = false, CancellationToken token = default)
+        {
+            _decAmount = decAmount;
+            _strReason = strReason;
+            _datDate = datDate;
+            _eExpenseType = objExpenseType;
+            _blnRefund = blnRefund;
+
+            // Get the default in-game date from character settings
+            if (_objCharacter != null)
+            {
+                CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
+                _datInGameDate = await objSettings.GetDefaultInGameDateAsync(token).ConfigureAwait(false);
+            }
+            else
+            {
+                _datInGameDate = datDate; // Fallback to real date if no character
+            }
 
             return this; //Allow chaining
         }
@@ -306,6 +368,7 @@ namespace Chummer
             objWriter.WriteStartElement("expense");
             objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("date", _datDate.ToString("s", GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("ingamedate", _datInGameDate.ToString("s", GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("amount", _decAmount.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("reason", _strReason);
             objWriter.WriteElementString("type", _eExpenseType.ToString());
@@ -340,6 +403,17 @@ namespace Chummer
                 return;
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             DateTime.TryParse(objNode["date"]?.InnerText, GlobalSettings.InvariantCultureInfo, DateTimeStyles.None, out _datDate);
+            
+            // Load in-game date, defaulting to real date if not present (for backward compatibility)
+            if (objNode["ingamedate"] != null)
+            {
+                DateTime.TryParse(objNode["ingamedate"].InnerText, GlobalSettings.InvariantCultureInfo, DateTimeStyles.None, out _datInGameDate);
+            }
+            else
+            {
+                _datInGameDate = _datDate; // Default to real date for backward compatibility
+            }
+            
             objNode.TryGetDecFieldQuickly("amount", ref _decAmount);
             if (objNode.TryGetStringFieldQuickly("reason", ref _strReason))
                 _strReason = _strReason.TrimEndOnce(" (" + (blnSync ? LanguageManager.GetString("String_Expense_Refund", token: token) : await LanguageManager.GetStringAsync("String_Expense_Refund", token: token).ConfigureAwait(false)) + ')').Replace("🡒", "->");
@@ -374,6 +448,7 @@ namespace Chummer
                 {
                     await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("date", Date.ToString(objCulture), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("ingamedate", InGameDate.ToString(objCulture), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("amount", Amount.ToString(Type == ExpenseType.Nuyen
                         ? await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false)
                         : "#,0.##", objCulture), token: token).ConfigureAwait(false);
@@ -405,6 +480,15 @@ namespace Chummer
         {
             get => _datDate;
             set => _datDate = value;
+        }
+
+        /// <summary>
+        /// In-game date the Expense Log Entry was made.
+        /// </summary>
+        public DateTime InGameDate
+        {
+            get => _datInGameDate;
+            set => _datInGameDate = value;
         }
 
         /// <summary>

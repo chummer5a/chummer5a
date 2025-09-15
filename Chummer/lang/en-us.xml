@@ -5836,6 +5836,10 @@
       <text>Date</text>
     </string>
     <string>
+      <key>String_InGameDate</key>
+      <text>In-Game Date</text>
+    </string>
+    <string>
       <key>String_Amount</key>
       <text>Amount</text>
     </string>
@@ -7187,6 +7191,10 @@
     <string>
       <key>Label_Expense_Date</key>
       <text>Date:</text>
+    </string>
+    <string>
+      <key>Label_Expense_InGameDate</key>
+      <text>In-Game Date:</text>
     </string>
     <string>
       <key>Label_Expense_Description</key>

@@ -38,6 +38,8 @@ namespace Chummer
             this.chkRefund = new Chummer.ColorableCheckBox();
             this.datDate = new System.Windows.Forms.DateTimePicker();
             this.lblDateLabel = new System.Windows.Forms.Label();
+            this.datInGameDate = new System.Windows.Forms.DateTimePicker();
+            this.lblInGameDateLabel = new System.Windows.Forms.Label();
             this.nudPercent = new Chummer.NumericUpDownEx();
             this.lblPercent = new System.Windows.Forms.Label();
             this.chkKarmaNuyenExchange = new Chummer.ColorableCheckBox();
@@ -56,7 +58,7 @@ namespace Chummer
             // 
             this.lblKarma.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarma.AutoSize = true;
-            this.lblKarma.Location = new System.Drawing.Point(3, 6);
+            this.lblKarma.Location = new System.Drawing.Point(199, 6);
             this.lblKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarma.Name = "lblKarma";
             this.lblKarma.Size = new System.Drawing.Size(79, 13);
@@ -93,7 +95,7 @@ namespace Chummer
             // 
             this.lblDescription.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDescription.AutoSize = true;
-            this.lblDescription.Location = new System.Drawing.Point(19, 58);
+            this.lblDescription.Location = new System.Drawing.Point(215, 84);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescription.Name = "lblDescription";
             this.lblDescription.Size = new System.Drawing.Size(63, 13);
@@ -105,9 +107,9 @@ namespace Chummer
             // txtDescription
             // 
             this.txtDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtDescription.Location = new System.Drawing.Point(88, 55);
+            this.txtDescription.Location = new System.Drawing.Point(284, 81);
             this.txtDescription.Name = "txtDescription";
-            this.txtDescription.Size = new System.Drawing.Size(355, 20);
+            this.txtDescription.Size = new System.Drawing.Size(159, 20);
             this.txtDescription.TabIndex = 7;
             this.txtDescription.Text = "Mission Reward";
             // 
@@ -147,7 +149,7 @@ namespace Chummer
             this.chkRefund.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkRefund.AutoSize = true;
             this.chkRefund.DefaultColorScheme = true;
-            this.chkRefund.Location = new System.Drawing.Point(88, 81);
+            this.chkRefund.Location = new System.Drawing.Point(3, 107);
             this.chkRefund.Name = "chkRefund";
             this.chkRefund.Size = new System.Drawing.Size(275, 17);
             this.chkRefund.TabIndex = 8;
@@ -160,16 +162,16 @@ namespace Chummer
             this.datDate.CustomFormat = "ddddd, MMMM dd, yyyy hh:mm tt";
             this.datDate.Dock = System.Windows.Forms.DockStyle.Fill;
             this.datDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.datDate.Location = new System.Drawing.Point(88, 29);
+            this.datDate.Location = new System.Drawing.Point(284, 29);
             this.datDate.Name = "datDate";
-            this.datDate.Size = new System.Drawing.Size(355, 20);
+            this.datDate.Size = new System.Drawing.Size(159, 20);
             this.datDate.TabIndex = 5;
             // 
             // lblDateLabel
             // 
             this.lblDateLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDateLabel.AutoSize = true;
-            this.lblDateLabel.Location = new System.Drawing.Point(49, 32);
+            this.lblDateLabel.Location = new System.Drawing.Point(245, 32);
             this.lblDateLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDateLabel.Name = "lblDateLabel";
             this.lblDateLabel.Size = new System.Drawing.Size(33, 13);
@@ -177,6 +179,30 @@ namespace Chummer
             this.lblDateLabel.Tag = "Label_Expense_Date";
             this.lblDateLabel.Text = "Date:";
             this.lblDateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // datInGameDate
+            // 
+            this.datInGameDate.CustomFormat = "ddddd, MMMM dd, yyyy";
+            this.datInGameDate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.datInGameDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.datInGameDate.Location = new System.Drawing.Point(284, 55);
+            this.datInGameDate.Name = "datInGameDate";
+            this.datInGameDate.Size = new System.Drawing.Size(159, 20);
+            this.datInGameDate.TabIndex = 7;
+            this.datInGameDate.Value = new System.DateTime(2072, 7, 31, 0, 0, 0, 0);
+            // 
+            // lblInGameDateLabel
+            // 
+            this.lblInGameDateLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblInGameDateLabel.AutoSize = true;
+            this.lblInGameDateLabel.Location = new System.Drawing.Point(202, 58);
+            this.lblInGameDateLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblInGameDateLabel.Name = "lblInGameDateLabel";
+            this.lblInGameDateLabel.Size = new System.Drawing.Size(76, 13);
+            this.lblInGameDateLabel.TabIndex = 6;
+            this.lblInGameDateLabel.Tag = "Label_Expense_InGameDate";
+            this.lblInGameDateLabel.Text = "In-Game Date:";
+            this.lblInGameDateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // nudPercent
             // 
@@ -222,9 +248,9 @@ namespace Chummer
             this.chkKarmaNuyenExchange.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkKarmaNuyenExchange.AutoSize = true;
             this.chkKarmaNuyenExchange.DefaultColorScheme = true;
-            this.chkKarmaNuyenExchange.Location = new System.Drawing.Point(88, 104);
+            this.chkKarmaNuyenExchange.Location = new System.Drawing.Point(284, 107);
             this.chkKarmaNuyenExchange.Name = "chkKarmaNuyenExchange";
-            this.chkKarmaNuyenExchange.Size = new System.Drawing.Size(161, 17);
+            this.chkKarmaNuyenExchange.Size = new System.Drawing.Size(159, 17);
             this.chkKarmaNuyenExchange.TabIndex = 11;
             this.chkKarmaNuyenExchange.Tag = "String_WorkingForTheManPeople";
             this.chkKarmaNuyenExchange.Text = "Working for the Man/People";
@@ -243,15 +269,18 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.lblDateLabel, 0, 1);
             this.tlpMain.Controls.Add(this.chkRefund, 1, 3);
             this.tlpMain.Controls.Add(this.datDate, 1, 1);
-            this.tlpMain.Controls.Add(this.lblDescription, 0, 2);
-            this.tlpMain.Controls.Add(this.txtDescription, 1, 2);
+            this.tlpMain.Controls.Add(this.lblInGameDateLabel, 0, 2);
+            this.tlpMain.Controls.Add(this.datInGameDate, 1, 2);
+            this.tlpMain.Controls.Add(this.lblDescription, 0, 3);
+            this.tlpMain.Controls.Add(this.txtDescription, 1, 3);
             this.tlpMain.Controls.Add(this.flpAmount, 1, 0);
-            this.tlpMain.Controls.Add(this.chkForceCareerVisible, 1, 5);
-            this.tlpMain.Controls.Add(this.tlpButtons, 0, 6);
+            this.tlpMain.Controls.Add(this.chkForceCareerVisible, 1, 6);
+            this.tlpMain.Controls.Add(this.tlpButtons, 0, 7);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 7;
+            this.tlpMain.RowCount = 8;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -269,7 +298,7 @@ namespace Chummer
             this.flpAmount.Controls.Add(this.nudAmount);
             this.flpAmount.Controls.Add(this.nudPercent);
             this.flpAmount.Controls.Add(this.lblPercent);
-            this.flpAmount.Location = new System.Drawing.Point(85, 0);
+            this.flpAmount.Location = new System.Drawing.Point(281, 0);
             this.flpAmount.Margin = new System.Windows.Forms.Padding(0);
             this.flpAmount.Name = "flpAmount";
             this.flpAmount.Size = new System.Drawing.Size(154, 26);
@@ -280,9 +309,9 @@ namespace Chummer
             this.chkForceCareerVisible.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkForceCareerVisible.AutoSize = true;
             this.chkForceCareerVisible.DefaultColorScheme = true;
-            this.chkForceCareerVisible.Location = new System.Drawing.Point(88, 127);
+            this.chkForceCareerVisible.Location = new System.Drawing.Point(284, 130);
             this.chkForceCareerVisible.Name = "chkForceCareerVisible";
-            this.chkForceCareerVisible.Size = new System.Drawing.Size(167, 17);
+            this.chkForceCareerVisible.Size = new System.Drawing.Size(159, 17);
             this.chkForceCareerVisible.TabIndex = 11;
             this.chkForceCareerVisible.Tag = "Checkbox_Expense_ForceCareerVisible";
             this.chkForceCareerVisible.Text = "Show in Career Karma/Nuyen";
@@ -351,6 +380,8 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOK;
         private Chummer.ColorableCheckBox chkRefund;
         private System.Windows.Forms.DateTimePicker datDate;
+        private System.Windows.Forms.DateTimePicker datInGameDate;
+        private System.Windows.Forms.Label lblInGameDateLabel;
         private System.Windows.Forms.Label lblDateLabel;
         private Chummer.NumericUpDownEx nudPercent;
         private System.Windows.Forms.Label lblPercent;

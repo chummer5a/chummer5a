@@ -7600,7 +7600,7 @@ namespace Chummer
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                             objExpense.Create(frmNewExpense.MyForm.Amount, frmNewExpense.MyForm.Reason,
                                 ExpenseType.Karma,
-                                frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
+                                frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.SelectedInGameDate, frmNewExpense.MyForm.Refund);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
                                 .ConfigureAwait(false);
 
@@ -7618,7 +7618,7 @@ namespace Chummer
                                 objExpense = new ExpenseLogEntry(CharacterObject);
                                 objExpense.Create(-frmNewExpense.MyForm.Amount * await CharacterObjectSettings.GetNuyenPerBPWftPAsync(GenericToken).ConfigureAwait(false),
                                     frmNewExpense.MyForm.Reason, ExpenseType.Nuyen,
-                                    frmNewExpense.MyForm.SelectedDate);
+                                    frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.SelectedInGameDate);
                                 objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
                                     .ConfigureAwait(false);
@@ -7715,7 +7715,7 @@ namespace Chummer
                                 objExpense = new ExpenseLogEntry(CharacterObject);
                                 objExpense.Create(frmNewExpense.MyForm.Amount * await CharacterObjectSettings.GetNuyenPerBPWftMAsync(GenericToken).ConfigureAwait(false),
                                     frmNewExpense.MyForm.Reason, ExpenseType.Nuyen,
-                                    frmNewExpense.MyForm.SelectedDate);
+                                    frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.SelectedInGameDate);
                                 objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
                                     .ConfigureAwait(false);
@@ -19609,6 +19609,7 @@ namespace Chummer
                                Amount = objExpense.Amount,
                                Refund = objExpense.Refund,
                                SelectedDate = objExpense.Date,
+                               SelectedInGameDate = objExpense.InGameDate,
                                ForceCareerVisible = objExpense.ForceCareerVisible,
                                IsInEditMode = true
                            }, GenericToken).ConfigureAwait(false))
@@ -19637,6 +19638,7 @@ namespace Chummer
                     // Rename the Expense.
                     objExpense.Reason = frmEditExpense.MyForm.Reason;
                     objExpense.Date = frmEditExpense.MyForm.SelectedDate;
+                    objExpense.InGameDate = frmEditExpense.MyForm.SelectedInGameDate;
                 }
 
                 if (blnDoRepopulateList)
@@ -19683,6 +19685,7 @@ namespace Chummer
                                Amount = objExpense.Amount,
                                Refund = objExpense.Refund,
                                SelectedDate = objExpense.Date,
+                               SelectedInGameDate = objExpense.InGameDate,
                                ForceCareerVisible = objExpense.ForceCareerVisible,
                                IsInEditMode = true
                            }, GenericToken).ConfigureAwait(false))
@@ -19711,6 +19714,7 @@ namespace Chummer
                     // Rename the Expense.
                     objExpense.Reason = frmEditExpense.MyForm.Reason;
                     objExpense.Date = frmEditExpense.MyForm.SelectedDate;
+                    objExpense.InGameDate = frmEditExpense.MyForm.SelectedInGameDate;
                 }
 
                 if (blnDoRepopulateList)
@@ -20029,17 +20033,17 @@ namespace Chummer
 
         private void splitKarmaNuyen_Panel1_Resize(object sender, EventArgs e)
         {
-            if (lstKarma.Columns.Count >= 2 && lstKarma.Width > 409)
+            if (lstKarma.Columns.Count >= 3 && lstKarma.Width > 509)
             {
-                lstKarma.Columns[2].Width = lstKarma.Width - 195;
+                lstKarma.Columns[3].Width = lstKarma.Width - 295;
             }
         }
 
         private void splitKarmaNuyen_Panel2_Resize(object sender, EventArgs e)
         {
-            if (lstNuyen.Columns.Count >= 2 && lstNuyen.Width > 409)
+            if (lstNuyen.Columns.Count >= 3 && lstNuyen.Width > 509)
             {
-                lstNuyen.Columns[2].Width = lstNuyen.Width - 195;
+                lstNuyen.Columns[3].Width = lstNuyen.Width - 295;
             }
         }
 
@@ -26706,6 +26710,11 @@ namespace Chummer
                                                                        .ShortTimePattern,
                                                              GlobalSettings.CultureInfo)
                             );
+                            objItem.SubItems.Add(objExpense.InGameDate.ToString(GlobalSettings.CustomDateTimeFormats
+                                                                 ? GlobalSettings.CustomDateFormat
+                                                                 : GlobalSettings.CultureInfo.DateTimeFormat
+                                                                                 .ShortDatePattern,
+                                                             GlobalSettings.CultureInfo));
                             objItem.SubItems.Add(objAmountItem);
                             objItem.SubItems.Add(objReasonItem);
                             objItem.SubItems.Add(objInternalIdItem);
@@ -26834,6 +26843,11 @@ namespace Chummer
                                                                        .ShortTimePattern,
                                                              GlobalSettings.CultureInfo)
                             );
+                            objItem.SubItems.Add(objExpense.InGameDate.ToString(GlobalSettings.CustomDateTimeFormats
+                                                                 ? GlobalSettings.CustomDateFormat
+                                                                 : GlobalSettings.CultureInfo.DateTimeFormat
+                                                                                 .ShortDatePattern,
+                                                             GlobalSettings.CultureInfo));
                             objItem.SubItems.Add(objAmountItem);
                             objItem.SubItems.Add(objReasonItem);
                             objItem.SubItems.Add(objInternalIdItem);
