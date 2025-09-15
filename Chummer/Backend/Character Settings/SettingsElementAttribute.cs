@@ -39,7 +39,7 @@ namespace Chummer
         /// <summary>
         /// Gets whether this element is nested (has a parent element)
         /// </summary>
-        public bool IsNested => ElementName.Contains("/");
+        public bool IsNested => ElementName.Contains('/');
     }
 }
 

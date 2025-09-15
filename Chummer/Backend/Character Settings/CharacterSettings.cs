@@ -133,62 +133,59 @@ namespace Chummer
 
             public static async Task WriteTaggedPropertiesAsync(CharacterSettings settings, XmlWriter objWriter, CancellationToken token)
             {
-                // Group properties by their parent element (for nested elements)
-                var nestedGroups = new Dictionary<string, List<(PropertyInfo prop, SettingsElementAttribute tag)>>();
-                var flatProperties = new List<(PropertyInfo prop, SettingsElementAttribute tag)>();
-
-                foreach (PropertyInfo prop in typeof(CharacterSettings).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker = await settings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    var tag = prop.GetCustomAttribute<SettingsElementAttribute>();
-                    if (tag == null || !prop.CanRead)
-                        continue;
+                    token.ThrowIfCancellationRequested();
+                    // Group properties by their parent element (for nested elements)
+                    var nestedGroups = new Dictionary<string, List<(PropertyInfo prop, SettingsElementAttribute tag)>>();
+                    var flatProperties = new List<(PropertyInfo prop, SettingsElementAttribute tag)>();
 
-                    if (tag.IsNested)
+                    foreach (PropertyInfo prop in typeof(CharacterSettings).GetProperties(BindingFlags.Public | BindingFlags.Instance))
                     {
-                        string parentName = tag.ParentElementName;
-                        if (!nestedGroups.ContainsKey(parentName))
-                            nestedGroups[parentName] = new List<(PropertyInfo, SettingsElementAttribute)>();
-                        nestedGroups[parentName].Add((prop, tag));
-                    }
-                    else
-                    {
-                        flatProperties.Add((prop, tag));
-                    }
-                }
+                        token.ThrowIfCancellationRequested();
+                        var tag = prop.GetCustomAttribute<SettingsElementAttribute>();
+                        if (tag == null || !prop.CanRead)
+                            continue;
 
-                // Write flat properties first
-                foreach (var (prop, tag) in flatProperties)
-                {
-                    object value;
-                    IAsyncDisposable objLocker = await settings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        value = prop.GetValue(settings);
+                        if (tag.IsNested)
+                        {
+                            string parentName = tag.ParentElementName;
+                            if (!nestedGroups.ContainsKey(parentName))
+                                nestedGroups[parentName] = new List<(PropertyInfo, SettingsElementAttribute)>();
+                            nestedGroups[parentName].Add((prop, tag));
+                        }
+                        else
+                        {
+                            flatProperties.Add((prop, tag));
+                        }
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                    if (value == null)
-                        continue;
-                    string strValue = ConvertToString(value, prop.PropertyType);
-                    if (strValue != null)
-                        await objWriter.WriteElementStringAsync(tag.ElementName, strValue, token: token).ConfigureAwait(false);
-                }
 
-                // Write nested properties grouped by parent element
-                foreach (var kvp in nestedGroups)
-                {
-                    string parentName = kvp.Key;
-                    var properties = kvp.Value;
-                    
-                    // Check if any property has a non-null value
-                    bool hasValues = false;
-                    var values = new List<(string childName, string value)>();
-                    
-                    IAsyncDisposable objLocker = await settings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    // Write flat properties first
+                    foreach (var (prop, tag) in flatProperties)
                     {
+                        token.ThrowIfCancellationRequested();
+                        object value = prop.GetValue(settings);
+                        if (value == null)
+                            continue;
+                        string strValue = ConvertToString(value, prop.PropertyType);
+                        if (strValue != null)
+                            await objWriter.WriteElementStringAsync(tag.ElementName, strValue, token: token).ConfigureAwait(false);
+                    }
+
+                    // Write nested properties grouped by parent element
+                    foreach (var kvp in nestedGroups)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string parentName = kvp.Key;
+                        var properties = kvp.Value;
+
+                        // Check if any property has a non-null value
+                        bool hasValues = false;
+                        var values = new List<(string childName, string value)>();
+
+                        token.ThrowIfCancellationRequested();
                         foreach (var (prop, tag) in properties)
                         {
                             object value = prop.GetValue(settings);
@@ -202,65 +199,85 @@ namespace Chummer
                                 }
                             }
                         }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                    
-                    if (hasValues)
-                    {
-                        try
+
+                        if (hasValues)
                         {
-                            await objWriter.WriteStartElementAsync(parentName, token: token).ConfigureAwait(false);
-                            foreach (var (childName, value) in values)
+                            try
                             {
-                                await objWriter.WriteElementStringAsync(childName, value, token: token).ConfigureAwait(false);
+                                await objWriter.WriteStartElementAsync(parentName, token: token).ConfigureAwait(false);
+                                foreach (var (childName, value) in values)
+                                {
+                                    await objWriter.WriteElementStringAsync(childName, value, token: token).ConfigureAwait(false);
+                                }
+                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                             }
-                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                            catch (InvalidOperationException ex) when (ex.Message.Contains("EndRootElement"))
+                            {
+                                // If we can't write nested elements due to XML writer state,
+                                // write them as flat elements instead
+                                foreach (var (childName, value) in values)
+                                {
+                                    await objWriter.WriteElementStringAsync(childName, value, token: token).ConfigureAwait(false);
+                                }
+                            }
                         }
-                        catch (InvalidOperationException ex) when (ex.Message.Contains("EndRootElement"))
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+
+            public static void ReadTaggedProperties(CharacterSettings settings, XPathNavigator node, CancellationToken token = default)
+            {
+                token.ThrowIfCancellationRequested();
+                if (node == null)
+                    return;
+                using (settings.LockObject.EnterWriteLock(token))
+                {
+                    token.ThrowIfCancellationRequested();
+                    foreach (PropertyInfo prop in typeof(CharacterSettings).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        var tag = prop.GetCustomAttribute<SettingsElementAttribute>();
+                        if (tag == null || !prop.CanWrite)
+                            continue;
+                        XPathNavigator elem = node.SelectSingleNodeAndCacheExpression(tag.ElementName, token);
+                        if (elem != null && TryParse(elem.Value, prop.PropertyType, out object parsed))
                         {
-                            // If we can't write nested elements due to XML writer state,
-                            // write them as flat elements instead
-                            foreach (var (childName, value) in values)
-                            {
-                                await objWriter.WriteElementStringAsync(childName, value, token: token).ConfigureAwait(false);
-                            }
+                            prop.SetValue(settings, parsed);
                         }
                     }
                 }
             }
 
-            public static void ReadTaggedProperties(CharacterSettings settings, System.Xml.XmlNode node)
+            public static async Task ReadTaggedPropertiesAsync(CharacterSettings settings, XPathNavigator node, CancellationToken token = default)
             {
+                token.ThrowIfCancellationRequested();
                 if (node == null)
                     return;
-                foreach (PropertyInfo prop in typeof(CharacterSettings).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker = await settings.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    var tag = prop.GetCustomAttribute<SettingsElementAttribute>();
-                    if (tag == null || !prop.CanWrite)
-                        continue;
-                    
-                    System.Xml.XmlNode elem;
-                    if (tag.IsNested)
+                    token.ThrowIfCancellationRequested();
+                    foreach (PropertyInfo prop in typeof(CharacterSettings).GetProperties(BindingFlags.Public | BindingFlags.Instance))
                     {
-                        // For nested elements, use the full path
-                        elem = node.SelectSingleNode(tag.ElementName);
-                    }
-                    else
-                    {
-                        // For flat elements, use the element name directly
-                        elem = node.SelectSingleNode(tag.ElementName);
-                    }
-                    
-                    if (elem == null)
-                        continue;
-                    if (TryParse(elem.InnerText, prop.PropertyType, out object parsed))
-                    {
-                        using (settings.LockObject.EnterWriteLock())
+                        token.ThrowIfCancellationRequested();
+                        var tag = prop.GetCustomAttribute<SettingsElementAttribute>();
+                        if (tag == null || !prop.CanWrite)
+                            continue;
+                        XPathNavigator elem = node.SelectSingleNodeAndCacheExpression(tag.ElementName, token);
+                        if (elem != null && TryParse(elem.Value, prop.PropertyType, out object parsed))
+                        {
                             prop.SetValue(settings, parsed);
+                        }
                     }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -289,8 +306,12 @@ namespace Chummer
                     if (target == typeof(double)) { result = double.Parse(s, GlobalSettings.InvariantCultureInfo); return true; }
                     if (target == typeof(float)) { result = float.Parse(s, GlobalSettings.InvariantCultureInfo); return true; }
                 }
-                catch { }
-                result = null; return false;
+                catch
+                {
+                    Utils.BreakIfDebug();
+                }
+                result = null;
+                return false;
             }
         }
         private Guid _guiSourceId = Guid.Empty;
@@ -2316,11 +2337,7 @@ namespace Chummer
                     objXmlNode.TryGetDecFieldQuickly("nuyenperbpwftp", ref _decNuyenPerBPWftP);
 
                 // Auto-load any tagged properties (attribute-driven)
-                try
-                {
-                    CharacterSettingsSerialization.ReadTaggedProperties(this, objXmlNode.UnderlyingObject as System.Xml.XmlNode);
-                }
-                catch { }
+                CharacterSettingsSerialization.ReadTaggedProperties(this, objXmlNode, token);
 
                 // Legacy shim for contact points expression
                 if (!objXmlNode.TryGetStringFieldQuickly("contactpointsexpression", ref _strContactPointsExpression))
@@ -2844,6 +2861,9 @@ namespace Chummer
                 }
                 else
                     objXmlNode.TryGetDecFieldQuickly("nuyenperbpwftp", ref _decNuyenPerBPWftP);
+
+                // Auto-load any tagged properties (attribute-driven)
+                CharacterSettingsSerialization.ReadTaggedProperties(this, objXmlNode, token);
 
                 // XPath expression for contact points
                 if (!objXmlNode.TryGetStringFieldQuickly("contactpointsexpression", ref _strContactPointsExpression))
