@@ -49,7 +49,7 @@ namespace WpfApplication1
             }
             string[] lines = txtRaw.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             if (lines.Length <= 1) return;
-            XmlDocument doc = new XmlDocument();
+            XmlDocument doc = new XmlDocument { XmlResolver = null };
             // write the root chummer node.
 
             XmlElement objHeader = doc.CreateElement(critter ? "critter" : "spirit");

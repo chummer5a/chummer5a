@@ -36,9 +36,12 @@ namespace Chummer
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
 
-        private XmlDocument _objBaseXmlDocument;
-        private XmlDocument _objAmendmentXmlDocument;
-        private XmlDocument _objResultXmlDocument;
+        private readonly XmlDocument _objBaseXmlDocument = new XmlDocument { XmlResolver = null };
+        private readonly XmlDocument _objAmendmentXmlDocument = new XmlDocument { XmlResolver = null };
+        private readonly XmlDocument _objResultXmlDocument = new XmlDocument { XmlResolver = null };
+        private readonly XmlDocument _objDiffBaseXmlDocument = new XmlDocument { XmlResolver = null };
+        private readonly XmlDocument _objDiffResultXmlDocument = new XmlDocument { XmlResolver = null };
+        private readonly XmlDocument _objFormatXmlDocument = new XmlDocument { XmlResolver = null };
         private string _strBaseXmlContent;
         private string _strResultXmlContent;
         private string _strXmlElementTemplate = string.Empty;
@@ -362,7 +365,6 @@ namespace Chummer
                         return;
                     }
 
-                    _objBaseXmlDocument = new XmlDocument();
                     await _objBaseXmlDocument.LoadStandardAsync(strFilePath, true, token: token).ConfigureAwait(false);
                     _blnDirty = false;
                     _strBaseXmlContent = _objBaseXmlDocument.OuterXml;
@@ -426,7 +428,6 @@ namespace Chummer
                     // Parse the amendment XML
                     try
                     {
-                        _objAmendmentXmlDocument = new XmlDocument();
                         _objAmendmentXmlDocument.LoadXml(txtAmendmentXml.Text);
                     }
                     catch (XmlException ex)
@@ -436,7 +437,6 @@ namespace Chummer
                     }
 
                     // Create a copy of the base XML to apply amendments to
-                    _objResultXmlDocument = new XmlDocument();
                     _objResultXmlDocument.LoadXml(_strBaseXmlContent);
                     // Apply the amendments using the same logic as XmlManager
                     Exception exFromAmend = await ApplyAmendmentOperationsAsync(_objResultXmlDocument, _objAmendmentXmlDocument, token).ConfigureAwait(false);
@@ -450,7 +450,7 @@ namespace Chummer
                     }
                     else
                     {
-                        _objResultXmlDocument = null;
+                        _objResultXmlDocument.RemoveAll();
                         _strResultXmlContent = string.Empty;
                         string strResultText = await LanguageManager.GetStringAsync("XmlEditor_Error_ApplyingAmendment", token: token).ConfigureAwait(false) + Environment.NewLine + exFromAmend.ToString();
                         await txtResultXml.DoThreadSafeAsync(x => x.Text = strResultText, token).ConfigureAwait(false);
@@ -574,16 +574,13 @@ namespace Chummer
             }
         }
 
-        private static async Task<string> GenerateCleanDiffAsync(string strBaseXml, string strResultXml, CancellationToken token = default)
+        private async Task<string> GenerateCleanDiffAsync(string strBaseXml, string strResultXml, CancellationToken token = default)
         {
             try
             {
                 // Parse both XML documents
-                XmlDocument objBaseDoc = new XmlDocument();
-                objBaseDoc.LoadXml(strBaseXml);
-
-                XmlDocument objResultDoc = new XmlDocument();
-                objResultDoc.LoadXml(strResultXml);
+                _objDiffBaseXmlDocument.LoadXml(strBaseXml);
+                _objDiffResultXmlDocument.LoadXml(strResultXml);
 
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdOutput))
                 {
@@ -591,7 +588,7 @@ namespace Chummer
                     sbdOutput.AppendLine();
 
                     // Compare the documents and generate a clean diff
-                    await CompareXmlDocumentsAsync(objBaseDoc, objResultDoc, sbdOutput, string.Empty, token).ConfigureAwait(false);
+                    await CompareXmlDocumentsAsync(_objDiffBaseXmlDocument, _objDiffResultXmlDocument, sbdOutput, string.Empty, token).ConfigureAwait(false);
 
                     if (sbdOutput.Length <= 30) // Only header was added
                     {
@@ -837,23 +834,25 @@ namespace Chummer
                 if (xmlNode.NodeType == XmlNodeType.Element)
                 {
                     // Create a temporary document to format just this node
-                    XmlDocument objTempDoc = new XmlDocument();
-                    XmlNode xmlImportedNode = objTempDoc.ImportNode(xmlNode, true);
-                    objTempDoc.AppendChild(xmlImportedNode);
-
-                    // Format the XML and get the inner content
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                    using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool, out XmlDocument objTempDoc))
                     {
-                        using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
+                        XmlNode xmlImportedNode = objTempDoc.ImportNode(xmlNode, true);
+                        objTempDoc.AppendChild(xmlImportedNode);
+
+                        // Format the XML and get the inner content
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                         {
-                            using (XmlTextWriter objXmlWriter = new XmlTextWriter(objStringWriter))
+                            using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
                             {
-                                objXmlWriter.Formatting = Formatting.Indented;
-                                objXmlWriter.Indentation = 2;
-                                xmlImportedNode.WriteTo(objXmlWriter);
+                                using (XmlTextWriter objXmlWriter = new XmlTextWriter(objStringWriter))
+                                {
+                                    objXmlWriter.Formatting = Formatting.Indented;
+                                    objXmlWriter.Indentation = 2;
+                                    xmlImportedNode.WriteTo(objXmlWriter);
+                                }
                             }
+                            return sbdReturn.ToTrimmedString();
                         }
-                        return sbdReturn.ToTrimmedString();
                     }
                 }
                 
@@ -867,12 +866,11 @@ namespace Chummer
             }
         }
 
-        private static string FormatXml(string strXml)
+        private string FormatXml(string strXml)
         {
             try
             {
-                XmlDocument objDoc = new XmlDocument();
-                objDoc.LoadXml(strXml);
+                _objFormatXmlDocument.LoadXml(strXml);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
                     using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
@@ -881,7 +879,7 @@ namespace Chummer
                         {
                             objXmlWriter.Formatting = Formatting.Indented;
                             objXmlWriter.Indentation = 2;
-                            objDoc.WriteTo(objXmlWriter);
+                            _objFormatXmlDocument.WriteTo(objXmlWriter);
                         }
                     }
                     return sbdReturn.ToTrimmedString();

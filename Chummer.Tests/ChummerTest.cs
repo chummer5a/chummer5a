@@ -222,24 +222,26 @@ namespace Chummer.Tests
             try
             {
                 Debug.WriteLine("Unit test initialized for: Test03_SaveAsChum5lz()");
-                foreach (Character objCharacter in GetTestCharacters(TestContext.CancellationTokenSource.Token))
+                using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool, out XmlDocument objXmlDocument))
                 {
-                    string strFileName = Path.GetFileName(objCharacter.FileName) ?? "Unknown";
-                    Debug.WriteLine("Checking " + strFileName);
-                    string strDestination =
-                        Path.Combine(CommonTestData.TestPathInfo.FullName, "(Compressed) " + strFileName);
-                    if (!strDestination.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                    foreach (Character objCharacter in GetTestCharacters(TestContext.CancellationTokenSource.Token))
                     {
-                        if (strDestination.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                            strDestination += "lz";
-                        else
-                            strDestination += ".chum5lz";
-                    }
+                        string strFileName = Path.GetFileName(objCharacter.FileName) ?? "Unknown";
+                        Debug.WriteLine("Checking " + strFileName);
+                        string strDestination =
+                            Path.Combine(CommonTestData.TestPathInfo.FullName, "(Compressed) " + strFileName);
+                        if (!strDestination.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (strDestination.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                                strDestination += "lz";
+                            else
+                                strDestination += ".chum5lz";
+                        }
 
-                    SaveCharacter(objCharacter, strDestination, token: TestContext.CancellationTokenSource.Token);
-                    // If our compression is malformed, we should run into a parse error when we try to load the XML data (don't load the full character because it's unnecessary)
-                    XmlDocument objXmlDocument = new XmlDocument { XmlResolver = null };
-                    objXmlDocument.LoadStandardFromLzmaCompressed(strDestination, token: TestContext.CancellationTokenSource.Token);
+                        SaveCharacter(objCharacter, strDestination, token: TestContext.CancellationTokenSource.Token);
+                        // If our compression is malformed, we should run into a parse error when we try to load the XML data (don't load the full character because it's unnecessary)
+                        objXmlDocument.LoadStandardFromLzmaCompressed(strDestination, token: TestContext.CancellationTokenSource.Token);
+                    }
                 }
             }
             catch (Exception ex)

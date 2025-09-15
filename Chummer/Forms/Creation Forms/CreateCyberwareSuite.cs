@@ -87,132 +87,134 @@ namespace Chummer
             bool blnNewFile = !File.Exists(strPath);
 
             // If this is not a new file, read in the existing contents.
-            XmlDocument objXmlCurrentDocument = new XmlDocument { XmlResolver = null };
-            if (!blnNewFile)
+            using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool, out XmlDocument objXmlCurrentDocument))
             {
-                try
+                if (!blnNewFile)
                 {
-                    await objXmlCurrentDocument.LoadStandardAsync(strPath).ConfigureAwait(false);
-                }
-                catch (IOException ex)
-                {
-                    await Program.ShowScrollableMessageBoxAsync(this, ex.ToString()).ConfigureAwait(false);
-                    return;
-                }
-                catch (XmlException ex)
-                {
-                    await Program.ShowScrollableMessageBoxAsync(this, ex.ToString()).ConfigureAwait(false);
-                    return;
-                }
-            }
-
-            using (FileStream objStream = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
-                {
-                    await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
-
-                    // <chummer>
-                    await objWriter.WriteStartElementAsync("chummer").ConfigureAwait(false);
-                    if (!blnNewFile)
+                    try
                     {
-                        // <cyberwares>
-                        await objWriter.WriteStartElementAsync(_strType + 's').ConfigureAwait(false);
-                        using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/" + _strType + 's'))
-                            if (xmlCyberwareList?.Count > 0)
-                                foreach (XmlNode xmlCyberware in xmlCyberwareList)
-                                    xmlCyberware.WriteContentTo(objWriter);
-                        // </cyberwares>
-                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                        await objXmlCurrentDocument.LoadStandardAsync(strPath).ConfigureAwait(false);
                     }
-
-                    // <suites>
-                    await objWriter.WriteStartElementAsync("suites").ConfigureAwait(false);
-
-                    // If this is not a new file, write out the current contents.
-                    if (!blnNewFile)
+                    catch (IOException ex)
                     {
-                        using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/suites"))
-                            if (xmlCyberwareList?.Count > 0)
-                                foreach (XmlNode xmlCyberware in xmlCyberwareList)
-                                    xmlCyberware.WriteContentTo(objWriter);
+                        await Program.ShowScrollableMessageBoxAsync(this, ex.ToString()).ConfigureAwait(false);
+                        return;
                     }
-
-                    // Determine the Grade of Cyberware.
-                    Cyberware objFirstWare = await _objCharacter.Cyberware.FirstOrDefaultAsync(x => x.SourceType == _eSource)
-                        .ConfigureAwait(false);
-                    string strGrade
-                        = objFirstWare != null ? (await objFirstWare.GetGradeAsync().ConfigureAwait(false)).Name : string.Empty;
-
-                    // <suite>
-                    await objWriter.WriteStartElementAsync("suite").ConfigureAwait(false);
-                    // <name />
-                    await objWriter.WriteElementStringAsync("id", Guid.NewGuid().ToString()).ConfigureAwait(false);
-                    // <name />
-                    await objWriter.WriteElementStringAsync("name", txtName.Text).ConfigureAwait(false);
-                    // <grade />
-                    await objWriter.WriteElementStringAsync("grade", strGrade).ConfigureAwait(false);
-                    // <cyberwares>
-                    await objWriter.WriteStartElementAsync(_strType + 's').ConfigureAwait(false);
-
-                    // Write out the Cyberware.
-                    await _objCharacter.Cyberware.ForEachAsync(async objCyberware =>
+                    catch (XmlException ex)
                     {
-                        if (objCyberware.SourceType != _eSource)
-                            return;
+                        await Program.ShowScrollableMessageBoxAsync(this, ex.ToString()).ConfigureAwait(false);
+                        return;
+                    }
+                }
 
-                        // <cyberware>
-                        // ReSharper disable AccessToDisposedClosure
-                        await objWriter.WriteStartElementAsync(_strType).ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("name", objCyberware.Name).ConfigureAwait(false);
-                        int intRating = await objCyberware.GetRatingAsync().ConfigureAwait(false);
-                        if (intRating > 0)
-                            await objWriter
-                                  .WriteElementStringAsync(
-                                      "rating", intRating.ToString(GlobalSettings.InvariantCultureInfo))
-                                  .ConfigureAwait(false);
-                        // Write out child items.
-                        if (await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).GetCountAsync().ConfigureAwait(false) > 0)
+                using (FileStream objStream = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                    {
+                        await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
+
+                        // <chummer>
+                        await objWriter.WriteStartElementAsync("chummer").ConfigureAwait(false);
+                        if (!blnNewFile)
                         {
                             // <cyberwares>
                             await objWriter.WriteStartElementAsync(_strType + 's').ConfigureAwait(false);
-                            await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).ForEachAsync(async objChild =>
-                            {
-                                // Do not include items that come with the base item by default.
-                                if (objChild.Capacity != "[*]")
-                                {
-                                    await objWriter.WriteStartElementAsync(_strType).ConfigureAwait(false);
-                                    await objWriter.WriteElementStringAsync("name", objChild.Name)
-                                                   .ConfigureAwait(false);
-                                    int intChildRating = await objChild.GetRatingAsync().ConfigureAwait(false);
-                                    if (intChildRating > 0)
-                                        await objWriter
-                                              .WriteElementStringAsync(
-                                                  "rating",
-                                                  intChildRating.ToString(GlobalSettings.InvariantCultureInfo))
-                                              .ConfigureAwait(false);
-                                    // </cyberware>
-                                    await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                                }
-                            }).ConfigureAwait(false);
-
+                            using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/" + _strType + 's'))
+                                if (xmlCyberwareList?.Count > 0)
+                                    foreach (XmlNode xmlCyberware in xmlCyberwareList)
+                                        xmlCyberware.WriteContentTo(objWriter);
                             // </cyberwares>
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                         }
 
-                        // </cyberware>
+                        // <suites>
+                        await objWriter.WriteStartElementAsync("suites").ConfigureAwait(false);
+
+                        // If this is not a new file, write out the current contents.
+                        if (!blnNewFile)
+                        {
+                            using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/suites"))
+                                if (xmlCyberwareList?.Count > 0)
+                                    foreach (XmlNode xmlCyberware in xmlCyberwareList)
+                                        xmlCyberware.WriteContentTo(objWriter);
+                        }
+
+                        // Determine the Grade of Cyberware.
+                        Cyberware objFirstWare = await _objCharacter.Cyberware.FirstOrDefaultAsync(x => x.SourceType == _eSource)
+                            .ConfigureAwait(false);
+                        string strGrade
+                            = objFirstWare != null ? (await objFirstWare.GetGradeAsync().ConfigureAwait(false)).Name : string.Empty;
+
+                        // <suite>
+                        await objWriter.WriteStartElementAsync("suite").ConfigureAwait(false);
+                        // <name />
+                        await objWriter.WriteElementStringAsync("id", Guid.NewGuid().ToString()).ConfigureAwait(false);
+                        // <name />
+                        await objWriter.WriteElementStringAsync("name", txtName.Text).ConfigureAwait(false);
+                        // <grade />
+                        await objWriter.WriteElementStringAsync("grade", strGrade).ConfigureAwait(false);
+                        // <cyberwares>
+                        await objWriter.WriteStartElementAsync(_strType + 's').ConfigureAwait(false);
+
+                        // Write out the Cyberware.
+                        await _objCharacter.Cyberware.ForEachAsync(async objCyberware =>
+                        {
+                            if (objCyberware.SourceType != _eSource)
+                                return;
+
+                            // <cyberware>
+                            // ReSharper disable AccessToDisposedClosure
+                            await objWriter.WriteStartElementAsync(_strType).ConfigureAwait(false);
+                            await objWriter.WriteElementStringAsync("name", objCyberware.Name).ConfigureAwait(false);
+                            int intRating = await objCyberware.GetRatingAsync().ConfigureAwait(false);
+                            if (intRating > 0)
+                                await objWriter
+                                      .WriteElementStringAsync(
+                                          "rating", intRating.ToString(GlobalSettings.InvariantCultureInfo))
+                                      .ConfigureAwait(false);
+                            // Write out child items.
+                            if (await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).GetCountAsync().ConfigureAwait(false) > 0)
+                            {
+                                // <cyberwares>
+                                await objWriter.WriteStartElementAsync(_strType + 's').ConfigureAwait(false);
+                                await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).ForEachAsync(async objChild =>
+                                {
+                                    // Do not include items that come with the base item by default.
+                                    if (objChild.Capacity != "[*]")
+                                    {
+                                        await objWriter.WriteStartElementAsync(_strType).ConfigureAwait(false);
+                                        await objWriter.WriteElementStringAsync("name", objChild.Name)
+                                                       .ConfigureAwait(false);
+                                        int intChildRating = await objChild.GetRatingAsync().ConfigureAwait(false);
+                                        if (intChildRating > 0)
+                                            await objWriter
+                                                  .WriteElementStringAsync(
+                                                      "rating",
+                                                      intChildRating.ToString(GlobalSettings.InvariantCultureInfo))
+                                                  .ConfigureAwait(false);
+                                        // </cyberware>
+                                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                                    }
+                                }).ConfigureAwait(false);
+
+                                // </cyberwares>
+                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                            }
+
+                            // </cyberware>
+                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                            // ReSharper restore AccessToDisposedClosure
+                        }).ConfigureAwait(false);
+
+                        // </cyberwares>
                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                        // ReSharper restore AccessToDisposedClosure
-                    }).ConfigureAwait(false);
+                        // </suite>
+                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                        // </chummer>
+                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
-                    // </cyberwares>
-                    await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                    // </suite>
-                    await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                    // </chummer>
-                    await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-
-                    await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                        await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                    }
                 }
             }
 

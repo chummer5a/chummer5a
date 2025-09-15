@@ -37,8 +37,8 @@ namespace Translator
     public partial class TranslateData : Form
     {
         private int _intLoading;
-        private readonly XmlDocument _objDataDoc = new XmlDocument();
-        private readonly XmlDocument _objTranslationDoc = new XmlDocument();
+        private readonly XmlDocument _objDataDoc = new XmlDocument { XmlResolver = null };
+        private readonly XmlDocument _objTranslationDoc = new XmlDocument { XmlResolver = null };
         private readonly BackgroundWorker _workerSectionLoader = new BackgroundWorker();
         private int _intQueueSectionLoaderRun;
         private readonly string[] _strSectionLoaderArgs = new string[2];
@@ -491,7 +491,7 @@ namespace Translator
                 return;
             }
 
-            XmlDocument xmlDocument = new XmlDocument();
+            XmlDocument xmlDocument = new XmlDocument { XmlResolver = null };
             xmlDocument.Load(Path.Combine(Utils.GetLanguageFolderPath, GlobalSettings.DefaultLanguage + ".xml"));
             if (_workerStringsLoader.CancellationPending)
             {
@@ -678,7 +678,7 @@ namespace Translator
                         }
 
                         XmlNodeList xmlChildNodes = xmlNodeToShow.ChildNodes;
-                        XmlDocument xmlDocument = new XmlDocument();
+                        XmlDocument xmlDocument = new XmlDocument { XmlResolver = null };
                         xmlDocument.Load(Path.Combine(Utils.GetDataFolderPath, strFileName));
                         object[][] arrayRowsToDisplay = new object[xmlChildNodes.Count][];
                         try

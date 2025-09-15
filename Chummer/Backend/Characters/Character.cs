@@ -3347,20 +3347,22 @@ namespace Chummer
                     XmlElement xmlOptionalPowersNode = charNode["optionalpowers"];
                     if (xmlOptionalPowersNode != null && intForce >= 3)
                     {
-                        XmlDocument objDummyDocument = new XmlDocument { XmlResolver = null };
-                        //For every 3 full points of Force a spirit has, it may gain one Optional Power.
-                        for (int i = intForce; i >= 3; i -= 3)
+                        using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool, out XmlDocument objDummyDocument))
                         {
-                            XmlNode bonusNode = objDummyDocument.CreateNode(XmlNodeType.Element, "bonus", null);
-                            XmlNode powerNode =
-                                objDummyDocument.ImportNode(xmlOptionalPowersNode.CloneNode(true), true);
-                            bonusNode.AppendChild(powerNode);
-                            objDummyDocument.AppendChild(bonusNode);
-                        }
+                            //For every 3 full points of Force a spirit has, it may gain one Optional Power.
+                            for (int i = intForce; i >= 3; i -= 3)
+                            {
+                                XmlNode bonusNode = objDummyDocument.CreateNode(XmlNodeType.Element, "bonus", null);
+                                XmlNode powerNode =
+                                    objDummyDocument.ImportNode(xmlOptionalPowersNode.CloneNode(true), true);
+                                bonusNode.AppendChild(powerNode);
+                                objDummyDocument.AppendChild(bonusNode);
+                            }
 
-                        foreach (XmlNode bonusNode in objDummyDocument.SelectNodes("/bonus"))
-                            ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metatype,
-                                strMetatypeId, bonusNode, 1, strMetatypeId, token: token);
+                            foreach (XmlNode bonusNode in objDummyDocument.SelectNodes("/bonus"))
+                                ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metatype,
+                                    strMetatypeId, bonusNode, 1, strMetatypeId, token: token);
+                        }
                     }
 
                     // Remove the Critter's Materialization Power if they have it. Add the Possession or Inhabitation Power if the Possession-based Tradition checkbox is checked.
@@ -4179,21 +4181,23 @@ namespace Chummer
                     XmlElement xmlOptionalPowersNode = charNode["optionalpowers"];
                     if (xmlOptionalPowersNode != null && intForce >= 3)
                     {
-                        XmlDocument objDummyDocument = new XmlDocument { XmlResolver = null };
-                        //For every 3 full points of Force a spirit has, it may gain one Optional Power.
-                        for (int i = intForce; i >= 3; i -= 3)
+                        using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool, out XmlDocument objDummyDocument))
                         {
-                            XmlNode bonusNode = objDummyDocument.CreateNode(XmlNodeType.Element, "bonus", null);
-                            XmlNode powerNode =
-                                objDummyDocument.ImportNode(xmlOptionalPowersNode.CloneNode(true), true);
-                            bonusNode.AppendChild(powerNode);
-                            objDummyDocument.AppendChild(bonusNode);
-                        }
+                            //For every 3 full points of Force a spirit has, it may gain one Optional Power.
+                            for (int i = intForce; i >= 3; i -= 3)
+                            {
+                                XmlNode bonusNode = objDummyDocument.CreateNode(XmlNodeType.Element, "bonus", null);
+                                XmlNode powerNode =
+                                    objDummyDocument.ImportNode(xmlOptionalPowersNode.CloneNode(true), true);
+                                bonusNode.AppendChild(powerNode);
+                                objDummyDocument.AppendChild(bonusNode);
+                            }
 
-                        foreach (XmlNode bonusNode in objDummyDocument.SelectNodes("/bonus"))
-                            await ImprovementManager.CreateImprovementsAsync(this,
-                                Improvement.ImprovementSource.Metatype,
-                                strMetatypeId, bonusNode, 1, strMetatypeId, token: token).ConfigureAwait(false);
+                            foreach (XmlNode bonusNode in objDummyDocument.SelectNodes("/bonus"))
+                                await ImprovementManager.CreateImprovementsAsync(this,
+                                    Improvement.ImprovementSource.Metatype,
+                                    strMetatypeId, bonusNode, 1, strMetatypeId, token: token).ConfigureAwait(false);
+                        }
                     }
 
                     // Remove the Critter's Materialization Power if they have it. Add the Possession or Inhabitation Power if the Possession-based Tradition checkbox is checked.
@@ -5726,32 +5730,33 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    XmlDocument objDoc = new XmlDocument { XmlResolver = null };
-                    using (XmlReader objXmlReader
-                           = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
-                        objDoc.Load(objXmlReader);
-                    using (FileStream objFileStream
-                           = new FileStream(strFileName, FileMode.Create, FileAccess.Write, FileShare.None))
+                    using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool, out XmlDocument objDoc))
                     {
-                        if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                            objDoc.Save(objFileStream);
-                        else
+                        using (XmlReader objXmlReader = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
+                            objDoc.Load(objXmlReader);
+                        using (FileStream objFileStream
+                               = new FileStream(strFileName, FileMode.Create, FileAccess.Write, FileShare.None))
                         {
-                            objStream.Seek(0, SeekOrigin.Begin);
-                            if (blnSync)
-                                objStream.CompressToLzmaFile(
-                                    objFileStream,
-                                    eOverrideCompressionLevel == LzmaHelper.ChummerCompressionPreset.None
-                                        ? GlobalSettings.Chum5lzCompressionLevel
-                                        : eOverrideCompressionLevel);
+                            if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                                objDoc.Save(objFileStream);
                             else
-                                await objStream.CompressToLzmaFileAsync(
+                            {
+                                objStream.Seek(0, SeekOrigin.Begin);
+                                if (blnSync)
+                                    objStream.CompressToLzmaFile(
                                         objFileStream,
                                         eOverrideCompressionLevel == LzmaHelper.ChummerCompressionPreset.None
                                             ? GlobalSettings.Chum5lzCompressionLevel
-                                            : eOverrideCompressionLevel,
-                                        token: token)
-                                    .ConfigureAwait(false);
+                                            : eOverrideCompressionLevel);
+                                else
+                                    await objStream.CompressToLzmaFileAsync(
+                                            objFileStream,
+                                            eOverrideCompressionLevel == LzmaHelper.ChummerCompressionPreset.None
+                                                ? GlobalSettings.Chum5lzCompressionLevel
+                                                : eOverrideCompressionLevel,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                            }
                         }
                     }
                 }
@@ -8902,7 +8907,7 @@ namespace Chummer
                             using (Timekeeper.StartSyncron("load_char_drugs", loadActivity))
                             {
                                 // Drugs.
-                                objXmlNodeList = objXmlDocument.SelectNodes("/character/drugs/drug");
+                                objXmlNodeList = objXmlCharacter.SelectNodes("drugs/drug");
                                 foreach (XmlNode objXmlDrug in objXmlNodeList)
                                 {
                                     Drug objDrug = new Drug(this);

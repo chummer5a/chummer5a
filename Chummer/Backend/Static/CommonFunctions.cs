@@ -47,11 +47,6 @@ namespace Chummer
         #region XPath Evaluators
 
         // TODO: implement a sane expression evaluator
-        // A single instance of an XmlDocument and its corresponding XPathNavigator helps reduce overhead of evaluating XPaths that just contain mathematical operations
-        private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument { XmlResolver = null };
-
-        private static readonly DebuggableSemaphoreSlim s_ObjXPathNavigatorDocumentLock = new DebuggableSemaphoreSlim();
-
         private static readonly ConcurrentStack<XPathNavigator> s_StkXPathNavigatorPool
             = new ConcurrentStack<XPathNavigator>();
 
@@ -184,15 +179,7 @@ namespace Chummer
                 {
                     if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
                     {
-                        await s_ObjXPathNavigatorDocumentLock.WaitAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
-                        }
-                        finally
-                        {
-                            s_ObjXPathNavigatorDocumentLock.Release();
-                        }
+                        objEvaluator = await XPathNavigatorExtensions.GetEmptyDocumentNavigatorAsync(token).ConfigureAwait(false);
                     }
 
                     try
@@ -268,17 +255,7 @@ namespace Chummer
                 try
                 {
                     if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
-                    {
-                        s_ObjXPathNavigatorDocumentLock.SafeWait(token);
-                        try
-                        {
-                            objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
-                        }
-                        finally
-                        {
-                            s_ObjXPathNavigatorDocumentLock.Release();
-                        }
-                    }
+                        objEvaluator = XPathNavigatorExtensions.GetEmptyDocumentNavigator(token);
 
                     try
                     {
@@ -320,15 +297,7 @@ namespace Chummer
                 {
                     if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
                     {
-                        await s_ObjXPathNavigatorDocumentLock.WaitAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
-                        }
-                        finally
-                        {
-                            s_ObjXPathNavigatorDocumentLock.Release();
-                        }
+                        objEvaluator = await XPathNavigatorExtensions.GetEmptyDocumentNavigatorAsync(token).ConfigureAwait(false);
                     }
 
                     try
@@ -372,17 +341,8 @@ namespace Chummer
                 try
                 {
                     if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
-                    {
-                        s_ObjXPathNavigatorDocumentLock.SafeWait(token);
-                        try
-                        {
-                            objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
-                        }
-                        finally
-                        {
-                            s_ObjXPathNavigatorDocumentLock.Release();
-                        }
-                    }
+                        objEvaluator = XPathNavigatorExtensions.GetEmptyDocumentNavigator(token);
+
                     try
                     {
                         objReturn = objEvaluator?.Evaluate(objXPath);

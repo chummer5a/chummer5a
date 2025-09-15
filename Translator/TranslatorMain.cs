@@ -236,7 +236,7 @@ namespace Translator
 
                     case DialogResult.Yes:
                         {
-                            XmlDocument objExistingTranslationDoc = new XmlDocument();
+                            XmlDocument objExistingTranslationDoc = new XmlDocument { XmlResolver = null };
                             objExistingTranslationDoc.Load(Path.Combine(Utils.GetLanguageFolderPath, strLowerCode + ".xml"));
 
                             string strToSelect = objExistingTranslationDoc.SelectSingleNode("/chummer/name")?.InnerText;
@@ -558,7 +558,7 @@ namespace Translator
             }
             string strFilePath = Path.Combine(Utils.GetLanguageFolderPath, _astrArgs[0] + ".xml");
 
-            XmlDocument objDoc = new XmlDocument();
+            XmlDocument objDoc = new XmlDocument { XmlResolver = null };
             if (File.Exists(strFilePath))
                 objDoc.Load(strFilePath);
             XmlNode xmlRootChummerNode = objDoc.SelectSingleNode("/chummer");
@@ -601,7 +601,7 @@ namespace Translator
                 xmlRootChummerNode.AppendChild(xmlTranslatedStringsNode);
             }
 
-            XmlDocument xmlDocument = new XmlDocument();
+            XmlDocument xmlDocument = new XmlDocument { XmlResolver = null };
             xmlDocument.Load(Path.Combine(Utils.GetLanguageFolderPath, "en-us.xml"));
             XmlNode xmlStringsNode = xmlDocument.SelectSingleNode("/chummer/strings");
             if (xmlStringsNode != null)
@@ -678,7 +678,7 @@ namespace Translator
                 return;
             }
             string strFilePath = Path.Combine(Utils.GetLanguageFolderPath, _astrArgs[0] + "_data.xml");
-            XmlDocument objDataDoc = new XmlDocument();
+            XmlDocument objDataDoc = new XmlDocument { XmlResolver = null };
             if (File.Exists(strFilePath))
                 objDataDoc.Load(strFilePath);
             XmlNode xmlRootChummerNode = objDataDoc.SelectSingleNode("/chummer");
@@ -741,7 +741,7 @@ namespace Translator
 
                     try
                     {
-                        XmlDocument xmlDocument = new XmlDocument();
+                        XmlDocument xmlDocument = new XmlDocument { XmlResolver = null };
                         xmlDocument.Load(strPath);
                         strInnerText = xmlDocument.SelectSingleNode("/chummer/name")?.InnerText;
                     }
@@ -801,7 +801,7 @@ namespace Translator
 
         private static void ProcessArmor(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "armor.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -1095,7 +1095,7 @@ namespace Translator
 
         private static void ProcessBioware(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument{ XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "bioware.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -1388,7 +1388,7 @@ namespace Translator
 
         private static void ProcessBooks(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "books.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -1520,7 +1520,7 @@ namespace Translator
 
         private static void ProcessComplexForms(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "complexforms.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -1659,7 +1659,7 @@ namespace Translator
 
         private static void ProcessContacts(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "contacts.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -1989,7 +1989,7 @@ namespace Translator
 
         private static void ProcessCritterPowers(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "critterpowers.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -2178,7 +2178,7 @@ namespace Translator
 
         private static void ProcessCritters(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "critters.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -2367,7 +2367,7 @@ namespace Translator
 
         private static void ProcessCyberware(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "cyberware.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -2669,7 +2669,7 @@ namespace Translator
 
         private static void ProcessDrugs(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "drugcomponents.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -2860,7 +2860,7 @@ namespace Translator
 
         private static void ProcessEchoes(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "echoes.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -2999,7 +2999,7 @@ namespace Translator
 
         private static void ProcessGear(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "gear.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -3185,7 +3185,7 @@ namespace Translator
 
         private static void ProcessImprovements(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "improvements.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -3324,7 +3324,7 @@ namespace Translator
 
         private static void ProcessLicenses(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "licenses.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -3396,7 +3396,7 @@ namespace Translator
 
         private static void ProcessLifestyles(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "lifestyles.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -3722,7 +3722,7 @@ namespace Translator
 
         private static void ProcessMartialArts(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "martialarts.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -3995,7 +3995,7 @@ namespace Translator
 
         private static void ProcessMentors(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "mentors.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -4214,7 +4214,7 @@ namespace Translator
 
         private static void ProcessMetamagic(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "metamagic.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -4472,7 +4472,7 @@ namespace Translator
 
         private static void ProcessMetatypes(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "metatypes.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -4664,7 +4664,7 @@ namespace Translator
 
         private static void ProcessOptions(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "options.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -4892,7 +4892,7 @@ namespace Translator
 
         private static void ProcessParagons(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "paragons.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -5161,7 +5161,7 @@ namespace Translator
 
         private static void ProcessPowers(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "powers.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -5419,7 +5419,7 @@ namespace Translator
 
         private static void ProcessPriorities(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "priorities.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -5609,7 +5609,7 @@ namespace Translator
 
         private static void ProcessPrograms(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "programs.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -5806,7 +5806,7 @@ namespace Translator
 
         private static void ProcessRanges(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "ranges.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -5914,7 +5914,7 @@ namespace Translator
 
         private static void ProcessQualities(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "qualities.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -6103,7 +6103,7 @@ namespace Translator
 
         private static void ProcessSettings(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "settings.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -6234,7 +6234,7 @@ namespace Translator
 
         private static void ProcessSkills(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "skills.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -6707,7 +6707,7 @@ namespace Translator
 
         private static void ProcessSpells(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "spells.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -6896,7 +6896,7 @@ namespace Translator
 
         private static void ProcessSpiritPowers(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "spiritpowers.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -7022,7 +7022,7 @@ namespace Translator
 
         private static void ProcessStreams(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "streams.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -7280,7 +7280,7 @@ namespace Translator
 
         private static void ProcessTips(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "tips.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -7403,7 +7403,7 @@ namespace Translator
 
         private static void ProcessTraditions(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "traditions.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -7742,7 +7742,7 @@ namespace Translator
 
         private static void ProcessVehicles(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "vehicles.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -8308,7 +8308,7 @@ namespace Translator
 
         private static void ProcessVessels(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "vessels.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -8497,7 +8497,7 @@ namespace Translator
 
         private static void ProcessWeapons(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
         {
-            XmlDocument xmlDataDocument = new XmlDocument();
+            XmlDocument xmlDataDocument = new XmlDocument { XmlResolver = null };
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "weapons.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 

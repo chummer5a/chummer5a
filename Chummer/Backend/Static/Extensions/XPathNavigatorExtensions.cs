@@ -29,6 +29,43 @@ namespace Chummer
 {
     public static class XPathNavigatorExtensions
     {
+        private static readonly XmlDocument s_objEmptyDocument = new XmlDocument { XmlResolver = null };
+        private static readonly DebuggableSemaphoreSlim s_ObjXPathNavigatorDocumentLock = new DebuggableSemaphoreSlim();
+
+        /// <summary>
+        /// Get an XPathNavigator linked to an empty XmlDocument.
+        /// </summary>
+        public static XPathNavigator GetEmptyDocumentNavigator(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            s_ObjXPathNavigatorDocumentLock.SafeWait(token);
+            try
+            {
+                return s_objEmptyDocument.CreateNavigator();
+            }
+            finally
+            {
+                s_ObjXPathNavigatorDocumentLock.Release();
+            }
+        }
+
+        /// <summary>
+        /// Get an XPathNavigator linked to an empty XmlDocument.
+        /// </summary>
+        public static async Task<XPathNavigator> GetEmptyDocumentNavigatorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            await s_ObjXPathNavigatorDocumentLock.WaitAsync(token).ConfigureAwait(false);
+            try
+            {
+                return s_objEmptyDocument.CreateNavigator();
+            }
+            finally
+            {
+                s_ObjXPathNavigatorDocumentLock.Release();
+            }
+        }
+
         public delegate bool TryParseFunction<T>(string input, out T result);
 
         /// <summary>

@@ -862,59 +862,61 @@ namespace Chummer
             {
                 if (!Path.GetFileName(strFile).StartsWith("custom_", StringComparison.OrdinalIgnoreCase))
                     continue;
-                XmlDocument objXmlDocument = new XmlDocument { XmlResolver = null };
-                try
+                using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool, out XmlDocument objXmlDocument))
                 {
-                    await objXmlDocument.LoadStandardPatientAsync(strFile).ConfigureAwait(false);
-                }
-                catch (IOException)
-                {
-                    continue;
-                }
-                catch (XmlException)
-                {
-                    continue;
-                }
-
-                XmlNode xmlDocumentBasePacksNode = objXmlDocument.SelectSingleNode("/chummer/packs");
-                if (xmlDocumentBasePacksNode?.TryGetNodeByNameOrId("pack", strSelectedKit, "category = \"Custom\"") != null)
-                {
-                    using (FileStream objStream = new FileStream(strFile, FileMode.Create, FileAccess.Write, FileShare.None))
+                    try
                     {
-                        using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                        await objXmlDocument.LoadStandardPatientAsync(strFile).ConfigureAwait(false);
+                    }
+                    catch (IOException)
+                    {
+                        continue;
+                    }
+                    catch (XmlException)
+                    {
+                        continue;
+                    }
+
+                    XmlNode xmlDocumentBasePacksNode = objXmlDocument.SelectSingleNode("/chummer/packs");
+                    if (xmlDocumentBasePacksNode?.TryGetNodeByNameOrId("pack", strSelectedKit, "category = \"Custom\"") != null)
+                    {
+                        using (FileStream objStream = new FileStream(strFile, FileMode.Create, FileAccess.Write, FileShare.None))
                         {
-                            await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
-
-                            // <chummer>
-                            await objWriter.WriteStartElementAsync("chummer").ConfigureAwait(false);
-                            // <packs>
-                            await objWriter.WriteStartElementAsync("packs").ConfigureAwait(false);
-
-                            // If this is not a new file, write out the current contents.
-                            using (XmlNodeList objXmlNodeList = xmlDocumentBasePacksNode.SelectNodes("*"))
+                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                             {
-                                if (objXmlNodeList?.Count > 0)
+                                await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
+
+                                // <chummer>
+                                await objWriter.WriteStartElementAsync("chummer").ConfigureAwait(false);
+                                // <packs>
+                                await objWriter.WriteStartElementAsync("packs").ConfigureAwait(false);
+
+                                // If this is not a new file, write out the current contents.
+                                using (XmlNodeList objXmlNodeList = xmlDocumentBasePacksNode.SelectNodes("*"))
                                 {
-                                    foreach (XmlNode objXmlNode in objXmlNodeList)
+                                    if (objXmlNodeList?.Count > 0)
                                     {
-                                        if (objXmlNode["name"]?.InnerText != strSelectedKit)
+                                        foreach (XmlNode objXmlNode in objXmlNodeList)
                                         {
-                                            // <pack>
-                                            await objWriter.WriteStartElementAsync("pack").ConfigureAwait(false);
-                                            objXmlNode.WriteContentTo(objWriter);
-                                            // </pack>
-                                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                                            if (objXmlNode["name"]?.InnerText != strSelectedKit)
+                                            {
+                                                // <pack>
+                                                await objWriter.WriteStartElementAsync("pack").ConfigureAwait(false);
+                                                objXmlNode.WriteContentTo(objWriter);
+                                                // </pack>
+                                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                                            }
                                         }
                                     }
                                 }
+
+                                // </packs>
+                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                                // </chummer>
+                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+
+                                await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
                             }
-
-                            // </packs>
-                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                            // </chummer>
-                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-
-                            await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
                         }
                     }
                 }
