@@ -81,7 +81,7 @@ namespace Chummer.UI.Powers
         }
 
         private Character _objCharacter;
-        private List<ValueTuple<string, Func<Power, CancellationToken, Task<bool>>>> _dropDownList;
+        private List<Tuple<string, Func<Power, CancellationToken, Task<bool>>>> _dropDownList;
         private bool _blnSearchMode;
 
         private CancellationToken _objMyToken;
@@ -298,21 +298,22 @@ namespace Chummer.UI.Powers
             }
         }
 
-        private static List<ValueTuple<string, Func<Power, CancellationToken, Task<bool>>>> GenerateDropdownFilter(
+        // Has to be Tuple and not ValueTuple to play nice with ComboBox.DisplayMember and ComboBox.ValueMember
+        private static List<Tuple<string, Func<Power, CancellationToken, Task<bool>>>> GenerateDropdownFilter(
             CancellationToken objMyToken = default)
         {
-            List<ValueTuple<string, Func<Power, CancellationToken, Task<bool>>>> ret = new List<ValueTuple<string, Func<Power, CancellationToken, Task<bool>>>>(4)
+            List<Tuple<string, Func<Power, CancellationToken, Task<bool>>>> ret = new List<Tuple<string, Func<Power, CancellationToken, Task<bool>>>>(4)
             {
-                new ValueTuple<string, Func<Power, CancellationToken, Task<bool>>>(
+                new Tuple<string, Func<Power, CancellationToken, Task<bool>>>(
                     LanguageManager.GetString("String_Search", token: objMyToken),
                     null),
-                new ValueTuple<string, Func<Power, CancellationToken, Task<bool>>>(
+                new Tuple<string, Func<Power, CancellationToken, Task<bool>>>(
                     LanguageManager.GetString("String_PowerFilterAll", token: objMyToken),
                     (x, t) => Task.FromResult(true)),
-                new ValueTuple<string, Func<Power, CancellationToken, Task<bool>>>(
+                new Tuple<string, Func<Power, CancellationToken, Task<bool>>>(
                     LanguageManager.GetString("String_PowerFilterRatingAboveZero", token: objMyToken),
                     async (power, t) => await power.GetRatingAsync(t).ConfigureAwait(false) > 0),
-                new ValueTuple<string, Func<Power, CancellationToken, Task<bool>>>(
+                new Tuple<string, Func<Power, CancellationToken, Task<bool>>>(
                     LanguageManager.GetString("String_PowerFilterRatingZero", token: objMyToken),
                     async (power, t) => await power.GetRatingAsync(t).ConfigureAwait(false) == 0)
             };
