@@ -809,7 +809,7 @@ namespace Chummer
             this.mnuXmlEditor.ImageDpi96 = global::Chummer.Properties.Resources.track_changes_edit_16;
             this.mnuXmlEditor.Name = "mnuXmlEditor";
             this.mnuXmlEditor.Size = new System.Drawing.Size(202, 22);
-            this.mnuXmlEditor.Tag = "Menu_Main_XmlAmendmentEditor";
+            this.mnuXmlEditor.Tag = "Menu_Main_XmlEditor";
             this.mnuXmlEditor.Text = "&XML Amendment Editor";
             this.mnuXmlEditor.Click += new System.EventHandler(this.mnuXmlEditor_Click);
             // 
