@@ -32,7 +32,6 @@ namespace Chummer.UI.Table
         {
             _objMyToken = objMyToken;
             InitializeComponent();
-            Disposed += (sender, args) => _objUpdateSemaphore.Dispose();
             ContentField = _checkBox;
             _checkBox.Text = text;
             _checkBox.Tag = tag;

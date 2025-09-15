@@ -28,21 +28,23 @@ namespace Chummer.UI.Table
     {
         private int _intUpdating;
         private readonly CancellationToken _objMyToken;
+        private readonly DebuggableSemaphoreSlim _objUpdateSemaphore;
+        private readonly TableView<T> _objMyTable;
 
         public SpinnerTableCell(TableView<T> table, CancellationToken objMyToken = default)
         {
+            _objUpdateSemaphore = new DebuggableSemaphoreSlim();
             _objMyToken = objMyToken;
+            _objMyTable = table;
             InitializeComponent();
-            ContentField = _spinner;
-            Disposed += (sender, args) => _objUpdateSemaphore.Dispose();
-            Enter += (a, b) => table.PauseSort(this);
+            ContentField = nudSpinner;
             Leave += DoResumeSort;
 
             async void DoResumeSort(object a, EventArgs b)
             {
                 try
                 {
-                    await table.ResumeSortAsync(this, _objMyToken).ConfigureAwait(false);
+                    await _objMyTable.ResumeSortAsync(this, _objMyToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -51,9 +53,15 @@ namespace Chummer.UI.Table
             }
         }
 
+        protected override void OnEnter(EventArgs e)
+        {
+            _objMyTable.PauseSort(this);
+            base.OnEnter(e);
+        }
+
         private void OnLoad(object sender, EventArgs eventArgs)
         {
-            MinimumSize = _spinner.Size;
+            MinimumSize = nudSpinner.Size;
         }
 
         protected internal override void UpdateValue(object newValue)
@@ -68,19 +76,19 @@ namespace Chummer.UI.Table
                     {
                         decimal decMin = Utils.SafelyRunSynchronously(() => MinExtractor(tValue, _objMyToken), _objMyToken);
                         decimal decMax = Utils.SafelyRunSynchronously(() => MaxExtractor(tValue, _objMyToken), _objMyToken);
-                        _spinner.Minimum = Math.Min(decMin, decMax);
-                        _spinner.Maximum = Math.Max(decMax, decMin);
+                        nudSpinner.Minimum = Math.Min(decMin, decMax);
+                        nudSpinner.Maximum = Math.Max(decMax, decMin);
                     }
                     else
-                        _spinner.Minimum = Utils.SafelyRunSynchronously(() => MinExtractor(tValue, _objMyToken), _objMyToken);
+                        nudSpinner.Minimum = Utils.SafelyRunSynchronously(() => MinExtractor(tValue, _objMyToken), _objMyToken);
                 }
                 else if (MaxExtractor != null)
                 {
-                    _spinner.Maximum = Utils.SafelyRunSynchronously(() => MaxExtractor(tValue, _objMyToken), _objMyToken);
+                    nudSpinner.Maximum = Utils.SafelyRunSynchronously(() => MaxExtractor(tValue, _objMyToken), _objMyToken);
                 }
                 if (EnabledExtractor != null)
                 {
-                    _spinner.Enabled = Utils.SafelyRunSynchronously(() => EnabledExtractor(tValue, _objMyToken), _objMyToken);
+                    nudSpinner.Enabled = Utils.SafelyRunSynchronously(() => EnabledExtractor(tValue, _objMyToken), _objMyToken);
                 }
 
                 if (ValueUpdater == null)
@@ -89,7 +97,7 @@ namespace Chummer.UI.Table
                     return;
                 try
                 {
-                    _spinner.Value = Math.Min(Math.Max(Utils.SafelyRunSynchronously(() => ValueGetter(tValue, _objMyToken), _objMyToken), _spinner.Minimum), _spinner.Maximum);
+                    nudSpinner.Value = Math.Min(Math.Max(Utils.SafelyRunSynchronously(() => ValueGetter(tValue, _objMyToken), _objMyToken), nudSpinner.Minimum), nudSpinner.Maximum);
                 }
                 finally
                 {
@@ -119,7 +127,7 @@ namespace Chummer.UI.Table
                 {
                     if (blnDoMin || blnDoMax || blnDoEnabled)
                     {
-                        await _spinner.DoThreadSafeAsync(x =>
+                        await nudSpinner.DoThreadSafeAsync(x =>
                         {
                             if (blnDoMin)
                                 x.Minimum = Math.Min(decMin, decMax);
@@ -135,7 +143,7 @@ namespace Chummer.UI.Table
                 try
                 {
                     decimal decValue = await ValueGetter(tValue, token).ConfigureAwait(false);
-                    await _spinner.DoThreadSafeAsync(x =>
+                    await nudSpinner.DoThreadSafeAsync(x =>
                     {
                         if (blnDoMin)
                             x.Minimum = Math.Min(decMin, decMax);
@@ -160,7 +168,7 @@ namespace Chummer.UI.Table
                     if (blnDoMin)
                     {
                         decimal decMin = await MinExtractor(tValue, token).ConfigureAwait(false);
-                        await _spinner.DoThreadSafeAsync(x =>
+                        await nudSpinner.DoThreadSafeAsync(x =>
                         {
                             x.Minimum = Math.Min(decMin, decMax);
                             x.Maximum = Math.Max(decMax, decMin);
@@ -169,7 +177,7 @@ namespace Chummer.UI.Table
                     }
                     else
                     {
-                        await _spinner.DoThreadSafeAsync(x =>
+                        await nudSpinner.DoThreadSafeAsync(x =>
                         {
                             x.Maximum = decMax;
                             x.Enabled = blnEnabled;
@@ -179,14 +187,14 @@ namespace Chummer.UI.Table
                 else if (blnDoMin)
                 {
                     decimal decMin = await MinExtractor(tValue, token).ConfigureAwait(false);
-                    await _spinner.DoThreadSafeAsync(x =>
+                    await nudSpinner.DoThreadSafeAsync(x =>
                     {
                         x.Minimum = decMin;
                         x.Enabled = blnEnabled;
                     }, token: token).ConfigureAwait(false);
                 }
                 else
-                    await _spinner.DoThreadSafeAsync(x => x.Enabled = blnEnabled, token: token).ConfigureAwait(false);
+                    await nudSpinner.DoThreadSafeAsync(x => x.Enabled = blnEnabled, token: token).ConfigureAwait(false);
             }
             else if (blnDoMax)
             {
@@ -194,19 +202,19 @@ namespace Chummer.UI.Table
                 if (blnDoMin)
                 {
                     decimal decMin = await MinExtractor(tValue, token).ConfigureAwait(false);
-                    await _spinner.DoThreadSafeAsync(x =>
+                    await nudSpinner.DoThreadSafeAsync(x =>
                     {
                         x.Minimum = Math.Min(decMin, decMax);
                         x.Maximum = Math.Max(decMax, decMin);
                     }, token: token).ConfigureAwait(false);
                 }
                 else
-                    await _spinner.DoThreadSafeAsync(x => x.Maximum = decMax, token: token).ConfigureAwait(false);
+                    await nudSpinner.DoThreadSafeAsync(x => x.Maximum = decMax, token: token).ConfigureAwait(false);
             }
             else if (blnDoMin)
             {
                 decimal decMin = await MinExtractor(tValue, token).ConfigureAwait(false);
-                await _spinner.DoThreadSafeAsync(x => x.Minimum = decMin, token: token).ConfigureAwait(false);
+                await nudSpinner.DoThreadSafeAsync(x => x.Minimum = decMin, token: token).ConfigureAwait(false);
             }
         }
 
@@ -234,14 +242,10 @@ namespace Chummer.UI.Table
         /// </summary>
         public Func<T, decimal, CancellationToken, Task> ValueUpdater { get; set; }
 
-        private readonly DebuggableSemaphoreSlim _objUpdateSemaphore = new DebuggableSemaphoreSlim();
-
         /// <summary>
         /// spinner value change handler
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async void value_changed(object sender, EventArgs e)
+        private async void nudSpinner_ValueChanged(object sender, EventArgs e)
         {
             if (ValueUpdater == null)
                 return;
@@ -255,7 +259,7 @@ namespace Chummer.UI.Table
                     try
                     {
                         await ValueUpdater(Value as T,
-                                await _spinner.DoThreadSafeFuncAsync(x => x.Value, _objMyToken).ConfigureAwait(false), _objMyToken)
+                                await nudSpinner.DoThreadSafeFuncAsync(x => x.Value, _objMyToken).ConfigureAwait(false), _objMyToken)
                             .ConfigureAwait(false);
                     }
                     finally

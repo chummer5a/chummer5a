@@ -13,9 +13,12 @@ namespace Chummer.UI.Table
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                _objUpdateSemaphore.Dispose();
+                ValueUpdater = null; // to help the GC
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -28,35 +31,35 @@ namespace Chummer.UI.Table
         /// </summary>
         private void InitializeComponent()
         {
-            this._spinner = new Chummer.NumericUpDownEx();
-            ((System.ComponentModel.ISupportInitialize)(this._spinner)).BeginInit();
+            this.nudSpinner = new Chummer.NumericUpDownEx();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSpinner)).BeginInit();
             this.SuspendLayout();
             // 
-            // _spinner
+            // nudSpinner
             // 
-            this._spinner.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.nudSpinner.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this._spinner.Location = new System.Drawing.Point(0, 0);
-            this._spinner.Name = "_spinner";
-            this._spinner.Size = new System.Drawing.Size(50, 20);
-            this._spinner.TabIndex = 0;
-            this._spinner.ValueChanged += new System.EventHandler(this.value_changed);
+            this.nudSpinner.Location = new System.Drawing.Point(0, 0);
+            this.nudSpinner.Name = "nudSpinner";
+            this.nudSpinner.Size = new System.Drawing.Size(50, 20);
+            this.nudSpinner.TabIndex = 0;
+            this.nudSpinner.ValueChanged += new System.EventHandler(this.nudSpinner_ValueChanged);
             // 
             // SpinnerTableCell
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.Controls.Add(this._spinner);
+            this.Controls.Add(this.nudSpinner);
             this.Name = "SpinnerTableCell";
             this.Size = new System.Drawing.Size(50, 23);
             this.Load += OnLoad;
-            ((System.ComponentModel.ISupportInitialize)(this._spinner)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSpinner)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private Chummer.NumericUpDownEx _spinner;
+        private Chummer.NumericUpDownEx nudSpinner;
     }
 }

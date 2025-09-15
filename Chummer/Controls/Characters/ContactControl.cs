@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
@@ -86,8 +85,6 @@ namespace Chummer
             _tmrPreferredPaymentChangeTimer.Tick += UpdatePreferredPayment;
             _tmrHobbiesViceChangeTimer = new Timer { Interval = 1000 };
             _tmrHobbiesViceChangeTimer.Tick += UpdateHobbiesVice;
-
-            Disposed += (sender, args) => UnbindContactControl();
 
             this.UpdateLightDarkMode(objMyToken);
             this.TranslateWinForm(token: objMyToken);

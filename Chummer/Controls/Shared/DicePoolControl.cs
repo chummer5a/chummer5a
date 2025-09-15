@@ -34,7 +34,6 @@ namespace Chummer.UI.Shared.Components
         public DicePoolControl()
         {
             InitializeComponent();
-            Disposed += (sender, args) => _objDicePoolLockObject.Dispose();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             CanEverBeRolled = CanEverBeRolled || GlobalSettings.AllowSkillDiceRolling;

@@ -31,7 +31,7 @@ namespace Chummer.UI.Skills
 {
     public partial class SkillGroupControl : UserControl
     {
-        private readonly SkillGroup _skillGroup;
+        private SkillGroup _skillGroup;
 
         // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
         private readonly NumericUpDownEx nudSkill;
@@ -50,7 +50,6 @@ namespace Chummer.UI.Skills
             _objMyToken = objMyToken;
             _skillGroup = skillGroup;
             InitializeComponent();
-            Disposed += (sender, args) => UnbindSkillGroupControl();
             //This is apparently a factor 30 faster than placed in load. NFI why
             using (new FetchSafelyFromSafeObjectPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
             {
@@ -318,6 +317,12 @@ namespace Chummer.UI.Skills
 
         public void UnbindSkillGroupControl()
         {
+            _skillGroup = null;
+
+            ButtonWithToolTip objOld = Interlocked.Exchange(ref _activeButton, null);
+            if (!objOld.IsNullOrDisposed())
+                objOld.Dispose();
+
             foreach (Control objControl in Controls)
                 objControl.DataBindings.Clear();
         }

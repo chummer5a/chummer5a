@@ -51,8 +51,6 @@ namespace Chummer
             _objMyToken = objMyToken;
             InitializeComponent();
 
-            Disposed += (sender, args) => UnbindSpiritControl();
-
             this.UpdateLightDarkMode(objMyToken);
             this.TranslateWinForm(token: objMyToken);
             foreach (ToolStripItem tssItem in cmsSpirit.Items)

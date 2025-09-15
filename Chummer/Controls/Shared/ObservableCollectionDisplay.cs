@@ -66,25 +66,6 @@ namespace Chummer.Controls.Shared
         public ObservableCollectionDisplay(ThreadSafeObservableCollection<TType> contents, Func<TType, Control> funcCreateControl, bool blnLoadVisibleOnly = true)
         {
             InitializeComponent();
-            Disposed += (sender, args) =>
-            {
-                CancellationTokenSource objOldSource = Interlocked.Exchange(ref _objFilterCancellationTokenSource, null);
-                if (objOldSource != null)
-                {
-                    objOldSource.Cancel(false);
-                    objOldSource.Dispose();
-                }
-                objOldSource = Interlocked.Exchange(ref _objSortCancellationTokenSource, null);
-                if (objOldSource != null)
-                {
-                    objOldSource.Cancel(false);
-                    objOldSource.Dispose();
-                }
-                foreach (ControlWithMetaData _objControlWithMetaData in _lstContentList)
-                {
-                    _objControlWithMetaData.Dispose();
-                }
-            };
             Contents = contents ?? throw new ArgumentNullException(nameof(contents));
             _funcCreateControl = funcCreateControl;
             _blnLoadVisibleOnly = blnLoadVisibleOnly;
@@ -109,17 +90,6 @@ namespace Chummer.Controls.Shared
                 _comparisonAsync = null;
 
                 Contents.CollectionChangedAsync += OnCollectionChanged;
-                Disposed += (sender, args) =>
-                {
-                    try
-                    {
-                        Contents.CollectionChangedAsync -= OnCollectionChanged;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
-                    }
-                };
                 ComputeDisplayIndex();
                 LoadScreenContent();
                 ObservableCollectionDisplay_SizeChanged(null, null);

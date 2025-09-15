@@ -64,25 +64,6 @@ namespace Chummer.Controls.Shared
         public BindingListDisplay(ThreadSafeBindingList<TType> contents, Func<TType, Control> funcCreateControl, bool blnLoadVisibleOnly = true)
         {
             InitializeComponent();
-            Disposed += (sender, args) =>
-            {
-                CancellationTokenSource objOldSource = Interlocked.Exchange(ref _objFilterCancellationTokenSource, null);
-                if (objOldSource != null)
-                {
-                    objOldSource.Cancel(false);
-                    objOldSource.Dispose();
-                }
-                objOldSource = Interlocked.Exchange(ref _objSortCancellationTokenSource, null);
-                if (objOldSource != null)
-                {
-                    objOldSource.Cancel(false);
-                    objOldSource.Dispose();
-                }
-                foreach (ControlWithMetaData _objControlWithMetaData in _lstContentList)
-                {
-                    _objControlWithMetaData.Dispose();
-                }
-            };
             Contents = contents ?? throw new ArgumentNullException(nameof(contents));
             _funcCreateControl = funcCreateControl;
             _blnLoadVisibleOnly = blnLoadVisibleOnly;
@@ -106,17 +87,6 @@ namespace Chummer.Controls.Shared
                 _comparison = _comparison ?? _indexComparer;
                 _comparisonAsync = null;
                 Contents.ListChangedAsync += ContentsChanged;
-                Disposed += (sender, args) =>
-                {
-                    try
-                    {
-                        Contents.ListChangedAsync -= ContentsChanged;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
-                    }
-                };
                 ComputeDisplayIndex();
                 LoadScreenContent();
                 BindingListDisplay_SizeChanged(null, null);

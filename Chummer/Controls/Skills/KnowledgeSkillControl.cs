@@ -36,7 +36,7 @@ namespace Chummer.UI.Skills
     {
         private int _intUpdatingName = 1;
         private int _intUpdatingSpec = 1;
-        private readonly KnowledgeSkill _objSkill;
+        private KnowledgeSkill _objSkill;
         private readonly Timer _tmrNameChangeTimer;
         private readonly Timer _tmrSpecChangeTimer;
 
@@ -70,7 +70,6 @@ namespace Chummer.UI.Skills
             _objMyToken = objMyToken;
             _objSkill = objSkill;
             InitializeComponent();
-            Disposed += (sender, args) => UnbindKnowledgeSkillControl();
             SuspendLayout();
             tlpMain.SuspendLayout();
             tlpMiddle.SuspendLayout();
@@ -928,12 +927,13 @@ namespace Chummer.UI.Skills
         {
             _tmrNameChangeTimer?.Dispose();
             _tmrSpecChangeTimer?.Dispose();
-            if (_objSkill?.IsDisposed == false)
+            KnowledgeSkill objSkill = Interlocked.Exchange(ref _objSkill, null); // for thread safety
+            if (objSkill?.IsDisposed == false)
             {
                 try
                 {
-                    _objSkill.MultiplePropertiesChangedAsync -= Skill_PropertyChanged;
-                    Character objCharacter = _objSkill.CharacterObject;
+                    objSkill.MultiplePropertiesChangedAsync -= Skill_PropertyChanged;
+                    Character objCharacter = objSkill.CharacterObject;
                     if (objCharacter?.IsDisposed == false)
                         objCharacter.SkillsSection.PropertyChangedAsync -= OnSkillsSectionPropertyChanged;
                 }
@@ -945,6 +945,10 @@ namespace Chummer.UI.Skills
 
             foreach (Control objControl in Controls)
                 objControl.DataBindings.Clear();
+
+            ButtonWithToolTip objOld = Interlocked.Exchange(ref _activeButton, null);
+            if (!objOld.IsNullOrDisposed())
+                objOld.Dispose();
         }
 
         private async void btnCareerIncrease_Click(object sender, EventArgs e)

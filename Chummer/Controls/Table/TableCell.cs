@@ -32,8 +32,6 @@ namespace Chummer.UI.Table
         {
             ContentField = content;
             InitializeComponent();
-            if (content != null)
-                Disposed += (sender, args) => content.Dispose();
             Alignment = Alignment.Left;
         }
 

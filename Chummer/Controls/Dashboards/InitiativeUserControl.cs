@@ -53,12 +53,6 @@ namespace Chummer
         {
             InitializeComponent();
 
-            Disposed += (sender, args) =>
-            {
-                foreach (Character objCharacter in _lstCharacters)
-                    objCharacter.Dispose();
-            };
-
             lblRound.Text = LanguageManager.GetString("Label_Round") + LanguageManager.GetString("String_Space") + 1.ToString(GlobalSettings.CultureInfo);
             _intRound = 1;
 

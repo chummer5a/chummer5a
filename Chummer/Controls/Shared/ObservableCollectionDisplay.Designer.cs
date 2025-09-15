@@ -1,3 +1,6 @@
+using System;
+using System.Threading;
+
 namespace Chummer.Controls.Shared
 {
     partial class ObservableCollectionDisplay<TType>
@@ -13,9 +16,34 @@ namespace Chummer.Controls.Shared
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                CancellationTokenSource objOldSource = Interlocked.Exchange(ref _objFilterCancellationTokenSource, null);
+                if (objOldSource != null)
+                {
+                    objOldSource.Cancel(false);
+                    objOldSource.Dispose();
+                }
+                objOldSource = Interlocked.Exchange(ref _objSortCancellationTokenSource, null);
+                if (objOldSource != null)
+                {
+                    objOldSource.Cancel(false);
+                    objOldSource.Dispose();
+                }
+                foreach (ControlWithMetaData _objControlWithMetaData in _lstContentList)
+                {
+                    _objControlWithMetaData.Dispose();
+                }
+                try
+                {
+                    Contents.CollectionChangedAsync -= OnCollectionChanged;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }

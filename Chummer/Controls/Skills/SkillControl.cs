@@ -38,7 +38,7 @@ namespace Chummer.UI.Skills
     {
         private readonly bool _blnLoading = true;
         private int _intUpdatingSpec = 1;
-        private readonly Skill _objSkill;
+        private Skill _objSkill;
         private readonly Timer _tmrSpecChangeTimer;
         private readonly Font _fntNormal;
         private readonly Font _fntItalic;
@@ -82,7 +82,6 @@ namespace Chummer.UI.Skills
             _objSkill = objSkill;
             _objAttributeActive = objSkill.AttributeObject;
             InitializeComponent();
-            Disposed += (sender, args) => UnbindSkillControl();
             SuspendLayout();
             pnlAttributes.SuspendLayout();
             tlpMain.SuspendLayout();
@@ -94,11 +93,6 @@ namespace Chummer.UI.Skills
                 _fntItalicName = new Font(_fntNormalName, FontStyle.Italic);
                 _fntNormal = btnAttribute.Font;
                 _fntItalic = new Font(_fntNormal, FontStyle.Italic);
-                Disposed += (sender, args) =>
-                {
-                    _fntItalicName.Dispose();
-                    _fntItalic.Dispose();
-                };
 
                 if (!_objSkill.Default)
                     lblName.Font = _fntItalicName;
@@ -176,7 +170,6 @@ namespace Chummer.UI.Skills
                     };
                     _fntNormalSpec = lblCareerSpec.Font;
                     _fntStrikethroughSpec = new Font(_fntNormalSpec, FontStyle.Strikeout);
-                    Disposed += (sender, args) => _fntStrikethroughSpec.Dispose();
 
                     tlpRight.Controls.Add(lblCareerSpec, 0, 0);
                     tlpRight.Controls.Add(btnAddSpec, 1, 0);
@@ -1259,18 +1252,19 @@ namespace Chummer.UI.Skills
         private void UnbindSkillControl()
         {
             _tmrSpecChangeTimer?.Dispose();
-            if (_objSkill?.IsDisposed == false)
+            Skill objSkill = Interlocked.Exchange(ref _objSkill, null); // for thread safety
+            if (objSkill?.IsDisposed == false)
             {
                 try
                 {
-                    _objSkill.MultiplePropertiesChangedAsync -= Skill_PropertyChanged;
+                    objSkill.MultiplePropertiesChangedAsync -= Skill_PropertyChanged;
                 }
                 catch (ObjectDisposedException)
                 {
                     //swallow this
                 }
             }
-            CharacterAttrib objAttribute = AttributeActive; // for thread safety
+            CharacterAttrib objAttribute = Interlocked.Exchange(ref _objAttributeActive, null); // for thread safety
             if (objAttribute?.IsDisposed == false)
             {
                 try
@@ -1282,6 +1276,10 @@ namespace Chummer.UI.Skills
                     //swallow this
                 }
             }
+
+            ButtonWithToolTip objOld = Interlocked.Exchange(ref _activeButton, null);
+            if (!objOld.IsNullOrDisposed())
+                objOld.Dispose();
 
             foreach (Control objControl in Controls)
                 objControl.DataBindings.Clear();

@@ -36,7 +36,6 @@ namespace Chummer.UI.Table
             InitializeComponent();
             this.UpdateLightDarkMode(token: token);
             Sortable = false;
-            Layout += ResizeControl;
         }
 
         public override string Text
@@ -45,11 +44,17 @@ namespace Chummer.UI.Table
             set
             {
                 _lblCellText.DoThreadSafe(x => x.Text = value);
-                ResizeControl(this, null);
+                ResizeControl();
             }
         }
 
-        private void ResizeControl(object sender, LayoutEventArgs e)
+        protected override void OnLayout(LayoutEventArgs e)
+        {
+            ResizeControl();
+            base.OnLayout(e);
+        }
+
+        private void ResizeControl()
         {
             this.DoThreadSafe(x => x.SuspendLayout());
             try
@@ -99,7 +104,7 @@ namespace Chummer.UI.Table
                 }
 
                 if (Interlocked.Exchange(ref _intArrowSize, value) != value)
-                    ResizeControl(this, null);
+                    ResizeControl();
             }
         }
 
@@ -114,7 +119,7 @@ namespace Chummer.UI.Table
                 }
 
                 if (Interlocked.Exchange(ref _intArrowPadding, value) != value)
-                    ResizeControl(this, null);
+                    ResizeControl();
             }
         }
 

@@ -53,8 +53,6 @@ namespace Chummer
             _tmrMetatypeChangeTimer = new Timer { Interval = 1000 };
             _tmrMetatypeChangeTimer.Tick += UpdateMetatype;
 
-            Disposed += (sender, args) => UnbindPetControl();
-
             this.UpdateLightDarkMode(objMyToken);
             this.TranslateWinForm(token: objMyToken);
             foreach (ToolStripItem tssItem in cmsContact.Items)

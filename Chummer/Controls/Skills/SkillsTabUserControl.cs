@@ -213,7 +213,6 @@ namespace Chummer.UI.Skills
                                 {
                                     Dock = DockStyle.Fill
                                 };
-                            Disposed += (sender, args) => _lstActiveSkills.Dispose();
 
                             Control MakeActiveSkill(Skill arg)
                             {
@@ -235,7 +234,6 @@ namespace Chummer.UI.Skills
                             {
                                 Dock = DockStyle.Fill
                             };
-                            Disposed += (sender, args) => _lstKnowledgeSkills.Dispose();
 
                             parts.TaskEnd("_lstKnowledgeSkills");
 
@@ -252,7 +250,6 @@ namespace Chummer.UI.Skills
                                 {
                                     Dock = DockStyle.Fill
                                 };
-                                Disposed += (sender, args) => _lstSkillGroups.Dispose();
                                 _lstSkillGroups.Filter(
                                     z => z.SkillList.Any(y =>
                                         _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),

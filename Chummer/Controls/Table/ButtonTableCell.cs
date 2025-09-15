@@ -35,7 +35,6 @@ namespace Chummer.UI.Table
             InitializeComponent();
             _button = button ?? throw new ArgumentNullException(nameof(button));
             button.Click += OnButtonClick;
-            Disposed += (sender, args) => _objUpdateSemaphore.Dispose();
             SuspendLayout();
             try
             {
