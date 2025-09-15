@@ -953,17 +953,15 @@ namespace Chummer.Backend.Attributes
                 int intReturn = _intCachedValue;
                 if (intReturn != int.MinValue)
                     return intReturn;
-                return _intCachedValue = await Task.Run(async () => Math.Min(
-                                                            Math.Max(
-                                                                await GetBaseAsync(token).ConfigureAwait(false)
-                                                                    + await GetFreeBaseAsync(token).ConfigureAwait(false)
-                                                                    + await GetRawMinimumAsync(token).ConfigureAwait(false)
-                                                                    + await GetAttributeValueModifiersAsync(token)
-                                                                         .ConfigureAwait(false),
-                                                                await GetTotalMinimumAsync(token).ConfigureAwait(false))
-                                                            + await GetKarmaAsync(token).ConfigureAwait(false),
-                                                            await GetTotalMaximumAsync(token).ConfigureAwait(false)), token)
-                                                   .ConfigureAwait(false);
+                return _intCachedValue = Math.Min(Math.Max(
+                                                    await GetBaseAsync(token).ConfigureAwait(false)
+                                                        + await GetFreeBaseAsync(token).ConfigureAwait(false)
+                                                        + await GetRawMinimumAsync(token).ConfigureAwait(false)
+                                                        + await GetAttributeValueModifiersAsync(token)
+                                                                .ConfigureAwait(false),
+                                                    await GetTotalMinimumAsync(token).ConfigureAwait(false))
+                                                + await GetKarmaAsync(token).ConfigureAwait(false),
+                                            await GetTotalMaximumAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -1855,9 +1853,7 @@ namespace Chummer.Backend.Attributes
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    return _intCachedTotalValue = await Task
-                        .Run(() => CalculatedTotalValueAsync(token: token), token)
-                        .ConfigureAwait(false);
+                    return _intCachedTotalValue = await CalculatedTotalValueAsync(token: token).ConfigureAwait(false);
                 }
                 finally
                 {

@@ -93,7 +93,7 @@ namespace Chummer
                 }
                 else
                 {
-                    await Task.Run(() => objReturn.Load(strXslFilePath), token).ConfigureAwait(false);
+                    await TaskExtensions.RunWithoutEC(() => objReturn.Load(strXslFilePath), token).ConfigureAwait(false);
                 }
 
                 ValueTuple<DateTime, XslCompiledTransform> tupNewValue =

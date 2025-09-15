@@ -468,7 +468,7 @@ namespace Chummer
                                     using (Stream objStream = objSettingsEntry.Open())
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        await Task.Run(() => objSettings.SaveAsync(objStream, token: token), token).ConfigureAwait(false);
+                                        await objSettings.SaveAsync(objStream, token: token).ConfigureAwait(false);
                                     }
                                     await pgbExportProgress.DoThreadSafeAsync(x => ++x.Value, _objGenericToken).ConfigureAwait(false);
                                     foreach (string strFileName in Utils.BasicDataFileNames)
@@ -480,7 +480,7 @@ namespace Chummer
                                         using (Stream objStream = objEntry.Open())
                                         {
                                             token.ThrowIfCancellationRequested();
-                                            await Task.Run(() => xmlDocument.Save(objStream), token).ConfigureAwait(false);
+                                            await TaskExtensions.RunWithoutEC(() => xmlDocument.Save(objStream), token).ConfigureAwait(false);
                                         }
                                         await pgbExportProgress.DoThreadSafeAsync(x => ++x.Value, _objGenericToken).ConfigureAwait(false);
                                     }

@@ -2888,28 +2888,23 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private Task OnCharacterPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+        private async Task OnCharacterPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
+            token.ThrowIfCancellationRequested();
             if (CharacterObject?.IsLoading != false)
-                return Task.CompletedTask;
+                return;
             if (e.PropertyNames.Contains(nameof(Character.Karma)))
             {
                 if (e.PropertyNames.Contains(nameof(Character.EffectiveBuildMethodUsesPriorityTables)))
                 {
-                    return Task.Run(async () =>
-                    {
-                        using (TemporaryArray<string> aParams = new TemporaryArray<string>(nameof(CareerCanIncrease), nameof(BaseUnbroken)))
-                            await OnMultiplePropertiesChangedAsync(aParams, token).ConfigureAwait(false);
-                    }, token);
+                    using (TemporaryArray<string> aParams = new TemporaryArray<string>(nameof(CareerCanIncrease), nameof(BaseUnbroken)))
+                        await OnMultiplePropertiesChangedAsync(aParams, token).ConfigureAwait(false);
                 }
-                return OnPropertyChangedAsync(nameof(CareerCanIncrease), token);
+                else
+                    await OnPropertyChangedAsync(nameof(CareerCanIncrease), token).ConfigureAwait(false);
             }
-
-            return e.PropertyNames.Contains(nameof(Character.EffectiveBuildMethodUsesPriorityTables))
-                ? OnPropertyChangedAsync(nameof(BaseUnbroken), token)
-                : Task.CompletedTask;
+            else if (e.PropertyNames.Contains(nameof(Character.EffectiveBuildMethodUsesPriorityTables)))
+                await OnPropertyChangedAsync(nameof(BaseUnbroken), token).ConfigureAwait(false);
         }
 
         private async Task OnCharacterSettingsPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e,

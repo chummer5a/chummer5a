@@ -32,6 +32,7 @@ using Chummer;
 using Microsoft.Win32.SafeHandles;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using TaskExtensions = Chummer.TaskExtensions;
 
 namespace CrashHandler
 {
@@ -182,7 +183,7 @@ namespace CrashHandler
                 await CrashLogWriter.WriteLineAsync("Creating .zip file").ConfigureAwait(false);
                 await CrashLogWriter.FlushAsync().ConfigureAwait(false);
                 string strFileName = Path.Combine(Utils.GetStartupPath, CrashDumpName + ".zip");
-                await Task.Run(() => ZipFile.CreateFromDirectory(WorkingDirectory,
+                await TaskExtensions.RunWithoutEC(() => ZipFile.CreateFromDirectory(WorkingDirectory,
                                                                  strFileName,
                                                                  CompressionLevel.Optimal, false, Encoding.UTF8)).ConfigureAwait(false);
                 await CrashLogWriter.WriteLineAsync("Zip file created").ConfigureAwait(false);

@@ -793,7 +793,7 @@ namespace Chummer
                     {
                         XPathDocument xmlDoc = blnSync
                             ? LoadXPathDocument()
-                            : await Task.Run(LoadXPathDocumentAsync, token).ConfigureAwait(false);
+                            : await LoadXPathDocumentAsync().ConfigureAwait(false);
 
                         XPathDocument LoadXPathDocument()
                         {

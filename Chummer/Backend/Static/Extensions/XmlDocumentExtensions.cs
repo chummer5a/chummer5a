@@ -83,7 +83,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         // ReSharper disable once AccessToDisposedClosure
-                        await Task.Run(() => xmlDocument.Load(objReader), token).ConfigureAwait(false);
+                        await TaskExtensions.RunWithoutEC(() => xmlDocument.Load(objReader), token).ConfigureAwait(false);
                     }
                 }
             }
@@ -158,7 +158,7 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             // ReSharper disable once AccessToDisposedClosure
-                            await Task.Run(() => xmlDocument.Load(objReader), token).ConfigureAwait(false);
+                            await TaskExtensions.RunWithoutEC(() => xmlDocument.Load(objReader), token).ConfigureAwait(false);
                         }
                     }
                 }
@@ -336,7 +336,7 @@ namespace Chummer
         {
             return xmlDocument == null
                 ? Task.FromResult<XPathNavigator>(null)
-                : Task.Run(() =>
+                : TaskExtensions.RunWithoutEC(() =>
                 {
                     using (RecyclableMemoryStream objMemoryStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {

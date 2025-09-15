@@ -17,19 +17,27 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Chummer
 {
     public static class CancellationTokenExtensions
     {
         /// <summary>
-        /// Returns a cancellation token in task form, i.e, as a task that runs forever until the cancellation token is fired.
+        /// Version of CancellationToken.Register that is done in an empty execution context as a way to avoid leaking memory of AsyncLocals
         /// </summary>
-        public static Task AsTask(this CancellationToken token)
+        public static CancellationTokenRegistration RegisterWithoutEC(this CancellationToken token, Action callback)
         {
-            return Task.Delay(Timeout.Infinite, token);
+            return Utils.RunInEmptyExecutionContext(() => token.Register(callback, false));
+        }
+
+        /// <summary>
+        /// Version of CancellationToken.Register that is done in an empty execution context as a way to avoid leaking memory of AsyncLocals
+        /// </summary>
+        public static CancellationTokenRegistration RegisterWithoutEC(this CancellationToken token, Action<object> callback, object state)
+        {
+            return Utils.RunInEmptyExecutionContext(() => token.Register(callback, state, false));
         }
     }
 }

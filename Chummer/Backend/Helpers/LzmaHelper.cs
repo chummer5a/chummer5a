@@ -306,7 +306,7 @@ namespace Chummer
             await objOutStream.WriteAsync(BitConverter.GetBytes(fileSize), 0, 8, token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             IAsyncCodeProgress funcProgress = funcOnProgress != null ? new AsyncDelegateCodeProgress(funcOnProgress) : null;
-            await Task.Run(() => encoder.CodeAsync(objInStream, objOutStream, -1, -1, funcProgress, token), token).ConfigureAwait(false);
+            await encoder.CodeAsync(objInStream, objOutStream, -1, -1, funcProgress, token).ConfigureAwait(false);
         }
 
         public static void DecompressLzmaFile(this FileStream objInStream, Stream objOutStream, Action<long, long> funcOnProgress = null)
@@ -351,7 +351,7 @@ namespace Chummer
             long compressedSize = objInStream.Length - objInStream.Position;
             token.ThrowIfCancellationRequested();
             IAsyncCodeProgress funcProgress = funcOnProgress != null ? new AsyncDelegateCodeProgress(funcOnProgress) : null;
-            await Task.Run(() => decoder.CodeAsync(objInStream, objOutStream, compressedSize, outSize, funcProgress, token), token).ConfigureAwait(false);
+            await decoder.CodeAsync(objInStream, objOutStream, compressedSize, outSize, funcProgress, token).ConfigureAwait(false);
         }
 
         private sealed class DelegateCodeProgress : ICodeProgress

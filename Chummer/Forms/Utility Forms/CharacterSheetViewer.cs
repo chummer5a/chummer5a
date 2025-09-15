@@ -755,7 +755,7 @@ namespace Chummer
                 throw;
             }
 
-            Task tskNew = Task.Run(() => RefreshCharacterXml(objToken), objToken);
+            Task tskNew = RefreshCharacterXml(objToken);
             if (Interlocked.CompareExchange(ref _tskRefresher, tskNew, null) != null)
             {
                 try
@@ -846,7 +846,7 @@ namespace Chummer
                 throw;
             }
 
-            Task tskNew = Task.Run(() => AsyncGenerateOutput(objToken), objToken);
+            Task tskNew = AsyncGenerateOutput(objToken);
             if (Interlocked.CompareExchange(ref _tskOutputGenerator, tskNew, null) != null)
             {
                 try
@@ -1053,43 +1053,41 @@ namespace Chummer
                     }
                 }
 
-                string strOutput = await Task.Run(async () =>
+                string strOutput;
+                using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                 {
-                    using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                    using (XmlWriter objWriter = objSettings != null
+                                ? XmlWriter.Create(objStream, objSettings)
+                                : Utils.GetXslTransformXmlWriter(objStream))
                     {
-                        using (XmlWriter objWriter = objSettings != null
-                                   ? XmlWriter.Create(objStream, objSettings)
-                                   : Utils.GetXslTransformXmlWriter(objStream))
-                        {
-                            token.ThrowIfCancellationRequested();
-                            objXslTransform.Transform(_objCharacterXml, objWriter);
-                        }
-
                         token.ThrowIfCancellationRequested();
+                        objXslTransform.Transform(_objCharacterXml, objWriter);
+                    }
 
-                        objStream.Position = 0;
+                    token.ThrowIfCancellationRequested();
 
-                        // Read in the resulting code and pass it to the browser.
-                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                    objStream.Position = 0;
+
+                    // Read in the resulting code and pass it to the browser.
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                         {
                             token.ThrowIfCancellationRequested();
-                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                            for (string strLine = await objReader.ReadLineAsync().ConfigureAwait(false);
+                                    strLine != null;
+                                    strLine = await objReader.ReadLineAsync().ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
-                                for (string strLine = await objReader.ReadLineAsync().ConfigureAwait(false);
-                                     strLine != null;
-                                     strLine = await objReader.ReadLineAsync().ConfigureAwait(false))
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    if (!string.IsNullOrEmpty(strLine))
-                                        sbdReturn.AppendLine(strLine);
-                                }
+                                if (!string.IsNullOrEmpty(strLine))
+                                    sbdReturn.AppendLine(strLine);
                             }
-
-                            return sbdReturn.ToString();
                         }
+
+                        strOutput = sbdReturn.ToString();
                     }
-                }, token).ConfigureAwait(false);
+                }
 
                 token.ThrowIfCancellationRequested();
 

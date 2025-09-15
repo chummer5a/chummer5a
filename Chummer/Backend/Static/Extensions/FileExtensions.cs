@@ -116,7 +116,7 @@ namespace Chummer
                     if (blnSync)
                         File.Delete(strPath);
                     else
-                        await Task.Run(() => File.Delete(strPath), token).ConfigureAwait(false);
+                        await TaskExtensions.RunWithoutEC(() => File.Delete(strPath), token).ConfigureAwait(false);
                 }
                 catch (PathTooLongException)
                 {

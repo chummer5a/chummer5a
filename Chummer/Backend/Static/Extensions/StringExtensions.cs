@@ -3236,7 +3236,7 @@ namespace Chummer
                 return Task.FromCanceled<string>(token);
             if (string.IsNullOrEmpty(strInput))
                 return Task.FromResult(string.Empty);
-            return Task.Run(() =>
+            return TaskExtensions.RunWithoutEC(() =>
             {
                 string strInputTrimmed = strInput.TrimStart();
                 string strReturn = strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
@@ -3263,7 +3263,7 @@ namespace Chummer
                 return Task.FromCanceled<string>(token);
             if (string.IsNullOrEmpty(strInput))
                 return Task.FromResult(string.Empty);
-            return Task.Run(() =>
+            return TaskExtensions.RunWithoutEC(() =>
             {
                 string strReturn = strInput.IsRtf()
                     ? Rtf.ToHtml(strInput)

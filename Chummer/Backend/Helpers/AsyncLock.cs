@@ -27,6 +27,9 @@ namespace Chummer
     /// A version of a locker that works recursively and also works with Async/Await.
     /// Taken from the WCF project here:
     /// https://github.com/dotnet/wcf/blob/main/src/System.Private.ServiceModel/src/Internals/System/Runtime/AsyncLock.cs
+    /// IMPORTANT NOTE:
+    /// Because of our reliance on AsyncLocal to make this work, we need to be A LOT more careful with any method or call that would create a copy of the ExecutionContext,
+    /// because it can end up creating a memory leak. The two most common methods that will do this are Task.Run and CancellationToken.Register.
     /// </summary>
     public sealed class AsyncLock : IDisposable, IAsyncDisposable
     {

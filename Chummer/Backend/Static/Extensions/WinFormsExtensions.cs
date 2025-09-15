@@ -114,7 +114,7 @@ namespace Chummer
                 return Utils.RunOnMainThreadAsync(() => frmForm.ShowDialog(owner), token);
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
-            using (token.Register(x => ((TaskCompletionSource<DialogResult>)x).TrySetCanceled(token), objCompletionSource, false))
+            using (token.RegisterWithoutEC(x => ((TaskCompletionSource<DialogResult>)x).TrySetCanceled(token), objCompletionSource))
             {
                 void BeginShow(Form frmInner)
                 {
@@ -176,7 +176,7 @@ namespace Chummer
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
             CancellationTokenRegistration objCancelRegistration
-                = token.Register(x => ((TaskCompletionSource<DialogResult>)x).TrySetCanceled(token), objCompletionSource, false);
+                = token.RegisterWithoutEC(x => ((TaskCompletionSource<DialogResult>)x).TrySetCanceled(token), objCompletionSource);
             try
             {
                 frmForm.BeginInvoke(new Action(() =>
@@ -229,7 +229,7 @@ namespace Chummer
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
             CancellationTokenRegistration objCancelRegistration
-                = token.Register(x => ((TaskCompletionSource<DialogResult>)x).TrySetCanceled(token), objCompletionSource, false);
+                = token.RegisterWithoutEC(x => ((TaskCompletionSource<DialogResult>)x).TrySetCanceled(token), objCompletionSource);
             void BeginShow(Form frmInner)
             {
                 try
@@ -476,7 +476,9 @@ namespace Chummer
                 return Task.CompletedTask;
             try
             {
-                return objControl == null ? Task.Run(funcToRun, token) : Utils.RunOnMainThreadAsync(funcToRun, token);
+                return objControl == null
+                    ? Task.Run(funcToRun, token)
+                    : Utils.RunOnMainThreadAsync(funcToRun, token);
             }
             catch (ObjectDisposedException) // e)
             {

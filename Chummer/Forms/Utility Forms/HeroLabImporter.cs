@@ -121,7 +121,7 @@ namespace Chummer
                             // If we run into any problems loading the character cache, fail out early.
                             try
                             {
-                                await Task.Run(() =>
+                                await TaskExtensions.RunWithoutEC(() =>
                                 {
                                     XPathDocument xmlSourceDoc;
                                     using (Stream objStream = objEntry.Open())

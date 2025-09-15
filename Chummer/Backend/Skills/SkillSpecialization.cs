@@ -344,9 +344,8 @@ namespace Chummer.Backend.Skills
                                 {
                                     CancellationToken objToken = objNewSource.Token;
                                     Task<string> tskNewTask
-                                        = Task.Run(
-                                            () => _objCharacter.ReverseTranslateExtraAsync(
-                                                _strName, GlobalSettings.Language, "skills.xml", objToken), objToken);
+                                        = _objCharacter.ReverseTranslateExtraAsync(
+                                                _strName, GlobalSettings.Language, "skills.xml", objToken);
                                     Task<string> tskOld
                                         = Interlocked.CompareExchange(ref _tskNameLoader, tskNewTask, null);
                                     if (tskOld != null)
@@ -399,10 +398,9 @@ namespace Chummer.Backend.Skills
                             objOldSource.Dispose();
                         }
 
-                        Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, Task.Run(
-                                                                       () => _objCharacter.ReverseTranslateExtraAsync(
+                        Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, _objCharacter.ReverseTranslateExtraAsync(
                                                                            value, GlobalSettings.Language, "skills.xml",
-                                                                           objToken), objToken));
+                                                                           objToken));
                         if (tskOld != null)
                             _strName = Utils.SafelyRunSynchronously(() => tskOld);
                         Interlocked.CompareExchange(ref _intNameLoaded, 1, 0);
@@ -440,9 +438,8 @@ namespace Chummer.Backend.Skills
                             {
                                 CancellationToken objToken = objNewSource.Token;
                                 Task<string> tskNewTask
-                                    = Task.Run(
-                                        () => _objCharacter.ReverseTranslateExtraAsync(
-                                            _strName, GlobalSettings.Language, "skills.xml", objToken), objToken);
+                                    = _objCharacter.ReverseTranslateExtraAsync(
+                                            _strName, GlobalSettings.Language, "skills.xml", objToken);
                                 Task<string> tskOld
                                     = Interlocked.CompareExchange(ref _tskNameLoader, tskNewTask, null);
                                 if (tskOld != null)
@@ -496,42 +493,33 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 if (await GetNameAsync(token).ConfigureAwait(false) == value)
                     return;
-                CancellationTokenSource objNewSource = new CancellationTokenSource();
-                CancellationToken objToken = objNewSource.Token;
-                using (token.Register(x =>
-                       {
-                           CancellationTokenSource objToCancel = (CancellationTokenSource)x;
-                           objToCancel.Cancel(false);
-                           objToCancel.Dispose();
-                       }, objNewSource, false))
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    token.ThrowIfCancellationRequested();
+                    _intNameLoaded = 0;
+                    CancellationTokenSource objNewSource = new CancellationTokenSource();
+                    CancellationToken objToken = objNewSource.Token;
+                    CancellationTokenSource objOldSource
+                        = Interlocked.Exchange(ref _objNameLoaderCancellationTokenSource, objNewSource);
+                    if (objOldSource != null)
                     {
-                        token.ThrowIfCancellationRequested();
-                        _intNameLoaded = 0;
-                        CancellationTokenSource objOldSource
-                            = Interlocked.Exchange(ref _objNameLoaderCancellationTokenSource, objNewSource);
-                        if (objOldSource != null)
-                        {
-                            objOldSource.Cancel(false);
-                            objOldSource.Dispose();
-                        }
-
-                        Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, Task.Run(
-                            () => _objCharacter.ReverseTranslateExtraAsync(
-                                value, GlobalSettings.Language, "skills.xml",
-                                objToken), objToken));
-                        if (tskOld != null)
-                            await tskOld.ConfigureAwait(false);
-                        Interlocked.CompareExchange(ref _intNameLoaded, 1, 0);
-                        _objCachedMyXmlNode = null;
-                        _objCachedMyXPathNode = null;
+                        objOldSource.Cancel(false);
+                        objOldSource.Dispose();
                     }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
+                    Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader,
+                        _objCharacter.ReverseTranslateExtraAsync(
+                            value, GlobalSettings.Language, "skills.xml",
+                            objToken));
+                    if (tskOld != null)
+                        await tskOld.ConfigureAwait(false);
+                    Interlocked.CompareExchange(ref _intNameLoaded, 1, 0);
+                    _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally

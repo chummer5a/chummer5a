@@ -133,7 +133,7 @@ namespace Chummer
 
             if (_frmPrintView != null)
             {
-                Task tskNew = Task.Run(() => DoPrint(objToken), objToken);
+                Task tskNew = DoPrint(objToken);
                 if (Interlocked.CompareExchange(ref _tskPrinter, tskNew, null) != null)
                 {
                     Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
@@ -212,7 +212,7 @@ namespace Chummer
 
                     if (_frmPrintView != null)
                     {
-                        Task tskNew = Task.Run(() => DoPrint(objToken), objToken);
+                        Task tskNew = DoPrint(objToken);
                         if (Interlocked.CompareExchange(ref _tskPrinter, tskNew, null) != null)
                         {
                             Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
@@ -286,7 +286,7 @@ namespace Chummer
                 objNewSource.Dispose();
                 throw;
             }
-            Task tskNew = Task.Run(() => DoPrint(objToken), objToken);
+            Task tskNew = DoPrint(objToken);
             if (Interlocked.CompareExchange(ref _tskPrinter, tskNew, null) != null)
             {
                 Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);

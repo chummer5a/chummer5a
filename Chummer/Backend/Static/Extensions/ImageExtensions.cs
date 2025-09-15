@@ -266,7 +266,7 @@ namespace Chummer
             };
             token.ThrowIfCancellationRequested();
 
-            return await Task.Run(() =>
+            return await TaskExtensions.RunWithoutEC(() =>
             {
                 try
                 {
@@ -353,25 +353,24 @@ namespace Chummer
         public static async Task<Image> ToImageAsync(this string strBase64String, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return string.IsNullOrEmpty(strBase64String)
-                ? default
-                : await Task.Run(async () =>
+            if (string.IsNullOrEmpty(strBase64String))
+                return default;
+            using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+            {
+                token.ThrowIfCancellationRequested();
+                byte[] achrBuffer = strBase64String.ToBase64PooledByteArray(out int intArrayLength, token);
+                try
                 {
-                    using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
-                    {
-                        byte[] achrBuffer = strBase64String.ToBase64PooledByteArray(out int intArrayLength, token);
-                        try
-                        {
-                            await objStream.WriteAsync(achrBuffer, 0, intArrayLength, token).ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            ArrayPool<byte>.Shared.Return(achrBuffer);
-                        }
-                        token.ThrowIfCancellationRequested();
-                        return Image.FromStream(objStream, true);
-                    }
-                }, token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    await objStream.WriteAsync(achrBuffer, 0, intArrayLength, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(achrBuffer);
+                }
+                token.ThrowIfCancellationRequested();
+                return Image.FromStream(objStream, true);
+            }
         }
 
         /// <summary>
@@ -396,6 +395,7 @@ namespace Chummer
                     return bmpInput;
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     return bmpInput.ConvertPixelFormat(eFormat);
                 }
                 finally
@@ -537,33 +537,31 @@ namespace Chummer
                 break;
             }
 
-            return await Task.Run(async () =>
+            try
             {
-                try
+                using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                 {
-                    using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                    token.ThrowIfCancellationRequested();
+                    if (eOverrideFormat == null)
                     {
-                        if (eOverrideFormat == null)
-                        {
-                            // Need to do this because calling RawFormat on its own will result in the system not finding its encoder
-                            if (Equals(imgToConvert.RawFormat, ImageFormat.Jpeg))
-                                eOverrideFormat = ImageFormat.Jpeg;
-                            else if (Equals(imgToConvert.RawFormat, ImageFormat.Gif))
-                                eOverrideFormat = ImageFormat.Gif;
-                            else
-                                eOverrideFormat = ImageFormat.Png;
-                        }
-
-                        bmpClone.Save(objImageStream, eOverrideFormat);
-                        token.ThrowIfCancellationRequested();
-                        return await objImageStream.ToBase64StringAsync(token: token).ConfigureAwait(false);
+                        // Need to do this because calling RawFormat on its own will result in the system not finding its encoder
+                        if (Equals(imgToConvert.RawFormat, ImageFormat.Jpeg))
+                            eOverrideFormat = ImageFormat.Jpeg;
+                        else if (Equals(imgToConvert.RawFormat, ImageFormat.Gif))
+                            eOverrideFormat = ImageFormat.Gif;
+                        else
+                            eOverrideFormat = ImageFormat.Png;
                     }
+
+                    bmpClone.Save(objImageStream, eOverrideFormat);
+                    token.ThrowIfCancellationRequested();
+                    return await objImageStream.ToBase64StringAsync(token: token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    bmpClone.Dispose();
-                }
-            }, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                bmpClone.Dispose();
+            }
         }
 
         /// <summary>
@@ -597,22 +595,20 @@ namespace Chummer
                 break;
             }
 
-            return await Task.Run(async () =>
+            try
             {
-                try
+                using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                 {
-                    using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
-                    {
-                        bmpClone.Save(objImageStream, objCodecInfo, lstEncoderParameters);
-                        token.ThrowIfCancellationRequested();
-                        return await objImageStream.ToBase64StringAsync(token: token).ConfigureAwait(false);
-                    }
+                    token.ThrowIfCancellationRequested();
+                    bmpClone.Save(objImageStream, objCodecInfo, lstEncoderParameters);
+                    token.ThrowIfCancellationRequested();
+                    return await objImageStream.ToBase64StringAsync(token: token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    bmpClone.Dispose();
-                }
-            }, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                bmpClone.Dispose();
+            }
         }
 
         /// <summary>
@@ -699,22 +695,20 @@ namespace Chummer
                 Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
             };
             token.ThrowIfCancellationRequested();
-            return await Task.Run(async () =>
+            try
             {
-                try
+                using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                 {
-                    using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
-                    {
-                        bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
-                        token.ThrowIfCancellationRequested();
-                        return await objImageStream.ToBase64StringAsync(token: token).ConfigureAwait(false);
-                    }
+                    token.ThrowIfCancellationRequested();
+                    bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
+                    token.ThrowIfCancellationRequested();
+                    return await objImageStream.ToBase64StringAsync(token: token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    bmpClone.Dispose();
-                }
-            }, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                bmpClone.Dispose();
+            }
         }
 
         /// <summary>

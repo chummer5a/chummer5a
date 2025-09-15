@@ -43,6 +43,9 @@ namespace Chummer
     /// Features allowing the lock to be recursive are taken from here (because otherwise, doing recursive locks that work with async/await is impossible, see the second link):
     /// https://github.com/dotnet/wcf/blob/main/src/System.Private.ServiceModel/src/Internals/System/Runtime/AsyncLock.cs
     /// https://itnext.io/reentrant-recursive-async-lock-is-impossible-in-c-e9593f4aa38a
+    /// IMPORTANT NOTE:
+    /// Because of our reliance on AsyncLocal to make this work, we need to be A LOT more careful with any method or call that would create a copy of the ExecutionContext,
+    /// because it can end up creating a memory leak. The two most common methods that will do this are Task.Run and CancellationToken.Register.
     /// </summary>
     public sealed class AsyncFriendlyReaderWriterLock : IAsyncDisposable, IDisposable
     {

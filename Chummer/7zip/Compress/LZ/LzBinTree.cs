@@ -742,9 +742,9 @@ namespace SevenZip.Compression.LZ
             {
                 int subValue = _pos - _cyclicBufferSize;
                 return Task.WhenAll(
-                    Task.Run(() => NormalizeLinksParallel(_son, _cyclicBufferSize * 2, (uint)subValue), token),
-                    Task.Run(() => NormalizeLinksParallel(_hash, (int)_hashSizeSum, (uint)subValue), token),
-                    Task.Run(() => ReduceOffsets(subValue), token)
+                    Chummer.TaskExtensions.RunWithoutEC(() => NormalizeLinksParallel(_son, _cyclicBufferSize * 2, (uint)subValue), token),
+                    Chummer.TaskExtensions.RunWithoutEC(() => NormalizeLinksParallel(_hash, (int)_hashSizeSum, (uint)subValue), token),
+                    Chummer.TaskExtensions.RunWithoutEC(() => ReduceOffsets(subValue), token)
                 );
             }
         }

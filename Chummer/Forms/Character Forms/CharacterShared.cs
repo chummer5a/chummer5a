@@ -62,17 +62,24 @@ namespace Chummer
         private FileSystemWatcher _objCharacterFileWatcher;
         protected readonly SaveFileDialog dlgSaveFile;
 
-        protected CancellationTokenSource GenericCancellationTokenSource { get; } = new CancellationTokenSource();
+        private CancellationTokenSource _objGenericCancellationTokenSource;
+
+        private CancellationTokenSource _objUpdateCharacterInfoCancellationTokenSource;
 
         protected CancellationToken GenericToken { get; }
 
+        protected void CancelGenericToken()
+        {
+            // Use this intermediate method to avoid having to use CancellationToken.Register
+            Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, null)?.Cancel(false);
+            Interlocked.Exchange(ref _objGenericCancellationTokenSource, null)?.Cancel(false);
+        }
+
         protected CharacterShared(Character objCharacter)
         {
-            GenericToken = GenericCancellationTokenSource.Token;
+            _objGenericCancellationTokenSource = new CancellationTokenSource();
+            GenericToken = _objGenericCancellationTokenSource.Token;
             _objCharacter = objCharacter;
-            CancellationTokenRegistration objCancellationRegistration
-                = GenericToken.Register(() => Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, null)?.Cancel(false));
-            Disposed += (sender, args) => objCancellationRegistration.Dispose();
             _objCharacter.MultiplePropertiesChangedAsync += CharacterPropertyChanged;
             dlgSaveFile = new SaveFileDialog();
             dlgSaveFile.DefaultExt = "chum5";
@@ -8939,7 +8946,7 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
+                                    await TaskExtensions.RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
                             }
 
                             await GlobalSettings
@@ -8993,7 +9000,7 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
+                                    await TaskExtensions.RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
                             }
 
                             await GlobalSettings
@@ -9064,7 +9071,7 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
+                                    await TaskExtensions.RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
                             }
 
                             await GlobalSettings
@@ -9118,7 +9125,7 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
+                                    await TaskExtensions.RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
                             }
 
                             await GlobalSettings
@@ -9155,7 +9162,7 @@ namespace Chummer
                                     using (XmlReader objXmlReader =
                                            XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                         // Put the stream into an XmlDocument
-                                        await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
+                                        await TaskExtensions.RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
                                 }
                             }
 
@@ -9194,7 +9201,7 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
+                                    await TaskExtensions.RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
                             }
 
                             await GlobalSettings
@@ -9236,7 +9243,7 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
+                                    await TaskExtensions.RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
                             }
 
                             await GlobalSettings
@@ -9278,7 +9285,7 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
+                                    await TaskExtensions.RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
                             }
 
                             await GlobalSettings
@@ -10905,9 +10912,8 @@ namespace Chummer
                 }
 
                 tskNew = blnAlsoProcessUpdate
-                    ? Task.Run(() => DoUpdateCharacterInfo(objNewToken), objNewToken)
-                    : Utils.RunInEmptyExecutionContext(
-                        () => Task.Run(() => DoUpdateCharacterInfo(objNewToken), objNewToken));
+                    ? DoUpdateCharacterInfo(objNewToken)
+                    : Utils.RunInEmptyExecutionContext(() => DoUpdateCharacterInfo(objNewToken));
 
                 if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNew, tskTemp) != tskTemp)
                 {
@@ -10975,7 +10981,7 @@ namespace Chummer
 
         private Task _tskUpdateCharacterInfo = Task.CompletedTask;
 
-        private CancellationTokenSource _objUpdateCharacterInfoCancellationTokenSource;
+        
 
         protected virtual Task DoUpdateCharacterInfo(CancellationToken token = default)
         {

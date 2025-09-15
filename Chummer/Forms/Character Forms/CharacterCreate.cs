@@ -1872,7 +1872,7 @@ namespace Chummer
 
                                 // If we end up with a character who is flagged as dirty after loading, immediately autosave them
                                 if (IsDirty)
-                                    tskAutosave = Task.Run(() => AutoSaveCharacter(GenericToken), GenericToken);
+                                    tskAutosave = AutoSaveCharacter(GenericToken);
 
                                 op_load_frm_create.SetSuccess(true);
                             }
@@ -1982,7 +1982,7 @@ namespace Chummer
                                 }
 
                                 await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, GenericToken).ConfigureAwait(false);
-                                GenericCancellationTokenSource?.Cancel(false);
+                                CancelGenericToken();
 
                                 // Reset the ToolStrip so the Save button is removed for the currently closing window.
                                 if (Program.MainForm.ActiveMdiChild == this)

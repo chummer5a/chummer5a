@@ -1709,98 +1709,71 @@ namespace Chummer.Backend.Equipment
                     bool blnAllowLeft = true;
                     bool blnAllowRight = true;
                     // Potentially expensive checks that can (and therefore should) be parallelized.
-                    await Task.WhenAll(
-                        Task.Run(async () =>
+                    await Task.WhenAll(CheckSide("Left"), CheckSide("Right")).ConfigureAwait(false);
+                    async Task CheckSide(string strSide)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        bool blnAllowSide = await xpnCyberware.RequirementsMetAsync(
+                                _objCharacter, objParent, strLocation: strSide, token: token).ConfigureAwait(false);
+                        try
                         {
-                            blnAllowLeft = await xpnCyberware.RequirementsMetAsync(_objCharacter, objParent, strLocation: "Left", token: token).ConfigureAwait(false);
-                            if (!blnAllowLeft)
-                                return;
-                            if (!string.IsNullOrEmpty(strHasModularMount)
-                                && dicNumLeftMountBlockers.TryGetValue(strHasModularMount, out int intNumBlockers))
-                            {
-                                string strLimbTypeOfMount = MountToLimbType(strHasModularMount);
-                                blnAllowLeft = !string.IsNullOrEmpty(strLimbTypeOfMount)
-                                               && await _objCharacter.LimbCountAsync(strLimbTypeOfMount, token)
-                                                   .ConfigureAwait(false) / 2 >= intNumBlockers;
-                                if (!blnAllowLeft)
-                                    return;
-                            }
-
-                            if (string.IsNullOrEmpty(strBlocksMounts) || lstCyberwareToCheck.Count == 0)
-                                return;
-                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(
-                                       Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
-                            {
-                                setBlocksMounts.AddRange(strBlocksMounts
-                                    .SplitNoAlloc(
-                                        ',', StringSplitOptions.RemoveEmptyEntries));
-                                blnAllowLeft = !await lstCyberwareToCheck.AnyAsync(async x =>
-                                {
-                                    string strLoopHasModularMount = await x.GetHasModularMountAsync(token).ConfigureAwait(false);
-                                    if (string.IsNullOrEmpty(strLoopHasModularMount))
-                                        return false;
-                                    if (await x.GetLocationAsync(token).ConfigureAwait(false) != "Left")
-                                        return false;
-                                    if (!setBlocksMounts.Contains(strLoopHasModularMount))
-                                        return false;
-                                    string strLimbTypeOfMount = MountToLimbType(strLoopHasModularMount);
-                                    if (string.IsNullOrEmpty(strLimbTypeOfMount))
-                                        return true;
-
-                                    int intLimbSlotCount = await GetLimbSlotCountAsync(token).ConfigureAwait(false);
-                                    if (dicNumLeftMountBlockers.TryGetValue(strLoopHasModularMount, out intNumBlockers))
-                                        intLimbSlotCount += intNumBlockers;
-                                    return await _objCharacter.LimbCountAsync(strLimbTypeOfMount, token)
-                                        .ConfigureAwait(false) / 2 < intLimbSlotCount;
-                                }, token).ConfigureAwait(false);
-                            }
-                        }, token),
-                        Task.Run(async () =>
-                        {
-                            blnAllowRight = await xpnCyberware.RequirementsMetAsync(
-                                _objCharacter, objParent, strLocation: "Right", token: token).ConfigureAwait(false);
-                            if (!blnAllowRight)
+                            if (!blnAllowSide)
                                 return;
                             if (!string.IsNullOrEmpty(strHasModularMount)
                                 && dicNumRightMountBlockers.TryGetValue(strHasModularMount, out int intNumBlockers))
                             {
                                 string strLimbTypeOfMount = MountToLimbType(strHasModularMount);
-                                blnAllowRight = !string.IsNullOrEmpty(strLimbTypeOfMount)
+                                blnAllowSide = !string.IsNullOrEmpty(strLimbTypeOfMount)
                                                 && await _objCharacter.LimbCountAsync(strLimbTypeOfMount, token)
                                                     .ConfigureAwait(false) / 2 >= intNumBlockers;
-                                if (!blnAllowRight)
+                                if (!blnAllowSide)
                                     return;
                             }
 
-                            if (string.IsNullOrEmpty(BlocksMounts) || lstCyberwareToCheck.Count == 0)
-                                return;
-                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(
-                                       Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
+                            if (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Count > 0)
                             {
-                                setBlocksMounts.AddRange(BlocksMounts
-                                    .SplitNoAlloc(
-                                        ',', StringSplitOptions.RemoveEmptyEntries));
-                                blnAllowRight = !await lstCyberwareToCheck.AnyAsync(async x =>
+                                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(
+                                           Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
                                 {
-                                    string strLoopHasModularMount = await x.GetHasModularMountAsync(token).ConfigureAwait(false);
-                                    if (string.IsNullOrEmpty(strLoopHasModularMount))
-                                        return false;
-                                    if (await x.GetLocationAsync(token).ConfigureAwait(false) != "Right")
-                                        return false;
-                                    if (!setBlocksMounts.Contains(strLoopHasModularMount))
-                                        return false;
-                                    string strLimbTypeOfMount = MountToLimbType(strLoopHasModularMount);
-                                    if (string.IsNullOrEmpty(strLimbTypeOfMount))
-                                        return true;
+                                    setBlocksMounts.AddRange(BlocksMounts
+                                        .SplitNoAlloc(
+                                            ',', StringSplitOptions.RemoveEmptyEntries));
+                                    blnAllowSide = !await lstCyberwareToCheck.AnyAsync(async x =>
+                                    {
+                                        string strLoopHasModularMount = await x.GetHasModularMountAsync(token).ConfigureAwait(false);
+                                        if (string.IsNullOrEmpty(strLoopHasModularMount))
+                                            return false;
+                                        if (await x.GetLocationAsync(token).ConfigureAwait(false) != strSide)
+                                            return false;
+                                        if (!setBlocksMounts.Contains(strLoopHasModularMount))
+                                            return false;
+                                        string strLimbTypeOfMount = MountToLimbType(strLoopHasModularMount);
+                                        if (string.IsNullOrEmpty(strLimbTypeOfMount))
+                                            return true;
 
-                                    int intLimbSlotCount = await GetLimbSlotCountAsync(token).ConfigureAwait(false);
-                                    if (dicNumRightMountBlockers.TryGetValue(strLoopHasModularMount, out intNumBlockers))
-                                        intLimbSlotCount += intNumBlockers;
-                                    return await _objCharacter.LimbCountAsync(strLimbTypeOfMount, token)
-                                        .ConfigureAwait(false) / 2 < intLimbSlotCount;
-                                }, token).ConfigureAwait(false);
+                                        int intLimbSlotCount = await GetLimbSlotCountAsync(token).ConfigureAwait(false);
+                                        if (dicNumRightMountBlockers.TryGetValue(strLoopHasModularMount, out intNumBlockers))
+                                            intLimbSlotCount += intNumBlockers;
+                                        return await _objCharacter.LimbCountAsync(strLimbTypeOfMount, token)
+                                            .ConfigureAwait(false) / 2 < intLimbSlotCount;
+                                    }, token).ConfigureAwait(false);
+                                }
                             }
-                        }, token)).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            switch (strSide)
+                            {
+                                case "Left":
+                                    blnAllowLeft = blnAllowSide;
+                                    break;
+                                case "Right":
+                                    blnAllowRight = blnAllowSide;
+                                    break;
+                            }
+                        }
+                    }
+
                     // Only one side is allowed.
                     if (blnAllowLeft != blnAllowRight)
                         strForcedSide = blnAllowLeft ? "Left" : "Right";

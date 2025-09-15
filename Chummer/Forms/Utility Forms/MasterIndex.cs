@@ -908,23 +908,24 @@ namespace Chummer
                                         || x.Source.Page != x.DisplaySource.Page))
                                 {
                                     // don't check again it is not translated
-                                    return Task.Run(async () =>
+                                    return InnerReturn(token);
+                                    async Task<string> InnerReturn(CancellationToken innerToken)
                                     {
+                                        innerToken.ThrowIfCancellationRequested();
                                         string strReturn = await CommonFunctions.GetTextFromPdfAsync(
-                                            await x.Source.ToStringAsync(token).ConfigureAwait(false),
-                                            x.EnglishNameOnPage, _objSelectedSetting, token).ConfigureAwait(false);
+                                            await x.Source.ToStringAsync(innerToken).ConfigureAwait(false),
+                                            x.EnglishNameOnPage, _objSelectedSetting, innerToken).ConfigureAwait(false);
                                         if (string.IsNullOrEmpty(strReturn))
                                             strReturn = await CommonFunctions.GetTextFromPdfAsync(
-                                                                                 await x.DisplaySource.ToStringAsync(token).ConfigureAwait(false),
-                                                                                 x.TranslatedNameOnPage, _objSelectedSetting, token)
+                                                                                 await x.DisplaySource.ToStringAsync(innerToken).ConfigureAwait(false),
+                                                                                 x.TranslatedNameOnPage, _objSelectedSetting, innerToken)
                                                                              .ConfigureAwait(false);
                                         return strReturn;
-                                    }, token);
+                                    }
                                 }
-                                return Task.Run(() =>
-                                                    CommonFunctions.GetTextFromPdfAsync(
+                                return CommonFunctions.GetTextFromPdfAsync(
                                                         x.Source.ToString(),
-                                                        x.EnglishNameOnPage, _objSelectedSetting, token), token);
+                                                        x.EnglishNameOnPage, _objSelectedSetting, token);
                             }).ConfigureAwait(false);
                             await txtNotes.DoThreadSafeAsync(x =>
                             {

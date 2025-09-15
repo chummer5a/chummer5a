@@ -629,7 +629,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        lstTasks.Add(funcSelector.Invoke(objCurrent));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -723,7 +723,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        lstTasks.Add(funcSelector.Invoke(objCurrent));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -817,7 +817,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        lstTasks.Add(funcSelector.Invoke(objCurrent));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -911,7 +911,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        lstTasks.Add(funcSelector.Invoke(objCurrent));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1005,7 +1005,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        lstTasks.Add(funcSelector.Invoke(objCurrent));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1101,7 +1101,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<int> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (funcPredicate(objInnerCurrent))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1197,7 +1204,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<long> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (funcPredicate(objInnerCurrent))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1293,7 +1307,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<float> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (funcPredicate(objInnerCurrent))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1389,7 +1410,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<double> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (funcPredicate(objInnerCurrent))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1485,7 +1513,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<decimal> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (funcPredicate(objInnerCurrent))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1533,7 +1568,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<int> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return funcSelector.Invoke(objInnerCurrent);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1581,7 +1623,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<int> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1629,7 +1678,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<long> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return funcSelector.Invoke(objInnerCurrent);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1677,7 +1733,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<long> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1725,7 +1788,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<float> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return funcSelector.Invoke(objInnerCurrent);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1773,7 +1843,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<float> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1821,7 +1898,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<double> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return funcSelector.Invoke(objInnerCurrent);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1869,7 +1953,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<double> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1917,7 +2008,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<decimal> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return funcSelector.Invoke(objInnerCurrent);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1965,7 +2063,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<decimal> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 

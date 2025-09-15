@@ -248,7 +248,7 @@ namespace Chummer
             {
                 objNewLanguage = await s_DicLanguageData
                     .GetOrAddAsync(
-                        strKey, x => Task.Run(() => LanguageData.CreateAsync(strLanguage, token), token), token)
+                        strKey, x => LanguageData.CreateAsync(strLanguage, token), token)
                     .ConfigureAwait(false);
             }
 
@@ -1149,62 +1149,64 @@ namespace Chummer
                                                             out HashSet<string> setLanguageKeys))
             {
                 // Potentially expensive checks that can (and therefore should) be parallelized.
-                await Task.WhenAll(
-                    Task.Run(async () =>
+                await Task.WhenAll(LoadEnglishStrings(), LoadAltLanguageStrings()).ConfigureAwait(false);
+
+                async Task LoadEnglishStrings()
+                {
+                    // Load the English version.
+                    string strFilePath
+                        = Path.Combine(Utils.GetLanguageFolderPath, GlobalSettings.DefaultLanguage + ".xml");
+                    try
                     {
-                        // Load the English version.
-                        string strFilePath
-                            = Path.Combine(Utils.GetLanguageFolderPath, GlobalSettings.DefaultLanguage + ".xml");
-                        try
+                        XPathDocument objEnglishDocument = await XPathDocumentExtensions
+                                                                 .LoadStandardFromFileAsync(
+                                                                     strFilePath, token: token)
+                                                                 .ConfigureAwait(false);
+                        foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator()
+                                     .SelectAndCacheExpression("/chummer/strings/string", token))
                         {
-                            XPathDocument objEnglishDocument = await XPathDocumentExtensions
-                                                                     .LoadStandardFromFileAsync(
-                                                                         strFilePath, token: token)
-                                                                     .ConfigureAwait(false);
-                            foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator()
-                                         .SelectAndCacheExpression("/chummer/strings/string", token))
-                            {
-                                string strKey = objNode.SelectSingleNodeAndCacheExpression("key", token)?.Value;
-                                if (!string.IsNullOrEmpty(strKey))
-                                    setEnglishKeys.Add(strKey);
-                            }
+                            string strKey = objNode.SelectSingleNodeAndCacheExpression("key", token)?.Value;
+                            if (!string.IsNullOrEmpty(strKey))
+                                setEnglishKeys.Add(strKey);
                         }
-                        catch (IOException)
-                        {
-                            //swallow this
-                        }
-                        catch (XmlException)
-                        {
-                            //swallow this
-                        }
-                    }, token),
-                    Task.Run(async () =>
+                    }
+                    catch (IOException)
                     {
-                        // Load the selected language version.
-                        string strLangPath = Path.Combine(Utils.GetLanguageFolderPath, "lang", strLanguage + ".xml");
-                        try
+                        //swallow this
+                    }
+                    catch (XmlException)
+                    {
+                        //swallow this
+                    }
+                }
+
+                async Task LoadAltLanguageStrings()
+                {
+                    // Load the selected language version.
+                    string strLangPath = Path.Combine(Utils.GetLanguageFolderPath, "lang", strLanguage + ".xml");
+                    try
+                    {
+                        XPathDocument objLanguageDocument = await XPathDocumentExtensions
+                                                                  .LoadStandardFromFileAsync(
+                                                                      strLangPath, token: token)
+                                                                  .ConfigureAwait(false);
+                        foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator()
+                                     .SelectAndCacheExpression("/chummer/strings/string", token))
                         {
-                            XPathDocument objLanguageDocument = await XPathDocumentExtensions
-                                                                      .LoadStandardFromFileAsync(
-                                                                          strLangPath, token: token)
-                                                                      .ConfigureAwait(false);
-                            foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator()
-                                         .SelectAndCacheExpression("/chummer/strings/string", token))
-                            {
-                                string strKey = objNode.SelectSingleNodeAndCacheExpression("key", token)?.Value;
-                                if (!string.IsNullOrEmpty(strKey))
-                                    setLanguageKeys.Add(strKey);
-                            }
+                            string strKey = objNode.SelectSingleNodeAndCacheExpression("key", token)?.Value;
+                            if (!string.IsNullOrEmpty(strKey))
+                                setLanguageKeys.Add(strKey);
                         }
-                        catch (IOException)
-                        {
-                            //swallow this
-                        }
-                        catch (XmlException)
-                        {
-                            //swallow this
-                        }
-                    }, token)).ConfigureAwait(false);
+                    }
+                    catch (IOException)
+                    {
+                        //swallow this
+                    }
+                    catch (XmlException)
+                    {
+                        //swallow this
+                    }
+                }
 
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdMissingMessage))
@@ -1213,7 +1215,7 @@ namespace Chummer
                 {
                     // Potentially expensive checks that can (and therefore should) be parallelized.
                     await Task.WhenAll(
-                        Task.Run(() =>
+                        TaskExtensions.RunWithoutEC(() =>
                         {
                             // Check for strings that are in the English file but not in the selected language file.
                             foreach (string strKey in setEnglishKeys)
@@ -1222,7 +1224,7 @@ namespace Chummer
                                     sbdMissingMessage.Append("Missing String: ").AppendLine(strKey);
                             }
                         }, token),
-                        Task.Run(() =>
+                        TaskExtensions.RunWithoutEC(() =>
                         {
                             // Check for strings that are not in the English file but are in the selected language file (someone has put in Keys that they shouldn't have which are ignored).
                             foreach (string strKey in setLanguageKeys)
@@ -2662,51 +2664,49 @@ namespace Chummer
         /// <param name="blnSafe">Whether to use safe or unsafe xml reader settings.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Name of the language associated with <paramref name="strFilePath"/> if one is found, empty string otherwise.</returns>
-        public static Task<string> GetLanguageNameFromFileNameAsync(string strFilePath, bool blnSafe = true, CancellationToken token = default)
+        public static async Task<string> GetLanguageNameFromFileNameAsync(string strFilePath, bool blnSafe = true, CancellationToken token = default)
         {
-            return Task.Run(async () =>
-            {
-                using (FileStream objFileStream
+            token.ThrowIfCancellationRequested();
+            using (FileStream objFileStream
                        = new FileStream(strFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                token.ThrowIfCancellationRequested();
+                using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
                 {
                     token.ThrowIfCancellationRequested();
-                    using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
+                    using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                               blnSafe
+                                   ? GlobalSettings.SafeXmlReaderAsyncSettings
+                                   : GlobalSettings.UnSafeXmlReaderAsyncSettings))
                     {
                         token.ThrowIfCancellationRequested();
-                        using (XmlReader objReader = XmlReader.Create(objStreamReader,
-                                   blnSafe
-                                       ? GlobalSettings.SafeXmlReaderAsyncSettings
-                                       : GlobalSettings.UnSafeXmlReaderAsyncSettings))
+                        _ = await objReader.MoveToContentAsync().ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        do
                         {
                             token.ThrowIfCancellationRequested();
-                            _ = await objReader.MoveToContentAsync().ConfigureAwait(false);
-                            token.ThrowIfCancellationRequested();
-                            do
+                            if (objReader.NodeType != XmlNodeType.Element || objReader.Name != "chummer")
+                                continue;
+                            while (await objReader.ReadAsync().ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
-                                if (objReader.NodeType != XmlNodeType.Element || objReader.Name != "chummer")
+                                if (objReader.NodeType != XmlNodeType.Element || objReader.Name != "name")
                                     continue;
                                 while (await objReader.ReadAsync().ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    if (objReader.NodeType != XmlNodeType.Element || objReader.Name != "name")
-                                        continue;
-                                    while (await objReader.ReadAsync().ConfigureAwait(false))
+                                    if (objReader.NodeType == XmlNodeType.Text)
                                     {
-                                        token.ThrowIfCancellationRequested();
-                                        if (objReader.NodeType == XmlNodeType.Text)
-                                        {
-                                            return objReader.Value;
-                                        }
+                                        return objReader.Value;
                                     }
                                 }
-                            } while (await objReader.ReadAsync().ConfigureAwait(false));
-                        }
+                            }
+                        } while (await objReader.ReadAsync().ConfigureAwait(false));
                     }
                 }
+            }
 
-                return string.Empty;
-            }, token);
+            return string.Empty;
         }
 
         #endregion Methods

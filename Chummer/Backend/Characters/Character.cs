@@ -4346,7 +4346,7 @@ namespace Chummer
                         if (blnSync)
                             DoSave();
                         else
-                            await Task.Run(DoSaveAsync, token).ConfigureAwait(false);
+                            await DoSaveAsync().ConfigureAwait(false);
 
                         void DoSave()
                         {
@@ -5931,7 +5931,7 @@ namespace Chummer
                                     if (funcLoopToRun != null)
                                     {
                                         lstDoOnSaveCompletedAsync.Add(
-                                            Task.Run(() => funcLoopToRun.Invoke(this, token), token));
+                                            funcLoopToRun.Invoke(this, token));
                                         if (++intCounter != Utils.MaxParallelBatchSize)
                                             continue;
                                         token.ThrowIfCancellationRequested();
@@ -6226,7 +6226,7 @@ namespace Chummer
                         {
                             bool blnKeepLoading = blnSync
                                 ? LoadSaveFileDocument()
-                                : await Task.Run(LoadSaveFileDocumentAsync, token).ConfigureAwait(false);
+                                : await LoadSaveFileDocumentAsync().ConfigureAwait(false);
 
                             bool LoadSaveFileDocument()
                             {
@@ -51046,7 +51046,7 @@ namespace Chummer
                                                 if (blnSync)
                                                     DoLoadStatblocks();
                                                 else
-                                                    await Task.Run(DoLoadStatblocks, token).ConfigureAwait(false);
+                                                    await TaskExtensions.RunWithoutEC(DoLoadStatblocks, token).ConfigureAwait(false);
                                                 void DoLoadStatblocks()
                                                 {
                                                     using (Stream objStream = objEntry.Open())
@@ -51163,7 +51163,7 @@ namespace Chummer
                                                 if (blnSync)
                                                     DoLoadLeads();
                                                 else
-                                                    await Task.Run(DoLoadLeads, token).ConfigureAwait(false);
+                                                    await TaskExtensions.RunWithoutEC(DoLoadLeads, token).ConfigureAwait(false);
                                                 void DoLoadLeads()
                                                 {
                                                     using (Stream objStream = objEntry.Open())

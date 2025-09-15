@@ -239,26 +239,23 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private Task OnKnowledgeSkillPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+        private async Task OnKnowledgeSkillPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_intLoading > 0)
-                return Task.CompletedTask;
+                return;
             if (e.PropertyNames.Contains(nameof(KnowledgeSkill.CurrentSpCost)))
             {
                 if (e.PropertyNames.Contains(nameof(KnowledgeSkill.IsNativeLanguage)))
                 {
-                    return Task.Run(async () =>
-                    {
-                        using (TemporaryArray<string> aParams = new TemporaryArray<string>(nameof(KnowledgeSkillRanksSum), nameof(HasAvailableNativeLanguageSlots)))
-                            await OnMultiplePropertiesChangedAsync(aParams, token).ConfigureAwait(false);
-                    }, token);
+                    using (TemporaryArray<string> aParams = new TemporaryArray<string>(nameof(KnowledgeSkillRanksSum), nameof(HasAvailableNativeLanguageSlots)))
+                        await OnMultiplePropertiesChangedAsync(aParams, token).ConfigureAwait(false);
                 }
-                return OnPropertyChangedAsync(nameof(KnowledgeSkillRanksSum), token);
+                else
+                    await OnPropertyChangedAsync(nameof(KnowledgeSkillRanksSum), token).ConfigureAwait(false);
             }
-
-            return e.PropertyNames.Contains(nameof(KnowledgeSkill.IsNativeLanguage))
-                ? OnPropertyChangedAsync(nameof(HasAvailableNativeLanguageSlots), token)
-                : Task.CompletedTask;
+            else if (e.PropertyNames.Contains(nameof(KnowledgeSkill.IsNativeLanguage)))
+                await OnPropertyChangedAsync(nameof(HasAvailableNativeLanguageSlots), token).ConfigureAwait(false);
         }
 
         private Task OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)

@@ -88,25 +88,21 @@ namespace Chummer
             return DoLoop();
             async Task<int> DoLoop()
             {
-                int intReturn = await Task.Run(async () =>
+                int intReturn;
+                if (objRandom is ThreadSafeRandom objThreadSafeRandom)
                 {
-                    int intLoopResult;
-                    if (objRandom is ThreadSafeRandom objThreadSafeRandom)
+                    do
                     {
-                        do
-                        {
-                            intLoopResult = await objThreadSafeRandom.NextAsync(token).ConfigureAwait(false);
-                        } while (intLoopResult >= intModuloCheck);
-                    }
-                    else
+                        intReturn = await objThreadSafeRandom.NextAsync(token).ConfigureAwait(false);
+                    } while (intReturn >= intModuloCheck);
+                }
+                else
+                {
+                    do
                     {
-                        do
-                        {
-                            intLoopResult = objRandom.Next();
-                        } while (intLoopResult >= intModuloCheck);
-                    }
-                    return intLoopResult;
-                }, token).ConfigureAwait(false);
+                        intReturn = objRandom.Next();
+                    } while (intReturn >= intModuloCheck);
+                }
 
                 return 1 + intReturn % 6;
             }
@@ -126,25 +122,21 @@ namespace Chummer
             return DoLoop();
             async Task<int> DoLoop()
             {
-                int intReturn = await Task.Run(async () =>
+                int intReturn;
+                if (objRandom is ThreadSafeRandom objThreadSafeRandom)
                 {
-                    int intLoopResult;
-                    if (objRandom is ThreadSafeRandom objThreadSafeRandom)
+                    do
                     {
-                        do
-                        {
-                            intLoopResult = await objThreadSafeRandom.NextAsync(token).ConfigureAwait(false);
-                        } while (intLoopResult >= intModuloCheck);
-                    }
-                    else
+                        intReturn = await objThreadSafeRandom.NextAsync(token).ConfigureAwait(false);
+                    } while (intReturn >= intModuloCheck);
+                }
+                else
+                {
+                    do
                     {
-                        do
-                        {
-                            intLoopResult = objRandom.Next();
-                        } while (intLoopResult >= intModuloCheck);
-                    }
-                    return intLoopResult;
-                }, token).ConfigureAwait(false);
+                        intReturn = objRandom.Next();
+                    } while (intReturn >= intModuloCheck);
+                }
 
                 return intReturn % maxValue;
             }
