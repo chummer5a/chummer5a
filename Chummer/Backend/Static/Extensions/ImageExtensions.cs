@@ -297,19 +297,21 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strBase64String))
                 return default;
-            using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+
+            byte[] achrBuffer = strBase64String.ToBase64PooledByteArray(out int intArrayLength, token);
+            try
             {
-                byte[] achrBuffer = strBase64String.ToBase64PooledByteArray(out int intArrayLength, token);
-                try
+                using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager, null, intArrayLength))
                 {
+                    token.ThrowIfCancellationRequested();
                     objStream.Write(achrBuffer, 0, intArrayLength);
+                    token.ThrowIfCancellationRequested();
+                    return Image.FromStream(objStream, true);
                 }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(achrBuffer);
-                }
-                token.ThrowIfCancellationRequested();
-                return Image.FromStream(objStream, true);
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(achrBuffer);
             }
         }
 
@@ -355,21 +357,22 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strBase64String))
                 return default;
-            using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+
+            byte[] achrBuffer = strBase64String.ToBase64PooledByteArray(out int intArrayLength, token);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                byte[] achrBuffer = strBase64String.ToBase64PooledByteArray(out int intArrayLength, token);
-                try
+                using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager, null, intArrayLength))
                 {
                     token.ThrowIfCancellationRequested();
                     await objStream.WriteAsync(achrBuffer, 0, intArrayLength, token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    return Image.FromStream(objStream, true);
                 }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(achrBuffer);
-                }
-                token.ThrowIfCancellationRequested();
-                return Image.FromStream(objStream, true);
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(achrBuffer);
             }
         }
 

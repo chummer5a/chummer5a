@@ -20284,13 +20284,13 @@ namespace Chummer
         /// <param name="intThreshold">Show an increase in modifiers every <paramref name="intThreshold"/> boxes.</param>
         /// <param name="intThresholdOffset">Initial threshold for penalties from <paramref name="intThreshold"/> should be offset by this much.</param>
         /// <param name="intOverflow">Number of overflow boxes to show (set to 0 if none, like for the stun condition monitor).</param>
-        /// <param name="button_Click">Event handler for when a CM box is clicked</param>
+        /// <param name="evtButtonClickEvent">Event handler for when a CM box is clicked</param>
         /// <param name="check">Whether to check the checkbox when finished processing. Expected to only be called on load.</param>
         /// <param name="value">Tag value of the checkbox to enable when using the check parameter. Expected to be the StunCMFilled or PhysicalCMFilled properties.</param>
         /// <param name="token">Cancellation token to use.</param>
         private async Task ProcessCharacterConditionMonitorBoxDisplays(
             Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset,
-            int intOverflow, EventHandler button_Click, bool check = false, int value = 0,
+            int intOverflow, EventHandler evtButtonClickEvent, bool check = false, int value = 0,
             CancellationToken token = default)
         {
             await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
@@ -20341,7 +20341,8 @@ namespace Chummer
                                             FlatStyle = objMaxCheckBox.FlatStyle,
                                             UseVisualStyleBackColor = objMaxCheckBox.UseVisualStyleBackColor
                                         };
-                                    cb.Click += button_Click;
+                                    if (evtButtonClickEvent != null)
+                                        cb.Click += evtButtonClickEvent;
                                     x.Controls.Add(cb);
                                     lstCheckBoxes.Add(cb);
                                 }
