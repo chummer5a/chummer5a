@@ -604,7 +604,7 @@ namespace Chummer.UI.Table
             foreach (TableColumn<T> objColumn in Columns)
                 objColumn.Dispose();
             foreach (Control objControl in Controls)
-                objControl.DataBindings.Clear();
+                objControl.ResetBindings();
         }
 
         private async Task DoFilter(bool performLayout = true, CancellationToken token = default)

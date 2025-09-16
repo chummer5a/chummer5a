@@ -944,7 +944,7 @@ namespace Chummer.UI.Skills
             }
 
             foreach (Control objControl in Controls)
-                objControl.DataBindings.Clear();
+                objControl.ResetBindings();
 
             ButtonWithToolTip objOld = Interlocked.Exchange(ref _activeButton, null);
             if (!objOld.IsNullOrDisposed())

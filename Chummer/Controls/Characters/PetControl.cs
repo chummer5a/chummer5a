@@ -85,7 +85,7 @@ namespace Chummer
         {
             _tmrMetatypeChangeTimer.Dispose();
             foreach (Control objControl in Controls)
-                objControl.DataBindings.Clear();
+                objControl.ResetBindings();
         }
 
         private void cboMetatype_TextChanged(object sender, EventArgs e)

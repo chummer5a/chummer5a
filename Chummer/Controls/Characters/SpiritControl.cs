@@ -194,7 +194,7 @@ namespace Chummer
                 objCharacter.PropertyChangedAsync -= RebuildSpiritListOnTraditionChange;
 
             foreach (Control objControl in Controls)
-                objControl.DataBindings.Clear();
+                objControl.ResetBindings();
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)

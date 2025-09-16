@@ -167,7 +167,7 @@ namespace Chummer
             _tmrPreferredPaymentChangeTimer.Dispose();
             _tmrHobbiesViceChangeTimer.Dispose();
             foreach (Control objControl in Controls)
-                objControl.DataBindings.Clear();
+                objControl.ResetBindings();
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)

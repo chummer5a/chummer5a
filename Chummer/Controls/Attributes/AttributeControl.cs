@@ -519,7 +519,7 @@ namespace Chummer.UI.Attributes
                 objCharacter.AttributeSection.DeregisterAsyncPropertyChangedForActiveAttribute(AttributeName, OnAttributePropertyChanged);
 
             foreach (Control objControl in Controls)
-                objControl.DataBindings.Clear();
+                objControl.ResetBindings();
         }
 
         private async void cmdImproveATT_Click(object sender, EventArgs e)

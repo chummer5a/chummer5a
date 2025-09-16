@@ -324,7 +324,7 @@ namespace Chummer.UI.Skills
                 objOld.Dispose();
 
             foreach (Control objControl in Controls)
-                objControl.DataBindings.Clear();
+                objControl.ResetBindings();
         }
 
         #region Control Events
