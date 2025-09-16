@@ -12967,7 +12967,7 @@ namespace Chummer
             {
                 Interlocked.Exchange(ref _lstInternalIdsNeedingReapplyImprovements, null);
                 _objSettings.MultiplePropertiesChangedAsync -= OptionsOnPropertyChanged;
-                ImprovementManager.ClearCachedValues(this);
+                ImprovementManager.ClearAllCharacterValues(this);
                 _lstLinkedCharacters.Clear(); // Clear this list because it relates to Contacts and Spirits disposal
                 foreach (Image imgMugshot in _lstMugshots)
                     imgMugshot.Dispose();
@@ -13084,7 +13084,7 @@ namespace Chummer
             {
                 Interlocked.Exchange(ref _lstInternalIdsNeedingReapplyImprovements, null);
                 _objSettings.MultiplePropertiesChangedAsync -= OptionsOnPropertyChanged;
-                ImprovementManager.ClearCachedValues(this);
+                ImprovementManager.ClearAllCharacterValues(this);
                 _lstLinkedCharacters.Clear(); // Clear this list because it relates to Contacts and Spirits disposal
                 await _lstMugshots.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
                 await _lstContacts.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
@@ -13266,7 +13266,7 @@ namespace Chummer
                 _lstVehicleLocations.ForEach(x => x.Dispose(), token);
                 // Reset all of the Lists.
                 // This kills the GC
-                ImprovementManager.ClearCachedValues(this, token);
+                ImprovementManager.ClearAllCharacterValues(this, token);
                 _lstImprovements.Clear();
                 _lstSpells.Clear();
                 _lstSustainedObjects.Clear();
@@ -13429,7 +13429,7 @@ namespace Chummer
                 await _lstVehicleLocations.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token).ConfigureAwait(false);
                 // Reset all of the Lists.
                 // This kills the GC
-                ImprovementManager.ClearCachedValues(this, token);
+                ImprovementManager.ClearAllCharacterValues(this, token);
                 await _lstImprovements.ClearAsync(token).ConfigureAwait(false);
                 await _lstSpells.ClearAsync(token).ConfigureAwait(false);
                 await _lstSustainedObjects.ClearAsync(token).ConfigureAwait(false);

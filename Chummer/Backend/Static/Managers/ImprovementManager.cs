@@ -185,6 +185,17 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Clear the limit selection value
+        /// </summary>
+        public static void ClearLimitSelection(Character objCharacter)
+        {
+            if (objCharacter == null)
+                s_strInvariantLimitSelection = string.Empty;
+            else
+                s_dicLimitSelections.TryRemove(objCharacter, out string _);
+        }
+
+        /// <summary>
         /// The string that was entered or selected from any of the dialogue windows that were presented because of this Improvement.
         /// </summary>
         public static string GetSelectedValue(Character objCharacter)
@@ -207,6 +218,17 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Clear the selected value (value that was entered or selected from any dialogue windows that were presented)
+        /// </summary>
+        public static void ClearSelectedValue(Character objCharacter)
+        {
+            if (objCharacter == null)
+                s_strInvariantSelectedValue = string.Empty;
+            else
+                s_dicSelectedValues.TryRemove(objCharacter, out string _);
+        }
+
+        /// <summary>
         /// Force any dialogue windows that open to use this string as their selected value.
         /// </summary>
         public static string GetForcedValue(Character objCharacter)
@@ -226,6 +248,17 @@ namespace Chummer
                 s_strInvariantForcedValue = value;
             else
                 s_dicForcedValues.AddOrUpdate(objCharacter, value, (c, s) => value);
+        }
+
+        /// <summary>
+        /// Clear the forced value (value that is forced by any dialogue windows that open to use a given string as their selected value)
+        /// </summary>
+        public static void ClearForcedValue(Character objCharacter)
+        {
+            if (objCharacter == null)
+                s_strInvariantForcedValue = string.Empty;
+            else
+                s_dicForcedValues.TryRemove(objCharacter, out string _);
         }
 
         public static void ClearCachedValue(Character objCharacter, Improvement.ImprovementType eImprovementType,
@@ -342,6 +375,20 @@ namespace Chummer
             }
 
             s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> _);
+        }
+
+        /// <summary>
+        /// Clear all values tied to a specific character. Should be called when a character is reset or disposed.
+        /// </summary>
+        public static void ClearAllCharacterValues(Character objCharacter, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            ClearLimitSelection(objCharacter);
+            token.ThrowIfCancellationRequested();
+            ClearForcedValue(objCharacter);
+            token.ThrowIfCancellationRequested();
+            ClearSelectedValue(objCharacter);
+            ClearCachedValues(objCharacter, token);
         }
 
         #endregion Properties
