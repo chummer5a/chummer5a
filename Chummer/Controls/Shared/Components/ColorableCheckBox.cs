@@ -31,15 +31,16 @@ namespace Chummer
         {
             FlatAppearance.MouseDownBackColor = ColorManager.ControlDarkest;
             FlatAppearance.MouseOverBackColor = ColorManager.ControlDarker;
-            BackColorChanged += OnBackColorChanged;
         }
 
-        private void OnBackColorChanged(object sender, EventArgs e)
+        protected override void OnBackColorChanged(EventArgs e)
         {
-            if (Enabled)
-                return;
-            FlatAppearance.MouseDownBackColor = BackColor;
-            FlatAppearance.MouseOverBackColor = BackColor;
+            base.OnBackColorChanged(e);
+            if (!Enabled)
+            {
+                FlatAppearance.MouseDownBackColor = BackColor;
+                FlatAppearance.MouseOverBackColor = BackColor;
+            }
         }
 
         private int _intEnabledBeingSetFromOutside = 1;
