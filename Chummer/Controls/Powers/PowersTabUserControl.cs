@@ -67,6 +67,8 @@ namespace Chummer.UI.Powers
             {
                 ResumeLayout();
             }
+
+            this.UpdateParentForToolTipControls();
         }
 
         private Character _objCharacter;

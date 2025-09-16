@@ -92,6 +92,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _lstFileNamesWithItems = Utils.ListItemListPool.Get();
             _lstItems = Utils.ListItemListPool.Get();
             _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
@@ -228,7 +229,7 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                 try
                 {
-                    await SourceString.Blank.SetControlAsync(lblSource, _objGenericToken).ConfigureAwait(false);
+                    await SourceString.Blank.SetControlAsync(lblSource, this, _objGenericToken).ConfigureAwait(false);
 
                     // Pre-load some very common expressions to speed up content load
                     Utils.TryCacheExpression("/chummer", _objGenericToken);
@@ -899,7 +900,7 @@ namespace Chummer
                         {
                             await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                             await lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                            await objEntry.DisplaySource.SetControlAsync(lblSource, token).ConfigureAwait(false);
+                            await objEntry.DisplaySource.SetControlAsync(lblSource, this, token).ConfigureAwait(false);
                             string strNotes = await _dicCachedNotes.GetOrAdd(objEntry, x =>
                             {
                                 if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -937,7 +938,7 @@ namespace Chummer
                         {
                             await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                             await lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                            await SourceString.Blank.SetControlAsync(lblSource, token).ConfigureAwait(false);
+                            await SourceString.Blank.SetControlAsync(lblSource, this, token).ConfigureAwait(false);
                             await txtNotes.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                         }
                     }

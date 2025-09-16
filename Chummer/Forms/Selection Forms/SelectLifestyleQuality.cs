@@ -58,6 +58,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             // Load the Quality information.
             _objXPathDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
             _lstCategory = Utils.ListItemListPool.Get();
@@ -169,13 +170,13 @@ namespace Chummer
                 {
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(
                         strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
-                    await objSourceString.SetControlAsync(lblSource).ConfigureAwait(false);
+                    await objSourceString.SetControlAsync(lblSource, this).ConfigureAwait(false);
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
                 }
                 else
                 {
                     await lblSource.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
-                    await lblSource.SetToolTipAsync(string.Empty).ConfigureAwait(false);
+                    await lblSource.SetToolTipTextAsync(string.Empty).ConfigureAwait(false);
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 }
 

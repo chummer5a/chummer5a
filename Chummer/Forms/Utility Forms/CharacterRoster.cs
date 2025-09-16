@@ -62,6 +62,7 @@ namespace Chummer
             tabCharacterText.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
 
             if (!string.IsNullOrEmpty(GlobalSettings.CharacterRosterPath) && Directory.Exists(GlobalSettings.CharacterRosterPath))
             {
@@ -1898,7 +1899,7 @@ namespace Chummer
                                     else
                                         x.Text = strSettingsFile;
                                 }, token).ConfigureAwait(false);
-                                await lblFilePath.SetToolTipAsync(
+                                await lblFilePath.SetToolTipTextAsync(
                                     await (await objCache.GetFilePathAsync(token).ConfigureAwait(false))
                                         .CheapReplaceAsync(Utils.GetStartupPath, () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false),
                                     token).ConfigureAwait(false);
@@ -1977,7 +1978,7 @@ namespace Chummer
                             await lblCharacterAlias.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
                             await lblEssence.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
                             await lblFilePath.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
-                            await lblFilePath.SetToolTipAsync(string.Empty, token).ConfigureAwait(false);
+                            await lblFilePath.SetToolTipTextAsync(string.Empty, token).ConfigureAwait(false);
                             await lblSettings.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
                             await picMugshot.DoThreadSafeAsync(x => x.Image = null, token).ConfigureAwait(false);
                         }

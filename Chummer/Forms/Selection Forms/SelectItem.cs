@@ -46,6 +46,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _lstGeneralItems = Utils.ListItemListPool.Get();
             Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstGeneralItems);
         }

@@ -88,6 +88,7 @@ namespace Chummer
 
             this.UpdateLightDarkMode(objMyToken);
             this.TranslateWinForm(token: objMyToken);
+            this.UpdateParentForToolTipControls();
 
             foreach (ToolStripItem tssItem in cmsContact.Items)
             {
@@ -1354,6 +1355,7 @@ namespace Chummer
                         {
                             x.tlpMain.SetColumnSpan(x.tlpStatBlock, 13);
                             x.tlpMain.Controls.Add(x.tlpStatBlock, 0, 3);
+                            x.tlpStatBlock.UpdateParentForToolTipControls();
                         }
                         finally
                         {
@@ -1582,6 +1584,7 @@ namespace Chummer
                         {
                             x.tlpMain.SetColumnSpan(x.tlpStatBlock, 13);
                             x.tlpMain.Controls.Add(x.tlpStatBlock, 0, 3);
+                            x.tlpStatBlock.UpdateParentForToolTipControls();
                         }
                         finally
                         {

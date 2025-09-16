@@ -42,7 +42,7 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.lblSource = new System.Windows.Forms.Label();
+            this.lblSource = new Chummer.LabelWithToolTip();
             this.lblRequiresProgram = new System.Windows.Forms.Label();
             this.lblRequiresProgramLabel = new System.Windows.Forms.Label();
             this.tlpTopRight = new System.Windows.Forms.TableLayoutPanel();
@@ -373,7 +373,7 @@ namespace Chummer
         private System.Windows.Forms.TableLayoutPanel tlpRight;
         private ColorableCheckBox chkLimitList;
         private System.Windows.Forms.Label lblSourceLabel;
-        private System.Windows.Forms.Label lblSource;
+        private Chummer.LabelWithToolTip lblSource;
         private System.Windows.Forms.Label lblRequiresProgram;
         private System.Windows.Forms.Label lblRequiresProgramLabel;
         private System.Windows.Forms.Label lblSearchLabel;

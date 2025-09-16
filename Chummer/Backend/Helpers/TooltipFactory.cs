@@ -17,6 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
+using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -26,33 +28,121 @@ namespace Chummer
 {
     public static class ToolTipFactory
     {
-        [System.CLSCompliant(false)]
-        public static HtmlToolTip ToolTip { get; } = new HtmlToolTip
-        {
-            AllowLinksHandling = true,
-            AutoPopDelay = 3600000,
-            BaseStylesheet = null,
-            InitialDelay = 250,
-            IsBalloon = false,
-            MaximumSize = new System.Drawing.Size(0, 0),
-            OwnerDraw = true,
-            ReshowDelay = 100,
-            TooltipCssClass = "htmltooltip",
-            UseGdiPlusTextRendering = true,
-            //UseAnimation = true,
-            //UseFading = true
-        };
+        private static ConcurrentDictionary<Form, HtmlToolTip> s_dicToolTipFactories = new ConcurrentDictionary<Form, HtmlToolTip>();
 
-        public static void SetToolTip(this Control c, string caption)
+        private static void TryClearToolTips(object sender, EventArgs e)
         {
-            caption = caption.CleanForHtml();
-            c.DoThreadSafe(x => ToolTip.SetToolTip(x, caption));
+            if (sender is Form form && s_dicToolTipFactories.TryRemove(form, out HtmlToolTip objToolTip))
+            {
+                objToolTip.RemoveAll();
+                objToolTip.Dispose();
+            }
         }
 
-        public static Task SetToolTipAsync(this Control c, string caption, CancellationToken token = default)
+        /// <summary>
+        /// Get the ToolTip object we want to use for a given form.
+        /// In order to prevent memory leaks through HtmlToolTip's implementation, we need to create a separate object for each form.
+        /// When a form is disposed, we will then clear out and dispose the associated HtmlToolTip to prevent leaks through static references.
+        /// </summary>
+        [System.CLSCompliant(false)]
+        public static HtmlToolTip GetToolTipForForm(Form form)
         {
-            caption = caption.CleanForHtml();
-            return c.DoThreadSafeAsync(x => ToolTip.SetToolTip(x, caption), token);
+            if (form == null)
+                return null;
+            return s_dicToolTipFactories.GetOrAdd(form, x =>
+            {
+                return x.DoThreadSafeFunc(y =>
+                {
+                    HtmlToolTip objReturn = new HtmlToolTip
+                    {
+                        AllowLinksHandling = true,
+                        AutoPopDelay = 3600000,
+                        BaseStylesheet = null,
+                        InitialDelay = 250,
+                        IsBalloon = false,
+                        MaximumSize = new System.Drawing.Size(0, 0),
+                        OwnerDraw = true,
+                        ReshowDelay = 100,
+                        TooltipCssClass = "htmltooltip",
+                        UseGdiPlusTextRendering = true,
+                        //UseAnimation = true,
+                        //UseFading = true
+                    };
+                    y.Disposed += TryClearToolTips;
+                    return objReturn;
+                });
+            });
+        }
+
+        /// <summary>
+        /// Get the ToolTip object we want to use for a given form.
+        /// In order to prevent memory leaks through HtmlToolTip's implementation, we need to create a separate object for each form.
+        /// When a form is disposed, we will then clear out and dispose the associated HtmlToolTip to prevent leaks through static references.
+        /// </summary>
+        [System.CLSCompliant(false)]
+        public static Task<HtmlToolTip> GetToolTipForFormAsync(Form form, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<HtmlToolTip>(token);
+            if (form == null)
+                return Task.FromResult<HtmlToolTip>(default);
+            return s_dicToolTipFactories.GetOrAddAsync(form, x =>
+            {
+                return x.DoThreadSafeFuncAsync(y =>
+                {
+                    HtmlToolTip objReturn = new HtmlToolTip
+                    {
+                        AllowLinksHandling = true,
+                        AutoPopDelay = 3600000,
+                        BaseStylesheet = null,
+                        InitialDelay = 250,
+                        IsBalloon = false,
+                        MaximumSize = new System.Drawing.Size(0, 0),
+                        OwnerDraw = true,
+                        ReshowDelay = 100,
+                        TooltipCssClass = "htmltooltip",
+                        UseGdiPlusTextRendering = true,
+                        //UseAnimation = true,
+                        //UseFading = true
+                    };
+                    y.Disposed += TryClearToolTips;
+                    return objReturn;
+                }, token);
+            }, token);
+        }
+
+        public static void SetToolTip(this Control objControl, string caption)
+        {
+            Form frmParent = objControl.DoThreadSafeFunc(x => x.FindForm());
+            SetToolTip(objControl, frmParent, caption);
+        }
+
+        public static void SetToolTip(this Control objControl, Form frmParent, string strCaption)
+        {
+            strCaption = strCaption.CleanForHtml();
+            HtmlToolTip objToolTipFactory = GetToolTipForForm(frmParent);
+            if (objToolTipFactory != null)
+                objControl.DoThreadSafe(x => objToolTipFactory.SetToolTip(x, strCaption));
+            else
+                Utils.BreakIfDebug();
+        }
+
+        public static async Task SetToolTipAsync(this Control objControl, string strCaption, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            Form frmParent = await objControl.DoThreadSafeFuncAsync(x => x.FindForm(), token).ConfigureAwait(false);
+            await SetToolTipAsync(objControl, frmParent, strCaption, token).ConfigureAwait(false);
+        }
+
+        public static async Task SetToolTipAsync(this Control c, Form frmParent, string strCaption, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            strCaption = strCaption.CleanForHtml();
+            HtmlToolTip objToolTipFactory = await GetToolTipForFormAsync(frmParent, token).ConfigureAwait(false);
+            if (objToolTipFactory != null)
+                await c.DoThreadSafeAsync(x => objToolTipFactory.SetToolTip(x, strCaption), token).ConfigureAwait(false);
+            else
+                Utils.BreakIfDebug();
         }
     }
 }

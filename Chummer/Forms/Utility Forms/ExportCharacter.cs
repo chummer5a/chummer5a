@@ -71,6 +71,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             Program.MainForm.OpenCharacterExportForms?.Add(this);

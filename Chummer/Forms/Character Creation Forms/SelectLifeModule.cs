@@ -49,6 +49,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _intStage = intStage;
             _xmlLifeModulesDocumentChummerNode
                 = _objCharacter.LoadDataXPath("lifemodules.xml").SelectSingleNode("/chummer");

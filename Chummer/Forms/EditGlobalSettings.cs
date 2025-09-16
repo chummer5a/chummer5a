@@ -2079,7 +2079,7 @@ namespace Chummer
         private async Task SetToolTips(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await cboUseLoggingApplicationInsights.SetToolTipAsync(string.Format(_objSelectedCultureInfo,
+            await cboUseLoggingApplicationInsights.SetToolTipAsync(this, string.Format(_objSelectedCultureInfo,
                                                                              await LanguageManager.GetStringAsync(
                                                                                      "Tip_Options_TelemetryId",
                                                                                      _strSelectedLanguage, token: token)

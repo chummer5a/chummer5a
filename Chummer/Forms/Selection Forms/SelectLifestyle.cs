@@ -56,6 +56,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             if (_objLifestyle.StyleType == LifestyleType.Standard)
             {
                 lblAreaLabel.Visible = false;
@@ -1075,18 +1076,18 @@ namespace Chummer
                 {
                     SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter, token).ConfigureAwait(false);
-                    await objSource.SetControlAsync(lblSource, token).ConfigureAwait(false);
+                    await objSource.SetControlAsync(lblSource, this, token).ConfigureAwait(false);
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                 }
                 else
                 {
-                    await SourceString.Blank.SetControlAsync(lblSource, token).ConfigureAwait(false);
+                    await SourceString.Blank.SetControlAsync(lblSource, this, token).ConfigureAwait(false);
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                 }
             }
             else
             {
-                await SourceString.Blank.SetControlAsync(lblSource, token).ConfigureAwait(false);
+                await SourceString.Blank.SetControlAsync(lblSource, this, token).ConfigureAwait(false);
                 await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
             }
 

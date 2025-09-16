@@ -140,6 +140,7 @@ namespace Chummer.UI.Attributes
 
                 this.UpdateLightDarkMode(token: objMyToken);
                 this.TranslateWinForm(token: objMyToken);
+                this.UpdateParentForToolTipControls();
             }
             finally
             {

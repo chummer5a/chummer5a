@@ -105,6 +105,8 @@ namespace Chummer
             tabForms.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
+
             _strCurrentVersion = Utils.CurrentChummerVersion.ToString(3);
 
             Disposed += (sender, args) =>

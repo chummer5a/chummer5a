@@ -45,6 +45,7 @@ namespace Chummer
                 Tag = "Title_SelectMentorSpirit_Paragon";
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             // Load the Mentor information.
             _xmlBaseMentorSpiritDataNode = objCharacter.LoadDataXPath(strXmlFile).SelectSingleNodeAndCacheExpression("/chummer");
         }
@@ -164,7 +165,7 @@ namespace Chummer
                                      await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
-                    await objSourceString.SetControlAsync(lblSource).ConfigureAwait(false);
+                    await objSourceString.SetControlAsync(lblSource, this).ConfigureAwait(false);
                     bool blnSourceEmpty = string.IsNullOrEmpty(await lblSource.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false));
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !blnSourceEmpty).ConfigureAwait(false);
                     await cmdOK.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false);

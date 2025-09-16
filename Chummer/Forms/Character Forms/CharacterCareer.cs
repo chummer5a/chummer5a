@@ -131,6 +131,7 @@ namespace Chummer
             tabPowerUc.CachedCharacter = objCharacter;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
 
             ContextMenuStrip[] lstCMSToTranslate =
             {
@@ -2952,7 +2953,7 @@ namespace Chummer
                             intGrade + 1,
                             await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false) + (intGrade + 1) *
                             await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false));
-                        await cmdAddMetamagic.SetToolTipAsync(strInitTip, token).ConfigureAwait(false);
+                        await cmdAddMetamagic.SetToolTipTextAsync(strInitTip, token).ConfigureAwait(false);
                         string strTemp7 = await LanguageManager
                             .GetStringAsync("Checkbox_JoinedGroup", token: token)
                             .ConfigureAwait(false);
@@ -3071,7 +3072,7 @@ namespace Chummer
                             intGrade + 1,
                             await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false) + (intGrade + 1) *
                             await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false));
-                        await cmdAddMetamagic.SetToolTipAsync(strInitTip, token).ConfigureAwait(false);
+                        await cmdAddMetamagic.SetToolTipTextAsync(strInitTip, token).ConfigureAwait(false);
                         string strTemp7 = await LanguageManager
                             .GetStringAsync("Checkbox_JoinedNetwork", token: token)
                             .ConfigureAwait(false);
@@ -6157,7 +6158,7 @@ namespace Chummer
                     default:
                         await cmdDeleteMartialArt.DoThreadSafeAsync(x => x.Enabled = false, token)
                                                  .ConfigureAwait(false);
-                        await SourceString.Blank.SetControlAsync(lblMartialArtSource, token).ConfigureAwait(false);
+                        await SourceString.Blank.SetControlAsync(lblMartialArtSource, this, token).ConfigureAwait(false);
                         break;
                 }
             }
@@ -7421,7 +7422,7 @@ namespace Chummer
                                 (intGrade + 1).ToString(
                                     GlobalSettings.CultureInfo),
                                 intAmount.ToString(GlobalSettings.CultureInfo));
-                            await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken).ConfigureAwait(false);
+                            await cmdAddMetamagic.SetToolTipTextAsync(strInitTip, GenericToken).ConfigureAwait(false);
                         }
                         else if (await CharacterObject.GetRESEnabledAsync(GenericToken).ConfigureAwait(false))
                         {
@@ -7536,7 +7537,7 @@ namespace Chummer
                                 (intGrade + 1).ToString(
                                     GlobalSettings.CultureInfo),
                                 intAmount.ToString(GlobalSettings.CultureInfo));
-                            await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken).ConfigureAwait(false);
+                            await cmdAddMetamagic.SetToolTipTextAsync(strInitTip, GenericToken).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -19271,7 +19272,7 @@ namespace Chummer
                             x.Enabled = objGrade.Grade >= 0;
                             x.Visible = true;
                         }, token).ConfigureAwait(false);
-                        await SourceString.Blank.SetControlAsync(lblMetamagicSource, token).ConfigureAwait(false);
+                        await SourceString.Blank.SetControlAsync(lblMetamagicSource, this, token).ConfigureAwait(false);
                         break;
                     }
                     default:
@@ -19538,7 +19539,7 @@ namespace Chummer
                     await lblCritterPowerDuration.DoThreadSafeAsync(x => x.Text = string.Empty, token)
                                                  .ConfigureAwait(false);
                     await chkCritterPowerCount.DoThreadSafeAsync(x => x.Checked = false, token).ConfigureAwait(false);
-                    await SourceString.Blank.SetControlAsync(lblCritterPowerSource, token).ConfigureAwait(false);
+                    await SourceString.Blank.SetControlAsync(lblCritterPowerSource, this, token).ConfigureAwait(false);
                     await lblCritterPowerPointCost.DoThreadSafeAsync(x => x.Visible = false, token)
                                                   .ConfigureAwait(false);
                     await lblCritterPowerPointCostLabel.DoThreadSafeAsync(x => x.Visible = false, token)
@@ -21796,7 +21797,7 @@ namespace Chummer
                                     x.Visible = true;
                                     x.Text = strRC;
                                 }, token).ConfigureAwait(false);
-                                await lblWeaponRC.SetToolTipAsync(strRCTooltip, token).ConfigureAwait(false);
+                                await lblWeaponRC.SetToolTipTextAsync(strRCTooltip, token).ConfigureAwait(false);
                                 string strAmmo = await objWeapon.GetDisplayAmmoAsync(token).ConfigureAwait(false);
                                 await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                     .ConfigureAwait(false);
@@ -25632,7 +25633,7 @@ namespace Chummer
                                     x.Visible = true;
                                     x.Text = strRC;
                                 }, token).ConfigureAwait(false);
-                                await lblVehicleWeaponRC.SetToolTipAsync(strRCTooltip, token).ConfigureAwait(false);
+                                await lblVehicleWeaponRC.SetToolTipTextAsync(strRCTooltip, token).ConfigureAwait(false);
                                 await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                             .ConfigureAwait(false);
                                 await lblVehicleWeaponReach.DoThreadSafeAsync(x => x.Visible = false, token)
@@ -26969,7 +26970,7 @@ namespace Chummer
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            await cmdAddMetamagic.SetToolTipAsync(strInitTip, token).ConfigureAwait(false);
+            await cmdAddMetamagic.SetToolTipTextAsync(strInitTip, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -26979,176 +26980,176 @@ namespace Chummer
         {
             // Armor Tab.
             await chkArmorEquipped
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_ArmorEquipped", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             // ToolTipFactory.SetToolTip(cmdArmorIncrease, LanguageManager.GetString("Tip_ArmorDegradationAPlus"));
             // ToolTipFactory.SetToolTip(cmdArmorDecrease, LanguageManager.GetString("Tip_ArmorDegradationAMinus"));
             // Weapon Tab.
             await cmdWeaponBuyAmmo
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_BuyAmmo", token: token).ConfigureAwait(false), token)
                   .ConfigureAwait(false);
             await cmdWeaponMoveToVehicle
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_TransferToVehicle", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             // Gear Tab.
             await cmdGearIncreaseQty
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_IncreaseGearQty", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await cmdGearReduceQty
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_DecreaseGearQty", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await cmdGearSplitQty
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_SplitGearQty", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await cmdGearMergeQty
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_MergeGearQty", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await cmdGearMoveToVehicle
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_TransferToVehicle", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await chkGearActiveCommlink
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_ActiveCommlink", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await chkCyberwareActiveCommlink
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_ActiveCommlink", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             // Vehicles Tab.
             await chkVehicleWeaponAccessoryInstalled
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_WeaponInstalled", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await cmdVehicleGearReduceQty
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_DecreaseGearQty", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await cmdVehicleMoveToInventory
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_TransferToInventory", token: token)
                                            .ConfigureAwait(false), token).ConfigureAwait(false);
             await chkVehicleActiveCommlink
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_ActiveCommlink", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             // Other Info Tab.
             await lblCMPhysicalLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherCMPhysical", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await lblCMStunLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherCMStun", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await lblINILabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherInitiative", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await lblMatrixINILabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherMatrixInitiative", token: token)
                                            .ConfigureAwait(false), token).ConfigureAwait(false);
             await lblAstralINILabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherAstralInitiative", token: token)
                                            .ConfigureAwait(false), token).ConfigureAwait(false);
             await lblArmorLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherArmor", token: token).ConfigureAwait(false), token)
                   .ConfigureAwait(false);
             await lblESS
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherEssence", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await lblRemainingNuyenLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherNuyen", token: token).ConfigureAwait(false), token)
                   .ConfigureAwait(false);
             await lblCareerKarmaLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherCareerKarma", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await lblMovementLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherMovement", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await lblSwimLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherSwim", token: token).ConfigureAwait(false), token)
                   .ConfigureAwait(false);
             await lblFlyLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherFly", token: token).ConfigureAwait(false), token)
                   .ConfigureAwait(false);
             await lblLiftCarryLimitsLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherLiftAndCarryLimits", token: token)
                                            .ConfigureAwait(false), token).ConfigureAwait(false);
             await lblComposureLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherComposure", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await lblSurpriseLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherSurprise", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await lblJudgeIntentionsLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherJudgeIntentions", token: token)
                                            .ConfigureAwait(false), token).ConfigureAwait(false);
             await lblLiftCarryLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherLiftAndCarry", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await lblMemoryLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherMemory", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             // Condition Monitor Tab.
             await lblCMPenaltyLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_CMPenalty", token: token).ConfigureAwait(false), token)
                   .ConfigureAwait(false);
             await lblCMArmorLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_OtherArmor", token: token).ConfigureAwait(false), token)
                   .ConfigureAwait(false);
             await lblCMDamageResistancePoolLabel
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_CMDamageResistance", token: token)
                                            .ConfigureAwait(false), token).ConfigureAwait(false);
             await cmdEdgeGained
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_CMRegainEdge", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             await cmdEdgeSpent
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_CMSpendEdge", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
             // Common Info Tab.
             await lblStreetCred
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_StreetCred", token: token).ConfigureAwait(false), token)
                   .ConfigureAwait(false);
             await lblNotoriety
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_Notoriety", token: token).ConfigureAwait(false), token)
                   .ConfigureAwait(false);
             if (await CharacterObjectSettings.GetUseCalculatedPublicAwarenessAsync(token).ConfigureAwait(false))
                 await lblPublicAware
-                      .SetToolTipAsync(
+                      .SetToolTipTextAsync(
                           await LanguageManager.GetStringAsync("Tip_PublicAwareness", token: token)
                                                .ConfigureAwait(false), token).ConfigureAwait(false);
             await cmdBurnStreetCred
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_BurnStreetCred", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
         }
@@ -27199,7 +27200,7 @@ namespace Chummer
                         string strText7 = await objSpell.DisplayDvAsync(GlobalSettings.Language, token)
                                                         .ConfigureAwait(false);
                         await lblSpellDV.DoThreadSafeAsync(x => x.Text = strText7, token).ConfigureAwait(false);
-                        await lblSpellDV.SetToolTipAsync(await objSpell.GetDvTooltipAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await lblSpellDV.SetToolTipTextAsync(await objSpell.GetDvTooltipAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objSpell.SetSourceDetailAsync(lblSpellSource, token).ConfigureAwait(false);
                         // Determine the size of the Spellcasting Dice Pool.
                         int intPool = await objSpell.GetDicePoolAsync(token).ConfigureAwait(false);
@@ -27426,7 +27427,7 @@ namespace Chummer
                         string strText3 = await objComplexForm.DisplayFvAsync(GlobalSettings.Language, token)
                                                               .ConfigureAwait(false);
                         await lblFV.DoThreadSafeAsync(x => x.Text = strText3, token).ConfigureAwait(false);
-                        await lblFV.SetToolTipAsync(await objComplexForm.GetFvTooltipAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await lblFV.SetToolTipTextAsync(await objComplexForm.GetFvTooltipAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objComplexForm.SetSourceDetailAsync(lblComplexFormSource, token).ConfigureAwait(false);
                         // Determine the size of the Threading Dice Pool.
                         int intPool = await objComplexForm.GetDicePoolAsync(token).ConfigureAwait(false);
@@ -28834,7 +28835,7 @@ namespace Chummer
                 {
                     await lblAIProgramsRequires.DoThreadSafeAsync(x => x.Text = string.Empty, token)
                                                .ConfigureAwait(false);
-                    await SourceString.Blank.SetControlAsync(lblAIProgramsSource, token).ConfigureAwait(false);
+                    await SourceString.Blank.SetControlAsync(lblAIProgramsSource, this, token).ConfigureAwait(false);
                 }
             }
             finally

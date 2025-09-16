@@ -51,6 +51,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _blnAdvancedProgramAllowed = blnAdvancedProgramAllowed;
             _blnInherentProgram = blnInherentProgram;
             // Load the Programs information.
@@ -246,20 +247,20 @@ namespace Chummer
                                 SourceString objSource = await SourceString.GetSourceStringAsync(
                                     strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
                                     _objCharacter, token).ConfigureAwait(false);
-                                await objSource.SetControlAsync(lblSource, token).ConfigureAwait(false);
+                                await objSource.SetControlAsync(lblSource, this, token).ConfigureAwait(false);
                             }
                             else
                             {
                                 string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                                 await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token: token).ConfigureAwait(false);
-                                await lblSource.SetToolTipAsync(strUnknown, token: token).ConfigureAwait(false);
+                                await lblSource.SetToolTipTextAsync(strUnknown, token: token).ConfigureAwait(false);
                             }
                         }
                         else
                         {
                             string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                             await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token: token).ConfigureAwait(false);
-                            await lblSource.SetToolTipAsync(strUnknown, token: token).ConfigureAwait(false);
+                            await lblSource.SetToolTipTextAsync(strUnknown, token: token).ConfigureAwait(false);
                         }
 
                         await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);

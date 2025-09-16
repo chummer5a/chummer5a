@@ -68,6 +68,7 @@ namespace Chummer
             tabControl.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             // Load the Armor information.
             _objXmlDocument = objCharacter.LoadData("armor.xml");
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
@@ -976,7 +977,7 @@ namespace Chummer
                     }, token).ConfigureAwait(false);
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                     await lblSource.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
-                    await lblSource.SetToolTipAsync(string.Empty, token).ConfigureAwait(false);
+                    await lblSource.SetToolTipTextAsync(string.Empty, token).ConfigureAwait(false);
 
                     await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                     await lblArmorValue.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);

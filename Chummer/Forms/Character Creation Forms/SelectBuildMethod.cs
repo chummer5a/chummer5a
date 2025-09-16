@@ -68,6 +68,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         private async void cmdOK_Click(object sender, EventArgs e)
@@ -215,7 +216,7 @@ namespace Chummer
                         }
 
                         await RepopulateCharacterSettings(objSelectSettings, _objGenericToken).ConfigureAwait(false);
-                        await chkIgnoreRules.SetToolTipAsync(
+                        await chkIgnoreRules.SetToolTipTextAsync(
                                                 await LanguageManager.GetStringAsync("Tip_SelectKarma_IgnoreRules", token: _objGenericToken)
                                                                      .ConfigureAwait(false), _objGenericToken)
                                             .ConfigureAwait(false);

@@ -44,6 +44,7 @@ namespace Chummer
                 Tag = "Title_CreateBiowareSuite";
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _strType = _eSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
             txtFileName.Text = "custom_" + _strType + ".xml";
         }

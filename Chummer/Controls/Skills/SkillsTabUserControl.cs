@@ -64,6 +64,7 @@ namespace Chummer.UI.Skills
                 lblGroupKarma.Margin.Bottom);
             this.UpdateLightDarkMode(token: objMyToken);
             this.TranslateWinForm(token: objMyToken);
+            this.UpdateParentForToolTipControls();
 
             MyToken = objMyToken;
         }

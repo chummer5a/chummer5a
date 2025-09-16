@@ -44,6 +44,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _objXmlDocument = objCharacter.LoadDataXPath("spells.xml");
         }
 

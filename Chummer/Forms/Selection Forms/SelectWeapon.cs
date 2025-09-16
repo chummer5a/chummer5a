@@ -67,6 +67,7 @@ namespace Chummer
             tabControl.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _lstCategory = Utils.ListItemListPool.Get();
             _setLimitToCategories = Utils.StringHashSetPool.Get();
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
@@ -394,7 +395,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                         (string strRC, string strRCTooltip) = await objSelectedWeapon.GetDisplayTotalRCAsync(token).ConfigureAwait(false);
                         await lblWeaponRC.DoThreadSafeAsync(x => x.Text = strRC, token: token).ConfigureAwait(false);
-                        await lblWeaponRC.SetToolTipAsync(strRCTooltip, token: token)
+                        await lblWeaponRC.SetToolTipTextAsync(strRCTooltip, token: token)
                                             .ConfigureAwait(false);
                         await lblWeaponRCLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strRC), token: token)

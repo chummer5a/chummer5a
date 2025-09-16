@@ -42,6 +42,7 @@ namespace Chummer.UI.Shared
             InitializeComponent();
             this.UpdateLightDarkMode(objMyToken);
             this.TranslateWinForm(token: objMyToken);
+            this.UpdateParentForToolTipControls();
 
             foreach (ToolStripMenuItem tssItem in cmsLimitModifier.Items.OfType<ToolStripMenuItem>())
             {

@@ -57,7 +57,7 @@ namespace Chummer
             this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.lblVehicleCapacity = new System.Windows.Forms.Label();
-            this.lblVehicleCapacityLabel = new System.Windows.Forms.Label();
+            this.lblVehicleCapacityLabel = new Chummer.LabelWithToolTip();
             this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox();
@@ -776,7 +776,7 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkBlackMarketDiscount;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblVehicleCapacity;
-        private System.Windows.Forms.Label lblVehicleCapacityLabel;
+        private Chummer.LabelWithToolTip lblVehicleCapacityLabel;
         private Chummer.ColorableCheckBox chkHideOverAvailLimit;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
         private Chummer.ColorableCheckBox chkShowOnlyAffordItems;

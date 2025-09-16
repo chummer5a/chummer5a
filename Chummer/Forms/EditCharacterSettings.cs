@@ -66,6 +66,7 @@ namespace Chummer
             tabOptions.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _objReferenceCharacterSettings = objExistingSettings;
             if (_objReferenceCharacterSettings == null)
             {
@@ -1752,39 +1753,39 @@ namespace Chummer
         private async Task SetToolTips(CancellationToken token = default)
         {
             await chkUnarmedSkillImprovements
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionsUnarmedSkillImprovements", token: token)
                                             .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
             await chkIgnoreArt
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionsIgnoreArt", token: token).ConfigureAwait(false))
                       .WordWrap(), token).ConfigureAwait(false);
             await chkIgnoreComplexFormLimit
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionsIgnoreComplexFormLimit", token: token)
                                             .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
             await chkCyberlegMovement
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionsCyberlegMovement", token: token)
                                             .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
             await chkDontDoubleQualityPurchases
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionsDontDoubleQualityPurchases", token: token)
                                             .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
             await chkDontDoubleQualityRefunds
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionsDontDoubleQualityRefunds", token: token)
                                             .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
             await chkStrictSkillGroups
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionStrictSkillGroups", token: token)
                                             .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
             await chkAllowInitiation
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionsAllowInitiation", token: token)
                                             .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
             await chkUseCalculatedPublicAwareness
-                  .SetToolTipAsync(
+                  .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_PublicAwareness", token: token).ConfigureAwait(false))
                       .WordWrap(), token).ConfigureAwait(false);
         }

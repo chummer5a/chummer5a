@@ -59,6 +59,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
 
             // Load the Spells information.
             _xmlBaseSpellDataNode = _objCharacter.LoadDataXPath("spells.xml").SelectSingleNodeAndCacheExpression("/chummer");
@@ -68,8 +69,8 @@ namespace Chummer
 
         private async void SelectSpell_Load(object sender, EventArgs e)
         {
-            await chkLimited.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_SelectSpell_LimitedSpell").ConfigureAwait(false)).ConfigureAwait(false);
-            await chkExtended.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_SelectSpell_ExtendedSpell").ConfigureAwait(false)).ConfigureAwait(false);
+            await chkLimited.SetToolTipTextAsync(await LanguageManager.GetStringAsync("Tip_SelectSpell_LimitedSpell").ConfigureAwait(false)).ConfigureAwait(false);
+            await chkExtended.SetToolTipTextAsync(await LanguageManager.GetStringAsync("Tip_SelectSpell_ExtendedSpell").ConfigureAwait(false)).ConfigureAwait(false);
             // If a value is forced, set the name of the spell and accept the form.
             if (!string.IsNullOrEmpty(_strForceSpell))
             {
@@ -1006,7 +1007,7 @@ namespace Chummer
             string strPage = xmlSpell.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? xmlSpell.SelectSingleNodeAndCacheExpression("page", token)?.Value ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
             SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                                                                              GlobalSettings.CultureInfo, _objCharacter, token: token).ConfigureAwait(false);
-            await objSource.SetControlAsync(lblSource, token: token).ConfigureAwait(false);
+            await objSource.SetControlAsync(lblSource, this, token: token).ConfigureAwait(false);
             await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()), token: token).ConfigureAwait(false);
             await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
             _blnRefresh = false;

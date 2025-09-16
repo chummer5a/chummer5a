@@ -41,6 +41,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode(token: objMyToken);
             this.TranslateWinForm(token: objMyToken);
+            this.UpdateParentForToolTipControls();
 
             if (objLinkedSustainedObject.LinkedObjectType == Improvement.ImprovementSource.CritterPower)
             {

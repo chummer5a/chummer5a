@@ -23,7 +23,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public class ColorableCheckBox : CheckBox
+    public class ColorableCheckBox : CheckBoxWithToolTip
     {
         // CheckBox doesn't let you control its colors when it is disabled, so this extended class exists as a hacky version of implementing that
         // It does so by never actually disabling the CheckBox control, instead just controlling the AutoCheck property and coloring the foreground accordingly

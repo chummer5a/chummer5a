@@ -63,7 +63,7 @@ namespace Chummer
             this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox();
             this.bufferedTableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lblCapacityLabel = new System.Windows.Forms.Label();
-            this.lblSource = new System.Windows.Forms.Label();
+            this.lblSource = new Chummer.LabelWithToolTip();
             this.lblCapacity = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lblArmorValueLabel = new System.Windows.Forms.Label();
@@ -998,7 +998,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCapacity;
         private System.Windows.Forms.Label lblCapacityLabel;
         private Chummer.ColorableCheckBox chkFreeItem;
-        private System.Windows.Forms.Label lblSource;
+        private Chummer.LabelWithToolTip lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.Label lblCost;
         private System.Windows.Forms.Label lblCostLabel;

@@ -33,6 +33,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         private async void SelectDiceHits_Load(object sender, EventArgs e)

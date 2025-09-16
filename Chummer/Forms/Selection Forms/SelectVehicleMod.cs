@@ -57,6 +57,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _lstCategory = Utils.ListItemListPool.Get();
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             Disposed += (sender, args) =>
@@ -798,7 +799,7 @@ namespace Chummer
                                 x.Text = strCapacity;
                             }, token: token).ConfigureAwait(false);
                             await lblVehicleCapacityLabel
-                                  .SetToolTipAsync(
+                                  .SetToolTipTextAsync(
                                       await LanguageManager
                                             .GetStringAsync("Tip_RemainingVehicleModCapacity", token: token)
                                             .ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -907,7 +908,7 @@ namespace Chummer
                                                              strSource, strPage, GlobalSettings.Language,
                                                              GlobalSettings.CultureInfo, _objCharacter, token: token)
                                                          .ConfigureAwait(false);
-                    await objSourceString.SetControlAsync(lblSource, token: token).ConfigureAwait(false);
+                    await objSourceString.SetControlAsync(lblSource, this, token: token).ConfigureAwait(false);
                     await lblSourceLabel
                           .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSourceString.ToString()),
                                              token: token).ConfigureAwait(false);

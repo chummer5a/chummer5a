@@ -18,14 +18,16 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace Chummer
 {
-    public class ButtonWithToolTip : DpiFriendlyImagedButton, IControlWithToolTip
+    public class CheckBoxWithToolTip : CheckBox, IControlWithToolTip
     {
         private readonly int _intToolTipWrap;
 
@@ -57,7 +59,7 @@ namespace Chummer
                 : Task.CompletedTask;
         }
 
-        public ButtonWithToolTip(int intToolTipWrap = -1) : base()
+        public CheckBoxWithToolTip(int intToolTipWrap = -1) : base()
         {
             _intToolTipWrap = intToolTipWrap;
             _frmParent = FindForm();

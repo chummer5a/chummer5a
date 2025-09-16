@@ -70,6 +70,7 @@ namespace Chummer
             TopMost = !Utils.IsUnitTest && !Debugger.IsAttached;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         /// <summary>

@@ -84,7 +84,7 @@ namespace Chummer
             this.tlpMetavariant = new System.Windows.Forms.TableLayoutPanel();
             this.lblMetavariantLabel = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.lblSource = new System.Windows.Forms.Label();
+            this.lblSource = new Chummer.LabelWithToolTip();
             this.tlpButtons.SuspendLayout();
             this.tlpTopHalf.SuspendLayout();
             this.tlpMain.SuspendLayout();
@@ -1001,6 +1001,6 @@ namespace Chummer
         private NumericUpDownEx nudForce;
         private System.Windows.Forms.TableLayoutPanel tlpMetavariant;
         internal System.Windows.Forms.Label lblSourceLabel;
-        internal System.Windows.Forms.Label lblSource;
+        internal Chummer.LabelWithToolTip lblSource;
     }
 }

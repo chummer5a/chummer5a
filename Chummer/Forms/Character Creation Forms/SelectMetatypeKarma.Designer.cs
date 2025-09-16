@@ -68,7 +68,7 @@ namespace Chummer
             this.lblMetavariantLabel = new System.Windows.Forms.Label();
             this.cboMetavariant = new Chummer.ElasticComboBox();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.lblSource = new System.Windows.Forms.Label();
+            this.lblSource = new Chummer.LabelWithToolTip();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
@@ -710,7 +710,7 @@ namespace Chummer
         private Panel pnlQualities;
         private System.Windows.Forms.TableLayoutPanel tlpMetavariant;
         internal Label lblSourceLabel;
-        internal Label lblSource;
+        internal Chummer.LabelWithToolTip lblSource;
         private System.Windows.Forms.TableLayoutPanel tlpButtons;
         internal Button cmdCancel;
         internal Button cmdOK;

@@ -28,7 +28,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Chummer
 {
-    public class SplitButton : Button
+    public class SplitButton : ButtonWithToolTip
     {
         private PushButtonState _state;
 

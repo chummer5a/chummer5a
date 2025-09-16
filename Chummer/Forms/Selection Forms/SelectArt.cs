@@ -52,6 +52,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
 
             // Load the Metamagic information.
             switch (objWindowMode)
@@ -126,7 +127,7 @@ namespace Chummer
             string strPage = objXmlMetamagic.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlMetamagic.SelectSingleNodeAndCacheExpression("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
             SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                                                                              GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
-            await objSource.SetControlAsync(lblSource).ConfigureAwait(false);
+            await objSource.SetControlAsync(lblSource, this).ConfigureAwait(false);
             await tlpRight.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
         }
 

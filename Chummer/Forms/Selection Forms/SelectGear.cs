@@ -77,6 +77,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _intAvailModifier = intAvailModifier;
             _intCostMultiplier = intCostMultiplier;
             _objGearParent = objGearParent;
@@ -912,7 +913,7 @@ namespace Chummer
                     SourceString objSource = await SourceString.GetSourceStringAsync(
                         strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter, token: token).ConfigureAwait(false);
-                    await objSource.SetControlAsync(lblSource, token: token).ConfigureAwait(false);
+                    await objSource.SetControlAsync(lblSource, this, token: token).ConfigureAwait(false);
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()), token: token).ConfigureAwait(false);
                     string strAvail = await new AvailabilityValue(intRating,
                         objXmlGear.SelectSingleNodeAndCacheExpression("avail", token)?.Value, (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlGear.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound()).ToStringAsync(token).ConfigureAwait(false);

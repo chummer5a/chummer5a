@@ -50,6 +50,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             // Load the Armor information.
             _xmlBaseDataNode = _objCharacter.LoadDataXPath("armor.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _objArmor = objParentNode;
@@ -430,7 +431,7 @@ namespace Chummer
                 SourceString objSource = await SourceString.GetSourceStringAsync(
                     strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter, token: token).ConfigureAwait(false);
-                await objSource.SetControlAsync(lblSource, token: token).ConfigureAwait(false);
+                await objSource.SetControlAsync(lblSource, this, token: token).ConfigureAwait(false);
                 await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()), token: token).ConfigureAwait(false);
                 await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
             }

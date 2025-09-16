@@ -56,6 +56,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             // Load the Weapon information.
@@ -684,7 +685,7 @@ namespace Chummer
                                                  .GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                                                                        GlobalSettings.CultureInfo, _objCharacter,
                                                                        token: token).ConfigureAwait(false);
-            await objSourceString.SetControlAsync(lblSource, token: token).ConfigureAwait(false);
+            await objSourceString.SetControlAsync(lblSource, this, token: token).ConfigureAwait(false);
             await lblSourceLabel
                   .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSourceString.ToString()), token: token)
                   .ConfigureAwait(false);

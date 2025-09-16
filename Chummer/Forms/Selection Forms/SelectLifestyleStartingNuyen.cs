@@ -40,6 +40,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]

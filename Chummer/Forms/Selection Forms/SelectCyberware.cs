@@ -110,6 +110,7 @@ namespace Chummer
 
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
 
             _lstGrades = _objCharacter.GetGradesList(objWareSource);
             _strNoneGradeId = _lstGrades.Find(x => x.Name == "None")?.SourceIDString;
@@ -633,7 +634,7 @@ namespace Chummer
                         string strPage = xmlCyberware.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? xmlCyberware.SelectSingleNodeAndCacheExpression("page", token)?.Value ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                         SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                             GlobalSettings.CultureInfo, _objCharacter, token: token).ConfigureAwait(false);
-                        await objSource.SetControlAsync(lblSource, token: token).ConfigureAwait(false);
+                        await objSource.SetControlAsync(lblSource, this, token: token).ConfigureAwait(false);
                         bool blnShowSource = !string.IsNullOrEmpty(await lblSource.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
                         await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = blnShowSource, token: token).ConfigureAwait(false);
 

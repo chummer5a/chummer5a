@@ -56,7 +56,7 @@ namespace Chummer
             this.lblCharacterAliasLabel = new System.Windows.Forms.Label();
             this.lblEssence = new System.Windows.Forms.Label();
             this.lblEssenceLabel = new System.Windows.Forms.Label();
-            this.lblFilePath = new System.Windows.Forms.Label();
+            this.lblFilePath = new Chummer.LabelWithToolTip();
             this.lblFilePathLabel = new System.Windows.Forms.Label();
             this.lblSettings = new System.Windows.Forms.Label();
             this.lblSettingsLabel = new System.Windows.Forms.Label();
@@ -549,7 +549,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCharacterAliasLabel;
         private System.Windows.Forms.Label lblEssence;
         private System.Windows.Forms.Label lblEssenceLabel;
-        private System.Windows.Forms.Label lblFilePath;
+        private Chummer.LabelWithToolTip lblFilePath;
         private System.Windows.Forms.Label lblFilePathLabel;
         private System.Windows.Forms.TabPage panGameNotes;
       

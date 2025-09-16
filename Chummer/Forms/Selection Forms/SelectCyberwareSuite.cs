@@ -56,6 +56,7 @@ namespace Chummer
             }
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _objXmlDocument = objCharacter.LoadData(_strType + ".xml", string.Empty, true);
         }
 

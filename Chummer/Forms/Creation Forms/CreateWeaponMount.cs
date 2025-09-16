@@ -96,6 +96,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         private async void CreateWeaponMount_Load(object sender, EventArgs e)
@@ -913,7 +914,7 @@ namespace Chummer
                       ?? xmlSelectedMount.SelectSingleNodeAndCacheExpression("page", token)?.Value
                       ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                 SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter, token).ConfigureAwait(false);
-                await objSourceString.SetControlAsync(lblSource, token).ConfigureAwait(false);
+                await objSourceString.SetControlAsync(lblSource, this, token).ConfigureAwait(false);
                 string strLoop5 = await lblCost.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
                 await lblCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strLoop5), token).ConfigureAwait(false);
                 string strLoop6 = await lblSlots.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);

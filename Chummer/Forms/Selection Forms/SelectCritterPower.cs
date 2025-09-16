@@ -50,6 +50,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _xmlBaseCritterPowerDataNode = _objCharacter.LoadDataXPath("critterpowers.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _xmlMetatypeDataNode = _objCharacter.GetNodeXPath();
             if (_xmlMetatypeDataNode != null && _objCharacter.MetavariantGuid != Guid.Empty)
@@ -229,7 +230,7 @@ namespace Chummer
                     string strPage = objXmlPower.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlPower.SelectSingleNodeAndCacheExpression("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
-                    await objSource.SetControlAsync(lblCritterPowerSource).ConfigureAwait(false);
+                    await objSource.SetControlAsync(lblCritterPowerSource, this).ConfigureAwait(false);
 
                     bool blnVisible = objXmlPower.SelectSingleNodeAndCacheExpression("rating") != null;
                     await nudCritterPowerRating.DoThreadSafeAsync(x => { x.Visible = blnVisible; x.Enabled = blnVisible; }).ConfigureAwait(false);

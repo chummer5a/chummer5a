@@ -132,6 +132,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
 
             _lstPrioritySkills = new List<string>(objCharacter.PriorityBonusSkillList);
             _xmlMetatypeDocumentMetatypesNode = _objCharacter.LoadData(strXmlFile).SelectSingleNode("/chummer/metatypes");
@@ -402,7 +403,7 @@ namespace Chummer
 
                         // Set up possession boxes
                         // Add Possession and Inhabitation to the list of Critter Tradition variations.
-                        await chkPossessionBased.SetToolTipAsync(
+                        await chkPossessionBased.SetToolTipTextAsync(
                                                     await LanguageManager.GetStringAsync("Tip_Metatype_PossessionTradition", token: _objGenericToken)
                                                                          .ConfigureAwait(false), _objGenericToken)
                                                 .ConfigureAwait(false);
@@ -2583,20 +2584,20 @@ namespace Chummer
                             SourceString objSource = await SourceString.GetSourceStringAsync(
                                 strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
                                 _objCharacter, token).ConfigureAwait(false);
-                            await objSource.SetControlAsync(lblSource, token).ConfigureAwait(false);
+                            await objSource.SetControlAsync(lblSource, this, token).ConfigureAwait(false);
                         }
                         else
                         {
                             string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                             await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token).ConfigureAwait(false);
-                            await lblSource.SetToolTipAsync(strUnknown, token).ConfigureAwait(false);
+                            await lblSource.SetToolTipTextAsync(strUnknown, token).ConfigureAwait(false);
                         }
                     }
                     else
                     {
                         string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                         await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token).ConfigureAwait(false);
-                        await lblSource.SetToolTipAsync(strUnknown, token).ConfigureAwait(false);
+                        await lblSource.SetToolTipTextAsync(strUnknown, token).ConfigureAwait(false);
                     }
 
                     // Set the special attributes label.
@@ -2826,20 +2827,20 @@ namespace Chummer
                             SourceString objSource = await SourceString.GetSourceStringAsync(
                                 strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
                                 _objCharacter, token).ConfigureAwait(false);
-                            await objSource.SetControlAsync(lblSource, token).ConfigureAwait(false);
+                            await objSource.SetControlAsync(lblSource, this, token).ConfigureAwait(false);
                         }
                         else
                         {
                             string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                             await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token).ConfigureAwait(false);
-                            await lblSource.SetToolTipAsync(strUnknown, token).ConfigureAwait(false);
+                            await lblSource.SetToolTipTextAsync(strUnknown, token).ConfigureAwait(false);
                         }
                     }
                     else
                     {
                         string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                         await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token).ConfigureAwait(false);
-                        await lblSource.SetToolTipAsync(strUnknown, token).ConfigureAwait(false);
+                        await lblSource.SetToolTipTextAsync(strUnknown, token).ConfigureAwait(false);
                     }
 
                     // Set the special attributes label.

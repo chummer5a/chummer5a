@@ -61,7 +61,7 @@ namespace Chummer
             this.lblWeaponCostLabel = new System.Windows.Forms.Label();
             this.lblWeaponAmmo = new System.Windows.Forms.Label();
             this.lblWeaponModeLabel = new System.Windows.Forms.Label();
-            this.lblWeaponRC = new System.Windows.Forms.Label();
+            this.lblWeaponRC = new Chummer.LabelWithToolTip();
             this.lblWeaponReach = new System.Windows.Forms.Label();
             this.lblTest = new System.Windows.Forms.Label();
             this.lblTestLabel = new System.Windows.Forms.Label();
@@ -1184,7 +1184,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblWeaponCostLabel;
         private System.Windows.Forms.Label lblWeaponAvail;
         private System.Windows.Forms.Label lblWeaponAvailLabel;
-        private System.Windows.Forms.Label lblWeaponRC;
+        private Chummer.LabelWithToolTip lblWeaponRC;
         private System.Windows.Forms.Label lblWeaponRCLabel;
         private System.Windows.Forms.Label lblWeaponDamage;
         private System.Windows.Forms.Label lblWeaponDamageLabel;
