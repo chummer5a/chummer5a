@@ -180,7 +180,7 @@ namespace Chummer
         {
             if (objCharacter == null)
                 s_strInvariantLimitSelection = value;
-            else
+            else if (!objCharacter.IsDisposed)
                 s_dicLimitSelections.AddOrUpdate(objCharacter, value, (c, s) => value);
         }
 
@@ -213,7 +213,7 @@ namespace Chummer
         {
             if (objCharacter == null)
                 s_strInvariantSelectedValue = value;
-            else
+            else if (!objCharacter.IsDisposed)
                 s_dicSelectedValues.AddOrUpdate(objCharacter, value, (c, s) => value);
         }
 
@@ -246,7 +246,7 @@ namespace Chummer
         {
             if (objCharacter == null)
                 s_strInvariantForcedValue = value;
-            else
+            else if (!objCharacter.IsDisposed)
                 s_dicForcedValues.AddOrUpdate(objCharacter, value, (c, s) => value);
         }
 
