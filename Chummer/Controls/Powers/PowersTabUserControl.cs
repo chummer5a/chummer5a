@@ -313,7 +313,7 @@ namespace Chummer.UI.Powers
                     foreach (XmlNode xmlCategoryNode in xmlPowerCategoryList)
                     {
                         string strName = xmlCategoryNode.InnerText;
-                        ret.Add(new ValueTuple<string, Predicate<Power>>(
+                        ret.Add(new Tuple<string, Predicate<Power>>(
                             LanguageManager.GetString("Label_Category") + LanguageManager.GetString("String_Space") + (xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName),
                             power => power.Category == strName));
                     }
@@ -339,7 +339,7 @@ namespace Chummer.UI.Powers
                     CursorWait objCursorWait = await CursorWait.NewAsync(this, token: objJoinedToken).ConfigureAwait(false);
                     try
                     {
-                        if (!(cboDisplayFilter.SelectedItem is ValueTuple<string, Func<Power, CancellationToken, Task<bool>>> selectedItem))
+                        if (!(cboDisplayFilter.SelectedItem is Tuple<string, Func<Power, CancellationToken, Task<bool>>> selectedItem))
                             return;
                         if (selectedItem.Item2 == null)
                         {

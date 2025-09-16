@@ -1269,7 +1269,7 @@ namespace Chummer.UI.Skills
             try
             {
                 if (!(await cboDisplayFilter.DoThreadSafeFuncAsync(x => x.SelectedItem, MyToken).ConfigureAwait(false)
-                        is ValueTuple<string, Predicate<Skill>, Func<Skill, CancellationToken, Task<bool>>>
+                        is Tuple<string, Predicate<Skill>, Func<Skill, CancellationToken, Task<bool>>>
                         selectedItem))
                     return;
                 if (selectedItem.Item2 == null)
@@ -1340,7 +1340,7 @@ namespace Chummer.UI.Skills
             try
             {
                 if (!(await cboSort.DoThreadSafeFuncAsync(x => x.SelectedItem, token: MyToken).ConfigureAwait(false) is
-                        ValueTuple<string, IComparer<Skill>, IAsyncComparer<Skill>> selectedItem))
+                        Tuple<string, IComparer<Skill>, IAsyncComparer<Skill>> selectedItem))
                     return;
                 await _lstActiveSkills.DoThreadSafeAsync(x => x.SuspendLayout(), token: MyToken).ConfigureAwait(false);
                 try
@@ -1541,7 +1541,7 @@ namespace Chummer.UI.Skills
             try
             {
                 if (!(await cboSortKnowledge.DoThreadSafeFuncAsync(x => x.SelectedItem, token: MyToken).ConfigureAwait(false) is
-                        ValueTuple<string, IComparer<KnowledgeSkill>, IAsyncComparer<KnowledgeSkill>> selectedItem))
+                        Tuple<string, IComparer<KnowledgeSkill>, IAsyncComparer<KnowledgeSkill>> selectedItem))
                     return;
                 await _lstKnowledgeSkills.DoThreadSafeAsync(x => x.SuspendLayout(), token: MyToken).ConfigureAwait(false);
                 try
@@ -1565,7 +1565,7 @@ namespace Chummer.UI.Skills
             try
             {
                 if (!(await cboDisplayFilterKnowledge.DoThreadSafeFuncAsync(x => x.SelectedItem, MyToken).ConfigureAwait(false)
-                        is ValueTuple<string, Predicate<KnowledgeSkill>, Func<KnowledgeSkill, CancellationToken, Task<bool>>>
+                        is Tuple<string, Predicate<KnowledgeSkill>, Func<KnowledgeSkill, CancellationToken, Task<bool>>>
                         selectedItem))
                     return;
                 if (selectedItem.Item2 == null)
