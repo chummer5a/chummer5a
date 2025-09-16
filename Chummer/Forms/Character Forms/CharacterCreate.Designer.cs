@@ -5573,7 +5573,6 @@ namespace Chummer
             this.cboTradition.Name = "cboTradition";
             this.cboTradition.Size = new System.Drawing.Size(186, 21);
             this.cboTradition.TabIndex = 90;
-            this.cboTradition.TooltipText = "";
             this.cboTradition.SelectedIndexChanged += new System.EventHandler(this.cboTradition_SelectedIndexChanged);
             // 
             // lblDrainAttributesLabel
@@ -5623,7 +5622,6 @@ namespace Chummer
             this.cboSpiritManipulation.Name = "cboSpiritManipulation";
             this.cboSpiritManipulation.Size = new System.Drawing.Size(186, 21);
             this.cboSpiritManipulation.TabIndex = 153;
-            this.cboSpiritManipulation.TooltipText = "";
             this.cboSpiritManipulation.Visible = false;
             // 
             // lblTraditionSourceLabel
@@ -5682,7 +5680,6 @@ namespace Chummer
             this.cboSpiritCombat.Name = "cboSpiritCombat";
             this.cboSpiritCombat.Size = new System.Drawing.Size(186, 21);
             this.cboSpiritCombat.TabIndex = 145;
-            this.cboSpiritCombat.TooltipText = "";
             this.cboSpiritCombat.Visible = false;
             // 
             // cboSpiritIllusion
@@ -5694,7 +5691,6 @@ namespace Chummer
             this.cboSpiritIllusion.Name = "cboSpiritIllusion";
             this.cboSpiritIllusion.Size = new System.Drawing.Size(186, 21);
             this.cboSpiritIllusion.TabIndex = 151;
-            this.cboSpiritIllusion.TooltipText = "";
             this.cboSpiritIllusion.Visible = false;
             // 
             // lblSpiritDetection
@@ -5719,7 +5715,6 @@ namespace Chummer
             this.cboSpiritDetection.Name = "cboSpiritDetection";
             this.cboSpiritDetection.Size = new System.Drawing.Size(186, 21);
             this.cboSpiritDetection.TabIndex = 147;
-            this.cboSpiritDetection.TooltipText = "";
             this.cboSpiritDetection.Visible = false;
             // 
             // lblSpiritIllusion
@@ -5744,7 +5739,6 @@ namespace Chummer
             this.cboSpiritHealth.Name = "cboSpiritHealth";
             this.cboSpiritHealth.Size = new System.Drawing.Size(186, 21);
             this.cboSpiritHealth.TabIndex = 149;
-            this.cboSpiritHealth.TooltipText = "";
             this.cboSpiritHealth.Visible = false;
             // 
             // lblSpiritHealth
@@ -5812,7 +5806,6 @@ namespace Chummer
             this.cboDrain.Name = "cboDrain";
             this.cboDrain.Size = new System.Drawing.Size(80, 21);
             this.cboDrain.TabIndex = 143;
-            this.cboDrain.TooltipText = "";
             this.cboDrain.Visible = false;
             // 
             // gpbMagicianMentorSpirit
@@ -6348,7 +6341,6 @@ namespace Chummer
             this.cboStream.Name = "cboStream";
             this.cboStream.Size = new System.Drawing.Size(386, 21);
             this.cboStream.TabIndex = 101;
-            this.cboStream.TooltipText = "";
             this.cboStream.SelectedIndexChanged += new System.EventHandler(this.cboStream_SelectedIndexChanged);
             // 
             // lblFadingAttributesLabel
@@ -8093,7 +8085,6 @@ namespace Chummer
             this.cboCyberwareGrade.Name = "cboCyberwareGrade";
             this.cboCyberwareGrade.Size = new System.Drawing.Size(194, 21);
             this.cboCyberwareGrade.TabIndex = 43;
-            this.cboCyberwareGrade.TooltipText = "";
             this.cboCyberwareGrade.Visible = false;
             this.cboCyberwareGrade.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGrade_SelectedIndexChanged);
             // 
@@ -8328,7 +8319,6 @@ namespace Chummer
             this.cboCyberwareAttack.Name = "cboCyberwareAttack";
             this.cboCyberwareAttack.Size = new System.Drawing.Size(103, 21);
             this.cboCyberwareAttack.TabIndex = 248;
-            this.cboCyberwareAttack.TooltipText = "";
             this.cboCyberwareAttack.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareAttack_SelectedIndexChanged);
             // 
             // cboCyberwareSleaze
@@ -8340,7 +8330,6 @@ namespace Chummer
             this.cboCyberwareSleaze.Name = "cboCyberwareSleaze";
             this.cboCyberwareSleaze.Size = new System.Drawing.Size(103, 21);
             this.cboCyberwareSleaze.TabIndex = 249;
-            this.cboCyberwareSleaze.TooltipText = "";
             this.cboCyberwareSleaze.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareSleaze_SelectedIndexChanged);
             // 
             // cboCyberwareDataProcessing
@@ -8352,7 +8341,6 @@ namespace Chummer
             this.cboCyberwareDataProcessing.Name = "cboCyberwareDataProcessing";
             this.cboCyberwareDataProcessing.Size = new System.Drawing.Size(103, 21);
             this.cboCyberwareDataProcessing.TabIndex = 250;
-            this.cboCyberwareDataProcessing.TooltipText = "";
             this.cboCyberwareDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareDataProcessing_SelectedIndexChanged);
             // 
             // cboCyberwareFirewall
@@ -8364,7 +8352,6 @@ namespace Chummer
             this.cboCyberwareFirewall.Name = "cboCyberwareFirewall";
             this.cboCyberwareFirewall.Size = new System.Drawing.Size(103, 21);
             this.cboCyberwareFirewall.TabIndex = 251;
-            this.cboCyberwareFirewall.TooltipText = "";
             this.cboCyberwareFirewall.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareFirewall_SelectedIndexChanged);
             // 
             // flpCyberwareMatrixCheckBoxes
@@ -9000,7 +8987,6 @@ namespace Chummer
             this.cboGearFirewall.Name = "cboGearFirewall";
             this.cboGearFirewall.Size = new System.Drawing.Size(119, 21);
             this.cboGearFirewall.TabIndex = 158;
-            this.cboGearFirewall.TooltipText = "";
             this.cboGearFirewall.Visible = false;
             this.cboGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboGearFirewall_SelectedIndexChanged);
             // 
@@ -9025,7 +9011,6 @@ namespace Chummer
             this.cboGearDataProcessing.Name = "cboGearDataProcessing";
             this.cboGearDataProcessing.Size = new System.Drawing.Size(119, 21);
             this.cboGearDataProcessing.TabIndex = 159;
-            this.cboGearDataProcessing.TooltipText = "";
             this.cboGearDataProcessing.Visible = false;
             this.cboGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboGearDataProcessing_SelectedIndexChanged);
             // 
@@ -9050,7 +9035,6 @@ namespace Chummer
             this.cboGearAttack.Name = "cboGearAttack";
             this.cboGearAttack.Size = new System.Drawing.Size(119, 21);
             this.cboGearAttack.TabIndex = 156;
-            this.cboGearAttack.TooltipText = "";
             this.cboGearAttack.Visible = false;
             this.cboGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboGearAttack_SelectedIndexChanged);
             // 
@@ -9063,7 +9047,6 @@ namespace Chummer
             this.cboGearSleaze.Name = "cboGearSleaze";
             this.cboGearSleaze.Size = new System.Drawing.Size(119, 21);
             this.cboGearSleaze.TabIndex = 157;
-            this.cboGearSleaze.TooltipText = "";
             this.cboGearSleaze.Visible = false;
             this.cboGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboGearSleaze_SelectedIndexChanged);
             // 
@@ -12984,7 +12967,6 @@ namespace Chummer
             this.cboVehicleWeaponFiringMode.Name = "cboVehicleWeaponFiringMode";
             this.cboVehicleWeaponFiringMode.Size = new System.Drawing.Size(153, 21);
             this.cboVehicleWeaponFiringMode.TabIndex = 250;
-            this.cboVehicleWeaponFiringMode.TooltipText = "";
             this.cboVehicleWeaponFiringMode.SelectedIndexChanged += new System.EventHandler(this.cboVehicleWeaponFiringMode_SelectedIndexChanged);
             // 
             // lblFiringModeLabel
@@ -13357,7 +13339,6 @@ namespace Chummer
             this.cboVehicleAttack.Name = "cboVehicleAttack";
             this.cboVehicleAttack.Size = new System.Drawing.Size(118, 21);
             this.cboVehicleAttack.TabIndex = 193;
-            this.cboVehicleAttack.TooltipText = "";
             this.cboVehicleAttack.Visible = false;
             this.cboVehicleAttack.SelectedIndexChanged += new System.EventHandler(this.cboVehicleAttack_SelectedIndexChanged);
             // 
@@ -13394,7 +13375,6 @@ namespace Chummer
             this.cboVehicleSleaze.Name = "cboVehicleSleaze";
             this.cboVehicleSleaze.Size = new System.Drawing.Size(118, 21);
             this.cboVehicleSleaze.TabIndex = 194;
-            this.cboVehicleSleaze.TooltipText = "";
             this.cboVehicleSleaze.Visible = false;
             this.cboVehicleSleaze.SelectedIndexChanged += new System.EventHandler(this.cboVehicleSleaze_SelectedIndexChanged);
             // 
@@ -13419,7 +13399,6 @@ namespace Chummer
             this.cboVehicleDataProcessing.Name = "cboVehicleDataProcessing";
             this.cboVehicleDataProcessing.Size = new System.Drawing.Size(118, 21);
             this.cboVehicleDataProcessing.TabIndex = 196;
-            this.cboVehicleDataProcessing.TooltipText = "";
             this.cboVehicleDataProcessing.Visible = false;
             this.cboVehicleDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboVehicleDataProcessing_SelectedIndexChanged);
             // 
@@ -13432,7 +13411,6 @@ namespace Chummer
             this.cboVehicleFirewall.Name = "cboVehicleFirewall";
             this.cboVehicleFirewall.Size = new System.Drawing.Size(118, 21);
             this.cboVehicleFirewall.TabIndex = 195;
-            this.cboVehicleFirewall.TooltipText = "";
             this.cboVehicleFirewall.Visible = false;
             this.cboVehicleFirewall.SelectedIndexChanged += new System.EventHandler(this.cboVehicleFirewall_SelectedIndexChanged);
             // 
@@ -13710,7 +13688,6 @@ namespace Chummer
             this.cboPrimaryArm.Name = "cboPrimaryArm";
             this.cboPrimaryArm.Size = new System.Drawing.Size(145, 21);
             this.cboPrimaryArm.TabIndex = 93;
-            this.cboPrimaryArm.TooltipText = "";
             this.cboPrimaryArm.SelectedIndexChanged += new System.EventHandler(this.cboPrimaryArm_SelectedIndexChanged);
             // 
             // lblNumMugshots

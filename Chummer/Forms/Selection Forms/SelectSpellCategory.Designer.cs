@@ -75,7 +75,6 @@ namespace Chummer
             this.cboCategory.Name = "cboCategory";
             this.cboCategory.Size = new System.Drawing.Size(280, 21);
             this.cboCategory.TabIndex = 1;
-            this.cboCategory.TooltipText = "";
             // 
             // tlpMain
             // 

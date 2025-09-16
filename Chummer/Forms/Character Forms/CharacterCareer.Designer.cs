@@ -7203,7 +7203,6 @@ namespace Chummer
             this.cboAttributeCategory.Name = "cboAttributeCategory";
             this.cboAttributeCategory.Size = new System.Drawing.Size(325, 21);
             this.cboAttributeCategory.TabIndex = 107;
-            this.cboAttributeCategory.TooltipText = "";
             this.cboAttributeCategory.SelectedIndexChanged += new System.EventHandler(this.cboAttributeCategory_SelectedIndexChanged);
             // 
             // lblMetatypeLabel
@@ -7993,7 +7992,6 @@ namespace Chummer
             this.cboTradition.Name = "cboTradition";
             this.cboTradition.Size = new System.Drawing.Size(213, 21);
             this.cboTradition.TabIndex = 99;
-            this.cboTradition.TooltipText = "";
             this.cboTradition.SelectedIndexChanged += new System.EventHandler(this.cboTradition_SelectedIndexChanged);
             // 
             // lblDrainAttributesLabel
@@ -8039,7 +8037,6 @@ namespace Chummer
             this.cboSpiritManipulation.Name = "cboSpiritManipulation";
             this.cboSpiritManipulation.Size = new System.Drawing.Size(213, 21);
             this.cboSpiritManipulation.TabIndex = 166;
-            this.cboSpiritManipulation.TooltipText = "";
             this.cboSpiritManipulation.Visible = false;
             // 
             // lblSpiritManipulation
@@ -8077,7 +8074,6 @@ namespace Chummer
             this.cboSpiritIllusion.Name = "cboSpiritIllusion";
             this.cboSpiritIllusion.Size = new System.Drawing.Size(213, 21);
             this.cboSpiritIllusion.TabIndex = 164;
-            this.cboSpiritIllusion.TooltipText = "";
             this.cboSpiritIllusion.Visible = false;
             // 
             // cboSpiritCombat
@@ -8089,7 +8085,6 @@ namespace Chummer
             this.cboSpiritCombat.Name = "cboSpiritCombat";
             this.cboSpiritCombat.Size = new System.Drawing.Size(213, 21);
             this.cboSpiritCombat.TabIndex = 158;
-            this.cboSpiritCombat.TooltipText = "";
             this.cboSpiritCombat.Visible = false;
             // 
             // lblSpiritIllusion
@@ -8114,7 +8109,6 @@ namespace Chummer
             this.cboSpiritHealth.Name = "cboSpiritHealth";
             this.cboSpiritHealth.Size = new System.Drawing.Size(213, 21);
             this.cboSpiritHealth.TabIndex = 162;
-            this.cboSpiritHealth.TooltipText = "";
             this.cboSpiritHealth.Visible = false;
             // 
             // lblSpiritDetection
@@ -8139,7 +8133,6 @@ namespace Chummer
             this.cboSpiritDetection.Name = "cboSpiritDetection";
             this.cboSpiritDetection.Size = new System.Drawing.Size(213, 21);
             this.cboSpiritDetection.TabIndex = 160;
-            this.cboSpiritDetection.TooltipText = "";
             this.cboSpiritDetection.Visible = false;
             // 
             // lblSpiritHealth
@@ -8212,7 +8205,6 @@ namespace Chummer
             this.cboDrain.Name = "cboDrain";
             this.cboDrain.Size = new System.Drawing.Size(80, 21);
             this.cboDrain.TabIndex = 156;
-            this.cboDrain.TooltipText = "";
             this.cboDrain.Visible = false;
             // 
             // gpbMagicianMentorSpirit
@@ -8830,7 +8822,6 @@ namespace Chummer
             this.cboStream.Name = "cboStream";
             this.cboStream.Size = new System.Drawing.Size(150, 21);
             this.cboStream.TabIndex = 106;
-            this.cboStream.TooltipText = "";
             this.cboStream.SelectedIndexChanged += new System.EventHandler(this.cboStream_SelectedIndexChanged);
             // 
             // lblFadingAttributesLabel
@@ -10701,7 +10692,6 @@ namespace Chummer
             this.cboCyberwareAttack.Name = "cboCyberwareAttack";
             this.cboCyberwareAttack.Size = new System.Drawing.Size(115, 21);
             this.cboCyberwareAttack.TabIndex = 211;
-            this.cboCyberwareAttack.TooltipText = "";
             this.cboCyberwareAttack.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareAttack_SelectedIndexChanged);
             // 
             // cboCyberwareSleaze
@@ -10713,7 +10703,6 @@ namespace Chummer
             this.cboCyberwareSleaze.Name = "cboCyberwareSleaze";
             this.cboCyberwareSleaze.Size = new System.Drawing.Size(115, 21);
             this.cboCyberwareSleaze.TabIndex = 212;
-            this.cboCyberwareSleaze.TooltipText = "";
             this.cboCyberwareSleaze.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareSleaze_SelectedIndexChanged);
             // 
             // cboCyberwareDataProcessing
@@ -10725,7 +10714,6 @@ namespace Chummer
             this.cboCyberwareDataProcessing.Name = "cboCyberwareDataProcessing";
             this.cboCyberwareDataProcessing.Size = new System.Drawing.Size(115, 21);
             this.cboCyberwareDataProcessing.TabIndex = 214;
-            this.cboCyberwareDataProcessing.TooltipText = "";
             this.cboCyberwareDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareDataProcessing_SelectedIndexChanged);
             // 
             // cboCyberwareFirewall
@@ -10737,7 +10725,6 @@ namespace Chummer
             this.cboCyberwareFirewall.Name = "cboCyberwareFirewall";
             this.cboCyberwareFirewall.Size = new System.Drawing.Size(115, 21);
             this.cboCyberwareFirewall.TabIndex = 213;
-            this.cboCyberwareFirewall.TooltipText = "";
             this.cboCyberwareFirewall.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareFirewall_SelectedIndexChanged);
             // 
             // cboCyberwareOverclocker
@@ -10749,7 +10736,6 @@ namespace Chummer
             this.cboCyberwareOverclocker.Name = "cboCyberwareOverclocker";
             this.cboCyberwareOverclocker.Size = new System.Drawing.Size(115, 21);
             this.cboCyberwareOverclocker.TabIndex = 216;
-            this.cboCyberwareOverclocker.TooltipText = "";
             this.cboCyberwareOverclocker.Visible = false;
             this.cboCyberwareOverclocker.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareOverclocker_SelectedIndexChanged);
             // 
@@ -12054,7 +12040,6 @@ namespace Chummer
             this.cboGearOverclocker.Name = "cboGearOverclocker";
             this.cboGearOverclocker.Size = new System.Drawing.Size(93, 21);
             this.cboGearOverclocker.TabIndex = 205;
-            this.cboGearOverclocker.TooltipText = "";
             this.cboGearOverclocker.Visible = false;
             this.cboGearOverclocker.SelectedIndexChanged += new System.EventHandler(this.cboGearOverclocker_SelectedIndexChanged);
             // 
@@ -12067,7 +12052,6 @@ namespace Chummer
             this.cboGearAttack.Name = "cboGearAttack";
             this.cboGearAttack.Size = new System.Drawing.Size(93, 21);
             this.cboGearAttack.TabIndex = 164;
-            this.cboGearAttack.TooltipText = "";
             this.cboGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboGearAttack_SelectedIndexChanged);
             // 
             // cboGearSleaze
@@ -12079,7 +12063,6 @@ namespace Chummer
             this.cboGearSleaze.Name = "cboGearSleaze";
             this.cboGearSleaze.Size = new System.Drawing.Size(93, 21);
             this.cboGearSleaze.TabIndex = 165;
-            this.cboGearSleaze.TooltipText = "";
             this.cboGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboGearSleaze_SelectedIndexChanged);
             // 
             // cboGearDataProcessing
@@ -12091,7 +12074,6 @@ namespace Chummer
             this.cboGearDataProcessing.Name = "cboGearDataProcessing";
             this.cboGearDataProcessing.Size = new System.Drawing.Size(93, 21);
             this.cboGearDataProcessing.TabIndex = 167;
-            this.cboGearDataProcessing.TooltipText = "";
             this.cboGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboGearDataProcessing_SelectedIndexChanged);
             // 
             // cboGearFirewall
@@ -12103,7 +12085,6 @@ namespace Chummer
             this.cboGearFirewall.Name = "cboGearFirewall";
             this.cboGearFirewall.Size = new System.Drawing.Size(93, 21);
             this.cboGearFirewall.TabIndex = 166;
-            this.cboGearFirewall.TooltipText = "";
             this.cboGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboGearFirewall_SelectedIndexChanged);
             // 
             // lblGearOverclockerLabel
@@ -13411,7 +13392,6 @@ namespace Chummer
             this.cboArmorFirewall.Name = "cboArmorFirewall";
             this.cboArmorFirewall.Size = new System.Drawing.Size(93, 21);
             this.cboArmorFirewall.TabIndex = 219;
-            this.cboArmorFirewall.TooltipText = "";
             this.cboArmorFirewall.SelectedIndexChanged += new System.EventHandler(this.cboArmorFirewall_SelectedIndexChanged);
             // 
             // cboArmorOverclocker
@@ -13423,7 +13403,6 @@ namespace Chummer
             this.cboArmorOverclocker.Name = "cboArmorOverclocker";
             this.cboArmorOverclocker.Size = new System.Drawing.Size(93, 21);
             this.cboArmorOverclocker.TabIndex = 214;
-            this.cboArmorOverclocker.TooltipText = "";
             this.cboArmorOverclocker.Visible = false;
             this.cboArmorOverclocker.SelectedIndexChanged += new System.EventHandler(this.cboArmorOverclocker_SelectedIndexChanged);
             // 
@@ -13577,7 +13556,6 @@ namespace Chummer
             this.cboArmorAttack.Name = "cboArmorAttack";
             this.cboArmorAttack.Size = new System.Drawing.Size(93, 21);
             this.cboArmorAttack.TabIndex = 216;
-            this.cboArmorAttack.TooltipText = "";
             this.cboArmorAttack.SelectedIndexChanged += new System.EventHandler(this.cboArmorAttack_SelectedIndexChanged);
             // 
             // cboArmorSleaze
@@ -13589,7 +13567,6 @@ namespace Chummer
             this.cboArmorSleaze.Name = "cboArmorSleaze";
             this.cboArmorSleaze.Size = new System.Drawing.Size(93, 21);
             this.cboArmorSleaze.TabIndex = 217;
-            this.cboArmorSleaze.TooltipText = "";
             this.cboArmorSleaze.SelectedIndexChanged += new System.EventHandler(this.cboArmorSleaze_SelectedIndexChanged);
             // 
             // cboArmorDataProcessing
@@ -13601,7 +13578,6 @@ namespace Chummer
             this.cboArmorDataProcessing.Name = "cboArmorDataProcessing";
             this.cboArmorDataProcessing.Size = new System.Drawing.Size(93, 21);
             this.cboArmorDataProcessing.TabIndex = 218;
-            this.cboArmorDataProcessing.TooltipText = "";
             this.cboArmorDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboArmorDataProcessing_SelectedIndexChanged);
             // 
             // tabArmorCM
@@ -15296,7 +15272,6 @@ namespace Chummer
             this.cboWeaponAmmo.Name = "cboWeaponAmmo";
             this.cboWeaponAmmo.Size = new System.Drawing.Size(151, 21);
             this.cboWeaponAmmo.TabIndex = 106;
-            this.cboWeaponAmmo.TooltipText = "";
             this.cboWeaponAmmo.SelectedIndexChanged += new System.EventHandler(this.cboWeaponAmmo_SelectedIndexChanged);
             // 
             // lblWeaponAmmoRemainingLabel
@@ -15475,7 +15450,6 @@ namespace Chummer
             this.cboWeaponOverclocker.Name = "cboWeaponOverclocker";
             this.cboWeaponOverclocker.Size = new System.Drawing.Size(96, 21);
             this.cboWeaponOverclocker.TabIndex = 218;
-            this.cboWeaponOverclocker.TooltipText = "";
             this.cboWeaponOverclocker.Visible = false;
             this.cboWeaponOverclocker.SelectedIndexChanged += new System.EventHandler(this.cboWeaponOverclocker_SelectedIndexChanged);
             // 
@@ -15581,7 +15555,6 @@ namespace Chummer
             this.cboWeaponGearDataProcessing.Name = "cboWeaponGearDataProcessing";
             this.cboWeaponGearDataProcessing.Size = new System.Drawing.Size(96, 21);
             this.cboWeaponGearDataProcessing.TabIndex = 210;
-            this.cboWeaponGearDataProcessing.TooltipText = "";
             this.cboWeaponGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearDataProcessing_SelectedIndexChanged);
             // 
             // lblWeaponAttackLabel
@@ -15617,7 +15590,6 @@ namespace Chummer
             this.cboWeaponGearAttack.Name = "cboWeaponGearAttack";
             this.cboWeaponGearAttack.Size = new System.Drawing.Size(96, 21);
             this.cboWeaponGearAttack.TabIndex = 207;
-            this.cboWeaponGearAttack.TooltipText = "";
             this.cboWeaponGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearAttack_SelectedIndexChanged);
             // 
             // cboWeaponGearSleaze
@@ -15629,7 +15601,6 @@ namespace Chummer
             this.cboWeaponGearSleaze.Name = "cboWeaponGearSleaze";
             this.cboWeaponGearSleaze.Size = new System.Drawing.Size(96, 21);
             this.cboWeaponGearSleaze.TabIndex = 208;
-            this.cboWeaponGearSleaze.TooltipText = "";
             this.cboWeaponGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearSleaze_SelectedIndexChanged);
             // 
             // lblWeaponSleazeLabel
@@ -15653,7 +15624,6 @@ namespace Chummer
             this.cboWeaponGearFirewall.Name = "cboWeaponGearFirewall";
             this.cboWeaponGearFirewall.Size = new System.Drawing.Size(96, 21);
             this.cboWeaponGearFirewall.TabIndex = 209;
-            this.cboWeaponGearFirewall.TooltipText = "";
             this.cboWeaponGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearFirewall_SelectedIndexChanged);
             // 
             // lblWeaponDeviceRatingLabel
@@ -18538,7 +18508,6 @@ namespace Chummer
             this.cboVehicleWeaponAmmo.Name = "cboVehicleWeaponAmmo";
             this.cboVehicleWeaponAmmo.Size = new System.Drawing.Size(151, 21);
             this.cboVehicleWeaponAmmo.TabIndex = 114;
-            this.cboVehicleWeaponAmmo.TooltipText = "";
             this.cboVehicleWeaponAmmo.SelectedIndexChanged += new System.EventHandler(this.cboVehicleWeaponAmmo_SelectedIndexChanged);
             // 
             // lblFiringModeLabel
@@ -18562,7 +18531,6 @@ namespace Chummer
             this.cboVehicleWeaponFiringMode.Name = "cboVehicleWeaponFiringMode";
             this.cboVehicleWeaponFiringMode.Size = new System.Drawing.Size(151, 21);
             this.cboVehicleWeaponFiringMode.TabIndex = 248;
-            this.cboVehicleWeaponFiringMode.TooltipText = "";
             this.cboVehicleWeaponFiringMode.SelectedIndexChanged += new System.EventHandler(this.cboVehicleWeaponFiringMode_SelectedIndexChanged);
             // 
             // flpVehiclesWeaponCareerButtons
@@ -18695,7 +18663,6 @@ namespace Chummer
             this.cboVehicleDataProcessing.Name = "cboVehicleDataProcessing";
             this.cboVehicleDataProcessing.Size = new System.Drawing.Size(96, 21);
             this.cboVehicleDataProcessing.TabIndex = 206;
-            this.cboVehicleDataProcessing.TooltipText = "";
             this.cboVehicleDataProcessing.Visible = false;
             this.cboVehicleDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboVehicleDataProcessing_SelectedIndexChanged);
             // 
@@ -18708,7 +18675,6 @@ namespace Chummer
             this.cboVehicleFirewall.Name = "cboVehicleFirewall";
             this.cboVehicleFirewall.Size = new System.Drawing.Size(96, 21);
             this.cboVehicleFirewall.TabIndex = 205;
-            this.cboVehicleFirewall.TooltipText = "";
             this.cboVehicleFirewall.Visible = false;
             this.cboVehicleFirewall.SelectedIndexChanged += new System.EventHandler(this.cboVehicleFirewall_SelectedIndexChanged);
             // 
@@ -18745,7 +18711,6 @@ namespace Chummer
             this.cboVehicleSleaze.Name = "cboVehicleSleaze";
             this.cboVehicleSleaze.Size = new System.Drawing.Size(96, 21);
             this.cboVehicleSleaze.TabIndex = 204;
-            this.cboVehicleSleaze.TooltipText = "";
             this.cboVehicleSleaze.Visible = false;
             this.cboVehicleSleaze.SelectedIndexChanged += new System.EventHandler(this.cboVehicleSleaze_SelectedIndexChanged);
             // 
@@ -18781,7 +18746,6 @@ namespace Chummer
             this.cboVehicleAttack.Name = "cboVehicleAttack";
             this.cboVehicleAttack.Size = new System.Drawing.Size(96, 21);
             this.cboVehicleAttack.TabIndex = 203;
-            this.cboVehicleAttack.TooltipText = "";
             this.cboVehicleAttack.Visible = false;
             this.cboVehicleAttack.SelectedIndexChanged += new System.EventHandler(this.cboVehicleAttack_SelectedIndexChanged);
             // 
@@ -20248,7 +20212,6 @@ namespace Chummer
             this.cboPrimaryArm.Name = "cboPrimaryArm";
             this.cboPrimaryArm.Size = new System.Drawing.Size(145, 21);
             this.cboPrimaryArm.TabIndex = 95;
-            this.cboPrimaryArm.TooltipText = "";
             this.cboPrimaryArm.SelectedIndexChanged += new System.EventHandler(this.cboPrimaryArm_SelectedIndexChanged);
             // 
             // lblGender

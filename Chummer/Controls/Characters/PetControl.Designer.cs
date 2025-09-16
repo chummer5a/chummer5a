@@ -145,7 +145,6 @@ namespace Chummer
             this.cboMetatype.Name = "cboMetatype";
             this.cboMetatype.Size = new System.Drawing.Size(271, 21);
             this.cboMetatype.TabIndex = 24;
-            this.cboMetatype.TooltipText = "";
             this.cboMetatype.TextChanged += new System.EventHandler(this.cboMetatype_TextChanged);
             // 
             // tlpMain

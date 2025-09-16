@@ -139,7 +139,6 @@ namespace Chummer
             this.cboMethod.Name = "cboMethod";
             this.cboMethod.Size = new System.Drawing.Size(200, 21);
             this.cboMethod.TabIndex = 3;
-            this.cboMethod.TooltipText = "";
             this.cboMethod.SelectedIndexChanged += new System.EventHandler(this.cboMethod_SelectedIndexChanged);
             // 
             // cmdReroll

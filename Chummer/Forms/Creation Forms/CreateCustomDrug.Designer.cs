@@ -223,7 +223,6 @@ namespace Chummer
             this.cboGrade.Name = "cboGrade";
             this.cboGrade.Size = new System.Drawing.Size(315, 21);
             this.cboGrade.TabIndex = 27;
-            this.cboGrade.TooltipText = "";
             this.cboGrade.SelectedIndexChanged += new System.EventHandler(this.cboGrade_SelectedIndexChanged);
             // 
             // tlpMain

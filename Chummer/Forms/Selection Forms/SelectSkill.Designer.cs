@@ -48,7 +48,6 @@ namespace Chummer
             this.cboSkill.Name = "cboSkill";
             this.cboSkill.Size = new System.Drawing.Size(320, 21);
             this.cboSkill.TabIndex = 1;
-            this.cboSkill.TooltipText = "";
             this.cboSkill.SelectedIndexChanged += new System.EventHandler(this.cboSkill_SelectedIndexChanged);
             // 
             // lblDescription
@@ -141,7 +140,6 @@ namespace Chummer
             this.cboExtra.Name = "cboExtra";
             this.cboExtra.Size = new System.Drawing.Size(320, 21);
             this.cboExtra.TabIndex = 4;
-            this.cboExtra.TooltipText = "";
             this.cboExtra.Visible = false;
             // 
             // SelectSkill

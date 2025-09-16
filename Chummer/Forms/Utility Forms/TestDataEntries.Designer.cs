@@ -57,7 +57,6 @@ namespace Chummer
             this.cboTest.Size = new System.Drawing.Size(187, 21);
             this.cboTest.Sorted = true;
             this.cboTest.TabIndex = 0;
-            this.cboTest.TooltipText = "";
             // 
             // cmdTest
             // 

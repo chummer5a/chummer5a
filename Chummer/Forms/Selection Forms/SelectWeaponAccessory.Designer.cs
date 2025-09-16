@@ -371,7 +371,6 @@ namespace Chummer
             this.cboMount.Name = "cboMount";
             this.cboMount.Size = new System.Drawing.Size(224, 21);
             this.cboMount.TabIndex = 20;
-            this.cboMount.TooltipText = "";
             this.cboMount.SelectedIndexChanged += new System.EventHandler(this.cboMount_SelectedIndexChanged);
             // 
             // chkBlackMarketDiscount
@@ -400,7 +399,6 @@ namespace Chummer
             this.cboExtraMount.Name = "cboExtraMount";
             this.cboExtraMount.Size = new System.Drawing.Size(224, 21);
             this.cboExtraMount.TabIndex = 41;
-            this.cboExtraMount.TooltipText = "";
             this.cboExtraMount.SelectedIndexChanged += new System.EventHandler(this.cboExtraMount_SelectedIndexChanged);
             // 
             // lblExtraMountLabel

@@ -48,7 +48,6 @@ namespace Chummer
             this.cboSkillGroup.Name = "cboSkillGroup";
             this.cboSkillGroup.Size = new System.Drawing.Size(280, 21);
             this.cboSkillGroup.TabIndex = 1;
-            this.cboSkillGroup.TooltipText = "";
             // 
             // cmdOK
             // 

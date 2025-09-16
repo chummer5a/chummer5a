@@ -153,7 +153,6 @@ namespace Chummer
             this.cboSelectLifestyle.Name = "cboSelectLifestyle";
             this.cboSelectLifestyle.Size = new System.Drawing.Size(232, 21);
             this.cboSelectLifestyle.TabIndex = 5;
-            this.cboSelectLifestyle.TooltipText = "";
             this.cboSelectLifestyle.SelectedIndexChanged += new System.EventHandler(this.cboSelectLifestyle_SelectionChanged);
             // 
             // lblDescription

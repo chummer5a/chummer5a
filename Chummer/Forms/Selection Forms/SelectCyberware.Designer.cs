@@ -297,7 +297,6 @@ namespace Chummer
             this.cboGrade.Name = "cboGrade";
             this.cboGrade.Size = new System.Drawing.Size(242, 21);
             this.cboGrade.TabIndex = 25;
-            this.cboGrade.TooltipText = "";
             this.cboGrade.SelectedIndexChanged += new System.EventHandler(this.cboGrade_SelectedIndexChanged);
             this.cboGrade.EnabledChanged += new System.EventHandler(this.cboGrade_EnabledChanged);
             // 
@@ -321,7 +320,6 @@ namespace Chummer
             this.cboCategory.Name = "cboCategory";
             this.cboCategory.Size = new System.Drawing.Size(242, 21);
             this.cboCategory.TabIndex = 23;
-            this.cboCategory.TooltipText = "";
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
             // label1

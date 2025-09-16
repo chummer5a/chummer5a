@@ -73,7 +73,6 @@ namespace Chummer.UI.Powers
             this.cboDisplayFilter.Name = "cboDisplayFilter";
             this.cboDisplayFilter.Size = new System.Drawing.Size(240, 21);
             this.cboDisplayFilter.TabIndex = 5;
-            this.cboDisplayFilter.TooltipText = "";
             this.cboDisplayFilter.SelectedIndexChanged += new System.EventHandler(this.cboDisplayFilter_SelectedIndexChanged);
             this.cboDisplayFilter.TextUpdate += new System.EventHandler(this.cboDisplayFilter_TextUpdate);
             // 

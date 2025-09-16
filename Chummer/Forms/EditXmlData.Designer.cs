@@ -140,7 +140,6 @@ namespace Chummer
             this.cboXmlFiles.Name = "cboXmlFiles";
             this.cboXmlFiles.Size = new System.Drawing.Size(667, 21);
             this.cboXmlFiles.TabIndex = 1;
-            this.cboXmlFiles.TooltipText = "";
             // 
             // splitContainerTop
             // 

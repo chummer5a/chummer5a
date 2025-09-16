@@ -59,7 +59,6 @@ namespace Chummer
             this.cboMembership.Name = "cboMembership";
             this.cboMembership.Size = new System.Drawing.Size(303, 21);
             this.cboMembership.TabIndex = 3;
-            this.cboMembership.TooltipText = "";
             this.cboMembership.SelectedIndexChanged += new System.EventHandler(this.cboMembership_SelectedIndexChanged);
             // 
             // lblMembershipLabel
@@ -83,7 +82,6 @@ namespace Chummer
             this.cboAreaOfInfluence.Name = "cboAreaOfInfluence";
             this.cboAreaOfInfluence.Size = new System.Drawing.Size(303, 21);
             this.cboAreaOfInfluence.TabIndex = 5;
-            this.cboAreaOfInfluence.TooltipText = "";
             this.cboAreaOfInfluence.SelectedIndexChanged += new System.EventHandler(this.cboAreaOfInfluence_SelectedIndexChanged);
             // 
             // lblAreaOfInfluenceLabel
@@ -107,7 +105,6 @@ namespace Chummer
             this.cboMagicalResources.Name = "cboMagicalResources";
             this.cboMagicalResources.Size = new System.Drawing.Size(303, 21);
             this.cboMagicalResources.TabIndex = 7;
-            this.cboMagicalResources.TooltipText = "";
             this.cboMagicalResources.SelectedIndexChanged += new System.EventHandler(this.cboMagicalResources_SelectedIndexChanged);
             // 
             // lblMagicalResourcesLabel
@@ -131,7 +128,6 @@ namespace Chummer
             this.cboMatrixResources.Name = "cboMatrixResources";
             this.cboMatrixResources.Size = new System.Drawing.Size(303, 21);
             this.cboMatrixResources.TabIndex = 9;
-            this.cboMatrixResources.TooltipText = "";
             this.cboMatrixResources.SelectedIndexChanged += new System.EventHandler(this.cboMatrixResources_SelectedIndexChanged);
             // 
             // lblMatrixResourcesLabel

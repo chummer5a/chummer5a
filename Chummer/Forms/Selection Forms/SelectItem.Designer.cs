@@ -80,7 +80,6 @@ namespace Chummer
             this.cboAmmo.Name = "cboAmmo";
             this.cboAmmo.Size = new System.Drawing.Size(236, 21);
             this.cboAmmo.TabIndex = 2;
-            this.cboAmmo.TooltipText = "";
             // 
             // lblAmmoLabel
             // 

@@ -85,7 +85,6 @@ namespace Chummer
             this.cboImprovemetType.Name = "cboImprovemetType";
             this.cboImprovemetType.Size = new System.Drawing.Size(380, 21);
             this.cboImprovemetType.TabIndex = 1;
-            this.cboImprovemetType.TooltipText = "";
             this.cboImprovemetType.SelectedIndexChanged += new System.EventHandler(this.cboImprovemetType_SelectedIndexChanged);
             // 
             // cmdCancel

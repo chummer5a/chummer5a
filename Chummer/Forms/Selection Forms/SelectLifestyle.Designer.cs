@@ -849,7 +849,6 @@ namespace Chummer
             this.cboBaseLifestyle.Name = "cboBaseLifestyle";
             this.cboBaseLifestyle.Size = new System.Drawing.Size(400, 21);
             this.cboBaseLifestyle.TabIndex = 32;
-            this.cboBaseLifestyle.TooltipText = "";
             this.cboBaseLifestyle.SelectedIndexChanged += new System.EventHandler(this.cboBaseLifestyle_SelectedIndexChanged);
             // 
             // tlpRightMiddle
@@ -921,7 +920,6 @@ namespace Chummer
             this.cboCity.Name = "cboCity";
             this.cboCity.Size = new System.Drawing.Size(398, 21);
             this.cboCity.TabIndex = 94;
-            this.cboCity.TooltipText = "";
             this.cboCity.SelectedIndexChanged += new System.EventHandler(this.cboCity_SelectedIndexChanged);
             // 
             // cboDistrict
@@ -932,7 +930,6 @@ namespace Chummer
             this.cboDistrict.Name = "cboDistrict";
             this.cboDistrict.Size = new System.Drawing.Size(398, 21);
             this.cboDistrict.TabIndex = 95;
-            this.cboDistrict.TooltipText = "";
             this.cboDistrict.SelectedIndexChanged += new System.EventHandler(this.cboDistrict_SelectedIndexChanged);
             // 
             // cboBorough
@@ -943,7 +940,6 @@ namespace Chummer
             this.cboBorough.Name = "cboBorough";
             this.cboBorough.Size = new System.Drawing.Size(398, 21);
             this.cboBorough.TabIndex = 96;
-            this.cboBorough.TooltipText = "";
             this.cboBorough.SelectedIndexChanged += new System.EventHandler(this.cboBorough_SelectedIndexChanged);
             // 
             // nudBonusLP

@@ -183,7 +183,6 @@ namespace Chummer
             this.cboCategory.Name = "cboCategory";
             this.cboCategory.Size = new System.Drawing.Size(303, 21);
             this.cboCategory.TabIndex = 66;
-            this.cboCategory.TooltipText = "";
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.RefreshMetatypesControl);
             // 
             // lblQualitiesLabel
@@ -480,7 +479,6 @@ namespace Chummer
             this.cboPossessionMethod.Name = "cboPossessionMethod";
             this.cboPossessionMethod.Size = new System.Drawing.Size(119, 21);
             this.cboPossessionMethod.TabIndex = 65;
-            this.cboPossessionMethod.TooltipText = "";
             this.cboPossessionMethod.Visible = false;
             // 
             // lblForceLabel
@@ -564,7 +562,6 @@ namespace Chummer
             this.cboMetavariant.Name = "cboMetavariant";
             this.cboMetavariant.Size = new System.Drawing.Size(347, 21);
             this.cboMetavariant.TabIndex = 59;
-            this.cboMetavariant.TooltipText = "";
             this.cboMetavariant.SelectedIndexChanged += new System.EventHandler(this.cboMetavariant_SelectedIndexChanged);
             // 
             // lblSourceLabel

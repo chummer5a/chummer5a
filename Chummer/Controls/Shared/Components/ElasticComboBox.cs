@@ -19,38 +19,15 @@
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
 {
     public class ElasticComboBox : ComboBox
     {
-        private readonly int _intToolTipWrap;
-
-        private readonly ToolTip _objToolTip;
-
-        private string _strToolTipText = string.Empty;
-
-        public string TooltipText
+        public ElasticComboBox()
         {
-            get => _strToolTipText;
-            set
-            {
-                value = _intToolTipWrap > 0 ? value.WordWrap(_intToolTipWrap) : value.WordWrap();
-                if (Interlocked.Exchange(ref _strToolTipText, value) == value)
-                    return;
-                _objToolTip.SetToolTip(this, value.CleanForHtml());
-            }
-        }
-
-        public ElasticComboBox() : this(ToolTipFactory.ToolTip)
-        {
-        }
-
-        public ElasticComboBox(ToolTip objToolTip, int intToolTipWrap = -1)
-        {
-            _objToolTip = objToolTip;
-            _intToolTipWrap = intToolTipWrap;
             SelectedIndexChanged += ClearUnintendedHighlight;
             Resize += ClearUnintendedHighlight;
         }
@@ -102,15 +79,6 @@ namespace Chummer
             if (objActiveControl == null || objActiveControl == this)
                 return;
             SelectionLength = 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && _objToolTip != null && _objToolTip != ToolTipFactory.ToolTip)
-            {
-                _objToolTip.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

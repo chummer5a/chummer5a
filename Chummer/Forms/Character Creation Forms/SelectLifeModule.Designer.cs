@@ -226,7 +226,6 @@ namespace Chummer
             this.cboStage.Name = "cboStage";
             this.cboStage.Size = new System.Drawing.Size(249, 21);
             this.cboStage.TabIndex = 27;
-            this.cboStage.TooltipText = "";
             this.cboStage.Visible = false;
             this.cboStage.SelectionChangeCommitted += new System.EventHandler(this.cboStage_SelectionChangeCommitted);
             // 

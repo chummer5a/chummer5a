@@ -150,7 +150,6 @@ namespace Chummer
             this.cboSpiritName.Name = "cboSpiritName";
             this.cboSpiritName.Size = new System.Drawing.Size(120, 21);
             this.cboSpiritName.TabIndex = 7;
-            this.cboSpiritName.TooltipText = "";
             // 
             // cmsSpirit
             // 

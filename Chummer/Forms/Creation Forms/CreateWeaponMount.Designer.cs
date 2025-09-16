@@ -122,7 +122,6 @@ namespace Chummer
             this.cboVisibility.Name = "cboVisibility";
             this.cboVisibility.Size = new System.Drawing.Size(240, 21);
             this.cboVisibility.TabIndex = 22;
-            this.cboVisibility.TooltipText = "";
             this.cboVisibility.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
             // 
             // lblControl
@@ -146,7 +145,6 @@ namespace Chummer
             this.cboControl.Name = "cboControl";
             this.cboControl.Size = new System.Drawing.Size(240, 21);
             this.cboControl.TabIndex = 24;
-            this.cboControl.TooltipText = "";
             this.cboControl.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
             // 
             // lblSize
@@ -170,7 +168,6 @@ namespace Chummer
             this.cboSize.Name = "cboSize";
             this.cboSize.Size = new System.Drawing.Size(240, 21);
             this.cboSize.TabIndex = 26;
-            this.cboSize.TooltipText = "";
             this.cboSize.SelectedIndexChanged += new System.EventHandler(this.cboSize_SelectedIndexChanged);
             // 
             // lblFlexibility
@@ -194,7 +191,6 @@ namespace Chummer
             this.cboFlexibility.Name = "cboFlexibility";
             this.cboFlexibility.Size = new System.Drawing.Size(240, 21);
             this.cboFlexibility.TabIndex = 28;
-            this.cboFlexibility.TooltipText = "";
             this.cboFlexibility.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
             // 
             // lblAvailabilityLabel

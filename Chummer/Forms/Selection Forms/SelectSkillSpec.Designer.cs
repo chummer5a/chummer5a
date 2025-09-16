@@ -81,7 +81,6 @@ namespace Chummer
             this.cboSpec.Name = "cboSpec";
             this.cboSpec.Size = new System.Drawing.Size(236, 21);
             this.cboSpec.TabIndex = 2;
-            this.cboSpec.TooltipText = "";
             this.cboSpec.SelectedIndexChanged += new System.EventHandler(this.cboSpec_SelectedIndexChanged);
             // 
             // lblAmmoLabel

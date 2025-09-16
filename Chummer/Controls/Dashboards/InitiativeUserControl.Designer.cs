@@ -388,7 +388,6 @@ namespace Chummer
             this.cboManeuvers.Name = "cboManeuvers";
             this.cboManeuvers.Size = new System.Drawing.Size(214, 21);
             this.cboManeuvers.TabIndex = 15;
-            this.cboManeuvers.TooltipText = "";
             // 
             // btnApplyInterrupt
             // 

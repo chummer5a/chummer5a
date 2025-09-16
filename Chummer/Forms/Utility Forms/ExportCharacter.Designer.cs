@@ -66,7 +66,6 @@ namespace Chummer
             this.cboXSLT.Name = "cboXSLT";
             this.cboXSLT.Size = new System.Drawing.Size(177, 21);
             this.cboXSLT.TabIndex = 1;
-            this.cboXSLT.TooltipText = "";
             this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.cboXSLT_SelectedIndexChanged);
             // 
             // cmdExportClose
@@ -120,7 +119,6 @@ namespace Chummer
             this.cboLanguage.Name = "cboLanguage";
             this.cboLanguage.Size = new System.Drawing.Size(177, 21);
             this.cboLanguage.TabIndex = 107;
-            this.cboLanguage.TooltipText = "";
             this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
             // 
             // imgSheetLanguageFlag

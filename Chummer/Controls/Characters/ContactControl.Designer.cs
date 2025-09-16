@@ -113,7 +113,6 @@ namespace Chummer
             this.cboContactRole.Name = "cboContactRole";
             this.cboContactRole.Size = new System.Drawing.Size(177, 21);
             this.cboContactRole.TabIndex = 2;
-            this.cboContactRole.TooltipText = "";
             this.cboContactRole.TextChanged += new System.EventHandler(this.cboContactRole_TextChanged);
             // 
             // txtContactName

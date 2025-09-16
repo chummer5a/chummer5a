@@ -298,7 +298,6 @@ namespace Chummer.UI.Skills
             this.cboSort.Name = "cboSort";
             this.cboSort.Size = new System.Drawing.Size(164, 21);
             this.cboSort.TabIndex = 4;
-            this.cboSort.TooltipText = "";
             this.cboSort.SelectedIndexChanged += new System.EventHandler(this.cboSort_SelectedIndexChanged);
             // 
             // cboDisplayFilter
@@ -311,7 +310,6 @@ namespace Chummer.UI.Skills
             this.cboDisplayFilter.Name = "cboDisplayFilter";
             this.cboDisplayFilter.Size = new System.Drawing.Size(249, 21);
             this.cboDisplayFilter.TabIndex = 1;
-            this.cboDisplayFilter.TooltipText = "";
             this.cboDisplayFilter.SelectedIndexChanged += new System.EventHandler(this.cboDisplayFilter_SelectedIndexChanged);
             this.cboDisplayFilter.TextUpdate += new System.EventHandler(this.cboDisplayFilter_TextUpdate);
             // 
@@ -457,7 +455,6 @@ namespace Chummer.UI.Skills
             this.cboDisplayFilterKnowledge.Name = "cboDisplayFilterKnowledge";
             this.cboDisplayFilterKnowledge.Size = new System.Drawing.Size(278, 21);
             this.cboDisplayFilterKnowledge.TabIndex = 54;
-            this.cboDisplayFilterKnowledge.TooltipText = "";
             this.cboDisplayFilterKnowledge.SelectedIndexChanged += new System.EventHandler(this.cboDisplayFilterKnowledge_SelectedIndexChanged);
             this.cboDisplayFilterKnowledge.TextUpdate += new System.EventHandler(this.cboDisplayFilterKnowledge_TextUpdate);
             // 
@@ -471,7 +468,6 @@ namespace Chummer.UI.Skills
             this.cboSortKnowledge.Name = "cboSortKnowledge";
             this.cboSortKnowledge.Size = new System.Drawing.Size(183, 21);
             this.cboSortKnowledge.TabIndex = 55;
-            this.cboSortKnowledge.TooltipText = "";
             this.cboSortKnowledge.SelectedIndexChanged += new System.EventHandler(this.cboSortKnowledge_SelectedIndexChanged);
             // 
             // btnKnowledge

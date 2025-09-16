@@ -564,7 +564,6 @@ namespace Chummer
             this.cboDefaultMasterIndexSetting.Name = "cboDefaultMasterIndexSetting";
             this.cboDefaultMasterIndexSetting.Size = new System.Drawing.Size(202, 21);
             this.cboDefaultMasterIndexSetting.TabIndex = 85;
-            this.cboDefaultMasterIndexSetting.TooltipText = "";
             this.cboDefaultMasterIndexSetting.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblDefaultMasterIndexSetting
@@ -608,7 +607,6 @@ namespace Chummer
             this.cboDpiScalingMethod.Name = "cboDpiScalingMethod";
             this.cboDpiScalingMethod.Size = new System.Drawing.Size(286, 21);
             this.cboDpiScalingMethod.TabIndex = 1;
-            this.cboDpiScalingMethod.TooltipText = "";
             this.cboDpiScalingMethod.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblDpiScalingMode
@@ -842,7 +840,6 @@ namespace Chummer
             this.cboSheetLanguage.Name = "cboSheetLanguage";
             this.cboSheetLanguage.Size = new System.Drawing.Size(329, 21);
             this.cboSheetLanguage.TabIndex = 34;
-            this.cboSheetLanguage.TooltipText = "";
             this.cboSheetLanguage.SelectedIndexChanged += new System.EventHandler(this.cboSheetLanguage_SelectedIndexChanged);
             // 
             // cboXSLT
@@ -855,7 +852,6 @@ namespace Chummer
             this.cboXSLT.Name = "cboXSLT";
             this.cboXSLT.Size = new System.Drawing.Size(330, 21);
             this.cboXSLT.TabIndex = 8;
-            this.cboXSLT.TooltipText = "";
             this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // cboLanguage
@@ -867,7 +863,6 @@ namespace Chummer
             this.cboLanguage.Name = "cboLanguage";
             this.cboLanguage.Size = new System.Drawing.Size(329, 21);
             this.cboLanguage.TabIndex = 1;
-            this.cboLanguage.TooltipText = "";
             this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
             // 
             // cmdVerify
@@ -947,7 +942,6 @@ namespace Chummer
             this.cboUseLoggingApplicationInsights.Name = "cboUseLoggingApplicationInsights";
             this.cboUseLoggingApplicationInsights.Size = new System.Drawing.Size(211, 21);
             this.cboUseLoggingApplicationInsights.TabIndex = 55;
-            this.cboUseLoggingApplicationInsights.TooltipText = "";
             this.cboUseLoggingApplicationInsights.SelectedIndexChanged += new System.EventHandler(this.cboUseLoggingApplicationInsights_SelectedIndexChanged);
             // 
             // cmdUseLoggingHelp
@@ -1167,7 +1161,6 @@ namespace Chummer
             this.cboMugshotCompression.Name = "cboMugshotCompression";
             this.cboMugshotCompression.Size = new System.Drawing.Size(75, 21);
             this.cboMugshotCompression.TabIndex = 66;
-            this.cboMugshotCompression.TooltipText = "";
             this.cboMugshotCompression.SelectedIndexChanged += new System.EventHandler(this.cboMugshotCompression_SelectedIndexChanged);
             // 
             // tlpColorMode
@@ -1210,7 +1203,6 @@ namespace Chummer
             this.cboColorMode.Name = "cboColorMode";
             this.cboColorMode.Size = new System.Drawing.Size(334, 21);
             this.cboColorMode.TabIndex = 1;
-            this.cboColorMode.TooltipText = "";
             this.cboColorMode.SelectedIndexChanged += new System.EventHandler(this.cboColorMode_SelectedIndexChanged);
             // 
             // chkPreferNightlyBuilds
@@ -1448,7 +1440,6 @@ namespace Chummer
             this.cboDefaultCharacterSetting.Name = "cboDefaultCharacterSetting";
             this.cboDefaultCharacterSetting.Size = new System.Drawing.Size(202, 21);
             this.cboDefaultCharacterSetting.TabIndex = 7;
-            this.cboDefaultCharacterSetting.TooltipText = "";
             this.cboDefaultCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkStartupFullscreen
@@ -1522,7 +1513,6 @@ namespace Chummer
             this.cboChum5lzCompressionLevel.Name = "cboChum5lzCompressionLevel";
             this.cboChum5lzCompressionLevel.Size = new System.Drawing.Size(240, 21);
             this.cboChum5lzCompressionLevel.TabIndex = 87;
-            this.cboChum5lzCompressionLevel.TooltipText = "";
             this.cboChum5lzCompressionLevel.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblPDFAppPath
@@ -1560,7 +1550,6 @@ namespace Chummer
             this.cboPDFParameters.Name = "cboPDFParameters";
             this.cboPDFParameters.Size = new System.Drawing.Size(202, 21);
             this.cboPDFParameters.TabIndex = 26;
-            this.cboPDFParameters.TooltipText = "";
             this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // flpBrowserVersion

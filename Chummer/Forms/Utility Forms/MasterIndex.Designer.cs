@@ -215,7 +215,6 @@ namespace Chummer
             this.cboFile.Name = "cboFile";
             this.cboFile.Size = new System.Drawing.Size(319, 21);
             this.cboFile.TabIndex = 0;
-            this.cboFile.TooltipText = "";
             this.cboFile.SelectedIndexChanged += new System.EventHandler(this.RefreshList);
             // 
             // lstItems
@@ -285,7 +284,6 @@ namespace Chummer
             this.cboCharacterSetting.Name = "cboCharacterSetting";
             this.cboCharacterSetting.Size = new System.Drawing.Size(603, 21);
             this.cboCharacterSetting.TabIndex = 21;
-            this.cboCharacterSetting.TooltipText = "";
             this.cboCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.cboCharacterSetting_SelectedIndexChanged);
             // 
             // MasterIndex
