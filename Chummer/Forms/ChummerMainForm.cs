@@ -60,6 +60,7 @@ namespace Chummer
         private PrintMultipleCharacters _frmOpenPrintMultipleCharacters;
         private ConcurrentStringHashSet _setCharactersToOpen;
         private readonly Timer _tmrCharactersToOpenCheck = new Timer();
+        private readonly Timer _tmrPerformLayoutCheck = new Timer();
         private readonly string _strCurrentVersion;
         private Chummy _mascotChummy;
         private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
@@ -112,6 +113,7 @@ namespace Chummer
                 _objVersionUpdaterCancellationTokenSource?.Dispose();
 #endif
                 _tmrCharactersToOpenCheck.Dispose();
+                _tmrPerformLayoutCheck.Dispose();
                 _objGenericCancellationTokenSource.Dispose();
                 _objFormOpeningSemaphore.Dispose();
                 dlgOpenFile?.Dispose();
@@ -126,6 +128,8 @@ namespace Chummer
             _lstOpenCharacterExportForms.CollectionChangedAsync += OpenCharacterExportFormsOnCollectionChanged;
             _tmrCharactersToOpenCheck.Interval = 1000;
             _tmrCharactersToOpenCheck.Tick += CharactersToOpenCheckOnTick;
+            _tmrPerformLayoutCheck.Interval = 1000;
+            _tmrPerformLayoutCheck.Tick += PerformLayoutCheckOnTick;
 
             //lets write that in separate lines to see where the exception is thrown
             if (!GlobalSettings.HideMasterIndex || blnIsUnitTest)
@@ -159,6 +163,29 @@ namespace Chummer
             try
             {
                 await ProcessQueuedCharactersToOpen(_objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void PerformLayoutCheckOnTick(object sender, EventArgs e)
+        {
+            if (Utils.IsUnitTest || _intFormClosing > 0)
+                return;
+            try
+            {
+                // Need this as a workaround for known WinForms memory leak caused by cachedLayoutEventArgs in order to flush it. See here:
+                // https://stackoverflow.com/a/25188923, https://github.com/dotnet/winforms/issues/165
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.PerformLayout();
+                    x.menuStrip.PerformLayout();
+                    x.toolStrip.PerformLayout();
+                    x.exitToolStripMenuItem.Owner.PerformLayout();
+                    x._tmrPerformLayoutCheck.Stop();
+                }, _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -2196,6 +2223,8 @@ namespace Chummer
                     if (x.TabCount <= 1)
                         x.Visible = false;
                 }, token: _objGenericToken).ConfigureAwait(false);
+
+                _tmrPerformLayoutCheck.Start();
 
                 await DoReopenCharacters(_objGenericToken).ConfigureAwait(false);
             }
