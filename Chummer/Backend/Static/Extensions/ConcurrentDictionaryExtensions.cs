@@ -39,7 +39,15 @@ namespace Chummer
             async Task<TValue> Inner()
             {
                 TValue objNewValue = await valueFactory.Invoke(key).ConfigureAwait(false);
-                return dicThis.GetOrAdd(key, objNewValue);
+                TValue objInnerReturn = dicThis.GetOrAdd(key, objNewValue);
+                if (!ReferenceEquals(objInnerReturn, objNewValue))
+                {
+                    if (objNewValue is IAsyncDisposable objDisposeAsync)
+                        await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                    else if (objNewValue is IDisposable objDispose)
+                        objDispose.Dispose();
+                }
+                return objInnerReturn;
             }
         }
 
@@ -54,7 +62,15 @@ namespace Chummer
             async Task<TValue> Inner()
             {
                 TValue objNewValue = await value.ConfigureAwait(false);
-                return dicThis.GetOrAdd(key, objNewValue);
+                TValue objInnerReturn = dicThis.GetOrAdd(key, objNewValue);
+                if (!ReferenceEquals(objInnerReturn, objNewValue))
+                {
+                    if (objNewValue is IAsyncDisposable objDisposeAsync)
+                        await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                    else if (objNewValue is IDisposable objDispose)
+                        objDispose.Dispose();
+                }
+                return objInnerReturn;
             }
         }
 
@@ -69,7 +85,15 @@ namespace Chummer
             async Task<TValue> Inner()
             {
                 TValue objNewValue = await valueFactory.Invoke(key, factoryArgument).ConfigureAwait(false);
-                return dicThis.GetOrAdd(key, objNewValue);
+                TValue objInnerReturn = dicThis.GetOrAdd(key, objNewValue);
+                if (!ReferenceEquals(objInnerReturn, objNewValue))
+                {
+                    if (objNewValue is IAsyncDisposable objDisposeAsync)
+                        await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                    else if (objNewValue is IDisposable objDispose)
+                        objDispose.Dispose();
+                }
+                return objInnerReturn;
             }
         }
 
@@ -85,7 +109,15 @@ namespace Chummer
             {
                 TValue objNewValue = await valueFactory.Invoke(key, await factoryArgument.ConfigureAwait(false))
                     .ConfigureAwait(false);
-                return dicThis.GetOrAdd(key, objNewValue);
+                TValue objInnerReturn = dicThis.GetOrAdd(key, objNewValue);
+                if (!ReferenceEquals(objInnerReturn, objNewValue))
+                {
+                    if (objNewValue is IAsyncDisposable objDisposeAsync)
+                        await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                    else if (objNewValue is IDisposable objDispose)
+                        objDispose.Dispose();
+                }
+                return objInnerReturn;
             }
         }
 
