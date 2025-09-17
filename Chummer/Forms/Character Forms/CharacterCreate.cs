@@ -1078,10 +1078,6 @@ namespace Chummer
                                     using (Timekeeper.StartSyncron(
                                                "load_frm_create_databinding2", op_load_frm_create))
                                     {
-                                        // Merge the ToolStrips.
-                                        ToolStripManager.RevertMerge("toolStrip");
-                                        ToolStripManager.Merge(tsMain, "toolStrip");
-
                                         await nudNuyen.RegisterOneWayAsyncDataBindingAsync(
                                                 (x, y) => x.Maximum = y, CharacterObject,
                                                 nameof(Character.TotalNuyenMaximumBP),
@@ -1986,10 +1982,6 @@ namespace Chummer
                                 await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, GenericToken).ConfigureAwait(false);
                                 CancelGenericToken();
 
-                                // Reset the ToolStrip so the Save button is removed for the currently closing window.
-                                if (Program.MainForm.ActiveMdiChild == this)
-                                    ToolStripManager.RevertMerge("toolStrip");
-
                                 // Unsubscribe from events.
                                 GlobalSettings.ClipboardChangedAsync -= DoRefreshPasteStatus;
                                 CharacterObject.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
@@ -2118,9 +2110,12 @@ namespace Chummer
 
         private void CharacterCreate_Activated(object sender, EventArgs e)
         {
-            // Merge the ToolStrips.
-            ToolStripManager.RevertMerge("toolStrip");
-            ToolStripManager.Merge(tsMain, "toolStrip");
+            ToolStripManager.Merge(tsMain, Program.MainForm.MainToolStrip);
+        }
+
+        private void CharacterCreate_Deactivate(object sender, EventArgs e)
+        {
+            ToolStripManager.RevertMerge(Program.MainForm.MainToolStrip, tsMain);
         }
 
         #endregion Form Events

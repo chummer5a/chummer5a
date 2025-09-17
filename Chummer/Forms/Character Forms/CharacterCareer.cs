@@ -1112,10 +1112,6 @@ namespace Chummer
                                     using (Timekeeper.StartSyncron("load_frm_career_databindingCallbacks2",
                                                op_load_frm_career))
                                     {
-                                        // Merge the ToolStrips.
-                                        ToolStripManager.RevertMerge("toolStrip");
-                                        ToolStripManager.Merge(tsMain, "toolStrip");
-
                                         await lblCMPenalty.RegisterOneWayAsyncDataBindingAsync(
                                                 (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo),
                                                 CharacterObject,
@@ -2599,10 +2595,6 @@ namespace Chummer
                                 await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, GenericToken).ConfigureAwait(false);
                                 CancelGenericToken();
 
-                                // Reset the ToolStrip so the Save button is removed for the currently closing window.
-                                if (Program.MainForm.ActiveMdiChild == this)
-                                    ToolStripManager.RevertMerge("toolStrip");
-
                                 // Unsubscribe from events.
                                 Tradition objTradition = await CharacterObject.GetMagicTraditionAsync().ConfigureAwait(false);
                                 objTradition.PropertyChangedAsync -= TraditionOnPropertyChanged;
@@ -2743,9 +2735,12 @@ namespace Chummer
 
         private void CharacterCareer_Activated(object sender, EventArgs e)
         {
-            // Merge the ToolStrips.
-            ToolStripManager.RevertMerge("toolStrip");
-            ToolStripManager.Merge(tsMain, "toolStrip");
+            ToolStripManager.Merge(tsMain, Program.MainForm.MainToolStrip);
+        }
+
+        private void CharacterCareer_Deactivate(object sender, EventArgs e)
+        {
+            ToolStripManager.RevertMerge(Program.MainForm.MainToolStrip, tsMain);
         }
 
         #endregion Form Events

@@ -22662,6 +22662,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Chummer - Career Mode";
             this.Activated += new System.EventHandler(this.CharacterCareer_Activated);
+            this.Deactivate += new System.EventHandler(this.CharacterCareer_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CharacterCareer_FormClosing);
             this.Load += new System.EventHandler(this.CharacterCareer_Load);
             this.StatusStrip.ResumeLayout(false);

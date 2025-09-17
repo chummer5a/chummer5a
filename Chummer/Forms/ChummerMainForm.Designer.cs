@@ -1157,7 +1157,7 @@ namespace Chummer
             this.tabForms.Size = new System.Drawing.Size(1264, 22);
             this.tabForms.TabIndex = 3;
             this.tabForms.Visible = false;
-            this.tabForms.SelectedIndexChanged += new System.EventHandler(this.tabForms_SelectedIndexChanged);
+            this.tabForms.SelectedIndexChanged += new System.EventHandler(tabForms_SelectedIndexChanged);
             this.tabForms.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tabForms_MouseClick);
             // 
             // mnuProcessFile

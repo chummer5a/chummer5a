@@ -15911,6 +15911,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Chummer - Create New Character";
             this.Activated += new System.EventHandler(this.CharacterCreate_Activated);
+            this.Deactivate += new System.EventHandler(this.CharacterCreate_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CharacterCreate_FormClosing);
             this.Load += new System.EventHandler(this.CharacterCreate_Load);
             this.StatusStrip.ResumeLayout(false);

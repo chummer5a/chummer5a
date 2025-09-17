@@ -67,6 +67,8 @@ namespace Chummer
         private readonly CancellationToken _objGenericToken;
         private readonly DebuggableSemaphoreSlim _objFormOpeningSemaphore = new DebuggableSemaphoreSlim();
 
+        public ToolStrip MainToolStrip => toolStrip;
+
         public async Task<string> GetMainTitleAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -2236,9 +2238,9 @@ namespace Chummer
             }
         }
 
-        private void tabForms_SelectedIndexChanged(object sender, EventArgs e)
+        private static void tabForms_SelectedIndexChanged(object sender, EventArgs e)
         {
-            (tabForms.SelectedTab?.Tag as Form)?.Select();
+            ((sender as TabControl)?.SelectedTab?.Tag as Form)?.Select();
         }
 
         private async Task DoReopenCharacters(CancellationToken token = default)
@@ -3105,13 +3107,13 @@ namespace Chummer
 
         private void tabForms_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Right && sender is TabControl objTabControl)
             {
-                for (int i = 0; i < tabForms.TabCount; ++i)
+                for (int i = 0; i < objTabControl.TabCount; ++i)
                 {
-                    if (!tabForms.GetTabRect(i).Contains(e.Location))
+                    if (!objTabControl.GetTabRect(i).Contains(e.Location))
                         continue;
-                    if (tabForms.SelectedTab.Tag is CharacterShared && tabForms.SelectedIndex == i)
+                    if (objTabControl.SelectedTab.Tag is CharacterShared && objTabControl.SelectedIndex == i)
                     {
                         mnuProcessFile.Show(this, e.Location);
                         break;
