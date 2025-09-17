@@ -18,9 +18,18 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                // Manually dispose of tab pages that could get removed from Controls
+                tabInitiation?.Dispose();
+                tabMagician?.Dispose();
+                tabAdept?.Dispose();
+                tabTechnomancer?.Dispose();
+                tabAdvancedPrograms?.Dispose();
+                tabCritter?.Dispose();
+                tabEnemies?.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
