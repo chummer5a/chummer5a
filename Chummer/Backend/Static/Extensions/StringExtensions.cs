@@ -3043,11 +3043,14 @@ namespace Chummer
                 // Two-step process so that newlines normalized in earlier iterations of the loop are not re-detected by later iterations
                 // Yes, this will replace null characters with newlines as well, too bad, we shouldn't have null characters in our strings anyway
                 foreach (string strSequence in astrLineEndingStrings)
-                    sbdReturn.Replace(strSequence, "\u0000");
-                sbdReturn.Replace("\u0000", Environment.NewLine);
+                    sbdReturn.Replace(strSequence, s_strNullsToUseAsPlaceholder);
+                sbdReturn.Replace(s_strNullsToUseAsPlaceholder, Environment.NewLine);
                 return sbdReturn.ToString();
             }
         }
+
+        // Use a placeholder length that matches the length of our new line string to reduce the amount of allocations needed in StringBuilder
+        private static readonly string s_strNullsToUseAsPlaceholder = Environment.NewLine.Length == 2 ? "\u0000\u0000" : "\u0000";
 
         /// <summary>
         /// Clean a string for usage inside an XPath filter, also surrounding it with quotation marks in an appropriate way.
