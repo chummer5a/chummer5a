@@ -212,9 +212,9 @@ namespace Chummer.UI.Table
         private sealed class ColumnHolder : IDisposable
         {
             public readonly HeaderCell header;
-            public readonly IList<TableCell> cells;
+            public readonly List<TableCell> cells;
 
-            public ColumnHolder(HeaderCell header, IList<TableCell> cells)
+            public ColumnHolder(HeaderCell header, List<TableCell> cells)
             {
                 this.header = header;
                 this.cells = cells;
@@ -228,7 +228,7 @@ namespace Chummer.UI.Table
             }
         }
 
-        private readonly Func<T, CancellationToken, Task<bool>> _funcDefaultFilter;
+        private Func<T, CancellationToken, Task<bool>> _funcDefaultFilter;
         private TableColumn<T> _sortColumn;
         private ThreadSafeBindingList<T> _lstItems;
         private readonly AsyncFriendlyReaderWriterLock _objItemsLocker = new AsyncFriendlyReaderWriterLock();
@@ -408,7 +408,7 @@ namespace Chummer.UI.Table
         {
             for (int i = 0; i < _columns.Count; i++)
             {
-                IList<TableCell> cells = _lstCells[i].cells;
+                List<TableCell> cells = _lstCells[i].cells;
                 if (index >= cells.Count)
                     continue;
                 TableColumn<T> column = _columns[i];
@@ -598,13 +598,17 @@ namespace Chummer.UI.Table
                 objOld.Dispose();
             }
             _objItemsLocker.Dispose();
-            _lstPermutation.Clear();
             foreach (ColumnHolder objColumnHolder in _lstCells)
                 objColumnHolder.Dispose();
             foreach (TableColumn<T> objColumn in Columns)
                 objColumn.Dispose();
-            foreach (Control objControl in Controls)
-                objControl.ResetBindings();
+            Columns.Dispose();
+            foreach (TableRow objRow in _lstRowCells)
+                objRow.Dispose();
+            // to help the GC
+            _lstPermutation.Clear();
+            _funcDefaultFilter = null;
+            _funcFilter = null;
         }
 
         private async Task DoFilter(bool performLayout = true, CancellationToken token = default)
@@ -739,7 +743,7 @@ namespace Chummer.UI.Table
                         for (int i = 0; i < _columns.Count; i++)
                         {
                             TableColumn<T> column = _columns[i];
-                            IList<TableCell> cells = _lstCells[i].cells;
+                            List<TableCell> cells = _lstCells[i].cells;
                             TableCell newCell = await CreateCell(item, column, token).ConfigureAwait(false);
                             try
                             {
@@ -822,7 +826,7 @@ namespace Chummer.UI.Table
                 {
                     for (int i = 0; i < _columns.Count; i++)
                     {
-                        IList<TableCell> cells = _lstCells[i].cells;
+                        List<TableCell> cells = _lstCells[i].cells;
                         TableCell objToRemove = cells[e.NewIndex];
                         cells.RemoveAt(e.NewIndex);
                         objToRemove.Dispose();
@@ -869,7 +873,7 @@ namespace Chummer.UI.Table
                 }
                 case ListChangedType.ItemMoved:
                 {
-                    foreach (IList<TableCell> cells in _lstCells.Select(x => x.cells))
+                    foreach (List<TableCell> cells in _lstCells.Select(x => x.cells))
                     {
                         TableCell cell = cells[e.OldIndex];
                         cells.RemoveAt(e.OldIndex);
@@ -974,7 +978,7 @@ namespace Chummer.UI.Table
                                     for (int i = 0; i < _columns.Count; i++)
                                     {
                                         TableColumn<T> column = _columns[i];
-                                        IList<TableCell> cells = _lstCells[i].cells;
+                                        List    <TableCell> cells = _lstCells[i].cells;
                                         for (int j = intOldCount; j < intNewCount; j++)
                                         {
                                             T objLoop = value[j];
@@ -996,7 +1000,7 @@ namespace Chummer.UI.Table
                                 else
                                 {
                                     intLimit = intNewCount;
-                                    foreach (IList<TableCell> cells in _lstCells.Select(x => x.cells))
+                                    foreach (List<TableCell> cells in _lstCells.Select(x => x.cells))
                                     {
                                         for (int j = intNewCount; j < intOldCount - intNewCount; ++j)
                                             cells[j].Dispose();
@@ -1111,7 +1115,7 @@ namespace Chummer.UI.Table
                                 for (int i = 0; i < _columns.Count; i++)
                                 {
                                     TableColumn<T> column = _columns[i];
-                                    IList<TableCell> cells = _lstCells[i].cells;
+                                    List<TableCell> cells = _lstCells[i].cells;
                                     for (int j = intOldCount; j < intNewCount; j++)
                                     {
                                         TableCell cell =
@@ -1133,7 +1137,7 @@ namespace Chummer.UI.Table
                             else
                             {
                                 intLimit = intNewCount;
-                                foreach (IList<TableCell> cells in _lstCells.Select(x => x.cells))
+                                foreach (List<TableCell> cells in _lstCells.Select(x => x.cells))
                                 {
                                     for (int j = intNewCount; j < intOldCount - intNewCount; ++j)
                                         cells[j].Dispose();

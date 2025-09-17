@@ -16,6 +16,7 @@ namespace Chummer.UI.Table
             if (disposing)
             {
                 ContentField?.Dispose();
+                Value = null; // to help the GC
                 if (components != null)
                     components.Dispose();
             }

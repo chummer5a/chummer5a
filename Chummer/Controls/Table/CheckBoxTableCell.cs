@@ -153,14 +153,16 @@ namespace Chummer.UI.Table
         /// </summary>
         public Func<T, CancellationToken, Task<bool>> EnabledExtractor { get; set; }
 
-        public Func<T, CancellationToken, Task<bool>> EnabledGetter { get; set; }
+        /// <summary>
+        /// The extractor for getting the visible state from the
+        /// value.
+        /// </summary>
+        public Func<T, CancellationToken, Task<bool>> VisibleExtractor { get; set; }
 
         /// <summary>
         /// The extractor for getting the checked state from the
         /// value.
         /// </summary>
-        public Func<T, CancellationToken, Task<bool>> VisibleExtractor { get; set; }
-
         public Func<T, CancellationToken, Task<bool>> ValueGetter { get; set; }
 
         /// <summary>

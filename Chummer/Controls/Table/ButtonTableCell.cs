@@ -34,6 +34,7 @@ namespace Chummer.UI.Table
             _objMyToken = objMyToken;
             InitializeComponent();
             _button = button ?? throw new ArgumentNullException(nameof(button));
+            ContentField = _button;
             button.Click += OnButtonClick;
             SuspendLayout();
             try

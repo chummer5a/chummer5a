@@ -16,7 +16,12 @@ namespace Chummer.UI.Table
             if (disposing)
             {
                 _objUpdateSemaphore.Dispose();
-                ValueUpdater = null; // to help the GC
+                // to help the GC
+                EnabledExtractor = null;
+                MinExtractor = null;
+                MaxExtractor = null;
+                ValueGetter = null;
+                ValueUpdater = null;
                 if (components != null)
                     components.Dispose();
             }

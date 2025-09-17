@@ -32,7 +32,7 @@ namespace Chummer.UI.Table
     /// <typeparam name="T">the table item type</typeparam>
     public class TableColumn<T> : IDisposable where T : INotifyPropertyChanged
     {
-        private readonly Func<TableCell> _cellFactory;
+        private Func<TableCell> _cellFactory;
         private Func<Task<object>, Task<object>, CancellationToken, Task<int>> _sorter;
         private bool _blnLive;
         private string _strText;
@@ -50,9 +50,16 @@ namespace Chummer.UI.Table
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing && _setDependencies != null)
+            if (disposing)
             {
-                Utils.StringHashSetPool.Return(ref _setDependencies);
+                // to help the GC
+                _cellFactory = null;
+                _sorter = null;
+                _funcExtractor = null;
+                _itemSorter = null;
+                ToolTipExtractor = null;
+                if (_setDependencies != null)
+                    Utils.StringHashSetPool.Return(ref _setDependencies);
             }
         }
 

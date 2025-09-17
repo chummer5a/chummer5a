@@ -33,16 +33,11 @@ namespace Chummer.UI.Table
         public TableRow()
         {
             InitializeComponent();
-            Layout += (sender, evt) => DoLayout();
         }
 
         private async void OnLoad(object sender, EventArgs eventArgs)
         {
             await UpdateAsync(Index, Selected).ConfigureAwait(false);
-        }
-
-        protected virtual void DoLayout()
-        {
         }
 
         protected virtual void Update(int intIndex, bool blnSelected)
