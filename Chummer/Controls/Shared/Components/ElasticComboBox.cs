@@ -26,14 +26,16 @@ namespace Chummer
 {
     public class ElasticComboBox : ComboBox
     {
-        public ElasticComboBox()
+        protected override void OnSelectedIndexChanged(EventArgs e)
         {
-            SelectedIndexChanged += ClearUnintendedHighlight;
-            Resize += ClearUnintendedHighlight;
+            base.OnSelectedIndexChanged(e);
+            if (DropDownStyle != ComboBoxStyle.DropDownList && IsHandleCreated)
+                ClearSelection();
         }
 
-        private void ClearUnintendedHighlight(object sender, EventArgs e)
+        protected override void OnResize(EventArgs e)
         {
+            base.OnResize(e);
             if (DropDownStyle != ComboBoxStyle.DropDownList && IsHandleCreated)
                 ClearSelection();
         }
