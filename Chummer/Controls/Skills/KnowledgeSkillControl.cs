@@ -39,6 +39,8 @@ namespace Chummer.UI.Skills
         private KnowledgeSkill _objSkill;
         private readonly Timer _tmrNameChangeTimer;
         private readonly Timer _tmrSpecChangeTimer;
+        private readonly Font _fntNormalSpec;
+        private readonly Font _fntStrikethroughSpec;
 
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly NumericUpDownEx nudKarma;
@@ -121,6 +123,8 @@ namespace Chummer.UI.Skills
                         Text = "[SPEC]",
                         TextAlign = ContentAlignment.MiddleLeft
                     };
+                    _fntNormalSpec = lblSpec.Font;
+                    _fntStrikethroughSpec = new Font(_fntNormalSpec, FontStyle.Strikeout);
                     btnAddSpec = new ButtonWithToolTip
                     {
                         Anchor = AnchorStyles.Right,
@@ -328,11 +332,6 @@ namespace Chummer.UI.Skills
                                                                        ,
                                                                  _objMyToken);
 
-                    btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
-                                                                    nameof(KnowledgeSkill.CanHaveSpecs),
-                                                                    x => x.GetCanHaveSpecsAsync(_objMyToken)
-                                                                          ,
-                                                                    _objMyToken);
                     btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                                     nameof(KnowledgeSkill.CanAffordSpecialization),
                                                                     x => x
@@ -388,15 +387,6 @@ namespace Chummer.UI.Skills
                           || _objSkill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
                     chkNativeLanguage.DoThreadSafe((x, y) => x.Enabled = blnEnableNative, _objMyToken);
 
-                    chkKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
-                                                                  nameof(KnowledgeSkill.CanHaveSpecs),
-                                                                  x => x.GetCanHaveSpecsAsync(_objMyToken),
-                                                                  _objMyToken);
-
-                    cboSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
-                                                           nameof(KnowledgeSkill.CanHaveSpecs),
-                                                           x => x.GetCanHaveSpecsAsync(_objMyToken),
-                                                           _objMyToken);
                     string strDisplaySpec = _objSkill.CurrentDisplaySpecialization;
                     Interlocked.Increment(ref _intUpdatingSpec);
                     try
@@ -569,10 +559,6 @@ namespace Chummer.UI.Skills
                                                                        _objMyToken)
                                                                    , token).ConfigureAwait(false);
 
-                await btnAddSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objSkill,
-                                                                nameof(KnowledgeSkill.CanHaveSpecs),
-                                                                x => x.GetCanHaveSpecsAsync(_objMyToken)
-                                                                      , token).ConfigureAwait(false);
                 await btnAddSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                                 nameof(KnowledgeSkill.CanAffordSpecialization),
                                                                 x => x
@@ -630,15 +616,6 @@ namespace Chummer.UI.Skills
                 await chkNativeLanguage.DoThreadSafeAsync(x => x.Enabled = blnEnableNative, token)
                                        .ConfigureAwait(false);
 
-                await chkKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
-                                                              nameof(KnowledgeSkill.CanHaveSpecs),
-                                                              x => x.GetCanHaveSpecsAsync(_objMyToken),
-                                                              token).ConfigureAwait(false);
-
-                await cboSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
-                                                                  nameof(KnowledgeSkill.CanHaveSpecs),
-                                                                  x => x.GetCanHaveSpecsAsync(_objMyToken),
-                                                                  token).ConfigureAwait(false);
                 string strDisplaySpec = await _objSkill.GetCurrentDisplaySpecializationAsync(token)
                                                        .ConfigureAwait(false);
                 Interlocked.Increment(ref _intUpdatingSpec);
@@ -781,6 +758,27 @@ namespace Chummer.UI.Skills
                     }
                 }
 
+                // Has to be here instead of done through data bindings because of weird potential memory leak via ComboBox subscription
+                if ((blnAll || e.PropertyNames.Contains(nameof(KnowledgeSkill.CanHaveSpecs))))
+                {
+                    bool blnCanHaveSpecs = await _objSkill.GetCanHaveSpecsAsync(token).ConfigureAwait(false);
+                    if (await _objSkill.CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                    {
+                        await this.DoThreadSafeAsync(x =>
+                        {
+                            x.btnAddSpec.Visible = blnCanHaveSpecs;
+                            x.lblSpec.Font = blnCanHaveSpecs ? _fntNormalSpec : _fntStrikethroughSpec;
+                        }, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await this.DoThreadSafeAsync(x =>
+                        {
+                            x.cboSpec.Enabled = blnCanHaveSpecs;
+                            x.chkKarma.Enabled = blnCanHaveSpecs;
+                        }, token).ConfigureAwait(false);
+                    }
+                }
                 if (cboSpec != null && await cboSpec.DoThreadSafeFuncAsync(x => x.Visible, token: token)
                         .ConfigureAwait(false))
                 {

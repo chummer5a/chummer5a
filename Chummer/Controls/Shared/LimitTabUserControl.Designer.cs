@@ -13,9 +13,11 @@ namespace Chummer.UI.Shared
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                MakeDirty = null;
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }

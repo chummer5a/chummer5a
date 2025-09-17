@@ -665,6 +665,7 @@ namespace Chummer.UI.Skills
 
         private async void UnbindSkillsTabUserControlAsync(object sender, EventArgs e)
         {
+            MakeDirtyWithCharacterUpdate = null;
             Character objCharacter = _objCharacter; // for thread safety
             if (objCharacter?.IsDisposed == false)
             {
