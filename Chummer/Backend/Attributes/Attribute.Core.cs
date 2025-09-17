@@ -4098,6 +4098,11 @@ namespace Chummer.Backend.Attributes
                     }
                 }
                 _objCachedTotalValueLock.Dispose();
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
         }
 
@@ -4140,6 +4145,11 @@ namespace Chummer.Backend.Attributes
                 }
 
                 await _objCachedTotalValueLock.DisposeAsync().ConfigureAwait(false);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
             finally
             {

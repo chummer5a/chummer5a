@@ -4594,6 +4594,11 @@ namespace Chummer.Backend.Skills
                     _dicKnowledgeSkillCategoriesMap = null;
                 }
                 _objKnowledgeSkillCategoriesMapLock.Dispose();
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
         }
 
@@ -4676,6 +4681,11 @@ namespace Chummer.Backend.Skills
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
                 await _objKnowledgeSkillCategoriesMapLock.DisposeAsync().ConfigureAwait(false);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
             finally
             {

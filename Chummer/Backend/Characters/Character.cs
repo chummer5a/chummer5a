@@ -13059,6 +13059,11 @@ namespace Chummer
                 _objTradition.Dispose();
                 if (_lstCachedContactArchetypes != null)
                     Utils.ListItemListPool.Return(ref _lstCachedContactArchetypes);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
 
             LockObject.Dispose();
@@ -13146,6 +13151,11 @@ namespace Chummer
                 await _objTradition.DisposeAsync().ConfigureAwait(false);
                 if (_lstCachedContactArchetypes != null)
                     Utils.ListItemListPool.Return(ref _lstCachedContactArchetypes);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
             finally
             {

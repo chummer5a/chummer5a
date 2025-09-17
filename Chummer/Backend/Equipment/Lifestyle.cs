@@ -5162,6 +5162,11 @@ namespace Chummer.Backend.Equipment
                 _lstLifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesCollectionChanged;
                 _lstLifestyleQualities.BeforeClearCollectionChangedAsync -= LifestyleQualitiesOnBeforeClearCollectionChanged;
                 _lstLifestyleQualities.Dispose();
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
         }
 
@@ -5175,6 +5180,11 @@ namespace Chummer.Backend.Equipment
                 _lstLifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesCollectionChanged;
                 _lstLifestyleQualities.BeforeClearCollectionChangedAsync -= LifestyleQualitiesOnBeforeClearCollectionChanged;
                 await _lstLifestyleQualities.DisposeAsync().ConfigureAwait(false);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
             finally
             {

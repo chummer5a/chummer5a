@@ -7421,6 +7421,11 @@ namespace Chummer.Backend.Equipment
         private void DisposeSelf()
         {
             _lstChildren.Dispose();
+            // to help the GC
+            PropertyChanged = null;
+            MultiplePropertiesChanged = null;
+            _setPropertyChangedAsync.Clear();
+            _setMultiplePropertiesChangedAsync.Clear();
         }
 
         /// <inheritdoc />
@@ -7432,6 +7437,11 @@ namespace Chummer.Backend.Equipment
 
         private ValueTask DisposeSelfAsync()
         {
+            // to help the GC
+            PropertyChanged = null;
+            MultiplePropertiesChanged = null;
+            _setPropertyChangedAsync.Clear();
+            _setMultiplePropertiesChangedAsync.Clear();
             return _lstChildren.DisposeAsync();
         }
     }

@@ -9054,6 +9054,11 @@ namespace Chummer.Backend.Skills
                 _objCachedSuggestedSpecializationsLock.Dispose();
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(ref _lstCachedSuggestedSpecializations);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
         }
 
@@ -9155,6 +9160,11 @@ namespace Chummer.Backend.Skills
                 await _objCachedSuggestedSpecializationsLock.DisposeAsync().ConfigureAwait(false);
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(ref _lstCachedSuggestedSpecializations);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
         }
 

@@ -2629,7 +2629,14 @@ namespace Chummer.Backend.Equipment
             if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                 return;
             using (LockObject.EnterWriteLock())
+            {
                 Utils.StringHashSetPool.Return(ref _setAllowedFreeLifestyles);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
+            }
         }
 
         /// <inheritdoc />
@@ -2641,6 +2648,11 @@ namespace Chummer.Backend.Equipment
             try
             {
                 Utils.StringHashSetPool.Return(ref _setAllowedFreeLifestyles);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
             finally
             {

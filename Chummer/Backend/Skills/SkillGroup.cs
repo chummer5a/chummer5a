@@ -104,6 +104,11 @@ namespace Chummer.Backend.Skills
                 _objCachedHasAnyBreakingSkillsLock.Dispose();
                 _objCachedRatingLock.Dispose();
                 _objCachedToolTipLock.Dispose();
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
             LockObject.Dispose();
         }
@@ -164,6 +169,11 @@ namespace Chummer.Backend.Skills
                 await _objCachedHasAnyBreakingSkillsLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedRatingLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedToolTipLock.DisposeAsync().ConfigureAwait(false);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
             finally
             {

@@ -3415,7 +3415,12 @@ namespace Chummer
         {
             if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                 return;
-            // No disposal necessary because our LockObject is our character owner's LockObject
+            // to help the GC
+            PropertyChanged = null;
+            MultiplePropertiesChanged = null;
+            _setPropertyChangedAsync.Clear();
+            _setMultiplePropertiesChangedAsync.Clear();
+            // No disposal of LockObject necessary because our LockObject is our character owner's LockObject
         }
 
         /// <inheritdoc />
@@ -3423,7 +3428,12 @@ namespace Chummer
         {
             if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                 return default;
-            // No disposal necessary because our LockObject is our character owner's LockObject
+            // to help the GC
+            PropertyChanged = null;
+            MultiplePropertiesChanged = null;
+            _setPropertyChangedAsync.Clear();
+            _setMultiplePropertiesChangedAsync.Clear();
+            // No disposal of LockObject necessary because our LockObject is our character owner's LockObject
             return default;
         }
 

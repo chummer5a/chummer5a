@@ -97,6 +97,11 @@ namespace Chummer.Backend.Uniques
                         //swallow this
                     }
                 }
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
             finally
             {
@@ -120,6 +125,11 @@ namespace Chummer.Backend.Uniques
                         //swallow this
                     }
                 }
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
         }
 

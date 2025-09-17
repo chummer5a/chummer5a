@@ -3467,6 +3467,11 @@ namespace Chummer
                 foreach (Image imgMugshot in _lstMugshots)
                     imgMugshot.Dispose();
                 _lstMugshots.Dispose();
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
         }
 

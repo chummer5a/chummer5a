@@ -1055,12 +1055,22 @@ namespace Chummer
         /// <inheritdoc />
         public ValueTask DisposeAsync()
         {
+            // to help the GC
+            PropertyChanged = null;
+            MultiplePropertiesChanged = null;
+            _setPropertyChangedAsync.Clear();
+            _setMultiplePropertiesChangedAsync.Clear();
             return LockObject.DisposeAsync();
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
+            // to help the GC
+            PropertyChanged = null;
+            MultiplePropertiesChanged = null;
+            _setPropertyChangedAsync.Clear();
+            _setMultiplePropertiesChangedAsync.Clear();
             LockObject.Dispose();
         }
 

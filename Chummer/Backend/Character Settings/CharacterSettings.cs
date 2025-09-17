@@ -18629,6 +18629,11 @@ namespace Chummer
                 Utils.StringHashSetPool.Return(ref _setBannedWareGrades);
                 Utils.StringHashSetPool.Return(ref _setRedlinerExcludes);
                 _dicCustomDataDirectoryKeys.Dispose();
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
 
             LockObject.Dispose();
@@ -18649,6 +18654,11 @@ namespace Chummer
                 Utils.StringHashSetPool.Return(ref _setBannedWareGrades);
                 Utils.StringHashSetPool.Return(ref _setRedlinerExcludes);
                 await _dicCustomDataDirectoryKeys.DisposeAsync().ConfigureAwait(false);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
             finally
             {

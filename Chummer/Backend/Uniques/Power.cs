@@ -3782,6 +3782,11 @@ namespace Chummer
                 _objCachedFreeLevelsLock.Dispose();
                 _objCachedPowerPointsLock.Dispose();
                 Enhancements.Dispose();
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
         }
 
@@ -3827,6 +3832,11 @@ namespace Chummer
                 await _objCachedFreeLevelsLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedPowerPointsLock.DisposeAsync().ConfigureAwait(false);
                 await Enhancements.DisposeAsync().ConfigureAwait(false);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
             finally
             {
