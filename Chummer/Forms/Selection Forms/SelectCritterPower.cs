@@ -61,7 +61,6 @@ namespace Chummer
             }
 
             _lstCategory = Utils.ListItemListPool.Get();
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
         }
 
         private async void SelectCritterPower_Load(object sender, EventArgs e)

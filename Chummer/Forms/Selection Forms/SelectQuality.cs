@@ -60,7 +60,6 @@ namespace Chummer
             _xmlBaseQualityDataNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _xmlMetatypeQualityRestrictionNode = _objCharacter.GetNodeXPath().SelectSingleNodeAndCacheExpression("qualityrestriction");
             _lstCategory = Utils.ListItemListPool.Get();
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
         }
 
         private async void SelectQuality_Load(object sender, EventArgs e)

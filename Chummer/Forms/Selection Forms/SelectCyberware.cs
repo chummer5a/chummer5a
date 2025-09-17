@@ -143,36 +143,6 @@ namespace Chummer
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             _setDisallowedGrades = Utils.StringHashSetPool.Get();
-            Disposed += (sender, args) =>
-            {
-                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objProcessGradeChangedCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateCyberwareInfoCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objDoRefreshSelectedCyberwareCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objDoRefreshListCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                _objGenericCancellationTokenSource.Dispose();
-                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
-                Utils.StringHashSetPool.Return(ref _setDisallowedGrades);
-            };
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseCyberwareDataNode));
         }
 

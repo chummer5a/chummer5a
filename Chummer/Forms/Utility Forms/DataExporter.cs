@@ -48,24 +48,6 @@ namespace Chummer
         public DataExporter()
         {
             _objGenericToken = _objGenericCancellationTokenSource.Token;
-            Disposed += (sender, args) =>
-            {
-                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objProcessCharacterSettingIndexChangedCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objRepopulateCharacterSettingsCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                _objGenericCancellationTokenSource.Dispose();
-                dlgSaveFile?.Dispose();
-                _objExportSemaphore?.Dispose();
-            };
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

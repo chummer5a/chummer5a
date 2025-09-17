@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 namespace Chummer
 {
@@ -15,9 +16,30 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                _lstCharacters.Dispose();
+                CancellationTokenSource objTempTokenSource = Interlocked.Exchange(ref _objRefresherCancellationTokenSource, null);
+                if (objTempTokenSource?.IsCancellationRequested == false)
+                {
+                    objTempTokenSource.Cancel(false);
+                    objTempTokenSource.Dispose();
+                }
+                objTempTokenSource = Interlocked.Exchange(ref _objOutputGeneratorCancellationTokenSource, null);
+                if (objTempTokenSource?.IsCancellationRequested == false)
+                {
+                    objTempTokenSource.Cancel(false);
+                    objTempTokenSource.Dispose();
+                }
+                objTempTokenSource = Interlocked.Exchange(ref _objGenericFormClosingCancellationTokenSource, null);
+                if (objTempTokenSource?.IsCancellationRequested == false)
+                {
+                    objTempTokenSource.Cancel(false);
+                    objTempTokenSource.Dispose();
+                }
+                dlgSaveFile?.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }

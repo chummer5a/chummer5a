@@ -80,7 +80,6 @@ namespace Chummer
             _xmlPowersBasePowersNode = objCharacter.LoadDataXPath("powers.xml").SelectSingleNodeAndCacheExpression("/chummer/powers");
             _xmlMartialArtsBaseChummerNode = objCharacter.LoadDataXPath("martialarts.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _lstCategory = Utils.ListItemListPool.Get();
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
         }
 
         private async void SelectPACKSKit_Load(object sender, EventArgs e)

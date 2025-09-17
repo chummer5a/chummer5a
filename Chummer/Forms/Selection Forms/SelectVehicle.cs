@@ -73,31 +73,6 @@ namespace Chummer
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             _objGenericCancellationTokenSource = new CancellationTokenSource();
             _objGenericToken = _objGenericCancellationTokenSource.Token;
-            Disposed += (sender, args) =>
-            {
-                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateSelectedVehicleCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateSelectedVehicleCostCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objDoRefreshListCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                _objGenericCancellationTokenSource.Dispose();
-                Utils.ListItemListPool.Return(ref _lstCategory);
-                Utils.StringHashSetPool.Return(ref _setDealerConnectionMaps);
-                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
-            };
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode));

@@ -88,32 +88,6 @@ namespace Chummer
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             _objGenericCancellationTokenSource = new CancellationTokenSource();
             _objGenericToken = _objGenericCancellationTokenSource.Token;
-            Disposed += (sender, args) =>
-            {
-                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateGearInfoCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objDoRefreshListCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objGearSelectedIndexChangedCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                _objGenericCancellationTokenSource.Dispose();
-                Utils.ListItemListPool.Return(ref _lstCategory);
-                Utils.StringHashSetPool.Return(ref _setAllowedCategories);
-                Utils.StringHashSetPool.Return(ref _setAllowedNames);
-                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
-            };
 
             // Load the Gear information.
             _xmlBaseGearDataNode = objCharacter.LoadDataXPath("gear.xml").SelectSingleNodeAndCacheExpression("/chummer");

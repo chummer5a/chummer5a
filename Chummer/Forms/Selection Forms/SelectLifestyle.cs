@@ -84,12 +84,6 @@ namespace Chummer
             _tmrCityChangeTimer = new Timer { Interval = 1000 };
             _tmrDistrictChangeTimer = new Timer { Interval = 1000 };
             _tmrBoroughChangeTimer = new Timer { Interval = 1000 };
-            Disposed += (o, args) =>
-            {
-                _tmrCityChangeTimer?.Dispose();
-                _tmrDistrictChangeTimer?.Dispose();
-                _tmrBoroughChangeTimer?.Dispose();
-            };
             _tmrCityChangeTimer.Tick += CityChangeTimer_Tick;
             _tmrDistrictChangeTimer.Tick += DistrictChangeTimer_Tick;
             _tmrBoroughChangeTimer.Tick += BoroughChangeTimer_Tick;

@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace Chummer
 {
     partial class ExportCharacter
@@ -13,9 +15,29 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                CancellationTokenSource objSource = Interlocked.Exchange(ref _objGenericFormClosingCancellationTokenSource, null);
+                if (objSource != null)
+                {
+                    objSource.Cancel(false);
+                    objSource.Dispose();
+                }
+                objSource = Interlocked.Exchange(ref _objXmlGeneratorCancellationTokenSource, null);
+                if (objSource != null)
+                {
+                    objSource.Cancel(false);
+                    objSource.Dispose();
+                }
+                objSource = Interlocked.Exchange(ref _objCharacterXmlGeneratorCancellationTokenSource, null);
+                if (objSource != null)
+                {
+                    objSource.Cancel(false);
+                    objSource.Dispose();
+                }
+                dlgSaveFile?.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }

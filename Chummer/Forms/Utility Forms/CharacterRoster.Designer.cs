@@ -1,5 +1,6 @@
 
 using System;
+using System.Threading;
 
 namespace Chummer
 {
@@ -16,9 +17,32 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objMostRecentlyUsedsRefreshCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objWatchFolderRefreshCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateCharacterCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                _objGenericFormClosingCancellationTokenSource?.Dispose();
+                _watcherCharacterRosterFolderSaves?.Dispose();
+                _objCharacterRosterFolderWatcherSemaphore?.Dispose();
+                _objCachePurgeReaderWriterLock?.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }

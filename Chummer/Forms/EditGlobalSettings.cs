@@ -80,16 +80,6 @@ namespace Chummer
             pnlHasNotesColorPreview.BackColor = ColorManager.IsLightMode ? _objSelectedHasNotesColor : ColorManager.GenerateDarkModeColor(_objSelectedHasNotesColor);
             _setCustomDataDirectoryInfos
                 = new HashSet<CustomDataDirectoryInfo>(GlobalSettings.CustomDataDirectoryInfos);
-            Disposed += (sender, args) =>
-            {
-                Stack<HashSet<string>> stkToReturn = new Stack<HashSet<string>>(_dicCachedPdfAppNames.GetValuesToListSafe());
-                _dicCachedPdfAppNames.Clear();
-                while (stkToReturn.Count > 0)
-                {
-                    HashSet<string> setLoop = stkToReturn.Pop();
-                    Utils.StringHashSetPool.Return(ref setLoop);
-                }
-            };
             if (!string.IsNullOrEmpty(strActiveTab))
             {
                 int intActiveTabIndex = tabOptions.TabPages.IndexOfKey(strActiveTab);

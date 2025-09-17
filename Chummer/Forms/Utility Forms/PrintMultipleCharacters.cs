@@ -44,11 +44,6 @@ namespace Chummer
 
         public PrintMultipleCharacters()
         {
-            Disposed += (sender, args) =>
-            {
-                _objGenericCancellationTokenSource.Dispose();
-                dlgOpenFile?.Dispose();
-            };
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -358,15 +353,20 @@ namespace Chummer
 
                     if (_frmPrintView == null)
                     {
-                        _frmPrintView = await this.DoThreadSafeFuncAsync(x =>
+                        CharacterSheetViewer frmPrintView = await this.DoThreadSafeFuncAsync(() => new CharacterSheetViewer(), token).ConfigureAwait(false);
+                        CharacterSheetViewer frmOld = Interlocked.CompareExchange(ref frmPrintView, frmPrintView, null);
+                        if (frmOld == null)
                         {
-                            CharacterSheetViewer objReturn = new CharacterSheetViewer();
-                            x.Disposed += (sender, args) => objReturn.Dispose();
-                            return objReturn;
-                        }, token).ConfigureAwait(false);
-                        await _frmPrintView.SetSelectedSheet("Game Master Summary", token).ConfigureAwait(false);
-                        await _frmPrintView.SetCharacters(token, lstCharacters).ConfigureAwait(false);
-                        await _frmPrintView.DoThreadSafeAsync(x => x.Show(), token).ConfigureAwait(false);
+                            await _frmPrintView.SetSelectedSheet("Game Master Summary", token).ConfigureAwait(false);
+                            await _frmPrintView.SetCharacters(token, lstCharacters).ConfigureAwait(false);
+                            await _frmPrintView.DoThreadSafeAsync(x => x.Show(), token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await frmPrintView.DoThreadSafeAsync(x => x.Close(), CancellationToken.None).ConfigureAwait(false);
+                            await frmOld.SetCharacters(token, lstCharacters).ConfigureAwait(false);
+                            await frmOld.DoThreadSafeAsync(x => x.Activate(), token).ConfigureAwait(false);
+                        }
                     }
                     else
                     {

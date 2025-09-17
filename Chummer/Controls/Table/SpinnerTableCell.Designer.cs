@@ -22,6 +22,7 @@ namespace Chummer.UI.Table
                 MaxExtractor = null;
                 ValueGetter = null;
                 ValueUpdater = null;
+                nudSpinner.ValueChanged -= nudSpinner_ValueChanged;
                 if (components != null)
                     components.Dispose();
             }

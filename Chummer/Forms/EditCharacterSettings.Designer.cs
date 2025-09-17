@@ -13,9 +13,15 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                _dicEnabledCharacterCustomDataDirectorys.Dispose();
+                _objCharacterSettings.MultiplePropertiesChangedAsync -= SettingsChanged;
+                _objCharacterSettings.Dispose();
+                Utils.ListItemListPool.Return(ref _lstSettings);
+                Utils.StringHashSetPool.Return(ref _setPermanentSourcebooks);
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }

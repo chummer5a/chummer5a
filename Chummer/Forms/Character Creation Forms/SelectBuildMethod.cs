@@ -48,22 +48,6 @@ namespace Chummer
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objGenericToken = _objGenericCancellationTokenSource.Token;
-            Disposed += (sender, args) =>
-            {
-                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objProcessCharacterSettingIndexChangedCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objRepopulateCharacterSettingsCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                _objGenericCancellationTokenSource.Dispose();
-            };
             _blnForExistingCharacter = blnUseCurrentValues;
             InitializeComponent();
             this.UpdateLightDarkMode();

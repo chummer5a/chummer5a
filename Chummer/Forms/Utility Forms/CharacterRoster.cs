@@ -71,58 +71,6 @@ namespace Chummer
                     {
                         IncludeSubdirectories = true
                     };
-
-                Disposed += (sender, args) =>
-                {
-                    CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objMostRecentlyUsedsRefreshCancellationTokenSource, null);
-                    if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                    {
-                        objOldCancellationTokenSource.Cancel(false);
-                        objOldCancellationTokenSource.Dispose();
-                    }
-                    objOldCancellationTokenSource = Interlocked.Exchange(ref _objWatchFolderRefreshCancellationTokenSource, null);
-                    if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                    {
-                        objOldCancellationTokenSource.Cancel(false);
-                        objOldCancellationTokenSource.Dispose();
-                    }
-                    objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateCharacterCancellationTokenSource, null);
-                    if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                    {
-                        objOldCancellationTokenSource.Cancel(false);
-                        objOldCancellationTokenSource.Dispose();
-                    }
-                    _objGenericFormClosingCancellationTokenSource.Dispose();
-                    _watcherCharacterRosterFolderSaves.Dispose();
-                    _objCharacterRosterFolderWatcherSemaphore.Dispose();
-                    _objCachePurgeReaderWriterLock.Dispose();
-                };
-            }
-            else
-            {
-                Disposed += (sender, args) =>
-                {
-                    CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objMostRecentlyUsedsRefreshCancellationTokenSource, null);
-                    if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                    {
-                        objOldCancellationTokenSource.Cancel(false);
-                        objOldCancellationTokenSource.Dispose();
-                    }
-                    objOldCancellationTokenSource = Interlocked.Exchange(ref _objWatchFolderRefreshCancellationTokenSource, null);
-                    if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                    {
-                        objOldCancellationTokenSource.Cancel(false);
-                        objOldCancellationTokenSource.Dispose();
-                    }
-                    objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateCharacterCancellationTokenSource, null);
-                    if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                    {
-                        objOldCancellationTokenSource.Cancel(false);
-                        objOldCancellationTokenSource.Dispose();
-                    }
-                    _objGenericFormClosingCancellationTokenSource.Dispose();
-                    _objCachePurgeReaderWriterLock.Dispose();
-                };
             }
         }
 

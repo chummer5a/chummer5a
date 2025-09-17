@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace Chummer
 {
     partial class MasterIndex
@@ -13,9 +15,44 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objPopulateCharacterSettingsCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objLoadContentCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objRefreshListCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objItemsSelectedIndexChangedCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objCharacterSettingSelectedIndexChangedCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                _objGenericFormClosingCancellationTokenSource?.Dispose();
+                _objLoadContentLocker?.Dispose();
+                Utils.ListItemListPool.Return(ref _lstFileNamesWithItems);
+                Utils.ListItemListPool.Return(ref _lstItems);
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }

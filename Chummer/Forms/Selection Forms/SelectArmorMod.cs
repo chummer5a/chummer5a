@@ -68,7 +68,6 @@ namespace Chummer
                 _objParentNode = _objArmor.GetNodeXPath();
             }
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
-            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             if (_xmlBaseDataNode != null)
             {
                 _setBlackMarketMaps.AddRange(

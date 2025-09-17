@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 
@@ -17,9 +18,29 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objPopulateMetatypesCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objPopulateMetavariantsCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objRefreshSelectedMetavariantCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                _objGenericCancellationTokenSource?.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -68,11 +68,6 @@ namespace Chummer
             _strNoneGradeId = _lstGrades.Find(x => x.Name == "None")?.SourceIDString;
             _setDisallowedGrades = Utils.StringHashSetPool.Get();
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
-            Disposed += (sender, args) =>
-            {
-                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
-                Utils.StringHashSetPool.Return(ref _setDisallowedGrades);
-            };
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseDrugDataNode));
         }
 

@@ -62,7 +62,6 @@ namespace Chummer
             // Load the Quality information.
             _objXPathDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
             _lstCategory = Utils.ListItemListPool.Get();
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
         }
 
         private async void SelectLifestyleQuality_Load(object sender, EventArgs e)

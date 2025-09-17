@@ -51,7 +51,6 @@ namespace Chummer
             // Load the Martial Art information.
             _xmlBaseChummerNode = _objCharacter.LoadDataXPath("martialarts.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _setAllowedTechniques = Utils.StringHashSetPool.Get();
-            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setAllowedTechniques);
             // Populate the Martial Art Technique list.
             XPathNavigator xmlMartialArtNode = _objMartialArt.GetNodeXPath();
             if (xmlMartialArtNode != null)

@@ -44,6 +44,8 @@ namespace Chummer
         private readonly List<string> _lstUsedTips = new List<string>();
         private Point _oldMousePos = new Point(-1, -1);
         private Character _characterObject;
+        private readonly Timer _tmrDraw;
+        private readonly Timer _tmrTip;
 
         private readonly HtmlToolTip _myToolTip = new HtmlToolTip
         {
@@ -72,30 +74,20 @@ namespace Chummer
                 _thickPen = new Pen(Color.Black, (int) (3 * g.DpiY / 96.0f));
             }
 
-            Disposed += (sender, args) =>
-            {
-                _thickPen.Dispose();
-                _myToolTip.Dispose();
-            };
-
             Paint += panel1_Paint;
 
-            using (Timer tmrDraw = new Timer())
-            {
-                tmrDraw.Interval = 100;
-                tmrDraw.Tick += tmr_DrawTick;
-                tmrDraw.Start();
-            }
-
-            using (Timer tmrTip = new Timer())
-            {
-                tmrTip.Interval = 300000;
-                tmrTip.Tick += tmr_TipTick;
-                tmrTip.Start();
-            }
-
+            _tmrDraw = new Timer();
+            _tmrDraw.Interval = 100;
+            _tmrDraw.Tick += tmr_DrawTick;
+            _tmrTip = new Timer();
+            _tmrTip.Interval = 300000;
+            _tmrTip.Tick += tmr_TipTick;
+            
             _myToolTip.Show(LanguageManager.GetString("Chummy_Intro").WordWrap().CleanForHtml(), this, _mouthCenter);
             _objXmlDocument = (objCharacter?.LoadDataXPath("tips.xml") ?? XmlManager.LoadXPath("tips.xml")).SelectSingleNodeAndCacheExpression("/chummer/tips");
+
+            _tmrDraw.Start();
+            _tmrTip.Start();
         }
 
         #region Event Handlers

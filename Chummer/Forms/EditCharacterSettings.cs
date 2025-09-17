@@ -86,14 +86,6 @@ namespace Chummer
             _objCharacterSettings.MultiplePropertiesChangedAsync += SettingsChanged;
             _lstSettings = Utils.ListItemListPool.Get();
             _setPermanentSourcebooks = Utils.StringHashSetPool.Get();
-            Disposed += (sender, args) =>
-            {
-                _dicEnabledCharacterCustomDataDirectorys.Dispose();
-                _objCharacterSettings.MultiplePropertiesChangedAsync -= SettingsChanged;
-                _objCharacterSettings.Dispose();
-                Utils.ListItemListPool.Return(ref _lstSettings);
-                Utils.StringHashSetPool.Return(ref _setPermanentSourcebooks);
-            };
         }
 
         private async void EditCharacterSettings_Load(object sender, EventArgs e)

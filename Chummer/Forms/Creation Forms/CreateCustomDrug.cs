@@ -66,12 +66,6 @@ namespace Chummer
             }
             _lstSelectedDrugComponents = new List<DrugNodeData>(5);
             _lstGrade = Utils.ListItemListPool.Get();
-            Disposed += (sender, args) =>
-            {
-                if (DialogResult != DialogResult.OK)
-                    Interlocked.Exchange(ref _objDrug, null)?.Dispose();
-                Utils.ListItemListPool.Return(ref _lstGrade);
-            };
         }
 
         private async void CreateCustomDrug_Load(object sender, EventArgs e)

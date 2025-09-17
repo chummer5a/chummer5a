@@ -64,7 +64,6 @@ namespace Chummer
             // Load the Spells information.
             _xmlBaseSpellDataNode = _objCharacter.LoadDataXPath("spells.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _lstCategory = Utils.ListItemListPool.Get();
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
         }
 
         private async void SelectSpell_Load(object sender, EventArgs e)

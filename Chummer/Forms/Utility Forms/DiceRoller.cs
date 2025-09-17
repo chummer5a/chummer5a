@@ -45,7 +45,6 @@ namespace Chummer
             lblResultsLabel.Visible = false;
             lblResults.Text = string.Empty;
             _objRollDiceSemaphore = Utils.SemaphorePool.Get();
-            Disposed += (sender, args) => Utils.SemaphorePool.Return(ref _objRollDiceSemaphore);
         }
 
         private async void DiceRoller_Load(object sender, EventArgs e)

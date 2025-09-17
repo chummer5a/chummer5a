@@ -68,29 +68,6 @@ namespace Chummer
         public CharacterSheetViewer(CancellationToken token = default)
         {
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
-            Disposed += (sender, args) =>
-            {
-                _lstCharacters.Dispose();
-                CancellationTokenSource objTempTokenSource = Interlocked.Exchange(ref _objRefresherCancellationTokenSource, null);
-                if (objTempTokenSource?.IsCancellationRequested == false)
-                {
-                    objTempTokenSource.Cancel(false);
-                    objTempTokenSource.Dispose();
-                }
-                objTempTokenSource = Interlocked.Exchange(ref _objOutputGeneratorCancellationTokenSource, null);
-                if (objTempTokenSource?.IsCancellationRequested == false)
-                {
-                    objTempTokenSource.Cancel(false);
-                    objTempTokenSource.Dispose();
-                }
-                objTempTokenSource = Interlocked.Exchange(ref _objGenericFormClosingCancellationTokenSource, null);
-                if (objTempTokenSource?.IsCancellationRequested == false)
-                {
-                    objTempTokenSource.Cancel(false);
-                    objTempTokenSource.Dispose();
-                }
-                dlgSaveFile?.Dispose();
-            };
             Program.MainForm.OpenCharacterSheetViewers?.Add(this);
             if (_strSelectedSheet.StartsWith("Shadowrun 4", StringComparison.Ordinal))
             {

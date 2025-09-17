@@ -60,11 +60,6 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
             _lstCategory = Utils.ListItemListPool.Get();
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
-            Disposed += (sender, args) =>
-            {
-                Utils.ListItemListPool.Return(ref _lstCategory);
-                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
-            };
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer");
             if (_xmlBaseVehicleDataNode != null)

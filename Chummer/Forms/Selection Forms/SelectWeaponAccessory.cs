@@ -58,7 +58,6 @@ namespace Chummer
             this.TranslateWinForm();
             this.UpdateParentForToolTipControls();
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
-            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             // Load the Weapon information.
             _xmlBaseChummerNode = _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseChummerNode));

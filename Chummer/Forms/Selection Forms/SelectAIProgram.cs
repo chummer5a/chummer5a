@@ -58,7 +58,6 @@ namespace Chummer
             _xmlBaseChummerNode = _objCharacter.LoadDataXPath("programs.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _xmlOptionalAIProgramsNode = _objCharacter.GetNodeXPath().SelectSingleNodeAndCacheExpression("optionalaiprograms");
             _lstCategory = Utils.ListItemListPool.Get();
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
         }
 
         private async void SelectAIProgram_Load(object sender, EventArgs e)

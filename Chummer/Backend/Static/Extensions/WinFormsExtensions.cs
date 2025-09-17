@@ -1121,7 +1121,16 @@ namespace Chummer
             T3 objData = Utils.SafelyRunSynchronously(() => funcAsyncDataGetter.Invoke(objDataSource), token);
             objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
-            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) =>
+            try
+            {
+                Utils.RunOnMainThread(() => objControl.Disposed += RemoveEvent, token: token);
+            }
+            catch
+            {
+                RemoveEvent(null, default);
+                throw;
+            }
+            void RemoveEvent(object sender, EventArgs e)
             {
                 try
                 {
@@ -1131,7 +1140,7 @@ namespace Chummer
                 {
                     //swallow this
                 }
-            }, token: token);
+            }
             return;
 
             async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
@@ -1180,19 +1189,26 @@ namespace Chummer
             await objControl.DoThreadSafeAsync(x => funcControlSetter.Invoke(x, objData), token)
                 .ConfigureAwait(false);
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
-            await Utils.RunOnMainThreadAsync(
-                () => objControl.Disposed += (o, args) =>
+            try
+            {
+                await Utils.RunOnMainThreadAsync(() => objControl.Disposed += RemoveEvent, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                RemoveEvent(null, default);
+                throw;
+            }
+            void RemoveEvent(object sender, EventArgs e)
+            {
+                try
                 {
-                    try
-                    {
-                        objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
-                    }
-                },
-                token).ConfigureAwait(false);
+                    objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+            }
             return;
 
             async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
@@ -1251,7 +1267,16 @@ namespace Chummer
             int intSkipControlSetter = 0;
             int intSkipDataSetter = 0;
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
-            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) =>
+            try
+            {
+                Utils.RunOnMainThread(() => objControl.Disposed += RemoveEvent, token: token);
+            }
+            catch
+            {
+                RemoveEvent(null, default);
+                throw;
+            }
+            void RemoveEvent(object sender, EventArgs e)
             {
                 try
                 {
@@ -1261,7 +1286,7 @@ namespace Chummer
                 {
                     //swallow this
                 }
-            }, token: token);
+            }
 
             funcControlEventHandlerAdder.Invoke(objControl, FuncControlEventHandler);
             return;
@@ -1358,19 +1383,26 @@ namespace Chummer
             int intSkipControlSetter = 0;
             int intSkipDataSetter = 0;
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
-            await Utils.RunOnMainThreadAsync(
-                () => objControl.Disposed += (o, args) =>
+            try
+            {
+                await Utils.RunOnMainThreadAsync(() => objControl.Disposed += RemoveEvent, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                RemoveEvent(null, default);
+                throw;
+            }
+            void RemoveEvent(object sender, EventArgs e)
+            {
+                try
                 {
-                    try
-                    {
-                        objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
-                    }
-                },
-                token).ConfigureAwait(false);
+                    objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+            }
 
             await objControl
                 .DoThreadSafeAsync(x => funcControlEventHandlerAdder.Invoke(x, FuncControlEventHandler), token)
@@ -1469,7 +1501,16 @@ namespace Chummer
             int intSkipControlSetter = 0;
             int intSkipDataSetter = 0;
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
-            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) =>
+            try
+            {
+                Utils.RunOnMainThread(() => objControl.Disposed += RemoveEvent, token: token);
+            }
+            catch
+            {
+                RemoveEvent(null, default);
+                throw;
+            }
+            void RemoveEvent(object sender, EventArgs e)
             {
                 try
                 {
@@ -1479,11 +1520,15 @@ namespace Chummer
                 {
                     //swallow this
                 }
-            }, token: token);
+            }
 
-            Timer tmrDelay = new Timer { Interval = intDelay };
-            tmrDelay.Tick += TmrDelayOnTick;
-            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) => tmrDelay.Dispose(), token: token);
+            Timer tmrDelay = objControl.DoThreadSafeFunc(x =>
+            {
+                tmrDelay = new Timer { Interval = intDelay };
+                tmrDelay.Tick += TmrDelayOnTick;
+                x.Disposed += (o, args) => tmrDelay.Dispose();
+                return tmrDelay;
+            }, token: token);
             funcControlEventHandlerAdder.Invoke(objControl, FuncControlEventHandler);
             return;
 
@@ -1598,7 +1643,16 @@ namespace Chummer
             int intSkipControlSetter = 0;
             int intSkipDataSetter = 0;
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
-            await Utils.RunOnMainThreadAsync(() => objControl.Disposed += (o, args) =>
+            try
+            {
+                await Utils.RunOnMainThreadAsync(() => objControl.Disposed += RemoveEvent, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                RemoveEvent(null, default);
+                throw;
+            }
+            void RemoveEvent(object sender, EventArgs e)
             {
                 try
                 {
@@ -1608,12 +1662,15 @@ namespace Chummer
                 {
                     //swallow this
                 }
-            }, token: token).ConfigureAwait(false);
+            }
 
-            Timer tmrDelay = new Timer { Interval = intDelay };
-            tmrDelay.Tick += TmrDelayOnTick;
-            await Utils.RunOnMainThreadAsync(() => objControl.Disposed += (o, args) => tmrDelay.Dispose(), token: token)
-                .ConfigureAwait(false);
+            Timer tmrDelay = await objControl.DoThreadSafeFuncAsync(x =>
+            {
+                tmrDelay = new Timer { Interval = intDelay };
+                tmrDelay.Tick += TmrDelayOnTick;
+                x.Disposed += (o, args) => tmrDelay.Dispose();
+                return tmrDelay;
+            }, token: token).ConfigureAwait(false);
             await objControl
                 .DoThreadSafeAsync(x => funcControlEventHandlerAdder.Invoke(x, FuncControlEventHandler), token)
                 .ConfigureAwait(false);

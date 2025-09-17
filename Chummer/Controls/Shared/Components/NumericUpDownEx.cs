@@ -49,7 +49,7 @@ namespace Chummer
         /// <summary>
         /// object creator
         /// </summary>
-        public NumericUpDownEx()
+        public NumericUpDownEx() : base()
         {
             // get a reference to the underlying UpDownButtons field
             // Underlying private type is System.Windows.Forms.UpDownBase+UpDownButtons
@@ -152,16 +152,6 @@ namespace Chummer
                 _blnMarginsSaved = true;
                 Interlocked.Decrement(ref _intSkipOnMarginChanged);
             }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _textbox?.Dispose();
-                _upDownButtons?.Dispose();
-            }
-            base.Dispose(disposing);
         }
 
         protected override void OnPaint(PaintEventArgs e)

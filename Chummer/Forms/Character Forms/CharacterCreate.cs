@@ -66,47 +66,6 @@ namespace Chummer
             InitializeComponent();
             tabSkillsUc.MyToken = GenericToken;
             tabPowerUc.MyToken = GenericToken;
-            Disposed += (sender, args) =>
-            {
-                _fntNormal.Dispose();
-                _fntStrikeout.Dispose();
-                Interlocked.Exchange(ref _objFormClosingSemaphore, null)?.Dispose();
-                // These tabs might not necessarily be present in our form, so check to dispose them manually
-                if (!tabInitiation.IsDisposed)
-                {
-                    tabInitiation.Dispose();
-                }
-
-                if (!tabMagician.IsDisposed)
-                {
-                    tabMagician.Dispose();
-                }
-
-                if (!tabAdept.IsDisposed)
-                {
-                    tabAdept.Dispose();
-                }
-
-                if (!tabTechnomancer.IsDisposed)
-                {
-                    tabTechnomancer.Dispose();
-                }
-
-                if (!tabAdvancedPrograms.IsDisposed)
-                {
-                    tabAdvancedPrograms.Dispose();
-                }
-
-                if (!tabCritter.IsDisposed)
-                {
-                    tabCritter.Dispose();
-                }
-
-                if (!tabEnemies.IsDisposed)
-                {
-                    tabEnemies.Dispose();
-                }
-            };
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -24558,7 +24517,6 @@ namespace Chummer
                     StoryBuilder objBuilder = new StoryBuilder(CharacterObject);
                     if (Interlocked.CompareExchange(ref _objStoryBuilder, objBuilder, null) == null)
                     {
-                        Disposed += (o, args) => objBuilder.Dispose();
                         await btnCreateBackstory.DoThreadSafeAsync(x => x.Enabled = false, token: GenericToken)
                             .ConfigureAwait(false);
                     }

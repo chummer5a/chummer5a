@@ -111,19 +111,6 @@ namespace Chummer
 
             _strCurrentVersion = Utils.CurrentChummerVersion.ToString(3);
 
-            Disposed += (sender, args) =>
-            {
-#if !DEBUG
-                _objVersionUpdaterCancellationTokenSource?.Dispose();
-#endif
-                _tmrCharactersToOpenCheck.Dispose();
-                _tmrPerformLayoutCheck.Dispose();
-                _objGenericCancellationTokenSource.Dispose();
-                _objFormOpeningSemaphore.Dispose();
-                dlgOpenFile?.Dispose();
-                DisposeOpenForms();
-            };
-
             _lstOpenCharacterEditorForms.BeforeClearCollectionChangedAsync += OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
             _lstOpenCharacterEditorForms.CollectionChangedAsync += OpenCharacterEditorFormsOnCollectionChanged;
             _lstOpenCharacterSheetViewers.BeforeClearCollectionChangedAsync += OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
@@ -890,7 +877,7 @@ namespace Chummer
                                                 setNewCharactersToOpen = setCharactersToOpen;
                                             foreach (string strFile in setFilesToLoad)
                                                 setNewCharactersToOpen.TryAdd(strFile);
-                                            _tmrCharactersToOpenCheck.Start();
+                                            await this.DoThreadSafeAsync(() => _tmrCharactersToOpenCheck.Start(), _objGenericToken).ConfigureAwait(false);
                                         }
                                     }
                                 }
@@ -925,17 +912,7 @@ namespace Chummer
                                         await LanguageManager.GetStringAsync(
                                             "String_Chummy", token: _objGenericToken).ConfigureAwait(false),
                                         token: _objGenericToken).ConfigureAwait(false);
-                                    _mascotChummy = await this.DoThreadSafeFuncAsync(x =>
-                                    {
-                                        Chummy objReturn = new Chummy(null);
-                                        x.Disposed += (o, args) =>
-                                        {
-                                            if (Interlocked.CompareExchange(ref _mascotChummy, null, objReturn)
-                                                == objReturn)
-                                                objReturn.Dispose();
-                                        };
-                                        return objReturn;
-                                    }, token: _objGenericToken).ConfigureAwait(false);
+                                    _mascotChummy = await this.DoThreadSafeFuncAsync(() => new Chummy(null), token: _objGenericToken).ConfigureAwait(false);
                                     await _mascotChummy.DoThreadSafeAsync(
                                         x => x.Show(), token: _objGenericToken).ConfigureAwait(false);
                                 }
@@ -1464,7 +1441,6 @@ namespace Chummer
                                 ChummerUpdater frmUpdater = await this.DoThreadSafeFuncAsync(() => new ChummerUpdater(), objNewToken);
                                 if (Interlocked.CompareExchange(ref _frmUpdate, frmUpdater, null) == null)
                                 {
-                                    Disposed += (sender, args) => frmUpdater.Dispose();
                                     await frmUpdater.DoThreadSafeAsync(x =>
                                     {
                                         x.FormClosed += (o, args) => ResetChummerUpdater(x);
@@ -1630,7 +1606,6 @@ namespace Chummer
                     ChummerUpdater objOldUpdater = Interlocked.CompareExchange(ref _frmUpdate, frmUpdater, null);
                     if (objOldUpdater == null)
                     {
-                        Disposed += (o, args) => frmUpdater.Dispose();
                         await frmUpdater.DoThreadSafeAsync(x =>
                         {
                             x.FormClosed += (o, args) => ResetChummerUpdater(x);
@@ -2228,7 +2203,7 @@ namespace Chummer
                         x.Visible = false;
                 }, token: _objGenericToken).ConfigureAwait(false);
 
-                _tmrPerformLayoutCheck.Start();
+                await this.DoThreadSafeAsync(() => _tmrPerformLayoutCheck.Start(), _objGenericToken).ConfigureAwait(false);
 
                 await DoReopenCharacters(_objGenericToken).ConfigureAwait(false);
             }
@@ -3058,6 +3033,21 @@ namespace Chummer
                 }
             }, CancellationToken.None);
             Interlocked.Exchange(ref _frmUpdate, null)?.DoThreadSafe(x =>
+            {
+                try
+                {
+                    x.Close();
+                }
+                catch (ObjectDisposedException)
+                {
+                    // swallow this
+                }
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
+            }, CancellationToken.None);
+            Interlocked.Exchange(ref _mascotChummy, null)?.DoThreadSafe(x =>
             {
                 try
                 {

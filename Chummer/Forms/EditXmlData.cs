@@ -57,22 +57,6 @@ namespace Chummer
         public EditXmlData()
         {
             InitializeComponent();
-            Disposed += (sender, args) =>
-            {
-                CancellationTokenSource objOldSource = Interlocked.Exchange(ref _objApplyAmendmentCancellationTokenSource, null);
-                if (objOldSource != null)
-                {
-                    objOldSource.Cancel(false);
-                    objOldSource.Dispose();
-                }
-                objOldSource = Interlocked.Exchange(ref _objSaveAmendmentCancellationTokenSource, null);
-                if (objOldSource != null)
-                {
-                    objOldSource.Cancel(false);
-                    objOldSource.Dispose();
-                }
-                Interlocked.Exchange(ref _objFormClosingSemaphore, null)?.Dispose();
-            };
         }
 
         private async void EditXmlData_Load(object sender, EventArgs e)

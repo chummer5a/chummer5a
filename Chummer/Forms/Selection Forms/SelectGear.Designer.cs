@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace Chummer
 {
     partial class SelectGear
@@ -13,9 +15,33 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateGearInfoCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objDoRefreshListCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objGearSelectedIndexChangedCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                _objGenericCancellationTokenSource.Dispose();
+                Utils.ListItemListPool.Return(ref _lstCategory);
+                Utils.StringHashSetPool.Return(ref _setAllowedCategories);
+                Utils.StringHashSetPool.Return(ref _setAllowedNames);
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }

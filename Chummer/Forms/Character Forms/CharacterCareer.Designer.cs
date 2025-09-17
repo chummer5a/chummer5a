@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Windows.Forms;
 using Chummer.UI.Powers;
 
@@ -18,14 +19,26 @@ namespace Chummer
         {
             if (disposing)
             {
-                // Manually dispose of tab pages that could get removed from Controls
-                tabInitiation?.Dispose();
-                tabMagician?.Dispose();
-                tabAdept?.Dispose();
-                tabTechnomancer?.Dispose();
-                tabAdvancedPrograms?.Dispose();
-                tabCritter?.Dispose();
-                tabEnemies?.Dispose();
+                _fntNormal?.Dispose();
+                _fntStrikeout?.Dispose();
+                Interlocked.Exchange(ref _objKarmaChartSemaphore, null)?.Dispose();
+                Interlocked.Exchange(ref _objNuyenChartSemaphore, null)?.Dispose();
+                Interlocked.Exchange(ref _objFormClosingSemaphore, null)?.Dispose();
+                // These tabs might not necessarily be present in our form, so check to dispose them manually
+                if (tabInitiation?.IsDisposed == false)
+                    tabInitiation.Dispose();
+                if (tabMagician?.IsDisposed == false)
+                    tabMagician.Dispose();
+                if (tabAdept?.IsDisposed == false)
+                    tabAdept.Dispose();
+                if (tabTechnomancer?.IsDisposed == false)
+                    tabTechnomancer.Dispose();
+                if (tabAdvancedPrograms?.IsDisposed == false)
+                    tabAdvancedPrograms.Dispose();
+                if (tabCritter?.IsDisposed == false)
+                    tabCritter.Dispose();
+                if (tabEnemies?.IsDisposed == false)
+                    tabEnemies.Dispose();
                 if (components != null)
                     components.Dispose();
             }

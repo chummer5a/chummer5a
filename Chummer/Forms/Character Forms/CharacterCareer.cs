@@ -69,49 +69,6 @@ namespace Chummer
             InitializeComponent();
             tabSkillsUc.MyToken = GenericToken;
             tabPowerUc.MyToken = GenericToken;
-            Disposed += (sender, args) =>
-            {
-                _fntNormal.Dispose();
-                _fntStrikeout.Dispose();
-                Interlocked.Exchange(ref _objKarmaChartSemaphore, null)?.Dispose();
-                Interlocked.Exchange(ref _objNuyenChartSemaphore, null)?.Dispose();
-                Interlocked.Exchange(ref _objFormClosingSemaphore, null)?.Dispose();
-                // These tabs might not necessarily be present in our form, so check to dispose them manually
-                if (!tabInitiation.IsDisposed)
-                {
-                    tabInitiation.Dispose();
-                }
-
-                if (!tabMagician.IsDisposed)
-                {
-                    tabMagician.Dispose();
-                }
-
-                if (!tabAdept.IsDisposed)
-                {
-                    tabAdept.Dispose();
-                }
-
-                if (!tabTechnomancer.IsDisposed)
-                {
-                    tabTechnomancer.Dispose();
-                }
-
-                if (!tabAdvancedPrograms.IsDisposed)
-                {
-                    tabAdvancedPrograms.Dispose();
-                }
-
-                if (!tabCritter.IsDisposed)
-                {
-                    tabCritter.Dispose();
-                }
-
-                if (!tabEnemies.IsDisposed)
-                {
-                    tabEnemies.Dispose();
-                }
-            };
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -845,7 +802,6 @@ namespace Chummer
                                             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                                        Utils.ListItemListPool, out List<ListItem> lstSpirit))
                                             {
-                                                lstSpirit.Add(ListItem.Blank);
                                                 if (xmlTraditionsBaseChummerNode != null)
                                                 {
                                                     foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode
@@ -870,6 +826,7 @@ namespace Chummer
                                                 }
 
                                                 lstSpirit.Sort(CompareListItems.CompareNames);
+                                                lstSpirit.Insert(0, ListItem.Blank);
 
                                                 async ValueTask BindSpiritVisibility(ElasticComboBox cboBox,
                                                     Label lblName,

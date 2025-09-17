@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace Chummer
 {
     partial class CreateCustomDrug
@@ -13,9 +15,13 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                if (DialogResult != System.Windows.Forms.DialogResult.OK)
+                    Interlocked.Exchange(ref _objDrug, null)?.Dispose();
+                Utils.ListItemListPool.Return(ref _lstGrade);
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }

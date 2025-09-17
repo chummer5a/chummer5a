@@ -42,15 +42,6 @@ namespace Chummer
 
         public HeroLabImporter()
         {
-            Disposed += (sender, args) =>
-            {
-                _lstCharacterCache.Dispose();
-                List<Bitmap> lstImages = _dicImages.GetValuesToListSafe();
-                _dicImages.Clear();
-                foreach (Bitmap objImage in lstImages)
-                    objImage.Dispose();
-                dlgOpenFile?.Dispose();
-            };
             InitializeComponent();
             tabCharacterText.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();

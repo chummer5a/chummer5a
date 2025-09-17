@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Chummer
 {
     partial class EditGlobalSettings
@@ -15,6 +17,13 @@ namespace Chummer
         {
             if (disposing)
             {
+                Stack<HashSet<string>> stkToReturn = new Stack<HashSet<string>>(_dicCachedPdfAppNames.GetValuesToListSafe());
+                _dicCachedPdfAppNames.Clear();
+                while (stkToReturn.Count > 0)
+                {
+                    HashSet<string> setLoop = stkToReturn.Pop();
+                    Utils.StringHashSetPool.Return(ref setLoop);
+                }
                 // Manually dispose of plugins tab because it might get removed from Controls
                 tabPlugins?.Dispose();
                 if (components != null)

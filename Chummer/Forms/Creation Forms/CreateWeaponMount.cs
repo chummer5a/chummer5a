@@ -61,30 +61,6 @@ namespace Chummer
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             _lstMods = new ThreadSafeList<VehicleMod>(1);
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
-            Disposed += (sender, args) =>
-            {
-                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
-                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateInfoCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objRefreshComboBoxesCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objAddModCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                _objGenericCancellationTokenSource.Dispose();
-                _lstMods.Dispose();
-            };
             _objVehicle = objVehicle;
             _objMount = objWeaponMount;
             _blnAllowEditOptions = objWeaponMount == null;

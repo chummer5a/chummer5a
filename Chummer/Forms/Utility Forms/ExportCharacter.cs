@@ -75,28 +75,6 @@ namespace Chummer
             _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             Program.MainForm.OpenCharacterExportForms?.Add(this);
-            Disposed += (sender, args) =>
-            {
-                CancellationTokenSource objSource = Interlocked.Exchange(ref _objGenericFormClosingCancellationTokenSource, null);
-                if (objSource != null)
-                {
-                    objSource.Cancel(false);
-                    objSource.Dispose();
-                }
-                objSource = Interlocked.Exchange(ref _objXmlGeneratorCancellationTokenSource, null);
-                if (objSource != null)
-                {
-                    objSource.Cancel(false);
-                    objSource.Dispose();
-                }
-                objSource = Interlocked.Exchange(ref _objCharacterXmlGeneratorCancellationTokenSource, null);
-                if (objSource != null)
-                {
-                    objSource.Cancel(false);
-                    objSource.Dispose();
-                }
-                dlgSaveFile?.Dispose();
-            };
         }
 
         private async void ExportCharacter_Load(object sender, EventArgs e)

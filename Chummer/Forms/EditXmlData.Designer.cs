@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace Chummer
 {
     partial class EditXmlData
@@ -13,9 +15,23 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                CancellationTokenSource objOldSource = Interlocked.Exchange(ref _objApplyAmendmentCancellationTokenSource, null);
+                if (objOldSource != null)
+                {
+                    objOldSource.Cancel(false);
+                    objOldSource.Dispose();
+                }
+                objOldSource = Interlocked.Exchange(ref _objSaveAmendmentCancellationTokenSource, null);
+                if (objOldSource != null)
+                {
+                    objOldSource.Cancel(false);
+                    objOldSource.Dispose();
+                }
+                Interlocked.Exchange(ref _objFormClosingSemaphore, null)?.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -70,13 +70,6 @@ namespace Chummer
             _strTempLatestVersionChangelogPath = Path.Combine(Utils.GetTempPath(), "changelog.txt");
             _clientChangelogDownloader = new WebClient { Proxy = WebRequest.DefaultWebProxy, Encoding = Encoding.UTF8, Credentials = CredentialCache.DefaultNetworkCredentials };
             _clientDownloader = new WebClient { Proxy = WebRequest.DefaultWebProxy, Encoding = Encoding.UTF8, Credentials = CredentialCache.DefaultNetworkCredentials };
-            Disposed += (sender, args) =>
-            {
-                _objGenericFormClosingCancellationTokenSource.Dispose();
-                _clientChangelogDownloader.Dispose();
-                _clientDownloader.Dispose();
-                _objConnectionLoaderCancellationTokenSource?.Dispose();
-            };
             _clientDownloader.DownloadFileCompleted += wc_DownloadCompleted;
             _clientDownloader.DownloadProgressChanged += wc_DownloadProgressChanged;
         }
