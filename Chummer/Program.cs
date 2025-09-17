@@ -1519,13 +1519,13 @@ namespace Chummer
         /// <summary>
         /// Opens the correct window for a single character in the main form, queues the command to open on the main form if it is not assigned (thread-safe).
         /// </summary>
-        public static async Task OpenCharacter(Character objCharacter, bool blnIncludeInMru = true, CancellationToken token = default)
+        public static Task OpenCharacter(Character objCharacter, bool blnIncludeInMru = true, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (objCharacter == null)
-                return;
-            using (TemporaryArray<Character> objYielded = objCharacter.YieldAsPooled())
-                await OpenCharacterList(objYielded, blnIncludeInMru, token).ConfigureAwait(false);
+                return Task.CompletedTask;
+            return OpenCharacterList(objCharacter.Yield(), blnIncludeInMru, token);
         }
 
         /// <summary>
@@ -1555,13 +1555,13 @@ namespace Chummer
         /// <summary>
         /// Open a character's print form up without necessarily opening them up fully for editing.
         /// </summary>
-        public static async Task OpenCharacterForPrinting(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
+        public static Task OpenCharacterForPrinting(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (objCharacter == null)
-                return;
-            using (TemporaryArray<Character> objYielded = objCharacter.YieldAsPooled())
-                await OpenCharacterListForPrinting(objYielded, blnIncludeInMru, token).ConfigureAwait(false);
+                return Task.CompletedTask;
+            return OpenCharacterListForPrinting(objCharacter.Yield(), blnIncludeInMru, token);
         }
 
         /// <summary>
@@ -1591,13 +1591,13 @@ namespace Chummer
         /// <summary>
         /// Open a character for exporting without necessarily opening them up fully for editing.
         /// </summary>
-        public static async Task OpenCharacterForExport(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
+        public static Task OpenCharacterForExport(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (objCharacter == null)
-                return;
-            using (TemporaryArray<Character> objYielded = objCharacter.YieldAsPooled())
-                await OpenCharacterListForExport(objYielded, blnIncludeInMru, token).ConfigureAwait(false);
+                return Task.CompletedTask;
+            return OpenCharacterListForExport(objCharacter.Yield(), blnIncludeInMru, token);
         }
 
         /// <summary>

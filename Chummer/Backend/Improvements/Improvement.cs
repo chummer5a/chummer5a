@@ -711,7 +711,7 @@ namespace Chummer
                 {
                     ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, strOldValue);
                     ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, value);
-                    using (TemporaryArray<string> strYielded = strOldValue.YieldAsPooled())
+                    using (TemporaryStringArray strYielded = strOldValue.YieldAsPooled())
                         this.ProcessRelevantEvents(lstExtraImprovedName: strYielded);
                 }
             }
@@ -936,7 +936,7 @@ namespace Chummer
                 if (strOldValue != value && Enabled)
                 {
                     ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                    using (TemporaryArray<string> strYielded = strOldValue.YieldAsPooled())
+                    using (TemporaryStringArray strYielded = strOldValue.YieldAsPooled())
                         this.ProcessRelevantEvents(lstExtraUniqueName: strYielded);
                 }
             }
@@ -970,7 +970,7 @@ namespace Chummer
                 string strOldValue = Interlocked.Exchange(ref _strTarget, value);
                 if (strOldValue != value && Enabled)
                 {
-                    using (TemporaryArray<string> strYielded = strOldValue.YieldAsPooled())
+                    using (TemporaryStringArray strYielded = strOldValue.YieldAsPooled())
                         this.ProcessRelevantEvents(lstExtraTarget: strYielded);
                 }
             }

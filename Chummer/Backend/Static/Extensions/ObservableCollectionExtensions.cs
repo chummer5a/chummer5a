@@ -49,19 +49,12 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(length));
             if (length == 0)
                 return;
-            T[] aobjSorted = ArrayPool<T>.Shared.Rent(length);
-            try
-            {
-                for (int i = 0; i < length; ++i)
-                    aobjSorted[i] = lstCollection[index + i];
-                Array.Sort(aobjSorted, 0, length, objComparer);
-                for (int i = 0; i < length; ++i)
-                    lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), index + i);
-            }
-            finally
-            {
-                ArrayPool<T>.Shared.Return(aobjSorted);
-            }
+            T[] aobjSorted = new T[length];
+            for (int i = 0; i < length; ++i)
+                aobjSorted[i] = lstCollection[index + i];
+            Array.Sort(aobjSorted, 0, length, objComparer);
+            for (int i = 0; i < length; ++i)
+                lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), index + i);
         }
 
         /// <summary>
@@ -77,19 +70,12 @@ namespace Chummer
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
             int intCollectionSize = lstCollection.Count;
-            T[] aobjSorted = ArrayPool<T>.Shared.Rent(intCollectionSize);
-            try
-            {
-                for (int i = 0; i < intCollectionSize; ++i)
-                    aobjSorted[i] = lstCollection[i];
-                Array.Sort(aobjSorted, 0, intCollectionSize, new FunctorComparer<T>(funcComparison));
-                for (int i = 0; i < intCollectionSize; ++i)
-                    lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), i);
-            }
-            finally
-            {
-                ArrayPool<T>.Shared.Return(aobjSorted);
-            }
+            T[] aobjSorted = new T[intCollectionSize];
+            for (int i = 0; i < intCollectionSize; ++i)
+                aobjSorted[i] = lstCollection[i];
+            Array.Sort(aobjSorted, funcComparison);
+            for (int i = 0; i < intCollectionSize; ++i)
+                lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), i);
         }
 
         /// <summary>
@@ -106,22 +92,15 @@ namespace Chummer
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             int intCollectionSize = lstCollection.Count;
-            T[] aobjSorted = ArrayPool<T>.Shared.Rent(intCollectionSize);
-            try
-            {
-                for (int i = 0; i < intCollectionSize; ++i)
-                    aobjSorted[i] = lstCollection[i];
-                if (objComparer != null)
-                    Array.Sort(aobjSorted, 0, intCollectionSize, objComparer);
-                else
-                    Array.Sort(aobjSorted, 0, intCollectionSize);
-                for (int i = 0; i < intCollectionSize; ++i)
-                    lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), i);
-            }
-            finally
-            {
-                ArrayPool<T>.Shared.Return(aobjSorted);
-            }
+            T[] aobjSorted = new T[intCollectionSize];
+            for (int i = 0; i < intCollectionSize; ++i)
+                aobjSorted[i] = lstCollection[i];
+            if (objComparer != null)
+                Array.Sort(aobjSorted, 0, intCollectionSize, objComparer);
+            else
+                Array.Sort(aobjSorted, 0, intCollectionSize);
+            for (int i = 0; i < intCollectionSize; ++i)
+                lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), i);
         }
     }
 }

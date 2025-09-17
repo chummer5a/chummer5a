@@ -2834,8 +2834,7 @@ namespace Chummer
         public static void EnableImprovements(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (TemporaryArray<Improvement> objYielded = objImprovement.YieldAsPooled())
-                EnableImprovements(objCharacter, objYielded, token);
+            EnableImprovements(objCharacter, objImprovement.Yield(), token);
         }
 
         public static void EnableImprovements(Character objCharacter, params Improvement[] objImprovementList)
@@ -2853,11 +2852,10 @@ namespace Chummer
             return EnableImprovementsAsync(objCharacter, objImprovementList.ToList(), token);
         }
 
-        public static async Task EnableImprovementsAsync(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
+        public static Task EnableImprovementsAsync(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (TemporaryArray<Improvement> objYielded = objImprovement.YieldAsPooled())
-                await EnableImprovementsAsync(objCharacter, objYielded, token).ConfigureAwait(false);
+            return EnableImprovementsAsync(objCharacter, objImprovement.Yield(), token);
         }
 
         public static Task EnableImprovementsAsync(Character objCharacter, params Improvement[] objImprovementList)
@@ -3531,8 +3529,7 @@ namespace Chummer
         public static void DisableImprovements(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (TemporaryArray<Improvement> objYielded = objImprovement.YieldAsPooled())
-                DisableImprovements(objCharacter, objYielded, token);
+            DisableImprovements(objCharacter, objImprovement.Yield(), token);
         }
 
         public static void DisableImprovements(Character objCharacter, params Improvement[] objImprovementList)
@@ -3551,11 +3548,10 @@ namespace Chummer
             return DisableImprovementsAsync(objCharacter, objImprovementList.ToList(), token);
         }
 
-        public static async Task DisableImprovementsAsync(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
+        public static Task DisableImprovementsAsync(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (TemporaryArray<Improvement> objYielded = objImprovement.YieldAsPooled())
-                await DisableImprovementsAsync(objCharacter, objYielded, token).ConfigureAwait(false);
+            return DisableImprovementsAsync(objCharacter, objImprovement.Yield(), token);
         }
 
         public static Task DisableImprovementsAsync(Character objCharacter, params Improvement[] objImprovementList)

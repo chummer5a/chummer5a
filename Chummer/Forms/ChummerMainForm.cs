@@ -3376,11 +3376,11 @@ namespace Chummer
         /// <summary>
         /// Opens the correct window for a single character.
         /// </summary>
-        public async Task OpenCharacter(Character objCharacter, bool blnIncludeInMru = true, CancellationToken token = default)
+        public Task OpenCharacter(Character objCharacter, bool blnIncludeInMru = true, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            using (TemporaryArray<Character> objYielded = objCharacter.YieldAsPooled())
-                await OpenCharacterList(objYielded, blnIncludeInMru, token).ConfigureAwait(false);
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            return OpenCharacterList(objCharacter.Yield(), blnIncludeInMru, token);
         }
 
         /// <summary>
@@ -3589,11 +3589,11 @@ namespace Chummer
         /// <summary>
         /// Open a character's print form up without necessarily opening them up fully for editing.
         /// </summary>
-        public async Task OpenCharacterForPrinting(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
+        public Task OpenCharacterForPrinting(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            using (TemporaryArray<Character> objYielded = objCharacter.YieldAsPooled())
-                await OpenCharacterListForPrinting(objYielded, blnIncludeInMru, token).ConfigureAwait(false);
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            return OpenCharacterListForPrinting(objCharacter.Yield(), blnIncludeInMru, token);
         }
 
         /// <summary>
@@ -3829,11 +3829,11 @@ namespace Chummer
         /// <summary>
         /// Open a character's export form up without necessarily opening them up fully for editing.
         /// </summary>
-        public async Task OpenCharacterForExport(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
+        public Task OpenCharacterForExport(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            using (TemporaryArray<Character> objYielded = objCharacter.YieldAsPooled())
-                await OpenCharacterListForExport(objYielded, blnIncludeInMru, token).ConfigureAwait(false);
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            return OpenCharacterListForExport(objCharacter.Yield(), blnIncludeInMru, token);
         }
 
         /// <summary>

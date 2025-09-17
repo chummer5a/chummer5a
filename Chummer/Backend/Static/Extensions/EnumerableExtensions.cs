@@ -255,9 +255,20 @@ namespace Chummer
         /// <typeparam name="T">Type of the object.</typeparam>
         /// <param name="objItem">The instance that will be wrapped. </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TemporaryArray<T> YieldAsPooled<T>(this T objItem)
+        public static TemporaryArray<T> YieldAsPooled<T>(this T objItem) where T : unmanaged
         {
             return new TemporaryArray<T>(objItem);
+        }
+
+        /// <summary>
+        /// Syntactic sugar to wraps this object instance into a temporary array consisting of a single item.
+        /// Potentially better than a normal Yield() because of fewer allocations needed, but more cumbersome because it requires disposal.
+        /// </summary>
+        /// <param name="strItem">The instance that will be wrapped. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TemporaryStringArray YieldAsPooled(this string strItem)
+        {
+            return new TemporaryStringArray(strItem);
         }
 
         /// <summary>

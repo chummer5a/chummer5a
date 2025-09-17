@@ -2897,7 +2897,7 @@ namespace Chummer.Backend.Skills
             {
                 if (e.PropertyNames.Contains(nameof(Character.EffectiveBuildMethodUsesPriorityTables)))
                 {
-                    using (TemporaryArray<string> aParams = new TemporaryArray<string>(nameof(CareerCanIncrease), nameof(BaseUnbroken)))
+                    using (TemporaryStringArray aParams = new TemporaryStringArray(nameof(CareerCanIncrease), nameof(BaseUnbroken)))
                         await OnMultiplePropertiesChangedAsync(aParams, token).ConfigureAwait(false);
                 }
                 else

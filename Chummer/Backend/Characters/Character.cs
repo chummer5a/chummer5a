@@ -9019,7 +9019,7 @@ namespace Chummer
                                             : await objCyberware.GetNodeAsync(token: token).ConfigureAwait(false);
                                         if (objNode != null)
                                         {
-                                            using (TemporaryArray<string> aParams = new TemporaryArray<string>(objCyberware.InternalId, objCyberware.InternalId + "Pair"))
+                                            using (TemporaryStringArray aParams = new TemporaryStringArray(objCyberware.InternalId, objCyberware.InternalId + "Pair"))
                                             {
                                                 if (blnSync)
                                                 {
@@ -9145,7 +9145,7 @@ namespace Chummer
                                                 XmlNode objNode = objCyberware.GetNode(token: token);
                                                 if (objNode != null)
                                                 {
-                                                    using (TemporaryArray<string> aParams = new TemporaryArray<string>(objCyberware.InternalId, objCyberware.InternalId + "Pair"))
+                                                    using (TemporaryStringArray aParams = new TemporaryStringArray(objCyberware.InternalId, objCyberware.InternalId + "Pair"))
                                                     {
                                                         ImprovementManager.RemoveImprovements(this, objCyberware.SourceType, aParams, token: token);
                                                     }
@@ -9224,7 +9224,7 @@ namespace Chummer
                                                 XmlNode objNode = await objCyberware.GetNodeAsync(token: token).ConfigureAwait(false);
                                                 if (objNode != null)
                                                 {
-                                                    using (TemporaryArray<string> aParams = new TemporaryArray<string>(objCyberware.InternalId, objCyberware.InternalId + "Pair"))
+                                                    using (TemporaryStringArray aParams = new TemporaryStringArray(objCyberware.InternalId, objCyberware.InternalId + "Pair"))
                                                     {
                                                         await ImprovementManager.RemoveImprovementsAsync(this, objCyberware.SourceType, aParams, token: token).ConfigureAwait(false);
                                                     }
@@ -20019,29 +20019,22 @@ namespace Chummer
 
                         if (xmlMugshotsList.Count > 1)
                         {
-                            Image[] objMugshotImages = ArrayPool<Image>.Shared.Rent(xmlMugshotsList.Count);
-                            try
+                            Bitmap[] objMugshotImages = new Bitmap[xmlMugshotsList.Count];
+                            token.ThrowIfCancellationRequested();
+                            Parallel.For(0, xmlMugshotsList.Count,
+                                            i =>
+                                            {
+                                                string strLoop = astrMugshotsBase64[i];
+                                                if (!string.IsNullOrEmpty(strLoop))
+                                                    objMugshotImages[i] = strLoop.ToImage(PixelFormat.Format32bppPArgb, token);
+                                                else
+                                                    objMugshotImages[i] = null;
+                                            });
+                            for (int i = 0; i < xmlMugshotsList.Count; ++i)
                             {
-                                token.ThrowIfCancellationRequested();
-                                Parallel.For(0, xmlMugshotsList.Count,
-                                             i =>
-                                             {
-                                                 string strLoop = astrMugshotsBase64[i];
-                                                 if (!string.IsNullOrEmpty(strLoop))
-                                                     objMugshotImages[i] = strLoop.ToImage(PixelFormat.Format32bppPArgb, token);
-                                                 else
-                                                     objMugshotImages[i] = null;
-                                             });
-                                for (int i = 0; i < xmlMugshotsList.Count; ++i)
-                                {
-                                    Image objLoop = objMugshotImages[i];
-                                    if (objLoop != null)
-                                        _lstMugshots.Add(objLoop);
-                                }
-                            }
-                            finally
-                            {
-                                ArrayPool<Image>.Shared.Return(objMugshotImages);
+                                Bitmap objLoop = objMugshotImages[i];
+                                if (objLoop != null)
+                                    _lstMugshots.Add(objLoop);
                             }
                         }
                         else
@@ -20098,24 +20091,17 @@ namespace Chummer
 
                         if (xmlMugshotsList.Count > 1)
                         {
-                            Bitmap[] aobjMugshots = await ParallelExtensions.ForAsync(0, xmlMugshotsList.Count, async i =>
+                            Bitmap[] aobjMugshots = await ParallelExtensions.ForAsync(0, xmlMugshotsList.Count, i =>
                             {
                                 string strLoop = astrMugshotsBase64[i];
                                 if (!string.IsNullOrEmpty(strLoop))
-                                    return await strLoop.ToImageAsync(PixelFormat.Format32bppPArgb, token).ConfigureAwait(false);
-                                return null;
-                            }, true, token).ConfigureAwait(false);
-                            try
+                                    return strLoop.ToImageAsync(PixelFormat.Format32bppPArgb, token);
+                                return Task.FromResult<Bitmap>(null);
+                            }, token).ConfigureAwait(false);
+                            foreach (Bitmap objImage in aobjMugshots)
                             {
-                                foreach (Bitmap objImage in aobjMugshots)
-                                {
-                                    if (objImage != null)
-                                        await _lstMugshots.AddAsync(objImage, token).ConfigureAwait(false);
-                                }
-                            }
-                            finally
-                            {
-                                ArrayPool<Bitmap>.Shared.Return(aobjMugshots);
+                                if (objImage != null)
+                                    await _lstMugshots.AddAsync(objImage, token).ConfigureAwait(false);
                             }
                         }
                         else

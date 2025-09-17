@@ -1180,7 +1180,45 @@ namespace Chummer
         /// <returns>Array of the results of <paramref name="funcCodeToRun"/> when run from <paramref name="intLowerBound"/> (inclusive) to <paramref name="intUpperBound"/> (exclusive).</returns>
         public static Task<TResult[]> ForAsync<TResult>(int intLowerBound, int intUpperBound, Func<int, Task<TResult>> funcCodeToRun, CancellationToken token = default)
         {
-            return ForAsync(intLowerBound, intUpperBound, funcCodeToRun, false, token);
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<TResult[]>(token);
+            int intReturnLength = intUpperBound - intLowerBound;
+            if (intReturnLength <= 0)
+                return Task.FromResult(Array.Empty<TResult>());
+            return Inner();
+            async Task<TResult[]> Inner()
+            {
+                int intCounter = 0;
+                TResult[] aobjReturn = new TResult[intReturnLength];
+                token.ThrowIfCancellationRequested();
+                int intBufferSize = Math.Min(intReturnLength, Utils.MaxParallelBatchSize);
+                List<Task<TResult>> lstBuffer = new List<Task<TResult>>(intBufferSize);
+                token.ThrowIfCancellationRequested();
+                int i = 0;
+                for (int j = intLowerBound; j < intUpperBound; ++j)
+                {
+                    token.ThrowIfCancellationRequested();
+                    lstBuffer.Add(funcCodeToRun(j));
+                    if (++i == intBufferSize)
+                    {
+                        TResult[] aobjReturnInner = await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                        for (int k = 0; k < i; ++k)
+                            aobjReturn[intCounter++] = aobjReturnInner[k];
+                        lstBuffer.Clear();
+                        i = 0;
+                    }
+                }
+                if (i > 0)
+                {
+                    token.ThrowIfCancellationRequested();
+                    await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    TResult[] aobjReturnInner = await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                    for (int k = 0; k < i; ++k)
+                        aobjReturn[intCounter++] = aobjReturnInner[k];
+                }
+                return aobjReturn;
+            }
         }
 
         /// <summary>
@@ -1192,7 +1230,7 @@ namespace Chummer
         /// <param name="blnPooledArray">Whether the returned array should be one taken from ArrayPool.Shared</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Array of the results of <paramref name="funcCodeToRun"/> when run from <paramref name="intLowerBound"/> (inclusive) to <paramref name="intUpperBound"/> (exclusive).</returns>
-        public static Task<TResult[]> ForAsync<TResult>(int intLowerBound, int intUpperBound, Func<int, Task<TResult>> funcCodeToRun, bool blnPooledArray, CancellationToken token = default)
+        public static Task<TResult[]> ForAsync<TResult>(int intLowerBound, int intUpperBound, Func<int, Task<TResult>> funcCodeToRun, bool blnPooledArray, CancellationToken token = default) where TResult : unmanaged // DO NOT REMOVE UNMANAGED UNLESS YOU LIKE RANDOM MEMORY LEAKS!
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<TResult[]>(token);
@@ -1238,6 +1276,66 @@ namespace Chummer
                 catch when (blnPooledArray)
                 {
                     ArrayPool<TResult>.Shared.Return(aobjReturn);
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.For while respecting the max parallel batch size we have set in Utils
+        /// </summary>
+        /// <param name="intLowerBound">Starting value of the iterating variable (inclusive).</param>
+        /// <param name="intUpperBound">Terminating value of the iterating variable (exclusive).</param>
+        /// <param name="funcCodeToRun">Code to run in parallel.</param>
+        /// <param name="blnPooledArray">Whether the returned array should be one taken from ArrayPool.Shared</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Array of the results of <paramref name="funcCodeToRun"/> when run from <paramref name="intLowerBound"/> (inclusive) to <paramref name="intUpperBound"/> (exclusive).</returns>
+        public static Task<string[]> ForAsync(int intLowerBound, int intUpperBound, Func<int, Task<string>> funcCodeToRun, bool blnPooledArray, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string[]>(token);
+            int intReturnLength = intUpperBound - intLowerBound;
+            if (intReturnLength <= 0)
+                return Task.FromResult(blnPooledArray ? ArrayPool<string>.Shared.Rent(0) : Array.Empty<string>());
+            return Inner();
+            async Task<string[]> Inner()
+            {
+                int intCounter = 0;
+                string[] aobjReturn = blnPooledArray ? ArrayPool<string>.Shared.Rent(intReturnLength) : new string[intReturnLength];
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    int intBufferSize = Math.Min(intReturnLength, Utils.MaxParallelBatchSize);
+                    List<Task<string>> lstBuffer = new List<Task<string>>(intBufferSize);
+                    token.ThrowIfCancellationRequested();
+                    int i = 0;
+                    for (int j = intLowerBound; j < intUpperBound; ++j)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        lstBuffer.Add(funcCodeToRun(j));
+                        if (++i == intBufferSize)
+                        {
+                            string[] aobjReturnInner = await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                            for (int k = 0; k < i; ++k)
+                                aobjReturn[intCounter++] = aobjReturnInner[k];
+                            lstBuffer.Clear();
+                            i = 0;
+                        }
+                    }
+                    if (i > 0)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        string[] aobjReturnInner = await Task.WhenAll(lstBuffer).ConfigureAwait(false);
+                        for (int k = 0; k < i; ++k)
+                            aobjReturn[intCounter++] = aobjReturnInner[k];
+                    }
+                    return aobjReturn;
+                }
+                catch when (blnPooledArray)
+                {
+                    ArrayPool<string>.Shared.Return(aobjReturn);
                     throw;
                 }
             }

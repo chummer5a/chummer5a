@@ -3693,7 +3693,7 @@ namespace Chummer
                         .ConfigureAwait(false),
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) == DialogResult.No)
                 return;
-            using (TemporaryArray<string> eParam = strSelectedId.YieldAsPooled())
+            using (TemporaryStringArray eParam = strSelectedId.YieldAsPooled())
                 await DoReapplyImprovements(eParam, token: token).ConfigureAwait(false);
         }
 

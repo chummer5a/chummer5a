@@ -933,8 +933,7 @@ namespace Chummer.Controls.Shared
                     Utils.RunOnMainThread(() => _parent.ChildPropertyChanged?.Invoke(sender, e));
                 if (changes)
                 {
-                    using (TemporaryArray<ControlWithMetaData> objYielded = this.YieldAsPooled())
-                        _parent.RedrawControls(objYielded);
+                    _parent.RedrawControls(this.Yield());
                 }
             }
 
@@ -954,8 +953,7 @@ namespace Chummer.Controls.Shared
                     await Utils.RunOnMainThreadAsync(() => _parent.ChildPropertyChanged?.Invoke(sender, e), token).ConfigureAwait(false);
                 if (changes)
                 {
-                    using (TemporaryArray<ControlWithMetaData> objYielded = this.YieldAsPooled())
-                        await _parent.RedrawControlsAsync(objYielded, token).ConfigureAwait(false);
+                    await _parent.RedrawControlsAsync(this.Yield(), token).ConfigureAwait(false);
                 }
             }
 

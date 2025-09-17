@@ -248,7 +248,7 @@ namespace Chummer.Backend.Skills
             {
                 if (e.PropertyNames.Contains(nameof(KnowledgeSkill.IsNativeLanguage)))
                 {
-                    using (TemporaryArray<string> aParams = new TemporaryArray<string>(nameof(KnowledgeSkillRanksSum), nameof(HasAvailableNativeLanguageSlots)))
+                    using (TemporaryStringArray aParams = new TemporaryStringArray(nameof(KnowledgeSkillRanksSum), nameof(HasAvailableNativeLanguageSlots)))
                         await OnMultiplePropertiesChangedAsync(aParams, token).ConfigureAwait(false);
                 }
                 else
@@ -2458,16 +2458,13 @@ namespace Chummer.Backend.Skills
                             //Timekeeper.Finish("load_char_skills");
                             if (blnSync)
                             {
-                                using (TemporaryArray<Action> aParams = new TemporaryArray<Action>(
+                                // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                                Utils.RunWithoutThreadLock(
                                     () => _lstSkills.Sort(CompareSkills),
                                     () => _lstKnowledgeSkills.Sort(CompareSkills),
                                     () => _lstKnowsoftSkills.Sort(CompareSkills),
-                                    () => _lstSkillGroups.Sort(CompareSkillGroups)))
-                                {
-                                    // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                                    Utils.RunWithoutThreadLock(aParams, token: token);
-                                    // ReSharper restore MethodHasAsyncOverloadWithCancellation
-                                }
+                                    () => _lstSkillGroups.Sort(CompareSkillGroups));
+                                // ReSharper restore MethodHasAsyncOverloadWithCancellation
                             }
                             else
                             {

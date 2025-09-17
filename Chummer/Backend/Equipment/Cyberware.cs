@@ -5609,7 +5609,7 @@ namespace Chummer.Backend.Equipment
                                 {
                                     if (PairBonus != null)
                                     {
-                                        using (TemporaryArray<string> aParams = new TemporaryArray<string>(InternalId, InternalId + "Pair"))
+                                        using (TemporaryStringArray aParams = new TemporaryStringArray(InternalId, InternalId + "Pair"))
                                             ImprovementManager.RemoveImprovements(_objCharacter, SourceType, aParams);
                                     }
                                     else
@@ -5808,7 +5808,7 @@ namespace Chummer.Backend.Equipment
                                 {
                                     if (PairBonus != null)
                                     {
-                                        using (TemporaryArray<string> aParams = new TemporaryArray<string>(InternalId, InternalId + "Pair"))
+                                        using (TemporaryStringArray aParams = new TemporaryStringArray(InternalId, InternalId + "Pair"))
                                         {
                                             await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
                                                 await GetSourceTypeAsync(token).ConfigureAwait(false),
@@ -11286,7 +11286,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                using (TemporaryArray<string> aParams = new TemporaryArray<string>(InternalId, InternalId + "Pair", InternalId + "Wireless", InternalId + "WirelessPair"))
+                using (TemporaryStringArray aParams = new TemporaryStringArray(InternalId, InternalId + "Pair", InternalId + "Wireless", InternalId + "WirelessPair"))
                 {
                     decReturn += ImprovementManager.RemoveImprovements(_objCharacter, SourceType, aParams);
                 }
@@ -11559,7 +11559,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                using (TemporaryArray<string> aParams = new TemporaryArray<string>(InternalId, InternalId + "Pair", InternalId + "Wireless", InternalId + "WirelessPair"))
+                using (TemporaryStringArray aParams = new TemporaryStringArray(InternalId, InternalId + "Pair", InternalId + "Wireless", InternalId + "WirelessPair"))
                 {
                     decReturn += await ImprovementManager
                         .RemoveImprovementsAsync(_objCharacter, SourceType, aParams, token)
