@@ -955,8 +955,8 @@ namespace Chummer.UI.Powers
                     return new TableColumn<Power>(
                         () =>
                         {
-                            DpiFriendlyImagedButton cmdReturn
-                                = new DpiFriendlyImagedButton
+                            ButtonWithToolTip cmdReturn
+                                = new ButtonWithToolTip
                                 {
                                     Dock = DockStyle.Fill,
                                     AutoSize = true,
@@ -1046,8 +1046,8 @@ namespace Chummer.UI.Powers
                     return new TableColumn<Power>(
                         () =>
                         {
-                            DpiFriendlyImagedButton cmdReturn
-                                = new DpiFriendlyImagedButton
+                            ButtonWithToolTip cmdReturn
+                                = new ButtonWithToolTip
                                 {
                                     Dock = DockStyle.Fill,
                                     AutoSize = true,
@@ -1139,8 +1139,8 @@ namespace Chummer.UI.Powers
                     return new TableColumn<Power>(
                         () =>
                         {
-                            DpiFriendlyImagedButton cmdReturn
-                                = new DpiFriendlyImagedButton
+                            ButtonWithToolTip cmdReturn
+                                = new ButtonWithToolTip
                                 {
                                     Dock = DockStyle.Fill,
                                     AutoSize = true,

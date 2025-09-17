@@ -67,7 +67,7 @@ namespace Chummer
             System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Vehicles");
             System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Improvements");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CharacterCareer));
-            this.lblTraditionSource = new System.Windows.Forms.Label();
+            this.lblTraditionSource = new Chummer.LabelWithToolTip();
             this.lblTraditionSourceLabel = new System.Windows.Forms.Label();
             this.tabPowerUc = new Chummer.UI.Powers.PowersTabUserControl();
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
@@ -407,7 +407,7 @@ namespace Chummer
             this.tabCommon = new System.Windows.Forms.TabPage();
             this.tlpCommon = new System.Windows.Forms.TableLayoutPanel();
             this.tlpCommonLeftSide = new System.Windows.Forms.TableLayoutPanel();
-            this.lblQualitySource = new System.Windows.Forms.Label();
+            this.lblQualitySource = new Chummer.LabelWithToolTip();
             this.treQualities = new System.Windows.Forms.TreeView();
             this.tlpQualityButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddQuality = new System.Windows.Forms.Button();
@@ -428,7 +428,7 @@ namespace Chummer
             this.lblMetatypeSourceLabel = new System.Windows.Forms.Label();
             this.lblPossessed = new System.Windows.Forms.Label();
             this.lblMysticAdeptAssignment = new System.Windows.Forms.Label();
-            this.lblMetatypeSource = new System.Windows.Forms.Label();
+            this.lblMetatypeSource = new Chummer.LabelWithToolTip();
             this.lblMetatype = new System.Windows.Forms.Label();
             this.flpMysticAdeptMAGAdept = new System.Windows.Forms.FlowLayoutPanel();
             this.lblMysticAdeptMAGAdept = new System.Windows.Forms.Label();
@@ -445,7 +445,7 @@ namespace Chummer
             this.cmdDeleteMartialArt = new System.Windows.Forms.Button();
             this.tlpMartialArtsRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblMartialArtSourceLabel = new System.Windows.Forms.Label();
-            this.lblMartialArtSource = new System.Windows.Forms.Label();
+            this.lblMartialArtSource = new Chummer.LabelWithToolTip();
             this.tabMagician = new System.Windows.Forms.TabPage();
             this.splitMagician = new System.Windows.Forms.SplitContainer();
             this.tlpMagicianTop = new System.Windows.Forms.TableLayoutPanel();
@@ -465,7 +465,7 @@ namespace Chummer
             this.lblSpellDamageLabel = new System.Windows.Forms.Label();
             this.lblSpellDamage = new System.Windows.Forms.Label();
             this.lblSpellRange = new System.Windows.Forms.Label();
-            this.lblSpellSource = new System.Windows.Forms.Label();
+            this.lblSpellSource = new Chummer.LabelWithToolTip();
             this.lblSpellSourceLabel = new System.Windows.Forms.Label();
             this.lblSpellDVLabel = new System.Windows.Forms.Label();
             this.lblSpellDuration = new System.Windows.Forms.Label();
@@ -499,7 +499,7 @@ namespace Chummer
             this.lblMentorSpiritInformation = new System.Windows.Forms.Label();
             this.tlpMagicianMentorSpiritHeader = new System.Windows.Forms.TableLayoutPanel();
             this.lblMentorSpiritLabel = new System.Windows.Forms.Label();
-            this.lblMentorSpiritSource = new System.Windows.Forms.Label();
+            this.lblMentorSpiritSource = new Chummer.LabelWithToolTip();
             this.lblMentorSpirit = new System.Windows.Forms.Label();
             this.lblMentorSpiritSourceLabel = new System.Windows.Forms.Label();
             this.tlpMagicianButtons = new System.Windows.Forms.TableLayoutPanel();
@@ -522,7 +522,7 @@ namespace Chummer
             this.lblTargetLabel = new System.Windows.Forms.Label();
             this.lblTarget = new System.Windows.Forms.Label();
             this.lblComplexFormSourceLabel = new System.Windows.Forms.Label();
-            this.lblComplexFormSource = new System.Windows.Forms.Label();
+            this.lblComplexFormSource = new Chummer.LabelWithToolTip();
             this.lblComplexFormDicePoolLabel = new System.Windows.Forms.Label();
             this.dpcComplexFormDicePool = new Chummer.UI.Shared.Components.DicePoolControl();
             this.lblDurationLabel = new System.Windows.Forms.Label();
@@ -543,7 +543,7 @@ namespace Chummer
             this.lblParagonInformation = new System.Windows.Forms.Label();
             this.tlpTechnomancerParagonHeader = new System.Windows.Forms.TableLayoutPanel();
             this.lblParagonLabel = new System.Windows.Forms.Label();
-            this.lblParagonSource = new System.Windows.Forms.Label();
+            this.lblParagonSource = new Chummer.LabelWithToolTip();
             this.lblParagon = new System.Windows.Forms.Label();
             this.lblParagonSourceLabel = new System.Windows.Forms.Label();
             this.tlpTechnomancerButtons = new System.Windows.Forms.TableLayoutPanel();
@@ -581,7 +581,7 @@ namespace Chummer
             this.lblCritterPowerNameLabel = new System.Windows.Forms.Label();
             this.lblCritterPowerPointCostLabel = new System.Windows.Forms.Label();
             this.lblCritterPowerCategoryLabel = new System.Windows.Forms.Label();
-            this.lblCritterPowerSource = new System.Windows.Forms.Label();
+            this.lblCritterPowerSource = new Chummer.LabelWithToolTip();
             this.lblCritterPowerSourceLabel = new System.Windows.Forms.Label();
             this.lblCritterPowerDuration = new System.Windows.Forms.Label();
             this.lblCritterPowerTypeLabel = new System.Windows.Forms.Label();
@@ -616,7 +616,7 @@ namespace Chummer
             this.lblGroupNotes = new System.Windows.Forms.Label();
             this.txtGroupName = new System.Windows.Forms.TextBox();
             this.chkJoinGroup = new Chummer.ColorableCheckBox();
-            this.lblMetamagicSource = new System.Windows.Forms.Label();
+            this.lblMetamagicSource = new Chummer.LabelWithToolTip();
             this.tabCyberware = new System.Windows.Forms.TabPage();
             this.tlpCyberware = new System.Windows.Forms.TableLayoutPanel();
             this.treCyberware = new System.Windows.Forms.TreeView();
@@ -648,7 +648,7 @@ namespace Chummer
             this.lblCyberlimbAGILabel = new System.Windows.Forms.Label();
             this.lblCyberwareCost = new System.Windows.Forms.Label();
             this.lblCyberwareEssenceLabel = new System.Windows.Forms.Label();
-            this.lblCyberwareSource = new System.Windows.Forms.Label();
+            this.lblCyberwareSource = new Chummer.LabelWithToolTip();
             this.lblCyberwareSourceLabel = new System.Windows.Forms.Label();
             this.lblCyberwareAvail = new System.Windows.Forms.Label();
             this.lblCyberwareAvailLabel = new System.Windows.Forms.Label();
@@ -718,7 +718,7 @@ namespace Chummer
             this.lblGearRating = new System.Windows.Forms.Label();
             this.lblGearRatingLabel = new System.Windows.Forms.Label();
             this.lblGearQtyLabel = new System.Windows.Forms.Label();
-            this.lblGearSource = new System.Windows.Forms.Label();
+            this.lblGearSource = new Chummer.LabelWithToolTip();
             this.lblGearSourceLabel = new System.Windows.Forms.Label();
             this.chkGearEquipped = new Chummer.ColorableCheckBox();
             this.flpGearQty = new System.Windows.Forms.FlowLayoutPanel();
@@ -806,7 +806,7 @@ namespace Chummer
             this.lblArmorAvail = new System.Windows.Forms.Label();
             this.lblArmorCostLabel = new System.Windows.Forms.Label();
             this.lblArmorCost = new System.Windows.Forms.Label();
-            this.lblArmorSource = new System.Windows.Forms.Label();
+            this.lblArmorSource = new Chummer.LabelWithToolTip();
             this.lblArmorCapacityLabel = new System.Windows.Forms.Label();
             this.lblArmorCapacity = new System.Windows.Forms.Label();
             this.lblArmorSourceLabel = new System.Windows.Forms.Label();
@@ -895,7 +895,7 @@ namespace Chummer
             this.cmdWeaponMoveToVehicle = new Chummer.ButtonWithToolTip();
             this.chkWeaponEquipped = new Chummer.ColorableCheckBox();
             this.chkIncludedInWeapon = new Chummer.ColorableCheckBox();
-            this.lblWeaponSource = new System.Windows.Forms.Label();
+            this.lblWeaponSource = new Chummer.LabelWithToolTip();
             this.lblWeaponSourceLabel = new System.Windows.Forms.Label();
             this.gpbWeaponsWeapon = new System.Windows.Forms.GroupBox();
             this.flpWeaponsWeapon = new System.Windows.Forms.FlowLayoutPanel();
@@ -1042,7 +1042,7 @@ namespace Chummer
             this.lblLifestyleMonthsLabel = new System.Windows.Forms.Label();
             this.lblLifestyleSourceLabel = new System.Windows.Forms.Label();
             this.lblLifestyleComfortsLabel = new System.Windows.Forms.Label();
-            this.lblLifestyleSource = new System.Windows.Forms.Label();
+            this.lblLifestyleSource = new Chummer.LabelWithToolTip();
             this.lblLifestyleCityLabel = new System.Windows.Forms.Label();
             this.lblLifestyleDistrictLabel = new System.Windows.Forms.Label();
             this.lblLifestyleCity = new System.Windows.Forms.Label();
@@ -1066,7 +1066,7 @@ namespace Chummer
             this.flpVehiclesCommonQuantity = new System.Windows.Forms.FlowLayoutPanel();
             this.lblVehicleGearQty = new System.Windows.Forms.Label();
             this.lblVehicleSourceLabel = new System.Windows.Forms.Label();
-            this.lblVehicleSource = new System.Windows.Forms.Label();
+            this.lblVehicleSource = new Chummer.LabelWithToolTip();
             this.flpVehiclesCommonCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
             this.chkVehicleIncludedInWeapon = new Chummer.ColorableCheckBox();
             this.lblVehicleAvailLabel = new System.Windows.Forms.Label();
@@ -23327,9 +23327,9 @@ namespace Chummer
         private System.Windows.Forms.Label lblPossessed;
         private System.Windows.Forms.TextBox txtAlias;
         private System.Windows.Forms.Label lblAlias;
-        private System.Windows.Forms.Label lblMetatypeSource;
+        private LabelWithToolTip lblMetatypeSource;
         private System.Windows.Forms.Label lblMetatypeSourceLabel;
-        private System.Windows.Forms.Label lblQualitySource;
+        private LabelWithToolTip lblQualitySource;
         private System.Windows.Forms.Label lblMysticAdeptAssignment;
         private System.Windows.Forms.Label lblMysticAdeptMAGAdept;
         private System.Windows.Forms.Label lblMetatype;
@@ -23340,7 +23340,7 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabLimits;
         private System.Windows.Forms.TabPage tabMartialArts;
         private SplitButton cmdAddMartialArt;
-        private System.Windows.Forms.Label lblMartialArtSource;
+        private LabelWithToolTip lblMartialArtSource;
         private System.Windows.Forms.Label lblMartialArtSourceLabel;
         private System.Windows.Forms.TreeView treMartialArts;
         private System.Windows.Forms.Button cmdDeleteMartialArt;
@@ -23367,7 +23367,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblDrainAttributes;
         private System.Windows.Forms.Label lblDrainAttributesLabel;
         private System.Windows.Forms.Label lblTraditionLabel;
-        private System.Windows.Forms.Label lblSpellSource;
+        private LabelWithToolTip lblSpellSource;
         private System.Windows.Forms.Label lblSpellSourceLabel;
         private System.Windows.Forms.Label lblSpellType;
         private System.Windows.Forms.Label lblSpellTypeLabel;
@@ -23396,7 +23396,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblDurationLabel;
         private System.Windows.Forms.Label lblTarget;
         private System.Windows.Forms.Label lblTargetLabel;
-        private System.Windows.Forms.Label lblComplexFormSource;
+        private LabelWithToolTip lblComplexFormSource;
         private System.Windows.Forms.Label lblComplexFormSourceLabel;
         private Chummer.ElasticComboBox cboStream;
         private System.Windows.Forms.Label lblFadingAttributes;
@@ -23415,7 +23415,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCritterPowerPointsLabel;
         private System.Windows.Forms.Button cmdDeleteCritterPower;
         private System.Windows.Forms.Button cmdAddCritterPower;
-        private System.Windows.Forms.Label lblCritterPowerSource;
+        private LabelWithToolTip lblCritterPowerSource;
         private System.Windows.Forms.Label lblCritterPowerSourceLabel;
         private System.Windows.Forms.Label lblCritterPowerDuration;
         private System.Windows.Forms.Label lblCritterPowerDurationLabel;
@@ -23447,7 +23447,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtGroupName;
         private System.Windows.Forms.Label lblGroupNotes;
         private System.Windows.Forms.Label lblGroupName;
-        private System.Windows.Forms.Label lblMetamagicSource;
+        private LabelWithToolTip lblMetamagicSource;
         private System.Windows.Forms.Label lblMetamagicSourceLabel;
         private System.Windows.Forms.TreeView treMetamagic;
         private System.Windows.Forms.Button cmdDeleteMetamagic;
@@ -23501,7 +23501,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCyberwareESSLabel;
         private System.Windows.Forms.Label lblCyberwareRating;
         private System.Windows.Forms.Label lblCyberwareGrade;
-        private System.Windows.Forms.Label lblCyberwareSource;
+        private LabelWithToolTip lblCyberwareSource;
         private System.Windows.Forms.Label lblCyberwareSourceLabel;
         private System.Windows.Forms.Button cmdAddBioware;
         private System.Windows.Forms.Label lblCyberwareRatingLabel;
@@ -23632,7 +23632,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblVehicleWeaponDamageLabel;
         private System.Windows.Forms.Label lblVehicleWeaponDamage;
         private System.Windows.Forms.Label lblVehicleRating;
-        private System.Windows.Forms.Label lblVehicleSource;
+        private LabelWithToolTip lblVehicleSource;
         private System.Windows.Forms.Label lblVehicleSourceLabel;
         private System.Windows.Forms.Label lblVehicleSlots;
         private System.Windows.Forms.Label lblVehicleSlotsLabel;
@@ -23735,7 +23735,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblNumMugshots;
         private Chummer.NumericUpDownEx nudMugshotIndex;
         private Chummer.ColorableCheckBox chkIsMainMugshot;
-        private System.Windows.Forms.Label lblTraditionSource;
+        private LabelWithToolTip lblTraditionSource;
         private System.Windows.Forms.Label lblTraditionSourceLabel;
         private PowersTabUserControl tabPowerUc;
         private FlowLayoutPanel pnlAttributes;
@@ -23785,7 +23785,7 @@ namespace Chummer
         private Label lblArmorCapacityLabel;
         private Label lblArmorRating;
         private Label lblArmorRatingLabel;
-        private Label lblArmorSource;
+        private LabelWithToolTip lblArmorSource;
         private Label lblArmorSourceLabel;
         private Label lblArmorCost;
         private Label lblArmorCostLabel;
@@ -23865,7 +23865,7 @@ namespace Chummer
         private Label lblWeaponAmmoRemainingLabel;
         private Label lblWeaponSlots;
         private Label lblWeaponSlotsLabel;
-        private Label lblWeaponSource;
+        private LabelWithToolTip lblWeaponSource;
         private Label lblWeaponSourceLabel;
         private Label lblWeaponAmmo;
         private Label lblWeaponAmmoLabel;
@@ -23906,7 +23906,7 @@ namespace Chummer
         private Label lblLifestyleMonthsLabel;
         private Label lblLifestyleComfortsLabel;
         private Label lblLifestyleSourceLabel;
-        private Label lblLifestyleSource;
+        private LabelWithToolTip lblLifestyleSource;
         private SplitButton cmdAddLifestyle;
         private TreeView treLifestyles;
         private Button cmdDeleteLifestyle;
@@ -24087,7 +24087,7 @@ namespace Chummer
         private System.Windows.Forms.TableLayoutPanel tlpMagicianTradition;
         private GroupBox gpbMagicianMentorSpirit;
         private System.Windows.Forms.TableLayoutPanel tlpMagicianMentorSpirit;
-        private Label lblMentorSpiritSource;
+        private LabelWithToolTip lblMentorSpiritSource;
         private Label lblMentorSpiritSourceLabel;
         private FlowLayoutPanel flpTechnomancer;
         private GroupBox gpbTechnomancerComplexForm;
@@ -24098,7 +24098,7 @@ namespace Chummer
         private GroupBox gpbTechnomancerParagon;
         private System.Windows.Forms.TableLayoutPanel tlpTechnomancerParagon;
         private Label lblParagonSourceLabel;
-        private Label lblParagonSource;
+        private LabelWithToolTip lblParagonSource;
         private UI.Charts.ExpenseChart chtKarma;
         private UI.Charts.ExpenseChart chtNuyen;
         private System.Windows.Forms.TableLayoutPanel tlpPhysicalCMBoxes;
@@ -24157,7 +24157,7 @@ namespace Chummer
         private Label lblGearRating;
         private Label lblGearRatingLabel;
         private Label lblGearQtyLabel;
-        private Label lblGearSource;
+        private LabelWithToolTip lblGearSource;
         private Label lblGearSourceLabel;
         private FlowLayoutPanel flpGearQty;
         private Label lblGearQty;

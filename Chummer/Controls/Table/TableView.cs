@@ -44,6 +44,8 @@ namespace Chummer.UI.Table
 
             public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
             {
+                if (_table.IsDisposed || _table.Disposing || _table._intDisposingAll > 1)
+                    return false;
                 using (CursorWait.New(_table))
                 {
                     _table.SuspendLayout();
@@ -400,7 +402,11 @@ namespace Chummer.UI.Table
             {
                 Control content = await cell.DoThreadSafeFuncAsync(x => x.Content, token: token).ConfigureAwait(false);
                 string strText = await funcTooltipExtractor(item, token).ConfigureAwait(false);
-                await (content ?? cell).SetToolTipAsync(strText, token).ConfigureAwait(false);
+                Control objContentForToolTip = content ?? cell;
+                if (objContentForToolTip is IControlWithToolTip objContentCast)
+                    await objContentCast.SetToolTipTextAsync(strText, token).ConfigureAwait(false);
+                else
+                    await objContentForToolTip.SetToolTipAsync(strText, token).ConfigureAwait(false);
             }
         }
 
@@ -589,8 +595,12 @@ namespace Chummer.UI.Table
             }
         }
 
+        private int _intDisposingAll = 0;
+
         private void DisposeAll()
         {
+            if (Interlocked.CompareExchange(ref _intDisposingAll, 1, 0) > 0)
+                return;
             CancellationTokenSource objOld = Interlocked.Exchange(ref _objSortPausedTokenSource, null);
             if (objOld != null)
             {
@@ -1219,7 +1229,15 @@ namespace Chummer.UI.Table
 
         public TableColumnCollection<T> Columns => _columns;
 
-        public override LayoutEngine LayoutEngine => _layoutEngine = _layoutEngine ?? new TableLayoutEngine(this);
+        public override LayoutEngine LayoutEngine
+        {
+            get
+            {
+                if (IsDisposed || Disposing || _intDisposingAll > 1)
+                    return base.LayoutEngine;
+                return _layoutEngine = _layoutEngine ?? new TableLayoutEngine(this);
+            }
+        }
 
         public SortOrder SortOrder
         {

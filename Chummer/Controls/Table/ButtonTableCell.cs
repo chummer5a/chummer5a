@@ -26,10 +26,10 @@ namespace Chummer.UI.Table
 {
     public partial class ButtonTableCell<T> : TableCell where T : class
     {
-        private readonly Control _button;
+        private readonly ButtonBase _button;
         private readonly CancellationToken _objMyToken;
 
-        public ButtonTableCell(Control button, CancellationToken objMyToken = default) : base(button)
+        public ButtonTableCell(ButtonBase button, CancellationToken objMyToken = default) : base(button)
         {
             _objMyToken = objMyToken;
             InitializeComponent();

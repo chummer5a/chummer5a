@@ -56,7 +56,7 @@ namespace Chummer
             this.cmdDeleteQuality = new System.Windows.Forms.Button();
             this.lblQualityLp = new System.Windows.Forms.Label();
             this.lblQualityLPLabel = new System.Windows.Forms.Label();
-            this.lblQualitySource = new System.Windows.Forms.Label();
+            this.lblQualitySource = new Chummer.LabelWithToolTip();
             this.lblQualitySourceLabel = new System.Windows.Forms.Label();
             this.lblQualityCost = new System.Windows.Forms.Label();
             this.lblQualityCostLabel = new System.Windows.Forms.Label();
@@ -1119,7 +1119,7 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkTrustFund;
         private System.Windows.Forms.Label lblQualityLp;
         private System.Windows.Forms.Label lblQualityLPLabel;
-        private System.Windows.Forms.Label lblQualitySource;
+        private LabelWithToolTip lblQualitySource;
         private System.Windows.Forms.Label lblQualitySourceLabel;
         private System.Windows.Forms.Label lblQualityCost;
         private System.Windows.Forms.Label lblQualityCostLabel;

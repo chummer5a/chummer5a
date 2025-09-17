@@ -52,7 +52,7 @@ namespace Chummer
             this.treMods = new System.Windows.Forms.TreeView();
             this.cmdDeleteMod = new System.Windows.Forms.Button();
             this.cmdAddMod = new System.Windows.Forms.Button();
-            this.lblSource = new System.Windows.Forms.Label();
+            this.lblSource = new Chummer.LabelWithToolTip();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpTopButtons = new System.Windows.Forms.TableLayoutPanel();
@@ -613,7 +613,7 @@ namespace Chummer
         private System.Windows.Forms.TreeView treMods;
         private System.Windows.Forms.Button cmdDeleteMod;
         private System.Windows.Forms.Button cmdAddMod;
-        private System.Windows.Forms.Label lblSource;
+        private LabelWithToolTip lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.TableLayoutPanel tlpTopButtons;

@@ -56,6 +56,8 @@ namespace Chummer.UI.Table
 
         private void ResizeControl()
         {
+            if (Disposing || IsDisposed)
+                return;
             this.DoThreadSafe(x => x.SuspendLayout());
             try
             {
