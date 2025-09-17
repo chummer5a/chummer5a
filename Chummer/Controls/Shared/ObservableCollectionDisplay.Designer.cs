@@ -42,6 +42,10 @@ namespace Chummer.Controls.Shared
                 {
                     //swallow this
                 }
+                finally
+                {
+                    Contents = null;
+                }
                 if (components != null)
                     components.Dispose();
             }

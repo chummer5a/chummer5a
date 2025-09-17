@@ -110,7 +110,7 @@ namespace Chummer.Controls.Shared
         /// <summary>
         /// Base ObservableCollection that represents all possible contents of the display, not necessarily all visible.
         /// </summary>
-        public ThreadSafeObservableCollection<TType> Contents { get; }
+        public ThreadSafeObservableCollection<TType> Contents { get; private set; }
 
         public Panel DisplayPanel => pnlDisplay;
 

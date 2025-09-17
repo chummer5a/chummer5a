@@ -608,6 +608,18 @@ namespace Chummer.UI.Table
                 objOld.Dispose();
             }
             _objItemsLocker.Dispose();
+            ThreadSafeBindingList<T> lstItems = Interlocked.Exchange(ref _lstItems, null);
+            if (lstItems != null)
+            {
+                try
+                {
+                    lstItems.ListChangedAsync -= ItemsChanged;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+            }
             foreach (ColumnHolder objColumnHolder in _lstCells)
                 objColumnHolder.Dispose();
             foreach (TableColumn<T> objColumn in Columns)

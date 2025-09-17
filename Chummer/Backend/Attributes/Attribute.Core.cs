@@ -49,6 +49,7 @@ namespace Chummer.Backend.Attributes
         private int _intKarma;
         private string _strAbbrev;
         private readonly Character _objCharacter;
+        private CharacterSettings _objCharacterSettings;
         private AttributeCategory _eMetatypeCategory;
         private int _intIsDisposed;
 
@@ -88,10 +89,11 @@ namespace Chummer.Backend.Attributes
             _strAbbrev = abbrev;
             _eMetatypeCategory = enumCategory;
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            _objCharacterSettings = objCharacter.Settings;
             LockObject = objCharacter.LockObject;
             _objCachedTotalValueLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             objCharacter.MultiplePropertiesChangedAsync += OnCharacterChanged;
-            objCharacter.Settings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+            _objCharacterSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
         }
 
         /// <summary>
@@ -232,7 +234,7 @@ namespace Chummer.Backend.Attributes
                 switch (Abbrev)
                 {
                     case "MAGAdept":
-                        if (!await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                        if (!await _objCharacterSettings
                                 .GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
                             || !await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false)
                             || !await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
@@ -1330,7 +1332,7 @@ namespace Chummer.Backend.Attributes
                 }
 
                 // If this is AGI or STR, factor in any Cyberlimbs.
-                if (!_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                if (!_objCharacterSettings.DontUseCyberlimbCalculation &&
                     Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
                     return _objCharacter.Cyberware.Any(objCyberware => objCyberware.IsLimb && objCyberware.IsModularCurrentlyEquipped, token);
@@ -1382,7 +1384,7 @@ namespace Chummer.Backend.Attributes
                 }
 
                 // If this is AGI or STR, factor in any Cyberlimbs.
-                if (!await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) &&
+                if (!await _objCharacterSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) &&
                     Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
                     return await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
@@ -1624,8 +1626,8 @@ namespace Chummer.Backend.Attributes
                 // If this is AGI or STR, factor in any Cyberlimbs.
                 if (blnIncludeCyberlimbs
                     && !(blnSync
-                            ? _objCharacter.Settings.DontUseCyberlimbCalculation
-                            : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false))
+                            ? _objCharacterSettings.DontUseCyberlimbCalculation
+                            : await _objCharacterSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false))
                     && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
                     int intLimbTotal;
@@ -1646,7 +1648,7 @@ namespace Chummer.Backend.Attributes
                                 continue;
                             if (objCyberware.IsLimb)
                             {
-                                if (_objCharacter.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot))
+                                if (_objCharacterSettings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot))
                                     continue;
 
                                 int intLoop = objCyberware.LimbSlotCount;
@@ -1675,7 +1677,7 @@ namespace Chummer.Backend.Attributes
                                 return;
                             if (await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false))
                             {
-                                if ((await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                                if ((await _objCharacterSettings
                                         .GetExcludeLimbSlotAsync(token).ConfigureAwait(false))
                                     .Contains(objCyberware.LimbSlot))
                                     return;
@@ -1874,7 +1876,7 @@ namespace Chummer.Backend.Attributes
             get
             {
                 using (LockObject.EnterReadLock())
-                    return _objCharacter.Settings.UnclampAttributeMinimum
+                    return _objCharacterSettings.UnclampAttributeMinimum
                         ? MetatypeMinimum + MinimumModifiers
                         : Math.Max(MetatypeMinimum + MinimumModifiers, 0);
             }
@@ -1891,7 +1893,7 @@ namespace Chummer.Backend.Attributes
                 token.ThrowIfCancellationRequested();
                 int intReturn = await GetMetatypeMinimumAsync(token).ConfigureAwait(false) +
                                 await GetMinimumModifiersAsync(token).ConfigureAwait(false);
-                if (!(await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).UnclampAttributeMinimum && intReturn < 0)
+                if (!_objCharacterSettings.UnclampAttributeMinimum && intReturn < 0)
                     intReturn = 0;
                 return intReturn;
             }
@@ -2610,7 +2612,7 @@ namespace Chummer.Backend.Attributes
                             }
 
                             //// If this is AGI or STR, factor in any Cyberlimbs.
-                            if (!_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                            if (!_objCharacterSettings.DontUseCyberlimbCalculation &&
                                 Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                             {
                                 _objCharacter.Cyberware.ForEach(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace));
@@ -2856,7 +2858,7 @@ namespace Chummer.Backend.Attributes
                         }
 
                         //// If this is AGI or STR, factor in any Cyberlimbs.
-                        if (!await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) &&
+                        if (!await _objCharacterSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) &&
                             Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                         {
                             await _objCharacter.Cyberware.ForEachAsync(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace), token: token).ConfigureAwait(false);
@@ -3087,7 +3089,7 @@ namespace Chummer.Backend.Attributes
                     }
 
                     int intUpgradeCost;
-                    int intOptionsCost = _objCharacter.Settings.KarmaAttribute;
+                    int intOptionsCost = _objCharacterSettings.KarmaAttribute;
                     if (intValue == 0)
                     {
                         intUpgradeCost = intOptionsCost;
@@ -3097,7 +3099,7 @@ namespace Chummer.Backend.Attributes
                         intUpgradeCost = (intValue + 1) * intOptionsCost;
                     }
 
-                    if (_objCharacter.Settings.AlternateMetatypeAttributeKarma &&
+                    if (_objCharacterSettings.AlternateMetatypeAttributeKarma &&
                         !s_SetAlternateMetatypeAttributeKarmaExceptions.Contains(Abbrev))
                         intUpgradeCost -= (MetatypeMinimum - 1) * intOptionsCost;
 
@@ -3202,14 +3204,14 @@ namespace Chummer.Backend.Attributes
                         return 0;
 
                     int intValue = Value;
-                    int intRawTotalBase = _objCharacter.Settings.ReverseAttributePriorityOrder
+                    int intRawTotalBase = _objCharacterSettings.ReverseAttributePriorityOrder
                         ? Math.Max(FreeBase + RawMinimum, TotalMinimum)
                         : TotalBase;
                     int intTotalBase = intRawTotalBase;
-                    if (_objCharacter.Settings.AlternateMetatypeAttributeKarma)
+                    if (_objCharacterSettings.AlternateMetatypeAttributeKarma)
                     {
                         int intHumanMinimum = FreeBase + 1 + MinimumModifiers;
-                        if (!_objCharacter.Settings.ReverseAttributePriorityOrder)
+                        if (!_objCharacterSettings.ReverseAttributePriorityOrder)
                             intHumanMinimum += Base;
                         if (intHumanMinimum < 1)
                         {
@@ -3225,7 +3227,7 @@ namespace Chummer.Backend.Attributes
 
                     // The expression below is a shortened version of n*(n+1)/2 when applied to karma costs. n*(n+1)/2 is the sum of all numbers from 1 to n.
                     // I'm taking n*(n+1)/2 where n = Base + Karma, then subtracting n*(n+1)/2 from it where n = Base. After removing all terms that cancel each other out, the expression below is what remains.
-                    int intCost = (2 * intTotalBase + Karma + 1) * Karma / 2 * _objCharacter.Settings.KarmaAttribute;
+                    int intCost = (2 * intTotalBase + Karma + 1) * Karma / 2 * _objCharacterSettings.KarmaAttribute;
 
                     decimal decExtra = 0;
                     decimal decMultiplier = 1.0m;
@@ -3400,6 +3402,39 @@ namespace Chummer.Backend.Attributes
                             .ConfigureAwait(false))
                     {
                         setProperties.Add(nameof(TotalValue));
+                    }
+                }
+                if (e.PropertyNames.Contains(nameof(Character.Settings)))
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        CharacterSettings objNewSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                        CharacterSettings objOldSettings = Interlocked.Exchange(ref _objCharacterSettings, objNewSettings);
+                        if (!ReferenceEquals(objNewSettings, objOldSettings))
+                        {
+                            if (objOldSettings?.IsDisposed == false)
+                                objOldSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                            if (objNewSettings?.IsDisposed == false)
+                            {
+                                objNewSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+                                if (!await objNewSettings.HasIdenticalSettingsAsync(objOldSettings, token).ConfigureAwait(false))
+                                {
+                                    MultiplePropertiesChangedEventArgs e2 = new MultiplePropertiesChangedEventArgs(await objNewSettings.GetDifferingPropertyNamesAsync(objOldSettings, token).ConfigureAwait(false));
+                                    await OnCharacterSettingsPropertyChanged(this, e2, token).ConfigureAwait(false);
+                                }
+                            }
+                            else
+                            {
+                                MultiplePropertiesChangedEventArgs e2 = new MultiplePropertiesChangedEventArgs(await objOldSettings.GetDifferingPropertyNamesAsync(objNewSettings, token).ConfigureAwait(false));
+                                await OnCharacterSettingsPropertyChanged(this, e2, token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
 
@@ -4070,31 +4105,26 @@ namespace Chummer.Backend.Attributes
             {
                 if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) != 0)
                     return;
-                if (_objCharacter != null)
+                if (_objCharacter?.IsDisposed == false)
                 {
-                    if (!_objCharacter.IsDisposed)
+                    try
                     {
-                        try
-                        {
-                            _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterChanged;
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            //swallow this
-                        }
+                        _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterChanged;
                     }
-
-                    CharacterSettings objSettings = _objCharacter.Settings;
-                    if (objSettings?.IsDisposed == false)
+                    catch (ObjectDisposedException)
                     {
-                        try
-                        {
-                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            // swallow this
-                        }
+                        //swallow this
+                    }
+                }
+                if (_objCharacterSettings?.IsDisposed == false)
+                {
+                    try
+                    {
+                        _objCharacterSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // swallow this
                     }
                 }
                 _objCachedTotalValueLock.Dispose();
@@ -4116,31 +4146,26 @@ namespace Chummer.Backend.Attributes
             {
                 if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) != 0)
                     return;
-                if (_objCharacter != null)
+                if (_objCharacter?.IsDisposed == false)
                 {
-                    if (!_objCharacter.IsDisposed)
+                    try
                     {
-                        try
-                        {
-                            _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterChanged;
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            //swallow this
-                        }
+                        _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterChanged;
                     }
-
-                    CharacterSettings objSettings = await _objCharacter.GetSettingsAsync().ConfigureAwait(false);
-                    if (objSettings?.IsDisposed == false)
+                    catch (ObjectDisposedException)
                     {
-                        try
-                        {
-                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            // swallow this
-                        }
+                        //swallow this
+                    }
+                }
+                if (_objCharacterSettings?.IsDisposed == false)
+                {
+                    try
+                    {
+                        _objCharacterSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // swallow this
                     }
                 }
 

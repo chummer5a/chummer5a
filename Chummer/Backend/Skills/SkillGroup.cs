@@ -57,25 +57,24 @@ namespace Chummer.Backend.Skills
             {
                 if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) != 0)
                     return;
-                if (_objCharacter != null)
+                if (_objCharacter?.IsDisposed == false)
                 {
-                    if (!_objCharacter.IsDisposed)
-                    {
-                        try
-                        {
-                            _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            //swallow this
-                        }
-                    }
-
                     try
                     {
-                        CharacterSettings objSettings = _objCharacter.Settings;
-                        if (objSettings?.IsDisposed == false)
-                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
+                    }
+                }
+
+                CharacterSettings objSettings = Interlocked.Exchange(ref _objCharacterSettings, null);
+                if (objSettings?.IsDisposed == false)
+                {
+                    try
+                    {
+                        objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -122,25 +121,24 @@ namespace Chummer.Backend.Skills
             {
                 if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) != 0)
                     return;
-                if (_objCharacter != null)
+                if (_objCharacter?.IsDisposed == false)
                 {
-                    if (!_objCharacter.IsDisposed)
-                    {
-                        try
-                        {
-                            _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            //swallow this
-                        }
-                    }
-
                     try
                     {
-                        CharacterSettings objSettings = await _objCharacter.GetSettingsAsync().ConfigureAwait(false);
-                        if (objSettings?.IsDisposed == false)
-                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
+                    }
+                }
+
+                CharacterSettings objSettings = Interlocked.Exchange(ref _objCharacterSettings, null);
+                if (objSettings?.IsDisposed == false)
+                {
+                    try
+                    {
+                        objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -771,11 +769,11 @@ namespace Chummer.Backend.Skills
                         if (IsDisabled || SkillList.Count == 0 ||
                             !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
                             _intCachedBaseUnbroken = 0;
-                        else if (_objCharacter.Settings.StrictSkillGroupsInCreateMode && !_objCharacter.Created)
+                        else if (_objCharacterSettings.StrictSkillGroupsInCreateMode && !_objCharacter.Created)
                             _intCachedBaseUnbroken =
                                 (SkillList.All(x => x.BasePoints + x.FreeBase <= 0)
                                  && SkillList.All(x => x.KarmaPoints + x.FreeKarma <= 0)).ToInt32();
-                        else if (_objCharacter.Settings.UsePointsOnBrokenGroups)
+                        else if (_objCharacterSettings.UsePointsOnBrokenGroups)
                             _intCachedBaseUnbroken = KarmaUnbroken.ToInt32();
                         else
                             _intCachedBaseUnbroken = SkillList.All(x => x.BasePoints + x.FreeBase <= 0).ToInt32();
@@ -824,9 +822,7 @@ namespace Chummer.Backend.Skills
                         _intCachedBaseUnbroken = 0;
                     else
                     {
-                        CharacterSettings objSettings =
-                            await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
-                        if (await objSettings.GetStrictSkillGroupsInCreateModeAsync(token)
+                        if (await _objCharacterSettings.GetStrictSkillGroupsInCreateModeAsync(token)
                                 .ConfigureAwait(false)
                             && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                             _intCachedBaseUnbroken =
@@ -839,7 +835,7 @@ namespace Chummer.Backend.Skills
                                      async x => await x.GetKarmaPointsAsync(token).ConfigureAwait(false) +
                                                 await x.GetFreeKarmaAsync(token).ConfigureAwait(false) <=
                                                 0, token: token).ConfigureAwait(false)).ToInt32();
-                        else if (await objSettings.GetUsePointsOnBrokenGroupsAsync(token)
+                        else if (await _objCharacterSettings.GetUsePointsOnBrokenGroupsAsync(token)
                                      .ConfigureAwait(false))
                             _intCachedBaseUnbroken =
                                 (await GetKarmaUnbrokenAsync(token).ConfigureAwait(false)).ToInt32();
@@ -890,7 +886,7 @@ namespace Chummer.Backend.Skills
                     {
                         if (IsDisabled || SkillList.Count == 0)
                             _intCachedKarmaUnbroken = 0;
-                        else if (_objCharacter.Settings.StrictSkillGroupsInCreateMode && !_objCharacter.Created)
+                        else if (_objCharacterSettings.StrictSkillGroupsInCreateMode && !_objCharacter.Created)
                             _intCachedKarmaUnbroken = (SkillList.All(x => x.BasePoints + x.FreeBase <= 0)
                                                        && SkillList.All(x => x.KarmaPoints + x.FreeKarma <= 0))
                                 .ToInt32();
@@ -943,7 +939,7 @@ namespace Chummer.Backend.Skills
                     token.ThrowIfCancellationRequested();
                     if (await GetIsDisabledAsync(token).ConfigureAwait(false) || SkillList.Count == 0)
                         _intCachedKarmaUnbroken = 0;
-                    else if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                    else if (await _objCharacterSettings
                                  .GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
                              && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                         _intCachedBaseUnbroken =
@@ -1161,7 +1157,7 @@ namespace Chummer.Backend.Skills
         {
             if (!_objCharacter.Created)
                 return;
-            if (!_objCharacter.Settings.AllowSkillRegrouping)
+            if (!_objCharacterSettings.AllowSkillRegrouping)
             {
                 using (LockObject.EnterReadLock())
                 {
@@ -1185,7 +1181,7 @@ namespace Chummer.Backend.Skills
         {
             if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                 return;
-            if (!(await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).AllowSkillRegrouping)
+            if (!await _objCharacterSettings.GetAllowSkillRegroupingAsync(token).ConfigureAwait(false))
             {
                 IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
@@ -1252,7 +1248,7 @@ namespace Chummer.Backend.Skills
                             {
                                 _intCachedHasAnyBreakingSkills = 0;
                             }
-                            else if (_objCharacter.Settings.SpecializationsBreakSkillGroups && SkillList.Any(
+                            else if (_objCharacterSettings.SpecializationsBreakSkillGroups && SkillList.Any(
                                          x =>
                                              x.Specializations.Count != 0
                                              && x.Enabled))
@@ -1318,7 +1314,7 @@ namespace Chummer.Backend.Skills
                         {
                             _intCachedHasAnyBreakingSkills = 0;
                         }
-                        else if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                        else if (await _objCharacterSettings
                                      .GetSpecializationsBreakSkillGroupsAsync(token).ConfigureAwait(false)
                                  && await SkillList
                                      .AnyAsync(
@@ -1531,8 +1527,8 @@ namespace Chummer.Backend.Skills
                 using (_objCharacter.LockObject.EnterReadLock())
                 {
                     return _objCharacter.Created || _objCharacter.IgnoreRules
-                        ? _objCharacter.Settings.MaxSkillRating
-                        : _objCharacter.Settings.MaxSkillRatingCreate;
+                        ? _objCharacterSettings.MaxSkillRating
+                        : _objCharacterSettings.MaxSkillRatingCreate;
                 }
             }
         }
@@ -2095,7 +2091,7 @@ namespace Chummer.Backend.Skills
                 new DependencyGraphNode<string, SkillGroup>(nameof(BaseUnbroken),
                     new DependencyGraphNode<string, SkillGroup>(nameof(IsDisabled)),
                     new DependencyGraphNode<string, SkillGroup>(nameof(SkillList)),
-                    new DependencyGraphNode<string, SkillGroup>(nameof(KarmaUnbroken), x => x._objCharacter.Settings.UsePointsOnBrokenGroups, async (x, t) => await (await x._objCharacter.GetSettingsAsync(t).ConfigureAwait(false)).GetUsePointsOnBrokenGroupsAsync(t).ConfigureAwait(false))
+                    new DependencyGraphNode<string, SkillGroup>(nameof(KarmaUnbroken), x => x._objCharacterSettings.UsePointsOnBrokenGroups, async (x, t) => await x._objCharacterSettings.GetUsePointsOnBrokenGroupsAsync(t).ConfigureAwait(false))
                 ),
                 new DependencyGraphNode<string, SkillGroup>(nameof(ToolTip),
                     new DependencyGraphNode<string, SkillGroup>(nameof(SkillList)),
@@ -2128,10 +2124,9 @@ namespace Chummer.Backend.Skills
                     {
                         if (await _objCharacter.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false))
                         {
-                            CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
-                            if ((await objSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
+                            if ((await _objCharacterSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
                                  && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
-                                || !await objSettings.GetUsePointsOnBrokenGroupsAsync(token).ConfigureAwait(false))
+                                || !await _objCharacterSettings.GetUsePointsOnBrokenGroupsAsync(token).ConfigureAwait(false))
                                 setProperties.Add(nameof(BaseUnbroken));
                         }
 
@@ -2198,10 +2193,12 @@ namespace Chummer.Backend.Skills
         private readonly List<Skill> _lstAffectedSkills = new List<Skill>(4);
         private string _strGroupName;
         private readonly Character _objCharacter;
+        private CharacterSettings _objCharacterSettings;
 
         public SkillGroup(Character objCharacter, string strGroupName = "")
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            _objCharacterSettings = objCharacter.Settings;
             LockObject = new AsyncFriendlyReaderWriterLock(); // We need a separate lock so that we can properly disconnect ourselves from the character lock while we are loading data
             _objCachedBaseUnbrokenLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedHasAnyBreakingSkillsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
@@ -2211,9 +2208,8 @@ namespace Chummer.Backend.Skills
             _objCachedToolTipLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _strGroupName = strGroupName;
             objCharacter.MultiplePropertiesChangedAsync += OnCharacterPropertyChanged;
-            CharacterSettings objSettings = objCharacter.Settings;
-            if (objSettings?.IsDisposed == false)
-                objSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+            if (_objCharacterSettings?.IsDisposed == false)
+                _objCharacterSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
         }
 
         public string Name
@@ -2903,6 +2899,39 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (CharacterObject?.IsLoading != false)
                 return;
+            if (e.PropertyNames.Contains(nameof(Character.Settings)))
+            {
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    CharacterSettings objNewSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                    CharacterSettings objOldSettings = Interlocked.Exchange(ref _objCharacterSettings, objNewSettings);
+                    if (!ReferenceEquals(objNewSettings, objOldSettings))
+                    {
+                        if (objOldSettings?.IsDisposed == false)
+                            objOldSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        if (objNewSettings?.IsDisposed == false)
+                        {
+                            objNewSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+                            if (!await objNewSettings.HasIdenticalSettingsAsync(objOldSettings, token).ConfigureAwait(false))
+                            {
+                                MultiplePropertiesChangedEventArgs e2 = new MultiplePropertiesChangedEventArgs(await objNewSettings.GetDifferingPropertyNamesAsync(objOldSettings, token).ConfigureAwait(false));
+                                await OnCharacterSettingsPropertyChanged(this, e2, token).ConfigureAwait(false);
+                            }
+                        }
+                        else
+                        {
+                            MultiplePropertiesChangedEventArgs e2 = new MultiplePropertiesChangedEventArgs(await objOldSettings.GetDifferingPropertyNamesAsync(objNewSettings, token).ConfigureAwait(false));
+                            await OnCharacterSettingsPropertyChanged(this, e2, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
             if (e.PropertyNames.Contains(nameof(Character.Karma)))
             {
                 if (e.PropertyNames.Contains(nameof(Character.EffectiveBuildMethodUsesPriorityTables)))
@@ -3267,9 +3296,9 @@ namespace Chummer.Backend.Skills
                     intCost /= 2; //We get square, need triangle
 
                     if (intCost == 1)
-                        intCost *= _objCharacter.Settings.KarmaNewSkillGroup;
+                        intCost *= _objCharacterSettings.KarmaNewSkillGroup;
                     else
-                        intCost *= _objCharacter.Settings.KarmaImproveSkillGroup;
+                        intCost *= _objCharacterSettings.KarmaImproveSkillGroup;
 
                     decimal decMultiplier = 1.0m;
                     decimal decExtra = 0;
@@ -3358,11 +3387,10 @@ namespace Chummer.Backend.Skills
                 intCost -= intLower * (intLower + 1);
                 intCost /= 2; //We get square, need triangle
 
-                CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
                 if (intCost == 1)
-                    intCost *= await objSettings.GetKarmaNewSkillGroupAsync(token).ConfigureAwait(false);
+                    intCost *= await _objCharacterSettings.GetKarmaNewSkillGroupAsync(token).ConfigureAwait(false);
                 else
-                    intCost *= await objSettings.GetKarmaImproveSkillGroupAsync(token).ConfigureAwait(false);
+                    intCost *= await _objCharacterSettings.GetKarmaImproveSkillGroupAsync(token).ConfigureAwait(false);
 
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;

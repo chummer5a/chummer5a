@@ -1349,6 +1349,7 @@ namespace Chummer.Backend.Skills
         protected Skill(Character objCharacter)
         {
             CharacterObject = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            _objCharacterObjectSettings = objCharacter.Settings;
             LockObject = new AsyncFriendlyReaderWriterLock(); // We need a separate lock so that we can properly disconnect ourselves from the character lock while we are loading data
             _objCachedCyberwareRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedTotalBaseRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
@@ -1360,9 +1361,8 @@ namespace Chummer.Backend.Skills
             _objAttribute = CharacterObject.GetAttribute(DefaultAttribute);
             _objAttribute.MultiplePropertiesChangedAsync += OnLinkedAttributeChanged;
             objCharacter.MultiplePropertiesChangedAsync += OnCharacterChanged;
-            CharacterSettings objSettings = objCharacter.Settings;
-            if (objSettings?.IsDisposed == false)
-                objSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+            if (_objCharacterObjectSettings?.IsDisposed == false)
+                _objCharacterObjectSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
             AttributeSection objSection = objCharacter.AttributeSection;
             if (objSection != null)
             {
@@ -1669,8 +1669,8 @@ namespace Chummer.Backend.Skills
                     return CharacterObject.EffectiveBuildMethodUsesPriorityTables
                            && (SkillGroupObject == null
                                || SkillGroupObject.Base <= 0
-                               || (CharacterObject.Settings.UsePointsOnBrokenGroups
-                                   && (!CharacterObject.Settings.StrictSkillGroupsInCreateMode
+                               || (CharacterObjectSettings.UsePointsOnBrokenGroups
+                                   && (!CharacterObjectSettings.StrictSkillGroupsInCreateMode
                                        || CharacterObject.Created || CharacterObject.IgnoreRules)));
             }
         }
@@ -1712,7 +1712,7 @@ namespace Chummer.Backend.Skills
             {
                 using (LockObject.EnterReadLock())
                 {
-                    if (CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
+                    if (CharacterObjectSettings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
                         !CharacterObject.IgnoreRules)
                     {
                         return SkillGroupObject == null || SkillGroupObject.Rating <= 0;
@@ -1732,7 +1732,7 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
+                if (await CharacterObjectSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
                     && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
                     && !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                 {
@@ -1760,9 +1760,9 @@ namespace Chummer.Backend.Skills
                 {
                     if (SkillGroupObject?.Base > 0)
                     {
-                        return (CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
+                        return (CharacterObjectSettings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
                                 !CharacterObject.IgnoreRules)
-                               || !CharacterObject.Settings.UsePointsOnBrokenGroups
+                               || !CharacterObjectSettings.UsePointsOnBrokenGroups
                             ? Math.Min(SkillGroupObject.Base + FreeBase, RatingMaximum)
                             : Math.Min(SkillGroupObject.Base + BasePoints + FreeBase, RatingMaximum);
                     }
@@ -1775,18 +1775,18 @@ namespace Chummer.Backend.Skills
                 using (LockObject.EnterReadLock())
                 {
                     if (SkillGroupObject?.Base > 0
-                        && ((CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
+                        && ((CharacterObjectSettings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
                              !CharacterObject.IgnoreRules)
-                            || !CharacterObject.Settings.UsePointsOnBrokenGroups))
+                            || !CharacterObjectSettings.UsePointsOnBrokenGroups))
                         return;
                 }
 
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (SkillGroupObject?.Base > 0
-                        && ((CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
+                        && ((CharacterObjectSettings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
                              !CharacterObject.IgnoreRules)
-                            || !CharacterObject.Settings.UsePointsOnBrokenGroups))
+                            || !CharacterObjectSettings.UsePointsOnBrokenGroups))
                         return;
 
                     //Calculate how far above maximum we are.
@@ -1938,7 +1938,7 @@ namespace Chummer.Backend.Skills
             {
                 using (LockObject.EnterReadLock())
                 {
-                    if (CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
+                    if (CharacterObjectSettings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
                         !CharacterObject.IgnoreRules && SkillGroupObject?.Karma > 0)
                     {
                         return SkillGroupObject.Karma;
@@ -1986,7 +1986,7 @@ namespace Chummer.Backend.Skills
                 {
                     intGroupKarma = await SkillGroupObject.GetKarmaAsync(token).ConfigureAwait(false);
                     if (intGroupKarma > 0
-                        && await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
+                        && await CharacterObjectSettings
                             .GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
                         && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
                         && !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
@@ -2375,13 +2375,13 @@ namespace Chummer.Backend.Skills
                         RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.Skill)
                             .Sum(x => x.Maximum);
                     int intBaseMax = IsKnowledgeSkill
-                        ? CharacterObject.Settings.MaxKnowledgeSkillRating
-                        : CharacterObject.Settings.MaxSkillRating;
+                        ? CharacterObjectSettings.MaxKnowledgeSkillRating
+                        : CharacterObjectSettings.MaxSkillRating;
                     if (!CharacterObject.Created && !CharacterObject.IgnoreRules)
                     {
                         intBaseMax = IsKnowledgeSkill
-                            ? CharacterObject.Settings.MaxKnowledgeSkillRatingCreate
-                            : CharacterObject.Settings.MaxSkillRatingCreate;
+                            ? CharacterObjectSettings.MaxKnowledgeSkillRatingCreate
+                            : CharacterObjectSettings.MaxSkillRatingCreate;
                     }
 
                     return intBaseMax + intOtherBonus;
@@ -3389,7 +3389,7 @@ namespace Chummer.Backend.Skills
                     int intLower;
                     if (SkillGroupObject != null)
                     {
-                        bool blnForceOffSkillGroupKarmaCompensation = !CharacterObject.Settings.CompensateSkillGroupKarmaDifference
+                        bool blnForceOffSkillGroupKarmaCompensation = !CharacterObjectSettings.CompensateSkillGroupKarmaDifference
                                                                       // Only count our discount if we are the first skill in the list
                                                                       || !ReferenceEquals(SkillGroupObject.SkillList.FirstOrDefault(x => x.Enabled), this);
                         if (SkillGroupObject.Karma > 0)
@@ -3427,7 +3427,7 @@ namespace Chummer.Backend.Skills
                     int intSpecCount = (BuyWithKarma || !CharacterObject.EffectiveBuildMethodUsesPriorityTables) && CanHaveSpecs
                         ? Specializations.Count(objSpec => !objSpec.Free)
                         : 0;
-                    int intSpecCost = intSpecCount * CharacterObject.Settings.KarmaSpecialization;
+                    int intSpecCost = intSpecCount * CharacterObjectSettings.KarmaSpecialization;
                     decimal decExtraSpecCost = 0;
                     decimal decSpecCostMultiplier = 1.0m;
                     foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.SkillCategorySpecializationKarmaCost, SkillCategory, true))
@@ -3472,7 +3472,7 @@ namespace Chummer.Backend.Skills
                 if (SkillGroupObject != null)
                 {
                     bool blnForceOffSkillGroupKarmaCompensation
-                        = !await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
+                        = !await CharacterObjectSettings
                                  .GetCompensateSkillGroupKarmaDifferenceAsync(token).ConfigureAwait(false)
                           // Only count our discount if we are the first skill in the list
                           || !ReferenceEquals(
@@ -3535,7 +3535,7 @@ namespace Chummer.Backend.Skills
                             token: token).ConfigureAwait(false)
                     : 0;
                 int intSpecCost = intSpecCount *
-                                  await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
+                                  await CharacterObjectSettings
                                       .GetKarmaSpecializationAsync(token).ConfigureAwait(false);
                 decimal decExtraSpecCost = 0;
                 decimal decSpecCostMultiplier = 1.0m;
@@ -3715,6 +3715,10 @@ namespace Chummer.Backend.Skills
         }
 
         public Character CharacterObject { get; }
+
+        protected CharacterSettings CharacterObjectSettings => _objCharacterObjectSettings;
+
+        private CharacterSettings _objCharacterObjectSettings;
 
         //TODO change to the actual characterattribute object
         /// <summary>
@@ -6046,8 +6050,8 @@ namespace Chummer.Backend.Skills
                 using (LockObject.EnterReadLock())
                 {
                     int intPrice = IsKnowledgeSkill
-                        ? CharacterObject.Settings.KarmaKnowledgeSpecialization
-                        : CharacterObject.Settings.KarmaSpecialization;
+                        ? CharacterObjectSettings.KarmaKnowledgeSpecialization
+                        : CharacterObjectSettings.KarmaSpecialization;
 
                     int intTotalBaseRating = TotalBaseRating;
                     decimal decExtraSpecCost = 0;
@@ -6080,8 +6084,8 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 int intPrice = IsKnowledgeSkill
-                    ? await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
-                    : await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaSpecializationAsync(token).ConfigureAwait(false);
+                    ? await CharacterObjectSettings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
+                    : await CharacterObjectSettings.GetKarmaSpecializationAsync(token).ConfigureAwait(false);
 
                 int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
                 decimal decExtraSpecCost = 0;
@@ -7086,9 +7090,9 @@ namespace Chummer.Backend.Skills
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(CurrentKarmaCost),
                     new DependencyGraphNode<string, Skill>(nameof(RangeCost),
-                        new DependencyGraphNode<string, Skill>(nameof(SkillGroupObject), x => x.CharacterObject.Settings.CompensateSkillGroupKarmaDifference && x.Enabled, async (x, t) => await
+                        new DependencyGraphNode<string, Skill>(nameof(SkillGroupObject), x => x.CharacterObjectSettings.CompensateSkillGroupKarmaDifference && x.Enabled, async (x, t) => await
                             (await x.CharacterObject.GetSettingsAsync(t).ConfigureAwait(false)).GetCompensateSkillGroupKarmaDifferenceAsync(t).ConfigureAwait(false) && await x.GetEnabledAsync(t).ConfigureAwait(false)),
-                        new DependencyGraphNode<string, Skill>(nameof(Enabled), x => x.CharacterObject.Settings.CompensateSkillGroupKarmaDifference && x.SkillGroupObject != null, async (x, t) => await
+                        new DependencyGraphNode<string, Skill>(nameof(Enabled), x => x.CharacterObjectSettings.CompensateSkillGroupKarmaDifference && x.SkillGroupObject != null, async (x, t) => await
                             (await x.CharacterObject.GetSettingsAsync(t).ConfigureAwait(false)).GetCompensateSkillGroupKarmaDifferenceAsync(t).ConfigureAwait(false) && x.SkillGroupObject != null)
                     ),
                     new DependencyGraphNode<string, Skill>(nameof(TotalBaseRating)),
@@ -7098,9 +7102,9 @@ namespace Chummer.Backend.Skills
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(CanUpgradeCareer),
                     new DependencyGraphNode<string, Skill>(nameof(UpgradeKarmaCost),
-                        new DependencyGraphNode<string, Skill>(nameof(SkillGroupObject), x => x.CharacterObject.Settings.CompensateSkillGroupKarmaDifference && x.Enabled, async (x, t) => await
+                        new DependencyGraphNode<string, Skill>(nameof(SkillGroupObject), x => x.CharacterObjectSettings.CompensateSkillGroupKarmaDifference && x.Enabled, async (x, t) => await
                             (await x.CharacterObject.GetSettingsAsync(t).ConfigureAwait(false)).GetCompensateSkillGroupKarmaDifferenceAsync(t).ConfigureAwait(false) && await x.GetEnabledAsync(t).ConfigureAwait(false)),
-                        new DependencyGraphNode<string, Skill>(nameof(Enabled), x => x.CharacterObject.Settings.CompensateSkillGroupKarmaDifference && x.SkillGroupObject != null, async (x, t) => await
+                        new DependencyGraphNode<string, Skill>(nameof(Enabled), x => x.CharacterObjectSettings.CompensateSkillGroupKarmaDifference && x.SkillGroupObject != null, async (x, t) => await
                             (await x.CharacterObject.GetSettingsAsync(t).ConfigureAwait(false)).GetCompensateSkillGroupKarmaDifferenceAsync(t).ConfigureAwait(false) && x.SkillGroupObject != null)
                     ),
                     new DependencyGraphNode<string, Skill>(nameof(RatingMaximum)),
@@ -7366,7 +7370,7 @@ namespace Chummer.Backend.Skills
                         RecacheAttribute();
 
                     if (setNamesOfChangedProperties.Contains(nameof(Enabled))
-                        && CharacterObject.Settings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
+                        && CharacterObjectSettings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
                     {
                         foreach (Skill objSkill in SkillGroupObject.SkillList)
                         {
@@ -7727,6 +7731,40 @@ namespace Chummer.Backend.Skills
                         }
                     }
 
+                    if (e.PropertyNames.Contains(nameof(Character.Settings)))
+                    {
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            CharacterSettings objNewSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                            CharacterSettings objOldSettings = Interlocked.Exchange(ref _objCharacterObjectSettings, objNewSettings);
+                            if (!ReferenceEquals(objNewSettings, objOldSettings))
+                            {
+                                if (objOldSettings?.IsDisposed == false)
+                                    objOldSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                                if (objNewSettings?.IsDisposed == false)
+                                {
+                                    objNewSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+                                    if (!await objNewSettings.HasIdenticalSettingsAsync(objOldSettings, token).ConfigureAwait(false))
+                                    {
+                                        MultiplePropertiesChangedEventArgs e2 = new MultiplePropertiesChangedEventArgs(await objNewSettings.GetDifferingPropertyNamesAsync(objOldSettings, token).ConfigureAwait(false));
+                                        await OnCharacterSettingsPropertyChanged(this, e2, token).ConfigureAwait(false);
+                                    }
+                                }
+                                else
+                                {
+                                    MultiplePropertiesChangedEventArgs e2 = new MultiplePropertiesChangedEventArgs(await objOldSettings.GetDifferingPropertyNamesAsync(objNewSettings, token).ConfigureAwait(false));
+                                    await OnCharacterSettingsPropertyChanged(this, e2, token).ConfigureAwait(false);
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+
                     if (setProperties.Count > 0)
                         await OnMultiplePropertiesChangedAsync(setProperties, token).ConfigureAwait(false);
                 }
@@ -7767,7 +7805,7 @@ namespace Chummer.Backend.Skills
                             (e.PropertyNames.Contains(nameof(CharacterSettings.CompensateSkillGroupKarmaDifference))
                              || ((e.PropertyNames.Contains(nameof(CharacterSettings.KarmaNewSkillGroup))
                                   || e.PropertyNames.Contains(nameof(CharacterSettings.KarmaImproveSkillGroup)))
-                                 && await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetCompensateSkillGroupKarmaDifferenceAsync(token)
+                                 && await CharacterObjectSettings.GetCompensateSkillGroupKarmaDifferenceAsync(token)
                                      .ConfigureAwait(false))))
                         {
                             setProperties.Add(nameof(RangeCost));
@@ -7966,14 +8004,14 @@ namespace Chummer.Backend.Skills
 
             int cost;
             if (lower == 0)
-                cost = (intLevelsModded - 1) * CharacterObject.Settings.KarmaImproveActiveSkill + CharacterObject.Settings.KarmaNewActiveSkill;
+                cost = (intLevelsModded - 1) * CharacterObjectSettings.KarmaImproveActiveSkill + CharacterObjectSettings.KarmaNewActiveSkill;
             else
-                cost = intLevelsModded * CharacterObject.Settings.KarmaImproveActiveSkill;
+                cost = intLevelsModded * CharacterObjectSettings.KarmaImproveActiveSkill;
 
             using (LockObject.EnterReadLock())
             {
                 int intSkillGroupCostAdjustment = 0;
-                if (!blnForceOffCompensateSkillGroupKarmaDifference && CharacterObject.Settings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
+                if (!blnForceOffCompensateSkillGroupKarmaDifference && CharacterObjectSettings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
                 {
                     int intSkillGroupUpper = int.MaxValue;
                     foreach (Skill objSkillGroupMember in SkillGroupObject.SkillList)
@@ -7995,16 +8033,16 @@ namespace Chummer.Backend.Skills
                         if (lower == 0)
                         {
                             int intExtraLevels = (intSkillGroupUpper - 1) * intSkillGroupUpper;
-                            intGroupCost = intExtraLevels * CharacterObject.Settings.KarmaImproveSkillGroup / 2 +
-                                           CharacterObject.Settings.KarmaNewSkillGroup;
-                            intNakedSkillCost *= intExtraLevels * CharacterObject.Settings.KarmaImproveActiveSkill / 2 +
-                                                 CharacterObject.Settings.KarmaNewActiveSkill;
+                            intGroupCost = intExtraLevels * CharacterObjectSettings.KarmaImproveSkillGroup / 2 +
+                                           CharacterObjectSettings.KarmaNewSkillGroup;
+                            intNakedSkillCost *= intExtraLevels * CharacterObjectSettings.KarmaImproveActiveSkill / 2 +
+                                                 CharacterObjectSettings.KarmaNewActiveSkill;
                         }
                         else
                         {
                             int intExtraLevels = intSkillGroupUpper * (intSkillGroupUpper + 1) - lower * (lower + 1);
-                            intGroupCost = intExtraLevels * CharacterObject.Settings.KarmaImproveSkillGroup / 2;
-                            intNakedSkillCost *= intExtraLevels * CharacterObject.Settings.KarmaImproveActiveSkill / 2;
+                            intGroupCost = intExtraLevels * CharacterObjectSettings.KarmaImproveSkillGroup / 2;
+                            intNakedSkillCost *= intExtraLevels * CharacterObjectSettings.KarmaImproveActiveSkill / 2;
                         }
 
                         intSkillGroupCostAdjustment = intGroupCost - intNakedSkillCost;
@@ -8208,17 +8246,17 @@ namespace Chummer.Backend.Skills
                     int intOptionsCost;
                     if (intTotalBaseRating == 0)
                     {
-                        intOptionsCost = CharacterObject.Settings.KarmaNewActiveSkill;
+                        intOptionsCost = CharacterObjectSettings.KarmaNewActiveSkill;
                         upgrade += intOptionsCost;
                     }
                     else
                     {
-                        intOptionsCost = CharacterObject.Settings.KarmaImproveActiveSkill;
+                        intOptionsCost = CharacterObjectSettings.KarmaImproveActiveSkill;
                         upgrade += (intTotalBaseRating + 1) * intOptionsCost;
                     }
 
                     int intSkillGroupCostAdjustment = 0;
-                    if (CharacterObject.Settings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
+                    if (CharacterObjectSettings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
                     {
                         int intSkillGroupUpper = int.MaxValue;
                         foreach (Skill objSkillGroupMember in SkillGroupObject.SkillList)
@@ -8237,15 +8275,15 @@ namespace Chummer.Backend.Skills
                             int intNakedSkillCost = SkillGroupObject.SkillList.Count(x => x == this || x.Enabled);
                             if (intTotalBaseRating == 0)
                             {
-                                intGroupCost = CharacterObject.Settings.KarmaNewSkillGroup;
-                                intNakedSkillCost *= CharacterObject.Settings.KarmaNewActiveSkill;
+                                intGroupCost = CharacterObjectSettings.KarmaNewSkillGroup;
+                                intNakedSkillCost *= CharacterObjectSettings.KarmaNewActiveSkill;
                             }
                             else
                             {
                                 intGroupCost = (intTotalBaseRating + 1) *
-                                               CharacterObject.Settings.KarmaImproveSkillGroup;
+                                               CharacterObjectSettings.KarmaImproveSkillGroup;
                                 intNakedSkillCost *= (intTotalBaseRating + 1) *
-                                                     CharacterObject.Settings.KarmaImproveActiveSkill;
+                                                     CharacterObjectSettings.KarmaImproveActiveSkill;
                             }
 
                             intSkillGroupCostAdjustment = intGroupCost - intNakedSkillCost;
@@ -8468,8 +8506,8 @@ namespace Chummer.Backend.Skills
                         else
                         {
                             int intPrice = IsKnowledgeSkill
-                                ? CharacterObject.Settings.KarmaKnowledgeSpecialization
-                                : CharacterObject.Settings.KarmaSpecialization;
+                                ? CharacterObjectSettings.KarmaKnowledgeSpecialization
+                                : CharacterObjectSettings.KarmaSpecialization;
 
                             int intTotalBaseRating = TotalBaseRating;
                             decimal decExtraSpecCost = 0;
@@ -8516,8 +8554,8 @@ namespace Chummer.Backend.Skills
                     else
                     {
                         int intPrice = IsKnowledgeSkill
-                            ? await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
-                            : await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaSpecializationAsync(token).ConfigureAwait(false);
+                            ? await CharacterObjectSettings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
+                            : await CharacterObjectSettings.GetKarmaSpecializationAsync(token).ConfigureAwait(false);
 
                         int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
                         decimal decExtraSpecCost = 0;
@@ -8567,8 +8605,8 @@ namespace Chummer.Backend.Skills
                     if (blnCreated)
                     {
                         int intPrice = IsKnowledgeSkill
-                            ? await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
-                            : await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaSpecializationAsync(token).ConfigureAwait(false);
+                            ? await CharacterObjectSettings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false)
+                            : await CharacterObjectSettings.GetKarmaSpecializationAsync(token).ConfigureAwait(false);
 
                         int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
                         decimal decExtraSpecCost = 0;
@@ -8760,9 +8798,9 @@ namespace Chummer.Backend.Skills
                                      && CanHaveSpecs
                                      && ((KarmaPoints > 0
                                           && BasePoints + FreeBase == 0
-                                          && !CharacterObject.Settings
+                                          && !CharacterObjectSettings
                                                              .AllowPointBuySpecializationsOnKarmaSkills)
-                                         || (CharacterObject.Settings
+                                         || (CharacterObjectSettings
                                                             .SpecializationsBreakSkillGroups
                                              && (SkillGroupObject?.Karma > 0
                                                  || SkillGroupObject?.Base > 0)))).ToInt32();
@@ -8832,7 +8870,7 @@ namespace Chummer.Backend.Skills
                     if (intReturn < 0)
                     {
                         intReturn = (TotalBaseRating == 0
-                                     || (CharacterObject.Settings
+                                     || (CharacterObjectSettings
                                                         .StrictSkillGroupsInCreateMode
                                          && !CharacterObject.Created
                                          && !CharacterObject.IgnoreRules
@@ -8977,38 +9015,36 @@ namespace Chummer.Backend.Skills
             if (disposing && Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) == 0)
             {
                 Character objCharacter = CharacterObject; // for thread safety
-                if (objCharacter != null)
+                if (objCharacter?.IsDisposed == false)
                 {
-                    if (!objCharacter.IsDisposed)
+                    try
                     {
-                        try
+                        objCharacter.MultiplePropertiesChangedAsync -= OnCharacterChanged;
+                        AttributeSection objSection = objCharacter.AttributeSection;
+                        if (objSection != null)
                         {
-                            objCharacter.MultiplePropertiesChangedAsync -= OnCharacterChanged;
-                            AttributeSection objSection = objCharacter.AttributeSection;
-                            if (objSection != null)
-                            {
-                                objSection.PropertyChangedAsync -= OnAttributeSectionChanged;
-                                ThreadSafeObservableCollection<CharacterAttrib> lstAttributes = objSection.Attributes;
-                                if (lstAttributes?.IsDisposed == false)
-                                    lstAttributes.CollectionChangedAsync -= OnAttributesCollectionChanged;
-                            }
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            //swallow this
+                            objSection.PropertyChangedAsync -= OnAttributeSectionChanged;
+                            ThreadSafeObservableCollection<CharacterAttrib> lstAttributes = objSection.Attributes;
+                            if (lstAttributes?.IsDisposed == false)
+                                lstAttributes.CollectionChangedAsync -= OnAttributesCollectionChanged;
                         }
                     }
-                    CharacterSettings objSettings = objCharacter.Settings;
-                    if (objSettings?.IsDisposed == false)
+                    catch (ObjectDisposedException)
                     {
-                        try
-                        {
-                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            //swallow this
-                        }
+                        //swallow this
+                    }
+                }
+
+                CharacterSettings objSettings = Interlocked.Exchange(ref _objCharacterObjectSettings, null);
+                if (objSettings?.IsDisposed == false)
+                {
+                    try
+                    {
+                        objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
                     }
                 }
 
@@ -9079,38 +9115,36 @@ namespace Chummer.Backend.Skills
             if (disposing && Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) == 0)
             {
                 Character objCharacter = CharacterObject; // for thread safety
-                if (objCharacter != null)
+                if (objCharacter?.IsDisposed == false)
                 {
-                    if (!objCharacter.IsDisposed)
+                    try
                     {
-                        try
+                        objCharacter.MultiplePropertiesChangedAsync -= OnCharacterChanged;
+                        AttributeSection objSection = await objCharacter.GetAttributeSectionAsync().ConfigureAwait(false);
+                        if (objSection != null)
                         {
-                            objCharacter.MultiplePropertiesChangedAsync -= OnCharacterChanged;
-                            AttributeSection objSection = await objCharacter.GetAttributeSectionAsync().ConfigureAwait(false);
-                            if (objSection != null)
-                            {
-                                objSection.PropertyChangedAsync -= OnAttributeSectionChanged;
-                                ThreadSafeObservableCollection<CharacterAttrib> lstAttributes = await objSection.GetAttributesAsync().ConfigureAwait(false);
-                                if (lstAttributes?.IsDisposed == false)
-                                    lstAttributes.CollectionChangedAsync -= OnAttributesCollectionChanged;
-                            }
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            //swallow this
+                            objSection.PropertyChangedAsync -= OnAttributeSectionChanged;
+                            ThreadSafeObservableCollection<CharacterAttrib> lstAttributes = await objSection.GetAttributesAsync().ConfigureAwait(false);
+                            if (lstAttributes?.IsDisposed == false)
+                                lstAttributes.CollectionChangedAsync -= OnAttributesCollectionChanged;
                         }
                     }
-                    CharacterSettings objSettings = await objCharacter.GetSettingsAsync().ConfigureAwait(false);
-                    if (objSettings?.IsDisposed == false)
+                    catch (ObjectDisposedException)
                     {
-                        try
-                        {
-                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            //swallow this
-                        }
+                        //swallow this
+                    }
+                }
+
+                CharacterSettings objSettings = Interlocked.Exchange(ref _objCharacterObjectSettings, null);
+                if (objSettings?.IsDisposed == false)
+                {
+                    try
+                    {
+                        objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
                     }
                 }
 

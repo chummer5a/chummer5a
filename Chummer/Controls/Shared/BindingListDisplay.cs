@@ -107,7 +107,7 @@ namespace Chummer.Controls.Shared
         /// <summary>
         /// Base BindingList that represents all possible contents of the display, not necessarily all visible.
         /// </summary>
-        public ThreadSafeBindingList<TType> Contents { get; }
+        public ThreadSafeBindingList<TType> Contents { get; private set; }
 
         public IEnumerable<Control> ContentControls => _lstContentList.Select(x => x.Control);
 

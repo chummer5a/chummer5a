@@ -40,6 +40,7 @@ namespace Chummer.Backend.Skills
     {
         private int _intLoading = 1;
         private readonly Character _objCharacter;
+        private CharacterSettings _objCharacterSettings;
         private readonly ConcurrentDictionary<Guid, Skill> _dicSkillBackups = new ConcurrentDictionary<Guid, Skill>();
 
         public Character CharacterObject => _objCharacter; // readonly member, no locking needed
@@ -47,6 +48,7 @@ namespace Chummer.Backend.Skills
         public SkillsSection(Character objCharacter)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            _objCharacterSettings = objCharacter.Settings;
             LockObject = objCharacter.LockObject;
             _objKnowledgeTypesLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedKnowledgePointsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
@@ -57,10 +59,9 @@ namespace Chummer.Backend.Skills
             _lstKnowledgeSkills = new ThreadSafeBindingList<KnowledgeSkill>(LockObject);
             _lstKnowsoftSkills = new ThreadSafeBindingList<KnowledgeSkill>(LockObject);
             _lstSkillGroups = new ThreadSafeBindingList<SkillGroup>(LockObject);
-            objCharacter.PropertyChangedAsync += OnCharacterPropertyChanged;
-            CharacterSettings objSettings = objCharacter.Settings;
-            if (objSettings?.IsDisposed == false)
-                objSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+            objCharacter.MultiplePropertiesChangedAsync += OnCharacterPropertyChanged;
+            if (_objCharacterSettings?.IsDisposed == false)
+                _objCharacterSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
             SkillGroups.BeforeRemoveAsync += SkillGroupsOnBeforeRemove;
             KnowsoftSkills.BeforeRemoveAsync += KnowsoftSkillsOnBeforeRemove;
             KnowledgeSkills.BeforeRemoveAsync += KnowledgeSkillsOnBeforeRemove;
@@ -258,13 +259,46 @@ namespace Chummer.Backend.Skills
                 await OnPropertyChangedAsync(nameof(HasAvailableNativeLanguageSlots), token).ConfigureAwait(false);
         }
 
-        private Task OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private async Task OnCharacterPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_intLoading > 0)
-                return Task.CompletedTask;
-            return e?.PropertyName == nameof(Character.EffectiveBuildMethodUsesPriorityTables)
-                ? OnPropertyChangedAsync(nameof(SkillPointsSpentOnKnoskills), token)
-                : Task.CompletedTask;
+                return;
+            if (e.PropertyNames.Contains(nameof(Character.Settings)))
+            {
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    CharacterSettings objNewSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                    CharacterSettings objOldSettings = Interlocked.Exchange(ref _objCharacterSettings, objNewSettings);
+                    if (!ReferenceEquals(objNewSettings, objOldSettings))
+                    {
+                        if (objOldSettings?.IsDisposed == false)
+                            objOldSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        if (objNewSettings?.IsDisposed == false)
+                        {
+                            objNewSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+                            if (!await objNewSettings.HasIdenticalSettingsAsync(objOldSettings, token).ConfigureAwait(false))
+                            {
+                                MultiplePropertiesChangedEventArgs e2 = new MultiplePropertiesChangedEventArgs(await objNewSettings.GetDifferingPropertyNamesAsync(objOldSettings, token).ConfigureAwait(false));
+                                await OnCharacterSettingsPropertyChanged(this, e2, token).ConfigureAwait(false);
+                            }
+                        }
+                        else
+                        {
+                            MultiplePropertiesChangedEventArgs e2 = new MultiplePropertiesChangedEventArgs(await objOldSettings.GetDifferingPropertyNamesAsync(objNewSettings, token).ConfigureAwait(false));
+                            await OnCharacterSettingsPropertyChanged(this, e2, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            if (e.PropertyNames.Contains(nameof(Character.EffectiveBuildMethodUsesPriorityTables)))
+                await OnPropertyChangedAsync(nameof(SkillPointsSpentOnKnoskills), token).ConfigureAwait(false);
         }
 
         private async Task OnCharacterSettingsPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e,
@@ -584,7 +618,7 @@ namespace Chummer.Backend.Skills
                 XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml", token: token);
                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
                            .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
-                                        _objCharacter.Settings.BookXPath(token: token)
+                                        _objCharacterSettings.BookXPath(token: token)
                                         + ')'
                                         + SkillFilter(eFilterOption, strName) + ']'))
                 {
@@ -654,7 +688,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
                            .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
-                                        await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false)
+                                        await _objCharacterSettings.BookXPathAsync(token: token).ConfigureAwait(false)
                                         + ')'
                                         + SkillFilter(eFilterOption, strName) + ']'))
                 {
@@ -1156,7 +1190,7 @@ namespace Chummer.Backend.Skills
                 XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml", token: token);
                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
                             .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
-                                        _objCharacter.Settings.BookXPath(token: token)
+                                        _objCharacterSettings.BookXPath(token: token)
                                         + ')'
                                         + SkillFilter(eFilterOption, strName) + ']'))
                 {
@@ -1235,7 +1269,7 @@ namespace Chummer.Backend.Skills
                     XmlDocument xmlSkillsDocument = await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
                     using (XmlNodeList xmlSkillList = xmlSkillsDocument
                                .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
-                                            await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)
+                                            await _objCharacterSettings.BookXPathAsync(token: token).ConfigureAwait(false)
                                             + ')'
                                             + SkillFilter(eFilterOption, strName) + ']'))
                     {
@@ -1579,9 +1613,9 @@ namespace Chummer.Backend.Skills
                                                                        "/chummer/skills/skill[not(exotic = 'True') and ("
                                                                        + (blnSync
                                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                                           ? _objCharacter.Settings.BookXPath(
+                                                                           ? _objCharacterSettings.BookXPath(
                                                                                token: token)
-                                                                           : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                                                                           : await _objCharacterSettings
                                                                                .BookXPathAsync(token: token)
                                                                                .ConfigureAwait(false)) + ')'
                                                                        + SkillFilter(FilterOption.NonSpecial) +
@@ -2266,8 +2300,8 @@ namespace Chummer.Backend.Skills
                                                "/chummer/skills/skill[not(exotic = 'True') and ("
                                                + (blnSync
                                                    // ReSharper disable once MethodHasAsyncOverload
-                                                   ? _objCharacter.Settings.BookXPath(token: token)
-                                                   : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token)
+                                                   ? _objCharacterSettings.BookXPath(token: token)
+                                                   : await _objCharacterSettings.BookXPathAsync(token: token)
                                                        .ConfigureAwait(false)) + ')'
                                                + SkillFilter(FilterOption.NonSpecial) + ']'))
                                     {
@@ -2388,7 +2422,7 @@ namespace Chummer.Backend.Skills
                                         }
                                     }
                                 }
-                                else if (_objCharacter.Settings.AllowSkillRegrouping)
+                                else if (_objCharacterSettings.AllowSkillRegrouping)
                                 {
                                     // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
                                     foreach (SkillGroup g in SkillGroups.AsEnumerableWithSideEffects())
@@ -2430,7 +2464,7 @@ namespace Chummer.Backend.Skills
                                     }
                                 }, token).ConfigureAwait(false);
                             }
-                            else if (_objCharacter.Settings.AllowSkillRegrouping)
+                            else if (_objCharacterSettings.AllowSkillRegrouping)
                             {
                                 // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
                                 await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(objSkillGroup =>
@@ -3099,7 +3133,7 @@ namespace Chummer.Backend.Skills
                             XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
                             using (XmlNodeList xmlSkillList = xmlSkillsDocument
                                        .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and ("
-                                                    + _objCharacter.Settings.BookXPath() + ')'
+                                                    + _objCharacterSettings.BookXPath() + ')'
                                                     + SkillFilter(FilterOption.NonSpecial) + ']'))
                             {
                                 if (xmlSkillList?.Count > 0)
@@ -3513,7 +3547,7 @@ namespace Chummer.Backend.Skills
                         return _intCachedKnowledgePoints;
                     using (_objCachedKnowledgePointsLock.EnterWriteLock())
                     {
-                        string strExpression = _objCharacter.Settings.KnowledgePointsExpression;
+                        string strExpression = _objCharacterSettings.KnowledgePointsExpression;
                         if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
                             strExpression = _objCharacter.ProcessAttributesInXPath(strExpression);
@@ -3569,7 +3603,7 @@ namespace Chummer.Backend.Skills
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    string strExpression = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false);
+                    string strExpression = await _objCharacterSettings.GetKnowledgePointsExpressionAsync(token).ConfigureAwait(false);
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
                         strExpression = await _objCharacter
@@ -4535,31 +4569,27 @@ namespace Chummer.Backend.Skills
         {
             using (LockObject.EnterWriteLock())
             {
-                if (_objCharacter != null)
+                if (_objCharacter?.IsDisposed == false)
                 {
-                    if (!_objCharacter.IsDisposed)
+                    try
                     {
-                        try
-                        {
-                            _objCharacter.PropertyChangedAsync -= OnCharacterPropertyChanged;
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            //swallow this
-                        }
+                        _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
                     }
-
-                    CharacterSettings objSettings = _objCharacter.Settings;
-                    if (objSettings?.IsDisposed == false)
+                    catch (ObjectDisposedException)
                     {
-                        try
-                        {
-                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            //swallow this
-                        }
+                        //swallow this
+                    }
+                }
+                CharacterSettings objSettings = Interlocked.Exchange(ref _objCharacterSettings, null);
+                if (objSettings?.IsDisposed == false)
+                {
+                    try
+                    {
+                        objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
                     }
                 }
                 _lstSkillGroups.ForEach(x => x.Dispose());
@@ -4608,31 +4638,27 @@ namespace Chummer.Backend.Skills
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                if (_objCharacter != null)
+                if (_objCharacter?.IsDisposed == false)
                 {
-                    if (!_objCharacter.IsDisposed)
+                    try
                     {
-                        try
-                        {
-                            _objCharacter.PropertyChangedAsync -= OnCharacterPropertyChanged;
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            //swallow this
-                        }
+                        _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
                     }
-
-                    CharacterSettings objSettings = await _objCharacter.GetSettingsAsync().ConfigureAwait(false);
-                    if (objSettings?.IsDisposed == false)
+                    catch (ObjectDisposedException)
                     {
-                        try
-                        {
-                            objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            //swallow this
-                        }
+                        //swallow this
+                    }
+                }
+                CharacterSettings objSettings = Interlocked.Exchange(ref _objCharacterSettings, null);
+                if (objSettings?.IsDisposed == false)
+                {
+                    try
+                    {
+                        objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
                     }
                 }
                 await _lstSkillGroups.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);

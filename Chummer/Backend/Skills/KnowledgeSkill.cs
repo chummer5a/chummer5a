@@ -874,11 +874,11 @@ namespace Chummer.Backend.Skills
                     decCost -= intLower * (intLower + 1);
 
                     decCost /= 2;
-                    int intKarmaCostImproveSkill = CharacterObject.Settings.KarmaImproveKnowledgeSkill;
+                    int intKarmaCostImproveSkill = CharacterObjectSettings.KarmaImproveKnowledgeSkill;
                     decCost *= intKarmaCostImproveSkill;
                     // We have bought the first level with karma, too
                     if (intLower == 0 && decCost > 0)
-                        decCost += CharacterObject.Settings.KarmaNewKnowledgeSkill -
+                        decCost += CharacterObjectSettings.KarmaNewKnowledgeSkill -
                                    intKarmaCostImproveSkill;
 
                     string strDictionaryKey = DictionaryKey;
@@ -928,7 +928,7 @@ namespace Chummer.Backend.Skills
                             decMultiplier *= objImprovement.Value / 100.0m;
                     }
                     int intSpecCount = BuyWithKarma ? Specializations.Count(x => !x.Free) : 0;
-                    decimal decSpecCost = CharacterObject.Settings.KarmaKnowledgeSpecialization * intSpecCount;
+                    decimal decSpecCost = CharacterObjectSettings.KarmaKnowledgeSpecialization * intSpecCount;
                     decimal decExtraSpecCost = 0;
                     decimal decSpecCostMultiplier = 1.0m;
                     foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.SkillCategorySpecializationKarmaCost, SkillCategory, true))
@@ -953,7 +953,7 @@ namespace Chummer.Backend.Skills
                         for (int i = 0; i < intLower; ++i)
                         {
                             decimal decLoopCost = i == 0
-                                ? CharacterObject.Settings.KarmaNewKnowledgeSkill
+                                ? CharacterObjectSettings.KarmaNewKnowledgeSkill
                                 : i * intKarmaCostImproveSkill;
                             decLoopCost = (decLoopCost + decExtra) * decMultiplier;
                             int intLoopCostDiff = intMinOverride - decLoopCost.StandardRound();
@@ -985,12 +985,11 @@ namespace Chummer.Backend.Skills
                 decCost -= intLower * (intLower + 1);
 
                 decCost /= 2;
-                CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
-                int intKarmaCostImproveSkill = await objSettings.GetKarmaImproveKnowledgeSkillAsync(token).ConfigureAwait(false);
+                int intKarmaCostImproveSkill = await CharacterObjectSettings.GetKarmaImproveKnowledgeSkillAsync(token).ConfigureAwait(false);
                 decCost *= intKarmaCostImproveSkill;
                 // We have bought the first level with karma, too
                 if (intLower == 0 && decCost > 0)
-                    decCost += await objSettings.GetKarmaNewKnowledgeSkillAsync(token).ConfigureAwait(false) -
+                    decCost += await CharacterObjectSettings.GetKarmaNewKnowledgeSkillAsync(token).ConfigureAwait(false) -
                                intKarmaCostImproveSkill;
 
                 string strDictionaryKey = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
@@ -1043,8 +1042,7 @@ namespace Chummer.Backend.Skills
                     ? await Specializations.CountAsync(async objSpec => !await objSpec.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
                     : 0;
                 decimal decSpecCost = intSpecCount *
-                                      await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
-                                          .GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false);
+                                      await CharacterObjectSettings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false);
                 decimal decExtraSpecCost = 0;
                 decimal decSpecCostMultiplier = 1.0m;
                 foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.SkillCategorySpecializationKarmaCost, SkillCategory, true, token).ConfigureAwait(false))
@@ -1069,7 +1067,7 @@ namespace Chummer.Backend.Skills
                     for (int i = 0; i < intLower; ++i)
                     {
                         decimal decLoopCost = i == 0
-                            ? await objSettings.GetKarmaNewKnowledgeSkillAsync(token).ConfigureAwait(false)
+                            ? await CharacterObjectSettings.GetKarmaNewKnowledgeSkillAsync(token).ConfigureAwait(false)
                             : i * intKarmaCostImproveSkill;
                         decLoopCost = (decLoopCost + decExtra) * decMultiplier;
                         int intLoopCostDiff = intMinOverride - decLoopCost.StandardRound();
@@ -1107,12 +1105,12 @@ namespace Chummer.Backend.Skills
                     int intValue;
                     if (intTotalBaseRating == 0)
                     {
-                        intOptionsCost = CharacterObject.Settings.KarmaNewKnowledgeSkill;
+                        intOptionsCost = CharacterObjectSettings.KarmaNewKnowledgeSkill;
                         intValue = intOptionsCost;
                     }
                     else
                     {
-                        intOptionsCost = CharacterObject.Settings.KarmaImproveKnowledgeSkill;
+                        intOptionsCost = CharacterObjectSettings.KarmaImproveKnowledgeSkill;
                         intValue = (intTotalBaseRating + 1) * intOptionsCost;
                     }
 
@@ -1185,15 +1183,14 @@ namespace Chummer.Backend.Skills
 
                 int intOptionsCost;
                 int intValue;
-                CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
                 if (intTotalBaseRating == 0)
                 {
-                    intOptionsCost = await objSettings.GetKarmaNewKnowledgeSkillAsync(token).ConfigureAwait(false);
+                    intOptionsCost = await CharacterObjectSettings.GetKarmaNewKnowledgeSkillAsync(token).ConfigureAwait(false);
                     intValue = intOptionsCost;
                 }
                 else
                 {
-                    intOptionsCost = await objSettings.GetKarmaImproveKnowledgeSkillAsync(token).ConfigureAwait(false);
+                    intOptionsCost = await CharacterObjectSettings.GetKarmaImproveKnowledgeSkillAsync(token).ConfigureAwait(false);
                     intValue = (intTotalBaseRating + 1) * intOptionsCost;
                 }
 
