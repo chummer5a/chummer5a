@@ -31,11 +31,11 @@ using System.Windows.Media;
 using System.Xml;
 using System.Xml.XPath;
 using NLog;
-using static iText.IO.Util.IntHashtable;
+using Color = System.Drawing.Color;
 
 namespace Chummer.Backend.Equipment
 {
-    public sealed class Drug : IHasName, IHasSourceId, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable, IAsyncDisposable, IHasCharacterObject, IHasNotes, IHasInternalId
+    public sealed class Drug : IHasName, IHasSourceId, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable, IAsyncDisposable, IHasCharacterObject, IHasNotes, IHasInternalId, IHasLockObject, IHasRating
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -56,6 +56,7 @@ namespace Chummer.Backend.Equipment
         private decimal _decCost;
         private int _intAddictionThreshold;
         private int _intAddictionRating;
+        private int _intRating;
         private const int _intSpeed = 9;
         private decimal _decQty;
         private int _intSortOrder;
@@ -69,6 +70,8 @@ namespace Chummer.Backend.Equipment
         private int _intDurationDice;
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
+        private string _strExtra = string.Empty;
+        private string _strRatingLabel = string.Empty;
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -77,6 +80,7 @@ namespace Chummer.Backend.Equipment
             _objCharacter = objCharacter;
             // Create the GUID for the new Drug.
             _guiID = Guid.NewGuid();
+            LockObject = objCharacter.LockObject;
             _lstComponents = new ThreadSafeObservableCollection<DrugComponent>(objCharacter.LockObject);
             Components.CollectionChanged += ComponentsChanged;
         }
@@ -126,7 +130,8 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
             objXmlData.TryGetDecFieldQuickly("cost", ref _decCost);
             objXmlData.TryGetDecFieldQuickly("quantity", ref _decQty);
-            objXmlData.TryGetInt32FieldQuickly("rating", ref _intAddictionRating);
+            objXmlData.TryGetInt32FieldQuickly("addictionrating", ref _intAddictionRating);
+            objXmlData.TryGetInt32FieldQuickly("rating", ref _intRating);
             objXmlData.TryGetInt32FieldQuickly("threshold", ref _intAddictionThreshold);
             objXmlData.TryGetStringFieldQuickly("grade", ref _strGrade);
             objXmlData.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
@@ -144,101 +149,31 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-            if ((Bonus != null || PairBonus != null) && !blnSkipSelectForms)
+            if (Bonus != null)
             {
-                if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
-                    ImprovementManager.SetForcedValue(_strForced, _objCharacter);
-
-                if (Bonus != null)
+                if (blnSync)
                 {
-                    if (blnSync)
-                    {
-                        // ReSharper disable once MethodHasAsyncOverload
-                        if (!ImprovementManager.CreateImprovements(_objCharacter, objSource,
-                                _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, Rating,
-                                CurrentDisplayNameShort, blnCreateImprovements, token))
-                        {
-                            _guiID = Guid.Empty;
-                            return;
-                        }
-                    }
-                    else if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, objSource,
-                                 _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, await GetRatingAsync(token).ConfigureAwait(false),
-                                 await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), blnCreateImprovements, token).ConfigureAwait(false))
+                    // ReSharper disable once MethodHasAsyncOverload
+                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Drug,
+                            _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, Rating,
+                            CurrentDisplayNameShort, blnCreateImprovements, token))
                     {
                         _guiID = Guid.Empty;
                         return;
                     }
                 }
-
-                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
-                if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
-                    _strExtra = strSelectedValue;
-
-                if (PairBonus != null)
+                else if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Drug,
+                             _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, await GetRatingAsync(token).ConfigureAwait(false),
+                             await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), blnCreateImprovements, token).ConfigureAwait(false))
                 {
-                    // This cyberware should not be included in the count to make things easier.
-                    List<Cyberware> lstPairableCyberwares = blnSync
-                        ? _objCharacter.Cyberware.DeepWhere(x => x.Children,
-                            x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
-                                 x.IsModularCurrentlyEquipped, token).ToList()
-                        : await _objCharacter.Cyberware.DeepWhereAsync(x => x.GetChildrenAsync(token),
-                            async x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
-                                       await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                    int intCount = lstPairableCyberwares.Count;
-                    // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
-                    if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
-                    {
-                        intCount = 0;
-                        foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
-                        {
-                            if (objPairableCyberware.Location != Location)
-                                // We have found a cyberware with which this one could be paired, so increase count by 1
-                                ++intCount;
-                            else
-                                // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
-                                --intCount;
-                        }
-
-                        // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
-                        intCount = (intCount > 0).ToInt32();
-                    }
-
-                    if ((intCount & 1) == 1)
-                    {
-                        if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
-                            ImprovementManager.SetForcedValue(_strForced, _objCharacter);
-                        else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
-                            ImprovementManager.SetForcedValue(_strExtra, _objCharacter);
-                        if (blnSync)
-                        {
-                            // ReSharper disable once MethodHasAsyncOverload
-                            if (!ImprovementManager.CreateImprovements(_objCharacter, objSource,
-                                    _guiID.ToString(
-                                        "D", GlobalSettings.InvariantCultureInfo)
-                                    + "Pair", PairBonus,
-                                    Rating,
-                                    CurrentDisplayNameShort,
-                                    blnCreateImprovements, token))
-                            {
-                                _guiID = Guid.Empty;
-                                return;
-                            }
-                        }
-                        else if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, objSource,
-                                     _guiID.ToString(
-                                         "D", GlobalSettings.InvariantCultureInfo)
-                                     + "Pair", PairBonus,
-                                     await GetRatingAsync(token).ConfigureAwait(false),
-                                     await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                                     blnCreateImprovements, token).ConfigureAwait(false))
-                        {
-                            _guiID = Guid.Empty;
-                            return;
-                        }
-                    }
+                    _guiID = Guid.Empty;
+                    return;
                 }
             }
+
+            string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+            if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                _strExtra = strSelectedValue;
         }
 
         public void Load(XmlNode objXmlData)
@@ -293,6 +228,7 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetDecFieldQuickly("cost", ref _decCost);
             objXmlData.TryGetDecFieldQuickly("quantity", ref _decQty);
             objXmlData.TryGetInt32FieldQuickly("rating", ref _intAddictionRating);
+            objXmlData.TryGetInt32FieldQuickly("drugrating", ref _intRating);
             objXmlData.TryGetInt32FieldQuickly("threshold", ref _intAddictionThreshold);
             objXmlData.TryGetStringFieldQuickly("grade", ref _strGrade);
             objXmlData.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
@@ -328,7 +264,9 @@ namespace Chummer.Backend.Equipment
             if (_decCost != 0)
                 objXmlWriter.WriteElementString("cost", _decCost.ToString(GlobalSettings.InvariantCultureInfo));
             if (_intAddictionRating != 0)
-                objXmlWriter.WriteElementString("rating", _intAddictionRating.ToString(GlobalSettings.InvariantCultureInfo));
+                objXmlWriter.WriteElementString("addictionrating", _intAddictionRating.ToString(GlobalSettings.InvariantCultureInfo));
+            if (_intRating != 0)
+                objXmlWriter.WriteElementString("rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
             if (_intAddictionThreshold != 0)
                 objXmlWriter.WriteElementString("threshold", _intAddictionThreshold.ToString(GlobalSettings.InvariantCultureInfo));
             if (Grade != null)
@@ -368,6 +306,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("qty", Quantity.ToString("#,0.##", objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("addictionthreshold", (await GetAddictionThresholdAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("addictionrating", (await GetAddictionRatingAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("initiative", (await GetInitiativeAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("initiativedice", (await GetInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("speed", (await GetSpeedAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
@@ -625,6 +564,25 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Bonus node from the XML file.
+        /// </summary>
+        public XmlNode Bonus
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _nodBonus;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                    _nodBonus = value;
+            }
+        }
+
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
+
+        /// <summary>
         /// Category of the Drug.
         /// </summary>
         public string Category
@@ -877,6 +835,42 @@ namespace Chummer.Backend.Equipment
             return _intCachedAddictionRating != int.MinValue
                     ? _intCachedAddictionRating
                     : _intCachedAddictionRating = await Components.SumAsync(d => d.ActiveDrugEffect != null, d => d.AddictionRating, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Rating of the Drug.
+        /// </summary>
+        public int Rating
+        {
+            get => _intRating;
+            set => _intRating = value;
+        }
+
+        /// <summary>
+        /// Rating of the Drug.
+        /// </summary>
+        public async Task<int> GetRatingAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return _intRating;
+        }
+
+        /// <summary>
+        /// Rating of the Drug.
+        /// </summary>
+        public async Task SetRatingAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _intRating = value;
+        }
+
+        /// <summary>
+        /// Rating Label of the Drug.
+        /// </summary>
+        public string RatingLabel
+        {
+            get => _strRatingLabel;
+            set => _strRatingLabel = value;
         }
 
         private bool _blnCachedLimitFlag;
@@ -1330,6 +1324,15 @@ namespace Chummer.Backend.Equipment
             string strReturn = DisplayNameShort(strLanguage);
             if (Quantity != 1)
                 strReturn = Quantity.ToString("#,0.##", objCulture) + LanguageManager.GetString("String_Space", strLanguage) + strReturn;
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            int intRating = Rating;
+            if (intRating > 0)
+            {
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
+                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace +
+                             intRating.ToString(objCulture) + ')';
+            }
             return strReturn;
         }
 
@@ -1341,6 +1344,15 @@ namespace Chummer.Backend.Equipment
             string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
             if (Quantity != 1)
                 strReturn = Quantity.ToString("#,0.##", objCulture) + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + strReturn;
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            int intRating = await GetRatingAsync(token).ConfigureAwait(false);
+            if (intRating > 0)
+            {
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
+                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false) + strSpace +
+                             intRating.ToString(objCulture) + ')';
+            }
             return strReturn;
         }
 
