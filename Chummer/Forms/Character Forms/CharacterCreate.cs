@@ -5339,8 +5339,8 @@ namespace Chummer
                                                                   await LanguageManager.GetStringAsync(
                                                                           "String_Improvement_SelectText", token: GenericToken)
                                                                       .ConfigureAwait(false),
-                                                                  objXmlProgram["translate"]?.InnerText
-                                                                  ?? objXmlProgram["name"]?.InnerText);
+                                                                  objXmlProgram["translate"]?.InnerTextViaPool()
+                                                                  ?? objXmlProgram["name"]?.InnerTextViaPool());
                             using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
                                        () => new SelectText
                                        {
@@ -7321,7 +7321,7 @@ namespace Chummer
                 XmlElement xmlAddModCategory = objXmlArmor["forcemodcategory"];
                 if (xmlAddModCategory != null)
                 {
-                    strAllowedCategories = xmlAddModCategory.InnerText;
+                    strAllowedCategories = xmlAddModCategory.InnerTextViaPool();
                     blnExcludeGeneralCategory = true;
                 }
                 else
@@ -7329,7 +7329,7 @@ namespace Chummer
                     xmlAddModCategory = objXmlArmor["addmodcategory"];
                     if (xmlAddModCategory != null)
                     {
-                        strAllowedCategories += ',' + xmlAddModCategory.InnerText;
+                        strAllowedCategories += ',' + xmlAddModCategory.InnerTextViaPool();
                     }
                 }
 
@@ -7361,7 +7361,7 @@ namespace Chummer
                                     frmPickArmorMod.MyForm.SelectedArmorMod);
 
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
-                                int.TryParse(objXmlArmor["maxrating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intMaxRating);
+                                int.TryParse(objXmlArmor["maxrating"]?.InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intMaxRating);
                                 int intRating
                                         = intMaxRating > 1
                                             ? frmPickArmorMod.MyForm.SelectedRating
@@ -9377,7 +9377,7 @@ namespace Chummer
                             if (xmlGearCategoryList != null)
                             {
                                 foreach (XmlNode objXmlCategory in xmlGearCategoryList)
-                                    sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                                    sbdCategories.Append(objXmlCategory.InnerTextViaPool()).Append(',');
                                 if (sbdCategories.Length > 0)
                                     --sbdCategories.Length;
                                 strCategories = sbdCategories.ToString();
@@ -9394,7 +9394,7 @@ namespace Chummer
                             if (xmlGearNameList?.Count > 0)
                             {
                                 foreach (XmlNode objXmlName in xmlGearNameList)
-                                    sbdGearNames.Append(objXmlName.InnerText).Append(',');
+                                    sbdGearNames.Append(objXmlName.InnerTextViaPool()).Append(',');
                                 --sbdGearNames.Length;
                                 strGearNames = sbdGearNames.ToString();
                             }
@@ -9516,7 +9516,7 @@ namespace Chummer
                                out StringBuilder sbdCategories))
                     {
                         foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                            sbdCategories.Append(objXmlCategory.InnerTextViaPool()).Append(',');
                         if (sbdCategories.Length > 0)
                             --sbdCategories.Length;
                         strCategories = sbdCategories.ToString();
@@ -9877,7 +9877,7 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
                 {
                     foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
-                        sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                        sbdCategories.Append(objXmlCategory.InnerTextViaPool()).Append(',');
                     if (sbdCategories.Length > 0)
                         --sbdCategories.Length;
                     strCategories = sbdCategories.ToString();
@@ -10293,7 +10293,7 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
                 {
                     foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
-                        sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                        sbdCategories.Append(objXmlCategory.InnerTextViaPool()).Append(',');
                     if (sbdCategories.Length > 0)
                         --sbdCategories.Length;
                     strCategories = sbdCategories.ToString();
@@ -10844,10 +10844,10 @@ namespace Chummer
                                 .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
 
                             // See if a Bonus node exists.
-                            if (objCyberware.Bonus?.InnerXml.Contains("Rating") == true
-                                || objCyberware.PairBonus?.InnerXml.Contains("Rating") == true ||
+                            if (objCyberware.Bonus?.InnerXmlContentContains("Rating") == true
+                                || objCyberware.PairBonus?.InnerXmlContentContains("Rating") == true ||
                                 objCyberware.WirelessOn
-                                && objCyberware.WirelessBonus?.InnerXml.Contains("Rating") == true)
+                                && objCyberware.WirelessBonus?.InnerXmlContentContains("Rating") == true)
                             {
                                 // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                                 await ImprovementManager
@@ -12750,8 +12750,8 @@ namespace Chummer
                                       .ConfigureAwait(false);
 
                         // See if a Bonus node exists.
-                        if (objMod.Bonus?.InnerXml.Contains("Rating") == true || objMod.WirelessOn
-                            && objMod.WirelessBonus?.InnerXml.Contains("Rating") == true)
+                        if (objMod.Bonus?.InnerXmlContentContains("Rating") == true || objMod.WirelessOn
+                            && objMod.WirelessBonus?.InnerXmlContentContains("Rating") == true)
                         {
                             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                             await ImprovementManager.RemoveImprovementsAsync(
@@ -12813,8 +12813,8 @@ namespace Chummer
                                       .ConfigureAwait(false);
 
                         // See if a Bonus node exists.
-                        if (objGear.Bonus?.InnerXml.Contains("Rating") == true || objGear.WirelessOn
-                            && objGear.WirelessBonus?.InnerXml.Contains("Rating") == true)
+                        if (objGear.Bonus?.InnerXmlContentContains("Rating") == true || objGear.WirelessOn
+                            && objGear.WirelessBonus?.InnerXmlContentContains("Rating") == true)
                         {
                             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                             await ImprovementManager.RemoveImprovementsAsync(
@@ -22213,12 +22213,12 @@ namespace Chummer
                                 .ConfigureAwait(false);
                             foreach (XmlNode objXmlChild in xmlChildrenList)
                             {
-                                string strName = objXmlChild["name"]?.InnerText;
+                                string strName = objXmlChild["name"]?.InnerTextViaPool();
                                 if (string.IsNullOrEmpty(strName))
                                     continue;
                                 XmlNode objXmlChildCyberware = objXmlDocument.TryGetNodeByNameOrId(
                                     "/chummer/" + strType + "s/" + strType, strName);
-                                int.TryParse(objXmlChild["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intChildRating);
+                                int.TryParse(objXmlChild["rating"]?.InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intChildRating);
                                 await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AddAsync(await CreateSuiteCyberware(objXmlChild,
                                     objXmlChildCyberware, objGrade,
                                     intChildRating, eSource, token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -22305,13 +22305,13 @@ namespace Chummer
                             foreach (XmlNode objXmlQuality in xmlQualityList)
                             {
                                 XmlNode objXmlQualityNode = xmlQualityDocument.TryGetNodeByNameOrId(
-                                    "/chummer/qualities/quality", objXmlQuality.InnerText,
+                                    "/chummer/qualities/quality", objXmlQuality.InnerTextViaPool(),
                                     await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
 
                                 if (objXmlQualityNode == null)
                                     continue;
                                 string strForceValue =
-                                        objXmlQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                                        objXmlQuality.Attributes?["select"]?.InnerTextViaPool() ?? string.Empty;
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
                                 Quality objQuality = new Quality(CharacterObject);
                                 try
@@ -22343,7 +22343,7 @@ namespace Chummer
                 XmlElement xmlSelectMartialArt = objXmlKit["selectmartialart"];
                 if (xmlSelectMartialArt != null)
                 {
-                    string strForcedValue = xmlSelectMartialArt.Attributes["select"]?.InnerText ?? string.Empty;
+                    string strForcedValue = xmlSelectMartialArt.Attributes["select"]?.InnerTextViaPool() ?? string.Empty;
 
                     using (ThreadSafeForm<SelectMartialArt> frmPickMartialArt = await ThreadSafeForm<SelectMartialArt>
                                .GetAsync(() => new SelectMartialArt(CharacterObject)
@@ -22392,7 +22392,7 @@ namespace Chummer
                             foreach (XmlNode objXmlArt in xmlMartialArtsList)
                             {
                                 XmlNode objXmlArtNode = objXmlMartialArtDocument.TryGetNodeByNameOrId(
-                                        "/chummer/martialarts/martialart", objXmlArt["name"]?.InnerText,
+                                        "/chummer/martialarts/martialart", objXmlArt["name"]?.InnerTextViaPool(),
                                         await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
                                 if (objXmlArtNode == null)
                                     continue;
@@ -22411,7 +22411,7 @@ namespace Chummer
                                             {
                                                 MartialArtTechnique objTechnique = new MartialArtTechnique(CharacterObject);
                                                 XmlNode xmlTechniqueNode = objXmlMartialArtDocument.TryGetNodeByNameOrId(
-                                                    "/chummer/techniques/technique", xmlTechnique["name"]?.InnerText,
+                                                    "/chummer/techniques/technique", xmlTechnique["name"]?.InnerTextViaPool(),
                                                     await CharacterObjectSettings.BookXPathAsync(token: token)
                                                         .ConfigureAwait(false));
                                                 await objTechnique.CreateAsync(xmlTechniqueNode, token)
@@ -22460,7 +22460,7 @@ namespace Chummer
                             {
                                 XmlNode objXmlComplexFormNode =
                                     objXmlComplexFormDocument.TryGetNodeByNameOrId(
-                                        "/chummer/complexforms/complexform", objXmlComplexForm["name"]?.InnerText,
+                                        "/chummer/complexforms/complexform", objXmlComplexForm["name"]?.InnerTextViaPool(),
                                         await CharacterObjectSettings.BookXPathAsync(token: token)
                                             .ConfigureAwait(false));
                                 if (objXmlComplexFormNode != null)
@@ -22503,7 +22503,7 @@ namespace Chummer
                             foreach (XmlNode objXmlProgram in xmlProgramsList)
                             {
                                 XmlNode objXmlProgramNode = objXmlProgramDocument.TryGetNodeByNameOrId(
-                                    "/chummer/programs/program", objXmlProgram["name"]?.InnerText,
+                                    "/chummer/programs/program", objXmlProgram["name"]?.InnerTextViaPool(),
                                     await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
                                 if (objXmlProgramNode != null)
                                 {
@@ -22528,8 +22528,8 @@ namespace Chummer
                         {
                             foreach (XmlNode objXmlSpell in xmlSpellsList)
                             {
-                                string strCategory = objXmlSpell["category"]?.InnerText;
-                                string strName = objXmlSpell["name"].InnerText;
+                                string strCategory = objXmlSpell["category"]?.InnerTextViaPool();
+                                string strName = objXmlSpell["name"].InnerTextViaPool();
                                 // Make sure the Spell has not already been added to the character.
                                 if (await CharacterObject.Spells
                                         .AnyAsync(x => x.Name == strName && x.Category == strCategory, token)
@@ -22543,7 +22543,7 @@ namespace Chummer
                                 if (objXmlSpellNode == null)
                                     continue;
 
-                                string strForceValue = objXmlSpell.Attributes?["select"]?.InnerText ?? string.Empty;
+                                string strForceValue = objXmlSpell.Attributes?["select"]?.InnerTextViaPool() ?? string.Empty;
                                 Spell objSpell = new Spell(CharacterObject);
                                 try
                                 {
@@ -22571,13 +22571,13 @@ namespace Chummer
                         {
                             foreach (XmlNode objXmlSpirit in xmlSpiritsList)
                             {
-                                int.TryParse(objXmlSpirit["force"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intForce);
-                                int.TryParse(objXmlSpirit["services"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intServices);
+                                int.TryParse(objXmlSpirit["force"]?.InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intForce);
+                                int.TryParse(objXmlSpirit["services"]?.InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intServices);
                                 Spirit objSpirit = new Spirit(CharacterObject);
                                 try
                                 {
                                     await objSpirit.SetEntityTypeAsync(SpiritType.Spirit, token).ConfigureAwait(false);
-                                    await objSpirit.SetNameAsync(objXmlSpirit["name"].InnerText, token).ConfigureAwait(false);
+                                    await objSpirit.SetNameAsync(objXmlSpirit["name"].InnerTextViaPool(), token).ConfigureAwait(false);
                                     await objSpirit.SetForceAsync(intForce, token).ConfigureAwait(false);
                                     await objSpirit.SetServicesOwedAsync(intServices, token).ConfigureAwait(false);
                                     await CharacterObject.Spirits.AddAsync(objSpirit, token).ConfigureAwait(false);
@@ -22611,7 +22611,7 @@ namespace Chummer
                     {
                         // Create the Lifestyle.
                         XmlNode objXmlLifestyleNode = objXmlLifestyleDocument.TryGetNodeByNameOrId(
-                            "/chummer/lifestyles/lifestyle", objXmlLifestyle["baselifestyle"].InnerText);
+                            "/chummer/lifestyles/lifestyle", objXmlLifestyle["baselifestyle"].InnerTextViaPool());
                         if (objXmlLifestyleNode == null)
                             continue;
                         Lifestyle objLifestyle = new Lifestyle(CharacterObject);
@@ -22619,12 +22619,12 @@ namespace Chummer
                         {
                             await objLifestyle.CreateAsync(objXmlLifestyleNode, token).ConfigureAwait(false);
                             // This is an Advanced Lifestyle, so build it manually.
-                            objLifestyle.CustomName = objXmlLifestyle["name"]?.InnerText ?? string.Empty;
-                            int.TryParse(objXmlLifestyle["comforts"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intComforts);
+                            objLifestyle.CustomName = objXmlLifestyle["name"]?.InnerTextViaPool() ?? string.Empty;
+                            int.TryParse(objXmlLifestyle["comforts"]?.InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intComforts);
                             objLifestyle.Comforts = intComforts;
-                            int.TryParse(objXmlLifestyle["security"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intSecurity);
+                            int.TryParse(objXmlLifestyle["security"]?.InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intSecurity);
                             objLifestyle.Security = intSecurity;
-                            int.TryParse(objXmlLifestyle["area"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intArea);
+                            int.TryParse(objXmlLifestyle["area"]?.InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intArea);
                             objLifestyle.Area = intArea;
 
                             foreach (XmlNode objXmlQuality in objXmlLifestyle.SelectNodes("qualities/quality"))
@@ -22655,7 +22655,7 @@ namespace Chummer
                 }
 
                 // Update NuyenBP.
-                string strNuyenBP = objXmlKit["nuyenbp"]?.InnerText;
+                string strNuyenBP = objXmlKit["nuyenbp"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strNuyenBP)
                     && decimal.TryParse(strNuyenBP, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                         out decimal decAmount))
@@ -22678,7 +22678,7 @@ namespace Chummer
                     foreach (XmlNode objXmlArmor in xmlArmors.SelectNodes("armor"))
                     {
                         XmlNode objXmlArmorNode = objXmlArmorDocument.TryGetNodeByNameOrId(
-                            "/chummer/armors/armor", objXmlArmor["name"].InnerText,
+                            "/chummer/armors/armor", objXmlArmor["name"].InnerTextViaPool(),
                             await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
                         if (objXmlArmorNode == null)
                             continue;
@@ -22686,7 +22686,7 @@ namespace Chummer
                         List<Weapon> lstWeapons = new List<Weapon>(1);
                         try
                         {
-                            int.TryParse(objXmlArmor["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
+                            int.TryParse(objXmlArmor["rating"]?.InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
                             await objArmor.CreateAsync(objXmlArmorNode,
                                 intRating, lstWeapons, false,
                                 blnCreateChildren, token: token).ConfigureAwait(false);
@@ -22696,7 +22696,7 @@ namespace Chummer
                             foreach (XmlNode objXmlMod in objXmlArmor.SelectNodes("mods/mod"))
                             {
                                 XmlNode objXmlModNode = objXmlArmorDocument.TryGetNodeByNameOrId(
-                                    "/chummer/mods/mod", objXmlMod["name"].InnerText,
+                                    "/chummer/mods/mod", objXmlMod["name"].InnerTextViaPool(),
                                     await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
                                 if (objXmlModNode != null)
                                 {
@@ -22704,7 +22704,7 @@ namespace Chummer
                                     try
                                     {
                                         if (objXmlMod["rating"] != null)
-                                            int.TryParse(objXmlMod["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intRating);
+                                            int.TryParse(objXmlMod["rating"]?.InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intRating);
                                         await objMod.CreateAsync(objXmlModNode, intRating, lstWeapons, token: token)
                                             .ConfigureAwait(false);
 
@@ -22763,7 +22763,7 @@ namespace Chummer
                             Utils.DoEventsSafe();
 
                             XmlNode objXmlWeaponNode = objXmlWeaponDocument.TryGetNodeByNameOrId(
-                                "/chummer/weapons/weapon", objXmlWeapon["name"].InnerText,
+                                "/chummer/weapons/weapon", objXmlWeapon["name"].InnerTextViaPool(),
                                 await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
                             if (objXmlWeaponNode != null)
                             {
@@ -22780,13 +22780,13 @@ namespace Chummer
                                     foreach (XmlNode objXmlAccessory in objXmlWeapon.SelectNodes("accessories/accessory"))
                                     {
                                         XmlNode objXmlAccessoryNode = objXmlWeaponDocument.TryGetNodeByNameOrId(
-                                            "/chummer/accessories/accessory", objXmlAccessory["name"].InnerText,
+                                            "/chummer/accessories/accessory", objXmlAccessory["name"].InnerTextViaPool(),
                                             await CharacterObjectSettings.BookXPathAsync(token: token)
                                                 .ConfigureAwait(false));
                                         if (objXmlAccessoryNode == null)
                                             continue;
-                                        string strMount = objXmlAccessory["mount"]?.InnerText ?? "Internal";
-                                        string strExtraMount = objXmlAccessory["extramount"]?.InnerText ?? "None";
+                                        string strMount = objXmlAccessory["mount"]?.InnerTextViaPool() ?? "Internal";
+                                        string strExtraMount = objXmlAccessory["extramount"]?.InnerTextViaPool() ?? "None";
                                         WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
                                         try
                                         {
@@ -22814,7 +22814,7 @@ namespace Chummer
                                     if (xmlUnderbarrelNode != null)
                                     {
                                         XmlNode objXmlUnderbarrelNode = objXmlWeaponDocument.TryGetNodeByNameOrId(
-                                            "/chummer/weapons/weapon", objXmlWeapon["underbarrel"].InnerText,
+                                            "/chummer/weapons/weapon", objXmlWeapon["underbarrel"].InnerTextViaPool(),
                                             await CharacterObjectSettings.BookXPathAsync(token: token)
                                                 .ConfigureAwait(false));
                                         if (objXmlUnderbarrelNode == null)
@@ -22843,13 +22843,13 @@ namespace Chummer
                                                 {
                                                     XmlNode objXmlAccessoryNode =
                                                         objXmlWeaponDocument.TryGetNodeByNameOrId(
-                                                            "/chummer/accessories/accessory", objXmlAccessory["name"].InnerText,
+                                                            "/chummer/accessories/accessory", objXmlAccessory["name"].InnerTextViaPool(),
                                                             await CharacterObjectSettings.BookXPathAsync(token: token)
                                                                 .ConfigureAwait(false));
                                                     if (objXmlAccessoryNode == null)
                                                         continue;
-                                                    string strMount = objXmlAccessory["mount"]?.InnerText ?? "Internal";
-                                                    string strExtraMount = objXmlAccessory["extramount"]?.InnerText ?? "None";
+                                                    string strMount = objXmlAccessory["mount"]?.InnerTextViaPool() ?? "Internal";
+                                                    string strExtraMount = objXmlAccessory["extramount"]?.InnerTextViaPool() ?? "None";
                                                     WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
                                                     try
                                                     {
@@ -23034,7 +23034,7 @@ namespace Chummer
                             Gear objDefaultSensor = null;
 
                             XmlNode objXmlVehicleNode = objXmlVehicleDocument.TryGetNodeByNameOrId(
-                                "/chummer/vehicles/vehicle", objXmlVehicle["name"].InnerText,
+                                "/chummer/vehicles/vehicle", objXmlVehicle["name"].InnerTextViaPool(),
                                 await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
                             if (objXmlVehicleNode == null)
                                 continue;
@@ -23062,7 +23062,7 @@ namespace Chummer
                                 foreach (XmlNode objXmlMod in objXmlVehicle.SelectNodes("mods/mod"))
                                 {
                                     XmlNode objXmlModNode = objXmlVehicleDocument.TryGetNodeByNameOrId(
-                                        "/chummer/mods/mod", objXmlMod["name"].InnerText,
+                                        "/chummer/mods/mod", objXmlMod["name"].InnerTextViaPool(),
                                         await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
                                     if (objXmlModNode == null)
                                         continue;
@@ -23114,7 +23114,7 @@ namespace Chummer
                                     {
                                         List<Weapon> lstSubWeapons = new List<Weapon>(1);
                                         XmlNode objXmlWeaponNode = objXmlWeaponDocument.TryGetNodeByNameOrId(
-                                            "/chummer/weapons/weapon", objXmlWeapon["name"].InnerText,
+                                            "/chummer/weapons/weapon", objXmlWeapon["name"].InnerTextViaPool(),
                                             await CharacterObjectSettings.BookXPathAsync(token: token)
                                                 .ConfigureAwait(false));
                                         if (objXmlWeaponNode == null)
@@ -23150,13 +23150,13 @@ namespace Chummer
                                             {
                                                 XmlNode objXmlAccessoryNode =
                                                     objXmlWeaponDocument.TryGetNodeByNameOrId(
-                                                        "/chummer/accessories/accessory", objXmlAccessory["name"].InnerText,
+                                                        "/chummer/accessories/accessory", objXmlAccessory["name"].InnerTextViaPool(),
                                                         await CharacterObjectSettings.BookXPathAsync(token: token)
                                                             .ConfigureAwait(false));
                                                 if (objXmlAccessoryNode == null)
                                                     continue;
-                                                string strMount = objXmlAccessory["mount"]?.InnerText ?? "Internal";
-                                                string strExtraMount = objXmlAccessory["extramount"]?.InnerText ?? "None";
+                                                string strMount = objXmlAccessory["mount"]?.InnerTextViaPool() ?? "Internal";
+                                                string strExtraMount = objXmlAccessory["extramount"]?.InnerTextViaPool() ?? "None";
                                                 WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
                                                 try
                                                 {
@@ -23180,7 +23180,7 @@ namespace Chummer
                                             {
                                                 XmlNode objXmlUnderbarrelNode =
                                                     objXmlWeaponDocument.TryGetNodeByNameOrId(
-                                                        "/chummer/weapons/weapon", objXmlWeapon["underbarrel"].InnerText,
+                                                        "/chummer/weapons/weapon", objXmlWeapon["underbarrel"].InnerTextViaPool(),
                                                         await CharacterObjectSettings.BookXPathAsync(token: token)
                                                             .ConfigureAwait(false));
                                                 if (objXmlUnderbarrelNode != null)
@@ -23209,14 +23209,14 @@ namespace Chummer
                                                                      "accessories/accessory"))
                                                         {
                                                             XmlNode objXmlAccessoryNode = objXmlWeaponDocument.TryGetNodeByNameOrId(
-                                                                "/chummer/accessories/accessory", objXmlAccessory["name"].InnerText,
+                                                                "/chummer/accessories/accessory", objXmlAccessory["name"].InnerTextViaPool(),
                                                                 await CharacterObjectSettings.BookXPathAsync(token: token)
                                                                     .ConfigureAwait(false));
                                                             if (objXmlAccessoryNode == null)
                                                                 continue;
-                                                            string strMount = objXmlAccessory["mount"]?.InnerText ?? "Internal";
+                                                            string strMount = objXmlAccessory["mount"]?.InnerTextViaPool() ?? "Internal";
                                                             string strExtraMount =
-                                                                objXmlAccessory["extramount"]?.InnerText ?? "None";
+                                                                objXmlAccessory["extramount"]?.InnerTextViaPool() ?? "None";
                                                             WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
                                                             try
                                                             {
@@ -23876,7 +23876,7 @@ namespace Chummer
                         return;
                     Grade objGrade
                         = await Grade
-                            .ConvertToCyberwareGradeAsync(xmlSuite["grade"]?.InnerText, objSource, CharacterObject,
+                            .ConvertToCyberwareGradeAsync(xmlSuite["grade"]?.InnerTextViaPool(), objSource, CharacterObject,
                                 token).ConfigureAwait(false);
 
                     string strXPathPrefix = strType + "s/" + strType;
@@ -23887,13 +23887,13 @@ namespace Chummer
                         {
                             foreach (XmlNode xmlItem in xmlItemList)
                             {
-                                string strName = xmlItem["name"]?.InnerText;
+                                string strName = xmlItem["name"]?.InnerTextViaPool();
                                 if (string.IsNullOrEmpty(strName))
                                     continue;
                                 XmlNode objXmlCyberware
                                     = objXmlDocument.TryGetNodeByNameOrId(
                                         "/chummer/" + strXPathPrefix, strName);
-                                int.TryParse(xmlItem["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
+                                int.TryParse(xmlItem["rating"]?.InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
 
                                 Cyberware objCyberware
                                     = await CreateSuiteCyberware(xmlItem, objXmlCyberware, objGrade, intRating,
@@ -23922,10 +23922,10 @@ namespace Chummer
                                   bool blnCreateChildren, CancellationToken token = default)
         {
             XmlNode objXmlGearNode = null;
-            string strName = objXmlGear["name"]?.InnerText;
+            string strName = objXmlGear["name"]?.InnerTextViaPool();
             if (!string.IsNullOrEmpty(strName))
             {
-                string strCategory = objXmlGear["category"]?.InnerText;
+                string strCategory = objXmlGear["category"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strCategory))
                     objXmlGearNode = objXmlGearDocument.TryGetNodeByNameOrId(
                         "/chummer/gears/gear", strName.CleanXPath(),
@@ -23940,9 +23940,9 @@ namespace Chummer
             if (objXmlGearNode == null)
                 return null;
 
-            int.TryParse(objXmlGear["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
+            int.TryParse(objXmlGear["rating"]?.InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
             decimal decQty = 1;
-            string strQty = objXmlGear["qty"]?.InnerText;
+            string strQty = objXmlGear["qty"]?.InnerTextViaPool();
             if (!string.IsNullOrEmpty(strQty))
             {
                 decimal.TryParse(strQty, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decQty);
@@ -24052,13 +24052,13 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                Grade objGrade = await Grade.ConvertToCyberwareGradeAsync(xmlCyberware["grade"]?.InnerText,
+                Grade objGrade = await Grade.ConvertToCyberwareGradeAsync(xmlCyberware["grade"]?.InnerTextViaPool(),
                     Improvement.ImprovementSource.Cyberware, CharacterObject, token).ConfigureAwait(false);
 
-                int.TryParse(xmlCyberware["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
+                int.TryParse(xmlCyberware["rating"]?.InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
 
                 Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware;
-                string strName = xmlCyberware["name"]?.InnerText;
+                string strName = xmlCyberware["name"]?.InnerTextViaPool();
                 if (string.IsNullOrEmpty(strName))
                     return;
 
@@ -24410,7 +24410,7 @@ namespace Chummer
                         return;
 
                     // Find the associated Power
-                    string strPower = objXmlArt["power"]?.InnerText;
+                    string strPower = objXmlArt["power"]?.InnerTextViaPool();
                     Power objPower = await CharacterObject.Powers
                                                           .FirstOrDefaultAsync(
                                                               x => x.Name == strPower

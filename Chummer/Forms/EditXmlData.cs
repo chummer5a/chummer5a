@@ -351,7 +351,7 @@ namespace Chummer
 
                     await _objBaseXmlDocument.LoadStandardAsync(strFilePath, true, token: token).ConfigureAwait(false);
                     _blnDirty = false;
-                    _strBaseXmlContent = _objBaseXmlDocument.OuterXml;
+                    _strBaseXmlContent = _objBaseXmlDocument.OuterXmlViaPool();
                     string strText = FormatXml(_strBaseXmlContent);
                     string strTemplate = await GetAmendmentTemplate(token).ConfigureAwait(false);
                     string strDiffPreviewText = await LanguageManager.GetStringAsync("XmlEditor_LoadInstructions", token: token).ConfigureAwait(false);
@@ -426,7 +426,7 @@ namespace Chummer
                     Exception exFromAmend = await ApplyAmendmentOperationsAsync(_objResultXmlDocument, _objAmendmentXmlDocument, token).ConfigureAwait(false);
                     if (exFromAmend == default)
                     {
-                        _strResultXmlContent = _objResultXmlDocument.OuterXml;
+                        _strResultXmlContent = _objResultXmlDocument.OuterXmlViaPool();
                         // Update the UI
                         string strResultText = FormatXml(_strResultXmlContent);
                         await txtResultXml.DoThreadSafeAsync(x => x.Text = strResultText, token).ConfigureAwait(false);

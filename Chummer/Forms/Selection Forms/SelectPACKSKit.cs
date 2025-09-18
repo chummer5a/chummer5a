@@ -898,7 +898,7 @@ namespace Chummer
                                     {
                                         foreach (XmlNode objXmlNode in objXmlNodeList)
                                         {
-                                            if (objXmlNode["name"]?.InnerText != strSelectedKit)
+                                            if (objXmlNode["name"]?.InnerTextViaPool() != strSelectedKit)
                                             {
                                                 // <pack>
                                                 await objWriter.WriteStartElementAsync("pack").ConfigureAwait(false);

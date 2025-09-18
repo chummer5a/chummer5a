@@ -87,7 +87,7 @@ namespace Chummer
             {
                 objNode.TryGetField("guid", Guid.TryParse, out _guiID);
                 objNode.TryGetField("gearid", Guid.TryParse, out _guiGearId);
-                _blnBonded = objNode["bonded"]?.InnerText == bool.TrueString;
+                _blnBonded = objNode["bonded"]?.InnerTextIsTrueString() == true;
                 using (XmlNodeList nodGearList = objNode.SelectNodes("gears/gear"))
                 {
                     if (nodGearList == null)
@@ -122,7 +122,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 objNode.TryGetField("guid", Guid.TryParse, out _guiID);
                 objNode.TryGetField("gearid", Guid.TryParse, out _guiGearId);
-                _blnBonded = objNode["bonded"]?.InnerText == bool.TrueString;
+                _blnBonded = objNode["bonded"]?.InnerTextIsTrueString() == true;
                 using (XmlNodeList nodGearList = objNode.SelectNodes("gears/gear"))
                 {
                     if (nodGearList != null)

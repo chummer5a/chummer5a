@@ -286,7 +286,7 @@ namespace Chummer
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalSettings.InvariantCultureInfo));
             if (_nodBonus != null)
-                objWriter.WriteRaw(_nodBonus.OuterXml);
+                objWriter.WriteRaw(_nodBonus.OuterXmlViaPool());
             else
                 objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteElementString("improvementsource", _eImprovementSource.ToString());
@@ -336,7 +336,7 @@ namespace Chummer
 
             _nodBonus = objNode["bonus"];
             if (objNode["improvementsource"] != null)
-                SourceType = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+                SourceType = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerTextViaPool());
 
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 

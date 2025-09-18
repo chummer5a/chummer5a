@@ -1439,7 +1439,7 @@ namespace Chummer
                     return;
                 }
 
-                strSelectedMetatype = objXmlMetatype["id"]?.InnerText ?? Utils.GuidEmptyString;
+                strSelectedMetatype = objXmlMetatype["id"]?.InnerTextViaPool() ?? Utils.GuidEmptyString;
 
                 System.IAsyncDisposable objLocker2
                     = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -1475,7 +1475,7 @@ namespace Chummer
                         strSelectedMetavariant = "Human";
                     XmlNode objXmlMetavariant
                         = objXmlMetatype.TryGetNodeByNameOrId("metavariants/metavariant", strSelectedMetavariant);
-                    strSelectedMetavariant = objXmlMetavariant?["id"]?.InnerText ?? Utils.GuidEmptyString;
+                    strSelectedMetavariant = objXmlMetavariant?["id"]?.InnerTextViaPool() ?? Utils.GuidEmptyString;
                     int intForce = await nudForce.DoThreadSafeFuncAsync(x => x.Visible ? x.ValueAsInt : 0, token)
                         .ConfigureAwait(false);
 
@@ -1687,7 +1687,7 @@ namespace Chummer
                                                         = new List<string>(xmlRelevantUnlocksNodesList.Count);
                                                     foreach (XmlNode xmlLoopNode in xmlRelevantUnlocksNodesList)
                                                     {
-                                                        string[] astrOptions = xmlLoopNode.InnerText.SplitToPooledArray(out _, ',');
+                                                        string[] astrOptions = xmlLoopNode.InnerTextViaPool().SplitToPooledArray(out _, ',');
                                                         try
                                                         {
                                                             if (!string.IsNullOrEmpty(strSkill1) &&
@@ -1779,7 +1779,7 @@ namespace Chummer
                                         intTemp = 1;
                                     if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intMax))
                                         intMax = Math.Max(await CommonFunctions.ExpressionToIntAsync(
-                                                charNode["magmax"]?.InnerText, intForce,
+                                                charNode["magmax"]?.InnerTextViaPool(), intForce,
                                                 token: token).ConfigureAwait(false),
                                             intTemp);
                                     await _objCharacter.MAG.AssignLimitsAsync(intTemp, intMax, intMax, token)
@@ -1793,7 +1793,7 @@ namespace Chummer
                                         intTemp = 1;
                                     if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxresonance", ref intMax))
                                         intMax = Math.Max(await CommonFunctions.ExpressionToIntAsync(
-                                                charNode["resmax"]?.InnerText, intForce,
+                                                charNode["resmax"]?.InnerTextViaPool(), intForce,
                                                 token: token).ConfigureAwait(false),
                                             intTemp);
                                     await _objCharacter.RES.AssignLimitsAsync(intTemp, intMax, intMax, token)
@@ -1807,7 +1807,7 @@ namespace Chummer
                                         intTemp = 1;
                                     if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxdepth", ref intMax))
                                         intMax = Math.Max(await CommonFunctions.ExpressionToIntAsync(
-                                                charNode["depmax"]?.InnerText, intForce,
+                                                charNode["depmax"]?.InnerTextViaPool(), intForce,
                                                 token: token).ConfigureAwait(false),
                                             intTemp);
                                     await _objCharacter.DEP.AssignLimitsAsync(intTemp, intMax, intMax, token)

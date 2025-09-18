@@ -539,13 +539,13 @@ namespace Chummer.Backend.Equipment
                                    ? ThreadSafeForm<SelectArmorMod>.Get(
                                        () => new SelectArmorMod(_objCharacter, this)
                                        {
-                                           AllowedCategories = objXmlCategoryNode.InnerText,
+                                           AllowedCategories = objXmlCategoryNode.InnerTextViaPool(),
                                            ExcludeGeneralCategory = true
                                        })
                                    : await ThreadSafeForm<SelectArmorMod>.GetAsync(
                                        () => new SelectArmorMod(_objCharacter, this)
                                        {
-                                           AllowedCategories = objXmlCategoryNode.InnerText,
+                                           AllowedCategories = objXmlCategoryNode.InnerTextViaPool(),
                                            ExcludeGeneralCategory = true
                                        }, token).ConfigureAwait(false))
                         {
@@ -632,12 +632,12 @@ namespace Chummer.Backend.Equipment
                         string strForceValue = string.Empty;
                         if (objXmlAttributes != null)
                         {
-                            int.TryParse(objXmlAttributes["rating"]?.InnerText, NumberStyles.Any,
+                            int.TryParse(objXmlAttributes["rating"]?.InnerTextViaPool(), NumberStyles.Any,
                                 GlobalSettings.InvariantCultureInfo, out intRating);
-                            strForceValue = objXmlAttributes["select"]?.InnerText ?? string.Empty;
+                            strForceValue = objXmlAttributes["select"]?.InnerTextViaPool() ?? string.Empty;
                         }
 
-                        XmlNode objXmlMod = objXmlArmorDocument.TryGetNodeByNameOrId("/chummer/mods/mod", objXmlArmorMod.InnerText);
+                        XmlNode objXmlMod = objXmlArmorDocument.TryGetNodeByNameOrId("/chummer/mods/mod", objXmlArmorMod.InnerTextViaPool());
                         ArmorMod objMod = new ArmorMod(_objCharacter);
                         try
                         {
@@ -656,13 +656,13 @@ namespace Chummer.Backend.Equipment
                                 objMod.IncludedInArmor = true;
                                 objMod.ArmorCapacity = "[0]";
                                 objMod.Cost = "0";
-                                string strMaxRating = objXmlAttributes?["maxrating"]?.InnerText;
+                                string strMaxRating = objXmlAttributes?["maxrating"]?.InnerTextViaPool();
                                 //If maxrating is being specified, we're intentionally bypassing the normal maximum rating. Set the maxrating first, then the rating again.
                                 if (!string.IsNullOrEmpty(strMaxRating))
                                 {
                                     objMod.MaxRating = strMaxRating;
                                     int intDummy = intRating;
-                                    string strOverrideRating = objXmlAttributes["rating"]?.InnerText;
+                                    string strOverrideRating = objXmlAttributes["rating"]?.InnerTextViaPool();
                                     if (!string.IsNullOrEmpty(strOverrideRating))
                                         int.TryParse(strOverrideRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                             out intDummy);
@@ -683,9 +683,9 @@ namespace Chummer.Backend.Equipment
                                 string strLoopMaximumRating = string.Empty;
                                 if (objXmlAttributes != null)
                                 {
-                                    int.TryParse(objXmlAttributes["rating"]?.InnerText, NumberStyles.Any,
+                                    int.TryParse(objXmlAttributes["rating"]?.InnerTextViaPool(), NumberStyles.Any,
                                         GlobalSettings.InvariantCultureInfo, out intLoopRating);
-                                    strLoopMaximumRating = objXmlAttributes["maxrating"]?.InnerText ?? string.Empty;
+                                    strLoopMaximumRating = objXmlAttributes["maxrating"]?.InnerTextViaPool() ?? string.Empty;
                                 }
                                 objMod.Name = _strName;
                                 objMod.Category = "Features";
@@ -940,11 +940,11 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteEndElement();
             }
             if (_nodBonus != null)
-                objWriter.WriteRaw(_nodBonus.OuterXml);
+                objWriter.WriteRaw(_nodBonus.OuterXmlViaPool());
             else
                 objWriter.WriteElementString("bonus", string.Empty);
             if (_nodWirelessBonus != null)
-                objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
+                objWriter.WriteRaw(_nodWirelessBonus.OuterXmlViaPool());
             else
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
             objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
@@ -1002,7 +1002,7 @@ namespace Chummer.Backend.Equipment
                 {
                     _guiID = Guid.NewGuid();
                 }
-                string strLocation = objNode["location"]?.InnerText;
+                string strLocation = objNode["location"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strLocation))
                 {
                     if (blnSync)
@@ -3503,7 +3503,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public void RefreshWirelessBonuses()
         {
-            if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
+            if (!WirelessBonus.IsNullOrInnerTextIsEmpty())
             {
                 if (WirelessOn && Equipped)
                 {
@@ -3553,7 +3553,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task RefreshWirelessBonusesAsync(CancellationToken token = default)
         {
-            if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
+            if (!WirelessBonus.IsNullOrInnerTextIsEmpty())
             {
                 if (WirelessOn && Equipped)
                 {

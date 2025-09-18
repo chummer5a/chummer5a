@@ -104,7 +104,7 @@ namespace Chummer
                 foreach (XmlNode objXmlGear in xmlVehicleList)
                 {
                     pgbProgress.PerformStep();
-                    string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
+                    string strName = objXmlGear["name"]?.InnerTextViaPool() ?? objXmlGear["id"]?.InnerTextViaPool();
                     if (string.IsNullOrEmpty(strName))
                         continue;
                     Utils.DoEventsSafe();
@@ -148,7 +148,7 @@ namespace Chummer
                 foreach (XmlNode objXmlGear in xmlVehicleModsList)
                 {
                     pgbProgress.PerformStep();
-                    string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
+                    string strName = objXmlGear["name"]?.InnerTextViaPool() ?? objXmlGear["id"]?.InnerTextViaPool();
                     if (string.IsNullOrEmpty(strName))
                         continue;
                     Utils.DoEventsSafe();
@@ -216,7 +216,7 @@ namespace Chummer
                 foreach (XmlNode objXmlGear in xmlWeaponList)
                 {
                     pgbProgress.PerformStep();
-                    string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
+                    string strName = objXmlGear["name"]?.InnerTextViaPool() ?? objXmlGear["id"]?.InnerTextViaPool();
                     if (string.IsNullOrEmpty(strName))
                         continue;
                     Utils.DoEventsSafe();
@@ -260,7 +260,7 @@ namespace Chummer
                 foreach (XmlNode objXmlGear in xmlAccessoryList)
                 {
                     pgbProgress.PerformStep();
-                    string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
+                    string strName = objXmlGear["name"]?.InnerTextViaPool() ?? objXmlGear["id"]?.InnerTextViaPool();
                     if (string.IsNullOrEmpty(strName))
                         continue;
                     Utils.DoEventsSafe();
@@ -316,7 +316,7 @@ namespace Chummer
                 foreach (XmlNode objXmlGear in xmlArmorList)
                 {
                     pgbProgress.PerformStep();
-                    string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
+                    string strName = objXmlGear["name"]?.InnerTextViaPool() ?? objXmlGear["id"]?.InnerTextViaPool();
                     if (string.IsNullOrEmpty(strName))
                         continue;
                     Utils.DoEventsSafe();
@@ -369,7 +369,7 @@ namespace Chummer
                 foreach (XmlNode objXmlGear in xmlArmorModsList)
                 {
                     pgbProgress.PerformStep();
-                    string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
+                    string strName = objXmlGear["name"]?.InnerTextViaPool() ?? objXmlGear["id"]?.InnerTextViaPool();
                     if (string.IsNullOrEmpty(strName))
                         continue;
                     Utils.DoEventsSafe();
@@ -433,7 +433,7 @@ namespace Chummer
                     foreach (XmlNode objXmlGear in xmlGearList)
                     {
                         pgbProgress.PerformStep();
-                        string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
+                        string strName = objXmlGear["name"]?.InnerTextViaPool() ?? objXmlGear["id"]?.InnerTextViaPool();
                         if (string.IsNullOrEmpty(strName))
                             continue;
                         Utils.DoEventsSafe();
@@ -508,7 +508,7 @@ namespace Chummer
                     foreach (XmlNode objXmlGear in xmlGearList)
                     {
                         pgbProgress.PerformStep();
-                        string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
+                        string strName = objXmlGear["name"]?.InnerTextViaPool() ?? objXmlGear["id"]?.InnerTextViaPool();
                         if (string.IsNullOrEmpty(strName))
                             continue;
                         Utils.DoEventsSafe();
@@ -581,7 +581,7 @@ namespace Chummer
                     foreach (XmlNode objXmlGear in xmlQualitiesList)
                     {
                         pgbProgress.PerformStep();
-                        string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
+                        string strName = objXmlGear["name"]?.InnerTextViaPool() ?? objXmlGear["id"]?.InnerTextViaPool();
                         if (string.IsNullOrEmpty(strName))
                             continue;
                         Utils.DoEventsSafe();
@@ -648,7 +648,7 @@ namespace Chummer
                     foreach (XmlNode objXmlMetatype in xmlMetatypeList)
                     {
                         pgbProgress.PerformStep();
-                        string strName = objXmlMetatype["name"]?.InnerText ?? objXmlMetatype["id"]?.InnerText;
+                        string strName = objXmlMetatype["name"]?.InnerTextViaPool() ?? objXmlMetatype["id"]?.InnerTextViaPool();
                         if (string.IsNullOrEmpty(strName))
                             continue;
                         Utils.DoEventsSafe();
@@ -665,142 +665,142 @@ namespace Chummer
                             if (strFile != "critters.xml" || strName == "Ally Spirit")
                             {
                                 _objCharacter.BOD.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["bodmax"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["bodaug"].InnerText, intForce));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["bodmax"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["bodaug"].InnerTextViaPool(), intForce));
                                 _objCharacter.AGI.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["agimax"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["agiaug"].InnerText, intForce));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["agimax"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["agiaug"].InnerTextViaPool(), intForce));
                                 _objCharacter.REA.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["reamax"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["reaaug"].InnerText, intForce));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["reamax"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["reaaug"].InnerTextViaPool(), intForce));
                                 _objCharacter.STR.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["strmax"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["straug"].InnerText, intForce));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["strmax"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["straug"].InnerTextViaPool(), intForce));
                                 _objCharacter.CHA.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["chamax"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["chaaug"].InnerText, intForce));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["chamax"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["chaaug"].InnerTextViaPool(), intForce));
                                 _objCharacter.INT.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["intmax"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["intaug"].InnerText, intForce));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["intmax"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["intaug"].InnerTextViaPool(), intForce));
                                 _objCharacter.LOG.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["logmax"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["logaug"].InnerText, intForce));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["logmax"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["logaug"].InnerTextViaPool(), intForce));
                                 _objCharacter.WIL.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["wilmax"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["wilaug"].InnerText, intForce));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["wilmax"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["wilaug"].InnerTextViaPool(), intForce));
                                 _objCharacter.MAG.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmax"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magaug"].InnerText, intForce));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmax"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magaug"].InnerTextViaPool(), intForce));
                                 _objCharacter.MAGAdept.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmax"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magaug"].InnerText, intForce));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmax"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magaug"].InnerTextViaPool(), intForce));
                                 _objCharacter.RES.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["resmax"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["resaug"].InnerText, intForce));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["resmax"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["resaug"].InnerTextViaPool(), intForce));
                                 _objCharacter.EDG.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["edgmax"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["edgaug"].InnerText, intForce));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["edgmax"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["edgaug"].InnerTextViaPool(), intForce));
                                 _objCharacter.ESS.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["essmin"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["essmax"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["essaug"].InnerText, intForce));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["essmin"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["essmax"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["essaug"].InnerTextViaPool(), intForce));
                                 _objCharacter.DEP.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["depmin"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["depmax"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["depaug"].InnerText, intForce));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["depmin"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["depmax"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["depaug"].InnerTextViaPool(), intForce));
                             }
                             else
                             {
                                 _objCharacter.BOD.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"].InnerText, intForce, -3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"].InnerText, intForce, 3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"].InnerText, intForce, 3));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"].InnerTextViaPool(), intForce, -3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"].InnerTextViaPool(), intForce, 3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"].InnerTextViaPool(), intForce, 3));
                                 _objCharacter.AGI.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"].InnerText, intForce, -3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"].InnerText, intForce, 3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"].InnerText, intForce, 3));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"].InnerTextViaPool(), intForce, -3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"].InnerTextViaPool(), intForce, 3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"].InnerTextViaPool(), intForce, 3));
                                 _objCharacter.REA.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"].InnerText, intForce, -3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"].InnerText, intForce, 3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"].InnerText, intForce, 3));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"].InnerTextViaPool(), intForce, -3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"].InnerTextViaPool(), intForce, 3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"].InnerTextViaPool(), intForce, 3));
                                 _objCharacter.STR.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"].InnerText, intForce, -3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"].InnerText, intForce, 3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"].InnerText, intForce, 3));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"].InnerTextViaPool(), intForce, -3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"].InnerTextViaPool(), intForce, 3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"].InnerTextViaPool(), intForce, 3));
                                 _objCharacter.CHA.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"].InnerText, intForce, -3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"].InnerText, intForce, 3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"].InnerText, intForce, 3));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"].InnerTextViaPool(), intForce, -3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"].InnerTextViaPool(), intForce, 3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"].InnerTextViaPool(), intForce, 3));
                                 _objCharacter.INT.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"].InnerText, intForce, -3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"].InnerText, intForce, 3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"].InnerText, intForce, 3));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"].InnerTextViaPool(), intForce, -3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"].InnerTextViaPool(), intForce, 3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"].InnerTextViaPool(), intForce, 3));
                                 _objCharacter.LOG.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"].InnerText, intForce, -3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"].InnerText, intForce, 3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"].InnerText, intForce, 3));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"].InnerTextViaPool(), intForce, -3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"].InnerTextViaPool(), intForce, 3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"].InnerTextViaPool(), intForce, 3));
                                 _objCharacter.WIL.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"].InnerText, intForce, -3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"].InnerText, intForce, 3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"].InnerText, intForce, 3));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"].InnerTextViaPool(), intForce, -3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"].InnerTextViaPool(), intForce, 3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"].InnerTextViaPool(), intForce, 3));
                                 _objCharacter.MAG.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, -3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, 3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, 3));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerTextViaPool(), intForce, -3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerTextViaPool(), intForce, 3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerTextViaPool(), intForce, 3));
                                 _objCharacter.MAGAdept.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, -3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, 3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, 3));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerTextViaPool(), intForce, -3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerTextViaPool(), intForce, 3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerTextViaPool(), intForce, 3));
                                 _objCharacter.RES.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"].InnerText, intForce, -3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"].InnerText, intForce, 3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"].InnerText, intForce, 3));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"].InnerTextViaPool(), intForce, -3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"].InnerTextViaPool(), intForce, 3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"].InnerTextViaPool(), intForce, 3));
                                 _objCharacter.EDG.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"].InnerText, intForce, -3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"].InnerText, intForce, 3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"].InnerText, intForce, 3));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"].InnerTextViaPool(), intForce, -3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"].InnerTextViaPool(), intForce, 3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"].InnerTextViaPool(), intForce, 3));
                                 _objCharacter.ESS.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["essmin"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["essmax"].InnerText, intForce),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["essaug"].InnerText, intForce));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["essmin"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["essmax"].InnerTextViaPool(), intForce),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["essaug"].InnerTextViaPool(), intForce));
                                 _objCharacter.DEP.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["depmin"].InnerText, intForce, -3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["depmin"].InnerText, intForce, 3),
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["depmin"].InnerText, intForce, 3));
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["depmin"].InnerTextViaPool(), intForce, -3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["depmin"].InnerTextViaPool(), intForce, 3),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["depmin"].InnerTextViaPool(), intForce, 3));
                             }
 
                             /* If we're working with a Critter, set the Attributes to their default values.
                             if (strFile == "critters.xml")
                             {
-                                _objCharacter.BOD.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 0));
-                                _objCharacter.AGI.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, 0));
-                                _objCharacter.REA.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, 0));
-                                _objCharacter.STR.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["strmin"].InnerText, intForce, 0));
-                                _objCharacter.CHA.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["chamin"].InnerText, intForce, 0));
-                                _objCharacter.INT.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["intmin"].InnerText, intForce, 0));
-                                _objCharacter.LOG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["logmin"].InnerText, intForce, 0));
-                                _objCharacter.WIL.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["wilmin"].InnerText, intForce, 0));
-                                _objCharacter.MAG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["magmin"].InnerText, intForce, 0));
-                                _objCharacter.RES.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 0));
-                                _objCharacter.EDG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 0));
-                                _objCharacter.ESS.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0));
-                                _objCharacter.DEP.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 0));
+                                _objCharacter.BOD.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["bodmin"].InnerTextViaPool(), intForce, 0));
+                                _objCharacter.AGI.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["agimin"].InnerTextViaPool(), intForce, 0));
+                                _objCharacter.REA.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["reamin"].InnerTextViaPool(), intForce, 0));
+                                _objCharacter.STR.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["strmin"].InnerTextViaPool(), intForce, 0));
+                                _objCharacter.CHA.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["chamin"].InnerTextViaPool(), intForce, 0));
+                                _objCharacter.INT.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["intmin"].InnerTextViaPool(), intForce, 0));
+                                _objCharacter.LOG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["logmin"].InnerTextViaPool(), intForce, 0));
+                                _objCharacter.WIL.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["wilmin"].InnerTextViaPool(), intForce, 0));
+                                _objCharacter.MAG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["magmin"].InnerTextViaPool(), intForce, 0));
+                                _objCharacter.RES.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["resmin"].InnerTextViaPool(), intForce, 0));
+                                _objCharacter.EDG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["edgmin"].InnerTextViaPool(), intForce, 0));
+                                _objCharacter.ESS.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["essmax"].InnerTextViaPool(), intForce, 0));
+                                _objCharacter.DEP.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["depmin"].InnerTextViaPool(), intForce, 0));
                             }
 
                             // Sprites can never have Physical Attributes or WIL.
-                            if (objXmlMetatype["name"].InnerText.EndsWith("Sprite"))
+                            if (objXmlMetatype["name"].InnerTextViaPool().EndsWith("Sprite"))
                             {
                                 _objCharacter.BOD.AssignLimits("0", "0", "0");
                                 _objCharacter.AGI.AssignLimits("0", "0", "0");
@@ -809,12 +809,12 @@ namespace Chummer
                             }
 
                             _objCharacter.Metatype = strName;
-                            _objCharacter.MetatypeCategory = objXmlMetatype["category"].InnerText;
+                            _objCharacter.MetatypeCategory = objXmlMetatype["category"].InnerTextViaPool();
                             _objCharacter.Metavariant = string.Empty;
                             _objCharacter.MetatypeBP = 400;
 
                             if (objXmlMetatype["movement"] != null)
-                                _objCharacter.Movement = objXmlMetatype["movement"].InnerText;
+                                _objCharacter.Movement = objXmlMetatype["movement"].InnerTextViaPool();
                             // Load the Qualities file.
                             XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
 
@@ -825,12 +825,12 @@ namespace Chummer
                             // Create the Qualities that come with the Metatype.
                             foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/positive/quality"))
                             {
-                                XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlQualityItem.InnerText.CleanXPath() + ']');
+                                XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlQualityItem.InnerTextViaPool().CleanXPath() + ']');
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
                                 Quality objQuality = new Quality(_objCharacter);
                                 string strForceValue = string.Empty;
                                 if (objXmlQualityItem.Attributes["select"] != null)
-                                    strForceValue = objXmlQualityItem.Attributes["select"].InnerText;
+                                    strForceValue = objXmlQualityItem.Attributes["select"].InnerTextViaPool();
                                 QualitySource objSource = new QualitySource();
                                 objSource = QualitySource.Metatype;
                                 if (objXmlQualityItem.Attributes["removable"] != null)
@@ -840,12 +840,12 @@ namespace Chummer
                             }
                             foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/negative/quality"))
                             {
-                                XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlQualityItem.InnerText.CleanXPath() + ']');
+                                XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlQualityItem.InnerTextViaPool().CleanXPath() + ']');
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
                                 Quality objQuality = new Quality(_objCharacter);
                                 string strForceValue = string.Empty;
                                 if (objXmlQualityItem.Attributes["select"] != null)
-                                    strForceValue = objXmlQualityItem.Attributes["select"].InnerText;
+                                    strForceValue = objXmlQualityItem.Attributes["select"].InnerTextViaPool();
                                 QualitySource objSource = new QualitySource();
                                 objSource = QualitySource.Metatype;
                                 if (objXmlQualityItem.Attributes["removable"] != null)
@@ -874,15 +874,15 @@ namespace Chummer
                             objXmlDocument = XmlManager.Load("critterpowers.xml");
                             foreach (XmlNode objXmlPower in objXmlCritter.SelectNodes("powers/power"))
                             {
-                                XmlNode objXmlCritterPower = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", objXmlPower.InnerText);
+                                XmlNode objXmlCritterPower = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", objXmlPower.InnerTextViaPool());
                                 CritterPower objPower = new CritterPower(_objCharacter);
                                 try
                                 {
-                                    string strForcedValue = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
+                                    string strForcedValue = objXmlPower.Attributes?["select"]?.InnerTextViaPool() ?? string.Empty;
                                     int intRating = 0;
 
                                     if (objXmlPower.Attributes["rating"] != null)
-                                        intRating = CommonFunctions.ExpressionToInt(objXmlPower.Attributes["rating"].InnerText, intForce, 0, 0);
+                                        intRating = CommonFunctions.ExpressionToInt(objXmlPower.Attributes["rating"].InnerTextViaPool(), intForce, 0, 0);
 
                                     objPower.Create(objXmlCritterPower, intRating, strForcedValue);
                                     _objCharacter.CritterPowers.Add(objPower);
@@ -897,37 +897,38 @@ namespace Chummer
                             // Set the Skill Ratings for the Critter.
                             foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/skill"))
                             {
-                                if (ExoticSkill.IsExoticSkillName(_objCharacter, objXmlSkill.InnerText))
+                                string strInnerText = objXmlSkill.InnerTextViaPool();
+                                if (ExoticSkill.IsExoticSkillName(_objCharacter, strInnerText))
                                 {
                                     //Skill objExotic = new Skill(_objCharacter);
                                     //objExotic.ExoticSkill = true;
                                     //objExotic.Attribute = "AGI";
                                     //if (objXmlSkill.Attributes["spec"] != null)
                                     //{
-                                    //SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
+                                    //SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerTextViaPool());
                                     //objExotic.Specializations.Add(objSpec);
                                     //}
-                                    //if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0)) > 6)
-                                    //    objExotic.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
-                                    //objExotic.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
-                                    //objExotic.Name = objXmlSkill.InnerText;
+                                    //if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerTextViaPool(), Convert.ToInt32(intForce), 0)) > 6)
+                                    //    objExotic.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerTextViaPool(), Convert.ToInt32(intForce), 0));
+                                    //objExotic.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerTextViaPool(), Convert.ToInt32(intForce), 0));
+                                    //objExotic.Name = objXmlSkill.InnerTextViaPool();
                                     //_objCharacter.Skills.Add(objExotic);
                                 }
                                 else
                                 {
                                     _objCharacter.SkillsSection.Skills.ForEachWithBreak(objSkill =>
                                     {
-                                        if (objSkill.Name == objXmlSkill.InnerText)
+                                        if (objSkill.Name == strInnerText)
                                         {
                                             if (objXmlSkill.Attributes?["spec"] != null)
                                             {
-                                                //SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
+                                                //SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerTextViaPool());
                                                 //objSkill.Specializations.Add(objSpec);
                                             }
 
-                                            //if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0)) > 6)
-                                            //    objSkill.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
-                                            //objSkill.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
+                                            //if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerTextViaPool(), Convert.ToInt32(intForce), 0)) > 6)
+                                            //    objSkill.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerTextViaPool(), Convert.ToInt32(intForce), 0));
+                                            //objSkill.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerTextViaPool(), Convert.ToInt32(intForce), 0));
                                             return false;
                                         }
 
@@ -942,10 +943,10 @@ namespace Chummer
                             //{
                             //    foreach (SkillGroup objSkill in _objCharacter.SkillGroups)
                             //    {
-                            //        if (objSkill.Name == objXmlSkill.InnerText)
+                            //        if (objSkill.Name == objXmlSkill.InnerTextViaPool())
                             //        {
-                            //            objSkill.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
-                            //            objSkill.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
+                            //            objSkill.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerTextViaPool(), Convert.ToInt32(intForce), 0));
+                            //            objSkill.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerTextViaPool(), Convert.ToInt32(intForce), 0));
                             //            break;
                             //        }
                             //    }
@@ -955,17 +956,17 @@ namespace Chummer
                             //foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/knowledge"))
                             //{
                             //    Skill objKnowledge = new Skill(_objCharacter);
-                            //    objKnowledge.Name = objXmlSkill.InnerText;
+                            //    objKnowledge.Name = objXmlSkill.InnerTextViaPool();
                             //    objKnowledge.KnowledgeSkill = true;
                             //    if (objXmlSkill.Attributes["spec"] != null)
                             //                   {
-                            //                       //SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
+                            //                       //SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerTextViaPool());
                             //                       //objKnowledge.Specializations.Add(objSpec);
                             //                   }
-                            //    objKnowledge.SkillCategory = objXmlSkill.Attributes["category"].InnerText;
-                            //    //if (Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText) > 6)
-                            //    //    objKnowledge.RatingMaximum = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
-                            //    //objKnowledge.Rating = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
+                            //    objKnowledge.SkillCategory = objXmlSkill.Attributes["category"].InnerTextViaPool();
+                            //    //if (Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerTextViaPool()) > 6)
+                            //    //    objKnowledge.RatingMaximum = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerTextViaPool());
+                            //    //objKnowledge.Rating = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerTextViaPool());
                             //    _objCharacter.Skills.Add(objKnowledge);
                             //}
 
@@ -994,8 +995,8 @@ namespace Chummer
                             XmlDocument objXmlProgramDocument = XmlManager.Load("complexforms.xml");
                             foreach (XmlNode objXmlComplexForm in objXmlCritter.SelectNodes("complexforms/complexform"))
                             {
-                                string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
-                                XmlNode objXmlComplexFormData = objXmlProgramDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexform", objXmlComplexForm.InnerText);
+                                string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerTextViaPool() ?? string.Empty;
+                                XmlNode objXmlComplexFormData = objXmlProgramDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexform", objXmlComplexForm.InnerTextViaPool());
                                 ComplexForm objComplexForm = new ComplexForm(_objCharacter);
                                 try
                                 {
@@ -1015,9 +1016,9 @@ namespace Chummer
                             {
                                 int intRating = 0;
                                 if (objXmlGear.Attributes["rating"] != null)
-                                    intRating = CommonFunctions.ExpressionToInt(objXmlGear.Attributes["rating"].InnerText, intForce, 0, 0);
-                                string strForceValue = objXmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
-                                XmlNode objXmlGearItem = objXmlGearDocument.TryGetNodeByNameOrId("/chummer/gears/gear", objXmlGear.InnerText);
+                                    intRating = CommonFunctions.ExpressionToInt(objXmlGear.Attributes["rating"].InnerTextViaPool(), intForce, 0, 0);
+                                string strForceValue = objXmlGear.Attributes?["select"]?.InnerTextViaPool() ?? string.Empty;
+                                XmlNode objXmlGearItem = objXmlGearDocument.TryGetNodeByNameOrId("/chummer/gears/gear", objXmlGear.InnerTextViaPool());
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
                                 Gear objGear = new Gear(_objCharacter);
                                 try

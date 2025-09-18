@@ -1602,16 +1602,17 @@ namespace Chummer
         public static void SetClipboard(XmlDocument value, ClipboardContentType eType, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            string strNewOuterXml = value.OuterXmlViaPool();
             using (_objClipboardLocker.EnterReadLock(token))
             {
                 token.ThrowIfCancellationRequested();
-                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXml == value.OuterXml)
+                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool() == strNewOuterXml)
                     return;
             }
             using (_objClipboardLocker.EnterUpgradeableReadLock(token))
             {
                 token.ThrowIfCancellationRequested();
-                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXml == value.OuterXml)
+                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool() == strNewOuterXml)
                     return;
 
                 using (_objClipboardLocker.EnterWriteLock(token))
@@ -1652,11 +1653,12 @@ namespace Chummer
         public static async Task SetClipboardAsync(XmlNode value, ClipboardContentType eType, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            string strNewOuterXml = value.OuterXmlViaPool();
             IAsyncDisposable objLocker = await _objClipboardLocker.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXml == value.OuterXml)
+                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool() == strNewOuterXml)
                     return;
             }
             finally
@@ -1667,7 +1669,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXml == value.OuterXml)
+                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool() == strNewOuterXml)
                     return;
 
                 IAsyncDisposable objLocker2 = await _objClipboardLocker.EnterWriteLockAsync(token).ConfigureAwait(false);

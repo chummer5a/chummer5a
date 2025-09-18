@@ -752,7 +752,7 @@ namespace Chummer.Backend.Equipment
             if (xmlNode == null)
                 throw new ArgumentNullException(nameof(xmlNode));
             XmlDocument xmlDoc = _objCharacter.LoadData("vehicles.xml");
-            string strSize = xmlNode["size"]?.InnerText;
+            string strSize = xmlNode["size"]?.InnerTextViaPool();
             if (string.IsNullOrEmpty(strSize))
                 return;
             XmlNode xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmounts/weaponmount", strSize, "category = \"Size\"");
@@ -760,7 +760,7 @@ namespace Chummer.Backend.Equipment
             {
                 Create(xmlDataNode);
 
-                string strFlexibility = xmlNode["flexibility"]?.InnerText;
+                string strFlexibility = xmlNode["flexibility"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strFlexibility))
                 {
                     xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmounts/weaponmount", strFlexibility, "category = \"Flexibility\"");
@@ -773,7 +773,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                string strControl = xmlNode["control"]?.InnerText;
+                string strControl = xmlNode["control"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strControl))
                 {
                     xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmounts/weaponmount", strControl, "category = \"Control\"");
@@ -786,7 +786,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                string strVisibility = xmlNode["visibility"]?.InnerText;
+                string strVisibility = xmlNode["visibility"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strVisibility))
                 {
                     xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmounts/weaponmount", strVisibility, "category = \"Visibility\"");
@@ -799,8 +799,8 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                _strLocation = xmlNode["location"]?.InnerText ?? string.Empty;
-                _strAllowedWeapons = xmlNode["allowedweapons"]?.InnerText ?? string.Empty;
+                _strLocation = xmlNode["location"]?.InnerTextViaPool() ?? string.Empty;
+                _strAllowedWeapons = xmlNode["allowedweapons"]?.InnerTextViaPool() ?? string.Empty;
                 xmlDataNode = xmlNode["mods"];
                 if (xmlDataNode == null)
                     return;
@@ -814,7 +814,7 @@ namespace Chummer.Backend.Equipment
                             try
                             {
                                 objMod.IncludedInVehicle = true;
-                                xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmountmods/mod", xmlModNode.InnerText);
+                                xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmountmods/mod", xmlModNode.InnerTextViaPool());
                                 objMod.Load(xmlDataNode);
                                 Mods.Add(objMod);
                             }
@@ -840,7 +840,7 @@ namespace Chummer.Backend.Equipment
             if (xmlNode == null)
                 throw new ArgumentNullException(nameof(xmlNode));
             XmlDocument xmlDoc = await _objCharacter.LoadDataAsync("vehicles.xml", token: token).ConfigureAwait(false);
-            string strSize = xmlNode["size"]?.InnerText;
+            string strSize = xmlNode["size"]?.InnerTextViaPool();
             if (string.IsNullOrEmpty(strSize))
                 return;
             XmlNode xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmounts/weaponmount", strSize, "category = \"Size\"");
@@ -848,7 +848,7 @@ namespace Chummer.Backend.Equipment
             {
                 await CreateAsync(xmlDataNode, token).ConfigureAwait(false);
 
-                string strFlexibility = xmlNode["flexibility"]?.InnerText;
+                string strFlexibility = xmlNode["flexibility"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strFlexibility))
                 {
                     xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmounts/weaponmount", strFlexibility, "category = \"Flexibility\"");
@@ -861,7 +861,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                string strControl = xmlNode["control"]?.InnerText;
+                string strControl = xmlNode["control"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strControl))
                 {
                     xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmounts/weaponmount", strControl, "category = \"Control\"");
@@ -874,7 +874,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                string strVisibility = xmlNode["visibility"]?.InnerText;
+                string strVisibility = xmlNode["visibility"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strVisibility))
                 {
                     xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmounts/weaponmount", strVisibility, "category = \"Visibility\"");
@@ -887,8 +887,8 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                _strLocation = xmlNode["location"]?.InnerText ?? string.Empty;
-                _strAllowedWeapons = xmlNode["allowedweapons"]?.InnerText ?? string.Empty;
+                _strLocation = xmlNode["location"]?.InnerTextViaPool() ?? string.Empty;
+                _strAllowedWeapons = xmlNode["allowedweapons"]?.InnerTextViaPool() ?? string.Empty;
                 xmlDataNode = xmlNode["mods"];
                 if (xmlDataNode == null)
                     return;
@@ -902,7 +902,7 @@ namespace Chummer.Backend.Equipment
                             try
                             {
                                 await objMod.SetIncludedInVehicleAsync(true, token).ConfigureAwait(false);
-                                xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmountmods/mod", xmlModNode.InnerText);
+                                xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmountmods/mod", xmlModNode.InnerTextViaPool());
                                 await objMod.LoadAsync(xmlDataNode, token: token).ConfigureAwait(false);
                                 await Mods.AddAsync(objMod, token).ConfigureAwait(false);
                             }
@@ -2276,7 +2276,7 @@ namespace Chummer.Backend.Equipment
 
             // Check for a Variable Cost.
             // ReSharper disable once PossibleNullReferenceException
-            _strCost = objXmlMod["cost"]?.InnerText ?? "0";
+            _strCost = objXmlMod["cost"]?.InnerTextViaPool() ?? "0";
             if (_strCost.StartsWith("Variable(", StringComparison.Ordinal))
             {
                 string strFirstHalf = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');

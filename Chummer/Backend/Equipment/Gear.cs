@@ -525,7 +525,7 @@ namespace Chummer.Backend.Equipment
                     // More than one Weapon can be added, so loop through all occurrences.
                     foreach (XmlNode objXmlAddWeapon in xmlWeaponList)
                     {
-                        string strLoopID = objXmlAddWeapon.InnerText;
+                        string strLoopID = objXmlAddWeapon.InnerTextViaPool();
                         XmlNode objXmlWeapon =
                             objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
                                 strLoopID);
@@ -533,7 +533,7 @@ namespace Chummer.Backend.Equipment
                         if (objXmlWeapon != null)
                         {
                             int intAddWeaponRating = 0;
-                            string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerText;
+                            string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerTextViaPool();
                             if (!string.IsNullOrEmpty(strLoopRating))
                             {
                                 strLoopRating = blnSync
@@ -585,7 +585,7 @@ namespace Chummer.Backend.Equipment
                 // Do not apply the Improvements if this is a Focus, unless we're specifically creating a Weapon Focus. This is to avoid creating the Foci's Improvements twice (once when it's first added
                 // to the character which is incorrect, and once when the Focus is actually Bonded).
                 bool blnApply = !((_strCategory == "Foci" || _strCategory == "Metamagic Foci") &&
-                                  !_nodBonus.InnerXml.Contains("selectweapon"));
+                                  !_nodBonus.HasChildWithName("selectweapon"));
 
                 if (blnApply)
                 {
@@ -746,13 +746,13 @@ namespace Chummer.Backend.Equipment
                                         strFilter += '[';
                                         if (xmlChoiceName != null)
                                         {
-                                            strFilter += "name = " + xmlChoiceName.InnerText.CleanXPath();
+                                            strFilter += "name = " + xmlChoiceName.InnerTextViaPool().CleanXPath();
                                             if (xmlChoiceCategory != null)
                                                 strFilter += " and category = "
-                                                             + xmlChoiceCategory.InnerText.CleanXPath();
+                                                             + xmlChoiceCategory.InnerTextViaPool().CleanXPath();
                                         }
                                         else
-                                            strFilter += "category = " + xmlChoiceCategory.InnerText.CleanXPath();
+                                            strFilter += "category = " + xmlChoiceCategory.InnerTextViaPool().CleanXPath();
 
                                         strFilter += ']';
                                     }
@@ -776,7 +776,7 @@ namespace Chummer.Backend.Equipment
                                         continue;
                                     }
 
-                                    string strName = objChoiceNode["name"]?.InnerText ?? string.Empty;
+                                    string strName = objChoiceNode["name"]?.InnerTextViaPool() ?? string.Empty;
                                     string strDisplayName = LanguageManager.GetString(strName, false);
                                     if (string.IsNullOrEmpty(strDisplayName))
                                         strDisplayName = _objCharacter.TranslateExtra(strName);
@@ -785,7 +785,7 @@ namespace Chummer.Backend.Equipment
 
                                 if (lstGears.Count == 0)
                                 {
-                                    if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
+                                    if (objXmlChooseGearNode["required"]?.InnerTextIsTrueString() == true)
                                     {
                                         blnCancelledDialog = true;
                                         break;
@@ -794,7 +794,7 @@ namespace Chummer.Backend.Equipment
                                     continue;
                                 }
 
-                                string strChooseGearNodeName = objXmlChooseGearNode["name"]?.InnerText ?? string.Empty;
+                                string strChooseGearNodeName = objXmlChooseGearNode["name"]?.InnerTextViaPool() ?? string.Empty;
                                 string strFriendlyName = LanguageManager.GetString(strChooseGearNodeName, false);
                                 if (string.IsNullOrEmpty(strFriendlyName))
                                     strFriendlyName = _objCharacter.TranslateExtra(strChooseGearNodeName);
@@ -812,7 +812,7 @@ namespace Chummer.Backend.Equipment
                                     // Make sure the dialogue window was not canceled.
                                     if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                                     {
-                                        if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
+                                        if (objXmlChooseGearNode["required"]?.InnerTextIsTrueString() == true)
                                         {
                                             blnCancelledDialog = true;
                                             break;
@@ -826,7 +826,7 @@ namespace Chummer.Backend.Equipment
 
                                     if (objXmlChosenGear == null)
                                     {
-                                        if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
+                                        if (objXmlChooseGearNode["required"]?.InnerTextIsTrueString() == true)
                                         {
                                             blnCancelledDialog = true;
                                             break;
@@ -864,12 +864,12 @@ namespace Chummer.Backend.Equipment
                 strFilter += '[';
                 if (xmlChildName != null)
                 {
-                    strFilter += "name = " + xmlChildName.InnerText.CleanXPath();
+                    strFilter += "name = " + xmlChildName.InnerTextViaPool().CleanXPath();
                     if (xmlChildCategory != null)
-                        strFilter += " and category = " + xmlChildCategory.InnerText.CleanXPath();
+                        strFilter += " and category = " + xmlChildCategory.InnerTextViaPool().CleanXPath();
                 }
                 else
-                    strFilter += "category = " + xmlChildCategory.InnerText.CleanXPath();
+                    strFilter += "category = " + xmlChildCategory.InnerTextViaPool().CleanXPath();
                 strFilter += ']';
             }
             XmlDocument xmlDocument = xmlChildNode.OwnerDocument ?? _objCharacter.LoadData("gear.xml");
@@ -878,14 +878,14 @@ namespace Chummer.Backend.Equipment
                 return;
             int intChildRating = 0;
             xmlChildNode.TryGetInt32FieldQuickly("rating", ref intChildRating);
-            string strChildForceSource = xmlChildNode["source"]?.InnerText ?? string.Empty;
-            string strChildForcePage = xmlChildNode["page"]?.InnerText ?? string.Empty;
+            string strChildForceSource = xmlChildNode["source"]?.InnerTextViaPool() ?? string.Empty;
+            string strChildForcePage = xmlChildNode["page"]?.InnerTextViaPool() ?? string.Empty;
             XmlAttributeCollection xmlChildNameAttributes = xmlChildName?.Attributes;
-            string strChildForceValue = xmlChildNameAttributes?["select"]?.InnerText ?? string.Empty;
-            bool blnCreateChildren = xmlChildNameAttributes?["createchildren"]?.InnerText != bool.FalseString;
-            bool blnAddChildImprovements = xmlChildNameAttributes?["addimprovements"]?.InnerText != bool.FalseString &&
+            string strChildForceValue = xmlChildNameAttributes?["select"]?.InnerTextViaPool() ?? string.Empty;
+            bool blnCreateChildren = xmlChildNameAttributes?["createchildren"]?.InnerTextViaPool() != bool.FalseString;
+            bool blnAddChildImprovements = xmlChildNameAttributes?["addimprovements"]?.InnerTextViaPool() != bool.FalseString &&
                                            blnAddImprovements;
-            string strChildQty = xmlChildNameAttributes?["qty"]?.InnerText;
+            string strChildQty = xmlChildNameAttributes?["qty"]?.InnerTextViaPool();
             decimal decChildQty;
             if (string.IsNullOrEmpty(strChildQty) || !decimal.TryParse(strChildQty, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decChildQty))
                 decChildQty = 1.0m;
@@ -908,7 +908,7 @@ namespace Chummer.Backend.Equipment
 
                 // Change the Capacity of the child if necessary.
                 if (xmlChildNode["capacity"] != null)
-                    objChild.Capacity = xmlChildNode["capacity"].InnerText;
+                    objChild.Capacity = xmlChildNode["capacity"].InnerTextViaPool();
 
                 objChild.CreateChildren(xmlChildNode, blnAddChildImprovements, blnSkipSelectForms);
             }
@@ -964,13 +964,13 @@ namespace Chummer.Backend.Equipment
                                         strFilter += '[';
                                         if (xmlChoiceName != null)
                                         {
-                                            strFilter += "name = " + xmlChoiceName.InnerText.CleanXPath();
+                                            strFilter += "name = " + xmlChoiceName.InnerTextViaPool().CleanXPath();
                                             if (xmlChoiceCategory != null)
                                                 strFilter += " and category = "
-                                                             + xmlChoiceCategory.InnerText.CleanXPath();
+                                                             + xmlChoiceCategory.InnerTextViaPool().CleanXPath();
                                         }
                                         else
-                                            strFilter += "category = " + xmlChoiceCategory.InnerText.CleanXPath();
+                                            strFilter += "category = " + xmlChoiceCategory.InnerTextViaPool().CleanXPath();
 
                                         strFilter += ']';
                                     }
@@ -994,7 +994,7 @@ namespace Chummer.Backend.Equipment
                                         continue;
                                     }
 
-                                    string strName = objChoiceNode["name"]?.InnerText ?? string.Empty;
+                                    string strName = objChoiceNode["name"]?.InnerTextViaPool() ?? string.Empty;
                                     string strDisplayName = await LanguageManager.GetStringAsync(strName, false, token).ConfigureAwait(false);
                                     if (string.IsNullOrEmpty(strDisplayName))
                                         strDisplayName = await _objCharacter.TranslateExtraAsync(strName, token: token).ConfigureAwait(false);
@@ -1003,7 +1003,7 @@ namespace Chummer.Backend.Equipment
 
                                 if (lstGears.Count == 0)
                                 {
-                                    if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
+                                    if (objXmlChooseGearNode["required"]?.InnerTextIsTrueString() == true)
                                     {
                                         blnCancelledDialog = true;
                                         break;
@@ -1012,7 +1012,7 @@ namespace Chummer.Backend.Equipment
                                     continue;
                                 }
 
-                                string strChooseGearNodeName = objXmlChooseGearNode["name"]?.InnerText ?? string.Empty;
+                                string strChooseGearNodeName = objXmlChooseGearNode["name"]?.InnerTextViaPool() ?? string.Empty;
                                 string strFriendlyName = await LanguageManager.GetStringAsync(strChooseGearNodeName, false, token).ConfigureAwait(false);
                                 if (string.IsNullOrEmpty(strFriendlyName))
                                     strFriendlyName = await _objCharacter.TranslateExtraAsync(strChooseGearNodeName, token: token).ConfigureAwait(false);
@@ -1029,7 +1029,7 @@ namespace Chummer.Backend.Equipment
                                     // Make sure the dialogue window was not canceled.
                                     if (await frmPickItem.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
                                     {
-                                        if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
+                                        if (objXmlChooseGearNode["required"]?.InnerTextIsTrueString() == true)
                                         {
                                             blnCancelledDialog = true;
                                             break;
@@ -1043,7 +1043,7 @@ namespace Chummer.Backend.Equipment
 
                                     if (objXmlChosenGear == null)
                                     {
-                                        if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
+                                        if (objXmlChooseGearNode["required"]?.InnerTextIsTrueString() == true)
                                         {
                                             blnCancelledDialog = true;
                                             break;
@@ -1082,12 +1082,12 @@ namespace Chummer.Backend.Equipment
                 strFilter += '[';
                 if (xmlChildName != null)
                 {
-                    strFilter += "name = " + xmlChildName.InnerText.CleanXPath();
+                    strFilter += "name = " + xmlChildName.InnerTextViaPool().CleanXPath();
                     if (xmlChildCategory != null)
-                        strFilter += " and category = " + xmlChildCategory.InnerText.CleanXPath();
+                        strFilter += " and category = " + xmlChildCategory.InnerTextViaPool().CleanXPath();
                 }
                 else
-                    strFilter += "category = " + xmlChildCategory.InnerText.CleanXPath();
+                    strFilter += "category = " + xmlChildCategory.InnerTextViaPool().CleanXPath();
                 strFilter += ']';
             }
             XmlDocument xmlDocument = xmlChildNode.OwnerDocument ?? await _objCharacter.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
@@ -1096,14 +1096,14 @@ namespace Chummer.Backend.Equipment
                 return;
             int intChildRating = 0;
             xmlChildNode.TryGetInt32FieldQuickly("rating", ref intChildRating);
-            string strChildForceSource = xmlChildNode["source"]?.InnerText ?? string.Empty;
-            string strChildForcePage = xmlChildNode["page"]?.InnerText ?? string.Empty;
+            string strChildForceSource = xmlChildNode["source"]?.InnerTextViaPool() ?? string.Empty;
+            string strChildForcePage = xmlChildNode["page"]?.InnerTextViaPool() ?? string.Empty;
             XmlAttributeCollection xmlChildNameAttributes = xmlChildName?.Attributes;
-            string strChildForceValue = xmlChildNameAttributes?["select"]?.InnerText ?? string.Empty;
-            bool blnCreateChildren = xmlChildNameAttributes?["createchildren"]?.InnerText != bool.FalseString;
-            bool blnAddChildImprovements = xmlChildNameAttributes?["addimprovements"]?.InnerText != bool.FalseString &&
+            string strChildForceValue = xmlChildNameAttributes?["select"]?.InnerTextViaPool() ?? string.Empty;
+            bool blnCreateChildren = xmlChildNameAttributes?["createchildren"]?.InnerTextViaPool() != bool.FalseString;
+            bool blnAddChildImprovements = xmlChildNameAttributes?["addimprovements"]?.InnerTextViaPool() != bool.FalseString &&
                                            blnAddImprovements;
-            string strChildQty = xmlChildNameAttributes?["qty"]?.InnerText;
+            string strChildQty = xmlChildNameAttributes?["qty"]?.InnerTextViaPool();
             decimal decChildQty;
             if (string.IsNullOrEmpty(strChildQty) || !decimal.TryParse(strChildQty, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decChildQty))
                 decChildQty = 1.0m;
@@ -1126,7 +1126,7 @@ namespace Chummer.Backend.Equipment
 
                 // Change the Capacity of the child if necessary.
                 if (xmlChildNode["capacity"] != null)
-                    objChild.Capacity = xmlChildNode["capacity"].InnerText;
+                    objChild.Capacity = xmlChildNode["capacity"].InnerTextViaPool();
 
                 await objChild.CreateChildrenAsync(xmlChildNode, blnAddChildImprovements, blnSkipSelectForms, token).ConfigureAwait(false);
             }
@@ -1155,13 +1155,13 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlGearDataNode;
             List<Gear> lstChildGears = new List<Gear>(1);
             XmlAttributeCollection lstGearAttributes = xmlGearNode.Attributes;
-            if (!int.TryParse(lstGearAttributes?["rating"]?.InnerText, NumberStyles.Any,
+            if (!int.TryParse(lstGearAttributes?["rating"]?.InnerTextViaPool(), NumberStyles.Any,
                     GlobalSettings.InvariantCultureInfo, out int intRating))
             {
-                int.TryParse(xmlGearNode["rating"]?.InnerText, NumberStyles.Any,
+                int.TryParse(xmlGearNode["rating"]?.InnerTextViaPool(), NumberStyles.Any,
                     GlobalSettings.InvariantCultureInfo, out intRating);
             }
-            string strName = xmlGearNode["id"]?.InnerText ?? xmlGearNode["name"]?.InnerText;
+            string strName = xmlGearNode["id"]?.InnerTextViaPool() ?? xmlGearNode["name"]?.InnerTextViaPool();
             if (!string.IsNullOrEmpty(strName))
             {
                 xmlGearDataNode = xmlGearsDocument.TryGetNodeByNameOrId("/chummer/gears/gear", strName);
@@ -1194,23 +1194,23 @@ namespace Chummer.Backend.Equipment
             else
             {
                 xmlGearDataNode =
-                    xmlGearsDocument.TryGetNodeByNameOrId("/chummer/gears/gear", xmlGearNode.InnerText);
+                    xmlGearsDocument.TryGetNodeByNameOrId("/chummer/gears/gear", xmlGearNode.InnerTextViaPool());
             }
 
             if (xmlGearDataNode != null)
             {
-                bool blnConsumeCapacity = lstGearAttributes?["consumecapacity"]?.InnerText == bool.TrueString;
+                bool blnConsumeCapacity = lstGearAttributes?["consumecapacity"]?.InnerTextIsTrueString() == true;
 
-                string strForceValue = lstGearAttributes?["select"]?.InnerText ?? string.Empty;
-                string strQty = lstGearAttributes?["qty"]?.InnerText;
+                string strForceValue = lstGearAttributes?["select"]?.InnerTextViaPool() ?? string.Empty;
+                string strQty = lstGearAttributes?["qty"]?.InnerTextViaPool();
                 if (string.IsNullOrEmpty(strQty) || !decimal.TryParse(strQty, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decQty))
                     decQty = 1.0m;
-                string strMaxRating = lstGearAttributes?["maxrating"]?.InnerText ?? string.Empty;
+                string strMaxRating = lstGearAttributes?["maxrating"]?.InnerTextViaPool() ?? string.Empty;
                 Create(xmlGearDataNode, intRating, lstWeapons, strForceValue, blnAddImprovements, true, blnSkipSelectForms);
 
                 // Change the Capacity of the child if necessary.
                 if (xmlGearNode["capacity"] != null)
-                    Capacity = xmlGearNode["capacity"].InnerText;
+                    Capacity = xmlGearNode["capacity"].InnerTextViaPool();
 
                 if (!blnConsumeCapacity)
                 {
@@ -1267,13 +1267,13 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlGearDataNode;
             List<Gear> lstChildGears = new List<Gear>(1);
             XmlAttributeCollection lstGearAttributes = xmlGearNode.Attributes;
-            if (!int.TryParse(lstGearAttributes?["rating"]?.InnerText, NumberStyles.Any,
+            if (!int.TryParse(lstGearAttributes?["rating"]?.InnerTextViaPool(), NumberStyles.Any,
                     GlobalSettings.InvariantCultureInfo, out int intRating))
             {
-                int.TryParse(xmlGearNode["rating"]?.InnerText, NumberStyles.Any,
+                int.TryParse(xmlGearNode["rating"]?.InnerTextViaPool(), NumberStyles.Any,
                     GlobalSettings.InvariantCultureInfo, out intRating);
             }
-            string strName = xmlGearNode["id"]?.InnerText ?? xmlGearNode["name"]?.InnerText;
+            string strName = xmlGearNode["id"]?.InnerTextViaPool() ?? xmlGearNode["name"]?.InnerTextViaPool();
             if (!string.IsNullOrEmpty(strName))
             {
                 xmlGearDataNode = xmlGearsDocument.TryGetNodeByNameOrId("/chummer/gears/gear", strName);
@@ -1306,23 +1306,23 @@ namespace Chummer.Backend.Equipment
             else
             {
                 xmlGearDataNode =
-                    xmlGearsDocument.TryGetNodeByNameOrId("/chummer/gears/gear", xmlGearNode.InnerText);
+                    xmlGearsDocument.TryGetNodeByNameOrId("/chummer/gears/gear", xmlGearNode.InnerTextViaPool());
             }
 
             if (xmlGearDataNode != null)
             {
-                bool blnConsumeCapacity = lstGearAttributes?["consumecapacity"]?.InnerText == bool.TrueString;
+                bool blnConsumeCapacity = lstGearAttributes?["consumecapacity"]?.InnerTextIsTrueString() == true;
 
-                string strForceValue = lstGearAttributes?["select"]?.InnerText ?? string.Empty;
-                string strQty = lstGearAttributes?["qty"]?.InnerText;
+                string strForceValue = lstGearAttributes?["select"]?.InnerTextViaPool() ?? string.Empty;
+                string strQty = lstGearAttributes?["qty"]?.InnerTextViaPool();
                 if (string.IsNullOrEmpty(strQty) || !decimal.TryParse(strQty, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decQty))
                     decQty = 1.0m;
-                string strMaxRating = lstGearAttributes?["maxrating"]?.InnerText ?? string.Empty;
+                string strMaxRating = lstGearAttributes?["maxrating"]?.InnerTextViaPool() ?? string.Empty;
                 await CreateAsync(xmlGearDataNode, intRating, lstWeapons, strForceValue, blnAddImprovements, true, blnSkipSelectForms, token).ConfigureAwait(false);
 
                 // Change the Capacity of the child if necessary.
                 if (xmlGearNode["capacity"] != null)
-                    Capacity = xmlGearNode["capacity"].InnerText;
+                    Capacity = xmlGearNode["capacity"].InnerTextViaPool();
 
                 if (!blnConsumeCapacity)
                 {
@@ -1571,20 +1571,20 @@ namespace Chummer.Backend.Equipment
             if (_guiWeaponID != Guid.Empty)
                 objWriter.WriteElementString("weaponguid",
                     _guiWeaponID.ToString("D", GlobalSettings.InvariantCultureInfo));
-            if (!string.IsNullOrEmpty(_nodBonus?.InnerXml))
-                objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
+            if (!_nodBonus.IsNullOrInnerTextIsEmpty())
+                objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXmlViaPool() + "</bonus>");
             else
                 objWriter.WriteElementString("bonus", string.Empty);
-            if (!string.IsNullOrEmpty(_nodWirelessBonus?.InnerXml))
-                objWriter.WriteRaw("<wirelessbonus>" + _nodWirelessBonus.InnerXml + "</wirelessbonus>");
+            if (!_nodWirelessBonus.IsNullOrInnerTextIsEmpty())
+                objWriter.WriteRaw("<wirelessbonus>" + _nodWirelessBonus.InnerXmlViaPool() + "</wirelessbonus>");
             else
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
-            if (!string.IsNullOrEmpty(_nodWeaponBonus?.InnerXml))
-                objWriter.WriteRaw("<weaponbonus>" + _nodWeaponBonus.InnerXml + "</weaponbonus>");
+            if (!_nodWeaponBonus.IsNullOrInnerTextIsEmpty())
+                objWriter.WriteRaw("<weaponbonus>" + _nodWeaponBonus.InnerXmlViaPool() + "</weaponbonus>");
             else
                 objWriter.WriteElementString("weaponbonus", string.Empty);
-            if (!string.IsNullOrEmpty(_nodFlechetteWeaponBonus?.InnerXml))
-                objWriter.WriteRaw("<flechetteweaponbonus>" + _nodFlechetteWeaponBonus.InnerXml +
+            if (!_nodFlechetteWeaponBonus.IsNullOrInnerTextIsEmpty())
+                objWriter.WriteRaw("<flechetteweaponbonus>" + _nodFlechetteWeaponBonus.InnerXmlViaPool() +
                                    "</flechetteweaponbonus>");
             else
                 objWriter.WriteElementString("flechetteweaponbonus", string.Empty);
@@ -1886,7 +1886,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            string strLocation = objNode["location"]?.InnerText;
+            string strLocation = objNode["location"]?.InnerTextViaPool();
             if (!string.IsNullOrEmpty(strLocation))
             {
                 if (blnSync)
@@ -4999,15 +4999,15 @@ namespace Chummer.Backend.Equipment
         {
             if (WeaponBonus == null)
                 return string.Empty;
-            string strReturn = WeaponBonus["damagereplace"]?.InnerText ?? "0";
+            string strReturn = WeaponBonus["damagereplace"]?.InnerTextViaPool() ?? "0";
             // Use the damagereplace value if applicable.
             if (strReturn == "0")
             {
                 // Use the damage bonus if available, otherwise use 0.
-                strReturn = WeaponBonus["damage"]?.InnerText ?? "0";
+                strReturn = WeaponBonus["damage"]?.InnerTextViaPool() ?? "0";
 
                 // Attach the type if applicable.
-                strReturn += WeaponBonus["damagetype"]?.InnerText ?? string.Empty;
+                strReturn += WeaponBonus["damagetype"]?.InnerTextViaPool() ?? string.Empty;
 
                 // Translate the string.
                 strReturn = Weapon.ReplaceDamageStrings(strReturn, strLanguage);
@@ -5033,15 +5033,15 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (WeaponBonus == null)
                 return string.Empty;
-            string strReturn = WeaponBonus["damagereplace"]?.InnerText ?? "0";
+            string strReturn = WeaponBonus["damagereplace"]?.InnerTextViaPool() ?? "0";
             // Use the damagereplace value if applicable.
             if (strReturn == "0")
             {
                 // Use the damage bonus if available, otherwise use 0.
-                strReturn = WeaponBonus["damage"]?.InnerText ?? "0";
+                strReturn = WeaponBonus["damage"]?.InnerTextViaPool() ?? "0";
 
                 // Attach the type if applicable.
-                strReturn += WeaponBonus["damagetype"]?.InnerText ?? string.Empty;
+                strReturn += WeaponBonus["damagetype"]?.InnerTextViaPool() ?? string.Empty;
 
                 // Translate the string.
                 strReturn = await Weapon.ReplaceDamageStringsAsync(strReturn, strLanguage, token).ConfigureAwait(false);
@@ -5068,7 +5068,7 @@ namespace Chummer.Backend.Equipment
                     return string.Empty;
             // Use the apreplace value if applicable.
             // Use the ap bonus if available, otherwise use 0.
-            string strReturn = WeaponBonus["apreplace"]?.InnerText ?? WeaponBonus["ap"]?.InnerText ?? "0";
+            string strReturn = WeaponBonus["apreplace"]?.InnerTextViaPool() ?? WeaponBonus["ap"]?.InnerTextViaPool() ?? "0";
 
             // Translate the string.
             strReturn = Weapon.ReplaceStrings(
@@ -5092,7 +5092,7 @@ namespace Chummer.Backend.Equipment
                 return string.Empty;
             // Use the apreplace value if applicable.
             // Use the ap bonus if available, otherwise use 0.
-            string strReturn = WeaponBonus["apreplace"]?.InnerText ?? WeaponBonus["ap"]?.InnerText ?? "0";
+            string strReturn = WeaponBonus["apreplace"]?.InnerTextViaPool() ?? WeaponBonus["ap"]?.InnerTextViaPool() ?? "0";
 
             // Translate the string.
             strReturn = await Weapon
@@ -5120,8 +5120,8 @@ namespace Chummer.Backend.Equipment
                     return string.Empty;
                 // Use the apreplace value if applicable.
                 // Use the ap bonus if available, otherwise use 0.
-                string strReturn = WeaponBonus["accuracyreplace"]?.InnerText
-                                   ?? WeaponBonus["accuracy"]?.InnerText ?? "0";
+                string strReturn = WeaponBonus["accuracyreplace"]?.InnerTextViaPool()
+                                   ?? WeaponBonus["accuracy"]?.InnerTextViaPool() ?? "0";
 
                 // If this does not start with "-", add a "+" to the string.
                 if (!strReturn.StartsWith('-', '+'))
@@ -5195,15 +5195,15 @@ namespace Chummer.Backend.Equipment
         {
             if (FlechetteWeaponBonus == null)
                 return string.Empty;
-            string strReturn = FlechetteWeaponBonus["damagereplace"]?.InnerText ?? "0";
+            string strReturn = FlechetteWeaponBonus["damagereplace"]?.InnerTextViaPool() ?? "0";
             // Use the damagereplace value if applicable.
             if (strReturn == "0")
             {
                 // Use the damage bonus if available, otherwise use 0.
-                strReturn = FlechetteWeaponBonus["damage"]?.InnerText ?? "0";
+                strReturn = FlechetteWeaponBonus["damage"]?.InnerTextViaPool() ?? "0";
 
                 // Attach the type if applicable.
-                strReturn += FlechetteWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
+                strReturn += FlechetteWeaponBonus["damagetype"]?.InnerTextViaPool() ?? string.Empty;
 
                 // Translate the string.
                 strReturn = Weapon.ReplaceDamageStrings(strReturn, strLanguage);
@@ -5229,15 +5229,15 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (FlechetteWeaponBonus == null)
                 return string.Empty;
-            string strReturn = FlechetteWeaponBonus["damagereplace"]?.InnerText ?? "0";
+            string strReturn = FlechetteWeaponBonus["damagereplace"]?.InnerTextViaPool() ?? "0";
             // Use the damagereplace value if applicable.
             if (strReturn == "0")
             {
                 // Use the damage bonus if available, otherwise use 0.
-                strReturn = FlechetteWeaponBonus["damage"]?.InnerText ?? "0";
+                strReturn = FlechetteWeaponBonus["damage"]?.InnerTextViaPool() ?? "0";
 
                 // Attach the type if applicable.
-                strReturn += FlechetteWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
+                strReturn += FlechetteWeaponBonus["damagetype"]?.InnerTextViaPool() ?? string.Empty;
 
                 // Translate the string.
                 strReturn = await Weapon.ReplaceDamageStringsAsync(strReturn, strLanguage, token).ConfigureAwait(false);
@@ -5264,7 +5264,7 @@ namespace Chummer.Backend.Equipment
                 return string.Empty;
             // Use the apreplace value if applicable.
             // Use the ap bonus if available, otherwise use 0.
-            string strReturn = FlechetteWeaponBonus["apreplace"]?.InnerText ?? FlechetteWeaponBonus["ap"]?.InnerText ?? "0";
+            string strReturn = FlechetteWeaponBonus["apreplace"]?.InnerTextViaPool() ?? FlechetteWeaponBonus["ap"]?.InnerTextViaPool() ?? "0";
 
             // Translate the string.
             strReturn = Weapon.ReplaceStrings(
@@ -5288,7 +5288,7 @@ namespace Chummer.Backend.Equipment
                 return string.Empty;
             // Use the apreplace value if applicable.
             // Use the ap bonus if available, otherwise use 0.
-            string strReturn = FlechetteWeaponBonus["apreplace"]?.InnerText ?? FlechetteWeaponBonus["ap"]?.InnerText ?? "0";
+            string strReturn = FlechetteWeaponBonus["apreplace"]?.InnerTextViaPool() ?? FlechetteWeaponBonus["ap"]?.InnerTextViaPool() ?? "0";
 
             // Translate the string.
             strReturn = await Weapon
@@ -5316,8 +5316,8 @@ namespace Chummer.Backend.Equipment
                     return string.Empty;
                 // Use the apreplace value if applicable.
                 // Use the ap bonus if available, otherwise use 0.
-                string strReturn = FlechetteWeaponBonus["accuracyreplace"]?.InnerText ??
-                                   FlechetteWeaponBonus["accuracy"]?.InnerText ?? "0";
+                string strReturn = FlechetteWeaponBonus["accuracyreplace"]?.InnerTextViaPool() ??
+                                   FlechetteWeaponBonus["accuracy"]?.InnerTextViaPool() ?? "0";
 
                 // If this does not start with "-", add a "+" to the string.
                 if (!strReturn.StartsWith('-', '+'))
@@ -5630,7 +5630,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCharacter?.IsLoading != false)
                 return;
-            if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
+            if (!WirelessBonus.IsNullOrInnerTextIsEmpty())
             {
                 if (WirelessOn && Equipped && (Parent as IHasWirelessBonus)?.WirelessOn != false)
                 {
@@ -5683,7 +5683,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCharacter?.IsLoading != false)
                 return;
-            if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
+            if (!WirelessBonus.IsNullOrInnerTextIsEmpty())
             {
                 if (WirelessOn && Equipped && (Parent as IHasWirelessBonus)?.WirelessOn != false)
                 {

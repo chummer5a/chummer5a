@@ -18,14 +18,19 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Xml;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
-using NLog;
-using System.Threading.Tasks;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.XPath;
+using NLog;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace Chummer
 {
@@ -149,7 +154,7 @@ namespace Chummer
                 XmlElement xmlField = node?[field];
                 if (xmlField != null)
                 {
-                    return parser(xmlField.InnerText, out read);
+                    return parser(xmlField.InnerTextViaPool(), out read);
                 }
             }
 
@@ -189,7 +194,7 @@ namespace Chummer
                 return false;
             }
 
-            fieldValue = node[field].InnerText;
+            fieldValue = node[field].InnerTextViaPool();
             return true;
         }
 
@@ -309,13 +314,13 @@ namespace Chummer
             XmlElement objField = node?[field];
             if (objField != null)
             {
-                read = objField.InnerText;
+                read = objField.InnerTextViaPool();
                 return true;
             }
             XmlAttribute objAttribute = node?.Attributes?[field];
             if (objAttribute == null)
                 return false;
-            read = objAttribute.InnerText;
+            read = objAttribute.InnerTextViaPool();
             return true;
         }
 
@@ -345,7 +350,7 @@ namespace Chummer
                 return false;
             if (objCulture == null)
                 objCulture = GlobalSettings.InvariantCultureInfo;
-            if (!int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out int intTmp))
+            if (!int.TryParse(objField.InnerTextViaPool(), NumberStyles.Any, objCulture, out int intTmp))
                 return false;
             read = intTmp;
             return true;
@@ -360,7 +365,7 @@ namespace Chummer
             XmlElement objField = node?[field];
             if (objField == null)
                 return false;
-            if (!bool.TryParse(objField.InnerText, out bool blnTmp))
+            if (!bool.TryParse(objField.InnerTextViaPool(), out bool blnTmp))
                 return false;
             read = blnTmp;
             return true;
@@ -377,7 +382,7 @@ namespace Chummer
                 return false;
             if (objCulture == null)
                 objCulture = GlobalSettings.InvariantCultureInfo;
-            if (!decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decimal decTmp))
+            if (!decimal.TryParse(objField.InnerTextViaPool(), NumberStyles.Any, objCulture, out decimal decTmp))
                 return false;
             read = decTmp;
             return true;
@@ -394,7 +399,7 @@ namespace Chummer
                 return false;
             if (objCulture == null)
                 objCulture = GlobalSettings.InvariantCultureInfo;
-            if (!double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out double dblTmp))
+            if (!double.TryParse(objField.InnerTextViaPool(), NumberStyles.Any, objCulture, out double dblTmp))
                 return false;
             read = dblTmp;
             return true;
@@ -411,7 +416,7 @@ namespace Chummer
                 return false;
             if (objCulture == null)
                 objCulture = GlobalSettings.InvariantCultureInfo;
-            if (!float.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out float fltTmp))
+            if (!float.TryParse(objField.InnerTextViaPool(), NumberStyles.Any, objCulture, out float fltTmp))
                 return false;
             read = fltTmp;
             return true;
@@ -430,7 +435,7 @@ namespace Chummer
             XmlNode objField = node.SelectSingleNode(field);
             if (objField == null)
                 return false;
-            if (!Guid.TryParse(objField.InnerText, out Guid guidTmp))
+            if (!Guid.TryParse(objField.InnerTextViaPool(), out Guid guidTmp))
                 return false;
             if (guidTmp == Guid.Empty && falseIfEmpty)
                 return false;
@@ -518,6 +523,293 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             XPathNavigator xmlNavigator = xmlNode.CreateNavigator();
             return xmlNavigator.SelectAndCacheExpression(xpath, token);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for an equivalent of string.IsNullOrEmpty(xmlNode?.InnerText), but without needing any sort of heap allocations.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static bool IsNullOrInnerTextIsEmpty(this XmlNode xmlNode)
+        {
+            if (xmlNode == null)
+                return true;
+            XmlNode firstChild = xmlNode.FirstChild;
+            if (firstChild == null)
+                return true;
+
+            if (firstChild.NextSibling == null)
+            {
+                XmlNodeType nodeType = firstChild.NodeType;
+                if ((nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace) && !string.IsNullOrEmpty(firstChild.Value))
+                    return false;
+                return true;
+            }
+
+            return CheckChildren(xmlNode);
+
+            bool CheckChildren(XmlNode xmlParentNode)
+            {
+                for (XmlNode xmlNodeInner = xmlParentNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
+                {
+                    if (xmlNodeInner.FirstChild == null)
+                    {
+                        XmlNodeType nodeType = firstChild.NodeType;
+                        if ((nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace) && !string.IsNullOrEmpty(firstChild.Value))
+                            return false;
+                    }
+                    else if (!CheckChildren(xmlNodeInner))
+                        return false;
+                }
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar to check if the inner text of a node would just be "True" (without quotes) without needing to go through rendering the node's entire contents.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static bool InnerTextIsTrueString(this XmlNode xmlNode)
+        {
+            bool blnFoundTextElement = false;
+            for (XmlNode xmlNodeInner = xmlNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
+            {
+                switch (xmlNodeInner.NodeType)
+                {
+                    case XmlNodeType.Element:
+                    case XmlNodeType.EndElement:
+                        return false;
+                    case XmlNodeType.Text:
+                        if (!string.Equals(xmlNodeInner.Value, bool.TrueString, StringComparison.OrdinalIgnoreCase))
+                            return false;
+                        blnFoundTextElement = true;
+                        break;
+                }
+            }
+            return blnFoundTextElement;
+        }
+
+        /// <summary>
+        /// Syntactic sugar to check if the inner text of a node would just be "False" (without quotes) without needing to go through rendering the node's entire contents.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static bool InnerTextIsFalseString(this XmlNode xmlNode)
+        {
+            bool blnFoundTextElement = false;
+            for (XmlNode xmlNodeInner = xmlNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
+            {
+                switch (xmlNodeInner.NodeType)
+                {
+                    case XmlNodeType.Element:
+                    case XmlNodeType.EndElement:
+                        return false;
+                    case XmlNodeType.Text:
+                        if (!string.Equals(xmlNodeInner.Value, bool.FalseString, StringComparison.OrdinalIgnoreCase))
+                            return false;
+                        blnFoundTextElement = true;
+                        break;
+                }
+            }
+            return blnFoundTextElement;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for checking if a compound node's children have any whose name matches a string without needing to go through rendering the node's contents.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static bool HasChildWithName(this XmlNode xmlNode, string strName)
+        {
+            if (string.IsNullOrEmpty(strName))
+                return false;
+
+            for (XmlNode xmlNodeInner = xmlNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
+            {
+                if (string.Equals(xmlNodeInner.Name, strName, StringComparison.Ordinal))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for checking if a node's contents contain a substring without needing to go through rendering the node's entire contents.
+        /// For compound nodes, checks each child of the node individually (and also checks their names), meaning the needle will not fire if it would need to be matched across multiple nodes or across a node's name and contents (use InnerText for that).
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static bool InnerXmlContentContains(this XmlNode xmlNode, string strNeedle)
+        {
+            if (string.IsNullOrEmpty(strNeedle))
+                return false;
+
+            XmlNode firstChild = xmlNode.FirstChild;
+            if (firstChild == null)
+            {
+                return false;
+            }
+
+            if (firstChild.NextSibling == null)
+            {
+                if (firstChild.Name.Contains(strNeedle))
+                    return true;
+                XmlNodeType nodeType = firstChild.NodeType;
+                if (nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace)
+                {
+                    return firstChild.Value.Contains(strNeedle);
+                }
+            }
+
+            return CheckChildren(xmlNode);
+
+            bool CheckChildren(XmlNode xmlParentNode)
+            {
+                for (XmlNode xmlNodeInner = xmlParentNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
+                {
+                    if (xmlNodeInner.Name.Contains(strNeedle))
+                        return true;
+                    if (xmlNodeInner.FirstChild == null)
+                    {
+                        if (xmlNodeInner.NodeType == XmlNodeType.Text || xmlNodeInner.NodeType == XmlNodeType.CDATA || xmlNodeInner.NodeType == XmlNodeType.Whitespace || xmlNodeInner.NodeType == XmlNodeType.SignificantWhitespace)
+                        {
+                            if (xmlNodeInner.Value.Contains(strNeedle))
+                                return true;
+                        }
+                    }
+                    else if (CheckChildren(xmlNodeInner))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Copy of default InnerText getter, but going through our StringBuilder pool instead creating a new one via heap allocation.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static string InnerTextViaPool(this XmlNode xmlNode)
+        {
+            XmlNode firstChild = xmlNode.FirstChild;
+            if (firstChild == null)
+            {
+                return string.Empty;
+            }
+
+            if (firstChild.NextSibling == null)
+            {
+                XmlNodeType nodeType = firstChild.NodeType;
+                if (nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace)
+                {
+                    return firstChild.Value;
+                }
+            }
+
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                AppendChildText(xmlNode, sbdReturn);
+                return sbdReturn.ToString();
+            }
+
+            void AppendChildText(XmlNode xmlParentNode, StringBuilder builder)
+            {
+                for (XmlNode xmlNodeInner = xmlParentNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
+                {
+                    if (xmlNodeInner.FirstChild == null)
+                    {
+                        if (xmlNodeInner.NodeType == XmlNodeType.Text || xmlNodeInner.NodeType == XmlNodeType.CDATA || xmlNodeInner.NodeType == XmlNodeType.Whitespace || xmlNodeInner.NodeType == XmlNodeType.SignificantWhitespace)
+                        {
+                            builder.Append(xmlNodeInner.InnerTextViaPool());
+                        }
+                    }
+                    else
+                    {
+                        AppendChildText(xmlNodeInner, builder);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Copy of default InnerText getter followed by Trim(), but going through our StringBuilder pool and ToTrimmedString() instead creating a new one via heap allocation.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static string InnerTextViaPoolTrimmed(this XmlNode xmlNode)
+        {
+            XmlNode firstChild = xmlNode.FirstChild;
+            if (firstChild == null)
+            {
+                return string.Empty;
+            }
+
+            if (firstChild.NextSibling == null)
+            {
+                XmlNodeType nodeType = firstChild.NodeType;
+                if (nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace)
+                {
+                    return firstChild.Value;
+                }
+            }
+
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                AppendChildText(xmlNode, sbdReturn);
+                return sbdReturn.ToTrimmedString();
+            }
+
+            void AppendChildText(XmlNode xmlParentNode, StringBuilder builder)
+            {
+                for (XmlNode xmlNodeInner = xmlParentNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
+                {
+                    if (xmlNodeInner.FirstChild == null)
+                    {
+                        if (xmlNodeInner.NodeType == XmlNodeType.Text || xmlNodeInner.NodeType == XmlNodeType.CDATA || xmlNodeInner.NodeType == XmlNodeType.Whitespace || xmlNodeInner.NodeType == XmlNodeType.SignificantWhitespace)
+                        {
+                            builder.Append(xmlNodeInner.InnerTextViaPool());
+                        }
+                    }
+                    else
+                    {
+                        AppendChildText(xmlNodeInner, builder);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Copy of default InnerXml getter, but going through our StringBuilder pool instead creating a new one via heap allocation.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static string InnerXmlViaPool(this XmlNode xmlNode)
+        {
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
+                {
+                    using (XmlDOMTextWriter objXmlWriter = new XmlDOMTextWriter(objStringWriter))
+                    {
+                        xmlNode.WriteContentTo(objXmlWriter);
+                    }
+                }
+                return sbdReturn.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Copy of default OuterXml getter, but going through our StringBuilder pool instead creating a new one via heap allocation.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static string OuterXmlViaPool(this XmlNode xmlNode)
+        {
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
+                {
+                    using (XmlDOMTextWriter objXmlWriter = new XmlDOMTextWriter(objStringWriter))
+                    {
+                        xmlNode.WriteTo(objXmlWriter);
+                    }
+                }
+                return sbdReturn.ToString();
+            }
         }
     }
 }

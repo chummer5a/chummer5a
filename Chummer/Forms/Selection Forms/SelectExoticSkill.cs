@@ -78,12 +78,12 @@ namespace Chummer
                     {
                         foreach (XmlNode objXmlSkill in objXmlSkillList)
                         {
-                            string strName = objXmlSkill["name"]?.InnerText;
+                            string strName = objXmlSkill["name"]?.InnerTextViaPool();
                             if (!string.IsNullOrEmpty(strName) && (string.IsNullOrEmpty(_strForceSkill)
                                                                    || strName.Equals(
                                                                        _strForceSkill,
                                                                        StringComparison.OrdinalIgnoreCase)))
-                                lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName));
+                                lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerTextViaPool() ?? strName));
                         }
                     }
                 }

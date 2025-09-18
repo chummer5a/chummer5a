@@ -19,7 +19,9 @@
 
 using System;
 using System.Globalization;
+using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -646,7 +648,7 @@ namespace Chummer
                     throw new InvalidOperationException(nameof(xmlNode.NodeType));
             }
             XmlNode xmlReturn = xmlParentDocument.CreateNode(eNodeType, xmlNode.Prefix, xmlNode.Name, xmlNode.NamespaceURI);
-            xmlReturn.InnerXml = xmlNode.InnerXml;
+            xmlReturn.InnerXml = xmlNode.InnerXmlViaPool();
             return xmlReturn;
         }
 
@@ -674,6 +676,85 @@ namespace Chummer
             XPathExpression objExpression = Utils.CachedXPathExpressions.GetOrAdd(xpath, XPathExpression.Compile);
             token.ThrowIfCancellationRequested();
             return xmlNode.Select(objExpression);
+        }
+
+        // XmlWriterSettings used for InnerXml and OuterXml extension methods
+        private static Lazy<XmlWriterSettings> s_xmlWriterSettings = new Lazy<XmlWriterSettings>(() => new XmlWriterSettings
+        {
+            Indent = true,
+            OmitXmlDeclaration = true,
+            ConformanceLevel = ConformanceLevel.Auto
+        });
+
+        /// <summary>
+        /// Copy of default InnerXml getter, but going through our StringBuilder pool instead creating a new one via heap allocation
+        /// </summary>
+        public static string InnerXmlViaPool(this XPathNavigator xmlNode)
+        {
+            switch (xmlNode.NodeType)
+            {
+                case XPathNodeType.Root:
+                case XPathNodeType.Element:
+                    {
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                        {
+                            using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
+                            {
+                                using (XmlWriter objXmlWriter = XmlWriter.Create(objStringWriter, s_xmlWriterSettings.Value))
+                                {
+                                    if (xmlNode.MoveToFirstChild())
+                                    {
+                                        do
+                                        {
+                                            objXmlWriter.WriteNode(xmlNode, defattr: true);
+                                        }
+                                        while (xmlNode.MoveToNext());
+                                        xmlNode.MoveToParent();
+                                    }
+                                }
+                            }
+                            return sbdReturn.ToString();
+                        }
+                    }
+                case XPathNodeType.Attribute:
+                case XPathNodeType.Namespace:
+                    return xmlNode.Value;
+                default:
+                    return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Copy of default OuterXml getter, but going through our StringBuilder pool instead creating a new one via heap allocation
+        /// </summary>
+        public static string OuterXmlViaPool(this XPathNavigator xmlNode)
+        {
+            if (xmlNode.NodeType == XPathNodeType.Attribute)
+            {
+                return xmlNode.Name + "=\"" + xmlNode.Value + "\"";
+            }
+
+            if (xmlNode.NodeType == XPathNodeType.Namespace)
+            {
+                if (xmlNode.LocalName.Length == 0)
+                {
+                    return "xmlns=\"" + xmlNode.Value + "\"";
+                }
+
+                return "xmlns:" + xmlNode.LocalName + "=\"" + xmlNode.Value + "\"";
+            }
+
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
+                {
+                    using (XmlWriter objXmlWriter = XmlWriter.Create(objStringWriter, s_xmlWriterSettings.Value))
+                    {
+                        objXmlWriter.WriteNode(xmlNode, defattr: true);
+                    }
+                }
+                return sbdReturn.ToString();
+            }
         }
     }
 }

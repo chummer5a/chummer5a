@@ -918,7 +918,7 @@ namespace Chummer
                 }, token).ConfigureAwait(false);
                 await cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                 await cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
-                if (string.IsNullOrWhiteSpace(_objCharacterXml.OuterXml))
+                if (_objCharacterXml.ChildNodes.Count == 0)
                 {
                     await SetDocumentText(
                         await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)

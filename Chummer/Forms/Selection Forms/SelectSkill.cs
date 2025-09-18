@@ -450,7 +450,7 @@ namespace Chummer
                     {
                         foreach (XmlNode objNode in xmlCategoryList)
                         {
-                            sbdLimitToCategories.Append("category = ").Append(objNode.InnerText.CleanXPath())
+                            sbdLimitToCategories.Append("category = ").Append(objNode.InnerTextViaPool().CleanXPath())
                                                 .Append(" or ");
                         }
 

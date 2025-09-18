@@ -1560,19 +1560,19 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objCharacter));
             string strSelectedSkill;
             blnIsKnowledgeSkill = blnIsKnowledgeSkill
-                                  || xmlBonusNode.Attributes?["knowledgeskills"]?.InnerText == bool.TrueString;
+                                  || xmlBonusNode.Attributes?["knowledgeskills"]?.InnerTextIsTrueString() == true;
             if (blnIsKnowledgeSkill)
             {
                 int intMinimumRating = 0;
-                string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
+                string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerTextViaPool();
                 if (!string.IsNullOrWhiteSpace(strMinimumRating))
                     intMinimumRating = blnSync
                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         ? ValueToInt(objCharacter, strMinimumRating, intRating, token)
                         : await ValueToIntAsync(objCharacter, strMinimumRating, intRating, token).ConfigureAwait(false);
                 int intMaximumRating = int.MaxValue;
-                string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
-                string strPrompt = xmlBonusNode.Attributes?["prompt"]?.InnerText ?? string.Empty;
+                string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerTextViaPool();
+                string strPrompt = xmlBonusNode.Attributes?["prompt"]?.InnerTextViaPool() ?? string.Empty;
 
                 if (!string.IsNullOrWhiteSpace(strMaximumRating))
                     intMaximumRating = blnSync
@@ -1599,7 +1599,7 @@ namespace Chummer
                             {
                                 foreach (XmlNode objNode in xmlCategoryList)
                                 {
-                                    setAllowedCategories.Add(objNode.InnerText);
+                                    setAllowedCategories.Add(objNode.InnerTextViaPool());
                                 }
                             }
                         }
@@ -1951,7 +1951,7 @@ namespace Chummer
                         .SelectSingleNode(strFilter) ??
                         throw new AbortedException();
                     int intMinimumRating = 0;
-                    string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
+                    string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerTextViaPool();
                     if (!string.IsNullOrWhiteSpace(strMinimumRating))
                         intMinimumRating = blnSync
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -1959,7 +1959,7 @@ namespace Chummer
                             : await ValueToIntAsync(objCharacter, strMinimumRating, intRating, token)
                                 .ConfigureAwait(false);
                     int intMaximumRating = int.MaxValue;
-                    string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
+                    string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerTextViaPool();
                     if (!string.IsNullOrWhiteSpace(strMaximumRating))
                         intMaximumRating = blnSync
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -2264,7 +2264,7 @@ namespace Chummer
             {
                 sbdTrace.Append("objImprovementSource = ").AppendLine(objImprovementSource.ToString());
                 sbdTrace.Append("strSourceName = ").AppendLine(strSourceName);
-                sbdTrace.Append("nodBonus = ").AppendLine(nodBonus?.OuterXml);
+                sbdTrace.Append("nodBonus = ").AppendLine(nodBonus?.OuterXmlViaPool());
                 sbdTrace.Append("intRating = ").AppendLine(intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 sbdTrace.Append("strFriendlyName = ").AppendLine(strFriendlyName);
 
@@ -2298,7 +2298,7 @@ namespace Chummer
 
                         if (nodBonus.HasChildNodes)
                         {
-                            string strUnique = nodBonus.Attributes?["unique"]?.InnerText ?? string.Empty;
+                            string strUnique = nodBonus.Attributes?["unique"]?.InnerTextViaPool() ?? string.Empty;
                             sbdTrace.AppendLine("Has Child Nodes");
                             if (nodBonus["selecttext"] != null)
                             {
@@ -2679,7 +2679,7 @@ namespace Chummer
                         }
 
                         // If the bonus should not bubble up SelectedValues from its improvements, reset it to empty.
-                        if (nodBonus.Attributes?["useselected"]?.InnerText == bool.FalseString)
+                        if (nodBonus.Attributes?["useselected"]?.InnerTextIsFalseString() == true)
                         {
                             SetSelectedValue(string.Empty, objCharacter);
                         }
@@ -2759,7 +2759,7 @@ namespace Chummer
             else if (bonusNode.NodeType != XmlNodeType.Comment)
             {
                 Utils.BreakIfDebug();
-                Log.Warn(new object[] { "Tried to get unknown bonus", bonusNode.OuterXml });
+                Log.Warn(new object[] { "Tried to get unknown bonus", bonusNode.OuterXmlViaPool() });
                 return false;
             }
 
@@ -2819,7 +2819,7 @@ namespace Chummer
             else if (bonusNode.NodeType != XmlNodeType.Comment)
             {
                 Utils.BreakIfDebug();
-                Log.Warn(new object[] { "Tried to get unknown bonus", bonusNode.OuterXml });
+                Log.Warn(new object[] { "Tried to get unknown bonus", bonusNode.OuterXmlViaPool() });
                 return new ValueTuple<bool, string>(false, strSourceName);
             }
 

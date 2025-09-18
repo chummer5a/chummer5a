@@ -207,7 +207,7 @@ namespace Chummer
                 objXmlArtNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-                _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == bool.TrueString;
+                _blnIsQuality = objXmlArtNode["isquality"]?.InnerTextIsTrueString() == true;
 
                 if (objXmlArtNode["bonus"] != null)
                 {
@@ -258,7 +258,7 @@ namespace Chummer
                 objXmlArtNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-                _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == bool.TrueString;
+                _blnIsQuality = objXmlArtNode["isquality"]?.InnerTextIsTrueString() == true;
 
                 if (objXmlArtNode["bonus"] != null)
                 {

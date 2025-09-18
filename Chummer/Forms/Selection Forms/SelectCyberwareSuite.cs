@@ -95,10 +95,10 @@ namespace Chummer
                     {
                         foreach (XmlNode objXmlSuite in xmlSuiteList)
                         {
-                            string strName = objXmlSuite["name"]?.InnerText;
+                            string strName = objXmlSuite["name"]?.InnerTextViaPool();
                             if (!string.IsNullOrEmpty(strName))
                             {
-                                string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
+                                string strGrade = objXmlSuite["grade"]?.InnerTextViaPool() ?? string.Empty;
                                 if (!string.IsNullOrEmpty(strGrade))
                                 {
                                     if (lstGrades.TrueForAll(x => x.Name != strGrade))
@@ -118,7 +118,7 @@ namespace Chummer
                                     }
                                 }
 
-                                lstSuitesToAdd.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, objXmlSuite["translate"]?.InnerText ?? strName));
+                                lstSuitesToAdd.Add(new ListItem(objXmlSuite["id"]?.InnerTextViaPool() ?? strName, objXmlSuite["translate"]?.InnerTextViaPool() ?? strName));
                             }
                         }
 
@@ -139,7 +139,7 @@ namespace Chummer
             if (strSelectedSuite != null)
             {
                 xmlSuite = _objXmlDocument.TryGetNodeByNameOrId("/chummer/suites/suite", strSelectedSuite);
-                string strSuiteGradeEntry = xmlSuite?["grade"]?.InnerText;
+                string strSuiteGradeEntry = xmlSuite?["grade"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strSuiteGradeEntry))
                 {
                     strGrade = CyberwareGradeName(strSuiteGradeEntry);

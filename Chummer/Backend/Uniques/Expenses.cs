@@ -177,9 +177,9 @@ namespace Chummer
             if (objNode == null)
                 return;
             if (objNode["karmatype"] != null)
-                KarmaType = ConvertToKarmaExpenseType(objNode["karmatype"].InnerText);
+                KarmaType = ConvertToKarmaExpenseType(objNode["karmatype"].InnerTextViaPool());
             if (objNode["nuyentype"] != null)
-                NuyenType = ConvertToNuyenExpenseType(objNode["nuyentype"].InnerText);
+                NuyenType = ConvertToNuyenExpenseType(objNode["nuyentype"].InnerTextViaPool());
             objNode.TryGetStringFieldQuickly("objectid", ref _strObjectId);
             objNode.TryGetDecFieldQuickly("qty", ref _decQty);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
@@ -339,12 +339,12 @@ namespace Chummer
             if (objNode == null)
                 return;
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            DateTime.TryParse(objNode["date"]?.InnerText, GlobalSettings.InvariantCultureInfo, DateTimeStyles.None, out _datDate);
+            DateTime.TryParse(objNode["date"]?.InnerTextViaPool(), GlobalSettings.InvariantCultureInfo, DateTimeStyles.None, out _datDate);
             objNode.TryGetDecFieldQuickly("amount", ref _decAmount);
             if (objNode.TryGetStringFieldQuickly("reason", ref _strReason))
                 _strReason = _strReason.TrimEndOnce(" (" + (blnSync ? LanguageManager.GetString("String_Expense_Refund", token: token) : await LanguageManager.GetStringAsync("String_Expense_Refund", token: token).ConfigureAwait(false)) + ')').Replace("🡒", "->");
             if (objNode["type"] != null)
-                _eExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
+                _eExpenseType = ConvertToExpenseType(objNode["type"].InnerTextViaPool());
             objNode.TryGetBoolFieldQuickly("refund", ref _blnRefund);
             objNode.TryGetBoolFieldQuickly("forcecareervisible", ref _blnForceCareerVisible);
 

@@ -83,7 +83,7 @@ namespace Chummer
                     int j;
                     for (j = i; j < modules.Count; j++)
                     {
-                        if (modules[j]["stage"]?.InnerText == stageName)
+                        if (modules[j]["stage"]?.InnerTextViaPool() == stageName)
                             break;
                     }
 
@@ -104,7 +104,7 @@ namespace Chummer
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                            out StringBuilder sbdTemp))
                         {
-                            story[i] = (await Write(sbdTemp, modules[i]["story"]?.InnerText ?? string.Empty, 5,
+                            story[i] = (await Write(sbdTemp, modules[i]["story"]?.InnerTextViaPool() ?? string.Empty, 5,
                                 xmlBaseMacrosNode, token).ConfigureAwait(false)).ToTrimmedString();
                         }
                     }, token).ConfigureAwait(false);

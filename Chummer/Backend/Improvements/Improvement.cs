@@ -540,9 +540,9 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("exclude", ref _strExclude);
             objNode.TryGetStringFieldQuickly("condition", ref _strCondition);
             if (objNode["improvementttype"] != null)
-                _eImprovementType = ConvertToImprovementType(objNode["improvementttype"].InnerText);
+                _eImprovementType = ConvertToImprovementType(objNode["improvementttype"].InnerTextViaPool());
             if (objNode["improvementsource"] != null)
-                _eImprovementSource = ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+                _eImprovementSource = ConvertToImprovementSource(objNode["improvementsource"].InnerTextViaPool());
             // Legacy shims
             if (_objCharacter.LastSavedVersion <= new ValueVersion(5, 214, 112)
                 && (_eImprovementSource == ImprovementSource.Initiation

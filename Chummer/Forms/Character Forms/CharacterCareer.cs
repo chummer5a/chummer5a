@@ -5818,7 +5818,7 @@ namespace Chummer
                                                             .ConfigureAwait(false);
 
                                 // Update the Movement if the Vessel has one.
-                                string strMovement = objSelected["movement"]?.InnerText;
+                                string strMovement = objSelected["movement"]?.InnerTextViaPool();
                                 if (!string.IsNullOrEmpty(strMovement))
                                     objMerge.Movement = strMovement;
 
@@ -5834,11 +5834,11 @@ namespace Chummer
                                             {
                                                 XmlNode objXmlCritterPower
                                                     = xmlPowerDoc.TryGetNodeByNameOrId(
-                                                        "/chummer/powers/power", objXmlPower.InnerText);
+                                                        "/chummer/powers/power", objXmlPower.InnerTextViaPool());
                                                 CritterPower objPower = new CritterPower(objMerge);
-                                                string strSelect = objXmlPower.Attributes?["select"]?.InnerText
+                                                string strSelect = objXmlPower.Attributes?["select"]?.InnerTextViaPool()
                                                                     ?? string.Empty;
-                                                int.TryParse(objXmlPower.Attributes?["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
+                                                int.TryParse(objXmlPower.Attributes?["rating"]?.InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
 
                                                 await objPower.CreateAsync(objXmlCritterPower, intRating, strSelect, GenericToken).ConfigureAwait(false);
 
@@ -8705,10 +8705,10 @@ namespace Chummer
                         {
                             // Positive Metagenetic Qualities are free if you're a Changeling.
                             if (CharacterObject.MetagenicLimit > 0
-                                && objXmlQuality["metagenic"]?.InnerText == bool.TrueString)
+                                && objXmlQuality["metagenic"]?.InnerTextIsTrueString() == true)
                                 blnFreeCost = true;
                             // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
-                            else if (objXmlQuality["name"]?.InnerText == "Mentor Spirit" &&
+                            else if (objXmlQuality["name"]?.InnerTextViaPool() == "Mentor Spirit" &&
                                      await CharacterObject.Qualities.AnyAsync(x =>
                                                                                   x.Name == "The Beast's Way"
                                                                                   || x.Name == "The Spiritual Way",
@@ -8739,7 +8739,7 @@ namespace Chummer
 
                             int intKarmaCost = intQualityBP * await CharacterObjectSettings.GetKarmaQualityAsync(GenericToken).ConfigureAwait(false);
                             if (!await CharacterObjectSettings.GetDontDoubleQualityPurchasesAsync(GenericToken).ConfigureAwait(false) &&
-                                objXmlQuality["doublecareer"]?.InnerText != bool.FalseString)
+                                objXmlQuality["doublecareer"]?.InnerTextViaPool() != bool.FalseString)
                                 intKarmaCost *= 2;
 
                             // Make sure the character has enough Karma to pay for the Quality.
@@ -8749,7 +8749,7 @@ namespace Chummer
                                 {
                                     if (intKarmaCost > await CharacterObject.GetKarmaAsync(GenericToken)
                                                                             .ConfigureAwait(false) &&
-                                        objXmlQuality["stagedpurchase"]?.InnerText != bool.TrueString)
+                                        objXmlQuality["stagedpurchase"]?.InnerTextViaPool() != bool.TrueString)
                                     {
                                         await Program.ShowScrollableMessageBoxAsync(this,
                                             await LanguageManager
@@ -8762,8 +8762,8 @@ namespace Chummer
                                         break;
                                     }
 
-                                    string strDisplayName = objXmlQuality["translate"]?.InnerText ??
-                                                            objXmlQuality["name"]?.InnerText ??
+                                    string strDisplayName = objXmlQuality["translate"]?.InnerTextViaPool() ??
+                                                            objXmlQuality["name"]?.InnerTextViaPool() ??
                                                             await LanguageManager.GetStringAsync("String_Unknown", token: GenericToken)
                                                                 .ConfigureAwait(false);
                                     if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
@@ -10933,7 +10933,7 @@ namespace Chummer
                 XmlElement xmlAddModCategory = objXmlArmor["forcemodcategory"];
                 if (xmlAddModCategory != null)
                 {
-                    strAllowedCategories = xmlAddModCategory.InnerText;
+                    strAllowedCategories = xmlAddModCategory.InnerTextViaPool();
                     blnExcludeGeneralCategory = true;
                 }
                 else
@@ -10941,7 +10941,7 @@ namespace Chummer
                     xmlAddModCategory = objXmlArmor["addmodcategory"];
                     if (xmlAddModCategory != null)
                     {
-                        strAllowedCategories += ',' + xmlAddModCategory.InnerText;
+                        strAllowedCategories += ',' + xmlAddModCategory.InnerTextViaPool();
                     }
                 }
 
@@ -10973,7 +10973,7 @@ namespace Chummer
                                 continue;
 
                             List<Weapon> lstWeapons = new List<Weapon>(1);
-                            int.TryParse(objXmlArmor["maxrating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intMaxRating);
+                            int.TryParse(objXmlArmor["maxrating"]?.InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intMaxRating);
                             int intRating = intMaxRating > 1
                                     ? frmPickArmorMod.MyForm.SelectedRating
                                     : 0;
@@ -14991,7 +14991,7 @@ namespace Chummer
                                out StringBuilder sbdCategories))
                     {
                         foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                            sbdCategories.Append(objXmlCategory.InnerTextViaPool()).Append(',');
                         if (sbdCategories.Length > 0)
                         {
                             --sbdCategories.Length;
@@ -15171,7 +15171,7 @@ namespace Chummer
                                out StringBuilder sbdCategories))
                     {
                         foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                            sbdCategories.Append(objXmlCategory.InnerTextViaPool()).Append(',');
                         if (sbdCategories.Length > 0)
                         {
                             --sbdCategories.Length;
@@ -15702,7 +15702,7 @@ namespace Chummer
                                out StringBuilder sbdCategories))
                     {
                         foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                            sbdCategories.Append(objXmlCategory.InnerTextViaPool()).Append(',');
                         if (sbdCategories.Length > 0)
                         {
                             --sbdCategories.Length;
@@ -16292,7 +16292,7 @@ namespace Chummer
                                out StringBuilder sbdCategories))
                     {
                         foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                            sbdCategories.Append(objXmlCategory.InnerTextViaPool()).Append(',');
                         if (sbdCategories.Length > 0)
                         {
                             --sbdCategories.Length;
@@ -19744,7 +19744,7 @@ namespace Chummer
                         .TryGetNodeByNameOrId("/chummer/improvements/improvement", objImprovement.CustomId);
                     if (objNode != null)
                     {
-                        string strText = objNode["translate"]?.InnerText ?? objNode["name"]?.InnerText ?? objImprovement.CustomId;
+                        string strText = objNode["translate"]?.InnerTextViaPool() ?? objNode["name"]?.InnerTextViaPool() ?? objImprovement.CustomId;
                         await lblImprovementType.DoThreadSafeAsync(x => x.Text = strText, token)
                               .ConfigureAwait(false);
                     }
@@ -27461,12 +27461,12 @@ namespace Chummer
                                 .ConfigureAwait(false);
                             foreach (XmlNode objXmlChild in xmlChildrenList)
                             {
-                                string strChildName = objXmlChild["name"]?.InnerText;
+                                string strChildName = objXmlChild["name"]?.InnerTextViaPool();
                                 if (string.IsNullOrEmpty(strChildName))
                                     continue;
                                 XmlNode objXmlChildCyberware
                                     = objXmlDocument.TryGetNodeByNameOrId("/chummer/" + strXPathPrefix, strChildName);
-                                int.TryParse(objXmlChild["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intChildRating);
+                                int.TryParse(objXmlChild["rating"]?.InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intChildRating);
 
                                 await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AddAsync(await CreateSuiteCyberware(objXmlChild,
                                     objXmlChildCyberware, objGrade,
@@ -27552,7 +27552,7 @@ namespace Chummer
                             .GetStringAsync("String_ExpensePurchaseCyberwareSuite", token: token)
                             .ConfigureAwait(false)
                         + await LanguageManager.GetStringAsync("String_Space", token: token)
-                            .ConfigureAwait(false) + xmlSuite["name"]?.InnerText,
+                            .ConfigureAwait(false) + xmlSuite["name"]?.InnerTextViaPool(),
                         ExpenseType.Nuyen, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                         .ConfigureAwait(false);
@@ -27560,7 +27560,7 @@ namespace Chummer
 
                     Grade objGrade
                         = await Grade
-                            .ConvertToCyberwareGradeAsync(xmlSuite["grade"]?.InnerText, objSource, CharacterObject,
+                            .ConvertToCyberwareGradeAsync(xmlSuite["grade"]?.InnerTextViaPool(), objSource, CharacterObject,
                                 token).ConfigureAwait(false);
 
                     // Run through each of the items in the Suite and add them to the character.
@@ -27570,12 +27570,12 @@ namespace Chummer
                         {
                             foreach (XmlNode xmlItem in xmlItemList)
                             {
-                                string strItemName = xmlItem["name"]?.InnerText;
+                                string strItemName = xmlItem["name"]?.InnerTextViaPool();
                                 if (string.IsNullOrEmpty(strItemName))
                                     continue;
                                 XmlNode objXmlCyberware = objXmlDocument.TryGetNodeByNameOrId(
                                     "/chummer/" + strType + "s/" + strType, strItemName);
-                                int.TryParse(xmlItem["rating"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
+                                int.TryParse(xmlItem["rating"]?.InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
 
                                 Cyberware objCyberware
                                     = await CreateSuiteCyberware(xmlItem, objXmlCyberware, objGrade, intRating,
@@ -28274,7 +28274,7 @@ namespace Chummer
                         return;
 
                     // Find the associated Power
-                    string strPower = objXmlArt["power"]?.InnerText;
+                    string strPower = objXmlArt["power"]?.InnerTextViaPool();
                     Power objPower = await CharacterObject.Powers
                         .FirstOrDefaultAsync(
                             x => x.Name == strPower
@@ -28663,7 +28663,7 @@ namespace Chummer
                                     await LanguageManager.GetStringAsync(
                                             "String_Improvement_SelectText", token: GenericToken)
                                         .ConfigureAwait(false),
-                                    objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"]?.InnerText ??
+                                    objXmlProgram["translate"]?.InnerTextViaPool() ?? objXmlProgram["name"]?.InnerTextViaPool() ??
                                     await LanguageManager.GetStringAsync("String_Unknown", token: GenericToken)
                                         .ConfigureAwait(false));
                                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>

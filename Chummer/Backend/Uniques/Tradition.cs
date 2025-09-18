@@ -476,7 +476,7 @@ namespace Chummer.Backend.Uniques
 
                 objWriter.WriteEndElement();
                 if (_nodBonus != null)
-                    objWriter.WriteRaw(_nodBonus.OuterXml);
+                    objWriter.WriteRaw(_nodBonus.OuterXmlViaPool());
                 else
                     objWriter.WriteElementString("bonus", string.Empty);
                 objWriter.WriteEndElement();
@@ -573,7 +573,7 @@ namespace Chummer.Backend.Uniques
                     {
                         foreach (XmlNode xmlSpiritNode in xmlSpiritList)
                         {
-                            _lstAvailableSpirits.Add(xmlSpiritNode.InnerText);
+                            _lstAvailableSpirits.Add(xmlSpiritNode.InnerTextViaPool());
                         }
                     }
                 }

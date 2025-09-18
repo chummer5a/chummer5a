@@ -92,7 +92,7 @@ namespace Chummer
                 if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 {
                     _guiID = Guid.NewGuid();
-                    _strName = objNode.InnerText;
+                    _strName = objNode.InnerTextViaPool();
                 }
                 else
                 {
@@ -124,7 +124,7 @@ namespace Chummer
                 if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 {
                     _guiID = Guid.NewGuid();
-                    _strName = objNode.InnerText;
+                    _strName = objNode.InnerTextViaPool();
                 }
                 else
                 {

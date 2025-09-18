@@ -161,12 +161,12 @@ namespace Chummer
                                              _decFreePoints.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("source", _strSource);
                 objWriter.WriteElementString("page", _strPage);
-                if (Bonus != null)
-                    objWriter.WriteRaw("<bonus>" + Bonus.InnerXml + "</bonus>");
+                if (!Bonus.IsNullOrInnerTextIsEmpty())
+                    objWriter.WriteRaw("<bonus>" + Bonus.InnerXmlViaPool() + "</bonus>");
                 else
                     objWriter.WriteElementString("bonus", string.Empty);
                 if (_nodAdeptWayRequirements != null)
-                    objWriter.WriteRaw("<adeptwayrequires>" + _nodAdeptWayRequirements.InnerXml
+                    objWriter.WriteRaw("<adeptwayrequires>" + _nodAdeptWayRequirements.InnerXmlViaPool()
                                                             + "</adeptwayrequires>");
                 else
                     objWriter.WriteElementString("adeptwayrequires", string.Empty);
@@ -506,9 +506,9 @@ namespace Chummer
                 }
 
                 if (blnSync)
-                    Extra = objNode["extra"]?.InnerText ?? string.Empty;
+                    Extra = objNode["extra"]?.InnerTextViaPool() ?? string.Empty;
                 else
-                    await SetExtraAsync(objNode["extra"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                    await SetExtraAsync(objNode["extra"]?.InnerTextViaPool() ?? string.Empty, token).ConfigureAwait(false);
                 if (!objNode.TryGetStringFieldQuickly("pointsperlevel", ref _strPointsPerLevel))
                     _strPointsPerLevel = "0";
                 if (!objNode.TryGetStringFieldQuickly("action", ref _strAction))
@@ -3235,7 +3235,7 @@ namespace Chummer
                         // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                         if (setNamesOfChangedProperties.Contains(nameof(TotalRating)))
                         {
-                            if (Bonus?.InnerXml.Contains("Rating") == true)
+                            if (Bonus?.InnerXmlContentContains("Rating") == true)
                             {
                                 bool blnRefreshImprovements = true;
                                 int intTotalRating;
@@ -3406,7 +3406,7 @@ namespace Chummer
                         if (setNamesOfChangedProperties.Contains(nameof(TotalRating)))
                         {
                             XmlNode xmlBonus = await GetBonusAsync(token).ConfigureAwait(false);
-                            if (xmlBonus?.InnerXml.Contains("Rating") == true)
+                            if (xmlBonus?.InnerXmlContentContains("Rating") == true)
                             {
                                 bool blnRefreshImprovements = true;
                                 int intTotalRating;

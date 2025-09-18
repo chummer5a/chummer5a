@@ -88,7 +88,7 @@ namespace Chummer.Backend.Skills
             if (!xmlNode.TryGetField("guid", Guid.TryParse, out Guid guiTemp))
                 guiTemp = Guid.NewGuid();
 
-            return new SkillSpecialization(objCharacter, strName, xmlNode["free"]?.InnerText == bool.TrueString, xmlNode["expertise"]?.InnerText == bool.TrueString)
+            return new SkillSpecialization(objCharacter, strName, xmlNode["free"]?.InnerTextIsTrueString() == true, xmlNode["expertise"]?.InnerTextIsTrueString() == true)
             {
                 _guiID = guiTemp
             };

@@ -266,7 +266,7 @@ namespace Chummer
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
                 objXmlQuality.TryGetInt32FieldQuickly("karma", ref _intBP);
-                _eQualityType = ConvertToQualityType(objXmlQuality["category"]?.InnerText);
+                _eQualityType = ConvertToQualityType(objXmlQuality["category"]?.InnerTextViaPool());
                 _eQualitySource = objQualitySource;
                 objXmlQuality.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);
                 objXmlQuality.TryGetBoolFieldQuickly("canbuywithspellpoints", ref _blnCanBuyWithSpellPoints);
@@ -296,13 +296,13 @@ namespace Chummer
                             : await _objCharacter.LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false);
                         foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
                         {
-                            string strLoopID = objXmlAddWeapon.InnerText;
+                            string strLoopID = objXmlAddWeapon.InnerTextViaPool();
                             XmlNode objXmlWeapon = objXmlWeaponDocument.TryGetNodeByNameOrId(
                                 "/chummer/weapons/weapon", strLoopID);
                             if (objXmlWeapon != null)
                             {
                                 int intAddWeaponRating = 0;
-                                string strWeaponRating = objXmlAddWeapon.Attributes?["rating"]?.InnerText;
+                                string strWeaponRating = objXmlAddWeapon.Attributes?["rating"]?.InnerTextViaPool();
                                 if (!string.IsNullOrEmpty(strWeaponRating) && int.TryParse(
                                         strWeaponRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                         out int intWeaponRating))
@@ -539,23 +539,23 @@ namespace Chummer
                 objWriter.WriteElementString("source", _strSource);
                 objWriter.WriteElementString("page", _strPage);
                 objWriter.WriteElementString("sourcename", _strSourceName);
-                if (!string.IsNullOrEmpty(_nodBonus?.InnerXml))
-                    objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
+                if (!_nodBonus.IsNullOrInnerTextIsEmpty())
+                    objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXmlViaPool() + "</bonus>");
                 else
                     objWriter.WriteElementString("bonus", string.Empty);
-                if (!string.IsNullOrEmpty(_nodFirstLevelBonus?.InnerXml))
-                    objWriter.WriteRaw("<firstlevelbonus>" + _nodFirstLevelBonus.InnerXml + "</firstlevelbonus>");
+                if (!_nodFirstLevelBonus.IsNullOrInnerTextIsEmpty())
+                    objWriter.WriteRaw("<firstlevelbonus>" + _nodFirstLevelBonus.InnerXmlViaPool() + "</firstlevelbonus>");
                 else
                     objWriter.WriteElementString("firstlevelbonus", string.Empty);
-                if (!string.IsNullOrEmpty(_nodNaturalWeaponsNode?.InnerXml))
-                    objWriter.WriteRaw("<naturalweapons>" + _nodNaturalWeaponsNode.InnerXml + "</naturalweapons>");
+                if (!_nodNaturalWeaponsNode.IsNullOrInnerTextIsEmpty())
+                    objWriter.WriteRaw("<naturalweapons>" + _nodNaturalWeaponsNode.InnerXmlViaPool() + "</naturalweapons>");
                 else
                     objWriter.WriteElementString("naturalweapons", string.Empty);
                 if (_guiWeaponID != Guid.Empty)
                     objWriter.WriteElementString("weaponguid",
                                                  _guiWeaponID.ToString("D", GlobalSettings.InvariantCultureInfo));
                 if (_nodDiscounts != null)
-                    objWriter.WriteRaw("<costdiscount>" + _nodDiscounts.InnerXml + "</costdiscount>");
+                    objWriter.WriteRaw("<costdiscount>" + _nodDiscounts.InnerXmlViaPool() + "</costdiscount>");
                 objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 if (_eQualityType == QualityType.LifeModule)
@@ -627,8 +627,8 @@ namespace Chummer
                 objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
                 objNode.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);
                 objNode.TryGetBoolFieldQuickly("canbuywithspellpoints", ref _blnCanBuyWithSpellPoints);
-                _eQualityType = ConvertToQualityType(objNode["qualitytype"]?.InnerText);
-                _eQualitySource = ConvertToQualitySource(objNode["qualitysource"]?.InnerText);
+                _eQualityType = ConvertToQualityType(objNode["qualitytype"]?.InnerTextViaPool());
+                _eQualitySource = ConvertToQualitySource(objNode["qualitysource"]?.InnerTextViaPool());
                 string strTemp = string.Empty;
                 if (objNode.TryGetStringFieldQuickly("metagenic", ref strTemp)
                     //Shim for characters files that have the old name for the metagenic flag.
@@ -663,13 +663,13 @@ namespace Chummer
 
                 switch (_eQualitySource)
                 {
-                    case QualitySource.Selected when string.IsNullOrEmpty(_nodBonus?.InnerText)
-                                                     && string.IsNullOrEmpty(_nodFirstLevelBonus?.InnerText)
-                                                     && string.IsNullOrEmpty(_nodNaturalWeaponsNode?.InnerText)
+                    case QualitySource.Selected when _nodBonus.IsNullOrInnerTextIsEmpty()
+                                                     && _nodFirstLevelBonus.IsNullOrInnerTextIsEmpty()
+                                                     && _nodNaturalWeaponsNode.IsNullOrInnerTextIsEmpty()
                                                      && (_eQualityType == QualityType.Positive
                                                          || _eQualityType == QualityType.Negative):
                         XmlNode objTemp = blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
-                        if (objTemp != null && ConvertToQualityType(objTemp["category"]?.InnerText) != _eQualityType)
+                        if (objTemp != null && ConvertToQualityType(objTemp["category"]?.InnerTextViaPool()) != _eQualityType)
                             _eQualitySource = QualitySource.MetatypeRemovedAtChargen;
                         break;
                     // Legacy shim for priority-given qualities
@@ -2553,7 +2553,7 @@ namespace Chummer
                     foreach (Quality objQuality in objCharacter.Qualities)
                     {
                         token.ThrowIfCancellationRequested();
-                        if (string.Equals(objQuality.SourceIDString, objXmlQuality["id"]?.InnerText, StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(objQuality.SourceIDString, objXmlQuality["id"]?.InnerTextViaPool(), StringComparison.OrdinalIgnoreCase))
                         {
                             reason |= QualityFailureReasons
                                 .LimitExceeded; //QualityFailureReason is a flag enum, meaning each bit represents a different thing
@@ -2582,7 +2582,7 @@ namespace Chummer
                                     foreach (XmlNode node in xmlNodeList)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        lstRequired.Add(node.InnerText);
+                                        lstRequired.Add(node.InnerTextViaPool());
                                     }
                                 }
                             }
@@ -2603,7 +2603,7 @@ namespace Chummer
                                 foreach (XmlNode objNode in xmlNodeList)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    if (objNode.InnerText == objCharacter.Metatype)
+                                    if (objNode.InnerTextViaPool() == objCharacter.Metatype)
                                     {
                                         reason &= ~QualityFailureReasons.MetatypeRequired;
                                         break;
@@ -2636,7 +2636,7 @@ namespace Chummer
                                     foreach (XmlNode node in xmlNodeList)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        if (!lstRequired.Contains(node.InnerText))
+                                        if (!lstRequired.Contains(node.InnerTextViaPool()))
                                         {
                                             reason |= QualityFailureReasons.RequiredMultiple;
                                             break;
@@ -2668,7 +2668,7 @@ namespace Chummer
                                     foreach (XmlNode node in xmlNodeList)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        setQualityForbidden.Add(node.InnerText);
+                                        setQualityForbidden.Add(node.InnerTextViaPool());
                                     }
                                 }
                             }

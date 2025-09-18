@@ -444,8 +444,8 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("allowed", _setAllowedFreeLifestyles.Count > 0
                                                  ? StringExtensions.JoinFast(",", _setAllowedFreeLifestyles)
                                                  : string.Empty);
-                if (Bonus != null)
-                    objWriter.WriteRaw("<bonus>" + Bonus.InnerXml + "</bonus>");
+                if (!Bonus.IsNullOrInnerTextIsEmpty())
+                    objWriter.WriteRaw("<bonus>" + Bonus.InnerXmlViaPool() + "</bonus>");
                 else
                     objWriter.WriteElementString("bonus", string.Empty);
                 objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
@@ -530,9 +530,9 @@ namespace Chummer.Backend.Equipment
                     (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortsMaximum);
                 objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
                 if (objNode["lifestylequalitytype"] != null)
-                    _eType = ConvertToLifestyleQualityType(objNode["lifestylequalitytype"].InnerText);
+                    _eType = ConvertToLifestyleQualityType(objNode["lifestylequalitytype"].InnerTextViaPool());
                 if (objNode["lifestylequalitysource"] != null)
-                    OriginSource = ConvertToLifestyleQualitySource(objNode["lifestylequalitysource"].InnerText);
+                    OriginSource = ConvertToLifestyleQualitySource(objNode["lifestylequalitysource"].InnerTextViaPool());
                 if (!objNode.TryGetStringFieldQuickly("category", ref _strCategory)
                     && (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("category", ref _strCategory) != true)
                     _strCategory = string.Empty;

@@ -467,9 +467,9 @@ namespace Chummer.Backend.Skills
                     {
                         if (xmlSkillNode["forced"] != null)
                             objKnowledgeSkill = new KnowledgeSkill(objCharacter,
-                                xmlSkillNode["name"]?.InnerText ?? string.Empty,
+                                xmlSkillNode["name"]?.InnerTextViaPool() ?? string.Empty,
                                 !Convert.ToBoolean(
-                                    xmlSkillNode["disableupgrades"]?.InnerText,
+                                    xmlSkillNode["disableupgrades"]?.InnerTextViaPool(),
                                     GlobalSettings.InvariantCultureInfo));
                         else
                         {
@@ -533,7 +533,7 @@ namespace Chummer.Backend.Skills
                     if (xmlSkillDataNode == null)
                     {
                         // Legacy sweeper: we might have an active skill by the same name whose ID was changed for whatever reason.
-                        string strName = xmlSkillNode["name"]?.InnerText ?? string.Empty;
+                        string strName = xmlSkillNode["name"]?.InnerTextViaPool() ?? string.Empty;
                         if (!string.IsNullOrEmpty(strName))
                         {
                             xmlSkillDataNode = xmlSkillsDoc.TryGetNodeByNameOrId("/chummer/skills/skill", strName);
@@ -600,9 +600,9 @@ namespace Chummer.Backend.Skills
                 if (xmlSkillNode["forced"] != null)
                 {
                     objLoadingSkill = new KnowledgeSkill(objCharacter,
-                        xmlSkillNode["name"]?.InnerText ?? string.Empty,
+                        xmlSkillNode["name"]?.InnerTextViaPool() ?? string.Empty,
                         !Convert.ToBoolean(
-                            xmlSkillNode["disableupgrades"]?.InnerText,
+                            xmlSkillNode["disableupgrades"]?.InnerTextViaPool(),
                             GlobalSettings.InvariantCultureInfo));
                     try
                     {
@@ -718,9 +718,9 @@ namespace Chummer.Backend.Skills
                     {
                         if (xmlSkillNode["forced"] != null)
                             objKnowledgeSkill = new KnowledgeSkill(objCharacter,
-                                xmlSkillNode["name"]?.InnerText ?? string.Empty,
+                                xmlSkillNode["name"]?.InnerTextViaPool() ?? string.Empty,
                                 !Convert.ToBoolean(
-                                    xmlSkillNode["disableupgrades"]?.InnerText,
+                                    xmlSkillNode["disableupgrades"]?.InnerTextViaPool(),
                                     GlobalSettings.InvariantCultureInfo));
                         else
                         {
@@ -786,7 +786,7 @@ namespace Chummer.Backend.Skills
                     if (xmlSkillDataNode == null)
                     {
                         // Legacy sweeper: we might have an active skill by the same name whose ID was changed for whatever reason.
-                        string strName = xmlSkillNode["name"]?.InnerText ?? string.Empty;
+                        string strName = xmlSkillNode["name"]?.InnerTextViaPool() ?? string.Empty;
                         if (!string.IsNullOrEmpty(strName))
                         {
                             xmlSkillDataNode = xmlSkillsDoc.TryGetNodeByNameOrId("/chummer/skills/skill", strName);
@@ -853,9 +853,9 @@ namespace Chummer.Backend.Skills
                 if (xmlSkillNode["forced"] != null)
                 {
                     objLoadingSkill = new KnowledgeSkill(objCharacter,
-                        xmlSkillNode["name"]?.InnerText ?? string.Empty,
+                        xmlSkillNode["name"]?.InnerTextViaPool() ?? string.Empty,
                         !Convert.ToBoolean(
-                            xmlSkillNode["disableupgrades"]?.InnerText,
+                            xmlSkillNode["disableupgrades"]?.InnerTextViaPool(),
                             GlobalSettings.InvariantCultureInfo));
                     try
                     {
@@ -962,13 +962,13 @@ namespace Chummer.Backend.Skills
                 return null;
             xmlSkillNode.TryGetField("id", Guid.TryParse, out Guid suid, Guid.NewGuid());
 
-            int.TryParse(xmlSkillNode["base"]?.InnerText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intBaseRating);
-            int.TryParse(xmlSkillNode["rating"]?.InnerText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intFullRating);
+            int.TryParse(xmlSkillNode["base"]?.InnerTextViaPool(), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intBaseRating);
+            int.TryParse(xmlSkillNode["rating"]?.InnerTextViaPool(), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intFullRating);
             int intKarmaRating = intFullRating - intBaseRating;  //Not reading karma directly as career only increases rating
 
             bool blnTemp = false;
 
-            string strName = xmlSkillNode["name"]?.InnerText ?? string.Empty;
+            string strName = xmlSkillNode["name"]?.InnerTextViaPool() ?? string.Empty;
             Skill objSkill;
             if (xmlSkillNode.TryGetBoolFieldQuickly("knowledge", ref blnTemp) && blnTemp)
             {
@@ -980,14 +980,14 @@ namespace Chummer.Backend.Skills
                         objKnoSkill.WritableName = strName;
                         objKnoSkill.Base = intBaseRating;
                         objKnoSkill.Karma = intKarmaRating;
-                        objKnoSkill.Type = xmlSkillNode["skillcategory"]?.InnerText;
+                        objKnoSkill.Type = xmlSkillNode["skillcategory"]?.InnerTextViaPool();
                     }
                     else
                     {
                         await objKnoSkill.SetWritableNameAsync(strName, token).ConfigureAwait(false);
                         await objKnoSkill.SetBaseAsync(intBaseRating, token).ConfigureAwait(false);
                         await objKnoSkill.SetKarmaAsync(intKarmaRating, token).ConfigureAwait(false);
-                        await objKnoSkill.SetTypeAsync(xmlSkillNode["skillcategory"]?.InnerText, token).ConfigureAwait(false);
+                        await objKnoSkill.SetTypeAsync(xmlSkillNode["skillcategory"]?.InnerTextViaPool(), token).ConfigureAwait(false);
                     }
                     objSkill = objKnoSkill;
                 }
@@ -1011,7 +1011,7 @@ namespace Chummer.Backend.Skills
                                            && xmlSkillsDocument
                                               .SelectSingleNodeAndCacheExpressionAsNavigator(
                                                   "/chummer/categories/category[. = "
-                                                  + xmlSkillDataNode["category"]?.InnerText.CleanXPath() + "]/@type", token)
+                                                  + xmlSkillDataNode["category"]?.InnerTextViaPool().CleanXPath() + "]/@type", token)
                                               ?.Value != "active";
 
                 objSkill = blnSync ? FromData(xmlSkillDataNode, objCharacter, blnIsKnowledgeSkill) : await FromDataAsync(xmlSkillDataNode, objCharacter, blnIsKnowledgeSkill, token).ConfigureAwait(false);
@@ -1125,7 +1125,7 @@ namespace Chummer.Backend.Skills
                 {
                     objKnoSkill.WritableName = strName;
                     objKnoSkill.Karma = intKarmaRating;
-                    objKnoSkill.Type = !string.IsNullOrEmpty(strSkillType) ? strSkillType : xmlSkillDataNode?["category"]?.InnerText ?? "Academic";
+                    objKnoSkill.Type = !string.IsNullOrEmpty(strSkillType) ? strSkillType : xmlSkillDataNode?["category"]?.InnerTextViaPool() ?? "Academic";
                     objKnoSkill.IsNativeLanguage = blnIsNativeLanguage;
                 }
                 catch
@@ -1223,7 +1223,7 @@ namespace Chummer.Backend.Skills
         {
             if (xmlNode == null)
                 return null;
-            if (xmlNode["exotic"]?.InnerText == bool.TrueString)
+            if (xmlNode["exotic"]?.InnerTextIsTrueString() == true)
             {
                 //load exotic skill
                 return new ExoticSkill(objCharacter, xmlNode);
@@ -1256,14 +1256,14 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (xmlNode == null)
                 return null;
-            if (xmlNode["exotic"]?.InnerText == bool.TrueString)
+            if (xmlNode["exotic"]?.InnerTextIsTrueString() == true)
             {
                 //load exotic skill
                 ExoticSkill objExoticReturn = new ExoticSkill(objCharacter, xmlNode, false);
                 try
                 {
                     await objExoticReturn.SetIsLoadingAsync(true, token).ConfigureAwait(false);
-                    string strExoticGroup = xmlNode["skillgroup"]?.InnerText;
+                    string strExoticGroup = xmlNode["skillgroup"]?.InnerTextViaPool();
 
                     if (!string.IsNullOrEmpty(strExoticGroup))
                     {
@@ -1320,7 +1320,7 @@ namespace Chummer.Backend.Skills
             try
             {
                 await objReturn.SetIsLoadingAsync(true, token).ConfigureAwait(false);
-                string strGroup = xmlNode["skillgroup"]?.InnerText;
+                string strGroup = xmlNode["skillgroup"]?.InnerTextViaPool();
 
                 if (!string.IsNullOrEmpty(strGroup))
                 {
@@ -1454,12 +1454,12 @@ namespace Chummer.Backend.Skills
             if (xmlNode == null)
                 return;
             _strName = xmlNode["name"]
-                    ?.InnerText; //No need to catch errors (for now), if missing we are fsked anyway
-            DefaultAttribute = xmlNode["attribute"]?.InnerText;
-            SkillCategory = xmlNode["category"]?.InnerText ?? string.Empty;
-            Default = xmlNode["default"]?.InnerText == bool.TrueString;
-            Source = xmlNode["source"]?.InnerText;
-            Page = xmlNode["page"]?.InnerText;
+                    ?.InnerTextViaPool(); //No need to catch errors (for now), if missing we are fsked anyway
+            DefaultAttribute = xmlNode["attribute"]?.InnerTextViaPool();
+            SkillCategory = xmlNode["category"]?.InnerTextViaPool() ?? string.Empty;
+            Default = xmlNode["default"]?.InnerTextIsTrueString() == true;
+            Source = xmlNode["source"]?.InnerTextViaPool();
+            Page = xmlNode["page"]?.InnerTextViaPool();
             if (xmlNode.TryGetField("id", Guid.TryParse, out Guid guiTemp))
                 _guidSkillId = guiTemp;
             else if (xmlNode.TryGetField("suid", Guid.TryParse, out guiTemp))
@@ -1481,7 +1481,7 @@ namespace Chummer.Backend.Skills
 
             if (blnDoSkillGroup)
             {
-                string strGroup = xmlNode["skillgroup"]?.InnerText;
+                string strGroup = xmlNode["skillgroup"]?.InnerTextViaPool();
 
                 if (!string.IsNullOrEmpty(strGroup))
                 {
