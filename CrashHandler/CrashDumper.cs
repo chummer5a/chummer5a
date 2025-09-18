@@ -77,8 +77,8 @@ namespace CrashHandler
 
             CrashLogWriter = new StreamWriter(CrashDumpLogName, false, Encoding.UTF8);
 
-            CrashLogWriter.WriteLine("This file contains information on a crash report for Chummer5A.");
-            CrashLogWriter.WriteLine("You can safely delete this file, but a developer might want to look at it.");
+            CrashLogWriter.WriteLine("This file contains information on a crash report generation for Chummer5A.");
+            CrashLogWriter.WriteLine("You can safely delete this file once the report has been assembled, though if that could not happen, a developer can look at this file to see where the crash reporter failed.");
 
             if (_dicPretendFilePaths.TryGetValue("exception.txt", out string exception))
             {
@@ -97,7 +97,7 @@ namespace CrashHandler
 
             Attributes["visible-crashhandler-major-minor"] = "v3_0";
 
-            CrashLogWriter.WriteLine("Crash working directory is " + WorkingDirectory);
+            CrashLogWriter.WriteLine("Crash working directory is " + WorkingDirectory.AnonymizePath());
             CrashLogWriter.Flush();
 
             _worker.WorkerReportsProgress = false;

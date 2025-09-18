@@ -41,6 +41,22 @@ namespace Chummer
             return string.Equals(strInput, Utils.GuidEmptyString, StringComparison.OrdinalIgnoreCase);
         }
 
+        /// <summary>
+        /// Removes all potentially identifiable information from a string containing a directory path.
+        /// </summary>
+        public static string AnonymizePath(this string strPath)
+        {
+            string strAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string strUserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            return strPath
+                .Replace(Utils.GetStartupPath, "[Chummer Path]")
+                .Replace(Utils.GetEscapedStartupPath, "[Chummer Path]")
+                .Replace(strAppDataPath, "[Application Data]")
+                .Replace(strAppDataPath.Replace("\\", "\\\\").Replace("\\\\\\\\", "\\\\"), "[Application Data]")
+                .Replace(strUserProfilePath, "[User Profile]")
+                .Replace(strUserProfilePath.Replace("\\", "\\\\").Replace("\\\\\\\\", "\\\\"), "[User Profile]");
+        }
+
         public static char[] ToPooledCharArray(this string strInput, out int intLength)
         {
             intLength = strInput.Length;
