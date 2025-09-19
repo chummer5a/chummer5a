@@ -431,7 +431,17 @@ namespace Chummer.UI.Skills
                         try
                         {
                             cboSpec.PopulateWithListItems(_objSkill.CGLSpecializations, token: _objMyToken);
-                            cboSpec.DoThreadSafe((x, y) => x.Text = strDisplaySpec, token: _objMyToken);
+                            cboSpec.DoThreadSafe(x =>
+                            {
+                                if (string.IsNullOrEmpty(strDisplaySpec))
+                                    x.SelectedIndex = -1;
+                                else
+                                {
+                                    x.SelectedValue = strDisplaySpec;
+                                    if (x.SelectedIndex == -1)
+                                        x.Text = strDisplaySpec;
+                                }
+                            }, _objMyToken);
                         }
                         finally
                         {
@@ -638,8 +648,17 @@ namespace Chummer.UI.Skills
                                          await _objSkill.GetCGLSpecializationsAsync(_objMyToken)
                                                         .ConfigureAwait(false), token: token)
                                      .ConfigureAwait(false);
-                        await cboSpec.DoThreadSafeAsync(x => x.Text = strDisplaySpec, token: token)
-                                     .ConfigureAwait(false);
+                        await cboSpec.DoThreadSafeAsync(x =>
+                        {
+                            if (string.IsNullOrEmpty(strDisplaySpec))
+                                x.SelectedIndex = -1;
+                            else
+                            {
+                                x.SelectedValue = strDisplaySpec;
+                                if (x.SelectedIndex == -1)
+                                    x.Text = strDisplaySpec;
+                            }
+                        }, token: token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -785,12 +804,6 @@ namespace Chummer.UI.Skills
                     {
                         IReadOnlyList<ListItem> lstSpecializations
                             = await _objSkill.GetCGLSpecializationsAsync(token).ConfigureAwait(false);
-                        string strOldSpec = lstSpecializations.Count != 0
-                            ? await cboSpec
-                                .DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token)
-                                .ConfigureAwait(false)
-                            : await cboSpec.DoThreadSafeFuncAsync(x => x.Text, token: token)
-                                .ConfigureAwait(false);
                         int intOldUpdating = Interlocked.Increment(ref _intUpdatingSpec);
                         try
                         {
@@ -803,20 +816,24 @@ namespace Chummer.UI.Skills
                                     .ConfigureAwait(false);
                                 await cboSpec.DoThreadSafeAsync(x =>
                                 {
-                                    if (string.IsNullOrEmpty(strOldSpec))
+                                    if (string.IsNullOrEmpty(strDisplaySpec))
                                         x.SelectedIndex = -1;
                                     else
                                     {
-                                        x.SelectedValue = strOldSpec;
+                                        x.SelectedValue = strDisplaySpec;
                                         if (x.SelectedIndex == -1)
-                                            x.Text = strOldSpec;
+                                            x.Text = strDisplaySpec;
                                     }
-
-                                    x.Text = strDisplaySpec;
                                 }, token: token).ConfigureAwait(false);
                             }
                             else
                             {
+                                string strOldSpec = lstSpecializations.Count != 0
+                                    ? await cboSpec
+                                        .DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token)
+                                        .ConfigureAwait(false)
+                                    : await cboSpec.DoThreadSafeFuncAsync(x => x.Text, token: token)
+                                        .ConfigureAwait(false);
                                 await cboSpec.PopulateWithListItemsAsync(lstSpecializations, token: token)
                                     .ConfigureAwait(false);
                                 await cboSpec.DoThreadSafeAsync(x =>
@@ -882,8 +899,17 @@ namespace Chummer.UI.Skills
                                     string strDisplaySpec = await _objSkill
                                         .GetTopMostDisplaySpecializationAsync(token)
                                         .ConfigureAwait(false);
-                                    await cboSpec.DoThreadSafeAsync(x => x.Text = strDisplaySpec, token: token)
-                                        .ConfigureAwait(false);
+                                    await cboSpec.DoThreadSafeAsync(x =>
+                                    {
+                                        if (string.IsNullOrEmpty(strDisplaySpec))
+                                            x.SelectedIndex = -1;
+                                        else
+                                        {
+                                            x.SelectedValue = strDisplaySpec;
+                                            if (x.SelectedIndex == -1)
+                                                x.Text = strDisplaySpec;
+                                        }
+                                    }, token: token).ConfigureAwait(false);
                                 }
                             }
                             finally
