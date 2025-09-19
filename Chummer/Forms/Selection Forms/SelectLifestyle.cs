@@ -92,18 +92,6 @@ namespace Chummer
         private void SelectLifestyleAdvanced_FormClosing(object sender, FormClosingEventArgs e)
         {
             _objLifestyle.LifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesOnCollectionChanged;
-            _objLifestyle.PropertyChangedAsync -= RefreshLifestyleQualities;
-        }
-
-        private Task RefreshLifestyleQualities(object sender, PropertyChangedEventArgs e,
-            CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            if (e.PropertyName == nameof(Lifestyle.LifestyleQualities))
-                return LifestyleQualitiesOnCollectionChanged(sender,
-                    new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset), token);
-            return Task.CompletedTask;
         }
 
         private async Task LifestyleQualitiesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
@@ -632,7 +620,6 @@ namespace Chummer
             }).ConfigureAwait(false);
 
             _objLifestyle.LifestyleQualities.CollectionChangedAsync += LifestyleQualitiesOnCollectionChanged;
-            _objLifestyle.PropertyChangedAsync += RefreshLifestyleQualities;
 
             // Populate the City ComboBox
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCity))
