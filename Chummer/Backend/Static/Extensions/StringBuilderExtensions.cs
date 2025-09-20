@@ -53,14 +53,14 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="StringBuilder.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="StringBuilder.Replace(string, string)"/> if the new value is something simple.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that ToString() will be applied to this as part of the method, so it may not be as cheap.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
-        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="StringBuilder.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder CheapReplace([NotNull] this StringBuilder sbdInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
         {
@@ -68,15 +68,15 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="StringBuilder.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="StringBuilder.Replace(string, string)"/> if the new value is something simple.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder in which the replacing takes place.</param>
-        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that StringBuilder::ToString() doesn't need to be called.</param>
+        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that <see cref="StringBuilder.ToString()"/> doesn't need to be called.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
-        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="StringBuilder.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder CheapReplace([NotNull] this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
         {
@@ -99,16 +99,16 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="StringBuilder.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="StringBuilder.Replace(string, string)"/> if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
-        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that ToString() will be applied to this as part of the method, so it may not be as cheap.</param>
+        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that <see cref="StringBuilder.ToString()"/> will be applied to this as part of the method, so it may not be as cheap.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="StringBuilder.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
@@ -116,16 +116,16 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="StringBuilder.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="StringBuilder.Replace(string, string)"/> if the new value is something simple.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder in which the replacing takes place.</param>
-        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that StringBuilder::ToString() doesn't need to be called.</param>
+        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that <see cref="StringBuilder.ToString()"/> doesn't need to be called.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="StringBuilder.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
@@ -176,16 +176,16 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="StringBuilder.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="StringBuilder.Replace(string, string)"/> if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
-        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that ToString() will be applied to this as part of the method, so it may not be as cheap.</param>
+        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that <see cref="StringBuilder.ToString()"/> will be applied to this as part of the method, so it may not be as cheap.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="StringBuilder.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
@@ -193,16 +193,16 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="StringBuilder.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="StringBuilder.Replace(string, string)"/> if the new value is something simple.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder in which the replacing takes place.</param>
-        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that StringBuilder::ToString() doesn't need to be called.</param>
+        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that <see cref="StringBuilder.ToString()"/> doesn't need to be called.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="StringBuilder.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
@@ -246,7 +246,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
@@ -270,7 +270,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -293,7 +293,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[], int, int)"/>, appending an list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -322,7 +322,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending an list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -343,7 +343,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending an list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -364,7 +364,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
@@ -388,7 +388,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -411,7 +411,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[], int, int)"/>, appending an list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -441,7 +441,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending an list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -463,7 +463,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending an list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -485,7 +485,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -511,7 +511,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -537,7 +537,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[], int, int)"/>, appending an list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -569,7 +569,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending an list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -593,7 +593,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending an list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -617,7 +617,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
@@ -644,7 +644,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -670,7 +670,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[], int, int)"/>, appending an list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -702,7 +702,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending an list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -726,7 +726,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending an list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -750,8 +750,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of StringBuilder.ToString() that returns a trimmed version of the string.
-        /// Faster than doing .ToString().Trim() because it takes advantage of StringBuilder internals that can modify string contents quickly without needing to allocate new strings.
+        /// Version of <see cref="StringBuilder.ToString()"> that returns a trimmed version of the string.
+        /// Faster than doing <see cref="StringBuilder.ToString()"> and then <see cref="string.Trim()"> because it takes advantage of StringBuilder internals that can modify string contents quickly without needing to allocate new strings.
         /// </summary>
         /// <param name="sbdInput">StringBuilder containing the string to be trimmed and returned.</param>
         /// <returns>The trimmed version of the string inside of <paramref name="sbdInput"/>.</returns>

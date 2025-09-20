@@ -86,7 +86,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string.Concat that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string ConcatFast(params string[] lstStrings)
         {
@@ -94,7 +94,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string.Concat that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string ConcatFast(IReadOnlyCollection<string> lstStrings)
         {
@@ -140,7 +140,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string.Concat that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
+        /// Version of <see cref="string.Concat(string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
         /// </summary>
         public static string ConcatFast(string strArg0, string strArg1)
         {
@@ -178,7 +178,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string.Concat that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
+        /// Version of <see cref="string.Concat(string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
         /// </summary>
         public static string ConcatFast(string strArg0, string strArg1, string strArg2)
         {
@@ -225,7 +225,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string.Concat that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
+        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
         /// </summary>
         public static string ConcatFast(string strArg0, string strArg1, string strArg2, string strArg3)
         {
@@ -281,7 +281,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string.Concat that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
+        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
         /// </summary>
         public static string ConcatFast(string strArg0, string strArg1, string strArg2, string strArg3, string strArg4)
         {
@@ -349,7 +349,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string.Concat that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
+        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
         /// </summary>
         public static string ConcatFast(string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5)
         {
@@ -426,7 +426,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string.Concat that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
+        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
         /// </summary>
         public static string ConcatFast(string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5, string strArg6)
         {
@@ -512,7 +512,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string.Join that is faster for shorter strings because it uses stackalloc instead of StringBuilder, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Join{T}(string, IEnumerable{T})"> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder">, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string JoinFast(string strSeparator, IReadOnlyCollection<string> lstStrings)
         {
@@ -598,7 +598,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string.Join that is faster for shorter strings because it uses stackalloc instead of StringBuilder, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Join{T}(string, IEnumerable{T})"> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder">, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static async Task<string> JoinFastAsync(string strSeparator, IAsyncReadOnlyCollection<string> lstStrings, CancellationToken token = default)
         {
@@ -720,7 +720,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Identical to string::Replace(), but the comparison for equality is custom-defined instead of always being case-sensitive Ordinal
+        /// Identical to <see cref="string.Replace(string, string)"/>, but the comparison for equality is custom-defined instead of always being case-sensitive Ordinal
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
         /// <param name="strOldValue">Substring to replace</param>
@@ -957,7 +957,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for string::IndexOfAny that uses params in its argument for the char array.
+        /// Syntactic sugar for <see cref="string.IndexOfAny(char[])"/> that uses params in its argument for the char array.
         /// </summary>
         /// <param name="strHaystack">String to search.</param>
         /// <param name="anyOf">Array of characters to match with IndexOfAny</param>
@@ -1085,7 +1085,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for string::LastIndexOfAny that uses params in its argument for the char array.
+        /// Syntactic sugar for <see cref="string.LastIndexOfAny(char[])"/> that uses params in its argument for the char array.
         /// </summary>
         /// <param name="strHaystack">String to search.</param>
         /// <param name="anyOf">Array of characters to match with LastIndexOfAny</param>
@@ -1218,7 +1218,20 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for string::Split that uses one separator char in its argument in addition to StringSplitOptions.
+        /// Syntactic sugar for <see cref="string.Split(char[])"> that uses one separator char in its argument.
+        /// </summary>
+        /// <param name="strInput">String to search.</param>
+        /// <param name="chrSeparator">Separator to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string[] Split(this string strInput, char chrSeparator)
+        {
+            if (strInput == null)
+                throw new ArgumentNullException(nameof(strInput));
+            return strInput.Split(new[] { chrSeparator });
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="string.Split(char[], StringSplitOptions)"> that uses one separator char in its argument.
         /// </summary>
         /// <param name="strInput">String to search.</param>
         /// <param name="chrSeparator">Separator to use.</param>
@@ -1228,11 +1241,39 @@ namespace Chummer
         {
             if (strInput == null)
                 throw new ArgumentNullException(nameof(strInput));
-            return strInput.Split(new[] {chrSeparator}, eSplitOptions);
+            return strInput.Split(new[] { chrSeparator }, eSplitOptions);
         }
 
         /// <summary>
-        /// Syntactic sugar for string::Split that uses one separator string in its argument in addition to StringSplitOptions.
+        /// Syntactic sugar for <see cref="string.Split(char[], int)"> that uses one separator char in its argument.
+        /// </summary>
+        /// <param name="strInput">String to search.</param>
+        /// <param name="intCount">The maximum number of substrings to return.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string[] Split(this string strInput, char chrSeparator, int intCount)
+        {
+            if (strInput == null)
+                throw new ArgumentNullException(nameof(strInput));
+            return strInput.Split(new[] { chrSeparator }, intCount);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="string.Split(char[], int, StringSplitOptions)"> that uses one separator char in its argument.
+        /// </summary>
+        /// <param name="strInput">String to search.</param>
+        /// <param name="chrSeparator">Separator to use.</param>
+        /// <param name="intCount">The maximum number of substrings to return.</param>
+        /// <param name="eSplitOptions">String split options.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string[] Split(this string strInput, char chrSeparator, int intCount, StringSplitOptions eSplitOptions)
+        {
+            if (strInput == null)
+                throw new ArgumentNullException(nameof(strInput));
+            return strInput.Split(new[] { chrSeparator }, intCount, eSplitOptions);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="string.Split(string[], StringSplitOptions)"/> that uses one separator string in its argument.
         /// </summary>
         /// <param name="strInput">String to search.</param>
         /// <param name="strSeparator">Separator to use.</param>
@@ -1243,6 +1284,21 @@ namespace Chummer
             if (strInput == null)
                 throw new ArgumentNullException(nameof(strInput));
             return strInput.Split(new[] {strSeparator}, eSplitOptions);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="string.Split(string[], int, StringSplitOptions)"/> that uses one separator string in its argument.
+        /// </summary>
+        /// <param name="strInput">String to search.</param>
+        /// <param name="strSeparator">Separator to use.</param>
+        /// <param name="intCount">The maximum number of substrings to return.</param>
+        /// <param name="eSplitOptions">String split options.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string[] Split(this string strInput, string strSeparator, int intCount, StringSplitOptions eSplitOptions)
+        {
+            if (strInput == null)
+                throw new ArgumentNullException(nameof(strInput));
+            return strInput.Split(new[] { strSeparator }, intCount, eSplitOptions);
         }
 
         /// <summary>
@@ -1303,7 +1359,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// Version of <see cref="StringExtensions.Split(string, char, StringSplitOptions)"> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="chrSplit">Character to use for splitting.</param>
@@ -1334,7 +1390,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// Version of <see cref="StringExtensions.Split(string, char, int, StringSplitOptions)"> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="chrSplit">Character to use for splitting.</param>
@@ -1370,7 +1426,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// Version of <see cref="StringExtensions.Split(string, string, StringSplitOptions)"> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="strSplit">String to use for splitting.</param>
@@ -1409,7 +1465,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="strSplit">String to use for splitting.</param>
@@ -1453,7 +1509,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// Version of <see cref="string.Split(char[])"> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="achrSplit">Characters to use for splitting.</param>
@@ -1464,7 +1520,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// Version of <see cref="string.Split(char[], StringSplitOptions)"> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="achrSplit">Characters to use for splitting.</param>
@@ -1501,8 +1557,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that guarantees that the returned string will be of a specific size, padding with string.Empty when needed.
-        /// Slightly faster than built-in versions of string:Split() because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Version of <see cref="StringExtensions.Split(string, char, int, StringSplitOptions)"> that guarantees that the returned string will be of a specific size, padding with <see cref="string.Empty"> when needed.
+        /// Slightly faster than built-in versions of <see cref="string.Split"> because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="intSize">Size of the array to return.</param>
@@ -1543,8 +1599,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that guarantees that the returned string will be of a specific size, padding with string.Empty when needed.
-        /// Slightly faster than built-in versions of string:Split() because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"> that guarantees that the returned string will be of a specific size, padding with <see cref="string.Empty"> when needed.
+        /// Slightly faster than built-in versions of <see cref="string.Split"> because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="intSize">Size of the array to return.</param>
@@ -1588,8 +1644,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that guarantees that the returned string will be of a specific size, padding with string.Empty when needed.
-        /// Slightly faster than built-in versions of string:Split() because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Version of <see cref="string.Split(char[], int)"> that guarantees that the returned string will be of a specific size, padding with <see cref="string.Empty"> when needed.
+        /// Slightly faster than built-in versions of <see cref="string.Split"> because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="intSize">Size of the array to return.</param>
@@ -1626,9 +1682,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that returns an array from ArrayPool.Shared instead of allocating it, and only splits to a specific array size, padding with string.Empty when necessary.
-        /// Slightly faster than built-in versions of string:Split() because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
-        /// Remember to return the result to ArrayPool.Shared when finished with it!
+        /// Version of <see cref="string.Split(char[], int, StringSplitOptions)"> that returns an array from <see cref="ArrayPool{string}.Shared"/> instead of allocating it, and only splits to a specific array size, padding with <see cref="string.Empty"> when necessary.
+        /// Slightly faster than built-in versions of <see cref="string.Split"> because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Remember to return the result to <see cref="ArrayPool{string}.Shared"/> when finished with it!
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="intSize">Size of the array to return.</param>
@@ -1679,9 +1735,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that returns an array from ArrayPool.Shared instead of allocating it, and only splits to a specific array size, padding with string.Empty when necessary.
-        /// Slightly faster than built-in versions of string:Split() because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
-        /// Remember to return the result to ArrayPool.Shared when finished with it!
+        /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"> that returns an array from <see cref="ArrayPool{string}.Shared"/> instead of allocating it, and only splits to a specific array size, padding with <see cref="string.Empty"> when necessary.
+        /// Slightly faster than built-in versions of <see cref="string.Split"> because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Remember to return the result to <see cref="ArrayPool{string}.Shared"/> when finished with it!
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="intSize">Size of the array to return.</param>
@@ -1735,9 +1791,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that returns an array from ArrayPool.Shared instead of allocating it, and only splits to a specific array size, padding with string.Empty when necessary.
-        /// Slightly faster than built-in versions of string:Split() because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
-        /// Remember to return the result to ArrayPool.Shared when finished with it!
+        /// Version of <see cref="string.Split(char[], int)"> that returns an array from <see cref="ArrayPool{string}.Shared"/> instead of allocating it, and only splits to a specific array size, padding with <see cref="string.Empty"> when necessary.
+        /// Slightly faster than built-in versions of <see cref="string.Split"> because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Remember to return the result to <see cref="ArrayPool{string}.Shared"/> when finished with it!
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="intSize">Size of the array to return.</param>
@@ -1784,13 +1840,13 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
+        /// Version of <see cref="StringExtensions.Split(string, char, StringSplitOptions)"> that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
         /// <param name="chrSplit">Character to use for splitting.</param>
         /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
-        /// <returns>String array rented from ArrayPool{string}.Shared containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
+        /// <returns>String array rented from <see cref="ArrayPool{string}.Shared"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
         public static string[] SplitToPooledArray(this string strInput, out int arrayLength, char chrSplit,
                                                        StringSplitOptions eSplitOptions = StringSplitOptions.None)
         {
@@ -1845,14 +1901,14 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
+        /// Version of <see cref="StringExtensions.Split(string, char, int, StringSplitOptions)"> that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
         /// <param name="chrSplit">Character to use for splitting.</param>
         /// <param name="intCount">The maximum number of substrings to return.</param>
         /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
-        /// <returns>String array rented from ArrayPool{string}.Shared containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
+        /// <returns>String array rented from <see cref="ArrayPool{string}.Shared"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
         public static string[] SplitToPooledArray(this string strInput, out int arrayLength, char chrSplit, int intCount,
                                                        StringSplitOptions eSplitOptions = StringSplitOptions.None)
         {
@@ -1913,14 +1969,14 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
+        /// Version of <see cref="StringExtensions.Split(string, string, StringSplitOptions)"> that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
         /// <param name="strSplit">String to use for splitting.</param>
         /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
         /// <param name="eComparison">Comparison to use when searching for the next instance of <paramref name="strSplit"/>.</param>
-        /// <returns>String array rented from ArrayPool{string}.Shared containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
+        /// <returns>String array rented from <see cref="ArrayPool{string}.Shared"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
         public static string[] SplitToPooledArray(this string strInput, out int arrayLength, string strSplit,
                                                        StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
         {
@@ -1982,7 +2038,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
+        /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"> that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
@@ -1990,7 +2046,7 @@ namespace Chummer
         /// <param name="intCount">The maximum number of substrings to return.</param>
         /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
         /// <param name="eComparison">Comparison to use when searching for the next instance of <paramref name="strSplit"/>.</param>
-        /// <returns>String array rented from ArrayPool{string}.Shared containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
+        /// <returns>String array rented from <see cref="ArrayPool{string}.Shared"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
         public static string[] SplitToPooledArray(this string strInput, out int arrayLength, string strSplit, int intCount,
                                                        StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
         {
@@ -2059,12 +2115,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// Version of <see cref="string.Split(char[])"> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
         /// <param name="achrSplit">Characters to use for splitting.</param>
-        /// <returns>String array rented from ArrayPool{string}.Shared containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
+        /// <returns>String array rented from <see cref="ArrayPool{string}.Shared"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
         public static string[] SplitToPooledArray(this string strInput, out int arrayLength, params char[] achrSplit)
         {
             arrayLength = 0;
@@ -2119,7 +2175,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Special version of SplitNoAlloc that is meant for processing command-line arguments (where we are supposed to ignore spaces inside of quotation mark blocks)
+        /// Special version of <see cref="StringExtensions.SplitNoAlloc(string, char, StringSplitOptions)"> that is meant for processing command-line arguments (where we are supposed to ignore spaces inside of quotation mark blocks)
         /// </summary>
         /// <param name="strInput">String to process.</param>
         /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split by whitespace</returns>
@@ -2162,7 +2218,7 @@ namespace Chummer
         /// Normalizes whitespace for a given textblock, removing extra spaces and trimming the string.
         /// </summary>
         /// <param name="strInput">Input textblock</param>
-        /// <param name="funcIsWhiteSpace">Custom function with which to check if a character should count as whitespace. If null, defaults to char::IsWhiteSpace && !char::IsControl.</param>
+        /// <param name="funcIsWhiteSpace">Custom function with which to check if a character should count as whitespace. If null, defaults to <see cref="char.IsWhiteSpace(char)"/> && !<see cref="char.IsControl(char)(char)"/>.</param>
         /// <returns>New string with any chars that return true from <paramref name="funcIsWhiteSpace"/> replaced with the first whitespace in a sequence and any excess whitespace removed.</returns>
         public static string NormalizeWhiteSpace(this string strInput, Func<char, bool> funcIsWhiteSpace = null)
         {
@@ -2663,14 +2719,14 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
         /// <param name="strInput">Base string in which the replacing takes place.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
-        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string CheapReplace(this string strInput, string strOldValue, Func<string> funcNewValueFactory,
                                           StringComparison eStringComparison = StringComparison.Ordinal)
@@ -2690,7 +2746,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
@@ -2699,7 +2755,7 @@ namespace Chummer
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue,
                                                            Func<string> funcNewValueFactory,
@@ -2751,7 +2807,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
@@ -2760,7 +2816,7 @@ namespace Chummer
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue,
                                                            Func<string> funcNewValueFactory,
@@ -2774,7 +2830,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
@@ -2783,7 +2839,7 @@ namespace Chummer
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue,
                                                            Func<string> funcNewValueFactory,
@@ -2797,7 +2853,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
@@ -2806,7 +2862,7 @@ namespace Chummer
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue,
                                                            Func<Task<string>> funcNewValueFactory,
@@ -2840,7 +2896,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
@@ -2849,7 +2905,7 @@ namespace Chummer
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue,
                                                            Func<Task<string>> funcNewValueFactory,
@@ -2863,7 +2919,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
@@ -2872,7 +2928,7 @@ namespace Chummer
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue,
                                                            Func<Task<string>> funcNewValueFactory,
@@ -4244,12 +4300,12 @@ namespace Chummer
 
         /// <summary>
         /// Converts the specified string, which encodes binary data as base-64 digits, to an equivalent 8-bit unsigned integer array.
-        /// Nearly identical to Convert.FromBase64String(), but the byte array that's returned is from a shared ArrayPool instead of newly allocated.
+        /// Nearly identical to <see cref="Convert.FromBase64String(string)"/>, but the byte array that's returned is from <see cref="ArrayPool{byte}.Shared"/> instead of newly allocated.
         /// </summary>
         /// <param name="s">The string to convert.</param>
         /// <param name="arrayLength">Actual length of the array used. Important because ArrayPool array can be larger than the lengths requested</param>
         /// <param name="token">Cancellation token to listen to, if any.</param>
-        /// <returns>A rented array (from ArrayPool.Shared) of 8-bit unsigned integers that is equivalent to s.</returns>
+        /// <returns>A rented array (from <see cref="ArrayPool{byte}.Shared"/>) of 8-bit unsigned integers that is equivalent to s.</returns>
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <exception cref="FormatException">The length of s, ignoring white-space characters, is not zero or a multiple of 4. -or-The format of s is invalid. s contains a non-base-64 character, more than two padding characters, or a non-white space-character among the padding characters.</exception>
         public static byte[] ToBase64PooledByteArray(this string s, out int arrayLength, CancellationToken token = default)

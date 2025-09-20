@@ -28,8 +28,8 @@ namespace Chummer
     /// Taken from the WCF project here:
     /// https://github.com/dotnet/wcf/blob/main/src/System.Private.ServiceModel/src/Internals/System/Runtime/AsyncLock.cs
     /// IMPORTANT NOTE:
-    /// Because of our reliance on AsyncLocal to make this work, we need to be A LOT more careful with any method or call that would create a copy of the ExecutionContext,
-    /// because it can end up creating a memory leak. The two most common methods that will do this are Task.Run and CancellationToken.Register.
+    /// Because of our reliance on <see cref="AsyncLocal{T}"/> to make this work, we need to be A LOT more careful with any method or call that would create a copy of the <see cref="ExecutionContext"/>,
+    /// because it can end up creating a memory leak. The two most common methods that will do this are <see cref="Task.Run"/> and <see cref="CancellationToken.Register"/>.
     /// </summary>
     public sealed class AsyncLock : IDisposable, IAsyncDisposable
     {

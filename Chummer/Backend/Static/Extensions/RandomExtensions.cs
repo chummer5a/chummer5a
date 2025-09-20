@@ -26,7 +26,7 @@ namespace Chummer
     public static class RandomExtensions
     {
         /// <summary>
-        /// Special version of NextModuloBiasRemoved(minValue, maxValue) built specifically for a 1D6 roll. The modulo bias to check is calculated at compile time, so the code should run faster.
+        /// Special version of <see cref="NextModuloBiasRemoved(Random, int, int)"/> built specifically for a 1D6 roll. The modulo bias to check is calculated at compile time, so the code should run faster.
         /// </summary>
         /// <param name="objRandom">Instance of Random to use.</param>
         public static int NextD6ModuloBiasRemoved(this Random objRandom)
@@ -45,7 +45,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Wraps Random::Next(maxValue) around code that eliminates modulo bias (i.e. the fact that certain results will be more common based on the remainder when dividing int.MaxValue by them)
+        /// Wraps <see cref="Random.Next(int)"/> around code that eliminates modulo bias (i.e. the fact that certain results will be more common based on the remainder when dividing <see cref="int.MaxValue"/> by them)
         /// </summary>
         /// <param name="objRandom">Instance of Random to use.</param>
         /// <param name="maxValue">Maximum value (exclusive) to generate.</param>
@@ -65,7 +65,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Wraps Random::Next(minValue, maxValue) around code that eliminates modulo bias (i.e. the fact that certain results will be more common based on the remainder when dividing int.MaxValue by them)
+        /// Wraps <see cref="Random.Next(int, int)"/> around code that eliminates modulo bias (i.e. the fact that certain results will be more common based on the remainder when dividing <see cref="int.MaxValue"/> by them)
         /// </summary>
         /// <param name="objRandom">Instance of Random to use.</param>
         /// <param name="minValue">Minimum value (inclusive) to generate.</param>
@@ -76,14 +76,16 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Special version of NextModuloBiasRemoved(minValue, maxValue) built specifically for a 1D6 roll. The modulo bias to check is calculated at compile time, so the code should run faster.
+        /// Special version of <see cref="NextModuloBiasRemovedAsync(Random, int, CancellationToken)"/> built specifically for a 1D6 roll. The modulo bias to check is calculated at compile time, so the code should run faster.
         /// </summary>
         /// <param name="objRandom">Instance of Random to use.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public static Task<int> NextD6ModuloBiasRemovedAsync(this Random objRandom, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<int>(token);
             if (objRandom == null)
-                throw new ArgumentNullException(nameof(objRandom));
+                return Task.FromException<int>(new ArgumentNullException(nameof(objRandom)));
             const int intModuloCheck = int.MaxValue - 1;  // Faster Modulo bias removal for 1d6
             return DoLoop();
             async Task<int> DoLoop()
@@ -109,15 +111,17 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Wraps Random::Next(maxValue) around code that eliminates modulo bias (i.e. the fact that certain results will be more common based on the remainder when dividing int.MaxValue by them)
+        /// Async version of <see cref="Random.Next(int)"/> with a wrapper that eliminates modulo bias (i.e. the fact that certain results will be more common based on the remainder when dividing <see cref="int.MaxValue"/> by them)
         /// </summary>
         /// <param name="objRandom">Instance of Random to use.</param>
         /// <param name="maxValue">Maximum value (exclusive) to generate.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public static Task<int> NextModuloBiasRemovedAsync(this Random objRandom, int maxValue, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<int>(token);
             if (objRandom == null)
-                throw new ArgumentNullException(nameof(objRandom));
+                return Task.FromException<int>(new ArgumentNullException(nameof(objRandom)));
             int intModuloCheck = int.MaxValue - int.MaxValue % maxValue;
             return DoLoop();
             async Task<int> DoLoop()
@@ -140,6 +144,18 @@ namespace Chummer
 
                 return intReturn % maxValue;
             }
+        }
+
+        /// <summary>
+        /// Async version of <see cref="Random.Next(int, int)"/> with a wrapper that eliminates modulo bias (i.e. the fact that certain results will be more common based on the remainder when dividing <see cref="int.MaxValue"/> by them)
+        /// </summary>
+        /// <param name="objRandom">Instance of Random to use.</param>
+        /// <param name="maxValue">Maximum value (exclusive) to generate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<int> NextModuloBiasRemovedAsync(this Random objRandom, int minValue, int maxValue, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await NextModuloBiasRemovedAsync(objRandom, maxValue - minValue, token).ConfigureAwait(false) + minValue;
         }
     }
 }

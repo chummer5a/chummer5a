@@ -23,7 +23,7 @@ using System.Text;
 namespace Chummer
 {
     /// <summary>
-    /// Copy of the otherwise inaccessible System.Xml.XmlDomTextWriter class
+    /// Copy of the otherwise inaccessible <see cref="System.Xml.XmlDomTextWriter"/> class
     /// </summary>
     internal class XmlDOMTextWriter : System.Xml.XmlTextWriter
     {

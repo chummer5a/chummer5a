@@ -26,7 +26,7 @@ namespace Chummer
     public static class WaitHandleExtensions
     {
         /// <summary>
-        /// Version of WaitOne with cancellation token support taken from the following blog:
+        /// Version of <see cref="WaitHandle.WaitOne(int)"/> with cancellation token support taken from the following blog:
         /// https://thomaslevesque.com/2015/06/04/async-and-cancellation-support-for-wait-handles/
         /// </summary>
         public static bool WaitOne(this WaitHandle objHandle, int intTimeout, CancellationToken token)
@@ -49,7 +49,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of WaitOne with cancellation token support taken from the following blog:
+        /// Version of <see cref="WaitHandle.WaitOne(TimeSpan)"/> with cancellation token support taken from the following blog:
         /// https://thomaslevesque.com/2015/06/04/async-and-cancellation-support-for-wait-handles/
         /// </summary>
         public static bool WaitOne(this WaitHandle objHandle, TimeSpan objTimeout, CancellationToken token)
@@ -61,7 +61,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of WaitOne with cancellation token support taken from the following blog:
+        /// Version of <see cref="WaitHandle.WaitOne()"/> with cancellation token support taken from the following blog:
         /// https://thomaslevesque.com/2015/06/04/async-and-cancellation-support-for-wait-handles/
         /// </summary>
         public static bool WaitOne(this WaitHandle objHandle, CancellationToken token)
@@ -73,7 +73,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async version of WaitOne taken from the following blog:
+        /// Async version of <see cref="WaitHandle.WaitOne(int)"/> taken from the following blog:
         /// https://thomaslevesque.com/2015/06/04/async-and-cancellation-support-for-wait-handles/
         /// </summary>
         public static async Task<bool> WaitOneAsync(this WaitHandle objHandle, int intTimeout, CancellationToken token = default)
@@ -104,7 +104,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async version of WaitOne taken from the following blog:
+        /// Async version of <see cref="WaitHandle.WaitOne(TimeSpan)"/> taken from the following blog:
         /// https://thomaslevesque.com/2015/06/04/async-and-cancellation-support-for-wait-handles/
         /// </summary>
         public static Task<bool> WaitOneAsync(this WaitHandle objHandle, TimeSpan objTimeout, CancellationToken token = default)
@@ -114,7 +114,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async version of WaitOne taken from the following blog:
+        /// Async version of <see cref="WaitHandle.WaitOne()"/> taken from the following blog:
         /// https://thomaslevesque.com/2015/06/04/async-and-cancellation-support-for-wait-handles/
         /// </summary>
         public static Task<bool> WaitOneAsync(this WaitHandle objHandle, CancellationToken token = default)

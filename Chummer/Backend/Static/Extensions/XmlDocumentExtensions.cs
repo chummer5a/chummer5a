@@ -306,11 +306,11 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Get an XPathNavigator for an XPathDocument copy of an XmlDocument.
-        /// Method is slow, but the nagivator it creates is faster than that of an XmlDocument. Use accordingly.
+        /// Get an <see cref="XPathNavigator"/> for an <see cref="XPathDocument"/> copy of an <see cref="XmlDocument"/>.
+        /// Method is slow, but the nagivator it creates is faster than that of an <see cref="XmlDocument"/>. Use accordingly.
         /// </summary>
         /// <param name="xmlDocument">The document from which a navigator should be spawned.</param>
-        /// <returns>An XPathNavigator of an XPathDocument copy of <paramref name="xmlDocument"/>.</returns>
+        /// <returns>An <see cref="XPathNavigator"/> of an <see cref="XPathDocument"/> copy of <paramref name="xmlDocument"/>.</returns>
         public static XPathNavigator GetFastNavigator(this XmlDocument xmlDocument)
         {
             if (xmlDocument == null)
@@ -326,12 +326,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Get an XPathNavigator for an XPathDocument copy of an XmlDocument.
-        /// Method is slow, but the nagivator it creates is faster than that of an XmlDocument. Use accordingly.
+        /// Get an <see cref="XPathNavigator"/> for an <see cref="XPathDocument"/> copy of an <see cref="XmlDocument"/>.
+        /// Method is slow, but the nagivator it creates is faster than that of an <see cref="XmlDocument"/>. Use accordingly.
         /// </summary>
         /// <param name="xmlDocument">The document from which a navigator should be spawned.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>An XPathNavigator of an XPathDocument copy of <paramref name="xmlDocument"/>.</returns>
+        /// <returns>An <see cref="XPathNavigator"/> of an <see cref="XPathDocument"/> copy of <paramref name="xmlDocument"/>.</returns>
         public static Task<XPathNavigator> GetFastNavigatorAsync(this XmlDocument xmlDocument, CancellationToken token = default)
         {
             return xmlDocument == null

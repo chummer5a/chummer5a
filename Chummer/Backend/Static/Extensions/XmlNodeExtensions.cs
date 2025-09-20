@@ -30,7 +30,6 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
 using NLog;
-using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace Chummer
 {
@@ -138,15 +137,8 @@ namespace Chummer
         /// from an XmlNode. This version sets the output variable to its
         /// default value in case of a failed read and can be used for
         /// initializing variables. It can work on any type, but it requires
-        /// a tryParse style function that is fed the nodes InnerText
+        /// a tryParse style function that is fed the node's <see cref="XmlNode.InnerText">
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="node"></param>
-        /// <param name="field"></param>
-        /// <param name="parser"></param>
-        /// <param name="read"></param>
-        /// <param name="onError"></param>
-        /// <returns></returns>
         public static bool TryGetField<T>(this XmlNode node, string field, TryParseFunction<T> parser, out T read, T onError = default)
         {
             if (parser != null)
@@ -306,7 +298,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like TryGetField for strings, only with as little overhead as possible.
+        /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for strings, only with as little overhead as possible.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetStringFieldQuickly(this XmlNode node, string field, ref string read)
@@ -325,7 +317,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like TryGetField for strings, only with as little overhead as possible.
+        /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for strings, only with as little overhead as possible.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetMultiLineStringFieldQuickly(this XmlNode node, string field, ref string read)
@@ -340,7 +332,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like TryGetField for ints, but taking advantage of int.TryParse... boo, no TryParse interface! :(
+        /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for ints, but taking advantage of <see cref="int.TryParse(string, out int)">... boo, no TryParse interface! :(
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetInt32FieldQuickly(this XmlNode node, string field, ref int read, IFormatProvider objCulture = null)
@@ -357,7 +349,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like TryGetField for bools, but taking advantage of bool.TryParse... boo, no TryParse interface! :(
+        /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for bools, but taking advantage of <see cref="bool.TryParse(string, out bool)">... boo, no TryParse interface! :(
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetBoolFieldQuickly(this XmlNode node, string field, ref bool read)
@@ -372,7 +364,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like TryGetField for decimals, but taking advantage of decimal.TryParse... boo, no TryParse interface! :(
+        /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for decimals, but taking advantage of <see cref="decimal.TryParse(string, out decimal)">... boo, no TryParse interface! :(
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetDecFieldQuickly(this XmlNode node, string field, ref decimal read, IFormatProvider objCulture = null)
@@ -389,7 +381,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like TryGetField for doubles, but taking advantage of double.TryParse... boo, no TryParse interface! :(
+        /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for doubles, but taking advantage of <see cref="double.TryParse(string, out double)">... boo, no TryParse interface! :(
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetDoubleFieldQuickly(this XmlNode node, string field, ref double read, IFormatProvider objCulture = null)
@@ -406,7 +398,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like TryGetField for float, but taking advantage of float.TryParse... boo, no TryParse interface! :(
+        /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for float, but taking advantage of <see cref="float.TryParse(string, out float)">... boo, no TryParse interface! :(
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetFloatFieldQuickly(this XmlNode node, string field, ref float read, IFormatProvider objCulture = null)
@@ -423,7 +415,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like TryGetField for guids, but taking advantage of guid.TryParse. Allows for returning false if the guid is Empty.
+        /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for guids, but taking advantage of <see cref="Guid.TryParse(string, out Guid)">. Allows for returning false if the guid is <see cref="Guid.Empty">.
         /// </summary>
         /// <param name="node">XPathNavigator node of the object.</param>
         /// <param name="field">Field name of the InnerXML element we're looking for.</param>
@@ -444,7 +436,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Query the XmlNode for a given node with an id or name element. Includes ToUpperInvariant processing to handle uppercase ids.
+        /// Query the XmlNode for a given node with an id or name element. Includes <see cref="string.ToUpperInvariant"> processing to handle uppercase ids.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XmlNode TryGetNodeByNameOrId(this XmlNode node, string strPath, string strId, string strExtraXPath = "")
@@ -474,7 +466,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Query the XmlNode for a given node with an id. Includes ToUpperInvariant processing to handle uppercase ids.
+        /// Query the XmlNode for a given node with an id. Includes <see cref="string.ToUpperInvariant"> processing to handle uppercase ids.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XmlNode TryGetNodeById(this XmlNode node, string strPath, Guid guidId, string strExtraXPath = "")
@@ -503,7 +495,7 @@ namespace Chummer
 
         /// <summary>
         /// Selects a single node using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
-        /// Effectively a version of SelectSingleNode(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
+        /// Effectively a version of <see cref="XmlNode.SelectSingleNode(string)"> that is slower on the first run (and consumes some memory), but faster on subsequent runs.
         /// Only use this if there's a particular XPath expression that keeps being used over and over.
         /// </summary>
         public static XPathNavigator SelectSingleNodeAndCacheExpressionAsNavigator(this XmlNode xmlNode, string xpath, CancellationToken token = default)
@@ -515,7 +507,7 @@ namespace Chummer
 
         /// <summary>
         /// Selects a node set using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
-        /// Effectively a version of Select(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
+        /// Effectively a version of <see cref="XmlNode.Select(string)"> that is slower on the first run (and consumes some memory), but faster on subsequent runs.
         /// Only use this if there's a particular XPath expression that keeps being used over and over.
         /// </summary>
         public static XPathNodeIterator SelectAndCacheExpressionAsNavigator(this XmlNode xmlNode, string xpath, CancellationToken token = default)
@@ -526,7 +518,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for an equivalent of string.IsNullOrEmpty(xmlNode?.InnerText), but without needing any sort of heap allocations.
+        /// Syntactic sugar for an equivalent of calling <see cref="string.IsNullOrEmpty(string)"> on <see cref="XmlNode.InnerText"> with a null check, but without needing any sort of heap allocations.
         /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
         /// </summary>
         public static bool IsNullOrInnerTextIsEmpty(this XmlNode xmlNode)
@@ -565,7 +557,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to check if the inner text of a node would just be "True" (without quotes) without needing to go through rendering the node's entire contents.
+        /// Syntactic sugar to check if <see cref="XmlNode.InnerText"> of a node would just be <see cref="bool.TrueString"> without needing to go through rendering the node's entire contents.
         /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
         /// </summary>
         public static bool InnerTextIsTrueString(this XmlNode xmlNode)
@@ -589,7 +581,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to check if the inner text of a node would just be "False" (without quotes) without needing to go through rendering the node's entire contents.
+        /// Syntactic sugar to check if <see cref="XmlNode.InnerText"> of a node would just be <see cref="bool.FalseString"> without needing to go through rendering the node's entire contents.
         /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
         /// </summary>
         public static bool InnerTextIsFalseString(this XmlNode xmlNode)
@@ -683,7 +675,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Copy of default InnerText getter, but going through our StringBuilder pool instead creating a new one via heap allocation.
+        /// Copy of <see cref="XmlNode.InnerText" />, but going through <see cref="Utils.StringBuilderPool"> instead creating a new one via heap allocation.
         /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
         /// </summary>
         public static string InnerTextViaPool(this XmlNode xmlNode)
@@ -729,7 +721,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Copy of default InnerText getter followed by Trim(), but going through our StringBuilder pool and ToTrimmedString() instead creating a new one via heap allocation.
+        /// Copy of <see cref="XmlNode.InnerText" /> followed by <see cref="string.Trim()">, but going through <see cref="Utils.StringBuilderPool"> and <see cref="StringBuilderExtensions.ToTrimmedString(StringBuilder)"> instead creating a new one via heap allocation.
         /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
         /// </summary>
         public static string InnerTextViaPoolTrimmed(this XmlNode xmlNode)
@@ -775,7 +767,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Copy of default InnerXml getter, but going through our StringBuilder pool instead creating a new one via heap allocation.
+        /// Copy of <see cref="XmlNode.InnerXml" />, but going through <see cref="Utils.StringBuilderPool"> instead creating a new one via heap allocation.
         /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
         /// </summary>
         public static string InnerXmlViaPool(this XmlNode xmlNode)
@@ -794,7 +786,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Copy of default OuterXml getter, but going through our StringBuilder pool instead creating a new one via heap allocation.
+        /// Copy of <see cref="XmlNode.OuterXml" />, but going through <see cref="Utils.StringBuilderPool"> instead creating a new one via heap allocation.
         /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
         /// </summary>
         public static string OuterXmlViaPool(this XmlNode xmlNode)

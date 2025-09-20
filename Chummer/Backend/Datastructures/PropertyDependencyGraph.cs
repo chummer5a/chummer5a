@@ -26,10 +26,9 @@ using System.Threading.Tasks;
 namespace Chummer
 {
     /// <summary>
-    /// Special version of DependencyGraph that is made explicitly for collecting property dependencies.
+    /// Special version of <see cref="DependencyGraph{string, T}"/> that is made explicitly for collecting property dependencies.
     /// The fact that all dependencies are stored as strings allows for a few extra optimizations to be used.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public class PropertyDependencyGraph<T> : DependencyGraph<string, T>
     {
         /// <summary>

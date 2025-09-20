@@ -272,7 +272,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for LINQ Any() call that will use List::Exists() if possible.
+        /// Syntactic sugar for LINQ Any() call that will use <see cref="List.Exists(Predicate{T})"/> if possible.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="lstCollection"></param>
@@ -286,7 +286,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for LINQ FirstOrDefault call that will use List::Find() if possible.
+        /// Syntactic sugar for LINQ FirstOrDefault call that will use <see cref="List.Find(Predicate{T})"/> if possible.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="lstCollection"></param>
@@ -300,7 +300,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for LINQ LastOrDefault call that will use List::FindLast() if possible.
+        /// Syntactic sugar for LINQ LastOrDefault call that will use <see cref="List.FindLast(Predicate{T})"/> if possible.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="lstCollection"></param>
@@ -314,7 +314,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for LINQ Where().ToList() call that will use List::FindAll() if possible.
+        /// Syntactic sugar for LINQ Where().ToList() call that will use <see cref="List.FindAll(Predicate{T})"/> if possible.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="lstCollection"></param>

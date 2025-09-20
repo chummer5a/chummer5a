@@ -28,10 +28,10 @@ using System.Threading.Tasks;
 namespace Chummer
 {
     /// <summary>
-    /// A version of Dictionary that is paired with a ReaderWriterLock.
-    /// In theory, this dictionary can be faster in serial contexts than ConcurrentDictionary.
-    /// Because ReadWriterLock allows parallel reads and only locks out writes, it's also faster than using a simple setup with the lock keyword.
-    /// However, for mass parallel writes, use ConcurrentDictionary instead because locking the entire dictionary when accessing keys is not good for performance.
+    /// A version of <see cref="Dictionary{TKey, TValue}"/> that is paired with a <see cref="AsyncFriendlyReaderWriterLock"/>.
+    /// In theory, this dictionary can be faster in serial contexts than <see cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}"/>.
+    /// Because <see cref="AsyncFriendlyReaderWriterLock"/> allows parallel reads and only locks out writes, it's also faster than using a simple setup with the lock keyword.
+    /// However, for mass parallel writes, use <see cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}"/> instead because locking the entire dictionary when accessing keys is not good for performance.
     /// </summary>
     /// <typeparam name="TKey">Key to use for the dictionary.</typeparam>
     /// <typeparam name="TValue">Values to use for the dictionary.</typeparam>

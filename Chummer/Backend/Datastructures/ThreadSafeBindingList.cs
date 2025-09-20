@@ -29,10 +29,9 @@ using System.Threading.Tasks;
 namespace Chummer
 {
     /// <summary>
-    /// Thread-safe-wrapped version of CachedBindingList, but also with constraints on the generic type so that it can only be used on a class with INotifyPropertyChanged.
-    /// Use ThreadSafeObservableCollection instead for classes without INotifyPropertyChanged.
+    /// Thread-safe-wrapped version of <see cref="CachedBindingList{T}"/>, but also with constraints on the generic type so that it can only be used on a class with <see cref="INotifyPropertyChanged"/>.
+    /// Use <see cref="ThreadSafeObservableCollection{T}"/> instead for classes without <see cref="INotifyPropertyChanged"/>.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public class ThreadSafeBindingList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IBindingList, ICancelAddNew, IRaiseItemChangedEvents, IHasLockObject, IAsyncProducerConsumerCollection<T>, IAsyncEnumerableWithSideEffects<T> where T : INotifyPropertyChanged
     {
         /// <inheritdoc />

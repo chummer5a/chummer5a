@@ -25,7 +25,7 @@ namespace Chummer
     public static class CancellationTokenExtensions
     {
         /// <summary>
-        /// Version of CancellationToken.Register that is done in an empty execution context as a way to avoid leaking memory of AsyncLocals
+        /// Version of <see cref="CancellationToken.Register(Action)"> that is done in an empty execution context as a way to avoid leaking memory of AsyncLocals
         /// </summary>
         public static CancellationTokenRegistration RegisterWithoutEC(this CancellationToken token, Action callback)
         {
@@ -33,7 +33,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of CancellationToken.Register that is done in an empty execution context as a way to avoid leaking memory of AsyncLocals
+        /// Version of <see cref="CancellationToken.Register(Action{object}, object)"> that is done in an empty execution context as a way to avoid leaking memory of AsyncLocals
         /// </summary>
         public static CancellationTokenRegistration RegisterWithoutEC(this CancellationToken token, Action<object> callback, object state)
         {

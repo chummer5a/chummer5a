@@ -25,7 +25,7 @@ namespace Chummer
     public static class ReaderWriterLockSlimExtensions
     {
         /// <summary>
-        /// Version of ReaderWriterLockSlim::EnterReadLock() that also processes application events if this is called on the UI thread
+        /// Version of <see cref="ReaderWriterLockSlim.EnterReadLock()"> that also processes application events if this is called on the UI thread
         /// </summary>
         public static void SafeEnterReadLock(this ReaderWriterLockSlim rwlLockerObject, bool blnForceDoEvents = false)
         {
@@ -54,7 +54,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of ReaderWriterLockSlim::EnterUpgradeableReadLock() that also processes application events if this is called on the UI thread
+        /// Version of <see cref="ReaderWriterLockSlim.EnterUpgradeableReadLock()"> that also processes application events if this is called on the UI thread
         /// </summary>
         public static void SafeEnterUpgradeableReadLock(this ReaderWriterLockSlim rwlLockerObject, bool blnForceDoEvents = false)
         {
@@ -83,7 +83,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of ReaderWriterLockSlim::EnterReadLock() that also processes application events if this is called on the UI thread
+        /// Version of <see cref="ReaderWriterLockSlim.EnterWriteLock()"> that also processes application events if this is called on the UI thread
         /// </summary>
         public static void SafeEnterWriteLock(this ReaderWriterLockSlim rwlLockerObject, bool blnForceDoEvents = false)
         {

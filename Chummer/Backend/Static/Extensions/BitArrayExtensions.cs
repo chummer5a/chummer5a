@@ -27,7 +27,7 @@ namespace Chummer
     public static class BitArrayExtensions
     {
         /// <summary>
-        /// Syntactic sugar for getting a copy of a BitArray's internal integer array (that is normally not accessible due to protection levels).
+        /// Syntactic sugar for getting a copy of a <see cref="BitArray">'s internal integer array (that is normally not accessible due to protection levels).
         /// </summary>
         /// <param name="ablnArray">Array from which to copy.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42,7 +42,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Get the first element in a BitArray that matches <paramref name="blnValue"/>.
+        /// Get the first element in a <see cref="BitArray"> that matches <paramref name="blnValue"/>.
         /// </summary>
         /// <param name="ablnArray">Array to search.</param>
         /// <param name="blnValue">Value for which to look.</param>
@@ -64,12 +64,11 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Count the number of bits set in a BitArray using special bit twiddling.
+        /// Count the number of bits set in a <see cref="BitArray"> using special bit twiddling.
         /// Adapted from https://stackoverflow.com/questions/5063178/counting-bits-set-in-a-net-bitarray-class
         /// and http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel.
         /// </summary>
         /// <param name="ablnToCount">Array to process</param>
-        /// <returns></returns>
         public static int CountTrues(this BitArray ablnToCount)
         {
             if (ablnToCount == null)
@@ -107,11 +106,10 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Check if all bits in a bit array are set or unset.
+        /// Check if all bits in a <see cref="BitArray"> are set or unset.
         /// </summary>
         /// <param name="ablnArray">Array to process</param>
         /// <param name="blnValue">True if we are checking set bits, false if we are checking unset bits.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AllValue(this BitArray ablnArray, bool blnValue)
         {

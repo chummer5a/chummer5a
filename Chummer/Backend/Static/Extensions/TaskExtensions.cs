@@ -26,7 +26,7 @@ namespace Chummer
     public static class TaskExtensions
     {
         /// <summary>
-        /// Version of Task.Run that runs in an empty execution context as a way to avoid leaking memory of AsyncLocals
+        /// Version of <see cref="Task.Run(Action)"/> that runs in an empty execution context as a way to avoid leaking memory of AsyncLocals
         /// </summary>
         public static Task RunWithoutEC(Action func)
         {
@@ -34,7 +34,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of Task.Run that runs in an empty execution context as a way to avoid leaking memory of AsyncLocals
+        /// Version of <see cref="Task.Run(Action, CancellationToken)"/> that runs in an empty execution context as a way to avoid leaking memory of AsyncLocals
         /// </summary>
         public static Task RunWithoutEC(Action func, CancellationToken token)
         {
@@ -44,7 +44,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of Task.Run that runs in an empty execution context as a way to avoid leaking memory of AsyncLocals
+        /// Version of <see cref="Task.Run{TResult}(Func{TResult})"/> that runs in an empty execution context as a way to avoid leaking memory of AsyncLocals
         /// </summary>
         public static Task<T> RunWithoutEC<T>(Func<T> func)
         {
@@ -52,7 +52,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of Task.Run that runs in an empty execution context as a way to avoid leaking memory of AsyncLocals
+        /// Version of <see cref="Task.Run{TResult}(Func{TResult}, CancellationToken)"/> that runs in an empty execution context as a way to avoid leaking memory of AsyncLocals
         /// </summary>
         public static Task<T> RunWithoutEC<T>(Func<T> func, CancellationToken token)
         {

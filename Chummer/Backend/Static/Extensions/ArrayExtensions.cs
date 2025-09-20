@@ -25,6 +25,10 @@ namespace Chummer
 {
     public static class ArrayExtensions
     {
+        /// <summary>
+        /// Async copy of <see cref="Array.Sort(Array, Array, int, int, System.Collections.IComparer)"/> that supports an async comparer.
+        /// Yes, the algorithm in <see cref="Array.Sort(Array, Array, int, int, System.Collections.IComparer)"/> isn't necessarily the most optimal for us, but it's better to keep it the same for consistency.
+        /// </summary>
         public static Task SortAsync<T>(this T[] keys, int index, int length, Func<T, T, Task<int>> comparer, CancellationToken token = default)
         {
             return length >= 2

@@ -35,8 +35,8 @@ using NLog;
 namespace Chummer
 {
     /// <summary>
-    /// Async/await-friendly version of ReaderWriterLockSlim that works off of SemaphoreSlim instead.
-    /// ReaderWriterLockSlim's locks have thread affinity and so have problems when a lock is entered on one thread, an async/await Task engine is created and executed, and then
+    /// Async/await-friendly version of <see cref="ReaderWriterLockSlim"/> that works off of <see cref="DebuggableSemaphoreSlim"/> instead.
+    /// <see cref="ReaderWriterLockSlim"/>'s locks have thread affinity and so have problems when a lock is entered on one thread, an async/await Task engine is created and executed, and then
     /// the code resumes on a different thread (which can happen with async/await) and tries releasing the lock.
     /// Internals and method heavily inspired by the code in the pull request mentioned in this StackOverflow comment:
     /// https://stackoverflow.com/questions/19659387/readerwriterlockslim-and-async-await#comment120825654_64757462
@@ -44,8 +44,8 @@ namespace Chummer
     /// https://github.com/dotnet/wcf/blob/main/src/System.Private.ServiceModel/src/Internals/System/Runtime/AsyncLock.cs
     /// https://itnext.io/reentrant-recursive-async-lock-is-impossible-in-c-e9593f4aa38a
     /// IMPORTANT NOTE:
-    /// Because of our reliance on AsyncLocal to make this work, we need to be A LOT more careful with any method or call that would create a copy of the ExecutionContext,
-    /// because it can end up creating a memory leak. The two most common methods that will do this are Task.Run and CancellationToken.Register.
+    /// Because of our reliance on <see cref="AsyncLocal{T}"/> to make this work, we need to be A LOT more careful with any method or call that would create a copy of the <see cref="ExecutionContext"/>,
+    /// because it can end up creating a memory leak. The two most common methods that will do this are <see cref="Task.Run"/> and <see cref="CancellationToken.Register"/>.
     /// </summary>
     public sealed class AsyncFriendlyReaderWriterLock : IAsyncDisposable, IDisposable
     {
@@ -280,7 +280,7 @@ namespace Chummer
 
         /// <summary>
         /// Try to synchronously obtain a lock for writing.
-        /// The returned SafeSemaphoreWriterRelease must be stored for when the write lock is to be released.
+        /// The returned <see cref="SafeWriterSemaphoreRelease"/> must be stored for when the write lock is to be released.
         /// </summary>
         public IDisposable EnterWriteLock(CancellationToken token = default)
         {
@@ -359,8 +359,8 @@ namespace Chummer
 
         /// <summary>
         /// Try to asynchronously obtain a lock for writing.
-        /// The returned SafeSemaphoreWriterRelease must be stored for when the write lock is to be released.
-        /// NOTE: Ensure that you are separately handling OperationCanceledException in the calling context and disposing of this result if the token is canceled!
+        /// The returned <see cref="SafeWriterSemaphoreRelease"/> must be stored for when the write lock is to be released.
+        /// NOTE: Ensure that you are separately handling <see cref="OperationCanceledException"/> in the calling context and disposing of this result if the token is canceled!
         /// </summary>
         public Task<IAsyncDisposable> EnterWriteLockAsync(CancellationToken token = default)
         {
@@ -564,7 +564,7 @@ namespace Chummer
 
         /// <summary>
         /// Try to asynchronously obtain a lock for reading (that can be upgraded to a write lock) and return a disposable that exits the read lock when disposed.
-        /// NOTE: Ensure that you are separately handling OperationCanceledException in the calling context and disposing of this result if the token is canceled!
+        /// NOTE: Ensure that you are separately handling <see cref="OperationCanceledException"/> in the calling context and disposing of this result if the token is canceled!
         /// </summary>
         public Task<IAsyncDisposable> EnterUpgradeableReadLockAsync(CancellationToken token = default)
         {
@@ -833,7 +833,7 @@ namespace Chummer
 
         /// <summary>
         /// Try to asynchronously obtain a lock for reading and only reading and return a disposable that exits the read lock when disposed.
-        /// NOTE: Ensure that you are separately handling OperationCanceledException in the calling context and disposing of this result if the token is canceled!
+        /// NOTE: Ensure that you are separately handling <see cref="OperationCanceledException"/> in the calling context and disposing of this result if the token is canceled!
         /// </summary>
         public Task<IAsyncDisposable> EnterReadLockAsync(CancellationToken token = default)
         {
@@ -842,7 +842,7 @@ namespace Chummer
 
         /// <summary>
         /// Try to asynchronously obtain a lock for reading and only reading and return a disposable that exits the read lock when disposed.
-        /// NOTE: Ensure that you are separately handling OperationCanceledException in the calling context and disposing of this result if the token is canceled!
+        /// NOTE: Ensure that you are separately handling <see cref="OperationCanceledException"/> in the calling context and disposing of this result if the token is canceled!
         /// This version will set the lock's parent to an upgradeable read lock instead of a non-upgradeable one
         /// </summary>
         public Task<IAsyncDisposable> EnterReadLockWithUpgradeableParentAsync(CancellationToken token = default)
@@ -852,7 +852,7 @@ namespace Chummer
 
         /// <summary>
         /// Try to asynchronously obtain a lock for reading and only reading and return a disposable that exits the read lock when disposed.
-        /// NOTE: Ensure that you are separately handling OperationCanceledException in the calling context and disposing of this result if the token is canceled!
+        /// NOTE: Ensure that you are separately handling <see cref="OperationCanceledException"/> in the calling context and disposing of this result if the token is canceled!
         /// This version will set the lock's parent to an upgradeable read lock instead of a non-upgradeable one if the lock's parent is in a write lock or potential write lock.
         /// </summary>
         public Task<IAsyncDisposable> EnterReadLockWithMatchingParentLockAsync(CancellationToken token = default)

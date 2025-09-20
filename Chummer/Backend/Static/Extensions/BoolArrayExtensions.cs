@@ -31,7 +31,6 @@ namespace Chummer
         /// <param name="blnValue">Value for which to look.</param>
         /// <param name="intFrom">Index from which to start search (inclusive).</param>
         /// <param name="intTo">Index at which to end search (exclusive).</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FirstMatching(this bool[] ablnArray, bool blnValue, int intFrom = 0, int intTo = int.MaxValue)
         {

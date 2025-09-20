@@ -687,7 +687,7 @@ namespace Chummer
         });
 
         /// <summary>
-        /// Copy of default InnerXml getter, but going through our StringBuilder pool instead creating a new one via heap allocation
+        /// Copy of <see cref="XPathNavigator.InnerXml"/>, but going through <see cref="Utils.StringBuilderPool"/> instead creating a new one via heap allocation
         /// </summary>
         public static string InnerXmlViaPool(this XPathNavigator xmlNode)
         {
@@ -725,7 +725,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Copy of default OuterXml getter, but going through our StringBuilder pool instead creating a new one via heap allocation
+        /// Copy of <see cref="XPathNavigator.OuterXml"/>, but going through <see cref="Utils.StringBuilderPool"/> instead creating a new one via heap allocation
         /// </summary>
         public static string OuterXmlViaPool(this XPathNavigator xmlNode)
         {

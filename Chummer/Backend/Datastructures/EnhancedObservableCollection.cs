@@ -33,9 +33,8 @@ using Chummer.Annotations;
 namespace Chummer
 {
     /// <summary>
-    /// Expanded version of ObservableCollection that has an extra event for processing items before a Clear() command is executed.
+    /// Expanded version of <see cref="ObservableCollection{T}"/> that has an extra event for processing items before a <see cref="ObservableCollection{T}.ClearItems()"/> command is executed.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public class EnhancedObservableCollection<T> : ObservableCollection<T>, INotifyMultiplePropertiesChangedAsync, IAsyncList<T>
     {
         /// <summary>

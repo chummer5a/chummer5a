@@ -27,16 +27,13 @@ namespace Chummer
     public static class BindingListExtensions
     {
         /// <summary>
-        /// Sorts the elements in a range of elements in an ObservableCollection using the specified
-        /// System.Collections.Generic.IComparer`1 generic interface.
+        /// Sorts the elements in a range of elements in a <see cref="System.ComponentModel.BindingList{T}"/> using the specified <see cref="System.Collections.Generic.IComparer{T}"> generic interface.
+        /// If more than half of the list is changed, a <see cref="System.ComponentModel.ListChangedType.Reset"/> event is fired, otherwise it will be a series of <see cref="System.ComponentModel.ListChangedType.ItemChanged"/> events.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="lstCollection">The ObservableCollection to sort.</param>
+        /// <param name="lstCollection">The list to sort.</param>
         /// <param name="index">The starting index of the range to sort.</param>
         /// <param name="length">The number of elements in the range to sort.</param>
-        /// <param name="objComparer">The System.Collections.Generic.IComparer`1 generic interface
-        /// implementation to use when comparing elements, or null to use the System.IComparable`1 generic
-        /// interface implementation of each element.</param>
+        /// <param name="objComparer">The <see cref="System.Collections.Generic.IComparer{T}"> generic interface implementation to use when comparing elements, or null to use the <see cref="System.IComparable{T}"> generic interface implementation of each element.</param>
         public static void Sort<T>(this BindingList<T> lstCollection, int index, int length, IComparer<T> objComparer = null) where T : IComparable
         {
             if (lstCollection == null)
@@ -116,11 +113,11 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Sorts the elements in a range of elements in an ObservableCollection using the specified System.Comparison`1.
+        /// Sorts the elements in a range of elements in a <see cref="System.ComponentModel.BindingList{T}"/> using the specified <see cref="System.Comparison{T}">.
+        /// If more than half of the list is changed, a <see cref="System.ComponentModel.ListChangedType.Reset"/> event is fired, otherwise it will be a series of <see cref="System.ComponentModel.ListChangedType.ItemChanged"/> events.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="lstCollection">The ObservableCollection to sort.</param>
-        /// <param name="funcComparison">The System.Comparison`1 to use when comparing elements.</param>
+        /// <param name="lstCollection">The list to sort.</param>
+        /// <param name="funcComparison">The <see cref="System.Comparison{T}"> to use when comparing elements.</param>
         public static void Sort<T>(this BindingList<T> lstCollection, Comparison<T> funcComparison)
         {
             if (lstCollection == null)
@@ -195,14 +192,11 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Sorts the elements in a range of elements in an ObservableCollection using the specified
-        /// System.Collections.Generic.IComparer`1 generic interface.
+        /// Sorts the elements in a range of elements in a <see cref="System.ComponentModel.BindingList{T}"/> using the specified <see cref="System.Collections.Generic.IComparer{T}"> generic interface.
+        /// If more than half of the list is changed, a <see cref="System.ComponentModel.ListChangedType.Reset"/> event is fired, otherwise it will be a series of <see cref="System.ComponentModel.ListChangedType.ItemChanged"/> events.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="lstCollection">The ObservableCollection to sort.</param>
-        /// <param name="objComparer">The System.Collections.Generic.IComparer`1 generic interface
-        /// implementation to use when comparing elements, or null to use the System.IComparable`1 generic
-        /// interface implementation of each element.</param>
+        /// <param name="lstCollection">The list to sort.</param>
+        /// <param name="objComparer">The <see cref="System.Collections.Generic.IComparer{T}"> generic interface implementation to use when comparing elements, or null to use the <see cref="System.IComparable{T}"> generic interface implementation of each element.</param>
         public static void Sort<T>(this BindingList<T> lstCollection, IComparer<T> objComparer = null) where T : IComparable
         {
             if (lstCollection == null)
@@ -274,13 +268,21 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Move a single item in a <see cref="System.ComponentModel.BindingList{T}"/> from one index to another.
+        /// If more than half of the list is changed, a <see cref="System.ComponentModel.ListChangedType.Reset"/> event is fired, otherwise it will be a series of <see cref="System.ComponentModel.ListChangedType.ItemChanged"/> events.
+        /// We cannot fire a <see cref="System.ComponentModel.ListChangedType.ItemMoved"/> because we do not have access to the internal methods required for us to be able to fire it instead of the others.
+        /// </summary>
+        /// <param name="lstCollection">The list in which the item is to be moved.</param>
+        /// <param name="intOldIndex">The current index where the item to be moved is located.</param>
+        /// <param name="intNewIndex">The new index to which the selected item should be moved.</param>
         public static void Move<T>(this BindingList<T> lstCollection, int intOldIndex, int intNewIndex)
         {
+            int intParity = intOldIndex < intNewIndex ? 1 : -1;
             bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
             try
             {
                 lstCollection.RaiseListChangedEvents = false;
-                int intParity = intOldIndex < intNewIndex ? 1 : -1;
                 for (int i = intOldIndex; i != intNewIndex; i += intParity)
                 {
                     (lstCollection[intOldIndex + intParity], lstCollection[intOldIndex]) = (lstCollection[intOldIndex], lstCollection[intOldIndex + intParity]);
@@ -289,6 +291,18 @@ namespace Chummer
             finally
             {
                 lstCollection.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+            }
+
+            if (Math.Abs(intOldIndex - intNewIndex) * 2 >= lstCollection.Count)
+            {
+                lstCollection.ResetBindings();
+            }
+            else
+            {
+                for (int i = intOldIndex; i != intNewIndex; i += intParity)
+                {
+                    lstCollection.ResetItem(i);
+                }
             }
         }
     }
