@@ -867,7 +867,7 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             objXmlWriter.Formatting = Formatting.Indented;
                             objXmlWriter.Indentation = 2;
-                            await TaskExtensions.RunWithoutEC(() => _objFormatXmlDocument.WriteTo(objXmlWriter), token).ConfigureAwait(false);
+                            await TaskExtensions.RunWithoutEC(() => _objFormatXmlDocument.Save(objXmlWriter), token).ConfigureAwait(false);
                         }
                     }
                     token.ThrowIfCancellationRequested();
