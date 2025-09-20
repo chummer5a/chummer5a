@@ -351,8 +351,8 @@ namespace Chummer
 
                     await _objBaseXmlDocument.LoadStandardAsync(strFilePath, true, token: token).ConfigureAwait(false);
                     _blnDirty = false;
-                    _strBaseXmlContent = _objBaseXmlDocument.OuterXmlViaPool();
-                    string strText = FormatXml(_strBaseXmlContent);
+                    _strBaseXmlContent = _objBaseXmlDocument.OuterXmlViaPool(token);
+                    string strText = await FormatXml(_strBaseXmlContent, token).ConfigureAwait(false);
                     string strTemplate = await GetAmendmentTemplate(token).ConfigureAwait(false);
                     string strDiffPreviewText = await LanguageManager.GetStringAsync("XmlEditor_LoadInstructions", token: token).ConfigureAwait(false);
                     string strTitle = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Title", token: token).ConfigureAwait(false), strSelectedFile);
@@ -426,9 +426,9 @@ namespace Chummer
                     Exception exFromAmend = await ApplyAmendmentOperationsAsync(_objResultXmlDocument, _objAmendmentXmlDocument, token).ConfigureAwait(false);
                     if (exFromAmend == default)
                     {
-                        _strResultXmlContent = _objResultXmlDocument.OuterXmlViaPool();
+                        _strResultXmlContent = _objResultXmlDocument.OuterXmlViaPool(token);
                         // Update the UI
-                        string strResultText = FormatXml(_strResultXmlContent);
+                        string strResultText = await FormatXml(_strResultXmlContent, token).ConfigureAwait(false);
                         await txtResultXml.DoThreadSafeAsync(x => x.Text = strResultText, token).ConfigureAwait(false);
                         await cmdSaveAmendment.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                     }
@@ -850,24 +850,33 @@ namespace Chummer
             }
         }
 
-        private string FormatXml(string strXml)
+        private async Task<string> FormatXml(string strXml, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             try
             {
                 _objFormatXmlDocument.LoadXml(strXml);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
+                    token.ThrowIfCancellationRequested();
                     using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
                     {
+                        token.ThrowIfCancellationRequested();
                         using (XmlTextWriter objXmlWriter = new XmlTextWriter(objStringWriter))
                         {
+                            token.ThrowIfCancellationRequested();
                             objXmlWriter.Formatting = Formatting.Indented;
                             objXmlWriter.Indentation = 2;
-                            _objFormatXmlDocument.WriteTo(objXmlWriter);
+                            await TaskExtensions.RunWithoutEC(() => _objFormatXmlDocument.WriteTo(objXmlWriter), token).ConfigureAwait(false);
                         }
                     }
+                    token.ThrowIfCancellationRequested();
                     return sbdReturn.ToTrimmedString();
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch
             {

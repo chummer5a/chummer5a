@@ -539,13 +539,13 @@ namespace Chummer.Backend.Equipment
                                    ? ThreadSafeForm<SelectArmorMod>.Get(
                                        () => new SelectArmorMod(_objCharacter, this)
                                        {
-                                           AllowedCategories = objXmlCategoryNode.InnerTextViaPool(),
+                                           AllowedCategories = objXmlCategoryNode.InnerTextViaPool(token),
                                            ExcludeGeneralCategory = true
                                        })
                                    : await ThreadSafeForm<SelectArmorMod>.GetAsync(
                                        () => new SelectArmorMod(_objCharacter, this)
                                        {
-                                           AllowedCategories = objXmlCategoryNode.InnerTextViaPool(),
+                                           AllowedCategories = objXmlCategoryNode.InnerTextViaPool(token),
                                            ExcludeGeneralCategory = true
                                        }, token).ConfigureAwait(false))
                         {
@@ -632,12 +632,12 @@ namespace Chummer.Backend.Equipment
                         string strForceValue = string.Empty;
                         if (objXmlAttributes != null)
                         {
-                            int.TryParse(objXmlAttributes["rating"]?.InnerTextViaPool(), NumberStyles.Any,
+                            int.TryParse(objXmlAttributes["rating"]?.InnerTextViaPool(token), NumberStyles.Any,
                                 GlobalSettings.InvariantCultureInfo, out intRating);
-                            strForceValue = objXmlAttributes["select"]?.InnerTextViaPool() ?? string.Empty;
+                            strForceValue = objXmlAttributes["select"]?.InnerTextViaPool(token) ?? string.Empty;
                         }
 
-                        XmlNode objXmlMod = objXmlArmorDocument.TryGetNodeByNameOrId("/chummer/mods/mod", objXmlArmorMod.InnerTextViaPool());
+                        XmlNode objXmlMod = objXmlArmorDocument.TryGetNodeByNameOrId("/chummer/mods/mod", objXmlArmorMod.InnerTextViaPool(token));
                         ArmorMod objMod = new ArmorMod(_objCharacter);
                         try
                         {
@@ -656,13 +656,13 @@ namespace Chummer.Backend.Equipment
                                 objMod.IncludedInArmor = true;
                                 objMod.ArmorCapacity = "[0]";
                                 objMod.Cost = "0";
-                                string strMaxRating = objXmlAttributes?["maxrating"]?.InnerTextViaPool();
+                                string strMaxRating = objXmlAttributes?["maxrating"]?.InnerTextViaPool(token);
                                 //If maxrating is being specified, we're intentionally bypassing the normal maximum rating. Set the maxrating first, then the rating again.
                                 if (!string.IsNullOrEmpty(strMaxRating))
                                 {
                                     objMod.MaxRating = strMaxRating;
                                     int intDummy = intRating;
-                                    string strOverrideRating = objXmlAttributes["rating"]?.InnerTextViaPool();
+                                    string strOverrideRating = objXmlAttributes["rating"]?.InnerTextViaPool(token);
                                     if (!string.IsNullOrEmpty(strOverrideRating))
                                         int.TryParse(strOverrideRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                             out intDummy);
@@ -683,9 +683,9 @@ namespace Chummer.Backend.Equipment
                                 string strLoopMaximumRating = string.Empty;
                                 if (objXmlAttributes != null)
                                 {
-                                    int.TryParse(objXmlAttributes["rating"]?.InnerTextViaPool(), NumberStyles.Any,
+                                    int.TryParse(objXmlAttributes["rating"]?.InnerTextViaPool(token), NumberStyles.Any,
                                         GlobalSettings.InvariantCultureInfo, out intLoopRating);
-                                    strLoopMaximumRating = objXmlAttributes["maxrating"]?.InnerTextViaPool() ?? string.Empty;
+                                    strLoopMaximumRating = objXmlAttributes["maxrating"]?.InnerTextViaPool(token) ?? string.Empty;
                                 }
                                 objMod.Name = _strName;
                                 objMod.Category = "Features";
@@ -1002,7 +1002,7 @@ namespace Chummer.Backend.Equipment
                 {
                     _guiID = Guid.NewGuid();
                 }
-                string strLocation = objNode["location"]?.InnerTextViaPool();
+                string strLocation = objNode["location"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strLocation))
                 {
                     if (blnSync)

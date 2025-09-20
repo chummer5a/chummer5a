@@ -772,8 +772,8 @@ namespace Chummer
                             strFileName += ".chum5";
                         await objCharacter.SetFileNameAsync(strFileName, token).ConfigureAwait(false);
 
-                        await objCharacter.CreateAsync(objXmlMetatype["category"]?.InnerTextViaPool(),
-                            objXmlMetatype["id"]?.InnerTextViaPool(),
+                        await objCharacter.CreateAsync(objXmlMetatype["category"]?.InnerTextViaPool(token),
+                            objXmlMetatype["id"]?.InnerTextViaPool(token),
                             string.Empty, objXmlMetatype, intForce, token: token).ConfigureAwait(false);
                         await objCharacter.SetMetatypeBPAsync(0, token).ConfigureAwait(false);
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar =

@@ -416,7 +416,7 @@ namespace Chummer
                 if (objNode["improvementsource"] != null)
                 {
                     _eImprovementSource
-                        = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerTextViaPool());
+                        = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerTextViaPool(token));
                 }
 
                 objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);

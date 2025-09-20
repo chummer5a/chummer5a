@@ -415,12 +415,12 @@ namespace Chummer.Backend.Equipment
                     foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
                     {
                         XmlNode objXmlWeapon = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
-                            objXmlAddWeapon.InnerTextViaPool());
+                            objXmlAddWeapon.InnerTextViaPool(token));
 
                         if (objXmlWeapon != null)
                         {
                             int intAddWeaponRating = 0;
-                            string strLoopRating = objXmlAddWeapon.Attributes?["rating"]?.InnerTextViaPool();
+                            string strLoopRating = objXmlAddWeapon.Attributes?["rating"]?.InnerTextViaPool(token);
                             if (!string.IsNullOrEmpty(strLoopRating))
                             {
                                 strLoopRating = blnSync

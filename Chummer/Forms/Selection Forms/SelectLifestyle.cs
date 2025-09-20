@@ -999,10 +999,10 @@ namespace Chummer
             XmlNode objXmlLifestyle = _xmlDocument.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", strBaseLifestyle);
             if (objXmlLifestyle == null)
                 return;
-            _objLifestyle.Source = objXmlLifestyle["source"]?.InnerTextViaPool();
-            _objLifestyle.Page = objXmlLifestyle["page"]?.InnerTextViaPool();
+            _objLifestyle.Source = objXmlLifestyle["source"]?.InnerTextViaPool(token);
+            _objLifestyle.Page = objXmlLifestyle["page"]?.InnerTextViaPool(token);
             await _objLifestyle.SetNameAsync(strLifestyleName, token).ConfigureAwait(false);
-            decimal.TryParse(objXmlLifestyle["cost"]?.InnerTextViaPool(), System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCost);
+            decimal.TryParse(objXmlLifestyle["cost"]?.InnerTextViaPool(token), System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCost);
             await _objLifestyle.SetCostAsync(decCost, token).ConfigureAwait(false);
             await _objLifestyle.SetPercentageAsync(await nudPercentage.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false), token).ConfigureAwait(false);
             await _objLifestyle.SetBaseLifestyleAsync(strBaseLifestyle, token).ConfigureAwait(false);
@@ -1028,9 +1028,9 @@ namespace Chummer
                 await _objLifestyle.SetBonusLPAsync(await nudBonusLP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false);
 
             // Get the starting Nuyen information.
-            if (int.TryParse(objXmlLifestyle["dice"]?.InnerTextViaPool(), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intDice))
+            if (int.TryParse(objXmlLifestyle["dice"]?.InnerTextViaPool(token), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intDice))
                 await _objLifestyle.SetDiceAsync(intDice, token).ConfigureAwait(false);
-            decimal.TryParse(objXmlLifestyle["multiplier"]?.InnerTextViaPool(), System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decMultiplier);
+            decimal.TryParse(objXmlLifestyle["multiplier"]?.InnerTextViaPool(token), System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decMultiplier);
             await _objLifestyle.SetMultiplierAsync(decMultiplier, token).ConfigureAwait(false);
             SelectedLifestyle = _objLifestyle;
             await this.DoThreadSafeAsync(x =>
@@ -1166,9 +1166,9 @@ namespace Chummer
                         {
                             foreach (XmlNode objXmlDistrict in xmlDistrictList)
                             {
-                                string strName = objXmlDistrict["name"]?.InnerTextViaPool()
+                                string strName = objXmlDistrict["name"]?.InnerTextViaPool(token)
                                                     ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
-                                lstDistrict.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerTextViaPool() ?? strName));
+                                lstDistrict.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerTextViaPool(token) ?? strName));
                             }
                         }
                     }
@@ -1198,9 +1198,9 @@ namespace Chummer
                             {
                                 foreach (XmlNode objXmlDistrict in xmlBoroughList)
                                 {
-                                    string strName = objXmlDistrict["name"]?.InnerTextViaPool()
+                                    string strName = objXmlDistrict["name"]?.InnerTextViaPool(token)
                                                      ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
-                                    lstBorough.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerTextViaPool() ?? strName));
+                                    lstBorough.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerTextViaPool(token) ?? strName));
                                 }
                             }
                         }

@@ -530,9 +530,9 @@ namespace Chummer.Backend.Equipment
                     (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortsMaximum);
                 objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
                 if (objNode["lifestylequalitytype"] != null)
-                    _eType = ConvertToLifestyleQualityType(objNode["lifestylequalitytype"].InnerTextViaPool());
+                    _eType = ConvertToLifestyleQualityType(objNode["lifestylequalitytype"].InnerTextViaPool(token));
                 if (objNode["lifestylequalitysource"] != null)
-                    OriginSource = ConvertToLifestyleQualitySource(objNode["lifestylequalitysource"].InnerTextViaPool());
+                    OriginSource = ConvertToLifestyleQualitySource(objNode["lifestylequalitysource"].InnerTextViaPool(token));
                 if (!objNode.TryGetStringFieldQuickly("category", ref _strCategory)
                     && (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("category", ref _strCategory) != true)
                     _strCategory = string.Empty;

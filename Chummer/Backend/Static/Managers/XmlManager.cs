@@ -1254,15 +1254,15 @@ namespace Chummer
                             || string.Equals(xmlLoopNode.Name, "accessories", StringComparison.OrdinalIgnoreCase)
                             || string.Equals(xmlLoopNode.Name, "weaponmounts", StringComparison.OrdinalIgnoreCase)))
                         continue;
-                    string strId = xmlLoopNode["id"]?.InnerTextViaPool();
+                    string strId = xmlLoopNode["id"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrEmpty(strId))
                     {
                         if (xmlLoopNode.Name == "knowledgeskilllevel")
                             continue; //TODO: knowledgeskilllevel node in lifemodules.xml uses ids instead of name references. Find a better way to manage this!
                         strId = strId.ToUpperInvariant();
-                        string strItemName = xmlLoopNode["name"]?.InnerTextViaPool()
-                                             ?? xmlLoopNode["stage"]?.InnerTextViaPool()
-                                             ?? xmlLoopNode["category"]?.InnerTextViaPool()
+                        string strItemName = xmlLoopNode["name"]?.InnerTextViaPool(token)
+                                             ?? xmlLoopNode["stage"]?.InnerTextViaPool(token)
+                                             ?? xmlLoopNode["category"]?.InnerTextViaPool(token)
                                              ?? strId;
                         if (!strId.IsGuid())
                             lstItemsWithMalformedIDs.Add(strItemName);
@@ -1343,7 +1343,7 @@ namespace Chummer
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    string strTranslate = objChild.SelectSingleNodeAndCacheExpression("@translate", token)?.InnerXmlViaPool();
+                    string strTranslate = objChild.SelectSingleNodeAndCacheExpression("@translate", token)?.InnerXmlViaPool(token);
                     if (!string.IsNullOrEmpty(strTranslate))
                     {
                         // Handle Category name translations.
@@ -1379,11 +1379,11 @@ namespace Chummer
                 }
                 else
                 {
-                    string strTranslate = objChild.SelectSingleNodeAndCacheExpression("@translate", token)?.InnerXmlViaPool();
+                    string strTranslate = objChild.SelectSingleNodeAndCacheExpression("@translate", token)?.InnerXmlViaPool(token);
                     if (!string.IsNullOrEmpty(strTranslate))
                     {
                         // Handle Category name translations.
-                        XmlElement objItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + "[. = " + objChild.InnerXmlViaPool().Replace("&amp;", "&").CleanXPath() + ']') as XmlElement;
+                        XmlElement objItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + "[. = " + objChild.InnerXmlViaPool(token).Replace("&amp;", "&").CleanXPath() + ']') as XmlElement;
                         // Expected result is null if not found.
                         objItem?.SetAttribute("translate", strTranslate);
                     }
@@ -1447,7 +1447,7 @@ namespace Chummer
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    string strTranslate = objChild.SelectSingleNodeAndCacheExpression("@translate", token)?.InnerXmlViaPool();
+                    string strTranslate = objChild.SelectSingleNodeAndCacheExpression("@translate", token)?.InnerXmlViaPool(token);
                     if (!string.IsNullOrEmpty(strTranslate))
                     {
                         // Handle Category name translations.
@@ -1483,11 +1483,11 @@ namespace Chummer
                 }
                 else
                 {
-                    string strTranslate = objChild.SelectSingleNodeAndCacheExpression("@translate", token)?.InnerXmlViaPool();
+                    string strTranslate = objChild.SelectSingleNodeAndCacheExpression("@translate", token)?.InnerXmlViaPool(token);
                     if (!string.IsNullOrEmpty(strTranslate))
                     {
                         // Handle Category name translations.
-                        XmlElement objItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + "[. = " + objChild.InnerXmlViaPool().Replace("&amp;", "&").CleanXPath() + ']') as XmlElement;
+                        XmlElement objItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + "[. = " + objChild.InnerXmlViaPool(token).Replace("&amp;", "&").CleanXPath() + ']') as XmlElement;
                         // Expected result is null if not found.
                         objItem?.SetAttribute("translate", strTranslate);
                     }
@@ -1609,13 +1609,13 @@ namespace Chummer
                                         XmlElement xmlIdNode = objType["id"];
                                         if (xmlIdNode != null)
                                             sbdFilter.Append("id = ")
-                                                     .Append(xmlIdNode.InnerTextViaPool().Replace("&amp;", "&").CleanXPath());
+                                                     .Append(xmlIdNode.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath());
                                         else
                                         {
                                             xmlIdNode = objType["name"];
                                             if (xmlIdNode != null)
                                                 sbdFilter.Append("name = ")
-                                                         .Append(xmlIdNode.InnerTextViaPool().Replace("&amp;", "&").CleanXPath());
+                                                         .Append(xmlIdNode.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath());
                                         }
 
                                         // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
@@ -1633,7 +1633,7 @@ namespace Chummer
                                                         sbdFilter.Append(" and ");
                                                     sbdFilter.Append(objExtraId.Name).Append(" = ")
                                                              .Append(
-                                                                 objExtraId.InnerTextViaPool().Replace("&amp;", "&").CleanXPath());
+                                                                 objExtraId.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath());
                                                 }
                                             }
                                         }
@@ -1647,7 +1647,7 @@ namespace Chummer
                                             "/chummer/" + objNode.Name + '/' + objType.Name + '[' + strFilter + ']');
                                         if (objItem != null)
                                         {
-                                            objItem.InnerXml = objType.InnerXmlViaPool();
+                                            objItem.InnerXml = objType.InnerXmlViaPool(token);
                                             blnReturn = true;
                                         }
                                     }
@@ -1699,7 +1699,7 @@ namespace Chummer
                                     string strFilter = string.Empty;
                                     XmlElement xmlIdNode = objChild["id"];
                                     if (xmlIdNode != null)
-                                        strFilter = "id = " + xmlIdNode.InnerTextViaPool().Replace("&amp;", "&").CleanXPath();
+                                        strFilter = "id = " + xmlIdNode.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath();
                                     else
                                     {
                                         XmlElement xmlNameNode = objChild["name"];
@@ -1708,7 +1708,7 @@ namespace Chummer
                                             strFilter += (string.IsNullOrEmpty(strFilter)
                                                              ? "name = "
                                                              : " and name = ") +
-                                                         xmlNameNode.InnerTextViaPool().Replace("&amp;", "&").CleanXPath();
+                                                         xmlNameNode.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath();
                                         }
                                     }
 
@@ -1922,13 +1922,13 @@ namespace Chummer
                                         XmlElement xmlIdNode = objType["id"];
                                         if (xmlIdNode != null)
                                             sbdFilter.Append("id = ")
-                                                     .Append(xmlIdNode.InnerTextViaPool().Replace("&amp;", "&").CleanXPath());
+                                                     .Append(xmlIdNode.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath());
                                         else
                                         {
                                             xmlIdNode = objType["name"];
                                             if (xmlIdNode != null)
                                                 sbdFilter.Append("name = ")
-                                                         .Append(xmlIdNode.InnerTextViaPool().Replace("&amp;", "&").CleanXPath());
+                                                         .Append(xmlIdNode.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath());
                                         }
 
                                         token.ThrowIfCancellationRequested();
@@ -1947,7 +1947,7 @@ namespace Chummer
                                                         sbdFilter.Append(" and ");
                                                     sbdFilter.Append(objExtraId.Name).Append(" = ")
                                                              .Append(
-                                                                 objExtraId.InnerTextViaPool().Replace("&amp;", "&").CleanXPath());
+                                                                 objExtraId.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath());
                                                 }
                                             }
                                         }
@@ -1961,7 +1961,7 @@ namespace Chummer
                                             "/chummer/" + objNode.Name + '/' + objType.Name + '[' + strFilter + ']');
                                         if (objItem != null)
                                         {
-                                            objItem.InnerXml = objType.InnerXmlViaPool();
+                                            objItem.InnerXml = objType.InnerXmlViaPool(token);
                                             blnReturn = true;
                                         }
                                     }
@@ -2013,7 +2013,7 @@ namespace Chummer
                                     string strFilter = string.Empty;
                                     XmlElement xmlIdNode = objChild["id"];
                                     if (xmlIdNode != null)
-                                        strFilter = "id = " + xmlIdNode.InnerTextViaPool().Replace("&amp;", "&").CleanXPath();
+                                        strFilter = "id = " + xmlIdNode.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath();
                                     else
                                     {
                                         XmlElement xmlNameNode = objChild["name"];
@@ -2022,7 +2022,7 @@ namespace Chummer
                                             strFilter += (string.IsNullOrEmpty(strFilter)
                                                              ? "name = "
                                                              : " and name = ") +
-                                                         xmlNameNode.InnerTextViaPool().Replace("&amp;", "&").CleanXPath();
+                                                         xmlNameNode.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath();
                                         }
                                     }
 
@@ -2217,7 +2217,7 @@ namespace Chummer
                 XmlNode objAmendOperation = objAmendingNodeAttribs.RemoveNamedItem("amendoperation");
                 if (objAmendOperation != null)
                 {
-                    strOperation = objAmendOperation.InnerTextViaPool();
+                    strOperation = objAmendOperation.InnerTextViaPool(token);
                 }
 
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
@@ -2226,7 +2226,7 @@ namespace Chummer
                     XmlNode objCustomXPath = objAmendingNodeAttribs.RemoveNamedItem("xpathfilter");
                     if (objCustomXPath != null)
                     {
-                        sbdFilter.Append(objCustomXPath.InnerTextViaPool().Replace("&amp;", "&").Replace("&quot;", "\""));
+                        sbdFilter.Append(objCustomXPath.InnerTextViaPool(token).Replace("&amp;", "&").Replace("&quot;", "\""));
                     }
                     else
                     {
@@ -2235,7 +2235,7 @@ namespace Chummer
                         if (objAmendingNodeId != null)
                         {
                             sbdFilter.Append("id = ")
-                                     .Append(objAmendingNodeId.InnerTextViaPool().Replace("&amp;", "&").CleanXPath());
+                                     .Append(objAmendingNodeId.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath());
                         }
                         else
                         {
@@ -2247,7 +2247,7 @@ namespace Chummer
                                 // A few places in the data files use just "name" as an actual entry in a list, so only default to using it as an id node
                                 // if there are other nodes present in the amending node or if a remove operation is specified (since that only requires an id node).
                                 sbdFilter.Append("name = ")
-                                         .Append(objAmendingNodeId.InnerTextViaPool().Replace("&amp;", "&").CleanXPath());
+                                         .Append(objAmendingNodeId.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath());
                             }
                         }
                         token.ThrowIfCancellationRequested();
@@ -2264,7 +2264,7 @@ namespace Chummer
                                     if (sbdFilter.Length > 0)
                                         sbdFilter.Append(" and ");
                                     sbdFilter.Append(objExtraId.Name).Append(" = ")
-                                             .Append(objExtraId.InnerTextViaPool().Replace("&amp;", "&").CleanXPath());
+                                             .Append(objExtraId.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath());
                                 }
                             }
                         }
@@ -2290,7 +2290,7 @@ namespace Chummer
                 XmlNode objRegExPattern = objAmendingNodeAttribs.RemoveNamedItem("regexpattern");
                 if (objRegExPattern != null)
                 {
-                    strRegexPattern = objRegExPattern.InnerTextViaPool();
+                    strRegexPattern = objRegExPattern.InnerTextViaPool(token);
                 }
             }
 

@@ -334,7 +334,7 @@ namespace Chummer
                     = await this.GetNodeAsync(strLanguageToPrint, token: token).ConfigureAwait(false);
                 if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
-                    strDisplayName = objXmlCritterNode?["translate"]?.InnerTextViaPool() ?? strName;
+                    strDisplayName = objXmlCritterNode?["translate"]?.InnerTextViaPool(token) ?? strName;
                 }
 
                 // <spirit>
@@ -481,7 +481,7 @@ namespace Chummer
                                             intAttrValue = _intForce;
                                         int intDicepool = intAttrValue + _intForce;
 
-                                        string strEnglishName = xmlSkillNode.InnerTextViaPool();
+                                        string strEnglishName = xmlSkillNode.InnerTextViaPool(token);
                                         string strTranslatedName
                                             = xmlSkillsDocument
                                                   .SelectSingleNode("/chummer/skills/skill[name = "
@@ -600,7 +600,7 @@ namespace Chummer
                             .ConfigureAwait(false));
                     string strSource = string.Empty;
                     string strPage = string.Empty;
-                    string strPowerName = xmlPowerEntryNode.InnerTextViaPool();
+                    string strPowerName = xmlPowerEntryNode.InnerTextViaPool(token);
                     string strEnglishName = strPowerName;
                     string strEnglishCategory = string.Empty;
                     string strCategory = string.Empty;

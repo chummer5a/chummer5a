@@ -32,7 +32,7 @@ namespace Chummer
     public static class XmlDocumentExtensions
     {
         /// <summary>
-        /// Syntactic sugar for synchronously loading an XmlDocument from a file with standard encoding and XmlReader settings
+        /// Syntactic sugar for calling <see cref="XmlDocument.Load(string)"/> with standard encoding and XmlReader settings
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
@@ -59,7 +59,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for asynchronously loading an XmlDocument from a file with standard encoding and XmlReader settings
+        /// Syntactic sugar for asynchronously calling <see cref="XmlDocument.Load(string)"/> with standard encoding and XmlReader settings
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
@@ -90,7 +90,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for synchronously loading an XmlDocument from an LZMA-compressed file with standard encoding and XmlReader settings
+        /// Syntactic sugar for calling <see cref="XmlDocument.Load(string)"/> on an LZMA-compressed file with standard encoding and XmlReader settings
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
@@ -128,7 +128,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for asynchronously loading an XmlDocument from an LZMA-compressed file with standard encoding and XmlReader settings
+        /// Syntactic sugar for asynchronously calling <see cref="XmlDocument.Load(string)"/> on an LZMA-compressed file with standard encoding and XmlReader settings
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
@@ -166,7 +166,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for synchronously loading an XmlDocument from a file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
+        /// Syntactic sugar for calling <see cref="XmlDocument.Load(string)"/> with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
@@ -201,7 +201,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for asynchronously loading an XmlDocument from a file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
+        /// Syntactic sugar for asynchronously calling <see cref="XmlDocument.Load(string)"/> with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
@@ -236,7 +236,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for synchronously loading an XmlDocument from an LZMA-compressed file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
+        /// Syntactic sugar for calling <see cref="XmlDocument.Load(string)"/> on an LZMA-compressed file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
@@ -271,7 +271,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for asynchronously loading an XmlDocument from an LZMA-compressed file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
+        /// Syntactic sugar for asynchronously calling <see cref="XmlDocument.Load(string)"/> on an LZMA-compressed file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>

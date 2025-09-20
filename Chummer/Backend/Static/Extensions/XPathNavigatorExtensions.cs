@@ -689,30 +689,39 @@ namespace Chummer
         /// <summary>
         /// Copy of <see cref="XPathNavigator.InnerXml"/>, but going through <see cref="Utils.StringBuilderPool"/> instead creating a new one via heap allocation
         /// </summary>
-        public static string InnerXmlViaPool(this XPathNavigator xmlNode)
+        public static string InnerXmlViaPool(this XPathNavigator xmlNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (xmlNode.NodeType)
             {
                 case XPathNodeType.Root:
                 case XPathNodeType.Element:
                     {
+                        token.ThrowIfCancellationRequested();
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                         {
+                            token.ThrowIfCancellationRequested();
                             using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
                             {
+                                token.ThrowIfCancellationRequested();
                                 using (XmlWriter objXmlWriter = XmlWriter.Create(objStringWriter, s_xmlWriterSettings.Value))
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     if (xmlNode.MoveToFirstChild())
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         do
                                         {
+                                            token.ThrowIfCancellationRequested();
                                             objXmlWriter.WriteNode(xmlNode, defattr: true);
                                         }
                                         while (xmlNode.MoveToNext());
+                                        token.ThrowIfCancellationRequested();
                                         xmlNode.MoveToParent();
                                     }
                                 }
                             }
+                            token.ThrowIfCancellationRequested();
                             return sbdReturn.ToString();
                         }
                     }
@@ -727,8 +736,9 @@ namespace Chummer
         /// <summary>
         /// Copy of <see cref="XPathNavigator.OuterXml"/>, but going through <see cref="Utils.StringBuilderPool"/> instead creating a new one via heap allocation
         /// </summary>
-        public static string OuterXmlViaPool(this XPathNavigator xmlNode)
+        public static string OuterXmlViaPool(this XPathNavigator xmlNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (xmlNode.NodeType == XPathNodeType.Attribute)
             {
                 return xmlNode.Name + "=\"" + xmlNode.Value + "\"";
@@ -744,15 +754,20 @@ namespace Chummer
                 return "xmlns:" + xmlNode.LocalName + "=\"" + xmlNode.Value + "\"";
             }
 
+            token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
+                token.ThrowIfCancellationRequested();
                 using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
                 {
+                    token.ThrowIfCancellationRequested();
                     using (XmlWriter objXmlWriter = XmlWriter.Create(objStringWriter, s_xmlWriterSettings.Value))
                     {
+                        token.ThrowIfCancellationRequested();
                         objXmlWriter.WriteNode(xmlNode, defattr: true);
                     }
                 }
+                token.ThrowIfCancellationRequested();
                 return sbdReturn.ToString();
             }
         }

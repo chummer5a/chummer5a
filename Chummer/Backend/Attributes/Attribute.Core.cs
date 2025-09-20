@@ -204,7 +204,7 @@ namespace Chummer.Backend.Attributes
                 else
                 {
                     _eMetatypeCategory =
-                        ConvertToMetatypeAttributeCategory(objNode["metatypecategory"]?.InnerTextViaPool() ?? "Standard");
+                        ConvertToMetatypeAttributeCategory(objNode["metatypecategory"]?.InnerTextViaPool(token) ?? "Standard");
                 }
             }
             finally

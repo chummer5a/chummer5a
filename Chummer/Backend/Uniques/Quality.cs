@@ -266,7 +266,7 @@ namespace Chummer
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
                 objXmlQuality.TryGetInt32FieldQuickly("karma", ref _intBP);
-                _eQualityType = ConvertToQualityType(objXmlQuality["category"]?.InnerTextViaPool());
+                _eQualityType = ConvertToQualityType(objXmlQuality["category"]?.InnerTextViaPool(token));
                 _eQualitySource = objQualitySource;
                 objXmlQuality.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);
                 objXmlQuality.TryGetBoolFieldQuickly("canbuywithspellpoints", ref _blnCanBuyWithSpellPoints);
@@ -296,13 +296,13 @@ namespace Chummer
                             : await _objCharacter.LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false);
                         foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
                         {
-                            string strLoopID = objXmlAddWeapon.InnerTextViaPool();
+                            string strLoopID = objXmlAddWeapon.InnerTextViaPool(token);
                             XmlNode objXmlWeapon = objXmlWeaponDocument.TryGetNodeByNameOrId(
                                 "/chummer/weapons/weapon", strLoopID);
                             if (objXmlWeapon != null)
                             {
                                 int intAddWeaponRating = 0;
-                                string strWeaponRating = objXmlAddWeapon.Attributes?["rating"]?.InnerTextViaPool();
+                                string strWeaponRating = objXmlAddWeapon.Attributes?["rating"]?.InnerTextViaPool(token);
                                 if (!string.IsNullOrEmpty(strWeaponRating) && int.TryParse(
                                         strWeaponRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                         out int intWeaponRating))
@@ -627,8 +627,8 @@ namespace Chummer
                 objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
                 objNode.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);
                 objNode.TryGetBoolFieldQuickly("canbuywithspellpoints", ref _blnCanBuyWithSpellPoints);
-                _eQualityType = ConvertToQualityType(objNode["qualitytype"]?.InnerTextViaPool());
-                _eQualitySource = ConvertToQualitySource(objNode["qualitysource"]?.InnerTextViaPool());
+                _eQualityType = ConvertToQualityType(objNode["qualitytype"]?.InnerTextViaPool(token));
+                _eQualitySource = ConvertToQualitySource(objNode["qualitysource"]?.InnerTextViaPool(token));
                 string strTemp = string.Empty;
                 if (objNode.TryGetStringFieldQuickly("metagenic", ref strTemp)
                     //Shim for characters files that have the old name for the metagenic flag.
@@ -669,7 +669,7 @@ namespace Chummer
                                                      && (_eQualityType == QualityType.Positive
                                                          || _eQualityType == QualityType.Negative):
                         XmlNode objTemp = blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
-                        if (objTemp != null && ConvertToQualityType(objTemp["category"]?.InnerTextViaPool()) != _eQualityType)
+                        if (objTemp != null && ConvertToQualityType(objTemp["category"]?.InnerTextViaPool(token)) != _eQualityType)
                             _eQualitySource = QualitySource.MetatypeRemovedAtChargen;
                         break;
                     // Legacy shim for priority-given qualities
@@ -2553,7 +2553,7 @@ namespace Chummer
                     foreach (Quality objQuality in objCharacter.Qualities)
                     {
                         token.ThrowIfCancellationRequested();
-                        if (string.Equals(objQuality.SourceIDString, objXmlQuality["id"]?.InnerTextViaPool(), StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(objQuality.SourceIDString, objXmlQuality["id"]?.InnerTextViaPool(token), StringComparison.OrdinalIgnoreCase))
                         {
                             reason |= QualityFailureReasons
                                 .LimitExceeded; //QualityFailureReason is a flag enum, meaning each bit represents a different thing
@@ -2582,7 +2582,7 @@ namespace Chummer
                                     foreach (XmlNode node in xmlNodeList)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        lstRequired.Add(node.InnerTextViaPool());
+                                        lstRequired.Add(node.InnerTextViaPool(token));
                                     }
                                 }
                             }
@@ -2603,7 +2603,7 @@ namespace Chummer
                                 foreach (XmlNode objNode in xmlNodeList)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    if (objNode.InnerTextViaPool() == objCharacter.Metatype)
+                                    if (objNode.InnerTextViaPool(token) == objCharacter.Metatype)
                                     {
                                         reason &= ~QualityFailureReasons.MetatypeRequired;
                                         break;
@@ -2636,7 +2636,7 @@ namespace Chummer
                                     foreach (XmlNode node in xmlNodeList)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        if (!lstRequired.Contains(node.InnerTextViaPool()))
+                                        if (!lstRequired.Contains(node.InnerTextViaPool(token)))
                                         {
                                             reason |= QualityFailureReasons.RequiredMultiple;
                                             break;
@@ -2668,7 +2668,7 @@ namespace Chummer
                                     foreach (XmlNode node in xmlNodeList)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        setQualityForbidden.Add(node.InnerTextViaPool());
+                                        setQualityForbidden.Add(node.InnerTextViaPool(token));
                                     }
                                 }
                             }

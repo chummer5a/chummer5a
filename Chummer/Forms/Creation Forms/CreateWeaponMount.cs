@@ -278,7 +278,7 @@ namespace Chummer
                 XmlElement xmlForbiddenNode = xmlSelectedMount["forbidden"];
                 if (xmlForbiddenNode != null)
                 {
-                    string strStringToCheck = xmlSelectedControl["name"]?.InnerTextViaPool();
+                    string strStringToCheck = xmlSelectedControl["name"]?.InnerTextViaPool(_objGenericToken);
                     if (!string.IsNullOrEmpty(strStringToCheck))
                     {
                         using (XmlNodeList xmlControlNodeList = xmlForbiddenNode.SelectNodes("control"))
@@ -287,14 +287,14 @@ namespace Chummer
                             {
                                 foreach (XmlNode xmlLoopNode in xmlControlNodeList)
                                 {
-                                    if (xmlLoopNode.InnerTextViaPool() == strStringToCheck)
+                                    if (xmlLoopNode.InnerTextViaPool(_objGenericToken) == strStringToCheck)
                                         return;
                                 }
                             }
                         }
                     }
 
-                    strStringToCheck = xmlSelectedFlexibility["name"]?.InnerTextViaPool();
+                    strStringToCheck = xmlSelectedFlexibility["name"]?.InnerTextViaPool(_objGenericToken);
                     if (!string.IsNullOrEmpty(strStringToCheck))
                     {
                         using (XmlNodeList xmlFlexibilityNodeList = xmlForbiddenNode.SelectNodes("flexibility"))
@@ -303,14 +303,14 @@ namespace Chummer
                             {
                                 foreach (XmlNode xmlLoopNode in xmlFlexibilityNodeList)
                                 {
-                                    if (xmlLoopNode.InnerTextViaPool() == strStringToCheck)
+                                    if (xmlLoopNode.InnerTextViaPool(_objGenericToken) == strStringToCheck)
                                         return;
                                 }
                             }
                         }
                     }
 
-                    strStringToCheck = xmlSelectedVisibility["name"]?.InnerTextViaPool();
+                    strStringToCheck = xmlSelectedVisibility["name"]?.InnerTextViaPool(_objGenericToken);
                     if (!string.IsNullOrEmpty(strStringToCheck))
                     {
                         using (XmlNodeList xmlVisibilityNodeList = xmlForbiddenNode.SelectNodes("visibility"))
@@ -319,7 +319,7 @@ namespace Chummer
                             {
                                 foreach (XmlNode xmlLoopNode in xmlVisibilityNodeList)
                                 {
-                                    if (xmlLoopNode.InnerTextViaPool() == strStringToCheck)
+                                    if (xmlLoopNode.InnerTextViaPool(_objGenericToken) == strStringToCheck)
                                         return;
                                 }
                             }
@@ -330,7 +330,7 @@ namespace Chummer
                 if (xmlRequiredNode != null)
                 {
                     bool blnRequirementsMet = true;
-                    string strStringToCheck = xmlSelectedControl["name"]?.InnerTextViaPool();
+                    string strStringToCheck = xmlSelectedControl["name"]?.InnerTextViaPool(_objGenericToken);
                     if (!string.IsNullOrEmpty(strStringToCheck))
                     {
                         using (XmlNodeList xmlControlNodeList = xmlRequiredNode.SelectNodes("control"))
@@ -340,7 +340,7 @@ namespace Chummer
                                 foreach (XmlNode xmlLoopNode in xmlControlNodeList)
                                 {
                                     blnRequirementsMet = false;
-                                    if (xmlLoopNode.InnerTextViaPool() == strStringToCheck)
+                                    if (xmlLoopNode.InnerTextViaPool(_objGenericToken) == strStringToCheck)
                                     {
                                         blnRequirementsMet = true;
                                         break;
@@ -352,7 +352,7 @@ namespace Chummer
                     if (!blnRequirementsMet)
                         return;
 
-                    strStringToCheck = xmlSelectedFlexibility["name"]?.InnerTextViaPool();
+                    strStringToCheck = xmlSelectedFlexibility["name"]?.InnerTextViaPool(_objGenericToken);
                     if (!string.IsNullOrEmpty(strStringToCheck))
                     {
                         using (XmlNodeList xmlFlexibilityNodeList = xmlRequiredNode.SelectNodes("flexibility"))
@@ -362,7 +362,7 @@ namespace Chummer
                                 foreach (XmlNode xmlLoopNode in xmlFlexibilityNodeList)
                                 {
                                     blnRequirementsMet = false;
-                                    if (xmlLoopNode.InnerTextViaPool() == strStringToCheck)
+                                    if (xmlLoopNode.InnerTextViaPool(_objGenericToken) == strStringToCheck)
                                     {
                                         blnRequirementsMet = true;
                                         break;
@@ -374,7 +374,7 @@ namespace Chummer
                     if (!blnRequirementsMet)
                         return;
 
-                    strStringToCheck = xmlSelectedVisibility["name"]?.InnerTextViaPool();
+                    strStringToCheck = xmlSelectedVisibility["name"]?.InnerTextViaPool(_objGenericToken);
                     if (!string.IsNullOrEmpty(strStringToCheck))
                     {
                         using (XmlNodeList xmlVisibilityNodeList = xmlRequiredNode.SelectNodes("visibility"))
@@ -384,7 +384,7 @@ namespace Chummer
                                 foreach (XmlNode xmlLoopNode in xmlVisibilityNodeList)
                                 {
                                     blnRequirementsMet = false;
-                                    if (xmlLoopNode.InnerTextViaPool() == strStringToCheck)
+                                    if (xmlLoopNode.InnerTextViaPool(_objGenericToken) == strStringToCheck)
                                     {
                                         blnRequirementsMet = true;
                                         break;
@@ -818,7 +818,7 @@ namespace Chummer
                     if (xmlLoopNode.TryGetInt32FieldQuickly("slots", ref intLoopSlots))
                         intSlots += intLoopSlots;
 
-                    string strLoopAvail = xmlLoopNode["avail"]?.InnerTextViaPool() ?? string.Empty;
+                    string strLoopAvail = xmlLoopNode["avail"]?.InnerTextViaPool(token) ?? string.Empty;
                     char chrLoopAvailSuffix = strLoopAvail.Length > 0 ? strLoopAvail[strLoopAvail.Length - 1] : ' ';
                     switch (chrLoopAvailSuffix)
                     {
@@ -939,7 +939,7 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strSelectedId))
                             continue;
                         XmlNode xmlLoopNode = _xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmounts/weaponmount", strSelectedId);
-                        if (xmlLoopNode != null && int.TryParse(xmlLoopNode["slots"]?.InnerTextViaPool(), NumberStyles.Integer,
+                        if (xmlLoopNode != null && int.TryParse(xmlLoopNode["slots"]?.InnerTextViaPool(token), NumberStyles.Integer,
                                 GlobalSettings.InvariantCultureInfo, out int intDummy))
                         {
                             intSlots += intDummy;

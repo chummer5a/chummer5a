@@ -886,11 +886,11 @@ namespace Chummer.Backend.Equipment
                     }
 
                     _blnAddToParentESS = objXmlCyberware["addtoparentess"] != null
-                                         && objXmlCyberware["addtoparentess"].InnerTextViaPool() != bool.FalseString;
+                                         && objXmlCyberware["addtoparentess"].InnerTextViaPool(token) != bool.FalseString;
                     _blnAddToParentCapacity = objXmlCyberware["addtoparentcapacity"] != null
-                                              && objXmlCyberware["addtoparentcapacity"].InnerTextViaPool() != bool.FalseString;
+                                              && objXmlCyberware["addtoparentcapacity"].InnerTextViaPool(token) != bool.FalseString;
                     _blnIsGeneware = objXmlCyberware["isgeneware"] != null
-                                     && objXmlCyberware["isgeneware"].InnerTextViaPool() != bool.FalseString;
+                                     && objXmlCyberware["isgeneware"].InnerTextViaPool(token) != bool.FalseString;
                     _nodBonus = objXmlCyberware["bonus"];
                     _nodPairBonus = objXmlCyberware["pairbonus"];
                     _nodWirelessBonus = objXmlCyberware["wirelessbonus"];
@@ -1116,7 +1116,7 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode objXmlAddWeapon in objXmlCyberware.SelectNodes("addweapon"))
                         {
                             XmlNode objXmlWeapon = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
-                                objXmlAddWeapon.InnerTextViaPool());
+                                objXmlAddWeapon.InnerTextViaPool(token));
 
                             if (objXmlWeapon != null)
                             {
@@ -1128,7 +1128,7 @@ namespace Chummer.Backend.Equipment
                                     else
                                         await objGearWeapon.SetParentVehicleAsync(await GetParentVehicleAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                                     int intAddWeaponRating = 0;
-                                    string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerTextViaPool();
+                                    string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerTextViaPool(token);
                                     if (!string.IsNullOrEmpty(strLoopRating))
                                     {
                                         strLoopRating = blnSync
@@ -1194,12 +1194,12 @@ namespace Chummer.Backend.Equipment
                                 {
                                     XmlNode objXmlAccessory = objXmlWeaponDocument.TryGetNodeByNameOrId(
                                         "/chummer/accessories/accessory",
-                                        objXml.InnerTextViaPool());
+                                        objXml.InnerTextViaPool(token));
 
                                     if (objXmlAccessory == null)
                                         continue;
                                     int intAddWeaponRating = 0;
-                                    string strLoopRating = objXml.Attributes["rating"]?.InnerTextViaPool();
+                                    string strLoopRating = objXml.Attributes["rating"]?.InnerTextViaPool(token);
                                     if (!string.IsNullOrEmpty(strLoopRating))
                                     {
                                         strLoopRating = blnSync
@@ -1267,7 +1267,7 @@ namespace Chummer.Backend.Equipment
                         // More than one Weapon can be added, so loop through all occurrences.
                         foreach (XmlNode xmlAddVehicle in objXmlCyberware.SelectNodes("addvehicle"))
                         {
-                            string strLoopID = xmlAddVehicle.InnerTextViaPool();
+                            string strLoopID = xmlAddVehicle.InnerTextViaPool(token);
                             XmlNode xmlVehicle =
                                 objXmlVehicleDocument.TryGetNodeByNameOrId("/chummer/vehicles/vehicle", strLoopID);
 
@@ -1981,7 +1981,7 @@ namespace Chummer.Backend.Equipment
                                 .LoadDataAsync("cyberware.xml", token: token).ConfigureAwait(false);
                             foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
                             {
-                                string strName = objXmlSubsystemNode["name"]?.InnerTextViaPool();
+                                string strName = objXmlSubsystemNode["name"]?.InnerTextViaPool(token);
                                 if (string.IsNullOrEmpty(strName))
                                     continue;
                                 XmlNode objXmlSubsystem =
@@ -1989,7 +1989,7 @@ namespace Chummer.Backend.Equipment
 
                                 if (objXmlSubsystem != null)
                                 {
-                                    int.TryParse(objXmlSubsystemNode["rating"]?.InnerTextViaPool(), NumberStyles.Any,
+                                    int.TryParse(objXmlSubsystemNode["rating"]?.InnerTextViaPool(token), NumberStyles.Any,
                                         GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
                                     Cyberware objSubsystem = new Cyberware(_objCharacter);
                                     try
@@ -1997,7 +1997,7 @@ namespace Chummer.Backend.Equipment
                                         await objSubsystem.CreateAsync(objXmlSubsystem, objGrade,
                                                 Improvement.ImprovementSource.Cyberware,
                                                 intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
-                                                objXmlSubsystemNode["forced"]?.InnerTextViaPool() ?? string.Empty, this,
+                                                objXmlSubsystemNode["forced"]?.InnerTextViaPool(token) ?? string.Empty, this,
                                                 token: token)
                                             .ConfigureAwait(false);
                                         objSubsystem.ParentID = InternalId;
@@ -2028,7 +2028,7 @@ namespace Chummer.Backend.Equipment
                                 .ConfigureAwait(false);
                             foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
                             {
-                                string strName = objXmlSubsystemNode["name"]?.InnerTextViaPool();
+                                string strName = objXmlSubsystemNode["name"]?.InnerTextViaPool(token);
                                 if (string.IsNullOrEmpty(strName))
                                     continue;
                                 XmlNode objXmlSubsystem =
@@ -2036,7 +2036,7 @@ namespace Chummer.Backend.Equipment
 
                                 if (objXmlSubsystem != null)
                                 {
-                                    int.TryParse(objXmlSubsystemNode["rating"]?.InnerTextViaPool(), NumberStyles.Any,
+                                    int.TryParse(objXmlSubsystemNode["rating"]?.InnerTextViaPool(token), NumberStyles.Any,
                                         GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
                                     Cyberware objSubsystem = new Cyberware(_objCharacter);
                                     try
@@ -2044,7 +2044,7 @@ namespace Chummer.Backend.Equipment
                                         await objSubsystem.CreateAsync(objXmlSubsystem, objGrade,
                                                 Improvement.ImprovementSource.Bioware,
                                                 intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
-                                                objXmlSubsystemNode["forced"]?.InnerTextViaPool() ?? string.Empty, this,
+                                                objXmlSubsystemNode["forced"]?.InnerTextViaPool(token) ?? string.Empty, this,
                                                 token: token)
                                             .ConfigureAwait(false);
                                         objSubsystem.ParentID = InternalId;
@@ -2409,7 +2409,7 @@ namespace Chummer.Backend.Equipment
                     if (objNode["improvementsource"] != null)
                     {
                         _eImprovementSource =
-                            Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerTextViaPool());
+                            Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerTextViaPool(token));
                     }
 
                     _objCachedMyXmlNode = null;
@@ -2470,12 +2470,12 @@ namespace Chummer.Backend.Equipment
                     objNode.TryGetStringFieldQuickly("page", ref _strPage);
                     objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
                     if (!objNode.TryGetStringFieldQuickly("hasmodularmount", ref _strHasModularMount))
-                        _strHasModularMount = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["hasmodularmount"]?.InnerTextViaPool() ?? string.Empty;
+                        _strHasModularMount = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["hasmodularmount"]?.InnerTextViaPool(token) ?? string.Empty;
                     if (!objNode.TryGetStringFieldQuickly("plugsintomodularmount", ref _strPlugsIntoModularMount))
                         _strPlugsIntoModularMount
-                            = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["plugsintomodularmount"]?.InnerTextViaPool() ?? string.Empty;
+                            = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["plugsintomodularmount"]?.InnerTextViaPool(token) ?? string.Empty;
                     if (!objNode.TryGetStringFieldQuickly("blocksmounts", ref _strBlocksMounts))
-                        _strBlocksMounts = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["blocksmounts"]?.InnerTextViaPool() ?? string.Empty;
+                        _strBlocksMounts = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["blocksmounts"]?.InnerTextViaPool(token) ?? string.Empty;
                     objNode.TryGetStringFieldQuickly("forced", ref _strForced);
                     objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
                     objNode.TryGetInt32FieldQuickly("minstrength", ref _intMinStrength);
@@ -2514,9 +2514,9 @@ namespace Chummer.Backend.Equipment
                     if (objNode["grade"] != null)
                         _objGrade = blnSync
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            ? Grade.ConvertToCyberwareGrade(objNode["grade"].InnerTextViaPool(), _eImprovementSource,
+                            ? Grade.ConvertToCyberwareGrade(objNode["grade"].InnerTextViaPool(token), _eImprovementSource,
                                 _objCharacter, token)
-                            : await Grade.ConvertToCyberwareGradeAsync(objNode["grade"].InnerTextViaPool(), _eImprovementSource,
+                            : await Grade.ConvertToCyberwareGradeAsync(objNode["grade"].InnerTextViaPool(token), _eImprovementSource,
                                 _objCharacter, token).ConfigureAwait(false);
                     objNode.TryGetStringFieldQuickly("location", ref _strLocation);
                     if (!objNode.TryGetStringFieldQuickly("extra", ref _strExtra) && _strLocation != "Left" &&
@@ -2559,7 +2559,7 @@ namespace Chummer.Backend.Equipment
                             if (xmlNameList?.Count > 0)
                             {
                                 foreach (XmlNode xmlNameNode in xmlNameList)
-                                    _lstIncludeInPairBonus.Add(xmlNameNode.InnerTextViaPool());
+                                    _lstIncludeInPairBonus.Add(xmlNameNode.InnerTextViaPool(token));
                             }
                         }
                     }
@@ -2580,7 +2580,7 @@ namespace Chummer.Backend.Equipment
                             if (xmlNameList?.Count > 0)
                             {
                                 foreach (XmlNode xmlNameNode in xmlNameList)
-                                    _lstIncludeInWirelessPairBonus.Add(xmlNameNode.InnerTextViaPool());
+                                    _lstIncludeInWirelessPairBonus.Add(xmlNameNode.InnerTextViaPool(token));
                             }
                         }
                     }
@@ -2594,7 +2594,7 @@ namespace Chummer.Backend.Equipment
                     // Legacy Sweep
                     if (_strForceGrade != "None" && IsGeneware)
                     {
-                        _strForceGrade = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["forcegrade"]?.InnerTextViaPool();
+                        _strForceGrade = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["forcegrade"]?.InnerTextViaPool(token);
                         if (!string.IsNullOrEmpty(_strForceGrade))
                             _objGrade = blnSync
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -2605,13 +2605,13 @@ namespace Chummer.Backend.Equipment
                     }
 
                     if (objNode["weaponguid"] != null
-                        && !Guid.TryParse(objNode["weaponguid"].InnerTextViaPool(), out _guiWeaponID))
+                        && !Guid.TryParse(objNode["weaponguid"].InnerTextViaPool(token), out _guiWeaponID))
                     {
                         _guiWeaponID = Guid.Empty;
                     }
 
                     if (objNode["vehicleguid"] != null &&
-                        !Guid.TryParse(objNode["vehicleguid"].InnerTextViaPool(), out _guiVehicleID))
+                        !Guid.TryParse(objNode["vehicleguid"].InnerTextViaPool(token), out _guiVehicleID))
                     {
                         _guiVehicleID = Guid.Empty;
                     }
@@ -2698,7 +2698,7 @@ namespace Chummer.Backend.Equipment
                     objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
                     if (objNode["addtoparentess"] != null)
                     {
-                        if (bool.TryParse(objNode["addtoparentess"].InnerTextViaPool(), out bool blnTmp))
+                        if (bool.TryParse(objNode["addtoparentess"].InnerTextViaPool(token), out bool blnTmp))
                         {
                             _blnAddToParentESS = blnTmp;
                         }
@@ -2708,7 +2708,7 @@ namespace Chummer.Backend.Equipment
 
                     if (objNode["addtoparentcapacity"] != null)
                     {
-                        if (bool.TryParse(objNode["addtoparentcapacity"].InnerTextViaPool(), out bool blnTmp))
+                        if (bool.TryParse(objNode["addtoparentcapacity"].InnerTextViaPool(token), out bool blnTmp))
                         {
                             _blnAddToParentCapacity = blnTmp;
                         }
@@ -2718,7 +2718,7 @@ namespace Chummer.Backend.Equipment
 
                     if (objNode["geneware"] != null)
                     {
-                        if (bool.TryParse(objNode["geneware"].InnerTextViaPool(), out bool blnTmp))
+                        if (bool.TryParse(objNode["geneware"].InnerTextViaPool(token), out bool blnTmp))
                         {
                             _blnIsGeneware = blnTmp;
                         }
@@ -2726,7 +2726,7 @@ namespace Chummer.Backend.Equipment
                     else
                     {
                         _blnIsGeneware = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["geneware"] != null;
-                        _strCategory = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["category"]?.InnerTextViaPool() ?? _strCategory;
+                        _strCategory = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["category"]?.InnerTextViaPool(token) ?? _strCategory;
                     }
 
                     bool blnIsActive = false;
@@ -5796,10 +5796,10 @@ namespace Chummer.Backend.Equipment
 
                             // Needed in order to properly process named sources where
                             // the tooltip was built before the object was added to the character
-                            if (Bonus?.InnerXmlContentContains("Rating") == true
-                                || PairBonus?.InnerXmlContentContains("Rating") == true
-                                || (WirelessOn && (WirelessBonus?.InnerXmlContentContains("Rating") == true
-                                                   || WirelessPairBonus?.InnerXmlContentContains("Rating") == true)))
+                            if (Bonus?.InnerXmlContentContains("Rating", token) == true
+                                || PairBonus?.InnerXmlContentContains("Rating", token) == true
+                                || (WirelessOn && (WirelessBonus?.InnerXmlContentContains("Rating", token) == true
+                                                   || WirelessPairBonus?.InnerXmlContentContains("Rating", token) == true)))
                             {
                                 if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
                                     ImprovementManager.SetForcedValue(_strForced, _objCharacter);

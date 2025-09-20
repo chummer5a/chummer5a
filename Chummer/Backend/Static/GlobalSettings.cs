@@ -1602,17 +1602,17 @@ namespace Chummer
         public static void SetClipboard(XmlDocument value, ClipboardContentType eType, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strNewOuterXml = value.OuterXmlViaPool();
+            string strNewOuterXml = value.OuterXmlViaPool(token);
             using (_objClipboardLocker.EnterReadLock(token))
             {
                 token.ThrowIfCancellationRequested();
-                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool() == strNewOuterXml)
+                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool(token) == strNewOuterXml)
                     return;
             }
             using (_objClipboardLocker.EnterUpgradeableReadLock(token))
             {
                 token.ThrowIfCancellationRequested();
-                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool() == strNewOuterXml)
+                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool(token) == strNewOuterXml)
                     return;
 
                 using (_objClipboardLocker.EnterWriteLock(token))
@@ -1653,12 +1653,12 @@ namespace Chummer
         public static async Task SetClipboardAsync(XmlNode value, ClipboardContentType eType, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strNewOuterXml = value.OuterXmlViaPool();
+            string strNewOuterXml = value.OuterXmlViaPool(token);
             IAsyncDisposable objLocker = await _objClipboardLocker.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool() == strNewOuterXml)
+                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool(token) == strNewOuterXml)
                     return;
             }
             finally
@@ -1669,7 +1669,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool() == strNewOuterXml)
+                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool(token) == strNewOuterXml)
                     return;
 
                 IAsyncDisposable objLocker2 = await _objClipboardLocker.EnterWriteLockAsync(token).ConfigureAwait(false);

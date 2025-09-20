@@ -582,7 +582,7 @@ namespace Chummer
 
                 if (objNode["mentortype"] != null)
                 {
-                    _eMentorType = Improvement.ConvertToImprovementType(objNode["mentortype"].InnerTextViaPool());
+                    _eMentorType = Improvement.ConvertToImprovementType(objNode["mentortype"].InnerTextViaPool(token));
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
                 }

@@ -506,9 +506,9 @@ namespace Chummer
                 }
 
                 if (blnSync)
-                    Extra = objNode["extra"]?.InnerTextViaPool() ?? string.Empty;
+                    Extra = objNode["extra"]?.InnerTextViaPool(token) ?? string.Empty;
                 else
-                    await SetExtraAsync(objNode["extra"]?.InnerTextViaPool() ?? string.Empty, token).ConfigureAwait(false);
+                    await SetExtraAsync(objNode["extra"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
                 if (!objNode.TryGetStringFieldQuickly("pointsperlevel", ref _strPointsPerLevel))
                     _strPointsPerLevel = "0";
                 if (!objNode.TryGetStringFieldQuickly("action", ref _strAction))
@@ -3406,7 +3406,7 @@ namespace Chummer
                         if (setNamesOfChangedProperties.Contains(nameof(TotalRating)))
                         {
                             XmlNode xmlBonus = await GetBonusAsync(token).ConfigureAwait(false);
-                            if (xmlBonus?.InnerXmlContentContains("Rating") == true)
+                            if (xmlBonus?.InnerXmlContentContains("Rating", token) == true)
                             {
                                 bool blnRefreshImprovements = true;
                                 int intTotalRating;

@@ -627,8 +627,9 @@ namespace Chummer
         /// For compound nodes, checks each child of the node individually (and also checks their names), meaning the needle will not fire if it would need to be matched across multiple nodes or across a node's name and contents (use InnerText for that).
         /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
         /// </summary>
-        public static bool InnerXmlContentContains(this XmlNode xmlNode, string strNeedle)
+        public static bool InnerXmlContentContains(this XmlNode xmlNode, string strNeedle, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strNeedle))
                 return false;
 
@@ -640,11 +641,13 @@ namespace Chummer
 
             if (firstChild.NextSibling == null)
             {
+                token.ThrowIfCancellationRequested();
                 if (firstChild.Name.Contains(strNeedle))
                     return true;
                 XmlNodeType nodeType = firstChild.NodeType;
                 if (nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace)
                 {
+                    token.ThrowIfCancellationRequested();
                     return firstChild.Value.Contains(strNeedle);
                 }
             }
@@ -655,12 +658,14 @@ namespace Chummer
             {
                 for (XmlNode xmlNodeInner = xmlParentNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
                 {
+                    token.ThrowIfCancellationRequested();
                     if (xmlNodeInner.Name.Contains(strNeedle))
                         return true;
                     if (xmlNodeInner.FirstChild == null)
                     {
                         if (xmlNodeInner.NodeType == XmlNodeType.Text || xmlNodeInner.NodeType == XmlNodeType.CDATA || xmlNodeInner.NodeType == XmlNodeType.Whitespace || xmlNodeInner.NodeType == XmlNodeType.SignificantWhitespace)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (xmlNodeInner.Value.Contains(strNeedle))
                                 return true;
                         }
@@ -678,8 +683,9 @@ namespace Chummer
         /// Copy of <see cref="XmlNode.InnerText" />, but going through <see cref="Utils.StringBuilderPool"> instead creating a new one via heap allocation.
         /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
         /// </summary>
-        public static string InnerTextViaPool(this XmlNode xmlNode)
+        public static string InnerTextViaPool(this XmlNode xmlNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             XmlNode firstChild = xmlNode.FirstChild;
             if (firstChild == null)
             {
@@ -695,9 +701,12 @@ namespace Chummer
                 }
             }
 
+            token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
+                token.ThrowIfCancellationRequested();
                 AppendChildText(xmlNode, sbdReturn);
+                token.ThrowIfCancellationRequested();
                 return sbdReturn.ToString();
             }
 
@@ -705,11 +714,12 @@ namespace Chummer
             {
                 for (XmlNode xmlNodeInner = xmlParentNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
                 {
+                    token.ThrowIfCancellationRequested();
                     if (xmlNodeInner.FirstChild == null)
                     {
                         if (xmlNodeInner.NodeType == XmlNodeType.Text || xmlNodeInner.NodeType == XmlNodeType.CDATA || xmlNodeInner.NodeType == XmlNodeType.Whitespace || xmlNodeInner.NodeType == XmlNodeType.SignificantWhitespace)
                         {
-                            builder.Append(xmlNodeInner.InnerTextViaPool());
+                            builder.Append(xmlNodeInner.InnerTextViaPool(token));
                         }
                     }
                     else
@@ -724,8 +734,9 @@ namespace Chummer
         /// Copy of <see cref="XmlNode.InnerText" /> followed by <see cref="string.Trim()">, but going through <see cref="Utils.StringBuilderPool"> and <see cref="StringBuilderExtensions.ToTrimmedString(StringBuilder)"> instead creating a new one via heap allocation.
         /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
         /// </summary>
-        public static string InnerTextViaPoolTrimmed(this XmlNode xmlNode)
+        public static string InnerTextViaPoolTrimmed(this XmlNode xmlNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             XmlNode firstChild = xmlNode.FirstChild;
             if (firstChild == null)
             {
@@ -741,9 +752,12 @@ namespace Chummer
                 }
             }
 
+            token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
+                token.ThrowIfCancellationRequested();
                 AppendChildText(xmlNode, sbdReturn);
+                token.ThrowIfCancellationRequested();
                 return sbdReturn.ToTrimmedString();
             }
 
@@ -751,11 +765,12 @@ namespace Chummer
             {
                 for (XmlNode xmlNodeInner = xmlParentNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
                 {
+                    token.ThrowIfCancellationRequested();
                     if (xmlNodeInner.FirstChild == null)
                     {
                         if (xmlNodeInner.NodeType == XmlNodeType.Text || xmlNodeInner.NodeType == XmlNodeType.CDATA || xmlNodeInner.NodeType == XmlNodeType.Whitespace || xmlNodeInner.NodeType == XmlNodeType.SignificantWhitespace)
                         {
-                            builder.Append(xmlNodeInner.InnerTextViaPool());
+                            builder.Append(xmlNodeInner.InnerTextViaPool(token));
                         }
                     }
                     else
@@ -770,17 +785,22 @@ namespace Chummer
         /// Copy of <see cref="XmlNode.InnerXml" />, but going through <see cref="Utils.StringBuilderPool"> instead creating a new one via heap allocation.
         /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
         /// </summary>
-        public static string InnerXmlViaPool(this XmlNode xmlNode)
+        public static string InnerXmlViaPool(this XmlNode xmlNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
+                token.ThrowIfCancellationRequested();
                 using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
                 {
+                    token.ThrowIfCancellationRequested();
                     using (XmlDOMTextWriter objXmlWriter = new XmlDOMTextWriter(objStringWriter))
                     {
+                        token.ThrowIfCancellationRequested();
                         xmlNode.WriteContentTo(objXmlWriter);
                     }
                 }
+                token.ThrowIfCancellationRequested();
                 return sbdReturn.ToString();
             }
         }
@@ -789,17 +809,22 @@ namespace Chummer
         /// Copy of <see cref="XmlNode.OuterXml" />, but going through <see cref="Utils.StringBuilderPool"> instead creating a new one via heap allocation.
         /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
         /// </summary>
-        public static string OuterXmlViaPool(this XmlNode xmlNode)
+        public static string OuterXmlViaPool(this XmlNode xmlNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
+                token.ThrowIfCancellationRequested();
                 using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
                 {
+                    token.ThrowIfCancellationRequested();
                     using (XmlDOMTextWriter objXmlWriter = new XmlDOMTextWriter(objStringWriter))
                     {
+                        token.ThrowIfCancellationRequested();
                         xmlNode.WriteTo(objXmlWriter);
                     }
                 }
+                token.ThrowIfCancellationRequested();
                 return sbdReturn.ToString();
             }
         }

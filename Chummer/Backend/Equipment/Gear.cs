@@ -525,7 +525,7 @@ namespace Chummer.Backend.Equipment
                     // More than one Weapon can be added, so loop through all occurrences.
                     foreach (XmlNode objXmlAddWeapon in xmlWeaponList)
                     {
-                        string strLoopID = objXmlAddWeapon.InnerTextViaPool();
+                        string strLoopID = objXmlAddWeapon.InnerTextViaPool(token);
                         XmlNode objXmlWeapon =
                             objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
                                 strLoopID);
@@ -533,7 +533,7 @@ namespace Chummer.Backend.Equipment
                         if (objXmlWeapon != null)
                         {
                             int intAddWeaponRating = 0;
-                            string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerTextViaPool();
+                            string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerTextViaPool(token);
                             if (!string.IsNullOrEmpty(strLoopRating))
                             {
                                 strLoopRating = blnSync
@@ -964,13 +964,13 @@ namespace Chummer.Backend.Equipment
                                         strFilter += '[';
                                         if (xmlChoiceName != null)
                                         {
-                                            strFilter += "name = " + xmlChoiceName.InnerTextViaPool().CleanXPath();
+                                            strFilter += "name = " + xmlChoiceName.InnerTextViaPool(token).CleanXPath();
                                             if (xmlChoiceCategory != null)
                                                 strFilter += " and category = "
-                                                             + xmlChoiceCategory.InnerTextViaPool().CleanXPath();
+                                                             + xmlChoiceCategory.InnerTextViaPool(token).CleanXPath();
                                         }
                                         else
-                                            strFilter += "category = " + xmlChoiceCategory.InnerTextViaPool().CleanXPath();
+                                            strFilter += "category = " + xmlChoiceCategory.InnerTextViaPool(token).CleanXPath();
 
                                         strFilter += ']';
                                     }
@@ -994,7 +994,7 @@ namespace Chummer.Backend.Equipment
                                         continue;
                                     }
 
-                                    string strName = objChoiceNode["name"]?.InnerTextViaPool() ?? string.Empty;
+                                    string strName = objChoiceNode["name"]?.InnerTextViaPool(token) ?? string.Empty;
                                     string strDisplayName = await LanguageManager.GetStringAsync(strName, false, token).ConfigureAwait(false);
                                     if (string.IsNullOrEmpty(strDisplayName))
                                         strDisplayName = await _objCharacter.TranslateExtraAsync(strName, token: token).ConfigureAwait(false);
@@ -1012,7 +1012,7 @@ namespace Chummer.Backend.Equipment
                                     continue;
                                 }
 
-                                string strChooseGearNodeName = objXmlChooseGearNode["name"]?.InnerTextViaPool() ?? string.Empty;
+                                string strChooseGearNodeName = objXmlChooseGearNode["name"]?.InnerTextViaPool(token) ?? string.Empty;
                                 string strFriendlyName = await LanguageManager.GetStringAsync(strChooseGearNodeName, false, token).ConfigureAwait(false);
                                 if (string.IsNullOrEmpty(strFriendlyName))
                                     strFriendlyName = await _objCharacter.TranslateExtraAsync(strChooseGearNodeName, token: token).ConfigureAwait(false);
@@ -1082,12 +1082,12 @@ namespace Chummer.Backend.Equipment
                 strFilter += '[';
                 if (xmlChildName != null)
                 {
-                    strFilter += "name = " + xmlChildName.InnerTextViaPool().CleanXPath();
+                    strFilter += "name = " + xmlChildName.InnerTextViaPool(token).CleanXPath();
                     if (xmlChildCategory != null)
-                        strFilter += " and category = " + xmlChildCategory.InnerTextViaPool().CleanXPath();
+                        strFilter += " and category = " + xmlChildCategory.InnerTextViaPool(token).CleanXPath();
                 }
                 else
-                    strFilter += "category = " + xmlChildCategory.InnerTextViaPool().CleanXPath();
+                    strFilter += "category = " + xmlChildCategory.InnerTextViaPool(token).CleanXPath();
                 strFilter += ']';
             }
             XmlDocument xmlDocument = xmlChildNode.OwnerDocument ?? await _objCharacter.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
@@ -1096,14 +1096,14 @@ namespace Chummer.Backend.Equipment
                 return;
             int intChildRating = 0;
             xmlChildNode.TryGetInt32FieldQuickly("rating", ref intChildRating);
-            string strChildForceSource = xmlChildNode["source"]?.InnerTextViaPool() ?? string.Empty;
-            string strChildForcePage = xmlChildNode["page"]?.InnerTextViaPool() ?? string.Empty;
+            string strChildForceSource = xmlChildNode["source"]?.InnerTextViaPool(token) ?? string.Empty;
+            string strChildForcePage = xmlChildNode["page"]?.InnerTextViaPool(token) ?? string.Empty;
             XmlAttributeCollection xmlChildNameAttributes = xmlChildName?.Attributes;
-            string strChildForceValue = xmlChildNameAttributes?["select"]?.InnerTextViaPool() ?? string.Empty;
-            bool blnCreateChildren = xmlChildNameAttributes?["createchildren"]?.InnerTextViaPool() != bool.FalseString;
-            bool blnAddChildImprovements = xmlChildNameAttributes?["addimprovements"]?.InnerTextViaPool() != bool.FalseString &&
+            string strChildForceValue = xmlChildNameAttributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
+            bool blnCreateChildren = xmlChildNameAttributes?["createchildren"]?.InnerTextViaPool(token) != bool.FalseString;
+            bool blnAddChildImprovements = xmlChildNameAttributes?["addimprovements"]?.InnerTextViaPool(token) != bool.FalseString &&
                                            blnAddImprovements;
-            string strChildQty = xmlChildNameAttributes?["qty"]?.InnerTextViaPool();
+            string strChildQty = xmlChildNameAttributes?["qty"]?.InnerTextViaPool(token);
             decimal decChildQty;
             if (string.IsNullOrEmpty(strChildQty) || !decimal.TryParse(strChildQty, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decChildQty))
                 decChildQty = 1.0m;
@@ -1126,7 +1126,7 @@ namespace Chummer.Backend.Equipment
 
                 // Change the Capacity of the child if necessary.
                 if (xmlChildNode["capacity"] != null)
-                    objChild.Capacity = xmlChildNode["capacity"].InnerTextViaPool();
+                    objChild.Capacity = xmlChildNode["capacity"].InnerTextViaPool(token);
 
                 await objChild.CreateChildrenAsync(xmlChildNode, blnAddChildImprovements, blnSkipSelectForms, token).ConfigureAwait(false);
             }
@@ -1267,13 +1267,13 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlGearDataNode;
             List<Gear> lstChildGears = new List<Gear>(1);
             XmlAttributeCollection lstGearAttributes = xmlGearNode.Attributes;
-            if (!int.TryParse(lstGearAttributes?["rating"]?.InnerTextViaPool(), NumberStyles.Any,
+            if (!int.TryParse(lstGearAttributes?["rating"]?.InnerTextViaPool(token), NumberStyles.Any,
                     GlobalSettings.InvariantCultureInfo, out int intRating))
             {
-                int.TryParse(xmlGearNode["rating"]?.InnerTextViaPool(), NumberStyles.Any,
+                int.TryParse(xmlGearNode["rating"]?.InnerTextViaPool(token), NumberStyles.Any,
                     GlobalSettings.InvariantCultureInfo, out intRating);
             }
-            string strName = xmlGearNode["id"]?.InnerTextViaPool() ?? xmlGearNode["name"]?.InnerTextViaPool();
+            string strName = xmlGearNode["id"]?.InnerTextViaPool(token) ?? xmlGearNode["name"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strName))
             {
                 xmlGearDataNode = xmlGearsDocument.TryGetNodeByNameOrId("/chummer/gears/gear", strName);
@@ -1306,23 +1306,23 @@ namespace Chummer.Backend.Equipment
             else
             {
                 xmlGearDataNode =
-                    xmlGearsDocument.TryGetNodeByNameOrId("/chummer/gears/gear", xmlGearNode.InnerTextViaPool());
+                    xmlGearsDocument.TryGetNodeByNameOrId("/chummer/gears/gear", xmlGearNode.InnerTextViaPool(token));
             }
 
             if (xmlGearDataNode != null)
             {
                 bool blnConsumeCapacity = lstGearAttributes?["consumecapacity"]?.InnerTextIsTrueString() == true;
 
-                string strForceValue = lstGearAttributes?["select"]?.InnerTextViaPool() ?? string.Empty;
-                string strQty = lstGearAttributes?["qty"]?.InnerTextViaPool();
+                string strForceValue = lstGearAttributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
+                string strQty = lstGearAttributes?["qty"]?.InnerTextViaPool(token);
                 if (string.IsNullOrEmpty(strQty) || !decimal.TryParse(strQty, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decQty))
                     decQty = 1.0m;
-                string strMaxRating = lstGearAttributes?["maxrating"]?.InnerTextViaPool() ?? string.Empty;
+                string strMaxRating = lstGearAttributes?["maxrating"]?.InnerTextViaPool(token) ?? string.Empty;
                 await CreateAsync(xmlGearDataNode, intRating, lstWeapons, strForceValue, blnAddImprovements, true, blnSkipSelectForms, token).ConfigureAwait(false);
 
                 // Change the Capacity of the child if necessary.
                 if (xmlGearNode["capacity"] != null)
-                    Capacity = xmlGearNode["capacity"].InnerTextViaPool();
+                    Capacity = xmlGearNode["capacity"].InnerTextViaPool(token);
 
                 if (!blnConsumeCapacity)
                 {
@@ -1886,7 +1886,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            string strLocation = objNode["location"]?.InnerTextViaPool();
+            string strLocation = objNode["location"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strLocation))
             {
                 if (blnSync)
@@ -5033,15 +5033,15 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (WeaponBonus == null)
                 return string.Empty;
-            string strReturn = WeaponBonus["damagereplace"]?.InnerTextViaPool() ?? "0";
+            string strReturn = WeaponBonus["damagereplace"]?.InnerTextViaPool(token) ?? "0";
             // Use the damagereplace value if applicable.
             if (strReturn == "0")
             {
                 // Use the damage bonus if available, otherwise use 0.
-                strReturn = WeaponBonus["damage"]?.InnerTextViaPool() ?? "0";
+                strReturn = WeaponBonus["damage"]?.InnerTextViaPool(token) ?? "0";
 
                 // Attach the type if applicable.
-                strReturn += WeaponBonus["damagetype"]?.InnerTextViaPool() ?? string.Empty;
+                strReturn += WeaponBonus["damagetype"]?.InnerTextViaPool(token) ?? string.Empty;
 
                 // Translate the string.
                 strReturn = await Weapon.ReplaceDamageStringsAsync(strReturn, strLanguage, token).ConfigureAwait(false);
@@ -5092,7 +5092,7 @@ namespace Chummer.Backend.Equipment
                 return string.Empty;
             // Use the apreplace value if applicable.
             // Use the ap bonus if available, otherwise use 0.
-            string strReturn = WeaponBonus["apreplace"]?.InnerTextViaPool() ?? WeaponBonus["ap"]?.InnerTextViaPool() ?? "0";
+            string strReturn = WeaponBonus["apreplace"]?.InnerTextViaPool(token) ?? WeaponBonus["ap"]?.InnerTextViaPool(token) ?? "0";
 
             // Translate the string.
             strReturn = await Weapon
@@ -5229,15 +5229,15 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (FlechetteWeaponBonus == null)
                 return string.Empty;
-            string strReturn = FlechetteWeaponBonus["damagereplace"]?.InnerTextViaPool() ?? "0";
+            string strReturn = FlechetteWeaponBonus["damagereplace"]?.InnerTextViaPool(token) ?? "0";
             // Use the damagereplace value if applicable.
             if (strReturn == "0")
             {
                 // Use the damage bonus if available, otherwise use 0.
-                strReturn = FlechetteWeaponBonus["damage"]?.InnerTextViaPool() ?? "0";
+                strReturn = FlechetteWeaponBonus["damage"]?.InnerTextViaPool(token) ?? "0";
 
                 // Attach the type if applicable.
-                strReturn += FlechetteWeaponBonus["damagetype"]?.InnerTextViaPool() ?? string.Empty;
+                strReturn += FlechetteWeaponBonus["damagetype"]?.InnerTextViaPool(token) ?? string.Empty;
 
                 // Translate the string.
                 strReturn = await Weapon.ReplaceDamageStringsAsync(strReturn, strLanguage, token).ConfigureAwait(false);
@@ -5288,7 +5288,7 @@ namespace Chummer.Backend.Equipment
                 return string.Empty;
             // Use the apreplace value if applicable.
             // Use the ap bonus if available, otherwise use 0.
-            string strReturn = FlechetteWeaponBonus["apreplace"]?.InnerTextViaPool() ?? FlechetteWeaponBonus["ap"]?.InnerTextViaPool() ?? "0";
+            string strReturn = FlechetteWeaponBonus["apreplace"]?.InnerTextViaPool(token) ?? FlechetteWeaponBonus["ap"]?.InnerTextViaPool(token) ?? "0";
 
             // Translate the string.
             strReturn = await Weapon

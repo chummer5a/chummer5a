@@ -336,7 +336,7 @@ namespace Chummer
 
             _nodBonus = objNode["bonus"];
             if (objNode["improvementsource"] != null)
-                SourceType = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerTextViaPool());
+                SourceType = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerTextViaPool(token));
 
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 

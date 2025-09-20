@@ -573,7 +573,7 @@ namespace Chummer.Backend.Uniques
                     {
                         foreach (XmlNode xmlSpiritNode in xmlSpiritList)
                         {
-                            _lstAvailableSpirits.Add(xmlSpiritNode.InnerTextViaPool());
+                            _lstAvailableSpirits.Add(xmlSpiritNode.InnerTextViaPool(token));
                         }
                     }
                 }

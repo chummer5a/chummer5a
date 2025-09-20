@@ -2737,24 +2737,24 @@ namespace Chummer
                         : objXmlMetavariant ?? objXmlMetatype;
                 AttributeSection.Create(charNode, intForce, token: token);
                 MetatypeGuid = new Guid(strMetatypeId);
-                Metatype = objXmlMetatype["name"]?.InnerTextViaPool() ?? "Human";
+                Metatype = objXmlMetatype["name"]?.InnerTextViaPool(token) ?? "Human";
                 MetatypeCategory = strSelectedMetatypeCategory;
                 MetavariantGuid = string.IsNullOrEmpty(strMetavariantId) ? Guid.Empty : new Guid(strMetavariantId);
-                Metavariant = MetavariantGuid != Guid.Empty ? objXmlMetavariant?["name"]?.InnerTextViaPool() ?? string.Empty : string.Empty;
+                Metavariant = MetavariantGuid != Guid.Empty ? objXmlMetavariant?["name"]?.InnerTextViaPool(token) ?? string.Empty : string.Empty;
                 // We only reverted to the base metatype to get the attributes.
                 if (strSelectedMetatypeCategory == "Shapeshifter")
                 {
                     charNode = objXmlMetavariant ?? objXmlMetatype;
                 }
 
-                Source = charNode["source"]?.InnerTextViaPool() ?? "SR5";
-                Page = charNode["page"]?.InnerTextViaPool() ?? "0";
+                Source = charNode["source"]?.InnerTextViaPool(token) ?? "SR5";
+                Page = charNode["page"]?.InnerTextViaPool(token) ?? "0";
                 _intMetatypeBP = 0;
                 charNode.TryGetInt32FieldQuickly("karma", ref _intMetatypeBP);
                 _intInitiativeDice = Settings.MinInitiativeDice;
                 charNode.TryGetInt32FieldQuickly("initiativedice", ref _intInitiativeDice);
 
-                Movement = objXmlMetatype["movement"]?.InnerTextViaPool() ?? string.Empty;
+                Movement = objXmlMetatype["movement"]?.InnerTextViaPool(token) ?? string.Empty;
 
                 // Determine if the Metatype has any bonuses.
                 XmlElement xmlBonusNode = charNode["bonus"];
@@ -2774,7 +2774,7 @@ namespace Chummer
                         {
                             foreach (XmlNode objXmlQualityItem in xmlQualityList)
                             {
-                                string strQuality = objXmlQualityItem.InnerTextViaPool();
+                                string strQuality = objXmlQualityItem.InnerTextViaPool(token);
                                 XmlNode objXmlQuality = xmlQualityDocumentQualitiesNode.TryGetNodeByNameOrId("quality", strQuality);
                                 if (objXmlQuality != null)
                                 {
@@ -2783,7 +2783,7 @@ namespace Chummer
                                     {
                                         token.ThrowIfCancellationRequested();
                                         string strForceValue =
-                                            objXmlQualityItem.Attributes["select"]?.InnerTextViaPool() ?? string.Empty;
+                                            objXmlQualityItem.Attributes["select"]?.InnerTextViaPool(token) ?? string.Empty;
                                         QualitySource objSource =
                                             objXmlQualityItem.Attributes["removable"]?.InnerTextIsTrueString() == true
                                                 ? QualitySource.MetatypeRemovable
@@ -2811,14 +2811,14 @@ namespace Chummer
                 {
                     foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
                     {
-                        string strCritterPower = objXmlPower.InnerTextViaPool();
+                        string strCritterPower = objXmlPower.InnerTextViaPool(token);
                         XmlNode objXmlCritterPower = xmlCritterPowerDocumentPowersNode.TryGetNodeByNameOrId("power", strCritterPower);
                         if (objXmlCritterPower != null)
                         {
                             CritterPower objPower = new CritterPower(this);
-                            string strForcedValue = objXmlPower.Attributes["select"]?.InnerTextViaPool() ?? string.Empty;
+                            string strForcedValue = objXmlPower.Attributes["select"]?.InnerTextViaPool(token) ?? string.Empty;
                             int intRating =
-                                CommonFunctions.ExpressionToInt(objXmlPower.Attributes["rating"]?.InnerTextViaPool(), intForce,
+                                CommonFunctions.ExpressionToInt(objXmlPower.Attributes["rating"]?.InnerTextViaPool(token), intForce,
                                                                 0,
                                                                 0, token);
 
@@ -2848,26 +2848,26 @@ namespace Chummer
                 //Load any natural weapons the character has.
                 foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("naturalweapons/naturalweapon"))
                 {
-                    string strReach = objXmlNaturalWeapon["reach"]?.InnerTextViaPool() ?? "0";
+                    string strReach = objXmlNaturalWeapon["reach"]?.InnerTextViaPool(token) ?? "0";
                     string strForce = intForce.ToString(GlobalSettings.InvariantCultureInfo);
                     Weapon objWeapon = new Weapon(this);
                     try
                     {
-                        objWeapon.Name = objXmlNaturalWeapon["name"].InnerTextViaPool();
+                        objWeapon.Name = objXmlNaturalWeapon["name"].InnerTextViaPool(token);
                         objWeapon.Category = LanguageManager.GetString("Tab_Critter", GlobalSettings.DefaultLanguage, token: token);
                         objWeapon.RangeType = "Melee";
                         objWeapon.Reach = strReach.Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce);
-                        objWeapon.Damage = objXmlNaturalWeapon["damage"]?.InnerTextViaPool() ?? "({STR})S";
-                        objWeapon.Accuracy = objXmlNaturalWeapon["accuracy"]?.InnerTextViaPool() ?? "Physical";
-                        objWeapon.AP = objXmlNaturalWeapon["ap"]?.InnerTextViaPool() ?? "0";
+                        objWeapon.Damage = objXmlNaturalWeapon["damage"]?.InnerTextViaPool(token) ?? "({STR})S";
+                        objWeapon.Accuracy = objXmlNaturalWeapon["accuracy"]?.InnerTextViaPool(token) ?? "Physical";
+                        objWeapon.AP = objXmlNaturalWeapon["ap"]?.InnerTextViaPool(token) ?? "0";
                         objWeapon.Mode = "0";
                         objWeapon.RC = "0";
                         objWeapon.Concealability = "0";
                         objWeapon.Avail = "0";
                         objWeapon.Cost = "0";
-                        objWeapon.UseSkill = objXmlNaturalWeapon["useskill"]?.InnerTextViaPool() ?? string.Empty;
-                        objWeapon.Source = objXmlNaturalWeapon["source"]?.InnerTextViaPool() ?? "SR5";
-                        objWeapon.Page = objXmlNaturalWeapon["page"]?.InnerTextViaPool() ?? "0";
+                        objWeapon.UseSkill = objXmlNaturalWeapon["useskill"]?.InnerTextViaPool(token) ?? string.Empty;
+                        objWeapon.Source = objXmlNaturalWeapon["source"]?.InnerTextViaPool(token) ?? "SR5";
+                        objWeapon.Page = objXmlNaturalWeapon["page"]?.InnerTextViaPool(token) ?? "0";
                         Weapons.Add(objWeapon);
                     }
                     catch
@@ -2905,14 +2905,14 @@ namespace Chummer
                 //Set the Active Skill Ratings for the Critter.
                 foreach (XmlNode xmlSkill in charNode.SelectNodes("skills/skill"))
                 {
-                    string strRating = xmlSkill.Attributes?["rating"]?.InnerTextViaPool();
+                    string strRating = xmlSkill.Attributes?["rating"]?.InnerTextViaPool(token);
                     bool bImprovementAdded = false;
                     if (!string.IsNullOrEmpty(strRating))
                     {
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            ImprovementManager.CreateImprovement(this, xmlSkill.InnerTextViaPool(),
+                            ImprovementManager.CreateImprovement(this, xmlSkill.InnerTextViaPool(token),
                                                                  Improvement.ImprovementSource.Metatype, string.Empty,
                                                                  Improvement.ImprovementType.SkillLevel,
                                                                  string.Empty,
@@ -2929,8 +2929,8 @@ namespace Chummer
                         bImprovementAdded = true;
                     }
 
-                    string strSkill = xmlSkill.InnerTextViaPool();
-                    string strSpec = xmlSkill.Attributes?["spec"]?.InnerTextViaPool() ?? string.Empty;
+                    string strSkill = xmlSkill.InnerTextViaPool(token);
+                    string strSpec = xmlSkill.Attributes?["spec"]?.InnerTextViaPool(token) ?? string.Empty;
                     Skill objSkill = SkillsSection.GetActiveSkill(strSkill, token);
 
                     if (objSkill == null)
@@ -2990,13 +2990,13 @@ namespace Chummer
                 //Set the Skill Group Ratings for the Critter.
                 foreach (XmlNode xmlSkillGroup in charNode.SelectNodes("skills/group"))
                 {
-                    string strRating = xmlSkillGroup.Attributes?["rating"]?.InnerTextViaPool();
+                    string strRating = xmlSkillGroup.Attributes?["rating"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrEmpty(strRating))
                     {
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            ImprovementManager.CreateImprovement(this, xmlSkillGroup.InnerTextViaPool(),
+                            ImprovementManager.CreateImprovement(this, xmlSkillGroup.InnerTextViaPool(token),
                                                                  Improvement.ImprovementSource.Metatype, string.Empty,
                                                                  Improvement.ImprovementType.SkillGroupLevel,
                                                                  string.Empty,
@@ -3021,10 +3021,10 @@ namespace Chummer
                 {
                     foreach (XmlNode xmlSkill in charNode.SelectNodes("skills/knowledge"))
                     {
-                        string strName = xmlSkill.InnerTextViaPool();
+                        string strName = xmlSkill.InnerTextViaPool(token);
                         if (string.IsNullOrEmpty(strName))
                             continue;
-                        string strRating = xmlSkill.Attributes?["rating"]?.InnerTextViaPool();
+                        string strRating = xmlSkill.Attributes?["rating"]?.InnerTextViaPool(token);
                         if (string.IsNullOrEmpty(strRating))
                             continue;
                         if (SkillsSection.KnowledgeSkills.All(x => x.DictionaryKey != strName, token))
@@ -3055,7 +3055,7 @@ namespace Chummer
                                 KnowledgeSkill objSkill = new KnowledgeSkill(this, strName, true);
                                 try
                                 {
-                                    objSkill.Type = xmlSkill.Attributes?["category"]?.InnerTextViaPool();
+                                    objSkill.Type = xmlSkill.Attributes?["category"]?.InnerTextViaPool(token);
                                     SkillsSection.KnowledgeSkills.Add(objSkill);
                                 }
                                 catch
@@ -3089,7 +3089,7 @@ namespace Chummer
                 XmlDocument xmlComplexFormDocument = LoadData("complexforms.xml", token: token);
                 foreach (XmlNode xmlComplexForm in charNode.SelectNodes("complexforms/complexform"))
                 {
-                    XmlNode xmlComplexFormData = xmlComplexFormDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexform", xmlComplexForm.InnerTextViaPool());
+                    XmlNode xmlComplexFormData = xmlComplexFormDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexform", xmlComplexForm.InnerTextViaPool(token));
                     if (xmlComplexFormData == null)
                         continue;
 
@@ -3133,12 +3133,12 @@ namespace Chummer
                 XmlDocument xmlCyberwareDocument = LoadData("cyberware.xml", token: token);
                 foreach (XmlNode node in charNode.SelectNodes("cyberwares/cyberware"))
                 {
-                    XmlNode objXmlCyberwareNode = xmlCyberwareDocument.TryGetNodeByNameOrId("chummer/cyberwares/cyberware", node.InnerTextViaPool());
+                    XmlNode objXmlCyberwareNode = xmlCyberwareDocument.TryGetNodeByNameOrId("chummer/cyberwares/cyberware", node.InnerTextViaPool(token));
                     if (objXmlCyberwareNode == null)
                         continue;
-                    string strForcedValue = node.Attributes["select"]?.InnerTextViaPool() ?? string.Empty;
+                    string strForcedValue = node.Attributes["select"]?.InnerTextViaPool(token) ?? string.Empty;
                     int intRating =
-                        CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerTextViaPool(), intForce, 0, 0, token);
+                        CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerTextViaPool(token), intForce, 0, 0, token);
                     Cyberware objWare = new Cyberware(this);
                     try
                     {
@@ -3174,12 +3174,12 @@ namespace Chummer
                 XmlDocument xmlBiowareDocument = LoadData("bioware.xml", token: token);
                 foreach (XmlNode node in charNode.SelectNodes("biowares/bioware"))
                 {
-                    XmlNode objXmlCyberwareNode = xmlBiowareDocument.TryGetNodeByNameOrId("chummer/biowares/bioware", node.InnerTextViaPool());
+                    XmlNode objXmlCyberwareNode = xmlBiowareDocument.TryGetNodeByNameOrId("chummer/biowares/bioware", node.InnerTextViaPool(token));
                     if (objXmlCyberwareNode == null)
                         continue;
-                    string strForcedValue = node.Attributes["select"]?.InnerTextViaPool() ?? string.Empty;
+                    string strForcedValue = node.Attributes["select"]?.InnerTextViaPool(token) ?? string.Empty;
                     int intRating =
-                        CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerTextViaPool(), intForce, 0, 0, token);
+                        CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerTextViaPool(token), intForce, 0, 0, token);
                     Cyberware objWare = new Cyberware(this);
                     try
                     {
@@ -3215,19 +3215,19 @@ namespace Chummer
                 XmlDocument xmlAIProgramDocument = LoadData("programs.xml", token: token);
                 foreach (XmlNode xmlAIProgram in charNode.SelectNodes("programs/program"))
                 {
-                    XmlNode xmlAIProgramData = xmlAIProgramDocument.TryGetNodeByNameOrId("chummer/programs/program", xmlAIProgram.InnerTextViaPool());
+                    XmlNode xmlAIProgramData = xmlAIProgramDocument.TryGetNodeByNameOrId("chummer/programs/program", xmlAIProgram.InnerTextViaPool(token));
                     if (xmlAIProgramData == null)
                         continue;
 
                     // Check for SelectText.
-                    string strExtra = xmlAIProgram.Attributes?["select"]?.InnerTextViaPool() ?? string.Empty;
+                    string strExtra = xmlAIProgram.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
                     if (xmlAIProgramData.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token) != null && !string.IsNullOrWhiteSpace(strExtra))
                     {
                         using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
                         {
                             Description = string.Format(GlobalSettings.CultureInfo,
                                        LanguageManager.GetString("String_Improvement_SelectText", token: token),
-                                       xmlAIProgramData["translate"]?.InnerTextViaPool() ?? xmlAIProgramData["name"]?.InnerTextViaPool())
+                                       xmlAIProgramData["translate"]?.InnerTextViaPool(token) ?? xmlAIProgramData["name"]?.InnerTextViaPool(token))
                         }))
                         {
                             // Make sure the dialogue window was not canceled.
@@ -3266,18 +3266,18 @@ namespace Chummer
                 foreach (XmlNode xmlGear in charNode.SelectNodes("gears/gear"))
                 {
                     XmlNode xmlGearData = xmlGearDocument.TryGetNodeByNameOrId(
-                        "/chummer/gears/gear", xmlGear["name"].InnerTextViaPool(),
-                        "category = " + xmlGear["category"].InnerTextViaPool().CleanXPath());
+                        "/chummer/gears/gear", xmlGear["name"].InnerTextViaPool(token),
+                        "category = " + xmlGear["category"].InnerTextViaPool(token).CleanXPath());
                     if (xmlGearData == null)
                         continue;
 
                     int intRating = 1;
                     if (xmlGear["rating"] != null)
-                        intRating = CommonFunctions.ExpressionToInt(xmlGear["rating"].InnerTextViaPool(), intForce, 0, 0, token);
+                        intRating = CommonFunctions.ExpressionToInt(xmlGear["rating"].InnerTextViaPool(token), intForce, 0, 0, token);
                     decimal decQty = 1.0m;
                     if (xmlGear["quantity"] != null)
-                        decQty = CommonFunctions.ExpressionToDecimal(xmlGear["quantity"].InnerTextViaPool(), intForce, token: token);
-                    string strForceValue = xmlGear.Attributes?["select"]?.InnerTextViaPool() ?? string.Empty;
+                        decQty = CommonFunctions.ExpressionToDecimal(xmlGear["quantity"].InnerTextViaPool(token), intForce, token: token);
+                    string strForceValue = xmlGear.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
 
                     Gear objGear = new Gear(this);
                     try
@@ -3510,24 +3510,24 @@ namespace Chummer
                         : objXmlMetavariant ?? objXmlMetatype;
                 await AttributeSection.CreateAsync(charNode, intForce, token: token).ConfigureAwait(false);
                 MetatypeGuid = new Guid(strMetatypeId);
-                Metatype = objXmlMetatype["name"]?.InnerTextViaPool() ?? "Human";
+                Metatype = objXmlMetatype["name"]?.InnerTextViaPool(token) ?? "Human";
                 await SetMetatypeCategoryAsync(strSelectedMetatypeCategory, token).ConfigureAwait(false);
                 MetavariantGuid = string.IsNullOrEmpty(strMetavariantId) ? Guid.Empty : new Guid(strMetavariantId);
-                Metavariant = MetavariantGuid != Guid.Empty ? objXmlMetavariant?["name"]?.InnerTextViaPool() ?? string.Empty : string.Empty;
+                Metavariant = MetavariantGuid != Guid.Empty ? objXmlMetavariant?["name"]?.InnerTextViaPool(token) ?? string.Empty : string.Empty;
                 // We only reverted to the base metatype to get the attributes.
                 if (strSelectedMetatypeCategory == "Shapeshifter")
                 {
                     charNode = objXmlMetavariant ?? objXmlMetatype;
                 }
 
-                Source = charNode["source"]?.InnerTextViaPool() ?? "SR5";
-                Page = charNode["page"]?.InnerTextViaPool() ?? "0";
+                Source = charNode["source"]?.InnerTextViaPool(token) ?? "SR5";
+                Page = charNode["page"]?.InnerTextViaPool(token) ?? "0";
                 _intMetatypeBP = 0;
                 charNode.TryGetInt32FieldQuickly("karma", ref _intMetatypeBP);
                 _intInitiativeDice = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetMinInitiativeDiceAsync(token).ConfigureAwait(false);
                 charNode.TryGetInt32FieldQuickly("initiativedice", ref _intInitiativeDice);
 
-                Movement = objXmlMetatype["movement"]?.InnerTextViaPool() ?? string.Empty;
+                Movement = objXmlMetatype["movement"]?.InnerTextViaPool(token) ?? string.Empty;
 
                 // Determine if the Metatype has any bonuses.
                 XmlElement xmlBonusNode = charNode["bonus"];
@@ -3550,7 +3550,7 @@ namespace Chummer
                         {
                             foreach (XmlNode objXmlQualityItem in xmlQualityList)
                             {
-                                string strQuality = objXmlQualityItem.InnerTextViaPool();
+                                string strQuality = objXmlQualityItem.InnerTextViaPool(token);
                                 XmlNode objXmlQuality =
                                     xmlQualityDocumentQualitiesNode.TryGetNodeByNameOrId("quality", strQuality);
                                 if (objXmlQuality != null)
@@ -3560,7 +3560,7 @@ namespace Chummer
                                     {
                                         token.ThrowIfCancellationRequested();
                                         string strForceValue =
-                                            objXmlQualityItem.Attributes["select"]?.InnerTextViaPool() ?? string.Empty;
+                                            objXmlQualityItem.Attributes["select"]?.InnerTextViaPool(token) ?? string.Empty;
                                         QualitySource objSource =
                                             objXmlQualityItem.Attributes["removable"]?.InnerTextIsTrueString() == true
                                                 ? QualitySource.MetatypeRemovable
@@ -3591,15 +3591,15 @@ namespace Chummer
                 {
                     foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
                     {
-                        string strCritterPower = objXmlPower.InnerTextViaPool();
+                        string strCritterPower = objXmlPower.InnerTextViaPool(token);
                         XmlNode objXmlCritterPower =
                             xmlCritterPowerDocumentPowersNode.TryGetNodeByNameOrId("power", strCritterPower);
                         if (objXmlCritterPower != null)
                         {
                             CritterPower objPower = new CritterPower(this);
-                            string strForcedValue = objXmlPower.Attributes["select"]?.InnerTextViaPool() ?? string.Empty;
+                            string strForcedValue = objXmlPower.Attributes["select"]?.InnerTextViaPool(token) ?? string.Empty;
                             int intRating =
-                                await CommonFunctions.ExpressionToIntAsync(objXmlPower.Attributes["rating"]?.InnerTextViaPool(),
+                                await CommonFunctions.ExpressionToIntAsync(objXmlPower.Attributes["rating"]?.InnerTextViaPool(token),
                                     intForce,
                                     0,
                                     0, token).ConfigureAwait(false);
@@ -3631,27 +3631,27 @@ namespace Chummer
                 //Load any natural weapons the character has.
                 foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("naturalweapons/naturalweapon"))
                 {
-                    string strReach = objXmlNaturalWeapon["reach"]?.InnerTextViaPool() ?? "0";
+                    string strReach = objXmlNaturalWeapon["reach"]?.InnerTextViaPool(token) ?? "0";
                     string strForce = intForce.ToString(GlobalSettings.InvariantCultureInfo);
                     Weapon objWeapon = new Weapon(this);
                     try
                     {
-                        objWeapon.Name = objXmlNaturalWeapon["name"].InnerTextViaPool();
+                        objWeapon.Name = objXmlNaturalWeapon["name"].InnerTextViaPool(token);
                         objWeapon.Category = await LanguageManager.GetStringAsync("Tab_Critter", GlobalSettings.DefaultLanguage,
                             token: token).ConfigureAwait(false);
                         objWeapon.RangeType = "Melee";
                         objWeapon.Reach = strReach.Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce);
-                        objWeapon.Damage = objXmlNaturalWeapon["damage"]?.InnerTextViaPool() ?? "({STR})S";
-                        objWeapon.Accuracy = objXmlNaturalWeapon["accuracy"]?.InnerTextViaPool() ?? "Physical";
-                        objWeapon.AP = objXmlNaturalWeapon["ap"]?.InnerTextViaPool() ?? "0";
+                        objWeapon.Damage = objXmlNaturalWeapon["damage"]?.InnerTextViaPool(token) ?? "({STR})S";
+                        objWeapon.Accuracy = objXmlNaturalWeapon["accuracy"]?.InnerTextViaPool(token) ?? "Physical";
+                        objWeapon.AP = objXmlNaturalWeapon["ap"]?.InnerTextViaPool(token) ?? "0";
                         objWeapon.Mode = "0";
                         objWeapon.RC = "0";
                         objWeapon.Concealability = "0";
                         objWeapon.Avail = "0";
                         objWeapon.Cost = "0";
-                        objWeapon.UseSkill = objXmlNaturalWeapon["useskill"]?.InnerTextViaPool() ?? string.Empty;
-                        objWeapon.Source = objXmlNaturalWeapon["source"]?.InnerTextViaPool() ?? "SR5";
-                        objWeapon.Page = objXmlNaturalWeapon["page"]?.InnerTextViaPool() ?? "0";
+                        objWeapon.UseSkill = objXmlNaturalWeapon["useskill"]?.InnerTextViaPool(token) ?? string.Empty;
+                        objWeapon.Source = objXmlNaturalWeapon["source"]?.InnerTextViaPool(token) ?? "SR5";
+                        objWeapon.Page = objXmlNaturalWeapon["page"]?.InnerTextViaPool(token) ?? "0";
                         await Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
                     }
                     catch
@@ -3689,14 +3689,14 @@ namespace Chummer
                 //Set the Active Skill Ratings for the Critter.
                 foreach (XmlNode xmlSkill in charNode.SelectNodes("skills/skill"))
                 {
-                    string strRating = xmlSkill.Attributes?["rating"]?.InnerTextViaPool();
+                    string strRating = xmlSkill.Attributes?["rating"]?.InnerTextViaPool(token);
                     bool bImprovementAdded = false;
                     if (!string.IsNullOrEmpty(strRating))
                     {
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            await ImprovementManager.CreateImprovementAsync(this, xmlSkill.InnerTextViaPool(),
+                            await ImprovementManager.CreateImprovementAsync(this, xmlSkill.InnerTextViaPool(token),
                                     Improvement.ImprovementSource.Metatype, string.Empty,
                                     Improvement.ImprovementType.SkillLevel,
                                     string.Empty,
@@ -3714,8 +3714,8 @@ namespace Chummer
                         bImprovementAdded = true;
                     }
 
-                    string strSkill = xmlSkill.InnerTextViaPool();
-                    string strSpec = xmlSkill.Attributes?["spec"]?.InnerTextViaPool() ?? string.Empty;
+                    string strSkill = xmlSkill.InnerTextViaPool(token);
+                    string strSpec = xmlSkill.Attributes?["spec"]?.InnerTextViaPool(token) ?? string.Empty;
                     Skill objSkill = await SkillsSection.GetActiveSkillAsync(strSkill, token).ConfigureAwait(false);
 
                     if (objSkill == null)
@@ -3778,13 +3778,13 @@ namespace Chummer
                 //Set the Skill Group Ratings for the Critter.
                 foreach (XmlNode xmlSkillGroup in charNode.SelectNodes("skills/group"))
                 {
-                    string strRating = xmlSkillGroup.Attributes?["rating"]?.InnerTextViaPool();
+                    string strRating = xmlSkillGroup.Attributes?["rating"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrEmpty(strRating))
                     {
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            await ImprovementManager.CreateImprovementAsync(this, xmlSkillGroup.InnerTextViaPool(),
+                            await ImprovementManager.CreateImprovementAsync(this, xmlSkillGroup.InnerTextViaPool(token),
                                     Improvement.ImprovementSource.Metatype, string.Empty,
                                     Improvement.ImprovementType.SkillGroupLevel,
                                     string.Empty,
@@ -3811,10 +3811,10 @@ namespace Chummer
                 {
                     foreach (XmlNode xmlSkill in charNode.SelectNodes("skills/knowledge"))
                     {
-                        string strName = xmlSkill.InnerTextViaPool();
+                        string strName = xmlSkill.InnerTextViaPool(token);
                         if (string.IsNullOrEmpty(strName))
                             continue;
-                        string strRating = xmlSkill.Attributes?["rating"]?.InnerTextViaPool();
+                        string strRating = xmlSkill.Attributes?["rating"]?.InnerTextViaPool(token);
                         if (string.IsNullOrEmpty(strRating))
                             continue;
                         if (await SkillsSection.KnowledgeSkills
@@ -3851,7 +3851,7 @@ namespace Chummer
                                     .ConfigureAwait(false);
                                 try
                                 {
-                                    await objSkill.SetTypeAsync(xmlSkill.Attributes?["category"]?.InnerTextViaPool(), token).ConfigureAwait(false);
+                                    await objSkill.SetTypeAsync(xmlSkill.Attributes?["category"]?.InnerTextViaPool(token), token).ConfigureAwait(false);
                                     await SkillsSection.KnowledgeSkills.AddAsync(objSkill, token).ConfigureAwait(false);
                                 }
                                 catch
@@ -3889,7 +3889,7 @@ namespace Chummer
                 {
                     XmlNode xmlComplexFormData =
                         xmlComplexFormDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexform",
-                            xmlComplexForm.InnerTextViaPool());
+                            xmlComplexForm.InnerTextViaPool(token));
                     if (xmlComplexFormData == null)
                         continue;
 
@@ -3935,13 +3935,13 @@ namespace Chummer
                 foreach (XmlNode node in charNode.SelectNodes("cyberwares/cyberware"))
                 {
                     XmlNode objXmlCyberwareNode =
-                        xmlCyberwareDocument.TryGetNodeByNameOrId("chummer/cyberwares/cyberware", node.InnerTextViaPool());
+                        xmlCyberwareDocument.TryGetNodeByNameOrId("chummer/cyberwares/cyberware", node.InnerTextViaPool(token));
                     if (objXmlCyberwareNode == null)
                         continue;
-                    string strForcedValue = node.Attributes["select"]?.InnerTextViaPool() ?? string.Empty;
+                    string strForcedValue = node.Attributes["select"]?.InnerTextViaPool(token) ?? string.Empty;
                     int intRating =
                         await CommonFunctions
-                            .ExpressionToIntAsync(node.Attributes["rating"]?.InnerTextViaPool(), intForce, 0, 0, token)
+                            .ExpressionToIntAsync(node.Attributes["rating"]?.InnerTextViaPool(token), intForce, 0, 0, token)
                             .ConfigureAwait(false);
                     Cyberware objWare = new Cyberware(this);
                     try
@@ -3983,13 +3983,13 @@ namespace Chummer
                 foreach (XmlNode node in charNode.SelectNodes("biowares/bioware"))
                 {
                     XmlNode objXmlCyberwareNode =
-                        xmlBiowareDocument.TryGetNodeByNameOrId("chummer/biowares/bioware", node.InnerTextViaPool());
+                        xmlBiowareDocument.TryGetNodeByNameOrId("chummer/biowares/bioware", node.InnerTextViaPool(token));
                     if (objXmlCyberwareNode == null)
                         continue;
-                    string strForcedValue = node.Attributes["select"]?.InnerTextViaPool() ?? string.Empty;
+                    string strForcedValue = node.Attributes["select"]?.InnerTextViaPool(token) ?? string.Empty;
                     int intRating =
                         await CommonFunctions
-                            .ExpressionToIntAsync(node.Attributes["rating"]?.InnerTextViaPool(), intForce, 0, 0, token)
+                            .ExpressionToIntAsync(node.Attributes["rating"]?.InnerTextViaPool(token), intForce, 0, 0, token)
                             .ConfigureAwait(false);
                     Cyberware objWare = new Cyberware(this);
                     try
@@ -4032,20 +4032,20 @@ namespace Chummer
                 foreach (XmlNode xmlAIProgram in charNode.SelectNodes("programs/program"))
                 {
                     XmlNode xmlAIProgramData =
-                        xmlAIProgramDocument.TryGetNodeByNameOrId("chummer/programs/program", xmlAIProgram.InnerTextViaPool());
+                        xmlAIProgramDocument.TryGetNodeByNameOrId("chummer/programs/program", xmlAIProgram.InnerTextViaPool(token));
                     if (xmlAIProgramData == null)
                         continue;
 
                     // Check for SelectText.
-                    string strExtra = xmlAIProgram.Attributes?["select"]?.InnerTextViaPool() ?? string.Empty;
+                    string strExtra = xmlAIProgram.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
                     if (xmlAIProgramData.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token) !=
                         null && !string.IsNullOrWhiteSpace(strExtra))
                     {
                         string strDescription = string.Format(GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token)
                                 .ConfigureAwait(false),
-                            xmlAIProgramData["translate"]?.InnerTextViaPool() ??
-                            xmlAIProgramData["name"]?.InnerTextViaPool());
+                            xmlAIProgramData["translate"]?.InnerTextViaPool(token) ??
+                            xmlAIProgramData["name"]?.InnerTextViaPool(token));
                         using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() =>
                                    new SelectText
                                    {
@@ -4089,21 +4089,21 @@ namespace Chummer
                 foreach (XmlNode xmlGear in charNode.SelectNodes("gears/gear"))
                 {
                     XmlNode xmlGearData = xmlGearDocument.TryGetNodeByNameOrId(
-                        "/chummer/gears/gear", xmlGear["name"].InnerTextViaPool(),
-                        "category = " + xmlGear["category"].InnerTextViaPool().CleanXPath());
+                        "/chummer/gears/gear", xmlGear["name"].InnerTextViaPool(token),
+                        "category = " + xmlGear["category"].InnerTextViaPool(token).CleanXPath());
                     if (xmlGearData == null)
                         continue;
 
                     int intRating = 1;
                     if (xmlGear["rating"] != null)
                         intRating = await CommonFunctions
-                            .ExpressionToIntAsync(xmlGear["rating"].InnerTextViaPool(), intForce, 0, 0, token)
+                            .ExpressionToIntAsync(xmlGear["rating"].InnerTextViaPool(token), intForce, 0, 0, token)
                             .ConfigureAwait(false);
                     decimal decQty = 1.0m;
                     if (xmlGear["quantity"] != null)
-                        decQty = await CommonFunctions.ExpressionToDecimalAsync(xmlGear["quantity"].InnerTextViaPool(), intForce,
+                        decQty = await CommonFunctions.ExpressionToDecimalAsync(xmlGear["quantity"].InnerTextViaPool(token), intForce,
                             token: token).ConfigureAwait(false);
-                    string strForceValue = xmlGear.Attributes?["select"]?.InnerTextViaPool() ?? string.Empty;
+                    string strForceValue = xmlGear.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
 
                     Gear objGear = new Gear(this);
                     try
@@ -6465,10 +6465,10 @@ namespace Chummer
                                             : new ValueVersion();
                                     }
                                     // Check for typo in Corrupter quality and correct it
-                                    else if (_verSavedVersion < new ValueVersion(5, 188, 34) && objXmlDocument.InnerXmlContentContains("Corruptor"))
+                                    else if (_verSavedVersion < new ValueVersion(5, 188, 34) && objXmlDocument.InnerXmlContentContains("Corruptor", token))
                                     {
                                         objXmlDocument.InnerXml =
-                                            objXmlDocument.InnerXmlViaPool().Replace("Corruptor", "Corrupter");
+                                            objXmlDocument.InnerXmlViaPool(token).Replace("Corruptor", "Corrupter");
                                         xmlCharacterNavigator =
                                             (blnSync
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -7569,16 +7569,16 @@ namespace Chummer
                                 // Improvements.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("improvements/improvement");
                                 bool blnRemoveImprovements = Utils.IsUnitTest;
-                                string strCharacterInnerXml = objXmlCharacter.InnerXmlViaPool();
+                                string strCharacterInnerXml = objXmlCharacter.InnerXmlViaPool(token);
                                 int intCharacterInnerXmlLength = strCharacterInnerXml.Length;
                                 foreach (XmlNode objXmlImprovement in objXmlNodeList)
                                 {
                                     // First check if this is an orphaned improvement
                                     if ((blnRemoveImprovements || showWarnings) &&
-                                        objXmlImprovement["custom"]?.InnerTextViaPool() != bool.TrueString &&
+                                        objXmlImprovement["custom"]?.InnerTextViaPool(token) != bool.TrueString &&
                                         !string.IsNullOrEmpty(strCharacterInnerXml))
                                     {
-                                        string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerTextViaPool();
+                                        string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerTextViaPool(token);
                                         if (!string.IsNullOrEmpty(strLoopSourceName)
                                             && strLoopSourceName.IsGuid())
                                         {
@@ -7678,7 +7678,7 @@ namespace Chummer
                                     }
 
                                     string strImprovementSource =
-                                        objXmlImprovement["improvementsource"]?.InnerTextViaPool();
+                                        objXmlImprovement["improvementsource"]?.InnerTextViaPool(token);
                                     switch (strImprovementSource)
                                     {
                                         // Do not load condition monitor improvements from older versions of Chummer
@@ -7754,7 +7754,7 @@ namespace Chummer
                                     catch (ArgumentException)
                                     {
                                         lstInternalIdsNeedingReapplyImprovements.Add(
-                                            objXmlImprovement["sourcename"]?.InnerTextViaPool());
+                                            objXmlImprovement["sourcename"]?.InnerTextViaPool(token));
                                     }
                                 }
 
@@ -9452,8 +9452,8 @@ namespace Chummer
                                         // Sort the Powers in alphabetical order.
                                         foreach (XmlNode xmlPower in objXmlNodeList)
                                         {
-                                            string strGuid = xmlPower["guid"]?.InnerTextViaPool();
-                                            string strPowerName = xmlPower["name"]?.InnerTextViaPool() ?? string.Empty;
+                                            string strGuid = xmlPower["guid"]?.InnerTextViaPool(token);
+                                            string strPowerName = xmlPower["name"]?.InnerTextViaPool(token) ?? string.Empty;
                                             if (blnDoEnhancedAccuracyRefresh
                                                 && strPowerName == "Enhanced Accuracy (skill)")
                                             {
@@ -9463,7 +9463,7 @@ namespace Chummer
                                             if (!string.IsNullOrEmpty(strGuid))
                                                 lstPowerOrder.Add(new ListItem(strGuid,
                                                                                strPowerName
-                                                                               + (xmlPower["extra"]?.InnerTextViaPool()
+                                                                               + (xmlPower["extra"]?.InnerTextViaPool(token)
                                                                                    ?? string.Empty)));
                                             else
                                             {
@@ -10509,14 +10509,14 @@ namespace Chummer
                                     foreach (XmlNode objXmlGroup in objXmlGroupList)
                                     {
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        _lstImprovementGroups.Add(objXmlGroup.InnerTextViaPool());
+                                        _lstImprovementGroups.Add(objXmlGroup.InnerTextViaPool(token));
                                     }
                                 }
                                 else
                                 {
                                     foreach (XmlNode objXmlGroup in objXmlGroupList)
                                     {
-                                        await _lstImprovementGroups.AddAsync(objXmlGroup.InnerTextViaPool(), token)
+                                        await _lstImprovementGroups.AddAsync(objXmlGroup.InnerTextViaPool(token), token)
                                                                    .ConfigureAwait(false);
                                     }
                                 }
@@ -11028,7 +11028,7 @@ namespace Chummer
                                     foreach (XmlNode objXmlPlugin in objXmlCharacter.SelectNodes("plugins/" +
                                                  plugin.GetPluginAssembly().GetName().Name))
                                     {
-                                        plugin.LoadFileElement(this, objXmlPlugin.InnerTextViaPool());
+                                        plugin.LoadFileElement(this, objXmlPlugin.InnerTextViaPool(token));
                                     }
                                 }
 
@@ -26074,7 +26074,7 @@ namespace Chummer
                         await Metamagics.ForEachAsync(async objMetamagic =>
                         {
                             if (objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic
-                                && objMetamagic.Bonus?.InnerXmlContentContains("Rating") == true)
+                                && objMetamagic.Bonus?.InnerXmlContentContains("Rating", token) == true)
                             {
                                 await ImprovementManager.RemoveImprovementsAsync(
                                     this, Improvement.ImprovementSource.Metamagic,
@@ -26102,7 +26102,7 @@ namespace Chummer
                             await Metamagics.ForEachAsync(async objMetamagic =>
                             {
                                 if (objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic
-                                    && objMetamagic.Bonus?.InnerXmlContentContains("Rating") == true)
+                                    && objMetamagic.Bonus?.InnerXmlContentContains("Rating", token) == true)
                                 {
                                     await ImprovementManager.CreateImprovementsAsync(
                                         this, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId,
@@ -26168,7 +26168,7 @@ namespace Chummer
                         await Metamagics.ForEachAsync(async objMetamagic =>
                         {
                             if (objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic
-                                && objMetamagic.Bonus?.InnerXmlContentContains("Rating") == true)
+                                && objMetamagic.Bonus?.InnerXmlContentContains("Rating", token) == true)
                             {
                                 blnFoundImprovement = false;
                                 string strMetamagicId = objMetamagic.InternalId;
@@ -27516,7 +27516,7 @@ namespace Chummer
                         await Metamagics.ForEachAsync(async objMetamagic =>
                         {
                             if (objMetamagic.SourceType == Improvement.ImprovementSource.Echo
-                                && objMetamagic.Bonus?.InnerXmlContentContains("Rating") == true)
+                                && objMetamagic.Bonus?.InnerXmlContentContains("Rating", token) == true)
                             {
                                 await ImprovementManager.RemoveImprovementsAsync(
                                         this, Improvement.ImprovementSource.Echo,
@@ -27539,7 +27539,7 @@ namespace Chummer
                             await Metamagics.ForEachAsync(async objMetamagic =>
                             {
                                 if (objMetamagic.SourceType == Improvement.ImprovementSource.Echo
-                                    && objMetamagic.Bonus?.InnerXmlContentContains("Rating") == true)
+                                    && objMetamagic.Bonus?.InnerXmlContentContains("Rating", token) == true)
                                 {
                                     await ImprovementManager.CreateImprovementsAsync(
                                         this, Improvement.ImprovementSource.Echo, objMetamagic.InternalId,
@@ -27599,7 +27599,7 @@ namespace Chummer
                         await Metamagics.ForEachAsync(async objMetamagic =>
                         {
                             if (objMetamagic.SourceType == Improvement.ImprovementSource.Echo
-                                && objMetamagic.Bonus?.InnerXmlContentContains("Rating") == true)
+                                && objMetamagic.Bonus?.InnerXmlContentContains("Rating", token) == true)
                             {
                                 blnFoundImprovement = false;
                                 string strMetamagicId = objMetamagic.InternalId;
@@ -44648,7 +44648,7 @@ namespace Chummer
                     {
                         if (objXmlQuality["name"] == null)
                         {
-                            string strInnerText = objXmlQuality.InnerTextViaPool();
+                            string strInnerText = objXmlQuality.InnerTextViaPool(token);
                             XmlNode objXmlQualityNode =
                                 xmlRootQualitiesNode.TryGetNodeByNameOrId(
                                     "quality", GetQualityName(strInnerText));
@@ -44721,13 +44721,13 @@ namespace Chummer
                             {
                                 foreach (XmlNode objXmlMetatypeQuality in xmlMetatypeQualityList)
                                 {
-                                    string strInnerText = objXmlMetatypeQuality.InnerTextViaPool();
+                                    string strInnerText = objXmlMetatypeQuality.InnerTextViaPool(token);
                                     // See if the Quality already exists in the character.
                                     // If the Quality was not found, create it.
                                     if (!await _lstQualities.AnyAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == strInnerText, token: token).ConfigureAwait(false))
                                     {
                                         string strForceValue =
-                                            objXmlMetatypeQuality.Attributes?["select"]?.InnerTextViaPool() ?? string.Empty;
+                                            objXmlMetatypeQuality.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
                                         XmlNode objXmlQuality =
                                             xmlRootQualitiesNode.TryGetNodeByNameOrId("quality",
                                                 strInnerText);
@@ -44767,13 +44767,13 @@ namespace Chummer
                                 {
                                     // See if the Quality already exists in the character.
                                     // If the Quality was not found, create it.
-                                    if (!await _lstQualities.AnyAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == objXmlMetatypeQuality.InnerTextViaPool(), token: token).ConfigureAwait(false))
+                                    if (!await _lstQualities.AnyAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == objXmlMetatypeQuality.InnerTextViaPool(token), token: token).ConfigureAwait(false))
                                     {
                                         string strForceValue =
-                                            objXmlMetatypeQuality.Attributes?["select"]?.InnerTextViaPool() ?? string.Empty;
+                                            objXmlMetatypeQuality.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
                                         XmlNode objXmlQuality =
                                             xmlRootQualitiesNode.TryGetNodeByNameOrId("quality",
-                                                objXmlMetatypeQuality.InnerTextViaPool());
+                                                objXmlMetatypeQuality.InnerTextViaPool(token));
                                         IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                                         try
                                         {
@@ -44818,14 +44818,14 @@ namespace Chummer
                                         {
                                             // See if the Quality already exists in the character.
                                             // If the Quality was not found, create it.
-                                            if (!await _lstQualities.AnyAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == objXmlMetatypeQuality.InnerTextViaPool(), token: token).ConfigureAwait(false))
+                                            if (!await _lstQualities.AnyAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == objXmlMetatypeQuality.InnerTextViaPool(token), token: token).ConfigureAwait(false))
                                             {
                                                 string strForceValue =
-                                                    objXmlMetatypeQuality.Attributes?["select"]?.InnerTextViaPool()
+                                                    objXmlMetatypeQuality.Attributes?["select"]?.InnerTextViaPool(token)
                                                     ?? string.Empty;
                                                 XmlNode objXmlQuality =
                                                     xmlRootQualitiesNode.TryGetNodeByNameOrId("quality",
-                                                        objXmlMetatypeQuality.InnerTextViaPool());
+                                                        objXmlMetatypeQuality.InnerTextViaPool(token));
                                                 IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                                                 try
                                                 {
@@ -44863,14 +44863,14 @@ namespace Chummer
                                         {
                                             // See if the Quality already exists in the character.
                                             // If the Quality was not found, create it.
-                                            if (!await _lstQualities.AnyAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == objXmlMetatypeQuality.InnerTextViaPool(), token: token).ConfigureAwait(false))
+                                            if (!await _lstQualities.AnyAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == objXmlMetatypeQuality.InnerTextViaPool(token), token: token).ConfigureAwait(false))
                                             {
                                                 string strForceValue =
-                                                    objXmlMetatypeQuality.Attributes?["select"]?.InnerTextViaPool()
+                                                    objXmlMetatypeQuality.Attributes?["select"]?.InnerTextViaPool(token)
                                                     ?? string.Empty;
                                                 XmlNode objXmlQuality =
                                                     xmlRootQualitiesNode.TryGetNodeByNameOrId("quality",
-                                                        objXmlMetatypeQuality.InnerTextViaPool());
+                                                        objXmlMetatypeQuality.InnerTextViaPool(token));
                                                 IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                                                 try
                                                 {
@@ -45364,7 +45364,7 @@ namespace Chummer
         private bool CorrectedUnleveledQuality(XmlNode xmlOldQuality, XmlNode xmlRootQualitiesNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            (XmlNode xmlNewQuality, int intRanks) = CorrectedUnleveledQualityCommon(xmlOldQuality["name"]?.InnerTextViaPool(), xmlRootQualitiesNode);
+            (XmlNode xmlNewQuality, int intRanks) = CorrectedUnleveledQualityCommon(xmlOldQuality["name"]?.InnerTextViaPool(token), xmlRootQualitiesNode);
             token.ThrowIfCancellationRequested();
             if (intRanks > 0)
             {
@@ -45384,11 +45384,11 @@ namespace Chummer
                             }
 
                             QualitySource objQualitySource =
-                                Quality.ConvertToQualitySource(xmlOldQuality["qualitysource"]?.InnerTextViaPool());
+                                Quality.ConvertToQualitySource(xmlOldQuality["qualitysource"]?.InnerTextViaPool(token));
                             objQuality.Create(xmlNewQuality, objQualitySource, _lstWeapons,
-                                              xmlOldQuality["extra"]?.InnerTextViaPool(), token: token);
+                                              xmlOldQuality["extra"]?.InnerTextViaPool(token), token: token);
                             if (xmlOldQuality["bp"] != null
-                                && int.TryParse(xmlOldQuality["bp"].InnerTextViaPool(), out int intOldBP))
+                                && int.TryParse(xmlOldQuality["bp"].InnerTextViaPool(token), out int intOldBP))
                                 objQuality.BP = intOldBP / intRanks;
 
                             Qualities.Add(objQuality);
@@ -45414,7 +45414,7 @@ namespace Chummer
         private async Task<bool> CorrectedUnleveledQualityAsync(XmlNode xmlOldQuality, XmlNode xmlRootQualitiesNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            (XmlNode xmlNewQuality, int intRanks) = CorrectedUnleveledQualityCommon(xmlOldQuality["name"]?.InnerTextViaPool(), xmlRootQualitiesNode);
+            (XmlNode xmlNewQuality, int intRanks) = CorrectedUnleveledQualityCommon(xmlOldQuality["name"]?.InnerTextViaPool(token), xmlRootQualitiesNode);
             token.ThrowIfCancellationRequested();
             if (intRanks > 0)
             {
@@ -45436,11 +45436,11 @@ namespace Chummer
                             }
 
                             QualitySource objQualitySource =
-                                Quality.ConvertToQualitySource(xmlOldQuality["qualitysource"]?.InnerTextViaPool());
+                                Quality.ConvertToQualitySource(xmlOldQuality["qualitysource"]?.InnerTextViaPool(token));
                             await objQuality.CreateAsync(xmlNewQuality, objQualitySource, _lstWeapons,
-                                xmlOldQuality["extra"]?.InnerTextViaPool(), token: token).ConfigureAwait(false);
+                                xmlOldQuality["extra"]?.InnerTextViaPool(token), token: token).ConfigureAwait(false);
                             if (xmlOldQuality["bp"] != null
-                                && int.TryParse(xmlOldQuality["bp"].InnerTextViaPool(), out int intOldBP))
+                                && int.TryParse(xmlOldQuality["bp"].InnerTextViaPool(token), out int intOldBP))
                                 await objQuality.SetBPAsync(intOldBP / intRanks, token).ConfigureAwait(false);
 
                             await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);

@@ -392,20 +392,20 @@ namespace Chummer.Backend.Equipment
                                 objXmlAccessoryGearName?.Attributes;
                             int intGearRating = 0;
                             decimal decGearQty = 1;
-                            string strChildForceSource = objXmlAccessoryGear["source"]?.InnerTextViaPool() ?? string.Empty;
-                            string strChildForcePage = objXmlAccessoryGear["page"]?.InnerTextViaPool() ?? string.Empty;
+                            string strChildForceSource = objXmlAccessoryGear["source"]?.InnerTextViaPool(token) ?? string.Empty;
+                            string strChildForcePage = objXmlAccessoryGear["page"]?.InnerTextViaPool(token) ?? string.Empty;
                             string strChildForceValue =
-                                objXmlAccessoryGearNameAttributes?["select"]?.InnerTextViaPool() ?? string.Empty;
+                                objXmlAccessoryGearNameAttributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
                             bool blnChildCreateChildren =
-                                objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerTextViaPool() != bool.FalseString;
+                                objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerTextViaPool(token) != bool.FalseString;
                             bool blnAddChildImprovements = blnCreateImprovements &&
                                                            objXmlAccessoryGearNameAttributes?["addimprovements"]
-                                                               ?.InnerTextViaPool() != bool.FalseString;
+                                                               ?.InnerTextViaPool(token) != bool.FalseString;
                             if (objXmlAccessoryGear["rating"] != null)
-                                int.TryParse(objXmlAccessoryGear["rating"].InnerTextViaPool(), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intGearRating);
+                                int.TryParse(objXmlAccessoryGear["rating"].InnerTextViaPool(token), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intGearRating);
                             if (objXmlAccessoryGearNameAttributes?["qty"] != null)
                             {
-                                decimal.TryParse(objXmlAccessoryGearNameAttributes["qty"].InnerTextViaPool(), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decGearQty);
+                                decimal.TryParse(objXmlAccessoryGearNameAttributes["qty"].InnerTextViaPool(token), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decGearQty);
                             }
                             string strFilter = "/chummer/gears/gear";
                             if (objXmlAccessoryGearName != null || objXmlAccessoryGearCategory != null)
@@ -413,13 +413,13 @@ namespace Chummer.Backend.Equipment
                                 strFilter += '[';
                                 if (objXmlAccessoryGearName != null)
                                 {
-                                    strFilter += "name = " + objXmlAccessoryGearName.InnerTextViaPool().CleanXPath();
+                                    strFilter += "name = " + objXmlAccessoryGearName.InnerTextViaPool(token).CleanXPath();
                                     if (objXmlAccessoryGearCategory != null)
                                         strFilter += " and category = " +
-                                                     objXmlAccessoryGearCategory.InnerTextViaPool().CleanXPath();
+                                                     objXmlAccessoryGearCategory.InnerTextViaPool(token).CleanXPath();
                                 }
                                 else
-                                    strFilter += "category = " + objXmlAccessoryGearCategory.InnerTextViaPool().CleanXPath();
+                                    strFilter += "category = " + objXmlAccessoryGearCategory.InnerTextViaPool(token).CleanXPath();
 
                                 strFilter += ']';
                             }
@@ -460,7 +460,7 @@ namespace Chummer.Backend.Equipment
 
                                 // Change the Capacity of the child if necessary.
                                 if (objXmlAccessoryGear["capacity"] != null)
-                                    objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerTextViaPool() + ']';
+                                    objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerTextViaPool(token) + ']';
                             }
                             catch
                             {
@@ -2716,7 +2716,7 @@ namespace Chummer.Backend.Equipment
                         {
                             XmlNodeList xmlGearCategoryList = AllowGear?.SelectNodes("gearcategory");
                             if (xmlGearCategoryList?.Count > 0 && xmlGearCategoryList.Cast<XmlNode>()
-                                    .Any(objAllowed => objAllowed.InnerTextViaPool() == strCheckValue))
+                                    .Any(objAllowed => objAllowed.InnerTextViaPool(token) == strCheckValue))
                             {
                                 return true;
                             }
@@ -2727,7 +2727,7 @@ namespace Chummer.Backend.Equipment
                         {
                             XmlNodeList xmlGearNameList = AllowGear?.SelectNodes("gearname");
                             if (xmlGearNameList?.Count > 0 && xmlGearNameList.Cast<XmlNode>()
-                                    .Any(objAllowed => objAllowed.InnerTextViaPool() == strCheckValue))
+                                    .Any(objAllowed => objAllowed.InnerTextViaPool(token) == strCheckValue))
                             {
                                 return true;
                             }

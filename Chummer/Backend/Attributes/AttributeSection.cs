@@ -899,7 +899,7 @@ namespace Chummer.Backend.Attributes
                 {
                     using (Timekeeper.StartSyncron("create_char_attrib", null,
                                                        CustomActivity.OperationType.RequestOperation,
-                                                       charNode.InnerTextViaPool()))
+                                                       charNode.InnerTextViaPool(token)))
                     {
                         CharacterAttrib objBod = GetAttributeByName("BOD", token);
                         int intOldBODBase = objBod?.Base ?? 0;
@@ -998,61 +998,61 @@ namespace Chummer.Backend.Attributes
                         objDep = GetAttributeByName("DEP", token);
 
                         objBod.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["bodmin"]?.InnerTextViaPool(), intValue, intMinModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["bodmax"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["bodaug"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token));
+                            CommonFunctions.ExpressionToInt(charNode["bodmin"]?.InnerTextViaPool(token), intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["bodmax"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["bodaug"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token));
                         objAgi.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["agimin"]?.InnerTextViaPool(), intValue, intMinModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["agimax"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["agiaug"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token));
+                            CommonFunctions.ExpressionToInt(charNode["agimin"]?.InnerTextViaPool(token), intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["agimax"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["agiaug"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token));
                         objRea.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["reamin"]?.InnerTextViaPool(), intValue, intMinModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["reamax"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["reaaug"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token));
+                            CommonFunctions.ExpressionToInt(charNode["reamin"]?.InnerTextViaPool(token), intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["reamax"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["reaaug"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token));
                         objStr.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["strmin"]?.InnerTextViaPool(), intValue, intMinModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["strmax"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["straug"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token));
+                            CommonFunctions.ExpressionToInt(charNode["strmin"]?.InnerTextViaPool(token), intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["strmax"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["straug"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token));
                         objCha.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["chamin"]?.InnerTextViaPool(), intValue, intMinModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["chamax"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["chaaug"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token));
+                            CommonFunctions.ExpressionToInt(charNode["chamin"]?.InnerTextViaPool(token), intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["chamax"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["chaaug"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token));
                         objInt.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["intmin"]?.InnerTextViaPool(), intValue, intMinModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["intmax"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["intaug"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token));
+                            CommonFunctions.ExpressionToInt(charNode["intmin"]?.InnerTextViaPool(token), intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["intmax"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["intaug"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token));
                         objLog.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["logmin"]?.InnerTextViaPool(), intValue, intMinModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["logmax"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["logaug"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token));
+                            CommonFunctions.ExpressionToInt(charNode["logmin"]?.InnerTextViaPool(token), intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["logmax"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["logaug"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token));
                         objWil.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["wilmin"]?.InnerTextViaPool(), intValue, intMinModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["wilmax"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["wilaug"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token));
+                            CommonFunctions.ExpressionToInt(charNode["wilmin"]?.InnerTextViaPool(token), intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["wilmax"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["wilaug"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token));
                         objMag.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["magmin"]?.InnerTextViaPool(), intValue, intMinModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["magaug"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token));
+                            CommonFunctions.ExpressionToInt(charNode["magmin"]?.InnerTextViaPool(token), intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["magaug"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token));
                         objRes.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["resmin"]?.InnerTextViaPool(), intValue, intMinModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["resmax"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["resaug"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token));
+                            CommonFunctions.ExpressionToInt(charNode["resmin"]?.InnerTextViaPool(token), intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["resmax"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["resaug"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token));
                         objEdg.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["edgmin"]?.InnerTextViaPool(), intValue, intMinModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["edgmax"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["edgaug"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token));
+                            CommonFunctions.ExpressionToInt(charNode["edgmin"]?.InnerTextViaPool(token), intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["edgmax"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["edgaug"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token));
                         objDep.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["depmin"]?.InnerTextViaPool(), intValue, intMinModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["depmax"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["depaug"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token));
+                            CommonFunctions.ExpressionToInt(charNode["depmin"]?.InnerTextViaPool(token), intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["depmax"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["depaug"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token));
                         objMagAdept.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["magmin"]?.InnerTextViaPool(), intValue, intMinModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["magaug"]?.InnerTextViaPool(), intValue, intMaxModifier, token: token));
+                            CommonFunctions.ExpressionToInt(charNode["magmin"]?.InnerTextViaPool(token), intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["magaug"]?.InnerTextViaPool(token), intValue, intMaxModifier, token: token));
                         GetAttributeByName("ESS", token).AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["essmin"]?.InnerTextViaPool(), intValue, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["essmax"]?.InnerTextViaPool(), intValue, token: token),
-                            CommonFunctions.ExpressionToInt(charNode["essaug"]?.InnerTextViaPool(), intValue, token: token));
+                            CommonFunctions.ExpressionToInt(charNode["essmin"]?.InnerTextViaPool(token), intValue, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["essmax"]?.InnerTextViaPool(token), intValue, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["essaug"]?.InnerTextViaPool(token), intValue, token: token));
 
                         objBod.Base = Math.Min(intOldBODBase, objBod.PriorityMaximum);
                         objBod.Karma = Math.Min(intOldBODKarma, objBod.KarmaMaximum);
@@ -1125,7 +1125,7 @@ namespace Chummer.Backend.Attributes
                 {
                     using (Timekeeper.StartSyncron("create_char_attrib", null,
                                CustomActivity.OperationType.RequestOperation,
-                               charNode.InnerTextViaPool()))
+                               charNode.InnerTextViaPool(token)))
                     {
                         CharacterAttrib objBod = await GetAttributeByNameAsync("BOD", token).ConfigureAwait(false);
                         int intOldBODBase = objBod != null ? await objBod.GetBaseAsync(token).ConfigureAwait(false) : 0;
@@ -1241,102 +1241,102 @@ namespace Chummer.Backend.Attributes
                         objDep = await GetAttributeByNameAsync("DEP", token).ConfigureAwait(false);
 
                         await objBod.AssignLimitsAsync(
-                            await CommonFunctions.ExpressionToIntAsync(charNode["bodmin"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["bodmin"]?.InnerTextViaPool(token), intValue,
                                 intMinModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["bodmax"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["bodmax"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["bodaug"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["bodaug"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objAgi.AssignLimitsAsync(
-                            await CommonFunctions.ExpressionToIntAsync(charNode["agimin"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["agimin"]?.InnerTextViaPool(token), intValue,
                                 intMinModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["agimax"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["agimax"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["agiaug"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["agiaug"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objRea.AssignLimitsAsync(
-                            await CommonFunctions.ExpressionToIntAsync(charNode["reamin"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["reamin"]?.InnerTextViaPool(token), intValue,
                                 intMinModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["reamax"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["reamax"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["reaaug"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["reaaug"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objStr.AssignLimitsAsync(
-                            await CommonFunctions.ExpressionToIntAsync(charNode["strmin"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["strmin"]?.InnerTextViaPool(token), intValue,
                                 intMinModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["strmax"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["strmax"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["straug"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["straug"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objCha.AssignLimitsAsync(
-                            await CommonFunctions.ExpressionToIntAsync(charNode["chamin"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["chamin"]?.InnerTextViaPool(token), intValue,
                                 intMinModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["chamax"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["chamax"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["chaaug"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["chaaug"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objInt.AssignLimitsAsync(
-                            await CommonFunctions.ExpressionToIntAsync(charNode["intmin"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["intmin"]?.InnerTextViaPool(token), intValue,
                                 intMinModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["intmax"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["intmax"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["intaug"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["intaug"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objLog.AssignLimitsAsync(
-                            await CommonFunctions.ExpressionToIntAsync(charNode["logmin"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["logmin"]?.InnerTextViaPool(token), intValue,
                                 intMinModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["logmax"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["logmax"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["logaug"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["logaug"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objWil.AssignLimitsAsync(
-                            await CommonFunctions.ExpressionToIntAsync(charNode["wilmin"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["wilmin"]?.InnerTextViaPool(token), intValue,
                                 intMinModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["wilmax"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["wilmax"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["wilaug"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["wilaug"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objMag.AssignLimitsAsync(
-                            await CommonFunctions.ExpressionToIntAsync(charNode["magmin"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["magmin"]?.InnerTextViaPool(token), intValue,
                                 intMinModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["magmax"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["magmax"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["magaug"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["magaug"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objRes.AssignLimitsAsync(
-                            await CommonFunctions.ExpressionToIntAsync(charNode["resmin"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["resmin"]?.InnerTextViaPool(token), intValue,
                                 intMinModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["resmax"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["resmax"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["resaug"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["resaug"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objEdg.AssignLimitsAsync(
-                            await CommonFunctions.ExpressionToIntAsync(charNode["edgmin"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["edgmin"]?.InnerTextViaPool(token), intValue,
                                 intMinModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["edgmax"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["edgmax"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["edgaug"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["edgaug"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objDep.AssignLimitsAsync(
-                            await CommonFunctions.ExpressionToIntAsync(charNode["depmin"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["depmin"]?.InnerTextViaPool(token), intValue,
                                 intMinModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["depmax"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["depmax"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["depaug"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["depaug"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await objMagAdept.AssignLimitsAsync(
-                            await CommonFunctions.ExpressionToIntAsync(charNode["magmin"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["magmin"]?.InnerTextViaPool(token), intValue,
                                 intMinModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["magmax"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["magmax"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["magaug"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["magaug"]?.InnerTextViaPool(token), intValue,
                                 intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                         await (await GetAttributeByNameAsync("ESS", token).ConfigureAwait(false)).AssignLimitsAsync(
-                            await CommonFunctions.ExpressionToIntAsync(charNode["essmin"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["essmin"]?.InnerTextViaPool(token), intValue,
                                 token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["essmax"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["essmax"]?.InnerTextViaPool(token), intValue,
                                 token: token).ConfigureAwait(false),
-                            await CommonFunctions.ExpressionToIntAsync(charNode["essaug"]?.InnerTextViaPool(), intValue,
+                            await CommonFunctions.ExpressionToIntAsync(charNode["essaug"]?.InnerTextViaPool(token), intValue,
                                 token: token).ConfigureAwait(false), token).ConfigureAwait(false);
 
                         await objBod.SetBaseAsync(

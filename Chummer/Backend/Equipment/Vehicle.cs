@@ -262,7 +262,7 @@ namespace Chummer.Backend.Equipment
             _blnSkipEvents = blnForSelectForm;
             objXmlVehicle.TryGetStringFieldQuickly("name", ref _strName);
             objXmlVehicle.TryGetStringFieldQuickly("category", ref _strCategory);
-            string strTemp = objXmlVehicle["handling"]?.InnerTextViaPool();
+            string strTemp = objXmlVehicle["handling"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
             {
                 //Some vehicles have different Offroad Handling speeds. If so, we want to split this up for use with mods and such later.
@@ -288,7 +288,7 @@ namespace Chummer.Backend.Equipment
                     _intOffroadHandling = _intHandling;
                 }
             }
-            strTemp = objXmlVehicle["accel"]?.InnerTextViaPool();
+            strTemp = objXmlVehicle["accel"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
             {
                 if (strTemp.Contains('/'))
@@ -313,7 +313,7 @@ namespace Chummer.Backend.Equipment
                     _intOffroadAccel = _intAccel;
                 }
             }
-            strTemp = objXmlVehicle["speed"]?.InnerTextViaPool();
+            strTemp = objXmlVehicle["speed"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
             {
                 if (strTemp.Contains('/'))
@@ -362,7 +362,7 @@ namespace Chummer.Backend.Equipment
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
             }
 
-            _strCost = objXmlVehicle["cost"]?.InnerTextViaPool() ?? string.Empty;
+            _strCost = objXmlVehicle["cost"]?.InnerTextViaPool(token) ?? string.Empty;
             if (!blnForSelectForm && !blnSkipCost && _strCost.StartsWith("Variable(", StringComparison.Ordinal))
             {
                 string strFirstHalf = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
@@ -518,11 +518,11 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (XmlNode objXmlVehicleMod in objXmlModList)
                             {
-                                XmlNode objXmlMod = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", objXmlVehicleMod.InnerTextViaPool());
+                                XmlNode objXmlMod = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", objXmlVehicleMod.InnerTextViaPool(token));
                                 if (objXmlMod != null)
                                 {
-                                    string strForcedValue = objXmlVehicleMod.Attributes?["select"]?.InnerTextViaPool() ?? string.Empty;
-                                    if (!int.TryParse(objXmlVehicleMod.Attributes?["rating"]?.InnerTextViaPool(), out int intRating))
+                                    string strForcedValue = objXmlVehicleMod.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
+                                    if (!int.TryParse(objXmlVehicleMod.Attributes?["rating"]?.InnerTextViaPool(token), out int intRating))
                                         intRating = 0;
                                     VehicleMod objMod = new VehicleMod(_objCharacter);
                                     try
@@ -566,14 +566,14 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (XmlNode objXmlVehicleMod in objXmlModList)
                             {
-                                string strName = objXmlVehicleMod["name"]?.InnerTextViaPool();
+                                string strName = objXmlVehicleMod["name"]?.InnerTextViaPool(token);
                                 if (string.IsNullOrEmpty(strName))
                                     continue;
                                 XmlNode objXmlMod = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", strName);
                                 if (objXmlMod != null)
                                 {
                                     string strForcedValue = objXmlVehicleMod.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select", token)?.Value ?? string.Empty;
-                                    if (!int.TryParse(objXmlVehicleMod["rating"]?.InnerTextViaPool(), out int intRating))
+                                    if (!int.TryParse(objXmlVehicleMod["rating"]?.InnerTextViaPool(token), out int intRating))
                                         intRating = 0;
                                     VehicleMod objMod = new VehicleMod(_objCharacter);
                                     try
@@ -603,7 +603,7 @@ namespace Chummer.Backend.Equipment
                                                         : await _objCharacter.LoadDataAsync("cyberware.xml", token: token).ConfigureAwait(false);
                                                     foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
                                                     {
-                                                        string strSubsystemName = objXmlSubsystemNode["name"]?.InnerTextViaPool();
+                                                        string strSubsystemName = objXmlSubsystemNode["name"]?.InnerTextViaPool(token);
                                                         if (string.IsNullOrEmpty(strSubsystemName))
                                                             continue;
                                                         XmlNode objXmlSubsystem
@@ -611,7 +611,7 @@ namespace Chummer.Backend.Equipment
                                                                 "/chummer/cyberwares/cyberware", strSubsystemName);
                                                         if (objXmlSubsystem == null)
                                                             continue;
-                                                        int.TryParse(objXmlSubsystemNode["rating"]?.InnerTextViaPool(), NumberStyles.Any,
+                                                        int.TryParse(objXmlSubsystemNode["rating"]?.InnerTextViaPool(token), NumberStyles.Any,
                                                             GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
                                                         Cyberware objSubsystem = new Cyberware(_objCharacter);
                                                         try
@@ -624,7 +624,7 @@ namespace Chummer.Backend.Equipment
                                                                     Improvement.ImprovementSource.Cyberware,
                                                                     intSubSystemRating, _lstWeapons, _objCharacter.Vehicles,
                                                                     false, true,
-                                                                    objXmlSubsystemNode["forced"]?.InnerTextViaPool() ?? string.Empty,
+                                                                    objXmlSubsystemNode["forced"]?.InnerTextViaPool(token) ?? string.Empty,
                                                                     token: token);
                                                             else
                                                                 await objSubsystem.CreateAsync(objXmlSubsystem,
@@ -633,7 +633,7 @@ namespace Chummer.Backend.Equipment
                                                                     Improvement.ImprovementSource.Cyberware,
                                                                     intSubSystemRating, _lstWeapons, _objCharacter.Vehicles,
                                                                     false, true,
-                                                                    objXmlSubsystemNode["forced"]?.InnerTextViaPool() ?? string.Empty,
+                                                                    objXmlSubsystemNode["forced"]?.InnerTextViaPool(token) ?? string.Empty,
                                                                     token: token).ConfigureAwait(false);
                                                             objSubsystem.ParentID = InternalId;
                                                             objSubsystem.Cost = "0";
@@ -801,7 +801,7 @@ namespace Chummer.Backend.Equipment
 
                     foreach (XmlNode objXmlWeapon in xmlWeapons.SelectNodes("weapon"))
                     {
-                        string strWeaponName = objXmlWeapon["name"]?.InnerTextViaPool();
+                        string strWeaponName = objXmlWeapon["name"]?.InnerTextViaPool(token);
                         if (string.IsNullOrEmpty(strWeaponName))
                             continue;
                         Weapon objWeapon = new Weapon(_objCharacter);
@@ -897,7 +897,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 foreach (XmlNode objXmlAccessory in xmlAccessories.SelectNodes("accessory"))
                                 {
-                                    string strAccessoryName = objXmlWeapon["name"]?.InnerTextViaPool();
+                                    string strAccessoryName = objXmlWeapon["name"]?.InnerTextViaPool(token);
                                     if (string.IsNullOrEmpty(strAccessoryName))
                                         continue;
                                     XmlNode objXmlAccessoryNode = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory", strAccessoryName);
@@ -1148,7 +1148,7 @@ namespace Chummer.Backend.Equipment
             }
 
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
-            string strTemp = objNode["handling"]?.InnerTextViaPool();
+            string strTemp = objNode["handling"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
             {
                 //Some vehicles have different Offroad Handling speeds. If so, we want to split this up for use with mods and such later.
@@ -1168,14 +1168,14 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intHandling);
-                    strTemp = objNode["offroadhandling"]?.InnerTextViaPool();
+                    strTemp = objNode["offroadhandling"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrEmpty(strTemp))
                     {
                         int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intOffroadHandling);
                     }
                 }
             }
-            strTemp = objNode["accel"]?.InnerTextViaPool();
+            strTemp = objNode["accel"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
             {
                 if (strTemp.Contains('/'))
@@ -1194,14 +1194,14 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intAccel);
-                    strTemp = objNode["offroadaccel"]?.InnerTextViaPool();
+                    strTemp = objNode["offroadaccel"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrEmpty(strTemp))
                     {
                         int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intOffroadAccel);
                     }
                 }
             }
-            strTemp = objNode["speed"]?.InnerTextViaPool();
+            strTemp = objNode["speed"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
             {
                 if (strTemp.Contains('/'))
@@ -1220,7 +1220,7 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intSpeed);
-                    strTemp = objNode["offroadspeed"]?.InnerTextViaPool();
+                    strTemp = objNode["offroadspeed"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrEmpty(strTemp))
                     {
                         int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intOffroadSpeed);
@@ -1437,7 +1437,7 @@ namespace Chummer.Backend.Equipment
 
                                             foreach (XmlNode objXmlWeapon in xmlDataNodesForMissingKrakeStuff.SelectNodes("weapon"))
                                             {
-                                                string strWeaponName = objXmlWeapon["name"]?.InnerTextViaPool();
+                                                string strWeaponName = objXmlWeapon["name"]?.InnerTextViaPool(token);
                                                 if (string.IsNullOrEmpty(strWeaponName))
                                                     continue;
                                                 bool blnAttached = false;
@@ -1508,7 +1508,7 @@ namespace Chummer.Backend.Equipment
                                                     {
                                                         foreach (XmlNode objXmlAccessory in xmlAccessories.SelectNodes("accessory"))
                                                         {
-                                                            string strAccessoryName = objXmlWeapon["name"]?.InnerTextViaPool();
+                                                            string strAccessoryName = objXmlWeapon["name"]?.InnerTextViaPool(token);
                                                             if (string.IsNullOrEmpty(strAccessoryName))
                                                                 continue;
                                                             XmlNode objXmlAccessoryNode = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory", strAccessoryName);
@@ -1599,7 +1599,7 @@ namespace Chummer.Backend.Equipment
                                             foreach (XmlNode objXmlWeapon in xmlDataNodesForMissingKrakeStuff.SelectNodes("weapon"))
                                             {
                                                 token.ThrowIfCancellationRequested();
-                                                string strWeaponName = objXmlWeapon["name"]?.InnerTextViaPool();
+                                                string strWeaponName = objXmlWeapon["name"]?.InnerTextViaPool(token);
                                                 if (string.IsNullOrEmpty(strWeaponName))
                                                     continue;
                                                 bool blnAttached = false;
@@ -1676,7 +1676,7 @@ namespace Chummer.Backend.Equipment
                                                         foreach (XmlNode objXmlAccessory in xmlAccessories.SelectNodes("accessory"))
                                                         {
                                                             token.ThrowIfCancellationRequested();
-                                                            string strAccessoryName = objXmlWeapon["name"]?.InnerTextViaPool();
+                                                            string strAccessoryName = objXmlWeapon["name"]?.InnerTextViaPool(token);
                                                             if (string.IsNullOrEmpty(strAccessoryName))
                                                                 continue;
                                                             XmlNode objXmlAccessoryNode = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory", strAccessoryName);
@@ -1721,7 +1721,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            string strLocation = objNode["location"]?.InnerTextViaPool();
+            string strLocation = objNode["location"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strLocation))
             {
                 if (blnSync)
