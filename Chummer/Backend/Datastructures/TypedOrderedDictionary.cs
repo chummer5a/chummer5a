@@ -170,6 +170,13 @@ namespace Chummer
             Add(objKey, objValue);
         }
 
+        /// <inheritdoc cref="Dictionary{TKey, TValue}.Add" />
+        public void Add(ValueTuple<TKey, TValue> item)
+        {
+            (TKey objKey, TValue objValue) = item;
+            Add(objKey, objValue);
+        }
+
         /// <inheritdoc />
         public void Add(object key, object value)
         {
@@ -330,6 +337,11 @@ namespace Chummer
             return item != null && Contains(item) && Remove(item.Item1);
         }
 
+        public bool Remove(ValueTuple<TKey, TValue> item)
+        {
+            return Contains(item) && Remove(item.Item1);
+        }
+
         public void Remove(object key)
         {
             switch (key)
@@ -460,6 +472,13 @@ namespace Chummer
                 : -1;
         }
 
+        public int IndexOf(ValueTuple<TKey, TValue> item)
+        {
+            return _dicUnorderedData.TryGetValue(item.Item1, out TValue objValue) && objValue.Equals(item.Item2)
+                ? _lstIndexes.IndexOf(item.Item1)
+                : -1;
+        }
+
         public int LastIndexOf(TKey key)
         {
             return _dicUnorderedData.ContainsKey(key)
@@ -477,6 +496,13 @@ namespace Chummer
         public int LastIndexOf(Tuple<TKey, TValue> item)
         {
             return item != null && _dicUnorderedData.TryGetValue(item.Item1, out TValue objValue) && objValue.Equals(item.Item2)
+                ? _lstIndexes.LastIndexOf(item.Item1)
+                : -1;
+        }
+
+        public int LastIndexOf(ValueTuple<TKey, TValue> item)
+        {
+            return _dicUnorderedData.TryGetValue(item.Item1, out TValue objValue) && objValue.Equals(item.Item2)
                 ? _lstIndexes.LastIndexOf(item.Item1)
                 : -1;
         }

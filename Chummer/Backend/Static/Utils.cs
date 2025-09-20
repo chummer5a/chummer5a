@@ -972,7 +972,7 @@ namespace Chummer
 #pragma warning disable VSTHRD001
             MySynchronizationContext.Post(x =>
             {
-                (string strMyFileName, string strMyArguments) = (Tuple<string, string>) x;
+                (string strMyFileName, string strMyArguments) = (ValueTuple<string, string>) x;
                 ProcessStartInfo objStartInfo = new ProcessStartInfo
                 {
                     FileName = strMyFileName,
