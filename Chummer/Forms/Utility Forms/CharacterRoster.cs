@@ -1146,6 +1146,7 @@ namespace Chummer
                          x => x.CharacterObjects))
             {
                 string strFile = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
                 // Make sure we're not loading a character that was already loaded by the MRU list.
                 if (!lstFavorites.Contains(strFile) && !lstRecents.Contains(strFile))
                     lstRecents.Add(strFile);

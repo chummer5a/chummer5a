@@ -3322,8 +3322,7 @@ namespace Chummer
                                                                                || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(
                                                                                    objOldLinkedCharacter), token: token)
                                         .ConfigureAwait(false)
-                                    && Program.MainForm.OpenFormsWithCharacters.All(
-                                        x => !x.CharacterObjects.Contains(objOldLinkedCharacter)))
+                                    && !await Program.MainForm.AnyOpenFormContainsCharacter(objOldLinkedCharacter, token: token).ConfigureAwait(false))
                                     await Program.OpenCharacters.RemoveAsync(objOldLinkedCharacter, token)
                                         .ConfigureAwait(false);
                             }
@@ -4006,8 +4005,7 @@ namespace Chummer
                                                                          || !(await x.GetLinkedCharactersAsync().ConfigureAwait(false)).Contains(
                                                                              _objLinkedCharacter))
                                                                 .ConfigureAwait(false)
-                                                && Program.MainForm.OpenFormsWithCharacters.All(
-                                                    x => !x.CharacterObjects.Contains(_objLinkedCharacter)))
+                                                && !await Program.MainForm.AnyOpenFormContainsCharacter(_objLinkedCharacter).ConfigureAwait(false))
                     await Program.OpenCharacters.RemoveAsync(_objLinkedCharacter).ConfigureAwait(false);
                 await _lstMugshots.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
                 await _lstMugshots.DisposeAsync().ConfigureAwait(false);

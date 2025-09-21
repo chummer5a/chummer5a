@@ -386,7 +386,7 @@ namespace Chummer
             }
         }
 
-        private static async Task CleanUpOldCharacters(Character[] aobjCharacters, CancellationToken token = default)
+        private async Task CleanUpOldCharacters(Character[] aobjCharacters, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!(aobjCharacters?.Length > 0))
@@ -401,7 +401,7 @@ namespace Chummer
                 {
                     if (!await Program.OpenCharacters.ContainsAsync(objCharacter, token: token).ConfigureAwait(false)
                         || await Program.OpenCharacters.AnyAsync(async x => (await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token).ConfigureAwait(false)
-                        || Program.MainForm.OpenFormsWithCharacters.Any(x => x.CharacterObjects.Contains(objCharacter)))
+                        || await Program.MainForm.AnyOpenFormContainsCharacter(objCharacter, this, token).ConfigureAwait(false))
                         continue;
                     blnAnyChanges = true;
                     await Program.OpenCharacters.RemoveAsync(objCharacter, token: token).ConfigureAwait(false);
