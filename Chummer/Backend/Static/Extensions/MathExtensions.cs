@@ -795,7 +795,7 @@ namespace Chummer
 
         /// <summary>
         /// A decimal-precision version of <see cref="Math.Sqrt(double)"/> that tries to get the result to decimal precision by using a Newton-Raphson process after obtaining a guess from casting.
-        /// NOTE: If <paramref name="decEpsilon"/> is not decimal.MaxValue, is often slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
+        /// NOTE: If <paramref name="decEpsilon"/> is not <see cref="decimal.MaxValue"/>, is often slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than 0, which is outside the domain for a square root.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -960,7 +960,7 @@ namespace Chummer
 
         /// <summary>
         /// A decimal-precision version of <see cref="Math.Pow(double, double)"/> that tries to get the result to decimal precision by using a Newton-Raphson process after obtaining a guess from casting.
-        /// NOTE: If <paramref name="decEpsilon"/> is not decimal.MaxValue, is often slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
+        /// NOTE: If <paramref name="decEpsilon"/> is not <see cref="decimal.MaxValue"/>, is often slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="x"/> is less than 0 while <paramref name="y"/> is not an integer, which is undefined.</exception>
         /// <exception cref="DivideByZeroException"><paramref name="x"/> is 0 while <paramref name="y"/> is negative, which would result in a division by zero.</exception>

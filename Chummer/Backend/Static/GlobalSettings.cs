@@ -2373,7 +2373,7 @@ namespace Chummer
         public static string PdfArguments { get; internal set; }
 
         /// <summary>
-        /// Compression quality to use when saving images. int.MaxValue is PNG (Lossless), anything else that is positive is JPEG (Lossy),
+        /// Compression quality to use when saving images. <see cref="int.MaxValue"/> is PNG (Lossless), anything else that is positive is JPEG (Lossy),
         /// anything else that is negative is JPEG with quality set automatically based on the size of the image.
         /// </summary>
         public static int SavedImageQuality
@@ -2383,7 +2383,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Converts an image to its Base64 string equivalent with compression settings specified by SavedImageQuality.
+        /// Converts an image to its Base64 string equivalent with compression settings specified by <see cref="SavedImageQuality"/>.
         /// </summary>
         /// <param name="objImageToSave">Image whose Base64 string should be created.</param>
         public static string ImageToBase64StringForStorage(Image objImageToSave, CancellationToken token = default)
@@ -2395,7 +2395,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Converts an image to its Base64 string equivalent with compression settings specified by SavedImageQuality.
+        /// Converts an image to its Base64 string equivalent with compression settings specified by <see cref="SavedImageQuality"/>.
         /// </summary>
         /// <param name="objImageToSave">Image whose Base64 string should be created.</param>
         /// <param name="token">Cancellation token to listen to.</param>

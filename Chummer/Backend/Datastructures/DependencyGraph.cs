@@ -44,7 +44,7 @@ namespace Chummer
 
         /// <summary>
         /// Returns a collection containing the current key's object and all objects that depend on the current key.
-        /// Slower but idiot-proof compared to GetWithAllDependentsUnsafe().
+        /// Slower but idiot-proof compared to <see cref="GetWithAllDependentsUnsafe(T2, T)"/>.
         /// </summary>
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
@@ -72,7 +72,7 @@ namespace Chummer
 
         /// <summary>
         /// Returns a collection containing the current key's object and all objects that depend on the current key.
-        /// Slower but idiot-proof compared to GetWithAllDependentsUnsafe().
+        /// Slower but idiot-proof compared to <see cref="GetWithAllDependentsUnsafe(T2, T)"/>.
         /// </summary>
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>

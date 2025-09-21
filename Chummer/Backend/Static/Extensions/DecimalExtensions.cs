@@ -29,7 +29,7 @@ namespace Chummer
         internal const decimal Epsilon = 0.000000000000000000000000001M;
 
         /// <summary>
-        /// Smallest positive number supported by the double type expressed in the decimal type
+        /// <see cref="double.Epsilon"/> expressed in the decimal type
         /// </summary>
         internal const decimal DoubleEpsilon = (decimal)double.Epsilon;
 
@@ -45,7 +45,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for applying ToInt32 conversion to a decimal (rounds towards zero).
+        /// Syntactic sugar for applying <see cref="decimal.ToInt32(decimal)"/> (rounds towards zero).
         /// </summary>
         /// <param name="decIn">Decimal to convert.</param>
         /// <returns>Rounded integer.</returns>

@@ -29,7 +29,7 @@ namespace Chummer
     public static class ParallelExtensions
     {
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.ForEach while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRun">Code to run in parallel.</param>
@@ -76,7 +76,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.ForEach while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRun">Code to run in parallel.</param>
@@ -124,7 +124,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.ForEach while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRun">Code to run in parallel.</param>
@@ -175,7 +175,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.ForEach while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRun">Code to run in parallel.</param>
@@ -225,7 +225,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.ForEach while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRun">Code to run in parallel.</param>
@@ -284,7 +284,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.ForEach while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRun">Code to run in parallel.</param>
@@ -344,7 +344,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.ForEach while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRun">Code to run in parallel.</param>
@@ -405,7 +405,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.ForEach while respecting the max parallel batch size we have set in Utils.
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>..
         /// </summary>
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRun">Code to run in parallel.</param>
@@ -466,7 +466,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.ForEach while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
@@ -526,7 +526,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.ForEach while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
@@ -585,7 +585,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.ForEach while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
@@ -645,7 +645,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.ForEach while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
@@ -705,7 +705,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.ForEach while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
@@ -796,7 +796,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.ForEach while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
@@ -888,7 +888,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.ForEach while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
@@ -982,7 +982,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.ForEach while respecting the max parallel batch size we have set in Utils.
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>..
         /// </summary>
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
@@ -1076,7 +1076,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.For while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.For"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="intLowerBound">Starting value of the iterating variable (inclusive).</param>
         /// <param name="intUpperBound">Terminating value of the iterating variable (exclusive).</param>
@@ -1119,7 +1119,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.For while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.For"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="intLowerBound">Starting value of the iterating variable (inclusive).</param>
         /// <param name="intUpperBound">Terminating value of the iterating variable (exclusive).</param>
@@ -1171,7 +1171,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.For while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.For"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="intLowerBound">Starting value of the iterating variable (inclusive).</param>
         /// <param name="intUpperBound">Terminating value of the iterating variable (exclusive).</param>
@@ -1222,12 +1222,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.For while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.For"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="intLowerBound">Starting value of the iterating variable (inclusive).</param>
         /// <param name="intUpperBound">Terminating value of the iterating variable (exclusive).</param>
         /// <param name="funcCodeToRun">Code to run in parallel.</param>
-        /// <param name="blnPooledArray">Whether the returned array should be one taken from ArrayPool.Shared</param>
+        /// <param name="blnPooledArray">Whether the returned array should be one taken from <see cref="ArrayPool{T}.Shared"/>.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Array of the results of <paramref name="funcCodeToRun"/> when run from <paramref name="intLowerBound"/> (inclusive) to <paramref name="intUpperBound"/> (exclusive).</returns>
         public static Task<TResult[]> ForAsync<TResult>(int intLowerBound, int intUpperBound, Func<int, Task<TResult>> funcCodeToRun, bool blnPooledArray, CancellationToken token = default) where TResult : unmanaged // DO NOT REMOVE UNMANAGED UNLESS YOU LIKE RANDOM MEMORY LEAKS!
@@ -1282,12 +1282,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.For while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.For"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="intLowerBound">Starting value of the iterating variable (inclusive).</param>
         /// <param name="intUpperBound">Terminating value of the iterating variable (exclusive).</param>
         /// <param name="funcCodeToRun">Code to run in parallel.</param>
-        /// <param name="blnPooledArray">Whether the returned array should be one taken from ArrayPool.Shared</param>
+        /// <param name="blnPooledArray">Whether the returned array should be one taken from <see cref="ArrayPool{T}.Shared"/>.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Array of the results of <paramref name="funcCodeToRun"/> when run from <paramref name="intLowerBound"/> (inclusive) to <paramref name="intUpperBound"/> (exclusive).</returns>
         public static Task<string[]> ForAsync(int intLowerBound, int intUpperBound, Func<int, Task<string>> funcCodeToRun, bool blnPooledArray, CancellationToken token = default)
@@ -1342,7 +1342,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to Parallel.For while respecting the max parallel batch size we have set in Utils
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.For"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
         /// </summary>
         /// <param name="intLowerBound">Starting value of the iterating variable (inclusive).</param>
         /// <param name="intUpperBound">Terminating value of the iterating variable (exclusive).</param>

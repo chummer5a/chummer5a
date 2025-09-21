@@ -1248,7 +1248,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Needed because it's not a strict replacement for GetHashCode().
+        /// Needed because it's not a strict replacement for <see cref="object.GetHashCode()"/>.
         /// Gets a number based on every single private property of the setting.
         /// If two settings have unequal Hash Codes, they will never actually be equal.
         /// </summary>
@@ -1259,7 +1259,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Needed because it's not a strict replacement for GetHashCode().
+        /// Needed because it's not a strict replacement for <see cref="object.GetHashCode()"/>.
         /// Gets a number based on every single private property of the setting.
         /// If two settings have unequal Hash Codes, they will never actually be equal.
         /// </summary>

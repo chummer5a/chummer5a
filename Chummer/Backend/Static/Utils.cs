@@ -2765,7 +2765,7 @@ namespace Chummer
 
         /// <summary>
         /// Gets a temporary file folder that is exclusive to Chummer and therefore can be manipulated at will without worrying about interfering with anything else.
-        /// Basically, like Path.GetTempPath(), but safer.
+        /// Basically, like <see cref="Path.GetTempPath()"/>, but safer.
         /// </summary>
         public static string GetTempPath()
         {

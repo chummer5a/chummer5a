@@ -28,6 +28,9 @@ namespace Chummer
 {
     public static class ListExtensions
     {
+        /// <summary>
+        /// Syntactic sugar to call <see cref="IList{T}.Insert(int, T)"/> in a sorted list and let it remain sorted.
+        /// </summary>
         public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem,
             Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default) where T : IComparable
         {
@@ -105,6 +108,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Syntactic sugar to call <see cref="IList{T}.Insert(int, T)"/> in a sorted list and let it remain sorted.
+        /// </summary>
         public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, IComparer<T> comparer,
             Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
         {
@@ -184,6 +190,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Syntactic sugar to call <see cref="IList{T}.Insert(int, T)"/> in a sorted list and let it remain sorted.
+        /// </summary>
         public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, Comparison<T> funcComparison,
             Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
         {
@@ -263,6 +272,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Syntactic sugar to call <see cref="IList{T}.Insert(int, T)"/> in a sorted list and let it remain sorted.
+        /// </summary>
         public static async Task AddWithSortAsync<T>(this IList<T> lstCollection, T objNewItem, Func<T, T, Task<int>> funcComparison,
             Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
         {
@@ -345,6 +357,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Syntactic sugar to call <see cref="IList{T}.Insert(int, T)"/> for a range of items in a sorted list and let it remain sorted.
+        /// </summary>
         public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd,
             Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default) where T : IComparable
         {
@@ -356,6 +371,9 @@ namespace Chummer
                 AddWithSort(lstCollection, objItem, funcOverrideIfEquals, token);
         }
 
+        /// <summary>
+        /// Syntactic sugar to call <see cref="IList{T}.Insert(int, T)"/> for a range of items in a sorted list and let it remain sorted.
+        /// </summary>
         public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd,
             IComparer<T> comparer, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
         {
@@ -369,6 +387,9 @@ namespace Chummer
                 AddWithSort(lstCollection, objItem, comparer, funcOverrideIfEquals, token);
         }
 
+        /// <summary>
+        /// Syntactic sugar to call <see cref="IList{T}.Insert(int, T)"/> for a range of items in a sorted list and let it remain sorted.
+        /// </summary>
         public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd,
             Comparison<T> funcComparison, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
         {
@@ -382,6 +403,9 @@ namespace Chummer
                 AddWithSort(lstCollection, objItem, funcComparison, funcOverrideIfEquals, token);
         }
 
+        /// <summary>
+        /// Syntactic sugar to call <see cref="IList{T}.Insert(int, T)"/> for a range of items in a sorted list and let it remain sorted.
+        /// </summary>
         public static async Task AddRangeWithSortAsync<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd,
             Func<T, T, Task<int>> funcComparison, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
         {
@@ -467,6 +491,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Async version of <see cref="List.RemoveAll(Predicate{T})"/>, but for the entire <see cref="IList{T}"/> interface.
+        /// </summary>
         public static async Task<int> RemoveAllAsync<T>(this IList<T> lstCollection, Func<T, Task<bool>> predicate,
             CancellationToken token = default)
         {
@@ -644,6 +671,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Accessible copy of the method with the same name in <see cref="ArraySortHelper{T}"/>.
+        /// </summary>
         private static void IntrospectiveSort<T>(IList<T> keys, int left, int length, IComparer<T> comparer)
         {
             if (length >= 2)
@@ -652,6 +682,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Accessible copy of the method with the same name in <see cref="ArraySortHelper{T}"/>.
+        /// </summary>
         private static void IntroSort<T>(IList<T> keys, int lo, int hi, int depthLimit, IComparer<T> comparer)
         {
             while (hi > lo)
@@ -692,6 +725,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Accessible copy of the method with the same name in <see cref="ArraySortHelper{T}"/>.
+        /// </summary>
         private static void SwapIfGreater<T>(IList<T> keys, IComparer<T> comparer, int a, int b)
         {
             if (a != b && comparer.Compare(keys[a], keys[b]) > 0)
@@ -700,6 +736,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Accessible copy of the method with the same name in <see cref="ArraySortHelper{T}"/>.
+        /// </summary>
         private static void Swap<T>(IList<T> a, int i, int j)
         {
             if (i != j)
@@ -708,6 +747,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Accessible copy of the method with the same name in <see cref="ArraySortHelper{T}"/>.
+        /// </summary>
         private static int PickPivotAndPartition<T>(IList<T> keys, int lo, int hi, IComparer<T> comparer)
         {
             int num = lo + (hi - lo) / 2;
@@ -740,6 +782,9 @@ namespace Chummer
             return num2;
         }
 
+        /// <summary>
+        /// Accessible copy of the method with the same name in <see cref="ArraySortHelper{T}"/>.
+        /// </summary>
         private static void Heapsort<T>(IList<T> keys, int lo, int hi, IComparer<T> comparer)
         {
             int num = hi - lo + 1;
@@ -755,6 +800,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Accessible copy of the method with the same name in <see cref="ArraySortHelper{T}"/>.
+        /// </summary>
         private static void DownHeap<T>(IList<T> keys, int i, int n, int lo, IComparer<T> comparer)
         {
             T val = keys[lo + i - 1];
@@ -774,6 +822,9 @@ namespace Chummer
             keys[lo + i - 1] = val;
         }
 
+        /// <summary>
+        /// Accessible copy of the method with the same name in <see cref="ArraySortHelper{T}"/>.
+        /// </summary>
         private static void InsertionSort<T>(IList<T> keys, int lo, int hi, IComparer<T> comparer)
         {
             for (int i = lo; i < hi; i++)
@@ -789,6 +840,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Async version of the method with the same name in <see cref="ArraySortHelper{T}"/>.
+        /// </summary>
         private static async Task IntroSortAsync<T>(this IList<T> lstCollection, int lo, int hi, int depthLimit,
             Func<T, T, Task<int>> comparer, CancellationToken token = default)
         {
@@ -832,6 +886,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Async version of the method with the same name in <see cref="ArraySortHelper{T}"/>.
+        /// </summary>
         private static async Task SwapIfGreaterAsync<T>(this IList<T> lstCollection, Func<T, T, Task<int>> comparer,
             int a, int b, CancellationToken token = default)
         {
@@ -840,6 +897,9 @@ namespace Chummer
                 (lstCollection[a], lstCollection[b]) = (lstCollection[b], lstCollection[a]);
         }
 
+        /// <summary>
+        /// Async version of the method with the same name in <see cref="ArraySortHelper{T}"/>.
+        /// </summary>
         private static Task SwapAsync<T>(this IList<T> lstCollection, int i, int j, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
@@ -849,6 +909,9 @@ namespace Chummer
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Async version of the method with the same name in <see cref="ArraySortHelper{T}"/>.
+        /// </summary>
         private static async Task<int> PickPivotAndPartitionAsync<T>(this IList<T> lstCollection, int lo, int hi,
             Func<T, T, Task<int>> comparer, CancellationToken token = default)
         {
@@ -881,6 +944,9 @@ namespace Chummer
             return i;
         }
 
+        /// <summary>
+        /// Async version of the method with the same name in <see cref="ArraySortHelper{T}"/>.
+        /// </summary>
         private static async Task HeapsortAsync<T>(this IList<T> lstCollection, int lo, int hi,
             Func<T, T, Task<int>> comparer, CancellationToken token = default)
         {
@@ -895,6 +961,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Async version of the method with the same name in <see cref="ArraySortHelper{T}"/>.
+        /// </summary>
         private static async Task DownHeapAsync<T>(this IList<T> lstCollection, int i, int n, int lo,
             Func<T, T, Task<int>> comparer, CancellationToken token = default)
         {
@@ -918,6 +987,9 @@ namespace Chummer
             lstCollection[lo + i - 1] = key;
         }
 
+        /// <summary>
+        /// Async version of the method with the same name in <see cref="ArraySortHelper{T}"/>.
+        /// </summary>
         private static async Task InsertionSortAsync<T>(this IList<T> lstCollection, int lo, int hi,
             Func<T, T, Task<int>> comparer, CancellationToken token = default)
         {

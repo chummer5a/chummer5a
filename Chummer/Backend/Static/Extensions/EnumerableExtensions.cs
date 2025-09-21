@@ -304,10 +304,6 @@ namespace Chummer
         /// <summary>
         /// Syntactic sugar for <see cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> plus <see cref="Enumerable.ToList{TSource}(IEnumerable{TSource})"/> that will use <see cref="List.FindAll(Predicate{T})"/> if possible.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="lstCollection"></param>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
         public static List<T> FindAll<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
         {
             if (lstCollection is List<T> lstCastedCollection)

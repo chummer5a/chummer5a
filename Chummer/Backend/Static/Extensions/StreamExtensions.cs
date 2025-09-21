@@ -30,7 +30,47 @@ namespace Chummer
     public static class StreamExtensions
     {
         /// <summary>
-        /// Similar to Stream.ToArray(), but allocates to a rented array from ArrayPool instead of to a newly allocated array.
+        /// Dumps the contents of a stream into a byte array.
+        /// </summary>
+        /// <param name="objStream">Stream to convert to a byte array.</param>
+        public static byte[] ToArray(this Stream objStream)
+        {
+            if (objStream == null)
+            {
+                throw new ArgumentNullException(nameof(objStream));
+            }
+            objStream.Position = 0;
+            int arrayLength = Convert.ToInt32(objStream.Length);
+            byte[] achrReturn = new byte[arrayLength];
+            _ = objStream.Read(achrReturn, 0, arrayLength);
+            return achrReturn;
+        }
+
+        /// <summary>
+        /// Dumps the contents of a stream into a byte array.
+        /// </summary>
+        /// <param name="objStream">Stream to convert to a byte array.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task<byte[]> ToArrayAsync(this Stream objStream, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objStream == null)
+            {
+                throw new ArgumentNullException(nameof(objStream));
+            }
+            return ToArrayAsyncInner();
+            async Task<byte[]> ToArrayAsyncInner()
+            {
+                objStream.Position = 0;
+                int arrayLength = Convert.ToInt32(objStream.Length);
+                byte[] achrReturn = new byte[arrayLength];
+                _ = await objStream.ReadAsync(achrReturn, 0, arrayLength, token).ConfigureAwait(false);
+                return achrReturn;
+            }
+        }
+
+        /// <summary>
+        /// Similar to <see cref="ToArray(Stream)"/>, but allocates to a rented array from ArrayPool instead of to a newly allocated array.
         /// </summary>
         /// <param name="objStream">Stream to convert to a byte array.</param>
         /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary.</param>
@@ -57,7 +97,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to Stream.ToArray(), but allocates to a rented array from ArrayPool instead of to a newly allocated array.
+        /// Similar to <see cref="ToArrayAsync(Stream, CancellationToken)"/>, but allocates to a rented array from ArrayPool instead of to a newly allocated array.
         /// </summary>
         /// <param name="objStream">Stream to convert to a byte array.</param>
         /// <param name="token">Cancellation token to listen to.</param>
@@ -101,7 +141,7 @@ namespace Chummer
 
         /// <summary>
         /// Converts a stream directly to a Base64-encoded string without needing to allocate a byte array as an intermediate.
-        /// More memory efficient than using some byte array converter on the stream followed by Convert.ToBase64String().
+        /// More memory efficient than using some byte array converter on the stream followed by <see cref="Convert.ToBase64String(byte[])"/>.
         /// </summary>
         /// <param name="objStream">Some stream to convert.</param>
         /// <param name="eFormattingOptions">Base64 formatting options to use in the output string.</param>
@@ -240,7 +280,7 @@ namespace Chummer
 
         /// <summary>
         /// Converts a stream directly to a Base64-encoded string without needing to allocate a byte array as an intermediate.
-        /// More memory efficient than using some byte array converter on the stream followed by Convert.ToBase64String().
+        /// More memory efficient than using some byte array converter on the stream followed by <see cref="Convert.ToBase64String(byte[])"/>.
         /// </summary>
         /// <param name="objStream">Some stream to convert.</param>
         /// <param name="eFormattingOptions">Base64 formatting options to use in the output string.</param>
