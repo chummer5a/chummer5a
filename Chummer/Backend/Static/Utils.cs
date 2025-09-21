@@ -1615,7 +1615,7 @@ namespace Chummer
         private static bool DefaultIsOkToRunDoEvents => (!IsUnitTest || IsUnitTestForUI) && EverDoEvents;
 
         /// <summary>
-        /// This member makes sure we aren't swamping the program with massive amounts of Application.DoEvents() calls
+        /// This member makes sure we aren't swamping the program with massive amounts of <see cref="Application.DoEvents"/> calls
         /// </summary>
         private static int _intIsOkToRunDoEvents = DefaultIsOkToRunDoEvents.ToInt32();
 

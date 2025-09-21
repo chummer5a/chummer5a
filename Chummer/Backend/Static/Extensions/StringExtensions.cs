@@ -1538,7 +1538,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Method to quickly remove all instances of a char from a string (much faster than using Replace() with an empty string)
+        /// Method to quickly remove all instances of a char from a string (much faster than using <see cref="string.Replace(string, string)"/> with an empty string)
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
         /// <param name="chrToDelete">Character to remove</param>
@@ -1590,7 +1590,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Method to quickly remove all instances of all chars in an array from a string (much faster than using a series of Replace() with an empty string)
+        /// Method to quickly remove all instances of all chars in an array from a string (much faster than using a series of <see cref="string.Replace(string, string)"/> with an empty string)
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
         /// <param name="achrToDelete">Array of characters to remove</param>
@@ -1665,7 +1665,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Method to quickly remove all instances of a substring from a string (should be faster than using Replace() with an empty string)
+        /// Method to quickly remove all instances of a substring from a string (should be faster than using <see cref="string.Replace(string, string)"/> with an empty string)
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
         /// <param name="strSubstringToDelete">Substring to remove</param>
@@ -5340,8 +5340,8 @@ namespace Chummer
 
         /// <summary>
         /// Reads the specified string that encodes binary data as base-64 digits into a stream directly.
-        /// Much more memory-efficient version of Convert.FromBase64String() if the byte array would just be immediately fed into a stream anyway.
-        /// However, much slower than using Convert.FromBase64String() or ToBase64PooledByteArray() because of unusable optimizations around writing to streams in unsafe code.
+        /// Much more memory-efficient version of <see cref="Convert.FromBase64String(string)"/> if the byte array would just be immediately fed into a stream anyway.
+        /// However, much slower than using <see cref="Convert.FromBase64String(string)"/> or <see cref="ToBase64PooledByteArray(string, out int, CancellationToken)"/> because of unusable optimizations around writing to streams in unsafe code.
         /// </summary>
         /// <param name="s">The string to convert and feed into <paramref name="stream"/>.</param>
         /// <param name="stream">Stream to hold the byte array of the base-64 decoded version of <paramref name="s"/>.</param>

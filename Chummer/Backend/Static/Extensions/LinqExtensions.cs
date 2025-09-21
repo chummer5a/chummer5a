@@ -291,7 +291,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's Count() without predicate, but deep searches the list, counting up the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.Count{TSource}(IEnumerable{TSource})"/>, but deep searches the list, counting up the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static int DeepCount<T, T2>(this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod) where T2 : IEnumerable<T>
         {
@@ -353,7 +353,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's Last() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.Last{TSource}(IEnumerable{TSource})"/>, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static T DeepLast<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod) where T2 : IEnumerable<T>
         {
@@ -383,7 +383,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's LastOrDefault() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource})"/>, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static T DeepLastOrDefault<T, T2>(this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod) where T2 : IEnumerable<T>
         {

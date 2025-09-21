@@ -43,12 +43,8 @@ namespace Chummer
         #region Forms Extensions
 
         /// <summary>
-        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// Alternative to <see cref="Form.ShowDialog"/> that will not stall out unit tests.
         /// </summary>
-        /// <param name="frmForm"></param>
-        /// <param name="owner"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static DialogResult ShowDialogSafe(this Form frmForm, IWin32Window owner = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -82,12 +78,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// Alternative to <see cref="Form.ShowDialog"/> that will not stall out unit tests.
         /// </summary>
-        /// <param name="frmForm"></param>
-        /// <param name="objCharacter"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static DialogResult ShowDialogSafe(this Form frmForm, Character objCharacter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -95,12 +87,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// Async alternative to <see cref="Form.ShowDialog"/> that will not stall out unit tests.
         /// </summary>
-        /// <param name="frmForm"></param>
-        /// <param name="owner"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, IWin32Window owner = null, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
@@ -135,12 +123,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// Async alternative to <see cref="Form.ShowDialog"/> that will not stall out unit tests.
         /// </summary>
-        /// <param name="frmForm"></param>
-        /// <param name="objCharacter"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static async Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, Character objCharacter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -149,13 +133,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Non-blocking version of ShowDialog() based on the following blog post:
+        /// Async, non-blocking version of <see cref="Form.ShowDialog"/> based on the following blog post:
         /// https://sriramsakthivel.wordpress.com/2015/04/19/asynchronous-showdialog/
         /// </summary>
-        /// <param name="frmForm"></param>
-        /// <param name="owner"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static Task<DialogResult> ShowDialogNonBlockingAsync(this Form frmForm, IWin32Window owner = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -200,12 +180,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// Async alternative to <see cref="Form.ShowDialog"/> that will not stall out unit tests.
         /// </summary>
-        /// <param name="frmForm"></param>
-        /// <param name="owner"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static Task<DialogResult> ShowDialogNonBlockingSafeAsync(this Form frmForm, IWin32Window owner = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -264,12 +240,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// Alternative to <see cref="Form.ShowDialog"/> that will not stall out unit tests.
         /// </summary>
-        /// <param name="frmForm"></param>
-        /// <param name="objCharacter"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static Task<DialogResult> ShowDialogNonBlockingSafeAsync(this Form frmForm, Character objCharacter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

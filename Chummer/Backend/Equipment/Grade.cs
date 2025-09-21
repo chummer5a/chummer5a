@@ -182,7 +182,7 @@ namespace Chummer.Backend.Equipment
         /// Gets the name of the data file to use that corresponds to a particular Improvement Source denoting the type of object being used.
         /// </summary>
         /// <param name="eSource">Type of object being looked at that has grades. Should be either drug, bioware, or cyberware.</param>
-        /// <returns>A full file name that can be used with LoadData() or LoadXData() methods.</returns>
+        /// <returns>A full file name that can be used with methods for loading data.</returns>
         public static string GetDataFileNameFromImprovementSource(Improvement.ImprovementSource eSource)
         {
             switch (eSource)

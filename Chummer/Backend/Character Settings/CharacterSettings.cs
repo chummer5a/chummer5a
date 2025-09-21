@@ -6584,7 +6584,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for XmlManager.LoadXPath() where we use the current enabled custom data directory list from our options file.
+        /// Syntactic sugar for <see cref="XmlManager.LoadXPath(string, IReadOnlyCollection{string}, string, bool, CancellationToken)"/> where we use the current enabled custom data directory list from our options file.
         /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
         /// Returns a new XPathNavigator associated with the XPathDocument so that multiple threads each get their own navigator if they're called on the same file
         /// </summary>
@@ -6608,7 +6608,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for XmlManager.LoadXPathAsync() where we use the current enabled custom data directory list from our options file.
+        /// Syntactic sugar for <see cref="XmlManager.LoadXPathAsync(string, IReadOnlyCollection{string}, string, bool, CancellationToken)"/> where we use the current enabled custom data directory list from our options file.
         /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
         /// Returns a new XPathNavigator associated with the XPathDocument so that multiple threads each get their own navigator if they're called on the same file
         /// </summary>
@@ -6633,7 +6633,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for XmlManager.Load() where we use the current enabled custom data directory list from our options file.
+        /// Syntactic sugar for <see cref="XmlManager.Load(string, IReadOnlyCollection{string}, string, bool, CancellationToken)"/> where we use the current enabled custom data directory list from our options file.
         /// </summary>
         /// <param name="strFileName">Name of the XML file to load.</param>
         /// <param name="strLanguage">Language in which to load the data document.</param>
@@ -6656,7 +6656,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for XmlManager.LoadAsync() where we use the current enabled custom data directory list from our options file.
+        /// Syntactic sugar for <see cref="XmlManager.LoadAsync(string, IReadOnlyCollection{string}, string, bool, CancellationToken)"/> where we use the current enabled custom data directory list from our options file.
         /// </summary>
         /// <param name="strFileName">Name of the XML file to load.</param>
         /// <param name="strLanguage">Language in which to load the data document.</param>

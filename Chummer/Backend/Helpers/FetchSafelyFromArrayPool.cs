@@ -24,7 +24,7 @@ using System.Runtime.CompilerServices;
 namespace Chummer
 {
     /// <summary>
-    /// Syntactic Sugar for wrapping a ArrayPool{T}'s Rent() and Return() methods into something that hooks into `using`
+    /// Syntactic Sugar for wrapping <see cref="ArrayPool{T}.Rent(int)"/> and <see cref="ArrayPool{T}.Return(T[], bool)"/> into something that hooks into `using`
     /// and that guarantees that pooled objects will be returned
     /// </summary>
     public readonly struct FetchSafelyFromArrayPool<T> : IDisposable, IEquatable<FetchSafelyFromArrayPool<T>>

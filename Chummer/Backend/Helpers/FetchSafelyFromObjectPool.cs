@@ -24,7 +24,7 @@ using Microsoft.Extensions.ObjectPool;
 namespace Chummer
 {
     /// <summary>
-    /// Syntactic Sugar for wrapping a ObjectPool{T}'s Get() and Return() methods into something that hooks into `using`
+    /// Syntactic Sugar for wrapping <see cref="ObjectPool{T}.Get"/> and <see cref="ObjectPool{T}.Return(T)"/> into something that hooks into `using`
     /// and that guarantees that pooled objects will be returned
     /// </summary>
     public readonly struct FetchSafelyFromObjectPool<T> : IDisposable, IEquatable<FetchSafelyFromObjectPool<T>> where T : class

@@ -389,12 +389,10 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Inverse operation of GetDarkModeVersion(). If a color is fed through that function, and the result is then fed through this one, the final result should be the original color.
-        /// Note that because GetDarkModeVersion() always does some amount of desaturation and lightening, not all colors are valid results of GetDarkModeVersion().
-        /// This function should therefore *not* be used as a kind of GetLightModeVersion() of a dark mode color directly.
+        /// Inverse operation of <see cref="GetDarkModeVersion(Color)"/>. If a color is fed through that function, and the result is then fed through this one, the final result should be the original color.
+        /// Note that because <see cref="GetDarkModeVersion(Color)"/> always does some amount of desaturation and lightening, not all colors are valid results of <see cref="GetDarkModeVersion(Color)"/>.
+        /// This function should therefore *not* be used as a kind of "GetLightModeVersion" of a dark mode color directly.
         /// </summary>
-        /// <param name="objColor"></param>
-        /// <returns></returns>
         private static Color InverseGetDarkModeVersion(Color objColor)
         {
             float fltHue = objColor.GetHue() / 360.0f;

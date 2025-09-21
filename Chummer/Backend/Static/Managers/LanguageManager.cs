@@ -970,7 +970,7 @@ namespace Chummer
         /// <param name="strInput">Input string to process.</param>
         /// <param name="strLanguage">Language into which to translate the compound string.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
-        /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() instead of GetString() for translating localized strings.</param>
+        /// <param name="blnUseTranslateExtra">Whether to use <see cref="TranslateExtraAsync(string, string, Character, string, CancellationToken)"/> instead of <see cref="GetStringAsync(string, bool, CancellationToken)"/> for translating localized strings.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
         public static async Task<string> ProcessCompoundString(string strInput, string strLanguage = "",

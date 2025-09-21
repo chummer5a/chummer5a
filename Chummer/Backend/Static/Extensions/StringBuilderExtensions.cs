@@ -56,7 +56,7 @@ namespace Chummer
         /// Like <see cref="StringBuilder.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="StringBuilder.Replace(string, string)"/> if the new value is something simple.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
-        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that ToString() will be applied to this as part of the method, so it may not be as cheap.</param>
+        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that <see cref="StringBuilder.ToString()"/> will be applied to this as part of the method, so it may not be as cheap.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>

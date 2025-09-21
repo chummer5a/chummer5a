@@ -524,13 +524,16 @@ namespace Chummer
             SetDefaultEventHandlers();
         }
 
+        /// <summary>
+        /// Syntactic sugar to call <see cref="CopyFrom(CharacterCache)"/> immediately after the constructor.
+        /// </summary>
         public CharacterCache(CharacterCache objExistingCache) : this()
         {
             CopyFrom(objExistingCache);
         }
 
         /// <summary>
-        /// Syntactic sugar to call LoadFromFile() synchronously immediately after the constructor.
+        /// Syntactic sugar to call <see cref="LoadFromFile(string)"/> immediately after the constructor.
         /// </summary>
         public CharacterCache(string strFile) : this()
         {
@@ -538,9 +541,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to call CopyFrom() asynchronously immediately after the constructor.
+        /// Syntactic sugar to call <see cref="CopyFromAsync(CharacterCache, CancellationToken)"/> immediately after the constructor.
         /// </summary>
-        public static async Task<CharacterCache> CreateFromFileAsync(CharacterCache objExistingCache, CancellationToken token = default)
+        public static async Task<CharacterCache> CreateCopyFromAsync(CharacterCache objExistingCache, CancellationToken token = default)
         {
             CharacterCache objReturn = new CharacterCache();
             try
@@ -556,7 +559,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to call LoadFromFile() asynchronously immediately after the constructor.
+        /// Syntactic sugar to call <see cref="LoadFromFileAsync(string, CancellationToken)"/> immediately after the constructor.
         /// </summary>
         public static async Task<CharacterCache> CreateFromFileAsync(string strFile, CancellationToken token = default)
         {

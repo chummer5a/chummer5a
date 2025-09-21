@@ -174,7 +174,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.ReadAllText() that can handle interruptions from a cancellation token.
+        /// An extended version of <see cref="File.ReadAllText(string)"> that can handle interruptions from a cancellation token.
         /// </summary>
         /// <param name="strPath">Path of the file whose contents should be read.</param>
         /// <param name="token">Cancellation token to listen to.</param>
@@ -203,7 +203,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.ReadAllText() that can handle interruptions from a cancellation token.
+        /// An extended version of <see cref="File.ReadAllText(string, Encoding)"> that can handle interruptions from a cancellation token.
         /// </summary>
         /// <param name="strPath">Path of the file whose contents should be read.</param>
         /// <param name="eEncoding">Specific encoding to use when reading the file.</param>
@@ -233,7 +233,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.ReadAllText() that is asynchronous and can handle interruptions from a cancellation token.
+        /// An extended version of <see cref="File.ReadAllText(string)"> that is asynchronous and can handle interruptions from a cancellation token.
         /// </summary>
         /// <param name="strPath">Path of the file whose contents should be read.</param>
         /// <param name="token">Cancellation token to listen to.</param>
@@ -269,7 +269,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.ReadAllText() that is asynchronous and can handle interruptions from a cancellation token.
+        /// An extended version of <see cref="File.ReadAllText(string, Encoding)"> that is asynchronous and can handle interruptions from a cancellation token.
         /// </summary>
         /// <param name="strPath">Path of the file whose contents should be read.</param>
         /// <param name="eEncoding">Specific encoding to use when reading the file.</param>
@@ -306,7 +306,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.WriteAllText() that is asynchronous.
+        /// An extended version of <see cref="File.WriteAllText(string, string)"> that is asynchronous.
         /// </summary>
         /// <param name="strPath">Path of the file where contents should be written.</param>
         /// <param name="strContents">The contents to write to the file.</param>
@@ -326,7 +326,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.WriteAllText() that is asynchronous.
+        /// An extended version of <see cref="File.WriteAllText(string, string, Encoding)"> that is asynchronous.
         /// </summary>
         /// <param name="strPath">Path of the file where contents should be written.</param>
         /// <param name="strContents">The contents to write to the file.</param>
@@ -347,7 +347,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.ReadAllBytes() that is asynchronous.
+        /// An extended version of <see cref="File.ReadAllBytes(string)"> that is asynchronous.
         /// </summary>
         /// <param name="strPath">The file to open for reading.</param>
         /// <param name="token">Cancellation token to listen to.</param>
@@ -377,7 +377,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.WriteAllBytes() that is asynchronous.
+        /// An extended version of <see cref="File.WriteAllBytes(string, byte[])"> that is asynchronous.
         /// </summary>
         /// <param name="strPath">The file to write to.</param>
         /// <param name="achrBytes">The bytes to write to the file.</param>
@@ -398,7 +398,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.ReadAllBytes() that returns an array taken from ArrayPool{byte}.Shared.
+        /// An extended version of <see cref="File.ReadAllBytes(string)"> that returns an array taken from <see cref="ArrayPool{byte}.Shared">.
         /// </summary>
         /// <param name="strPath">The file to open for reading.</param>
         public static byte[] ReadAllBytesToPooledArray(string strPath)
@@ -433,7 +433,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.ReadAllBytes() that is asynchronous and returns an array taken from ArrayPool{byte}.Shared.
+        /// An extended version of <see cref="File.ReadAllBytes(string)"> that is asynchronous and returns an array taken from <see cref="ArrayPool{byte}.Shared">.
         /// </summary>
         /// <param name="strPath">The file to open for reading.</param>
         /// <param name="token">Cancellation token to listen to.</param>

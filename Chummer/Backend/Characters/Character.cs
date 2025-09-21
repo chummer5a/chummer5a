@@ -252,7 +252,7 @@ namespace Chummer
         private readonly LockingOrderedSet<Func<Character, CancellationToken, Task<bool>>> _setDoOnSaveCompletedAsync;
 
         /// <summary>
-        /// Set of unique methods to run after the character's Save() method is otherwise finished.
+        /// Set of unique methods to run after a <see cref="Save"/> or <see cref="SaveAsync"/> call is otherwise finished.
         /// Input is the character in question, output is if the code resolved without errors.
         /// </summary>
         [JsonIgnore]
@@ -268,7 +268,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Set of unique async methods to run after the character's Save() method is otherwise finished.
+        /// Set of unique async methods to run after a <see cref="Save"/> or <see cref="SaveAsync"/> call is otherwise finished.
         /// Input is the character in question, output is if the code resolved without errors.
         /// </summary>
         [JsonIgnore]
@@ -5978,7 +5978,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for XmlManager.LoadXPath() where we use the current enabled custom data directory list from our options file.
+        /// Syntactic sugar for <see cref="XmlManager.LoadXPath(string, IReadOnlyCollection{string}, string, bool, CancellationToken)"/> where we use the current enabled custom data directory list from our options file.
         /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
         /// Returns a new XPathNavigator associated with the XPathDocument so that multiple threads each get their own navigator if they're called on the same file
         /// </summary>
@@ -5993,7 +5993,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for XmlManager.LoadXPathAsync() where we use the current enabled custom data directory list from our options file.
+        /// Syntactic sugar for <see cref="XmlManager.LoadXPathAsync(string, IReadOnlyCollection{string}, string, bool, CancellationToken)"/> where we use the current enabled custom data directory list from our options file.
         /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
         /// Returns a new XPathNavigator associated with the XPathDocument so that multiple threads each get their own navigator if they're called on the same file
         /// </summary>
@@ -6009,7 +6009,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for XmlManager.Load() where we use the current enabled custom data directory list from our options file.
+        /// Syntactic sugar for <see cref="XmlManager.Load(string, IReadOnlyCollection{string}, string, bool, CancellationToken)"/> where we use the current enabled custom data directory list from our options file.
         /// </summary>
         /// <param name="strFileName">Name of the XML file to load.</param>
         /// <param name="strLanguage">Language in which to load the data document.</param>
@@ -6023,7 +6023,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for XmlManager.LoadAsync() where we use the current enabled custom data directory list from our options file.
+        /// Syntactic sugar for <see cref="XmlManager.LoadAsync(string, IReadOnlyCollection{string}, string, bool, CancellationToken)"/> where we use the current enabled custom data directory list from our options file.
         /// </summary>
         /// <param name="strFileName">Name of the XML file to load.</param>
         /// <param name="strLanguage">Language in which to load the data document.</param>

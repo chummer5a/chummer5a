@@ -254,7 +254,7 @@ namespace Chummer
         /// <summary>
         /// Get a HashCode representing the contents of an enumerable (instead of just of the pointer to the location where the enumerable would start)
         /// </summary>
-        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <typeparam name="T">The type for which <see cref="object.GetHashCode"/> will be called</typeparam>
         /// <param name="lstItems">The collection containing the contents</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
@@ -292,7 +292,7 @@ namespace Chummer
         /// Get a HashCode representing the contents of an enumerable (instead of just of the pointer to the location where the enumerable would start) in a way where the order of the items is irrelevant
         /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
         /// </summary>
-        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <typeparam name="T">The type for which <see cref="object.GetHashCode"/> will be called</typeparam>
         /// <param name="lstItems">The collection containing the contents</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
@@ -330,7 +330,7 @@ namespace Chummer
         /// This is a parallelized version of GetOrderInvariantEnsembleHashCode meant to be used for large collections
         /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
         /// </summary>
-        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <typeparam name="T">The type for which <see cref="object.GetHashCode"/> will be called</typeparam>
         /// <param name="lstItems">The collection containing the contents</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
@@ -9318,7 +9318,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's Count() without predicate, but deep searches the list, counting up the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.Count{TSource}(IEnumerable{TSource})"/>, but deep searches the list, counting up the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static async Task<int> DeepCountAsync<T, T2>(this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, CancellationToken token = default) where T2 : IEnumerable<T>
         {
@@ -9411,7 +9411,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's Count() without predicate, but deep searches the list, counting up the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.Count{TSource}(IEnumerable{TSource})"/>, but deep searches the list, counting up the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static async Task<int> DeepCountAsync<T, T2>(this IEnumerable<T> objParentList, Func<T, Task<T2>> funcGetChildrenMethod, CancellationToken token = default) where T2: IAsyncEnumerable<T>
         {
@@ -9700,7 +9700,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's Last() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.Last{TSource}(IEnumerable{TSource})"/>, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static async Task<T> DeepLastAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, CancellationToken token = default) where T2 : IEnumerable<T>
         {
@@ -9790,7 +9790,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's Last() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.Last{TSource}(IEnumerable{TSource})"/>, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static async Task<T> DeepLastAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<T2>> funcGetChildrenMethod, CancellationToken token = default) where T2 : IEnumerable<T>
         {
@@ -9903,7 +9903,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's LastOrDefault() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource})"/>, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static async Task<T> DeepLastOrDefaultAsync<T, T2>(this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, CancellationToken token = default) where T2 : IEnumerable<T>
         {
@@ -9998,7 +9998,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's LastOrDefault() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource})"/>, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static async Task<T> DeepLastOrDefaultAsync<T, T2>(this IEnumerable<T> objParentList, Func<T, Task<T2>> funcGetChildrenMethod, CancellationToken token = default) where T2 : IEnumerable<T>
         {
