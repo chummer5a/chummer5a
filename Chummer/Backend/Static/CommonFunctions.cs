@@ -2633,7 +2633,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 // if it is a "paragraph title" just concatenate everything
                 if (blnTitleWithColon)
-                    return string.Join(" ", strArray, intTitleIndex, intBlockEndIndex - intTitleIndex);
+                    return StringExtensions.JoinFast(" ", strArray, intTitleIndex, intBlockEndIndex - intTitleIndex);
                 token.ThrowIfCancellationRequested();
                 // add the title
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,

@@ -109,7 +109,7 @@ namespace Chummer
                         }
                     }, token).ConfigureAwait(false);
 
-                    return string.Join(Environment.NewLine + Environment.NewLine, story, 0, modules.Count);
+                    return StringExtensions.JoinFast(Environment.NewLine + Environment.NewLine, story, 0, modules.Count);
                 }
                 finally
                 {

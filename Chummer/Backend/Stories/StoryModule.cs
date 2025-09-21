@@ -422,7 +422,7 @@ namespace Chummer
                         }
                     }
 
-                    return string.Join(string.Empty, astrOutputStrings, 0, lstSubstrings.Count);
+                    return StringExtensions.ConcatFast(astrOutputStrings, 0, lstSubstrings.Count);
                 }
                 finally
                 {

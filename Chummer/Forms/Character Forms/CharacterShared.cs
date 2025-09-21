@@ -10188,11 +10188,11 @@ namespace Chummer
                         await LanguageManager.GetStringAsync("DialogFilter_ImagesPrefix", token: token)
                             .ConfigureAwait(false) + "({1})|{1}|{0}|" +
                         await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false),
-                        string.Join("|",
+                        StringExtensions.JoinFast("|",
                             lstCodecs.Select(codec => string.Format(GlobalSettings.CultureInfo,
                                 strFormat, codec.CodecName,
                                 codec.FilenameExtension))),
-                        string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension)));
+                        StringExtensions.JoinFast(";", lstCodecs.Select(codec => codec.FilenameExtension)));
                     string strInitialDirectory = string.Empty;
                     if (!string.IsNullOrWhiteSpace(GlobalSettings.RecentImageFolder) &&
                         Directory.Exists(GlobalSettings.RecentImageFolder))

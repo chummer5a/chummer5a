@@ -444,7 +444,7 @@ namespace Chummer
                                 }
 
                                 strSourceFilter = setValidCodes.Count > 0
-                                    ? '(' + string.Join(" or ", setValidCodes.Select(x => "source = " + x.CleanXPath()))
+                                    ? '(' + StringExtensions.JoinFast(" or ", setValidCodes.Select(x => "source = " + x.CleanXPath()))
                                           + ')'
                                     : "source";
                             }

@@ -4932,7 +4932,7 @@ namespace Chummer.Backend.Skills
                 if (_dicCachedStringSpec.TryGetValue(strLanguage, out string strReturn))
                     return strReturn;
                 string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-                strReturn = string.Join(',' + strSpace, Specializations.Select(x => x.DisplayName(strLanguage)));
+                strReturn = StringExtensions.JoinFast(',' + strSpace, Specializations.Select(x => x.DisplayName(strLanguage)));
 
                 _dicCachedStringSpec.Add(strLanguage, strReturn);
 

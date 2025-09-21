@@ -275,7 +275,7 @@ namespace Chummer
                                     .ConfigureAwait(false);
                         }
 
-                        return string.Join(string.Empty, astrModuleOutputStrings, 0, intCount);
+                        return StringExtensions.ConcatFast(astrModuleOutputStrings, 0, intCount);
                     }
                     finally
                     {

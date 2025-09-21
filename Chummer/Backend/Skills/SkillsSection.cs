@@ -2871,7 +2871,7 @@ namespace Chummer.Backend.Skills
                     //Build a crazy xpath to get everything we want to convert
 
                     string strXPath = "/character/expenses/expense[type = \'Karma\']/undo[" +
-                                      string.Join(
+                                      StringExtensions.JoinFast(
                                           " or ",
                                           typesRequiringConverting.Select(
                                               x => "karmatype = " + x.ToString().CleanXPath())) +
@@ -2935,7 +2935,7 @@ namespace Chummer.Backend.Skills
                     //Build a crazy xpath to get everything we want to convert
 
                     string strXPath = "/character/expenses/expense[type = \'Karma\']/undo[" +
-                                      string.Join(
+                                      StringExtensions.JoinFast(
                                           " or ",
                                           typesRequiringConverting.Select(
                                               x => "karmatype = " + x.ToString().CleanXPath())) +

@@ -2083,7 +2083,7 @@ namespace Chummer
                                     x => x.Text = string.Format(
                                         GlobalSettings.CultureInfo,
                                         strSheet,
-                                        string.Join(',' + strSpace,
+                                        StringExtensions.JoinFast(',' + strSpace,
                                                     frmSheetViewer.CharacterObjects.Select(y => y.CharacterName.Trim()))), token: _objGenericToken).ConfigureAwait(false);
                                 if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
                                 {
@@ -2479,7 +2479,7 @@ namespace Chummer
                                     = string.Format(
                                         GlobalSettings.CultureInfo,
                                         strSheet,
-                                        string.Join(',' + strSpace,
+                                        StringExtensions.JoinFast(',' + strSpace,
                                                     frmCharacterSheetViewer.CharacterObjects.Select(
                                                         y => y.CharacterName.Trim())));
                                 break;
@@ -2524,7 +2524,7 @@ namespace Chummer
                                     = string.Format(
                                         GlobalSettings.CultureInfo,
                                         strSheet,
-                                        string.Join(',' + strSpace,
+                                        StringExtensions.JoinFast(',' + strSpace,
                                                     frmCharacterSheetViewer.CharacterObjects.Select(
                                                         y => y.CharacterName.Trim())));
                                 break;
@@ -2572,7 +2572,7 @@ namespace Chummer
                                     = string.Format(
                                         GlobalSettings.CultureInfo,
                                         strSheet,
-                                        string.Join(',' + strSpace,
+                                        StringExtensions.JoinFast(',' + strSpace,
                                                     frmCharacterSheetViewer.CharacterObjects.Select(
                                                         y => y.CharacterName.Trim())));
                                 break;
@@ -3335,7 +3335,7 @@ namespace Chummer
                     // Array instead of concurrent bag because we want to preserve order
                     Character[] lstCharacters = new Character[lstFilesToOpen.Count];
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
-                               string.Join(
+                               StringExtensions.JoinFast(
                                    ',' + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
@@ -3551,7 +3551,7 @@ namespace Chummer
                     // Array instead of concurrent bag because we want to preserve order
                     Character[] lstCharacters = new Character[lstFilesToOpen.Count];
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
-                               string.Join(
+                               StringExtensions.JoinFast(
                                    ',' + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
@@ -3791,7 +3791,7 @@ namespace Chummer
                     // Array instead of concurrent bag because we want to preserve order
                     Character[] lstCharacters = new Character[lstFilesToOpen.Count];
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
-                               string.Join(
+                               StringExtensions.JoinFast(
                                    ',' + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))

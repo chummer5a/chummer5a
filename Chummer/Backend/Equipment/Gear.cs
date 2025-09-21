@@ -3590,7 +3590,7 @@ namespace Chummer.Backend.Equipment
                 {
                     case "Device Rating":
                         strExtraExpression
-                            = string.Concat(ImprovementManager
+                            = StringExtensions.ConcatFast(ImprovementManager
                                             .GetCachedImprovementListForValueOf(
                                                 CharacterObject, Improvement.ImprovementType.LivingPersonaDeviceRating)
                                             .Select(x => x.ImprovedName));
@@ -3598,7 +3598,7 @@ namespace Chummer.Backend.Equipment
 
                     case "Program Limit":
                         strExtraExpression
-                            = string.Concat(ImprovementManager
+                            = StringExtensions.ConcatFast(ImprovementManager
                                             .GetCachedImprovementListForValueOf(
                                                 CharacterObject, Improvement.ImprovementType.LivingPersonaProgramLimit)
                                             .Select(x => x.ImprovedName));
@@ -3606,7 +3606,7 @@ namespace Chummer.Backend.Equipment
 
                     case "Attack":
                         strExtraExpression
-                            = string.Concat(ImprovementManager
+                            = StringExtensions.ConcatFast(ImprovementManager
                                             .GetCachedImprovementListForValueOf(
                                                 CharacterObject, Improvement.ImprovementType.LivingPersonaAttack)
                                             .Select(x => x.ImprovedName));
@@ -3614,7 +3614,7 @@ namespace Chummer.Backend.Equipment
 
                     case "Sleaze":
                         strExtraExpression
-                            = string.Concat(ImprovementManager
+                            = StringExtensions.ConcatFast(ImprovementManager
                                             .GetCachedImprovementListForValueOf(
                                                 CharacterObject, Improvement.ImprovementType.LivingPersonaSleaze)
                                             .Select(x => x.ImprovedName));
@@ -3622,7 +3622,7 @@ namespace Chummer.Backend.Equipment
 
                     case "Data Processing":
                         strExtraExpression
-                            = string.Concat(ImprovementManager
+                            = StringExtensions.ConcatFast(ImprovementManager
                                             .GetCachedImprovementListForValueOf(
                                                 CharacterObject, Improvement.ImprovementType.LivingPersonaDataProcessing)
                                             .Select(x => x.ImprovedName));
@@ -3630,7 +3630,7 @@ namespace Chummer.Backend.Equipment
 
                     case "Firewall":
                         strExtraExpression
-                            = string.Concat(ImprovementManager
+                            = StringExtensions.ConcatFast(ImprovementManager
                                             .GetCachedImprovementListForValueOf(
                                                 CharacterObject, Improvement.ImprovementType.LivingPersonaFirewall)
                                             .Select(x => x.ImprovedName));
@@ -3690,7 +3690,7 @@ namespace Chummer.Backend.Equipment
                 {
                     case "Device Rating":
                         strExtraExpression
-                            = string.Concat((await ImprovementManager
+                            = StringExtensions.ConcatFast((await ImprovementManager
                                     .GetCachedImprovementListForValueOfAsync(
                                         CharacterObject, Improvement.ImprovementType.LivingPersonaDeviceRating, token: token).ConfigureAwait(false))
                                             .Select(x => x.ImprovedName));
@@ -3698,7 +3698,7 @@ namespace Chummer.Backend.Equipment
 
                     case "Program Limit":
                         strExtraExpression
-                            = string.Concat((await ImprovementManager
+                            = StringExtensions.ConcatFast((await ImprovementManager
                                     .GetCachedImprovementListForValueOfAsync(
                                         CharacterObject, Improvement.ImprovementType.LivingPersonaProgramLimit, token: token).ConfigureAwait(false))
                                             .Select(x => x.ImprovedName));
@@ -3706,7 +3706,7 @@ namespace Chummer.Backend.Equipment
 
                     case "Attack":
                         strExtraExpression
-                            = string.Concat((await ImprovementManager
+                            = StringExtensions.ConcatFast((await ImprovementManager
                                     .GetCachedImprovementListForValueOfAsync(
                                         CharacterObject, Improvement.ImprovementType.LivingPersonaAttack, token: token).ConfigureAwait(false))
                                             .Select(x => x.ImprovedName));
@@ -3714,7 +3714,7 @@ namespace Chummer.Backend.Equipment
 
                     case "Sleaze":
                         strExtraExpression
-                            = string.Concat((await ImprovementManager
+                            = StringExtensions.ConcatFast((await ImprovementManager
                                     .GetCachedImprovementListForValueOfAsync(
                                         CharacterObject, Improvement.ImprovementType.LivingPersonaSleaze, token: token).ConfigureAwait(false))
                                             .Select(x => x.ImprovedName));
@@ -3722,7 +3722,7 @@ namespace Chummer.Backend.Equipment
 
                     case "Data Processing":
                         strExtraExpression
-                            = string.Concat((await ImprovementManager
+                            = StringExtensions.ConcatFast((await ImprovementManager
                                     .GetCachedImprovementListForValueOfAsync(
                                         CharacterObject, Improvement.ImprovementType.LivingPersonaDataProcessing, token: token).ConfigureAwait(false))
                                             .Select(x => x.ImprovedName));
@@ -3730,7 +3730,7 @@ namespace Chummer.Backend.Equipment
 
                     case "Firewall":
                         strExtraExpression
-                            = string.Concat((await ImprovementManager
+                            = StringExtensions.ConcatFast((await ImprovementManager
                                     .GetCachedImprovementListForValueOfAsync(
                                         CharacterObject, Improvement.ImprovementType.LivingPersonaFirewall, token: token).ConfigureAwait(false))
                                             .Select(x => x.ImprovedName));
@@ -5409,7 +5409,7 @@ namespace Chummer.Backend.Equipment
                 if (Name == "Living Persona")
                 {
                     string strExpression
-                        = string.Concat(ImprovementManager
+                        = StringExtensions.ConcatFast(ImprovementManager
                                         .GetCachedImprovementListForValueOf(
                                             CharacterObject, Improvement.ImprovementType.LivingPersonaMatrixCM)
                                         .Select(x => x.ImprovedName));
