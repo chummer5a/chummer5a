@@ -10487,27 +10487,27 @@
     <!-- End Region SINners Plugin-->
     <string>
       <key>String_ApplicationInsights_OnlyLocal</key>
-      <text>only local logging</text>
+      <text>Perform Only Local Logging</text>
     </string>
     <string>
       <key>String_ApplicationInsights_OnlyMetric</key>
-      <text>upload statistical data</text>
+      <text>Upload Only Statistical Data</text>
     </string>
     <string>
       <key>String_ApplicationInsights_Crashes</key>
-      <text>upload crashes</text>
+      <text>Upload Crashes</text>
     </string>
     <string>
       <key>String_ApplicationInsights_Info</key>
-      <text>upload some logs</text>
+      <text>Upload Crashes and Some Logs</text>
     </string>
     <string>
       <key>String_ApplicationInsights_Trace</key>
-      <text>upload detailed logs</text>
+      <text>Upload Crashes and Detailed Logs</text>
     </string>
     <string>
       <key>String_ApplicationInsights_NotSet</key>
-      <text>let chummer decide</text>
+      <text>Let Chummer Decide</text>
     </string>
     <string>
       <key>String_Chummy</key>
