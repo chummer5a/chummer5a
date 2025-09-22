@@ -384,7 +384,7 @@ namespace Chummer
                         .GetStringAsync(
                             "MessageTitle_Options_ConfirmTelemetry",
                             _strSelectedLanguage).ConfigureAwait(false),
-                    MessageBoxButtons.YesNo).ConfigureAwait(false) != DialogResult.Yes)
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question).ConfigureAwait(false) != DialogResult.Yes)
             {
                 int intLoading = Interlocked.Increment(ref _intLoading);
                 try
@@ -427,7 +427,7 @@ namespace Chummer
                         .ConfigureAwait(false)).WordWrap(),
                     await LanguageManager
                         .GetStringAsync("MessageTitle_Options_ConfirmDetailedTelemetry", _strSelectedLanguage)
-                        .ConfigureAwait(false), MessageBoxButtons.YesNo).ConfigureAwait(false) != DialogResult.Yes)
+                        .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Warning).ConfigureAwait(false) != DialogResult.Yes)
             {
                 int intLoading = Interlocked.Increment(ref _intLoading);
                 try
