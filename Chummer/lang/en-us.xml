@@ -6161,7 +6161,7 @@
     </string>
     <string>
       <key>Message_Options_ConfirmDetailedTelemetry</key>
-      <text>We greatly appreciate people sending us highly detailed logging information because it lets us really find places to improve the program that otherwise would have been overlooked. However, such highly detailed logging makes your data significantly less anonymous, and for those on metered internet connections who use the program a lot, it may end causing non-insignificant amounts of interent traffic.\n\nDo you wish to proceed and enable highly detailed telemetry?</text>
+      <text>We greatly appreciate people sending us highly detailed logging information because it lets us find places to improve the program that otherwise would have been overlooked. However, such highly detailed logging makes your data significantly less anonymous, and for those on metered internet connections who use the program a lot, it may end causing non-insignificant amounts of interent traffic.\n\nDo you wish to proceed and enable highly detailed telemetry?</text>
     </string>
     <string>
       <key>MessageTitle_Options_ConfirmDetailedTelemetry</key>

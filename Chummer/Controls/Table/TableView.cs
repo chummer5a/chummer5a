@@ -402,11 +402,7 @@ namespace Chummer.UI.Table
             {
                 Control content = await cell.DoThreadSafeFuncAsync(x => x.Content, token: token).ConfigureAwait(false);
                 string strText = await funcTooltipExtractor(item, token).ConfigureAwait(false);
-                Control objContentForToolTip = content ?? cell;
-                if (objContentForToolTip is IControlWithToolTip objContentCast)
-                    await objContentCast.SetToolTipTextAsync(strText, token).ConfigureAwait(false);
-                else
-                    await objContentForToolTip.SetToolTipAsync(strText, token).ConfigureAwait(false);
+                await (content ?? cell).SetToolTipAsync(strText, token).ConfigureAwait(false);
             }
         }
 

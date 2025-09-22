@@ -258,11 +258,7 @@ namespace Chummer
                 return;
             string strText = ToString();
             source.DoThreadSafe(x => x.Text = strText);
-            string strToolTip = LanguageBookTooltip;
-            if (source is IControlWithToolTip objSourceWithToolTip)
-                objSourceWithToolTip.ToolTipText = strToolTip;
-            else
-                source.SetToolTip(strToolTip);
+            source.SetToolTip(LanguageBookTooltip);
         }
 
         /// <summary>
@@ -290,11 +286,7 @@ namespace Chummer
                 return;
             string strText = await ToStringAsync(token).ConfigureAwait(false);
             await source.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-            string strToolTip = await GetLanguageBookTooltipAsync(token).ConfigureAwait(false);
-            if (source is IControlWithToolTip objSourceWithToolTip)
-                await objSourceWithToolTip.SetToolTipTextAsync(strToolTip, token).ConfigureAwait(false);
-            else
-                await source.SetToolTipAsync(strToolTip, token).ConfigureAwait(false);
+            await source.SetToolTipAsync(await GetLanguageBookTooltipAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         /// <summary>

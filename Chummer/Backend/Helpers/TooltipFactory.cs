@@ -111,10 +111,15 @@ namespace Chummer
             }, token);
         }
 
-        public static void SetToolTip(this Control objControl, string caption)
+        public static void SetToolTip(this Control objControl, string strCaption)
         {
-            Form frmParent = objControl.DoThreadSafeFunc(x => x.FindForm());
-            SetToolTip(objControl, frmParent, caption);
+            if (objControl is IControlWithToolTip objCast)
+                objCast.ToolTipText = strCaption;
+            else
+            {
+                Form frmParent = objControl.DoThreadSafeFunc(x => x.FindForm());
+                SetToolTip(objControl, frmParent, strCaption);
+            }
         }
 
         public static void SetToolTip(this Control objControl, Form frmParent, string strCaption)
@@ -127,11 +132,18 @@ namespace Chummer
                 Utils.BreakIfDebug();
         }
 
-        public static async Task SetToolTipAsync(this Control objControl, string strCaption, CancellationToken token = default)
+        public static Task SetToolTipAsync(this Control objControl, string strCaption, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            Form frmParent = await objControl.DoThreadSafeFuncAsync(x => x.FindForm(), token).ConfigureAwait(false);
-            await SetToolTipAsync(objControl, frmParent, strCaption, token).ConfigureAwait(false);
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (objControl is IControlWithToolTip objCast)
+                return objCast.SetToolTipTextAsync(strCaption, token);
+            return Inner();
+            async Task Inner()
+            {
+                Form frmParent = await objControl.DoThreadSafeFuncAsync(x => x.FindForm(), token).ConfigureAwait(false);
+                await SetToolTipAsync(objControl, frmParent, strCaption, token).ConfigureAwait(false);
+            }
         }
 
         public static async Task SetToolTipAsync(this Control c, Form frmParent, string strCaption, CancellationToken token = default)
