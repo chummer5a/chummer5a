@@ -467,118 +467,46 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Quick way to get the floor of the base-2 logarithm of an integer
+        /// Results of floor(log_2(n)) for integer values of n between 0 and 255. Stored as bytes to help potentially reduce array size in memory (potentially because I don't know the exact details of array packing and member alignment in C#).
+        /// </summary>
+        private static readonly byte[] s_abytLog2Results =
+        { // log_2(0) is undefined, but return 0 to remain within byte domain space. Any algorithm that uses this needs to check that n > 0 for a valid result.
+            0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
+        };
+
+        /// <summary>
+        /// Quick way to get the floor of the base-2 logarithm of an integer.
+        /// Adapted from: https://graphics.stanford.edu/~seander/bithacks.html#IntegerLogLookup
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FloorLog2(this int n)
         {
             if (n <= 0)
                 throw new ArgumentOutOfRangeException(nameof(n));
-            // n is between 2^31 - 1 and 0, which means the fastest way is going to be to binary search between 30 and 0
-            if (n >= (1 << 15))
+            // n is between 2^31 - 1 and 0, which means the fastest way is going to be to binary search, but we can get help from a lookup table
+            int intTemp = n >> 16;
+            if (intTemp > 0)
             {
-                if (n >= (1 << 23))
-                {
-                    if (n >= (1 << 27))
-                    {
-                        if (n >= (1 << 29))
-                        {
-                            if (n >= (1 << 30))
-                                return 30;
-                            else
-                                return 29;
-                        }
-                        else if (n >= (1 << 28))
-                            return 28;
-                        else
-                            return 27;
-                    }
-                    else if (n >= (1 << 25))
-                    {
-                        if (n >= (1 << 26))
-                            return 26;
-                        else
-                            return 25;
-                    }
-                    else if (n >= (1 << 24))
-                        return 24;
-                    else
-                        return 23;
-                }
-                else if (n >= (1 << 19))
-                {
-                    if (n >= (1 << 21))
-                    {
-                        if (n >= (1 << 22))
-                            return 22;
-                        else
-                            return 21;
-                    }
-                    else if (n >= (1 << 20))
-                        return 20;
-                    else
-                        return 19;
-                }
-                else if (n >= (1 << 17))
-                {
-                    if (n >= (1 << 18))
-                        return 18;
-                    else
-                        return 17;
-                }
-                else if (n >= (1 << 16))
-                    return 16;
-                else
-                    return 15;
+                n = intTemp >> 8;
+                return n > 0 ? 24 + s_abytLog2Results[n] : 16 + s_abytLog2Results[intTemp];
             }
-            else if (n >= (1 << 8))
-            {
-                if (n >= (1 << 12))
-                {
-                    if (n >= (1 << 14))
-                        return 14;
-                    else if (n >= (1 << 13))
-                        return 13;
-                    else
-                        return 12;
-                }
-                else if (n >= (1 << 10))
-                {
-                    if (n >= (1 << 11))
-                        return 11;
-                    else
-                        return 10;
-                }
-                else if (n >= (1 << 9))
-                    return 9;
-                else
-                    return 8;
-            }
-            else if (n >= (1 << 4))
-            {
-                if (n >= (1 << 6))
-                {
-                    if (n >= (1 << 7))
-                        return 7;
-                    else
-                        return 6;
-                }
-                else if (n >= (1 << 5))
-                    return 5;
-                else
-                    return 4;
-            }
-            else if (n >= (1 << 2))
-            {
-                if (n >= (1 << 3))
-                    return 3;
-                else
-                    return 2;
-            }
-            else if (n >= 2)
-                return 1;
-            else
-                return 0;
+            intTemp = n >> 8;
+            return intTemp > 0 ? 8 + s_abytLog2Results[intTemp] : s_abytLog2Results[n];
         }
 
         /// <summary>
@@ -600,36 +528,26 @@ namespace Chummer
         {
             if (n <= 0)
                 throw new ArgumentOutOfRangeException(nameof(n));
-            // n is between 2*10^9 and 0, which means the fastest way is going to be to binary search between 9 and 0.
+            // n is between 2*10^9 and 0, which means the fastest way is going to be to binary search
             if (n >= 100000)
             {
                 if (n >= 10000000)
                 {
                     if (n >= 1000000000)
                         return 9;
-                    else if (n >= 100000000)
-                        return 8;
                     else
-                        return 7;
+                        return n >= 100000000 ? 8 : 7;
                 }
-                else if (n >= 1000000)
-                    return 6;
                 else
-                    return 5;
+                    return n >= 1000000 ? 6 : 5;
             }
             else if (n >= 1000)
             {
-                if (n >= 10000)
-                    return 4;
-                else
-                    return 3;
+                return n >= 10000 ? 4 : 3;
             }
             else if (n >= 10)
             {
-                if (n >= 100)
-                    return 2;
-                else
-                    return 1;
+                return n >= 100 ? 2 : 1;
             }
             else
                 return 0;
@@ -795,7 +713,7 @@ namespace Chummer
 
         /// <summary>
         /// A decimal-precision version of <see cref="Math.Sqrt(double)"/> that tries to get the result to decimal precision by using a Newton-Raphson process after obtaining a guess from casting.
-        /// NOTE: If <paramref name="decEpsilon"/> is not <see cref="decimal.MaxValue"/>, is often slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
+        /// NOTE: If <paramref name="decEpsilon"/> is less than <see cref="double.Epsilon"/>, is usually slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than 0, which is outside the domain for a square root.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -814,24 +732,18 @@ namespace Chummer
                 }
             }
 
-            switch (decEpsilon)
-            {
-                case decimal.MaxValue:
-                    // Use Math.Sqrt for doing square roots because we kind of have to for the initial guess, there's no easy way to do roots with built-in decimal arithmetic
-                    return Convert.ToDecimal(Math.Sqrt(Convert.ToDouble(d)));
-                case 0:
-                    decEpsilon = DecimalExtensions.Epsilon;
-                    break;
-                default:
-                    if (decEpsilon < 0)
-                        throw new ArgumentOutOfRangeException(nameof(decEpsilon), "Epsilons should not be negative");
-                    break;
-            }
+            // If the amount of precision we need is sufficiently met by Math.Sqrt, then just use that
+            if (decEpsilon >= DecimalExtensions.DoubleEpsilon)
+                return Convert.ToDecimal(Math.Sqrt(Convert.ToDouble(d)));
+            if (decEpsilon < 0)
+                throw new ArgumentOutOfRangeException(nameof(decEpsilon), "Epsilons should not be negative");
+            if (decEpsilon == 0)
+                decEpsilon = DecimalExtensions.Epsilon;
 
             // Start doing Newton-Raphson iterations to find the root of the function f(x) = x^2 - a, which is equivalent to finding x when x = sqrt(a)
-            decimal decPrevious = d;
             // Use Math.Sqrt for doing square roots because we kind of have to for the initial guess, there's no easy way to do roots with built-in decimal arithmetic
-            decimal decCurrent = Convert.ToDecimal(Math.Sqrt(Convert.ToDouble(d)));
+            decimal decPrevious = Convert.ToDecimal(Math.Sqrt(Convert.ToDouble(d)));
+            decimal decCurrent = (decPrevious + d / decPrevious) / 2; // Do at least one Newton-Raphson iteration because we expect the initial guess to be insufficient if we know our epsilon is smaller than double.Epsilon
             while (Math.Abs(decCurrent - decPrevious) > decEpsilon && decCurrent != 0.0m)
             {
                 decPrevious = decCurrent;
@@ -841,6 +753,29 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Results of floor(sqrt(n)) for integer values of n between 0 and 255. Stored as bytes to help potentially reduce array size in memory (potentially because I don't know the exact details of array packing and member alignment in C#).
+        /// </summary>
+        private static readonly byte[] s_abytSqrtIntResults =
+        {
+            0,
+            1, 1, 1,
+            2, 2, 2, 2, 2,
+            3, 3, 3, 3, 3, 3, 3,
+            4, 4, 4, 4, 4, 4, 4, 4, 4,
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
+            10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+            11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+            12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+            13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+            14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15
+        };
+
+        /// <summary>
         /// A fast way of taking the square root of an integer and returning the result rounded up to the nearest integer.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="intBase"/> is less than 0, which is outside the domain for a square root.</exception>
@@ -848,42 +783,9 @@ namespace Chummer
         {
             if (intBase < 0)
                 throw new ArgumentOutOfRangeException(nameof(intBase), "Cannot get square root of a negative number");
-            // Handle trivial cases first (up to 100)
-            if (intBase <= 1)
-                return intBase;
-            if (intBase <= 100)
-            {
-                if (intBase <= 36)
-                {
-                    if (intBase <= 16)
-                    {
-                        if (intBase <= 9)
-                        {
-                            if (intBase <= 4)
-                                return 2;
-                            else
-                                return 3;
-                        }
-                        else
-                            return 4;
-                    }
-                    else if (intBase <= 25)
-                        return 5;
-                    else
-                        return 6;
-                }
-                else if (intBase <= 64)
-                {
-                    if (intBase <= 49)
-                        return 7;
-                    else
-                        return 8;
-                }
-                else if (intBase <= 81)
-                    return 9;
-                else
-                    return 10;
-            }
+            // Handle trivial cases first (up to the size of our lookup table)
+            if (intBase < s_abytSqrtIntResults.Length)
+                return s_abytSqrtIntResults[intBase];
             // We use a digit-by-digit calculation in binary base
             int intReturn = 0;
             // We take advantage of the fact that sqrt factors and so start factoring out powers of 4 (since we know their sqrt will be some form of 2^m)
@@ -960,7 +862,7 @@ namespace Chummer
 
         /// <summary>
         /// A decimal-precision version of <see cref="Math.Pow(double, double)"/> that tries to get the result to decimal precision by using a Newton-Raphson process after obtaining a guess from casting.
-        /// NOTE: If <paramref name="decEpsilon"/> is not <see cref="decimal.MaxValue"/>, is often slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
+        /// NOTE: If <paramref name="decEpsilon"/> is less than <see cref="double.Epsilon"/>, is usually slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="x"/> is less than 0 while <paramref name="y"/> is not an integer, which is undefined.</exception>
         /// <exception cref="DivideByZeroException"><paramref name="x"/> is 0 while <paramref name="y"/> is negative, which would result in a division by zero.</exception>
@@ -981,23 +883,18 @@ namespace Chummer
             if (x < 0)
                 throw new ArgumentOutOfRangeException(nameof(x), "Cannot raise negative number to a fractional power");
 
-            switch (decEpsilon)
-            {
-                case decimal.MaxValue: // Don't do any iterations if our epsilon is massive
-                    // Use Math.Pow for doing roots and fractional exponents because we kind of have to, there's no easy way to do roots with built-in decimal arithmetic
-                    return Convert.ToDecimal(Math.Pow(Convert.ToDouble(x), Convert.ToDouble(y)));
-                case 0:
-                    decEpsilon = DecimalExtensions.Epsilon;
-                    break;
-                default:
-                    if (decEpsilon < 0)
-                        throw new ArgumentOutOfRangeException(nameof(decEpsilon), "Epsilons should not be negative");
-                    break;
-            }
+            // If the amount of precision we need is sufficiently met by Math.Sqrt, then just use that
+            if (decEpsilon >= DecimalExtensions.DoubleEpsilon)
+                return Convert.ToDecimal(Math.Pow(Convert.ToDouble(x), Convert.ToDouble(y)));
+            if (decEpsilon < 0)
+                throw new ArgumentOutOfRangeException(nameof(decEpsilon), "Epsilons should not be negative");
+            if (decEpsilon == 0)
+                decEpsilon = DecimalExtensions.Epsilon;
+
             // Start doing Newton-Raphson iterations to find the root of the function f(x) = x^(1/b) - a, which is equivalent to finding x when x = a^b
-            decimal decPrevious = x;
             // Use Math.Pow for doing roots and fractional exponents because we kind of have to for the initial guess, there's no easy way to do roots with built-in decimal arithmetic
-            decimal decCurrent = Convert.ToDecimal(Math.Pow(Convert.ToDouble(x), Convert.ToDouble(y)));
+            decimal decPrevious = Convert.ToDecimal(Math.Pow(Convert.ToDouble(x), Convert.ToDouble(y)));
+            decimal decCurrent = (1m - y) * decPrevious + x * y / decPrevious.Pow(1m / y - 1m, decEpsilon); // Do at least one Newton-Raphson iteration because we expect the initial guess to be insufficient if we know our epsilon is smaller than double.Epsilon
             while (Math.Abs(decCurrent - decPrevious) > decEpsilon && decCurrent != 0.0m)
             {
                 decPrevious = decCurrent;
@@ -1222,13 +1119,15 @@ namespace Chummer
         private const int TaylorSeriesNumTerms_Ln_x = 75;
 
         /// <summary>
-        /// A decimal-precision version of <see cref="Math.Log(double, double)"/> that never casts to floating-point.
-        /// NOTE: Can be *much* slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
+        /// A decimal-precision version of <see cref="Math.Log(double, double)"/> that avoids casting to floating-point until appropriate.
+        /// NOTE: If <paramref name="decEpsilon"/> is less than <see cref="double.Epsilon"/>, is usually *much* slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="a"/> is less than or equal to 0, which is outside the domain for a logarithm.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="a"/> or <paramref name="newBase"/> are less than or equal to 0 or <paramref name="newBase"/> is 1, which are outside the domain for a logarithm.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal Log(this decimal a, decimal newBase, decimal decEpsilon)
         {
+            if (newBase == 1.0m)
+                throw new ArgumentOutOfRangeException(nameof(newBase));
             decimal decReturn = Log2(a, decEpsilon);
             if (newBase != 2.0m)
                 decReturn /= Log2(newBase, decEpsilon);
@@ -1236,8 +1135,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// A decimal-precision version of <see cref="Math.Log(double)"/> that never casts to floating-point.
-        /// NOTE: Can be *much* slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
+        /// A decimal-precision version of <see cref="Math.Log(double)"/> that avoids casting to floating-point until appropriate.
+        /// NOTE: If <paramref name="decEpsilon"/> is less than <see cref="double.Epsilon"/>, is usually *much* slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than or equal to 0, which is outside the domain for a logarithm.</exception>
         public static decimal Log(this decimal d, decimal decEpsilon = DecimalExtensions.Epsilon)
@@ -1249,6 +1148,9 @@ namespace Chummer
             // Calculate as log_2 instead of as ln(x) directly because integer part can be calculated more exactly with integer division
             if (d >= Euler || d <= 1 / Euler)
                 return Log2(d, decEpsilon) / Log2_e; // Log_2(e) for transforming the base
+            // If the amount of precision we need is sufficiently met by Math.Log, then just use that
+            if (decEpsilon >= DecimalExtensions.DoubleEpsilon)
+                return Convert.ToDecimal(Math.Log(Convert.ToDouble(d)));
             if (decEpsilon < 0)
                 throw new ArgumentOutOfRangeException(nameof(decEpsilon), "Epsilons should not be negative");
             if (decEpsilon == 0)
@@ -1295,8 +1197,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// A decimal-precision version of <see cref="Math.Log10(double)"/> that never casts to floating-point.
-        /// NOTE: Can be *much* slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
+        /// A decimal-precision version of <see cref="Math.Log10(double)"/> that avoids casting to floating-point until appropriate.
+        /// NOTE: If <paramref name="decEpsilon"/> is less than <see cref="double.Epsilon"/>, is usually *much* slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than or equal to 0, which is outside the domain for a logarithm.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1306,8 +1208,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// A high-precision version of calculating a base-2 logarithm, used for an arbitrary precision number
-        /// Note: can be quite slow compared to just using Math.Log.
+        /// A high-precision version of calculating a base-2 logarithm, used for an arbitrary precision number that avoids casting to floating-point until appropriate.
+        /// Note: If <paramref name="decEpsilon"/> is less than <see cref="double.Epsilon"/>, can be quite slow compared to just using Math.Log.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than or equal to 0, which is outside the domain for a logarithm.</exception>
         private static decimal Log2(this decimal d, decimal decEpsilon = DecimalExtensions.Epsilon)
@@ -1336,6 +1238,12 @@ namespace Chummer
             // d is now between 1 and 2, so the remaining part should be a fraction.
             if (d == 1)
                 return blnNegate ? -decReturn : decReturn;
+            // If the amount of precision we need is sufficiently met by Math.Log, then just use that for the fraction part
+            if (decEpsilon >= DecimalExtensions.DoubleEpsilon)
+            {
+                decReturn += Convert.ToDecimal(Math.Log(Convert.ToDouble(d), 2.0));
+                return blnNegate ? -decReturn : decReturn;
+            }
             if (decEpsilon < 0)
                 throw new ArgumentOutOfRangeException(nameof(decEpsilon), "Epsilons should not be negative");
             if (decEpsilon == 0)
