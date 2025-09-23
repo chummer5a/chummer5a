@@ -1406,9 +1406,9 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            return StringExtensions.ConcatFast(GetString(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
-                             token: token), GetString("String_Space", strLanguage, token: token),
-                             "(", GetString("String_DescAdept", strLanguage, token: token), ")");
+            return GetString(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
+                             token: token) + GetString("String_Space", strLanguage, token: token)
+                                           + '(' + GetString("String_DescAdept", strLanguage, token: token) + ')';
         }
 
         public static async Task<string> MAGAdeptStringAsync(string strLanguage = "", bool blnLong = false,
@@ -1416,11 +1416,11 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            return StringExtensions.ConcatFast(await GetStringAsync(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
-                                        token: token).ConfigureAwait(false),
-                   await GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false),
-                   "(", await GetStringAsync(
-                       "String_DescAdept", strLanguage, token: token).ConfigureAwait(false), ")");
+            return await GetStringAsync(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
+                                        token: token).ConfigureAwait(false)
+                   + await GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
+                   + '(' + await GetStringAsync(
+                       "String_DescAdept", strLanguage, token: token).ConfigureAwait(false) + ')';
         }
 
         /// <summary>

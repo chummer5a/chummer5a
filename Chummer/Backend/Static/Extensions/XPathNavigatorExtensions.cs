@@ -557,14 +557,16 @@ namespace Chummer
             // This is mostly for improvements.xml, which uses the improvement id (such as addecho) as the id rather than a guid.
             if (!blnIdIsGuid)
             {
-                return node.SelectSingleNode(string.IsNullOrEmpty(strExtraXPath)
-                    ? strPath.ConcatFast("[id = ", strId.CleanXPath(), ']')
-                    : strPath.ConcatFast("[id = ", strId.CleanXPath(), " and (", strExtraXPath, ")]"));
+                return node.SelectSingleNode(strPath + "[id = " + strId.CleanXPath()
+                                             + (string.IsNullOrEmpty(strExtraXPath)
+                                                 ? "]"
+                                                 : " and (" + strExtraXPath + ") ]"));
             }
 
-            return node.SelectSingleNode(string.IsNullOrEmpty(strExtraXPath)
-                ? strPath.ConcatFast("[name = ", strId.CleanXPath(), ']')
-                : strPath.ConcatFast("[name = ", strId.CleanXPath(), " and (", strExtraXPath, ")]"));
+            return node.SelectSingleNode(strPath + "[name = " + strId.CleanXPath()
+                                         + (string.IsNullOrEmpty(strExtraXPath)
+                                             ? "]"
+                                             : " and (" + strExtraXPath + ") ]"));
         }
 
         /// <summary>
@@ -575,11 +577,17 @@ namespace Chummer
         {
             if (node == null || string.IsNullOrEmpty(strPath))
                 return null;
-            string strSuffix = string.IsNullOrEmpty(strExtraXPath) ? "]" : " and (".ConcatFast(strExtraXPath, ")]");
             string strId = guidId.ToString("D", GlobalSettings.InvariantCultureInfo);
-            return node.SelectSingleNode(strPath.ConcatFast("[id = ", strId.CleanXPath(), strSuffix))
+            return node.SelectSingleNode(strPath + "[id = " + strId.CleanXPath()
+                                         + (string.IsNullOrEmpty(strExtraXPath)
+                                             ? "]"
+                                             : " and (" + strExtraXPath + ")]"))
                    // Split into two separate queries because the case-insensitive search here can be expensive if we're doing it a lot
-                   ?? node.SelectSingleNode(strPath.ConcatFast("[translate(id, 'abcdef', 'ABCDEF') = ", strId.ToUpperInvariant().CleanXPath(), strSuffix));
+                   ?? node.SelectSingleNode(strPath + "[translate(id, 'abcdef', 'ABCDEF') = "
+                                                    + strId.ToUpperInvariant().CleanXPath()
+                                                    + (string.IsNullOrEmpty(strExtraXPath)
+                                                        ? "]"
+                                                        : " and (" + strExtraXPath + ")]"));
         }
 
         /// <summary>
@@ -733,17 +741,17 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (xmlNode.NodeType == XPathNodeType.Attribute)
             {
-                return xmlNode.Name.ConcatFast("=\"", xmlNode.Value, '\"');
+                return xmlNode.Name + "=\"" + xmlNode.Value + "\"";
             }
 
             if (xmlNode.NodeType == XPathNodeType.Namespace)
             {
                 if (xmlNode.LocalName.Length == 0)
                 {
-                    return xmlNode.Name.ConcatFast("xmlns=\"", xmlNode.Value, '\"');
+                    return "xmlns=\"" + xmlNode.Value + "\"";
                 }
 
-                return "xmlns:".ConcatFast(xmlNode.LocalName, "=\"", xmlNode.Value, "\"");
+                return "xmlns:" + xmlNode.LocalName + "=\"" + xmlNode.Value + "\"";
             }
 
             token.ThrowIfCancellationRequested();
