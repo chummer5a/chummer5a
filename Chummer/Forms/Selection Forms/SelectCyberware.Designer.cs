@@ -63,10 +63,6 @@ namespace Chummer
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox();
             this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox();
-            this.chkHideOverEssenceLimit = new Chummer.ColorableCheckBox();
-            this.flpEssenceFilter = new System.Windows.Forms.FlowLayoutPanel();
-            this.nudMaxEssence = new Chummer.NumericUpDownEx();
-            this.lblMaxEssenceLabel = new System.Windows.Forms.Label();
             this.tlpLeft = new System.Windows.Forms.TableLayoutPanel();
             this.cboGrade = new Chummer.ElasticComboBox();
             this.lblCategory = new System.Windows.Forms.Label();
@@ -112,6 +108,10 @@ namespace Chummer
             this.tlpTopRight = new System.Windows.Forms.TableLayoutPanel();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
+            this.flpEssenceFilter = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkHideOverEssenceLimit = new Chummer.ColorableCheckBox();
+            this.lblMaxEssenceLabel = new System.Windows.Forms.Label();
+            this.nudMaxEssence = new Chummer.NumericUpDownEx();
             this.tlpMain.SuspendLayout();
             this.tlpLeft.SuspendLayout();
             this.tlpButtons.SuspendLayout();
@@ -123,10 +123,10 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             this.flpDiscount.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudESSDiscount)).BeginInit();
-            this.flpEssenceFilter.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxEssence)).BeginInit();
             this.pnlNotes.SuspendLayout();
             this.tlpTopRight.SuspendLayout();
+            this.flpEssenceFilter.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxEssence)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdOK
@@ -169,20 +169,18 @@ namespace Chummer
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
             this.tlpMain.Controls.Add(this.chkHideOverAvailLimit, 1, 3);
             this.tlpMain.Controls.Add(this.chkShowOnlyAffordItems, 1, 4);
-            this.tlpMain.Controls.Add(this.chkHideOverEssenceLimit, 1, 5);
-            this.tlpMain.Controls.Add(this.flpEssenceFilter, 1, 6);
             this.tlpMain.Controls.Add(this.tlpLeft, 0, 0);
             this.tlpMain.Controls.Add(this.chkHideBannedGrades, 1, 2);
-            this.tlpMain.Controls.Add(this.tlpButtons, 1, 7);
+            this.tlpMain.Controls.Add(this.tlpButtons, 1, 6);
             this.tlpMain.Controls.Add(this.tlpRight, 1, 1);
             this.tlpMain.Controls.Add(this.tlpTopRight, 1, 0);
+            this.tlpMain.Controls.Add(this.flpEssenceFilter, 1, 5);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 8;
+            this.tlpMain.RowCount = 7;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -197,13 +195,14 @@ namespace Chummer
             this.chkHideOverAvailLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkHideOverAvailLimit.AutoSize = true;
             this.chkHideOverAvailLimit.DefaultColorScheme = true;
-            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(309, 468);
+            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(309, 442);
             this.chkHideOverAvailLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
             this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
             this.chkHideOverAvailLimit.TabIndex = 65;
             this.chkHideOverAvailLimit.Tag = "Checkbox_HideOverAvailLimit";
             this.chkHideOverAvailLimit.Text = "Hide Items Over Avail Limit ({0})";
+            this.chkHideOverAvailLimit.ToolTipText = "";
             this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
             this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.RefreshCurrentList);
             // 
@@ -212,89 +211,16 @@ namespace Chummer
             this.chkShowOnlyAffordItems.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkShowOnlyAffordItems.AutoSize = true;
             this.chkShowOnlyAffordItems.DefaultColorScheme = true;
-            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(309, 493);
+            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(309, 467);
             this.chkShowOnlyAffordItems.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
             this.chkShowOnlyAffordItems.TabIndex = 72;
             this.chkShowOnlyAffordItems.Tag = "Checkbox_ShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Text = "Show Only Items I Can Afford";
+            this.chkShowOnlyAffordItems.ToolTipText = "";
             this.chkShowOnlyAffordItems.UseVisualStyleBackColor = true;
             this.chkShowOnlyAffordItems.CheckedChanged += new System.EventHandler(this.RefreshCurrentList);
-            // 
-            // chkHideOverEssenceLimit
-            // 
-            this.chkHideOverEssenceLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkHideOverEssenceLimit.AutoSize = true;
-            this.chkHideOverEssenceLimit.DefaultColorScheme = true;
-            this.chkHideOverEssenceLimit.Location = new System.Drawing.Point(309, 518);
-            this.chkHideOverEssenceLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkHideOverEssenceLimit.Name = "chkHideOverEssenceLimit";
-            this.chkHideOverEssenceLimit.Size = new System.Drawing.Size(175, 17);
-            this.chkHideOverEssenceLimit.TabIndex = 73;
-            this.chkHideOverEssenceLimit.Tag = "Checkbox_HideOverEssenceLimit";
-            this.chkHideOverEssenceLimit.Text = "Hide Items Over Essence Limit";
-            this.chkHideOverEssenceLimit.UseVisualStyleBackColor = true;
-            this.chkHideOverEssenceLimit.Checked = true;
-            this.chkHideOverEssenceLimit.CheckedChanged += new System.EventHandler(this.RefreshCurrentList);
-            // 
-            // flpEssenceFilter
-            // 
-            this.flpEssenceFilter.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.flpEssenceFilter.AutoSize = true;
-            this.flpEssenceFilter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpEssenceFilter.Controls.Add(this.lblMaxEssenceLabel);
-            this.flpEssenceFilter.Controls.Add(this.nudMaxEssence);
-            this.flpEssenceFilter.Location = new System.Drawing.Point(309, 543);
-            this.flpEssenceFilter.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.flpEssenceFilter.Name = "flpEssenceFilter";
-            this.flpEssenceFilter.Size = new System.Drawing.Size(200, 26);
-            this.flpEssenceFilter.TabIndex = 74;
-            this.flpEssenceFilter.WrapContents = false;
-            // 
-            // lblMaxEssenceLabel
-            // 
-            this.lblMaxEssenceLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblMaxEssenceLabel.AutoSize = true;
-            this.lblMaxEssenceLabel.Location = new System.Drawing.Point(3, 6);
-            this.lblMaxEssenceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxEssenceLabel.Name = "lblMaxEssenceLabel";
-            this.lblMaxEssenceLabel.Size = new System.Drawing.Size(75, 13);
-            this.lblMaxEssenceLabel.TabIndex = 0;
-            this.lblMaxEssenceLabel.Tag = "Label_MaxEssence";
-            this.lblMaxEssenceLabel.Text = "Max Essence:";
-            this.lblMaxEssenceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // nudMaxEssence
-            // 
-            this.nudMaxEssence.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudMaxEssence.AutoSize = true;
-            this.nudMaxEssence.DecimalPlaces = 2;
-            this.nudMaxEssence.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            131072});
-            this.nudMaxEssence.Location = new System.Drawing.Point(84, 3);
-            this.nudMaxEssence.Maximum = new decimal(new int[] {
-            6,
-            0,
-            0,
-            0});
-            this.nudMaxEssence.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMaxEssence.Name = "nudMaxEssence";
-            this.nudMaxEssence.Size = new System.Drawing.Size(56, 20);
-            this.nudMaxEssence.TabIndex = 1;
-            this.nudMaxEssence.Value = new decimal(new int[] {
-            6,
-            0,
-            0,
-            0});
-            this.nudMaxEssence.ValueChanged += new System.EventHandler(this.RefreshCurrentList);
             // 
             // tlpLeft
             // 
@@ -315,7 +241,7 @@ namespace Chummer
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpLeft.Size = new System.Drawing.Size(306, 543);
+            this.tlpLeft.Size = new System.Drawing.Size(306, 514);
             this.tlpLeft.TabIndex = 75;
             // 
             // cboGrade
@@ -383,13 +309,14 @@ namespace Chummer
             this.chkHideBannedGrades.Checked = true;
             this.chkHideBannedGrades.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkHideBannedGrades.DefaultColorScheme = true;
-            this.chkHideBannedGrades.Location = new System.Drawing.Point(309, 443);
+            this.chkHideBannedGrades.Location = new System.Drawing.Point(309, 417);
             this.chkHideBannedGrades.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideBannedGrades.Name = "chkHideBannedGrades";
             this.chkHideBannedGrades.Size = new System.Drawing.Size(178, 17);
             this.chkHideBannedGrades.TabIndex = 67;
             this.chkHideBannedGrades.Tag = "Checkbox_HideBannedCyberwareGrades";
             this.chkHideBannedGrades.Text = "Hide Banned Cyberware Grades";
+            this.chkHideBannedGrades.ToolTipText = "";
             this.chkHideBannedGrades.UseVisualStyleBackColor = true;
             this.chkHideBannedGrades.CheckedChanged += new System.EventHandler(this.chkHideBannedGrades_CheckedChanged);
             // 
@@ -474,7 +401,7 @@ namespace Chummer
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.Size = new System.Drawing.Size(460, 413);
+            this.tlpRight.Size = new System.Drawing.Size(460, 387);
             this.tlpRight.TabIndex = 79;
             // 
             // lblEssence
@@ -653,6 +580,7 @@ namespace Chummer
             this.chkFree.TabIndex = 17;
             this.chkFree.Tag = "Checkbox_Free";
             this.chkFree.Text = "Free!";
+            this.chkFree.ToolTipText = "";
             this.chkFree.UseVisualStyleBackColor = true;
             this.chkFree.CheckedChanged += new System.EventHandler(this.chkFree_CheckedChanged);
             // 
@@ -668,6 +596,7 @@ namespace Chummer
             this.chkBlackMarketDiscount.TabIndex = 39;
             this.chkBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
             this.chkBlackMarketDiscount.Text = "Black Market Discount (10%)";
+            this.chkBlackMarketDiscount.ToolTipText = "";
             this.chkBlackMarketDiscount.UseVisualStyleBackColor = true;
             this.chkBlackMarketDiscount.Visible = false;
             this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.ProcessCyberwareInfoChanged);
@@ -684,6 +613,7 @@ namespace Chummer
             this.chkPrototypeTranshuman.TabIndex = 66;
             this.chkPrototypeTranshuman.Tag = "Checkbox_PrototypeTranshuman";
             this.chkPrototypeTranshuman.Text = "Prototype Transhuman";
+            this.chkPrototypeTranshuman.ToolTipText = "";
             this.chkPrototypeTranshuman.UseVisualStyleBackColor = true;
             this.chkPrototypeTranshuman.Visible = false;
             this.chkPrototypeTranshuman.CheckedChanged += new System.EventHandler(this.ProcessCyberwareInfoChanged);
@@ -904,6 +834,7 @@ namespace Chummer
             // pnlNotes
             // 
             this.pnlNotes.AutoScroll = true;
+            this.pnlNotes.AutoSize = true;
             this.tlpRight.SetColumnSpan(this.pnlNotes, 3);
             this.pnlNotes.Controls.Add(this.lblCyberwareNotes);
             this.pnlNotes.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -911,7 +842,7 @@ namespace Chummer
             this.pnlNotes.Margin = new System.Windows.Forms.Padding(0);
             this.pnlNotes.Name = "pnlNotes";
             this.pnlNotes.Padding = new System.Windows.Forms.Padding(3, 6, 13, 3);
-            this.pnlNotes.Size = new System.Drawing.Size(403, 210);
+            this.pnlNotes.Size = new System.Drawing.Size(403, 184);
             this.pnlNotes.TabIndex = 78;
             // 
             // lblCyberwareNotes
@@ -967,6 +898,83 @@ namespace Chummer
             this.lblSearchLabel.Tag = "Label_Search";
             this.lblSearchLabel.Text = "&Search:";
             // 
+            // flpEssenceFilter
+            // 
+            this.flpEssenceFilter.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flpEssenceFilter.AutoSize = true;
+            this.flpEssenceFilter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpEssenceFilter.Controls.Add(this.chkHideOverEssenceLimit);
+            this.flpEssenceFilter.Controls.Add(this.lblMaxEssenceLabel);
+            this.flpEssenceFilter.Controls.Add(this.nudMaxEssence);
+            this.flpEssenceFilter.Location = new System.Drawing.Point(306, 488);
+            this.flpEssenceFilter.Margin = new System.Windows.Forms.Padding(0);
+            this.flpEssenceFilter.Name = "flpEssenceFilter";
+            this.flpEssenceFilter.Size = new System.Drawing.Size(306, 26);
+            this.flpEssenceFilter.TabIndex = 74;
+            this.flpEssenceFilter.WrapContents = false;
+            // 
+            // chkHideOverEssenceLimit
+            // 
+            this.chkHideOverEssenceLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkHideOverEssenceLimit.AutoSize = true;
+            this.chkHideOverEssenceLimit.Checked = true;
+            this.chkHideOverEssenceLimit.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkHideOverEssenceLimit.DefaultColorScheme = true;
+            this.chkHideOverEssenceLimit.Location = new System.Drawing.Point(3, 4);
+            this.chkHideOverEssenceLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkHideOverEssenceLimit.Name = "chkHideOverEssenceLimit";
+            this.chkHideOverEssenceLimit.Size = new System.Drawing.Size(170, 17);
+            this.chkHideOverEssenceLimit.TabIndex = 73;
+            this.chkHideOverEssenceLimit.Tag = "Checkbox_HideOverEssenceLimit";
+            this.chkHideOverEssenceLimit.Text = "Hide Items Over Essence Limit";
+            this.chkHideOverEssenceLimit.ToolTipText = "";
+            this.chkHideOverEssenceLimit.UseVisualStyleBackColor = true;
+            this.chkHideOverEssenceLimit.CheckedChanged += new System.EventHandler(this.chkHideOverEssenceLimit_CheckedChanged);
+            // 
+            // lblMaxEssenceLabel
+            // 
+            this.lblMaxEssenceLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMaxEssenceLabel.AutoSize = true;
+            this.lblMaxEssenceLabel.Location = new System.Drawing.Point(179, 6);
+            this.lblMaxEssenceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMaxEssenceLabel.Name = "lblMaxEssenceLabel";
+            this.lblMaxEssenceLabel.Size = new System.Drawing.Size(74, 13);
+            this.lblMaxEssenceLabel.TabIndex = 0;
+            this.lblMaxEssenceLabel.Tag = "Label_MaxEssence";
+            this.lblMaxEssenceLabel.Text = "Max Essence:";
+            this.lblMaxEssenceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // nudMaxEssence
+            // 
+            this.nudMaxEssence.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMaxEssence.AutoSize = true;
+            this.nudMaxEssence.DecimalPlaces = 2;
+            this.nudMaxEssence.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.nudMaxEssence.Location = new System.Drawing.Point(259, 3);
+            this.nudMaxEssence.Maximum = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
+            this.nudMaxEssence.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxEssence.Name = "nudMaxEssence";
+            this.nudMaxEssence.Size = new System.Drawing.Size(44, 20);
+            this.nudMaxEssence.TabIndex = 1;
+            this.nudMaxEssence.Value = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
+            this.nudMaxEssence.ValueChanged += new System.EventHandler(this.RefreshCurrentList);
+            // 
             // SelectCyberware
             // 
             this.AcceptButton = this.cmdOK;
@@ -1006,13 +1014,13 @@ namespace Chummer
             this.flpDiscount.ResumeLayout(false);
             this.flpDiscount.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudESSDiscount)).EndInit();
-            this.flpEssenceFilter.ResumeLayout(false);
-            this.flpEssenceFilter.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxEssence)).EndInit();
             this.pnlNotes.ResumeLayout(false);
             this.pnlNotes.PerformLayout();
             this.tlpTopRight.ResumeLayout(false);
             this.tlpTopRight.PerformLayout();
+            this.flpEssenceFilter.ResumeLayout(false);
+            this.flpEssenceFilter.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxEssence)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
