@@ -5052,9 +5052,9 @@ namespace Chummer
                     continue;
                 Color objExistingColor = Color.FromArgb(intRed, intGreen, intBlue);
                 Color objDarkModeColor = ColorManager.GenerateDarkModeColor(objExistingColor);
-                dicColorReplacements.Add(objColorEntry.Value, "\\red" + objDarkModeColor.R.ToString(GlobalSettings.InvariantCultureInfo)
-                    + "\\green" + objDarkModeColor.G.ToString(GlobalSettings.InvariantCultureInfo)
-                    + "\\blue" + objDarkModeColor.B.ToString(GlobalSettings.InvariantCultureInfo) + ';');
+                dicColorReplacements.Add(objColorEntry.Value, ConcatFast("\\red", objDarkModeColor.R.ToString(GlobalSettings.InvariantCultureInfo),
+                    "\\green", objDarkModeColor.G.ToString(GlobalSettings.InvariantCultureInfo),
+                    "\\blue", objDarkModeColor.B.ToString(GlobalSettings.InvariantCultureInfo), ","));
             }
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInputColorTable))
             {
@@ -5063,7 +5063,7 @@ namespace Chummer
                 {
                     sbdInputColorTable.Replace(kvpReplace.Key, kvpReplace.Value);
                 }
-                return strInputPreColorTable + sbdInputColorTable.ToString() + strInputPostColorTable;
+                return ConcatFast(strInputPreColorTable, sbdInputColorTable.ToString(), strInputPostColorTable);
             }
         }
 
@@ -5108,9 +5108,9 @@ namespace Chummer
                     continue;
                 Color objDarkModeColor = Color.FromArgb(intRed, intGreen, intBlue);
                 Color objInvertedColor = ColorManager.GenerateInverseDarkModeColor(objDarkModeColor);
-                dicColorReplacements.Add(objColorEntry.Value, "\\red" + objInvertedColor.R.ToString(GlobalSettings.InvariantCultureInfo)
-                    + "\\green" + objInvertedColor.G.ToString(GlobalSettings.InvariantCultureInfo)
-                    + "\\blue" + objInvertedColor.B.ToString(GlobalSettings.InvariantCultureInfo) + ';');
+                dicColorReplacements.Add(objColorEntry.Value, ConcatFast("\\red", objInvertedColor.R.ToString(GlobalSettings.InvariantCultureInfo),
+                    "\\green", objInvertedColor.G.ToString(GlobalSettings.InvariantCultureInfo),
+                    "\\blue", objInvertedColor.B.ToString(GlobalSettings.InvariantCultureInfo), ","));
             }
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInputColorTable))
             {
@@ -5119,7 +5119,7 @@ namespace Chummer
                 {
                     sbdInputColorTable.Replace(kvpReplace.Key, kvpReplace.Value);
                 }
-                return strInputPreColorTable + sbdInputColorTable.ToString() + strInputPostColorTable;
+                return ConcatFast(strInputPreColorTable, sbdInputColorTable.ToString(), strInputPostColorTable);
             }
         }
 
@@ -5273,8 +5273,8 @@ namespace Chummer
             {
                 intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
                 if (intIndex < 0)
-                    return strFirstPart + strSecondPart;
-                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex), intRating);
+                    return strFirstPart.ConcatFast(strSecondPart);
+                return strFirstPart.ConcatFast(ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex), intRating));
             }
             if (strSecondPart[intIndex] != ')')
             {
@@ -5308,8 +5308,8 @@ namespace Chummer
                 {
                     intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
                     if (intIndex < 0)
-                        return strFirstPart + strSecondPart;
-                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex), intRating);
+                        return strFirstPart.ConcatFast(strSecondPart);
+                    return strFirstPart.ConcatFast(ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex), intRating));
                 }
             }
 
@@ -5319,16 +5319,16 @@ namespace Chummer
                 strSecondPart = strSecondPart.Substring(0, intIndex);
                 intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
                 if (intIndex < 0)
-                    return strFirstPart + strSecondPart;
-                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex), intRating);
+                    return strFirstPart.ConcatFast(strSecondPart);
+                return strFirstPart.ConcatFast(ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex), intRating));
             }
 
             string strSecondPartA = strSecondPart.Substring(0, intIndex);
             string strSecondPartB = intIndex + 2 < strSecondPart.Length ? strSecondPart.Substring(intIndex + 2) : string.Empty;
             intIndex = strSecondPartA.IndexOfAny(s_achrOpenParenthesesComma);
             if (intIndex < 0)
-                return strFirstPart + strSecondPartA + strSecondPartB;
-            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex), intRating) + ProcessFixedValuesString(strSecondPartB, intRating);
+                return strFirstPart.ConcatFast(strSecondPartA, strSecondPartB);
+            return strFirstPart.ConcatFast(ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex), intRating), ProcessFixedValuesString(strSecondPartB, intRating));
         }
 
         /// <summary>
@@ -5360,9 +5360,9 @@ namespace Chummer
             {
                 intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
                 if (intIndex < 0)
-                    return strFirstPart + strSecondPart;
+                    return strFirstPart.ConcatFast(strSecondPart);
                 int intRatingInner = funcRating();
-                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+                return strFirstPart.ConcatFast(ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner));
             }
             if (strSecondPart[intIndex] != ')')
             {
@@ -5396,9 +5396,9 @@ namespace Chummer
                 {
                     intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
                     if (intIndex < 0)
-                        return strFirstPart + strSecondPart;
+                        return strFirstPart.ConcatFast(strSecondPart);
                     int intRatingInner = funcRating();
-                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+                    return strFirstPart.ConcatFast(ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner));
                 }
             }
 
@@ -5408,18 +5408,18 @@ namespace Chummer
                 strSecondPart = strSecondPart.Substring(0, intIndex);
                 intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
                 if (intIndex < 0)
-                    return strFirstPart + strSecondPart;
+                    return strFirstPart.ConcatFast(strSecondPart);
                 int intRatingInner = funcRating();
-                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+                return strFirstPart.ConcatFast(ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner));
             }
 
             string strSecondPartA = strSecondPart.Substring(0, intIndex);
             string strSecondPartB = intIndex + 2 < strSecondPart.Length ? strSecondPart.Substring(intIndex + 2) : string.Empty;
             intIndex = strSecondPartA.IndexOfAny(s_achrOpenParenthesesComma);
             if (intIndex < 0)
-                return strFirstPart + strSecondPartA + strSecondPartB;
+                return strFirstPart.ConcatFast(strSecondPartA, strSecondPartB);
             int intRating = funcRating();
-            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex), intRating) + ProcessFixedValuesString(strSecondPartB, intRating);
+            return strFirstPart.ConcatFast(ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex), intRating), ProcessFixedValuesString(strSecondPartB, intRating));
         }
 
         /// <summary>
@@ -5453,9 +5453,9 @@ namespace Chummer
             {
                 intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
                 if (intIndex < 0)
-                    return strFirstPart + strSecondPart;
+                    return strFirstPart.ConcatFast(strSecondPart);
                 int intRatingInner = await funcRating().ConfigureAwait(false);
-                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+                return strFirstPart.ConcatFast(ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner));
             }
             if (strSecondPart[intIndex] != ')')
             {
@@ -5489,9 +5489,9 @@ namespace Chummer
                 {
                     intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
                     if (intIndex < 0)
-                        return strFirstPart + strSecondPart;
+                        return strFirstPart.ConcatFast(strSecondPart);
                     int intRatingInner = await funcRating().ConfigureAwait(false);
-                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+                    return strFirstPart.ConcatFast(ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner));
                 }
             }
 
@@ -5501,18 +5501,18 @@ namespace Chummer
                 strSecondPart = strSecondPart.Substring(0, intIndex);
                 intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
                 if (intIndex < 0)
-                    return strFirstPart + strSecondPart;
+                    return strFirstPart.ConcatFast(strSecondPart);
                 int intRatingInner = await funcRating().ConfigureAwait(false);
-                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+                return strFirstPart.ConcatFast(ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner));
             }
 
             string strSecondPartA = strSecondPart.Substring(0, intIndex);
             string strSecondPartB = intIndex + 2 < strSecondPart.Length ? strSecondPart.Substring(intIndex + 2) : string.Empty;
             intIndex = strSecondPartA.IndexOfAny(s_achrOpenParenthesesComma);
             if (intIndex < 0)
-                return strFirstPart + strSecondPartA + strSecondPartB;
+                return strFirstPart.ConcatFast(strSecondPartA, strSecondPartB);
             int intRating = await funcRating().ConfigureAwait(false);
-            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex), intRating) + ProcessFixedValuesString(strSecondPartB, intRating);
+            return strFirstPart.ConcatFast(ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex), intRating), ProcessFixedValuesString(strSecondPartB, intRating));
         }
 
         private static string ProcessFixedValuesStringCore(this string strInput, int intRating, int intIndex)

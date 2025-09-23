@@ -452,17 +452,15 @@ namespace Chummer
             }
 
             string strIdCleaned = strId.CleanXPath();
-            objReturn = node.SelectSingleNode(strPath + "[name = " + strIdCleaned
-                                         + (string.IsNullOrEmpty(strExtraXPath)
-                                             ? "]"
-                                             : " and (" + strExtraXPath + ")]"));
+            objReturn = node.SelectSingleNode(string.IsNullOrEmpty(strExtraXPath)
+                ? strPath.ConcatFast("[name = ", strIdCleaned, ']')
+                : strPath.ConcatFast("[name = ", strIdCleaned, " and (", strExtraXPath, ")]"));
             if (objReturn != null)
                 return objReturn;
             // There are cases where we use ids that are not Guids (e.g., custom improvements), so we need this part as well.
-            return node.SelectSingleNode(strPath + "[id = " + strIdCleaned
-                                         + (string.IsNullOrEmpty(strExtraXPath)
-                                             ? "]"
-                                             : " and (" + strExtraXPath + ")]"));
+            return node.SelectSingleNode(string.IsNullOrEmpty(strExtraXPath)
+                ? strPath.ConcatFast("[id = ", strIdCleaned, ']')
+                : strPath.ConcatFast("[id = ", strIdCleaned, " and (", strExtraXPath, ")]"));
         }
 
         /// <summary>
@@ -473,11 +471,11 @@ namespace Chummer
         {
             if (node == null || string.IsNullOrEmpty(strPath))
                 return null;
-            string strSuffix = string.IsNullOrEmpty(strExtraXPath) ? "]" : " and (" + strExtraXPath + ")]";
+            string strSuffix = string.IsNullOrEmpty(strExtraXPath) ? "]" : " and (".ConcatFast(strExtraXPath, ")]");
             string strId = guidId.ToString("D", GlobalSettings.InvariantCultureInfo);
-            return node.SelectSingleNode(strPath + "[id = " + strId.CleanXPath() + strSuffix)
+            return node.SelectSingleNode(strPath.ConcatFast("[id = ", strId.CleanXPath(), strSuffix))
                    // Split into two separate queries because the case-insensitive search here can be expensive if we're doing it a lot
-                   ?? node.SelectSingleNode(strPath + "[translate(id, 'abcdef', 'ABCDEF') = " + strId.ToUpperInvariant().CleanXPath() + strSuffix);
+                   ?? node.SelectSingleNode(strPath.ConcatFast("[translate(id, 'abcdef', 'ABCDEF') = ", strId.ToUpperInvariant().CleanXPath(), strSuffix));
         }
 
         /// <summary>

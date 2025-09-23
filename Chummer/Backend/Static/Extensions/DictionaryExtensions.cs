@@ -35,7 +35,7 @@ namespace Chummer
             }
             foreach (KeyValuePair<string, object> objItem in objSource.ToDictionaryOfPublicMembers<Dictionary<string, object>>())
             {
-                string strKey = string.IsNullOrEmpty(strParentPropertyKey) ? objItem.Key : strParentPropertyKey + '.' + objItem.Key;
+                string strKey = string.IsNullOrEmpty(strParentPropertyKey) ? objItem.Key : strParentPropertyKey.ConcatFast('.', objItem.Key);
                 if (IsAnonymousType(objItem.Value))
                 {
                     foreach (KeyValuePair<string, object> objInnerItem in objItem.Value

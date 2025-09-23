@@ -1824,7 +1824,7 @@ namespace Chummer
                                                     }
 
                                                     string strFilter = sbdFilter.Length > 0
-                                                        ? ") and (" + sbdFilter
+                                                        ? ") and (" + sbdFilter.ToString()
                                                         : string.Empty;
                                                     foreach (XPathNavigator xmlSkill in (blnSync
                                                                  ? objCharacter

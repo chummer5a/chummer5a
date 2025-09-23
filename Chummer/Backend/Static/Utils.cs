@@ -956,7 +956,7 @@ namespace Chummer
                     }
                 }
 
-                strFileName = GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName;
+                strFileName = GetStartupPath.ConcatFast(Path.DirectorySeparatorChar, AppDomain.CurrentDomain.FriendlyName);
                 // Restart current application, with same arguments/parameters
                 foreach (Form objForm in await Program.MainForm.DoThreadSafeFuncAsync(x => x.MdiChildren, token).ConfigureAwait(false))
                 {
@@ -2671,11 +2671,11 @@ namespace Chummer
                         break;
 
                     case PlatformID.WinCE:
-                        strReturn = "Windows Embedded Compact " + objOSInfoVersion.Major + ".0";
+                        strReturn = "Windows Embedded Compact ".ConcatFast(objOSInfoVersion.Major.ToString(CultureInfo.InvariantCulture), ".0");
                         break;
 
                     case PlatformID.Unix:
-                        strReturn = "Unix Kernel " + objOSInfoVersion;
+                        strReturn = "Unix Kernel ".ConcatFast(objOSInfoVersion.ToString());
                         break;
 
                     case PlatformID.Xbox:
@@ -2683,7 +2683,7 @@ namespace Chummer
                         break;
 
                     case PlatformID.MacOSX:
-                        strReturn = "macOS with Darwin Kernel " + objOSInfoVersion;
+                        strReturn = "macOS with Darwin Kernel ".ConcatFast(objOSInfoVersion.ToString());
                         break;
 
                     default:
@@ -2697,7 +2697,7 @@ namespace Chummer
                 if (strReturn.StartsWith("Windows", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(objOSInfo.ServicePack))
                 {
                     //Append service pack to the OS name.  i.e. "Windows XP Service Pack 3"
-                    strReturn += ' ' + objOSInfo.ServicePack;
+                    strReturn = strReturn.ConcatFast(' ', objOSInfo.ServicePack);
                 }
             }
             catch (Exception e)

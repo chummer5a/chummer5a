@@ -379,9 +379,9 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strXPathExpression))
                     strXPathExpression = strXPathExpression
-                                         .Replace('{' + strCharAttributeName + '}', "1")
-                                         .Replace('{' + strCharAttributeName + "Unaug}", "1")
-                                         .Replace('{' + strCharAttributeName + "Base}", "1");
+                                         .Replace('{'.ConcatFast(strCharAttributeName, '}'), "1")
+                                         .Replace('{'.ConcatFast(strCharAttributeName, "Unaug}"), "1")
+                                         .Replace('{'.ConcatFast(strCharAttributeName, "Base}"), "1");
             }
 
             if (string.IsNullOrEmpty(strXPathExpression))
@@ -405,9 +405,9 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strXPathExpression))
                     strXPathExpression = strXPathExpression
-                                         .Replace('{' + strCharAttributeName + '}', "1")
-                                         .Replace('{' + strCharAttributeName + "Unaug}", "1")
-                                         .Replace('{' + strCharAttributeName + "Base}", "1");
+                                         .Replace('{'.ConcatFast(strCharAttributeName, '}'), "1")
+                                         .Replace('{'.ConcatFast(strCharAttributeName, "Unaug}"), "1")
+                                         .Replace('{'.ConcatFast(strCharAttributeName, "Base}"), "1");
             }
 
             if (string.IsNullOrEmpty(strXPathExpression))
@@ -1439,7 +1439,7 @@ namespace Chummer
             XPathNavigator xmlOriginalCode = objSettings != null
                 ? objSettings.LoadDataXPath("books.xml", strLanguage, token: token)
                 : XmlManager.LoadXPath("books.xml", null, strLanguage, token: token);
-            xmlOriginalCode = xmlOriginalCode?.SelectSingleNodeAndCacheExpression("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code", token);
+            xmlOriginalCode = xmlOriginalCode?.SelectSingleNodeAndCacheExpression("/chummer/books/book[altcode = ".ConcatFast(strAltCode.CleanXPath(), "]/code"), token);
             return xmlOriginalCode?.Value ?? strAltCode;
         }
 
@@ -1458,7 +1458,7 @@ namespace Chummer
                 ? await objSettings.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
                 : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
             xmlOriginalCode = xmlOriginalCode?.SelectSingleNodeAndCacheExpression(
-                "/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code", token: token);
+                "/chummer/books/book[altcode = ".ConcatFast(strAltCode.CleanXPath(), "]/code"), token: token);
             return xmlOriginalCode?.Value ?? strAltCode;
         }
 
@@ -1478,7 +1478,7 @@ namespace Chummer
             XPathNavigator xmlAltCode = objSettings != null
                 ? objSettings.LoadDataXPath("books.xml", strLanguage, token: token)
                 : XmlManager.LoadXPath("books.xml", null, strLanguage, token: token);
-            xmlAltCode = xmlAltCode?.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode", token);
+            xmlAltCode = xmlAltCode?.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = ".ConcatFast(strCode.CleanXPath(), "]/altcode"), token);
             return xmlAltCode?.Value ?? strCode;
         }
 
@@ -1500,7 +1500,7 @@ namespace Chummer
                 ? await objSettings.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
                 : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
             xmlAltCode = xmlAltCode?.SelectSingleNodeAndCacheExpression(
-                "/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode", token: token);
+                "/chummer/books/book[code = ".ConcatFast(strCode.CleanXPath(), "]/altcode"), token: token);
             return xmlAltCode?.Value ?? strCode;
         }
 
@@ -1518,7 +1518,7 @@ namespace Chummer
             XPathNavigator xmlBook = objSettings != null
                 ? objSettings.LoadDataXPath("books.xml", strLanguage, token: token)
                 : XmlManager.LoadXPath("books.xml", null, strLanguage, token: token);
-            xmlBook = xmlBook?.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = " + strCode.CleanXPath() + ']', token);
+            xmlBook = xmlBook?.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = ".ConcatFast(strCode.CleanXPath(), ']'), token);
             if (xmlBook != null)
             {
                 string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate", token)?.Value
@@ -1547,7 +1547,7 @@ namespace Chummer
             if (xmlBook != null)
             {
                 xmlBook = xmlBook.SelectSingleNodeAndCacheExpression(
-                    "/chummer/books/book[code = " + strCode.CleanXPath() + ']', token: token);
+                    "/chummer/books/book[code = ".ConcatFast(strCode.CleanXPath(), ']'), token: token);
                 if (xmlBook != null)
                 {
                     string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
@@ -1582,7 +1582,7 @@ namespace Chummer
 
             using (objSettings.LockObject.EnterReadLock(token))
             {
-                string strNotes = GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objSettings, token);
+                string strNotes = GetTextFromPdf(strSource.ConcatFast(' ', strPage), strEnglishNameOnPage, objSettings, token);
 
                 if (!string.IsNullOrEmpty(strNotes)
                     || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -1599,7 +1599,7 @@ namespace Chummer
                     && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                     strTranslatedNameOnPage = strNameOnPage;
 
-                return GetTextFromPdf(strSource + ' ' + strDisplayPage,
+                return GetTextFromPdf(strSource.ConcatFast(' ', strDisplayPage),
                                       strTranslatedNameOnPage, objSettings, token);
             }
         }
@@ -1630,7 +1630,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strNotes = await GetTextFromPdfAsync(strSource + ' ' + strPage, strEnglishNameOnPage, objSettings, token).ConfigureAwait(false);
+                string strNotes = await GetTextFromPdfAsync(strSource.ConcatFast(' ', strPage), strEnglishNameOnPage, objSettings, token).ConfigureAwait(false);
 
                 if (!string.IsNullOrEmpty(strNotes)
                     || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -1647,7 +1647,7 @@ namespace Chummer
                     && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                     strTranslatedNameOnPage = strNameOnPage;
 
-                return await GetTextFromPdfAsync(strSource + ' ' + strDisplayPage,
+                return await GetTextFromPdfAsync(strSource.ConcatFast(' ', strDisplayPage),
                                                  strTranslatedNameOnPage, objSettings, token).ConfigureAwait(false);
             }
             finally
@@ -1706,25 +1706,22 @@ namespace Chummer
             }
 
             // Treat everything as being uppercase so the search is case-insensitive.
-            string strReturn = "((not(" + strTranslateElement + ") and contains(translate(" + strNameElement
+            string strReturn = StringExtensions.ConcatFast("((not(", strTranslateElement, ") and contains(translate(", strNameElement,
                                // ReSharper disable once StringLiteralTypo
-                               + ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), "
-                               + strSearchText + ")) " +
-                               "or contains(translate(" + strTranslateElement
+                               ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
+                               strSearchText, ")) or contains(translate(", strTranslateElement,
                                // ReSharper disable once StringLiteralTypo
-                               + ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), "
-                               + strSearchText + "))";
+                               ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
+                               strSearchText, "))");
             if (!string.IsNullOrEmpty(strSearchText2))
             {
-                strReturn = '(' + strReturn + " or ((not(" + strTranslateElement + ") and contains(translate("
-                            + strNameElement
+                strReturn = StringExtensions.ConcatFast("(", strReturn, " or ((not(", strTranslateElement, ") and contains(translate(", strNameElement,
                             // ReSharper disable once StringLiteralTypo
-                            + ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), "
-                            + strSearchText2 + ")) " +
-                            "or contains(translate(" + strTranslateElement
+                            ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
+                            strSearchText2, ")) or contains(translate(", strTranslateElement,
                             // ReSharper disable once StringLiteralTypo
-                            + ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), "
-                            + strSearchText2 + ")))";
+                            ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
+                            strSearchText2, ")))");
             }
 
             return strReturn;
