@@ -86,7 +86,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string ConcatFast(params string[] lstStrings)
         {
@@ -94,15 +94,85 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string ConcatFast(IReadOnlyCollection<string> lstStrings)
         {
             int intStringsCount = lstStrings.Count;
-            if (intStringsCount == 0)
-                return string.Empty;
-            if (intStringsCount == 1)
-                return lstStrings.ElementAtBetter(0);
+            // Handle cases where we can rely on the internal Concat methods that do not need allocations and can make use of faster string construction
+            switch (intStringsCount)
+            {
+                case 0:
+                    return string.Empty;
+                case 1:
+                    return lstStrings.ElementAtBetter(0);
+                case 2:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+                        {
+                            if (objEnumerator.MoveNext())
+                            {
+                                str1 = objEnumerator.Current;
+                                if (objEnumerator.MoveNext())
+                                {
+                                    str2 = objEnumerator.Current;
+                                }
+                            }
+                            return string.Concat(str1, str2);
+                        }
+                    }
+                case 3:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        string str3 = string.Empty;
+                        using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+                        {
+                            if (objEnumerator.MoveNext())
+                            {
+                                str1 = objEnumerator.Current;
+                                if (objEnumerator.MoveNext())
+                                {
+                                    str2 = objEnumerator.Current;
+                                    if (objEnumerator.MoveNext())
+                                    {
+                                        str3 = objEnumerator.Current;
+                                    }
+                                }
+                            }
+                            return string.Concat(str1, str2, str3);
+                        }
+                    }
+                case 4:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        string str3 = string.Empty;
+                        string str4 = string.Empty;
+                        using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+                        {
+                            if (objEnumerator.MoveNext())
+                            {
+                                str1 = objEnumerator.Current;
+                                if (objEnumerator.MoveNext())
+                                {
+                                    str2 = objEnumerator.Current;
+                                    if (objEnumerator.MoveNext())
+                                    {
+                                        str3 = objEnumerator.Current;
+                                        if (objEnumerator.MoveNext())
+                                        {
+                                            str4 = objEnumerator.Current;
+                                        }
+                                    }
+                                }
+                            }
+                            return string.Concat(str1, str2, str3, str4);
+                        }
+                    }
+            }
             int intTotalLength = 0;
             using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
             {
@@ -140,7 +210,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(IEnumerable{string})"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
+        /// Version of <see cref="string.Concat(IEnumerable{string})"> that is faster than the built-in version for shorter strings because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
         /// </summary>
         public static string ConcatFast(IEnumerable<string> lstStrings)
         {
@@ -194,17 +264,138 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static Task<string> ConcatFastAsync(IAsyncReadOnlyCollection<string> lstStrings, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<string>(token);
             int intStringsCount = lstStrings.Count;
-            if (intStringsCount == 0)
-                return Task.FromResult(string.Empty);
-            if (intStringsCount == 1)
-                return lstStrings.ElementAtBetterAsync(0, token);
+            // Handle cases where we can rely on the internal Concat methods that do not need allocations and can make use of faster string construction
+            switch (intStringsCount)
+            {
+                case 0:
+                    return Task.FromResult(string.Empty);
+                case 1:
+                    return lstStrings.ElementAtBetterAsync(0, token);
+                case 2:
+                    {
+                        return Inner2();
+                        async Task<string> Inner2()
+                        {
+                            string str1 = string.Empty;
+                            string str2 = string.Empty;
+                            IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (objEnumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    str1 = objEnumerator.Current;
+                                    if (objEnumerator.MoveNext())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        str2 = objEnumerator.Current;
+                                    }
+                                }
+                                token.ThrowIfCancellationRequested();
+                                return string.Concat(str1, str2);
+                            }
+                            finally
+                            {
+                                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                                else if (objEnumerator is IDisposable objDispose)
+                                    objDispose.Dispose();
+                            }
+                        }
+                    }
+                case 3:
+                    {
+                        return Inner3();
+                        async Task<string> Inner3()
+                        {
+                            string str1 = string.Empty;
+                            string str2 = string.Empty;
+                            string str3 = string.Empty;
+                            IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (objEnumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    str1 = objEnumerator.Current;
+                                    if (objEnumerator.MoveNext())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        str2 = objEnumerator.Current;
+                                        if (objEnumerator.MoveNext())
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            str3 = objEnumerator.Current;
+                                        }
+                                    }
+                                }
+                                token.ThrowIfCancellationRequested();
+                                return string.Concat(str1, str2, str3);
+                            }
+                            finally
+                            {
+                                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                                else if (objEnumerator is IDisposable objDispose)
+                                    objDispose.Dispose();
+                            }
+                        }
+                    }
+                case 4:
+                    {
+                        return Inner4();
+                        async Task<string> Inner4()
+                        {
+                            string str1 = string.Empty;
+                            string str2 = string.Empty;
+                            string str3 = string.Empty;
+                            string str4 = string.Empty;
+                            IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (objEnumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    str1 = objEnumerator.Current;
+                                    if (objEnumerator.MoveNext())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        str2 = objEnumerator.Current;
+                                        if (objEnumerator.MoveNext())
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            str3 = objEnumerator.Current;
+                                            if (objEnumerator.MoveNext())
+                                            {
+                                                token.ThrowIfCancellationRequested();
+                                                str4 = objEnumerator.Current;
+                                            }
+                                        }
+                                    }
+                                }
+                                token.ThrowIfCancellationRequested();
+                                return string.Concat(str1, str2, str3, str4);
+                            }
+                            finally
+                            {
+                                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                                else if (objEnumerator is IDisposable objDispose)
+                                    objDispose.Dispose();
+                            }
+                        }
+                    }
+            }
             return Inner();
             async Task<string> Inner()
             {
@@ -259,7 +450,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async version of <see cref="string.Concat(IEnumerable{string})"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
+        /// Async version of <see cref="string.Concat(IEnumerable{string})"> that is faster than the built-in version for shorter strings because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
         /// </summary>
         public static async Task<string> ConcatFastAsync(IAsyncEnumerable<string> lstStrings, CancellationToken token = default)
         {
@@ -331,7 +522,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string ConcatFast(string[] lstStrings, int startIndex, int count)
         {
@@ -339,14 +530,99 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string ConcatFast(IReadOnlyCollection<string> lstStrings, int startIndex, int count)
         {
             if (count <= 0)
                 return string.Empty;
-            if (count == 1)
-                return lstStrings.ElementAtBetter(startIndex);
+            // Handle cases where we can rely on the internal Concat methods that do not need allocations and can make use of faster string construction
+            switch (count)
+            {
+                case 1:
+                    return lstStrings.ElementAtBetter(startIndex);
+                case 2:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+                        {
+                            for (int i = 0; i < startIndex; ++i)
+                            {
+                                if (!objEnumerator.MoveNext())
+                                    return string.Concat(str1, str2);
+                            }
+                            if (objEnumerator.MoveNext())
+                            {
+                                str1 = objEnumerator.Current;
+                                if (objEnumerator.MoveNext())
+                                {
+                                    str2 = objEnumerator.Current;
+                                }
+                            }
+                            return string.Concat(str1, str2);
+                        }
+                    }
+                case 3:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        string str3 = string.Empty;
+                        using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+                        {
+                            for (int i = 0; i < startIndex; ++i)
+                            {
+                                if (!objEnumerator.MoveNext())
+                                    return string.Concat(str1, str2, str3);
+                            }
+                            if (objEnumerator.MoveNext())
+                            {
+                                str1 = objEnumerator.Current;
+                                if (objEnumerator.MoveNext())
+                                {
+                                    str2 = objEnumerator.Current;
+                                    if (objEnumerator.MoveNext())
+                                    {
+                                        str3 = objEnumerator.Current;
+                                    }
+                                }
+                            }
+                            return string.Concat(str1, str2, str3);
+                        }
+                    }
+                case 4:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        string str3 = string.Empty;
+                        string str4 = string.Empty;
+                        using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+                        {
+                            for (int i = 0; i < startIndex; ++i)
+                            {
+                                if (!objEnumerator.MoveNext())
+                                    return string.Concat(str1, str2, str3, str4);
+                            }
+                            if (objEnumerator.MoveNext())
+                            {
+                                str1 = objEnumerator.Current;
+                                if (objEnumerator.MoveNext())
+                                {
+                                    str2 = objEnumerator.Current;
+                                    if (objEnumerator.MoveNext())
+                                    {
+                                        str3 = objEnumerator.Current;
+                                        if (objEnumerator.MoveNext())
+                                        {
+                                            str4 = objEnumerator.Current;
+                                        }
+                                    }
+                                }
+                            }
+                            return string.Concat(str1, str2, str3, str4);
+                        }
+                    }
+            }
             int intFinalIndex = startIndex + count;
             if (intFinalIndex >= lstStrings.Count)
                 throw new ArgumentOutOfRangeException(nameof(count));
@@ -397,15 +673,144 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static async Task<string> ConcatFastAsync(IAsyncReadOnlyCollection<string> lstStrings, int startIndex, int count, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (count <= 0)
                 return string.Empty;
-            if (count == 1)
-                return await lstStrings.ElementAtBetterAsync(startIndex, token).ConfigureAwait(false);
+            // Handle cases where we can rely on the internal Concat methods that do not need allocations and can make use of faster string construction
+            switch (count)
+            {
+                case 1:
+                    return await lstStrings.ElementAtBetterAsync(startIndex, token).ConfigureAwait(false);
+                case 2:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        IEnumerator<string> objLoopEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            for (int i = 0; i < startIndex; ++i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!objLoopEnumerator.MoveNext())
+                                    return string.Concat(str1, str2);
+                            }
+                            token.ThrowIfCancellationRequested();
+                            if (objLoopEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                str1 = objLoopEnumerator.Current;
+                                if (objLoopEnumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    str2 = objLoopEnumerator.Current;
+                                }
+                            }
+                            token.ThrowIfCancellationRequested();
+                            return string.Concat(str1, str2);
+                        }
+                        finally
+                        {
+                            if (objLoopEnumerator is IAsyncDisposable objDisposeAsync)
+                                await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                            else if (objLoopEnumerator is IDisposable objDispose)
+                                objDispose.Dispose();
+                        }
+                    }
+                case 3:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        string str3 = string.Empty;
+                        IEnumerator<string> objLoopEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            for (int i = 0; i < startIndex; ++i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!objLoopEnumerator.MoveNext())
+                                    return string.Concat(str1, str2, str3);
+                            }
+                            token.ThrowIfCancellationRequested();
+                            if (objLoopEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                str1 = objLoopEnumerator.Current;
+                                if (objLoopEnumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    str2 = objLoopEnumerator.Current;
+                                    if (objLoopEnumerator.MoveNext())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        str3 = objLoopEnumerator.Current;
+                                    }
+                                }
+                            }
+                            token.ThrowIfCancellationRequested();
+                            return string.Concat(str1, str2, str3);
+                        }
+                        finally
+                        {
+                            if (objLoopEnumerator is IAsyncDisposable objDisposeAsync)
+                                await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                            else if (objLoopEnumerator is IDisposable objDispose)
+                                objDispose.Dispose();
+                        }
+                    }
+                case 4:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        string str3 = string.Empty;
+                        string str4 = string.Empty;
+                        IEnumerator<string> objLoopEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            for (int i = 0; i < startIndex; ++i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!objLoopEnumerator.MoveNext())
+                                    return string.Concat(str1, str2, str3, str4);
+                            }
+                            if (objLoopEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                str1 = objLoopEnumerator.Current;
+                                if (objLoopEnumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    str2 = objLoopEnumerator.Current;
+                                    if (objLoopEnumerator.MoveNext())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        str3 = objLoopEnumerator.Current;
+                                        if (objLoopEnumerator.MoveNext())
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            str4 = objLoopEnumerator.Current;
+                                        }
+                                    }
+                                }
+                            }
+                            token.ThrowIfCancellationRequested();
+                            return string.Concat(str1, str2, str3, str4);
+                        }
+                        finally
+                        {
+                            if (objLoopEnumerator is IAsyncDisposable objDisposeAsync)
+                                await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                            else if (objLoopEnumerator is IDisposable objDispose)
+                                objDispose.Dispose();
+                        }
+                    }
+            }
             int intFinalIndex = startIndex + count;
             if (intFinalIndex >= lstStrings.Count)
                 throw new ArgumentOutOfRangeException(nameof(count));
@@ -469,1034 +874,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this string strArg0, string strArg1)
-        {
-            int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(strArg0, strArg1);
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                int intCurrent = 0;
-                int intLoopLength = strArg0?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg0)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent = intLoopLength;
-                }
-                intLoopLength = strArg1?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg1)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this string strArg0, char chrArg1)
-        {
-            int intTotalLength = (strArg0?.Length ?? 0) + 1;
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(strArg0, chrArg1.ToString());
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                int intCurrent = 0;
-                int intLoopLength = strArg0?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg0)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent = intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg1;
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this char chrArg0, string strArg1)
-        {
-            int intTotalLength = 1 + (strArg1?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(chrArg0.ToString(), strArg1);
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                achrNewChars[0] = chrArg0;
-                int intCurrent = 1;
-                int intLoopLength = strArg1?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg1)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this char chrArg0, char chrArg1)
-        {
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[2];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                achrNewChars[0] = chrArg0;
-                achrNewChars[1] = chrArg1;
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, 2);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this string strArg0, string strArg1, string strArg2)
-        {
-            int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(strArg0, strArg1, strArg2);
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                int intCurrent = 0;
-                int intLoopLength = strArg0?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg0)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent = intLoopLength;
-                }
-                intLoopLength = strArg1?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg1)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                intLoopLength = strArg2?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg2)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this string strArg0, string strArg1, char chrArg2)
-        {
-            int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + 1;
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(strArg0, strArg1, chrArg2.ToString());
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                int intCurrent = 0;
-                int intLoopLength = strArg0?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg0)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent = intLoopLength;
-                }
-                intLoopLength = strArg1?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg1)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg2;
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this string strArg0, char chrArg1, string strArg2)
-        {
-            int intTotalLength = (strArg0?.Length ?? 0) + 1 + (strArg2?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(strArg0, chrArg1.ToString(), strArg2);
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                int intCurrent = 0;
-                int intLoopLength = strArg0?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg0)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent = intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg1;
-                intLoopLength = strArg2?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg2)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this string strArg0, char chrArg1, char chrArg2)
-        {
-            int intTotalLength = (strArg0?.Length ?? 0) + 2;
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(strArg0, chrArg1.ToString(), chrArg2.ToString());
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                int intCurrent = 0;
-                int intLoopLength = strArg0?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg0)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent = intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg1;
-                achrNewChars[intCurrent++] = chrArg2;
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this char chrArg0, string strArg1, string strArg2)
-        {
-            int intTotalLength = 1 + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(chrArg0.ToString(), strArg1, strArg2);
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                achrNewChars[0] = chrArg0;
-                int intCurrent = 1;
-                int intLoopLength = strArg1?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg1)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                intLoopLength = strArg2?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg2)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this char chrArg0, string strArg1, char chrArg2)
-        {
-            int intTotalLength = 2 + (strArg1?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(chrArg0.ToString(), strArg1, chrArg2.ToString());
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                achrNewChars[0] = chrArg0;
-                int intCurrent = 1;
-                int intLoopLength = strArg1?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg1)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg2;
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this char chrArg0, char chrArg1, string strArg2)
-        {
-            int intTotalLength = 2 + (strArg2?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(chrArg0.ToString(), chrArg1.ToString(), strArg2);
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                achrNewChars[0] = chrArg0;
-                achrNewChars[1] = chrArg1;
-                int intLoopLength = strArg2?.Length ?? 0;
-                int intCurrent = 2;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg2)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this char chrArg0, char chrArg1, char chrArg2)
-        {
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[3];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                achrNewChars[0] = chrArg0;
-                achrNewChars[1] = chrArg1;
-                achrNewChars[2] = chrArg2;
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, 3);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3)
-        {
-            int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(strArg0, strArg1, strArg2, strArg3);
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                int intCurrent = 0;
-                int intLoopLength = strArg0?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg0)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent = intLoopLength;
-                }
-                intLoopLength = strArg1?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg1)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                intLoopLength = strArg2?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg2)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                intLoopLength = strArg3?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg3)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this string strArg0, string strArg1, string strArg2, char chrArg3)
-        {
-            int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + 1;
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(strArg0, strArg1, strArg2, chrArg3.ToString());
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                int intCurrent = 0;
-                int intLoopLength = strArg0?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg0)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent = intLoopLength;
-                }
-                intLoopLength = strArg1?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg1)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                intLoopLength = strArg2?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg2)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg3;
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this string strArg0, string strArg1, char chrArg2, string strArg3)
-        {
-            int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + 1 + (strArg3?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(strArg0, strArg1, chrArg2.ToString(), strArg3);
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                int intCurrent = 0;
-                int intLoopLength = strArg0?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg0)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent = intLoopLength;
-                }
-                intLoopLength = strArg1?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg1)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg2;
-                intLoopLength = strArg3?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg3)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this string strArg0, string strArg1, char chrArg2, char chrArg3)
-        {
-            int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + 2;
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(strArg0, strArg1, chrArg2.ToString(), chrArg3.ToString());
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                int intCurrent = 0;
-                int intLoopLength = strArg0?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg0)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent = intLoopLength;
-                }
-                intLoopLength = strArg1?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg1)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg2;
-                achrNewChars[intCurrent++] = chrArg3;
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this string strArg0, char chrArg1, string strArg2, string strArg3)
-        {
-            int intTotalLength = (strArg0?.Length ?? 0) + 1 + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(strArg0, chrArg1.ToString(), strArg2, strArg3);
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                int intCurrent = 0;
-                int intLoopLength = strArg0?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg0)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent = intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg1;
-                intLoopLength = strArg2?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg2)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                intLoopLength = strArg3?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg3)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this string strArg0, char chrArg1, string strArg2, char chrArg3)
-        {
-            int intTotalLength = (strArg0?.Length ?? 0) + (strArg2?.Length ?? 0) + 2;
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(strArg0, chrArg1.ToString(), strArg2, chrArg3.ToString());
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                int intCurrent = 0;
-                int intLoopLength = strArg0?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg0)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent = intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg1;
-                intLoopLength = strArg2?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg2)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg3;
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this string strArg0, char chrArg1, char chrArg2, string strArg3)
-        {
-            int intTotalLength = (strArg0?.Length ?? 0) + 2 + (strArg3?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(strArg0, chrArg1.ToString(), chrArg2.ToString(), strArg3);
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                int intCurrent = 0;
-                int intLoopLength = strArg0?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg0)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent = intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg1;
-                achrNewChars[intCurrent++] = chrArg2;
-                intLoopLength = strArg3?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg3)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this string strArg0, char chrArg1, char chrArg2, char chrArg3)
-        {
-            int intTotalLength = (strArg0?.Length ?? 0) + 3;
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(strArg0, chrArg1.ToString(), chrArg2.ToString(), chrArg3.ToString());
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                int intCurrent = 0;
-                int intLoopLength = strArg0?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg0)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent = intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg1;
-                achrNewChars[intCurrent++] = chrArg2;
-                achrNewChars[intCurrent++] = chrArg3;
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this char chrArg0, string strArg1, string strArg2, string strArg3)
-        {
-            int intTotalLength = 1 + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(chrArg0.ToString(), strArg1, strArg2, strArg3);
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                achrNewChars[0] = chrArg0;
-                int intCurrent = 1;
-                int intLoopLength = strArg1?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg1)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                intLoopLength = strArg2?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg2)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                intLoopLength = strArg3?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg3)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this char chrArg0, string strArg1, string strArg2, char chrArg3)
-        {
-            int intTotalLength = 2 + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(chrArg0.ToString(), strArg1, strArg2, chrArg3.ToString());
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                achrNewChars[0] = chrArg0;
-                int intCurrent = 1;
-                int intLoopLength = strArg1?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg1)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                intLoopLength = strArg2?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg2)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg3;
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this char chrArg0, string strArg1, char chrArg2, string strArg3)
-        {
-            int intTotalLength = 2 + (strArg1?.Length ?? 0) + (strArg3?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(chrArg0.ToString(), strArg1, chrArg2.ToString(), strArg3);
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                achrNewChars[0] = chrArg0;
-                int intCurrent = 1;
-                int intLoopLength = strArg1?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg1)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg2;
-                intLoopLength = strArg3?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg3)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this char chrArg0, string strArg1, char chrArg2, char chrArg3)
-        {
-            int intTotalLength = 3 + (strArg1?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(chrArg0.ToString(), strArg1, chrArg2.ToString(), chrArg3.ToString());
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                achrNewChars[0] = chrArg0;
-                int intCurrent = 1;
-                int intLoopLength = strArg1?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg1)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg2;
-                achrNewChars[intCurrent++] = chrArg3;
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this char chrArg0, char chrArg1, string strArg2, string strArg3)
-        {
-            int intTotalLength = 2 + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(chrArg0.ToString(), chrArg1.ToString(), strArg2, strArg3);
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                achrNewChars[0] = chrArg0;
-                achrNewChars[1] = chrArg1;
-                int intCurrent = 2;
-                int intLoopLength = strArg2?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg2)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                intLoopLength = strArg3?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg3)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this char chrArg0, char chrArg1, string strArg2, char chrArg3)
-        {
-            int intTotalLength = 3 + (strArg2?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(chrArg0.ToString(), chrArg1.ToString(), strArg2, chrArg3.ToString());
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                achrNewChars[0] = chrArg0;
-                achrNewChars[1] = chrArg1;
-                int intCurrent = 2;
-                int intLoopLength = strArg2?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg2)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-                achrNewChars[intCurrent++] = chrArg3;
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this char chrArg0, char chrArg1, char chrArg2, string strArg3)
-        {
-            int intTotalLength = 3 + (strArg3?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(chrArg0.ToString(), chrArg1.ToString(), chrArg2.ToString(), strArg3);
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[intTotalLength];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                achrNewChars[0] = chrArg0;
-                achrNewChars[1] = chrArg1;
-                achrNewChars[2] = chrArg2;
-                int intCurrent = 3;
-                int intLoopLength = strArg3?.Length ?? 0;
-                if (intLoopLength > 0)
-                {
-                    fixed (char* src = strArg3)
-                    {
-                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                    }
-                    intCurrent += intLoopLength;
-                }
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, intCurrent);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string, string, string, string)"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
-        /// </summary>
-        public static string ConcatFast(this char chrArg0, char chrArg1, char chrArg2, char chrArg3)
-        {
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                char* achrNewChars = stackalloc char[4];
-                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                achrNewChars[0] = chrArg0;
-                achrNewChars[1] = chrArg1;
-                achrNewChars[2] = chrArg2;
-                achrNewChars[3] = chrArg3;
-
-                // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                return new string(achrNewChars, 0, 4);
-            }
-        }
-
-        /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
+        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
         /// </summary>
         public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4)
         {
@@ -1505,7 +883,7 @@ namespace Chummer
                 return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4);
             intTotalLength += (strArg4?.Length ?? 0);
             if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(ConcatFast(strArg0, strArg1, strArg2, strArg3), strArg4);
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4);
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
             {
@@ -1564,16 +942,16 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
+        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
         /// </summary>
         public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5)
         {
             int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0);
             if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return ConcatFast(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4, strArg5);
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4, strArg5);
             intTotalLength += (strArg4?.Length ?? 0) + (strArg5?.Length ?? 0);
             if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(ConcatFast(strArg0, strArg1, strArg2, strArg3), strArg4, strArg5);
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4, strArg5);
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
             {
@@ -1641,16 +1019,16 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc.
+        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
         /// </summary>
         public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5, string strArg6)
         {
             int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0);
             if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return ConcatFast(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4, strArg5, strArg6);
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4, strArg5, strArg6);
             intTotalLength += (strArg4?.Length ?? 0) + (strArg5?.Length ?? 0) + (strArg6?.Length ?? 0);
             if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
-                return string.Concat(ConcatFast(strArg0, strArg1, strArg2, strArg3), strArg4, strArg5, strArg6);
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4, strArg5, strArg6);
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
             {
@@ -1813,7 +1191,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Join(string, IEnumerable{string})"> that is faster than the built-in version for shorter strings (including for string arrays) because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
+        /// Version of <see cref="string.Join(string, IEnumerable{string})"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
         /// </summary>
         public static string JoinFast(string strSeparator, IEnumerable<string> lstStrings)
         {
