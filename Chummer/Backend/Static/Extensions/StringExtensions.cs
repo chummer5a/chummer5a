@@ -4799,7 +4799,7 @@ namespace Chummer
             int intQuotePos = strSearch.IndexOf('"');
             if (intQuotePos == -1)
             {
-                return '\"' + strSearch + '\"';
+                return "\"" + strSearch + "\"";
             }
 
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
@@ -5054,7 +5054,7 @@ namespace Chummer
                 Color objDarkModeColor = ColorManager.GenerateDarkModeColor(objExistingColor);
                 dicColorReplacements.Add(objColorEntry.Value, "\\red" + objDarkModeColor.R.ToString(GlobalSettings.InvariantCultureInfo)
                     + "\\green" + objDarkModeColor.G.ToString(GlobalSettings.InvariantCultureInfo)
-                    + "\\blue" + objDarkModeColor.B.ToString(GlobalSettings.InvariantCultureInfo) + ';');
+                    + "\\blue" + objDarkModeColor.B.ToString(GlobalSettings.InvariantCultureInfo) + ";");
             }
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInputColorTable))
             {
@@ -5110,7 +5110,7 @@ namespace Chummer
                 Color objInvertedColor = ColorManager.GenerateInverseDarkModeColor(objDarkModeColor);
                 dicColorReplacements.Add(objColorEntry.Value, "\\red" + objInvertedColor.R.ToString(GlobalSettings.InvariantCultureInfo)
                     + "\\green" + objInvertedColor.G.ToString(GlobalSettings.InvariantCultureInfo)
-                    + "\\blue" + objInvertedColor.B.ToString(GlobalSettings.InvariantCultureInfo) + ';');
+                    + "\\blue" + objInvertedColor.B.ToString(GlobalSettings.InvariantCultureInfo) + ";");
             }
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInputColorTable))
             {

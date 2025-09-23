@@ -1919,7 +1919,7 @@ namespace Chummer.Backend.Equipment
 
                         string strNameToUse = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         if (Parent != null)
-                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ')';
+                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ")";
 
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
@@ -2084,7 +2084,7 @@ namespace Chummer.Backend.Equipment
             // Create the Expense Log Entry for the sale.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(decAmount,
-                LanguageManager.GetString("String_ExpenseSoldVehicleWeaponMount") + ' ' + CurrentDisplayNameShort,
+                LanguageManager.GetString("String_ExpenseSoldVehicleWeaponMount") + " " + CurrentDisplayNameShort,
                 ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
@@ -2122,7 +2122,7 @@ namespace Chummer.Backend.Equipment
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(decAmount,
                 await LanguageManager.GetStringAsync("String_ExpenseSoldVehicleWeaponMount", token: token).ConfigureAwait(false) +
-                ' ' + await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
+                " " + await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
                 DateTime.Now);
             await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
             await _objCharacter.ModifyNuyenAsync(decAmount, token).ConfigureAwait(false);

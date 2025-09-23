@@ -4932,7 +4932,7 @@ namespace Chummer.Backend.Skills
                 if (_dicCachedStringSpec.TryGetValue(strLanguage, out string strReturn))
                     return strReturn;
                 string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-                strReturn = StringExtensions.JoinFast(',' + strSpace, Specializations.Select(x => x.DisplayName(strLanguage)));
+                strReturn = StringExtensions.JoinFast("," + strSpace, Specializations.Select(x => x.DisplayName(strLanguage)));
 
                 _dicCachedStringSpec.Add(strLanguage, strReturn);
 
@@ -4950,7 +4950,7 @@ namespace Chummer.Backend.Skills
                     return strReturn;
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
                 strReturn = await StringExtensions
-                    .JoinAsync(',' + strSpace, (await GetSpecializationsAsync(token).ConfigureAwait(false)).Select(x => x.DisplayNameAsync(strLanguage, token)), token)
+                    .JoinAsync("," + strSpace, (await GetSpecializationsAsync(token).ConfigureAwait(false)).Select(x => x.DisplayNameAsync(strLanguage, token)), token)
                     .ConfigureAwait(false);
 
                 _dicCachedStringSpec.Add(strLanguage, strReturn);
@@ -5419,9 +5419,9 @@ namespace Chummer.Backend.Skills
                         sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append('(').AppendJoin(
                             strSpace + LanguageManager.GetString("String_Or") + strSpace,
                             lstConditionalImprovements.Select(
-                                x => CharacterObject.GetObjectName(x) + strSpace + '('
-                                     + x.Value.ToString(GlobalSettings.CultureInfo) + ',' + strSpace
-                                     + x.Condition + ')')).Append(')');
+                                x => CharacterObject.GetObjectName(x) + strSpace + "("
+                                     + x.Value.ToString(GlobalSettings.CultureInfo) + "," + strSpace
+                                     + x.Condition + ")")).Append(')');
                     }
 
                     int wound = CharacterObject.WoundModifier;
@@ -8636,8 +8636,8 @@ namespace Chummer.Backend.Skills
                             = await LanguageManager.GetStringAsync("String_ExpenseLearnSpecialization", token: token)
                                 .ConfigureAwait(false) + strSpace
                                                        + await GetCurrentDisplayNameAsync(token)
-                                                           .ConfigureAwait(false) + strSpace + '('
-                                                       + strName + ')';
+                                                           .ConfigureAwait(false) + strSpace + "("
+                                                       + strName + ")";
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(intPrice * -1, strUpgradeText, ExpenseType.Karma, DateTime.Now);
                         objExpense.Undo =

@@ -589,7 +589,7 @@ namespace Chummer.Backend.Equipment
                 XPathNavigator objLifestyleQualityNode = this.GetNodeXPath()
                                                          ?? objXmlDocument.SelectSingleNode(
                                                              "/chummer/qualities/quality[name = " + Name.CleanXPath()
-                                                             + ']');
+                                                             + "]");
                 if (objLifestyleQualityNode == null)
                 {
                     using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
@@ -671,7 +671,7 @@ namespace Chummer.Backend.Equipment
                 XPathNavigator objLifestyleQualityNode = await this.GetNodeXPathAsync(token).ConfigureAwait(false)
                                                          ?? objXmlDocument.SelectSingleNode(
                                                              "/chummer/qualities/quality[name = " + (await GetNameAsync(token).ConfigureAwait(false)).CleanXPath()
-                                                             + ']');
+                                                             + "]");
                 if (objLifestyleQualityNode == null)
                 {
                     using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
@@ -809,7 +809,7 @@ namespace Chummer.Backend.Equipment
                                     .ConfigureAwait(false))
                                 .SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " +
                                                                     strLifestyleQualityType.CleanXPath()
-                                                                    + ']', token: token);
+                                                                    + "]", token: token);
                         if (objNode != null)
                             strLifestyleQualityType
                                 = objNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? strLifestyleQualityType;
@@ -1302,8 +1302,8 @@ namespace Chummer.Backend.Equipment
 
                 if (!string.IsNullOrEmpty(Extra))
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' +
-                                 _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + "(" +
+                                 _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
                 return strReturn;
             }
         }
@@ -1322,9 +1322,9 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(Extra))
                     // Attempt to retrieve the CharacterAttribute name.
                     strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                                                      .ConfigureAwait(false) + '(' +
+                                                      .ConfigureAwait(false) + "(" +
                                  await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token)
-                                                    .ConfigureAwait(false) + ')';
+                                                    .ConfigureAwait(false) + ")";
                 return strReturn;
             }
             finally
@@ -1343,7 +1343,7 @@ namespace Chummer.Backend.Equipment
             {
                 return DisplayName(strLanguage)
                     + LanguageManager.GetString("String_Space", strLanguage)
-                    + '[' + DisplayCost(objCulture, strLanguage) + ']';
+                    + "[" + DisplayCost(objCulture, strLanguage) + "]";
             }
         }
 
@@ -1355,7 +1355,7 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 return await DisplayNameAsync(strLanguage, token).ConfigureAwait(false)
                        + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
-                       + '[' + await DisplayCostAsync(objCulture, strLanguage, token).ConfigureAwait(false) + ']';
+                       + "[" + await DisplayCostAsync(objCulture, strLanguage, token).ConfigureAwait(false) + "]";
             }
             finally
             {

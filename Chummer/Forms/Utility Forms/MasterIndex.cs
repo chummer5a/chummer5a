@@ -201,7 +201,7 @@ namespace Chummer
                                  .SelectAndCacheExpression("/chummer/books/book/code", _objGenericToken))
                     {
                         Utils.TryCacheExpression(
-                                "/chummer/books/book[code = " + objCode.Value.CleanXPath() + ']', _objGenericToken);
+                                "/chummer/books/book[code = " + objCode.Value.CleanXPath() + "]", _objGenericToken);
                         Utils.TryCacheExpression(
                                 "/chummer/books/book[code = " + objCode.Value.CleanXPath() + "]/altcode", _objGenericToken);
                     }
@@ -444,8 +444,8 @@ namespace Chummer
                                 }
 
                                 strSourceFilter = setValidCodes.Count > 0
-                                    ? '(' + StringExtensions.JoinFast(" or ", setValidCodes.Select(x => "source = " + x.CleanXPath()))
-                                          + ')'
+                                    ? "(" + StringExtensions.JoinFast(" or ", setValidCodes.Select(x => "source = " + x.CleanXPath()))
+                                          + ")"
                                     : "source";
                             }
 
@@ -476,7 +476,7 @@ namespace Chummer
                                                 return;
                                             bool blnLoopFileNameHasItems = false;
                                             foreach (XPathNavigator xmlItemNode in xmlBaseNode.Select(
-                                                         ".//*[page and " + strSourceFilter + ']'))
+                                                         ".//*[page and " + strSourceFilter + "]"))
                                             {
                                                 blnLoopFileNameHasItems = true;
                                                 string strName
@@ -596,7 +596,7 @@ namespace Chummer
                                                                         GlobalSettings.CultureInfo,
                                                                         strFormat, objItem.Name,
                                                                         StringExtensions.JoinFast(
-                                                                            ',' + strSpace, objEntry.FileNames)));
+                                                                            "," + strSpace, objEntry.FileNames)));
                                                                 _lstItems.Add(
                                                                     objItemToAdd); // Not using AddRange because of potential memory issues
                                                                 lstExistingItems.Add(objItemToAdd);
@@ -616,7 +616,7 @@ namespace Chummer
                                                                             GlobalSettings.CultureInfo,
                                                                             strFormat, objExistingEntry.DisplayName,
                                                                             StringExtensions.JoinFast(
-                                                                                ',' + strSpace,
+                                                                                "," + strSpace,
                                                                                 objExistingEntry.FileNames)));
                                                                     _lstItems.Add(
                                                                         objItemToAdd); // Not using AddRange because of potential memory issues

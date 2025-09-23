@@ -167,7 +167,7 @@ namespace Chummer
         /// </summary>
         private async Task BuildMetamagicList(CancellationToken token = default)
         {
-            string strFilter = '(' + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + ')';
+            string strFilter = "(" + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + ")";
             // If the character has MAG enabled, filter the list based on Adept/Magician availability.
             if (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
             {
@@ -189,7 +189,7 @@ namespace Chummer
                     foreach (string strMetamagic in _lstMetamagicLimits)
                         sbdFilter.Append("name = ").Append(strMetamagic.CleanXPath()).Append(" or ");
                     sbdFilter.Length -= 4;
-                    strFilter += sbdFilter.ToString() + ')';
+                    strFilter += sbdFilter.ToString() + ")";
                 }
             }
 
@@ -199,7 +199,7 @@ namespace Chummer
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetamagics))
             {
                 foreach (XPathNavigator objXmlMetamagic in
-                         _objXmlDocument.Select(_strRootXPath + '[' + strFilter + ']'))
+                         _objXmlDocument.Select(_strRootXPath + "[" + strFilter + "]"))
                 {
                     string strId = objXmlMetamagic.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (string.IsNullOrEmpty(strId))

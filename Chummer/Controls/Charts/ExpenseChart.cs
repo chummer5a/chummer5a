@@ -57,9 +57,9 @@ namespace Chummer.UI.Charts
             {
                 LabelFormatter = val => new DateTime((long)val, DateTimeKind.Local).ToString(GlobalSettings.CustomDateTimeFormats
                     ? GlobalSettings.CustomDateFormat
-                      + ' ' + GlobalSettings.CustomTimeFormat
+                      + " " + GlobalSettings.CustomTimeFormat
                     : GlobalSettings.CultureInfo.DateTimeFormat.ShortDatePattern
-                      + ' ' + GlobalSettings.CultureInfo.DateTimeFormat.ShortTimePattern, GlobalSettings.CultureInfo)
+                      + " " + GlobalSettings.CultureInfo.DateTimeFormat.ShortTimePattern, GlobalSettings.CultureInfo)
             });
             _objYAxis = new Axis
             {

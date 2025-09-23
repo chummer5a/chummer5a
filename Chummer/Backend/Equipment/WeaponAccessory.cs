@@ -357,7 +357,7 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(_strFireMode))
                     _strFireMode = strTemp;
                 else if (!_strFireMode.Contains(strTemp))
-                    _strFireMode += '/' + strTemp;
+                    _strFireMode += "/" + strTemp;
             }
             objXmlAccessory.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
             objXmlAccessory.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
@@ -410,7 +410,7 @@ namespace Chummer.Backend.Equipment
                             string strFilter = "/chummer/gears/gear";
                             if (objXmlAccessoryGearName != null || objXmlAccessoryGearCategory != null)
                             {
-                                strFilter += '[';
+                                strFilter += "[";
                                 if (objXmlAccessoryGearName != null)
                                 {
                                     strFilter += "name = " + objXmlAccessoryGearName.InnerTextViaPool(token).CleanXPath();
@@ -421,7 +421,7 @@ namespace Chummer.Backend.Equipment
                                 else
                                     strFilter += "category = " + objXmlAccessoryGearCategory.InnerTextViaPool(token).CleanXPath();
 
-                                strFilter += ']';
+                                strFilter += "]";
                             }
 
                             XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode(strFilter);
@@ -460,7 +460,7 @@ namespace Chummer.Backend.Equipment
 
                                 // Change the Capacity of the child if necessary.
                                 if (objXmlAccessoryGear["capacity"] != null)
-                                    objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerTextViaPool(token) + ']';
+                                    objGear.Capacity = "[" + objXmlAccessoryGear["capacity"].InnerTextViaPool(token) + "]";
                             }
                             catch
                             {
@@ -747,7 +747,7 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(_strFireMode))
                     _strFireMode = strTemp;
                 else if (!_strFireMode.Contains(strTemp))
-                    _strFireMode += '/' + strTemp;
+                    _strFireMode += "/" + strTemp;
             }
             objNode.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
             objNode.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
@@ -1123,7 +1123,7 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(Extra))
             {
-                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + "(" + _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
             }
 
             return strReturn;
@@ -1138,7 +1138,7 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(Extra))
             {
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + "(" + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ")";
             }
 
             return strReturn;
@@ -2471,7 +2471,7 @@ namespace Chummer.Backend.Equipment
 
                         string strNameToUse = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         if (Parent != null)
-                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ')';
+                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ")";
 
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
@@ -2638,7 +2638,7 @@ namespace Chummer.Backend.Equipment
                 decAmount = (DeleteWeaponAccessory() + decOriginal) * decPercentage;
             }
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory") + ' ' + CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory") + " " + CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
             return true;
@@ -2675,7 +2675,7 @@ namespace Chummer.Backend.Equipment
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(decAmount,
                 await LanguageManager.GetStringAsync("String_ExpenseSoldWeaponAccessory", token: token).ConfigureAwait(false) +
-                ' ' + await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
+                " " + await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
                 DateTime.Now);
             await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
             await _objCharacter.ModifyNuyenAsync(decAmount, token).ConfigureAwait(false);

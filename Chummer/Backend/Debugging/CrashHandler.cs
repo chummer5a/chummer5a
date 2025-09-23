@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -221,7 +222,7 @@ namespace Chummer.Backend
                 if (File.Exists(strChummerLog))
                     dump.AddFile(strChummerLog);
 
-                string strJsonPath = Path.Combine(Utils.GetStartupPath, "chummer_crash_" + datCrashDateTime.ToFileTimeUtc() + ".json");
+                string strJsonPath = Path.Combine(Utils.GetStartupPath, "chummer_crash_" + datCrashDateTime.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture) + ".json");
                 using (FileStream objFileStream = new FileStream(strJsonPath, FileMode.Create, FileAccess.Write, FileShare.None))
                 using (StreamWriter objStreamWriter = new StreamWriter(objFileStream))
                 using (JsonTextWriter objJsonWriter = new JsonTextWriter(objStreamWriter))
@@ -233,7 +234,7 @@ namespace Chummer.Backend
                 string strCrashHandler = Path.Combine(Utils.GetStartupPath, "CrashHandler.exe");
                 if (File.Exists(strCrashHandler))
                 {
-                    string strArgs = "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc()
+                    string strArgs = "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture)
 #if DEBUG
                         + "\" --debug";
 #else
@@ -248,8 +249,8 @@ namespace Chummer.Backend
                         {
                             Program.ShowScrollableMessageBox(
                                 "Failed to create crash report because of an issue with the crash handler."
-                                + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion
-                                + Environment.NewLine + "Crash Handler crashed with exit code: " + prcCrashHandler.ExitCode
+                                + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion.ToString()
+                                + Environment.NewLine + "Crash Handler crashed with exit code: " + prcCrashHandler.ExitCode.ToString(CultureInfo.InvariantCulture)
                                 + Environment.NewLine + "Crash information:"
                                 + Environment.NewLine + ex.ToString().AnonymizePath(),
                                 "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -260,7 +261,7 @@ namespace Chummer.Backend
                 {
                     Program.ShowScrollableMessageBox(
                                 "Failed to create crash report because the crash handler was not found."
-                                + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion
+                                + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion.ToString()
                                 + Environment.NewLine + "Crash information:"
                                 + Environment.NewLine + ex.ToString().AnonymizePath(),
                                 "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -270,7 +271,7 @@ namespace Chummer.Backend
             {
                 Program.ShowScrollableMessageBox(
                     "Failed to create crash report."
-                    + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion
+                    + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion.ToString()
                     + Environment.NewLine + "Here is some information to help the developers figure out why:"
                     + Environment.NewLine + nex.Demystify().ToString().AnonymizePath()
                     + Environment.NewLine + "Crash information:" + Environment.NewLine

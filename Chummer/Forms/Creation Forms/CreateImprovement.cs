@@ -501,7 +501,7 @@ namespace Chummer
                                 }
 
                                 if (sbdFilters.Length > 0)
-                                    strFilter = '[' + sbdFilters.ToString() + ']';
+                                    strFilter = "[" + sbdFilters.ToString() + "]";
                             }
                         }
 
@@ -894,7 +894,7 @@ namespace Chummer
                 case "SelectMentalAttribute":
                 case "SelectSpecialAttribute":
                     return strToTranslate == "MAGAdept"
-                    ? await LanguageManager.GetStringAsync("String_AttributeMAGShort", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + await LanguageManager.GetStringAsync("String_DescAdept", token: token).ConfigureAwait(false) + ')'
+                    ? await LanguageManager.GetStringAsync("String_AttributeMAGShort", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" + await LanguageManager.GetStringAsync("String_DescAdept", token: token).ConfigureAwait(false) + ")"
                     : await LanguageManager.GetStringAsync("String_Attribute" + strToTranslate + "Short", token: token).ConfigureAwait(false);
 
                 case "SelectSkill":
@@ -913,7 +913,7 @@ namespace Chummer
                                   ?? astrToTranslateParts[0]
                                 : astrToTranslateParts[0];
 
-                            return strFirstPartTranslated + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + await _objCharacter.TranslateExtraAsync(astrToTranslateParts[1], token: token).ConfigureAwait(false) + ')';
+                            return strFirstPartTranslated + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" + await _objCharacter.TranslateExtraAsync(astrToTranslateParts[1], token: token).ConfigureAwait(false) + ")";
                         }
                         finally
                         {
@@ -933,25 +933,25 @@ namespace Chummer
                     return objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value ?? strToTranslate;
 
                 case "SelectSkillCategory":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']', token: token);
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + "]", token: token);
                     if (objXmlNode == null)
                         return strToTranslate;
                     return objXmlNode.SelectSingleNodeAndCacheExpression("@translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression(".", token: token)?.Value ?? strToTranslate;
 
                 case "SelectSkillGroup":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer/skillgroups/name[. = " + strToTranslate.CleanXPath() + ']', token: token);
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer/skillgroups/name[. = " + strToTranslate.CleanXPath() + "]", token: token);
                     if (objXmlNode == null)
                         return strToTranslate;
                     return objXmlNode.SelectSingleNodeAndCacheExpression("@translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression(".", token: token)?.Value ?? strToTranslate;
 
                 case "SelectWeaponCategory":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']', token: token);
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + "]", token: token);
                     if (objXmlNode == null)
                         return strToTranslate;
                     return objXmlNode.SelectSingleNodeAndCacheExpression("@translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression(".", token: token)?.Value ?? strToTranslate;
 
                 case "SelectSpellCategory":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']', token: token);
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + "]", token: token);
                     if (objXmlNode == null)
                         return strToTranslate;
                     return objXmlNode.SelectSingleNodeAndCacheExpression("@translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression(".", token: token)?.Value ?? strToTranslate;

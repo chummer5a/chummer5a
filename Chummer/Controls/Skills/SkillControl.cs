@@ -1226,7 +1226,7 @@ namespace Chummer.UI.Skills
                 {
                     Character objCharacter = _objSkill.CharacterObject;
                     await CommonFunctions.OpenPdf(
-                        _objSkill.Source + ' ' + await _objSkill.DisplayPageAsync(GlobalSettings.Language, _objMyToken)
+                        _objSkill.Source + " " + await _objSkill.DisplayPageAsync(GlobalSettings.Language, _objMyToken)
                                                                 .ConfigureAwait(false),
                         objCharacter != null
                             ? await objCharacter.GetSettingsAsync(_objMyToken).ConfigureAwait(false)

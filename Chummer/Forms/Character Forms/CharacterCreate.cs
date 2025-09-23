@@ -690,7 +690,7 @@ namespace Chummer
                                                                  + await CharacterObjectSettings
                                                                      .BookXPathAsync(token: GenericToken)
                                                                      .ConfigureAwait(false)
-                                                                 + ']'))
+                                                                 + "]"))
                                                 {
                                                     string strName
                                                         = xmlTradition.SelectSingleNodeAndCacheExpression(
@@ -951,7 +951,7 @@ namespace Chummer
                                                                  + await CharacterObjectSettings
                                                                      .BookXPathAsync(token: GenericToken)
                                                                      .ConfigureAwait(false)
-                                                                 + ']'))
+                                                                 + "]"))
                                                 {
                                                     string strName
                                                         = xmlTradition.SelectSingleNodeAndCacheExpression(
@@ -2927,7 +2927,7 @@ namespace Chummer
                                                  "traditions/tradition["
                                                  + await CharacterObjectSettings.BookXPathAsync(token: token)
                                                      .ConfigureAwait(false)
-                                                 + ']'))
+                                                 + "]"))
                                     {
                                         string strName
                                             = xmlTradition
@@ -3086,7 +3086,7 @@ namespace Chummer
                                                  "traditions/tradition["
                                                  + await CharacterObjectSettings.BookXPathAsync(token: token)
                                                      .ConfigureAwait(false)
-                                                 + ']'))
+                                                 + "]"))
                                     {
                                         string strName
                                             = xmlTradition
@@ -4460,7 +4460,7 @@ namespace Chummer
                                               "Message_ReapplyImprovementsFoundOutdatedItems_Top",
                                               token: token)
                                           .ConfigureAwait(false) +
-                                      sbdOutdatedItems +
+                                      sbdOutdatedItems.ToString() +
                                       await LanguageManager.GetStringAsync(
                                               "Message_ReapplyImprovementsFoundOutdatedItems_Bottom",
                                               token: token)
@@ -6141,7 +6141,7 @@ namespace Chummer
                                                                     + intStage.ToString(
                                                                                   GlobalSettings.InvariantCultureInfo)
                                                                               .CleanXPath()
-                                                                    + ']', GenericToken);
+                                                                    + "]", GenericToken);
                             if (xmlStageNode == null)
                             {
                                 --intStage;
@@ -6490,7 +6490,7 @@ namespace Chummer
                                 {
                                     objReplaceQuality.Type = QualityType.Negative;
                                     if (!string.IsNullOrEmpty(objReplaceQuality.Extra))
-                                        objReplaceQuality.Extra += ',' + await LanguageManager
+                                        objReplaceQuality.Extra += "," + await LanguageManager
                                             .GetStringAsync("String_Space", token: token)
                                             .ConfigureAwait(false);
                                     objReplaceQuality.Extra
@@ -6502,7 +6502,7 @@ namespace Chummer
                                 {
                                     objReplaceQuality.Type = QualityType.Positive;
                                     if (!string.IsNullOrEmpty(objReplaceQuality.Extra))
-                                        objReplaceQuality.Extra += ',' + await LanguageManager
+                                        objReplaceQuality.Extra += "," + await LanguageManager
                                             .GetStringAsync("String_Space", token: token)
                                             .ConfigureAwait(false);
                                     objReplaceQuality.Extra
@@ -6546,7 +6546,7 @@ namespace Chummer
                                         .ConfigureAwait(false);
                                 // Create the Qualities that come with the Metatype.
                                 foreach (XPathNavigator objXmlQualityItem in xmlCharacterNode.Select(
-                                             "qualities/*/quality[. = " + (await objSelectedQuality.GetNameAsync(token).ConfigureAwait(false)).CleanXPath() + ']'))
+                                             "qualities/*/quality[. = " + (await objSelectedQuality.GetNameAsync(token).ConfigureAwait(false)).CleanXPath() + "]"))
                                 {
                                     XmlNode objXmlQuality
                                         = xmlQualitiesDoc.TryGetNodeByNameOrId(
@@ -7316,7 +7316,7 @@ namespace Chummer
 
                 XmlNode objXmlArmor = await objArmor.GetNodeAsync(GenericToken).ConfigureAwait(false);
 
-                string strAllowedCategories = objArmor.Category + ',' + objArmor.Name;
+                string strAllowedCategories = objArmor.Category + "," + objArmor.Name;
                 bool blnExcludeGeneralCategory = false;
                 XmlElement xmlAddModCategory = objXmlArmor["forcemodcategory"];
                 if (xmlAddModCategory != null)
@@ -7329,7 +7329,7 @@ namespace Chummer
                     xmlAddModCategory = objXmlArmor["addmodcategory"];
                     if (xmlAddModCategory != null)
                     {
-                        strAllowedCategories += ',' + xmlAddModCategory.InnerTextViaPool(GenericToken);
+                        strAllowedCategories += "," + xmlAddModCategory.InnerTextViaPool(GenericToken);
                     }
                 }
 
@@ -8090,7 +8090,7 @@ namespace Chummer
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
-                                    objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                                    objGear.Cost = "(" + objGear.Cost + ") * 0.5";
                                 // If the item was marked as free, change its cost.
                                 if (frmPickGear.MyForm.FreeCost)
                                 {
@@ -9445,7 +9445,7 @@ namespace Chummer
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
-                                    objNewGear.Cost = '(' + objNewGear.Cost + ") * 0.5";
+                                    objNewGear.Cost = "(" + objNewGear.Cost + ") * 0.5";
                                 // If the item was marked as free, change its cost.
                                 if (frmPickGear.MyForm.FreeCost)
                                 {
@@ -9565,7 +9565,7 @@ namespace Chummer
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
-                                    objNewGear.Cost = '(' + objNewGear.Cost + ") * 0.5";
+                                    objNewGear.Cost = "(" + objNewGear.Cost + ") * 0.5";
                                 // If the item was marked as free, change its cost.
                                 if (frmPickGear.MyForm.FreeCost)
                                 {
@@ -9696,7 +9696,7 @@ namespace Chummer
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
-                                    objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                                    objGear.Cost = "(" + objGear.Cost + ") * 0.5";
                                 // If the item was marked as free, change its cost.
                                 if (frmPickGear.MyForm.FreeCost)
                                 {
@@ -9820,7 +9820,7 @@ namespace Chummer
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
-                                    objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                                    objGear.Cost = "(" + objGear.Cost + ") * 0.5";
                                 // If the item was marked as free, change its cost.
                                 if (frmPickGear.MyForm.FreeCost)
                                 {
@@ -9925,7 +9925,7 @@ namespace Chummer
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
-                                    objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                                    objGear.Cost = "(" + objGear.Cost + ") * 0.5";
                                 // If the item was marked as free, change its cost.
                                 if (frmPickGear.MyForm.FreeCost)
                                 {
@@ -10045,7 +10045,7 @@ namespace Chummer
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
-                                    objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                                    objGear.Cost = "(" + objGear.Cost + ") * 0.5";
                                 // If the item was marked as free, change its cost.
                                 if (frmPickGear.MyForm.FreeCost)
                                 {
@@ -10230,7 +10230,7 @@ namespace Chummer
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
-                                    objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                                    objGear.Cost = "(" + objGear.Cost + ") * 0.5";
                                 // If the item was marked as free, change its cost.
                                 if (frmPickGear.MyForm.FreeCost)
                                 {
@@ -10338,7 +10338,7 @@ namespace Chummer
 
                             // Reduce the cost for Do It Yourself components.
                             if (frmPickGear.MyForm.DoItYourself)
-                                objNewGear.Cost = '(' + objNewGear.Cost + ") * 0.5";
+                                objNewGear.Cost = "(" + objNewGear.Cost + ") * 0.5";
                             // If the item was marked as free, change its cost.
                             if (frmPickGear.MyForm.FreeCost)
                             {
@@ -13836,7 +13836,7 @@ namespace Chummer
                                             .ConfigureAwait(false);
                                 }
                                 else if (!string.IsNullOrWhiteSpace(strName))
-                                    strNameToUse += '/' + strName;
+                                    strNameToUse += "/" + strName;
 
                                 sbdPositiveQualityTooltip.AppendFormat(GlobalSettings.CultureInfo, "{0}{1}({2})",
                                     strNameToUse,
@@ -14189,10 +14189,10 @@ namespace Chummer
                             || lblBuildRitualsBP != null))
                     {
                         token.ThrowIfCancellationRequested();
-                        string strFormat = "{0}" + strSpace + '×' + strSpace + "{1}" + strSpace
+                        string strFormat = "{0}" + strSpace + "×" + strSpace + "{1}" + strSpace
                                            + await LanguageManager.GetStringAsync("String_Karma", token: token)
                                                .ConfigureAwait(false)
-                                           + strSpace + '=' + strSpace + "{2}" + strSpace + await LanguageManager
+                                           + strSpace + "=" + strSpace + "{2}" + strSpace + await LanguageManager
                                                .GetStringAsync("String_Karma", token: token).ConfigureAwait(false);
                         if (lblSpellsBP != null)
                         {
@@ -15208,7 +15208,7 @@ namespace Chummer
                                         x => x.Text = blnNoParent
                                             ? decCalculatedEss.ToString(
                                                 strESSFormat, GlobalSettings.CultureInfo)
-                                            : '+'
+                                            : "+"
                                               + decCalculatedEss.ToString(
                                                   strESSFormat, GlobalSettings.CultureInfo), token)
                                     .ConfigureAwait(false);
@@ -16759,11 +16759,11 @@ namespace Chummer
                                 x => x.Text = strCapacity, token).ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(objArmorMod.GearCapacity))
                             {
-                                string strText = objArmorMod.GearCapacity + '/' + strCapacity + strSpace + '(' +
+                                string strText = objArmorMod.GearCapacity + "/" + strCapacity + strSpace + "(" +
                                                  (await objArmorMod.GetGearCapacityRemainingAsync(token).ConfigureAwait(false)).ToString(
                                                      "#,0.##", GlobalSettings.CultureInfo) + strSpace +
                                                  await LanguageManager.GetStringAsync("String_Remaining", token: token)
-                                                     .ConfigureAwait(false) + ')';
+                                                     .ConfigureAwait(false) + ")";
                                 await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = strText, token)
                                                       .ConfigureAwait(false);
                             }
@@ -16873,7 +16873,7 @@ namespace Chummer
                                     {
                                         await lblArmorCapacity
                                             .DoThreadSafeAsync(
-                                                x => x.Text = '[' + 0.ToString(GlobalSettings.CultureInfo) + ']',
+                                                x => x.Text = "[" + 0.ToString(GlobalSettings.CultureInfo) + "]",
                                                 token).ConfigureAwait(false);
                                     }
                                     else
@@ -17546,7 +17546,7 @@ namespace Chummer
                                                          + strMetavariantGuidString.CleanXPath()
                                                          + " or translate(id, 'abcdef', 'ABCDEF') = "
                                                          + strMetavariantGuidString.ToUpperInvariant().CleanXPath()
-                                                         + ']';
+                                                         + "]";
                             AttributeSection objAttributeSection =
                                 await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false);
                             ThreadSafeObservableCollection<CharacterAttrib> lstAttributeList =
@@ -18234,7 +18234,7 @@ namespace Chummer
                         objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
                         // Reduce the cost for Do It Yourself components.
                         if (frmPickGear.MyForm.DoItYourself)
-                            objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                            objGear.Cost = "(" + objGear.Cost + ") * 0.5";
                         // If the item was marked as free, change its cost.
                         if (frmPickGear.MyForm.FreeCost)
                         {
@@ -18415,7 +18415,7 @@ namespace Chummer
 
                         // Reduce the cost for Do It Yourself components.
                         if (frmPickGear.MyForm.DoItYourself)
-                            objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                            objGear.Cost = "(" + objGear.Cost + ") * 0.5";
                         // If the item was marked as free, change its cost.
                         if (frmPickGear.MyForm.FreeCost)
                         {
@@ -18516,7 +18516,7 @@ namespace Chummer
                                      + await LanguageManager.GetStringAsync("String_D6", token: token)
                                                             .ConfigureAwait(false)
                                      + strSpace
-                                     + '×' + strSpace
+                                     + "×" + strSpace
                                      + objLifestyle.Multiplier.ToString(
                                          await CharacterObjectSettings.GetNuyenFormatAsync(token).ConfigureAwait(false),
                                          GlobalSettings.CultureInfo) + await LanguageManager
@@ -18576,7 +18576,7 @@ namespace Chummer
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdQualities))
                         {
-                            await sbdQualities.AppendJoinAsync(',' + Environment.NewLine,
+                            await sbdQualities.AppendJoinAsync("," + Environment.NewLine,
                                                                objLifestyle.LifestyleQualities.Select(
                                                                    r => r.GetCurrentFormattedDisplayNameAsync(token)),
                                                                token).ConfigureAwait(false);
@@ -18846,12 +18846,12 @@ namespace Chummer
                             {
                                 int intSlots = await objVehicle.GetSlotsAsync(token).ConfigureAwait(false);
                                 string strText = intSlots.ToString(GlobalSettings.CultureInfo) + strSpace
-                                    + '('
+                                    + "("
                                     + (intSlots - await objVehicle.GetSlotsUsedAsync(token).ConfigureAwait(false)).ToString(
                                         GlobalSettings.CultureInfo)
                                     + strSpace + await LanguageManager.GetStringAsync("String_Remaining", token: token)
                                                                       .ConfigureAwait(false)
-                                    + ')';
+                                    + ")";
                                 await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                           .ConfigureAwait(false);
                                 await lblVehicleSlots.DoThreadSafeAsync(x =>
@@ -18959,7 +18959,7 @@ namespace Chummer
                                                                       .ConfigureAwait(false);
                                     string strText
                                         = (await objVehicle.GetDroneModSlotsUsedAsync(token).ConfigureAwait(false)).ToString(
-                                            GlobalSettings.CultureInfo) + '/'
+                                            GlobalSettings.CultureInfo) + "/"
                                                                         + (await objVehicle
                                                                             .GetDroneModSlotsAsync(token).ConfigureAwait(false))
                                                                         .ToString(GlobalSettings.CultureInfo);
@@ -20229,13 +20229,13 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
-                            string strText2 = objGear.CalculatedCapacity + strSpace + '('
+                            string strText2 = objGear.CalculatedCapacity + strSpace + "("
                                               + objGear.CapacityRemaining.ToString(
                                                   "#,0.##", GlobalSettings.CultureInfo) +
                                               strSpace + await LanguageManager
                                                                .GetStringAsync("String_Remaining", token: token)
                                                                .ConfigureAwait(false)
-                                              + ')';
+                                              + ")";
                             await lblVehicleSlots.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -20969,7 +20969,7 @@ namespace Chummer
                                                                           .ConfigureAwait(false))
                                              .Append('(')
                                              .AppendJoinAsync(
-                                                 ',' + await LanguageManager.GetStringAsync(
+                                                 "," + await LanguageManager.GetStringAsync(
                                                      "String_Space", token: token).ConfigureAwait(false),
                                                  lstSpecs.Select(
                                                      x => x.GetCurrentDisplayNameAsync(token)), token)
@@ -22042,7 +22042,7 @@ namespace Chummer
                             }
 
                             strNewName += await LanguageManager.GetStringAsync("String_Space", token: token)
-                                    .ConfigureAwait(false) + '('
+                                    .ConfigureAwait(false) + "("
                                                            + await LanguageManager
                                                                .GetStringAsync(
                                                                    "Title_CreateMode", token: token)
@@ -22538,7 +22538,7 @@ namespace Chummer
                                 XmlNode objXmlSpellNode = objXmlSpellDocument.TryGetNodeByNameOrId(
                                     "/chummer/spells/spell", strName,
                                     "category = " + strCategory.CleanXPath() + " and (" + await CharacterObjectSettings
-                                        .BookXPathAsync(token: token).ConfigureAwait(false) + ')');
+                                        .BookXPathAsync(token: token).ConfigureAwait(false) + ")");
 
                                 if (objXmlSpellNode == null)
                                     continue;
@@ -23929,7 +23929,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strCategory))
                     objXmlGearNode = objXmlGearDocument.TryGetNodeByNameOrId(
                         "/chummer/gears/gear", strName.CleanXPath(),
-                        '(' + await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false)
+                        "(" + await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false)
                             + ") and category = " + strCategory.CleanXPath());
                 else
                     objXmlGearNode = objXmlGearDocument.TryGetNodeByNameOrId(

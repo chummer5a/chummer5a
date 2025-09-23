@@ -1101,7 +1101,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strFilePath))
                     {
                         strTooltip = strFilePath.Replace(Utils.GetStartupPath,
-                                                               '<' + Application.ProductName + '>');
+                                                               "<" + Application.ProductName + ">");
                     }
 
                     string strErrorText = objCache.ErrorText;
@@ -1373,8 +1373,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strErrorText))
                     strWatchText
                         += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
-                           + '(' + await LanguageManager.GetStringAsync("String_Error", token: token)
-                                                        .ConfigureAwait(false) + ')';
+                           + "(" + await LanguageManager.GetStringAsync("String_Error", token: token)
+                                                        .ConfigureAwait(false) + ")";
                 if (objWatchNode != null)
                 {
                     await treCharacterList.DoThreadSafeAsync(() =>
@@ -1740,7 +1740,7 @@ namespace Chummer
             {
                 Text = await objCache.CalculatedNameAsync(token: token).ConfigureAwait(false),
                 ToolTipText = await (await objCache.GetFilePathAsync(token).ConfigureAwait(false))
-                    .CheapReplaceAsync(Utils.GetStartupPath, () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false),
+                    .CheapReplaceAsync(Utils.GetStartupPath, () => "<" + Application.ProductName + ">", token: token).ConfigureAwait(false),
                 Tag = objCache
             };
             string strErrorText = await objCache.GetErrorTextAsync(token).ConfigureAwait(false);
@@ -1850,7 +1850,7 @@ namespace Chummer
                                 }, token).ConfigureAwait(false);
                                 await lblFilePath.SetToolTipTextAsync(
                                     await (await objCache.GetFilePathAsync(token).ConfigureAwait(false))
-                                        .CheapReplaceAsync(Utils.GetStartupPath, () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false),
+                                        .CheapReplaceAsync(Utils.GetStartupPath, () => "<" + Application.ProductName + ">", token: token).ConfigureAwait(false),
                                     token).ConfigureAwait(false);
                                 Image objMugshot = await objCache.GetMugshotAsync(token).ConfigureAwait(false);
                                 await picMugshot.DoThreadSafeAsync(x => x.Image = objMugshot, token).ConfigureAwait(false);
@@ -1862,12 +1862,12 @@ namespace Chummer
                                         = await XmlManager.LoadXPathAsync("metatypes.xml", token: token).ConfigureAwait(false);
                                     XPathNavigator objMetatypeNode
                                         = objMetatypeDoc.SelectSingleNode(
-                                            "/chummer/metatypes/metatype[name = " + strMetatype.CleanXPath() + ']');
+                                            "/chummer/metatypes/metatype[name = " + strMetatype.CleanXPath() + "]");
                                     if (objMetatypeNode == null)
                                     {
                                         objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml", token: token).ConfigureAwait(false);
                                         objMetatypeNode = objMetatypeDoc.SelectSingleNode(
-                                            "/chummer/metatypes/metatype[name = " + strMetatype.CleanXPath() + ']');
+                                            "/chummer/metatypes/metatype[name = " + strMetatype.CleanXPath() + "]");
                                     }
 
                                     token.ThrowIfCancellationRequested();
@@ -1877,10 +1877,10 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(strMetavariant) && strMetavariant != "None")
                                     {
                                         objMetatypeNode = objMetatypeNode?.SelectSingleNode(
-                                            "metavariants/metavariant[name = " + strMetavariant.CleanXPath() + ']');
+                                            "metavariants/metavariant[name = " + strMetavariant.CleanXPath() + "]");
 
-                                        strMetatypeText += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
-                                            + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strMetavariant) + ')';
+                                        strMetatypeText += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "("
+                                            + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strMetavariant) + ")";
                                     }
 
                                     await lblMetatype.DoThreadSafeAsync(x => x.Text = strMetatypeText, token).ConfigureAwait(false);

@@ -243,7 +243,7 @@ namespace Chummer
 
             string strNodeText = await objNodeData.DrugComponent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
             if (objNodeData.DrugComponent.Level <= 0 && objNodeData.DrugComponent.DrugEffects.Count > 1)
-                strNodeText += strSpaceString + '(' + await LanguageManager.GetStringAsync("String_Level", token: token).ConfigureAwait(false) + strSpaceString + (objNodeData.Level + 1).ToString(GlobalSettings.CultureInfo) + ')';
+                strNodeText += strSpaceString + "(" + await LanguageManager.GetStringAsync("String_Level", token: token).ConfigureAwait(false) + strSpaceString + (objNodeData.Level + 1).ToString(GlobalSettings.CultureInfo) + ")";
             await treChosenComponents.DoThreadSafeAsync(() =>
             {
                 TreeNode objNewNode = nodCategoryNode.Nodes.Add(strNodeText);

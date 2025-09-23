@@ -229,8 +229,8 @@ namespace Translator
             string strBaseXPath = "/chummer/chummer[@file = " + cboFile.Text.CleanXPath() + "]/" + strSection;
             if (cboFile.Text == "tips.xml")
             {
-                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[id = " + strId.CleanXPath() + ']') ??
-                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/*[text = " + strEnglish.CleanXPath() + ']');
+                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[id = " + strId.CleanXPath() + "]") ??
+                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/*[text = " + strEnglish.CleanXPath() + "]");
                 if (xmlNodeLocal != null)
                 {
                     XmlElement element = xmlNodeLocal["translate"];
@@ -259,11 +259,11 @@ namespace Translator
             }
             else
             {
-                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[id = " + strId.CleanXPath() + ']') ??
-                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/*[name = " + strEnglish.CleanXPath() + ']');
+                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[id = " + strId.CleanXPath() + "]") ??
+                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/*[name = " + strEnglish.CleanXPath() + "]");
                 if (xmlNodeLocal == null)
                 {
-                    xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[. = " + strEnglish.CleanXPath() + ']');
+                    xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[. = " + strEnglish.CleanXPath() + "]");
                     XmlAttributeCollection objAttributes = xmlNodeLocal?.Attributes;
                     if (objAttributes != null)
                     {
@@ -369,7 +369,7 @@ namespace Translator
             string strEnglish = item.Cells["English"].Value.ToString();
             bool blnSetTranslatedAttribute = strTranslated != strEnglish && Convert.ToBoolean(item.Cells["Translated?"].Value);
             string strKey = item.Cells["Key"].Value.ToString();
-            XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = " + strKey.CleanXPath() + ']');
+            XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = " + strKey.CleanXPath() + "]");
             if (xmlNodeLocal != null)
             {
                 XmlElement xmlElement = xmlNodeLocal["text"];
@@ -525,7 +525,7 @@ namespace Translator
                         string strEnglish = xmlNodeEnglish["text"]?.InnerText ?? string.Empty;
                         string strTranslated = strEnglish;
                         bool blnTranslated = false;
-                        XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = " + strKey.CleanXPath() + ']');
+                        XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = " + strKey.CleanXPath() + "]");
                         if (xmlNodeLocal != null)
                         {
                             strTranslated = xmlNodeLocal["text"]?.InnerText ?? string.Empty;
@@ -754,9 +754,9 @@ namespace Translator
                                             // if we have an Id get the Node using it
                                             XmlNode xmlNodeLocal = !string.IsNullOrEmpty(strId)
                                                 ? xmlDocument.SelectSingleNode(
-                                                    "/chummer/" + strSection + "/*[id = " + strId.CleanXPath() + ']')
+                                                    "/chummer/" + strSection + "/*[id = " + strId.CleanXPath() + "]")
                                                 : xmlDocument.SelectSingleNode(
-                                                    "/chummer/" + strSection + "/*[name = " + strName.CleanXPath() + ']');
+                                                    "/chummer/" + strSection + "/*[name = " + strName.CleanXPath() + "]");
 #if DEBUG
                                             if (xmlNodeLocal == null)
                                                 MessageBox.Show(strName);
@@ -938,7 +938,7 @@ namespace Translator
             {
                 List<string> lstSectionStrings = null;
                 XmlNode xmlNode
-                    = _objDataDoc.SelectSingleNode("/chummer/chummer[@file = " + cboFile.Text.CleanXPath() + ']');
+                    = _objDataDoc.SelectSingleNode("/chummer/chummer[@file = " + cboFile.Text.CleanXPath() + "]");
                 if (xmlNode != null)
                 {
                     lstSectionStrings = new List<string>(xmlNode.ChildNodes.Count);

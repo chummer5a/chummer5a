@@ -520,7 +520,7 @@ namespace Chummer
                     if (xmlTraditionsBaseChummerNode != null)
                     {
                         foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                     "traditions/tradition[" + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + ']'))
+                                     "traditions/tradition[" + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + "]"))
                         {
                             string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name", token)?.Value;
                             if (!string.IsNullOrEmpty(strName))
@@ -1819,7 +1819,7 @@ namespace Chummer
                 string strFilter = "/chummer/gears/gear";
                 if (!string.IsNullOrEmpty(strName) || !string.IsNullOrEmpty(strCategory))
                 {
-                    strFilter += '[';
+                    strFilter += "[";
                     if (!string.IsNullOrEmpty(strName))
                     {
                         strFilter += "name = " + strName.CleanXPath();
@@ -1828,7 +1828,7 @@ namespace Chummer
                     }
                     else
                         strFilter += "category = " + strCategory.CleanXPath();
-                    strFilter += ']';
+                    strFilter += "]";
                 }
 
                 XmlNode xmlGearDataNode = (await _objCharacter.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false)).SelectSingleNode(strFilter) ?? throw new AbortedException();
@@ -2190,7 +2190,7 @@ namespace Chummer
                 }
                 else
                 {
-                    SelectedValue += ',' + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + await objSelectedContact.GetNameAsync(token).ConfigureAwait(false);
+                    SelectedValue += "," + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + await objSelectedContact.GetNameAsync(token).ConfigureAwait(false);
                 }
             }
         }
@@ -2695,7 +2695,7 @@ namespace Chummer
                 strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
-                    strBonus = '+' + strBonus;
+                    strBonus = "+" + strBonus;
                 await CreateImprovementAsync(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaDeviceRating, _strUnique, token: token).ConfigureAwait(false);
             }
 
@@ -2706,7 +2706,7 @@ namespace Chummer
                 strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
-                    strBonus = '+' + strBonus;
+                    strBonus = "+" + strBonus;
                 await CreateImprovementAsync(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaProgramLimit, _strUnique, token: token).ConfigureAwait(false);
             }
 
@@ -2717,7 +2717,7 @@ namespace Chummer
                 strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
-                    strBonus = '+' + strBonus;
+                    strBonus = "+" + strBonus;
                 await CreateImprovementAsync(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaAttack, _strUnique, token: token).ConfigureAwait(false);
             }
 
@@ -2728,7 +2728,7 @@ namespace Chummer
                 strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
-                    strBonus = '+' + strBonus;
+                    strBonus = "+" + strBonus;
                 await CreateImprovementAsync(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaSleaze, _strUnique, token: token).ConfigureAwait(false);
             }
 
@@ -2739,7 +2739,7 @@ namespace Chummer
                 strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
-                    strBonus = '+' + strBonus;
+                    strBonus = "+" + strBonus;
                 await CreateImprovementAsync(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaDataProcessing, _strUnique, token: token).ConfigureAwait(false);
             }
 
@@ -2750,7 +2750,7 @@ namespace Chummer
                 strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
-                    strBonus = '+' + strBonus;
+                    strBonus = "+" + strBonus;
                 await CreateImprovementAsync(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaFirewall, _strUnique, token: token).ConfigureAwait(false);
             }
 
@@ -2761,7 +2761,7 @@ namespace Chummer
                 strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
-                    strBonus = '+' + strBonus;
+                    strBonus = "+" + strBonus;
                 await CreateImprovementAsync(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaMatrixCM, _strUnique, token: token).ConfigureAwait(false);
             }
         }
@@ -5530,7 +5530,7 @@ namespace Chummer
                     objXmlDocument.Select("/chummer/armors/armor[(" + strFilter + ") and mods[name = 'Custom Fit']]");
             }
 
-            //.SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" + strFilter + ')' + SkillFilter(filter) + ']');
+            //.SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" + strFilter + ")" + SkillFilter(filter) + "]");
 
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstArmors))
             {
@@ -5686,7 +5686,7 @@ namespace Chummer
                         if (!blnIncludeUnarmed && objWeapon.Name == "Unarmed Attack")
                             continue;
                         if (!string.IsNullOrEmpty(strWeaponDetails)
-                            && (await objWeapon.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNode("self::node()[" + strWeaponDetails + ']') == null)
+                            && (await objWeapon.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNode("self::node()[" + strWeaponDetails + "]") == null)
                             continue;
                         lstWeapons.Add(new ListItem(objWeapon.InternalId,
                                                     await objWeapon.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)));
@@ -6068,7 +6068,7 @@ namespace Chummer
                     objXmlSelectedQuality = objXmlDocument.TryGetNodeByNameOrId(
                         "/chummer/qualities/quality", strSelected);
                     objXmlBonusQuality
-                        = bonusNode.SelectSingleNode("quality[. = " + strSelected.CleanXPath() + ']');
+                        = bonusNode.SelectSingleNode("quality[. = " + strSelected.CleanXPath() + "]");
                 }
 
                 int intQualityDiscount = 0;
@@ -6093,7 +6093,7 @@ namespace Chummer
                                 {
                                     string strDisplayName = objXmlQuality["translate"]?.InnerTextViaPool(token) ?? strName;
                                     if (!string.IsNullOrWhiteSpace(strForceDiscountValue))
-                                        strDisplayName += " (" + strForceDiscountValue + ')';
+                                        strDisplayName += " (" + strForceDiscountValue + ")";
                                     lstQualities.Add(new ListItem(strName, strDisplayName));
                                 }
                             }
@@ -6125,7 +6125,7 @@ namespace Chummer
                                                                       strSelected);
                             objXmlBonusQuality
                                 = bonusNode.SelectSingleNode("discountqualities/quality[. = "
-                                                             + strSelected.CleanXPath() + ']');
+                                                             + strSelected.CleanXPath() + "]");
                             intQualityDiscount
                                 = await ImprovementManager.ValueToIntAsync(_objCharacter, objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@discount", token)?.Value, _intRating, token).ConfigureAwait(false);
                             strForceDiscountValue = objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@select", token)?.Value;
@@ -6465,7 +6465,7 @@ namespace Chummer
                         foreach (XPathNavigator xmlSpirit in (await _objCharacter.LoadDataXPathAsync("critters.xml", token: token).ConfigureAwait(false))
                                                                           .Select(
                                                                               "/chummer/critters/critter[category = "
-                                                                              + strCritterCategory.CleanXPath() + ']'))
+                                                                              + strCritterCategory.CleanXPath() + "]"))
                         {
                             string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name", token)?.Value;
                             if (setAllowed.All(l => strSpiritName != l) && setAllowed.Count != 0)

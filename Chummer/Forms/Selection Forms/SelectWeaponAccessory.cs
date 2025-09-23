@@ -123,7 +123,7 @@ namespace Chummer
                         sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
 
                     if (sbdFilter.Length > 0)
-                        strFilter = '[' + sbdFilter.ToString() + ']';
+                        strFilter = "[" + sbdFilter.ToString() + "]";
                 }
 
                 int intOverLimit = 0;
@@ -568,7 +568,7 @@ namespace Chummer
                         await lblCost.DoThreadSafeAsync(
                                          x => x.Text = decMin.ToString(strNuyenFormat,
                                                                        GlobalSettings.CultureInfo)
-                                                       + strNuyen + '+',
+                                                       + strNuyen + "+",
                                          token: token)
                                      .ConfigureAwait(false);
                     }
@@ -578,7 +578,7 @@ namespace Chummer
                                                                .ConfigureAwait(false);
                         await lblCost.DoThreadSafeAsync(
                                          x => x.Text = decMin.ToString(strNuyenFormat,
-                                                                       GlobalSettings.CultureInfo) + strSpace + '-'
+                                                                       GlobalSettings.CultureInfo) + strSpace + "-"
                                                        + strSpace + decMax.ToString(strNuyenFormat,
                                                            GlobalSettings.CultureInfo)
                                                        + strNuyen, token: token)

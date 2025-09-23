@@ -619,8 +619,8 @@ namespace Chummer.Backend.Skills
                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
                            .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
                                         _objCharacterSettings.BookXPath(token: token)
-                                        + ')'
-                                        + SkillFilter(eFilterOption, strName) + ']'))
+                                        + ")"
+                                        + SkillFilter(eFilterOption, strName) + "]"))
                 {
                     if (xmlSkillList?.Count > 0)
                     {
@@ -689,8 +689,8 @@ namespace Chummer.Backend.Skills
                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
                            .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
                                         await _objCharacterSettings.BookXPathAsync(token: token).ConfigureAwait(false)
-                                        + ')'
-                                        + SkillFilter(eFilterOption, strName) + ']'))
+                                        + ")"
+                                        + SkillFilter(eFilterOption, strName) + "]"))
                 {
                     lstReturn = new List<ValueTuple<Skill, bool>>(xmlSkillList?.Count ?? 0);
                     if (xmlSkillList?.Count > 0)
@@ -1191,8 +1191,8 @@ namespace Chummer.Backend.Skills
                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
                             .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
                                         _objCharacterSettings.BookXPath(token: token)
-                                        + ')'
-                                        + SkillFilter(eFilterOption, strName) + ']'))
+                                        + ")"
+                                        + SkillFilter(eFilterOption, strName) + "]"))
                 {
                     if (xmlSkillList?.Count > 0)
                     {
@@ -1270,8 +1270,8 @@ namespace Chummer.Backend.Skills
                     using (XmlNodeList xmlSkillList = xmlSkillsDocument
                                .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
                                             await _objCharacterSettings.BookXPathAsync(token: token).ConfigureAwait(false)
-                                            + ')'
-                                            + SkillFilter(eFilterOption, strName) + ']'))
+                                            + ")"
+                                            + SkillFilter(eFilterOption, strName) + "]"))
                     {
                         if (xmlSkillList?.Count > 0)
                         {
@@ -1617,9 +1617,9 @@ namespace Chummer.Backend.Skills
                                                                                token: token)
                                                                            : await _objCharacterSettings
                                                                                .BookXPathAsync(token: token)
-                                                                               .ConfigureAwait(false)) + ')'
+                                                                               .ConfigureAwait(false)) + ")"
                                                                        + SkillFilter(FilterOption.NonSpecial) +
-                                                                       ']'))
+                                                                       "]"))
                                                             {
                                                                 if (lstSkillDataNodes?.Count > 0)
                                                                 {
@@ -1659,11 +1659,11 @@ namespace Chummer.Backend.Skills
                                                                                     xmlSkillNode.SelectSingleNode(
                                                                                         "skills/skill[suid = " +
                                                                                         strSkillId.CleanXPath() +
-                                                                                        ']') ??
+                                                                                        "]") ??
                                                                                     xmlSkillNode.SelectSingleNode(
                                                                                         "knoskills/skill[suid = " +
                                                                                         strSkillId.CleanXPath() +
-                                                                                        ']');
+                                                                                        "]");
                                                                                 if (xmlLoadingSkillNode != null)
                                                                                 {
                                                                                     setSkillIdsToSkip.Add(
@@ -2302,8 +2302,8 @@ namespace Chummer.Backend.Skills
                                                    // ReSharper disable once MethodHasAsyncOverload
                                                    ? _objCharacterSettings.BookXPath(token: token)
                                                    : await _objCharacterSettings.BookXPathAsync(token: token)
-                                                       .ConfigureAwait(false)) + ')'
-                                               + SkillFilter(FilterOption.NonSpecial) + ']'))
+                                                       .ConfigureAwait(false)) + ")"
+                                               + SkillFilter(FilterOption.NonSpecial) + "]"))
                                     {
                                         if (lstSkillDataNodes?.Count > 0)
                                         {
@@ -3133,8 +3133,8 @@ namespace Chummer.Backend.Skills
                             XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
                             using (XmlNodeList xmlSkillList = xmlSkillsDocument
                                        .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and ("
-                                                    + _objCharacterSettings.BookXPath() + ')'
-                                                    + SkillFilter(FilterOption.NonSpecial) + ']'))
+                                                    + _objCharacterSettings.BookXPath() + ")"
+                                                    + SkillFilter(FilterOption.NonSpecial) + "]"))
                             {
                                 if (xmlSkillList?.Count > 0)
                                 {
@@ -3241,8 +3241,8 @@ namespace Chummer.Backend.Skills
                                            .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and ("
                                                         + await (await _objCharacter.GetSettingsAsync(token)
                                                                 .ConfigureAwait(false)).BookXPathAsync(token: token)
-                                                            .ConfigureAwait(false) + ')'
-                                                        + SkillFilter(FilterOption.NonSpecial) + ']'))
+                                                            .ConfigureAwait(false) + ")"
+                                                        + SkillFilter(FilterOption.NonSpecial) + "]"))
                                 {
                                     if (xmlSkillList?.Count > 0)
                                     {
@@ -4017,7 +4017,7 @@ namespace Chummer.Backend.Skills
                     return " and name = " + strName.CleanXPath();
 
                 case FilterOption.XPath:
-                    return " and (" + strName + ')';
+                    return " and (" + strName + ")";
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(eFilter), eFilter, null);
@@ -4493,7 +4493,7 @@ namespace Chummer.Backend.Skills
                 foreach (string strSkillKey in Skills.Select(i => i.DictionaryKey))
                 {
                     if (blnShowValues)
-                        strReturn = strReturn.CheapReplace('{' + strSkillKey + '}',
+                        strReturn = strReturn.CheapReplace("{" + strSkillKey + "}",
                                                            () =>
                                                            {
                                                                Skill objLoopSkill = GetActiveSkill(strSkillKey);
@@ -4508,7 +4508,7 @@ namespace Chummer.Backend.Skills
                                                                                   0)); // We explicitly want to override the attribute value with 0 because we're just fetching the pure skill pool
                                                            });
                     else
-                        strReturn = strReturn.CheapReplace('{' + strSkillKey + '}',
+                        strReturn = strReturn.CheapReplace("{" + strSkillKey + "}",
                                                            () => GetActiveSkill(strSkillKey).DisplayName(strLanguage));
                 }
             }
@@ -4541,7 +4541,7 @@ namespace Chummer.Backend.Skills
                 foreach (string strSkillKey in Skills.Select(i => i.DictionaryKey))
                 {
                     if (blnShowValues)
-                        sbdInput.CheapReplace(strOriginal, '{' + strSkillKey + '}',
+                        sbdInput.CheapReplace(strOriginal, "{" + strSkillKey + "}",
                                               () =>
                                               {
                                                   Skill objLoopSkill = GetActiveSkill(strSkillKey);
@@ -4556,7 +4556,7 @@ namespace Chummer.Backend.Skills
                                                                      0)); // We explicitly want to override the attribute value with 0 because we're just fetching the pure skill pool
                                               });
                     else
-                        sbdInput.CheapReplace(strOriginal, '{' + strSkillKey + '}',
+                        sbdInput.CheapReplace(strOriginal, "{" + strSkillKey + "}",
                                               () => GetActiveSkill(strSkillKey).DisplayName(strLanguage));
                 }
             }

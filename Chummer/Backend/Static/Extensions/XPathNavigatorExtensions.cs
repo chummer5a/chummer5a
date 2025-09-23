@@ -348,7 +348,7 @@ namespace Chummer
                 : node.SelectSingleNode(field);
             if (objField == null && !field.StartsWith('@'))
             {
-                field = '@' + field;
+                field = "@" + field;
                 objField = Utils.CachedXPathExpressions.TryGetValue(field, out objCachedExpression)
                     ? node.SelectSingleNode(objCachedExpression)
                     : node.SelectSingleNode(field);

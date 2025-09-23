@@ -219,7 +219,7 @@ namespace Chummer
             catch (ArgumentOutOfRangeException ex)
             {
                 ex = ex.Demystify();
-                Log.Error(ex, "How the hell? Give me the callstack! " + ex);
+                Log.Error(ex, "How the hell? Give me the callstack! " + ex.ToString());
                 Utils.BreakIfDebug();
             }
         }
@@ -1160,7 +1160,7 @@ namespace Chummer
             {
                 string strNewFileName = string.Empty;
                 string strFilter
-                    = await LanguageManager.GetStringAsync("DialogFilter_Pdf", token: token).ConfigureAwait(false) + '|'
+                    = await LanguageManager.GetStringAsync("DialogFilter_Pdf", token: token).ConfigureAwait(false) + "|"
                     +
                     await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
                 DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
@@ -1229,7 +1229,7 @@ namespace Chummer
             {
                 string strFileName = string.Empty;
                 string strFilter
-                    = await LanguageManager.GetStringAsync("DialogFilter_Exe", token: token).ConfigureAwait(false) + '|'
+                    = await LanguageManager.GetStringAsync("DialogFilter_Exe", token: token).ConfigureAwait(false) + "|"
                     +
                     await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
                 DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
@@ -2389,7 +2389,7 @@ namespace Chummer
                     foreach (XPathNavigator objBook in objBooks
                                  .SelectAndCacheExpression(
                                      "/chummer/books/book[matches/match/language = "
-                                     + _strSelectedLanguage.CleanXPath() + ']'))
+                                     + _strSelectedLanguage.CleanXPath() + "]"))
                     {
                         string strCode
                             = objBook.SelectSingleNodeAndCacheExpression("code")
@@ -2398,7 +2398,7 @@ namespace Chummer
                             continue;
                         XPathNavigator objMatch
                             = objBook.SelectSingleNodeAndCacheExpression(
-                                    "matches/match[language = " + _strSelectedLanguage.CleanXPath() + ']');
+                                    "matches/match[language = " + _strSelectedLanguage.CleanXPath() + "]");
                         if (objMatch == null)
                             continue;
                         string strMatchText
@@ -2427,7 +2427,7 @@ namespace Chummer
                         if (_strSelectedLanguage != GlobalSettings.DefaultLanguage)
                         {
                             objMatch = objBook.SelectSingleNodeAndCacheExpression(
-                                    "matches/match[language = " + GlobalSettings.DefaultLanguage.CleanXPath() + ']');
+                                    "matches/match[language = " + GlobalSettings.DefaultLanguage.CleanXPath() + "]");
                         }
                         if (objMatch == null)
                         {

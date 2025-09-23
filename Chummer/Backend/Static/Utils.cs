@@ -2671,11 +2671,11 @@ namespace Chummer
                         break;
 
                     case PlatformID.WinCE:
-                        strReturn = "Windows Embedded Compact " + objOSInfoVersion.Major + ".0";
+                        strReturn = "Windows Embedded Compact " + objOSInfoVersion.Major.ToString(CultureInfo.InvariantCulture) + ".0";
                         break;
 
                     case PlatformID.Unix:
-                        strReturn = "Unix Kernel " + objOSInfoVersion;
+                        strReturn = "Unix Kernel " + objOSInfoVersion.ToString();
                         break;
 
                     case PlatformID.Xbox:
@@ -2683,7 +2683,7 @@ namespace Chummer
                         break;
 
                     case PlatformID.MacOSX:
-                        strReturn = "macOS with Darwin Kernel " + objOSInfoVersion;
+                        strReturn = "macOS with Darwin Kernel " + objOSInfoVersion.ToString();
                         break;
 
                     default:
@@ -2697,7 +2697,7 @@ namespace Chummer
                 if (strReturn.StartsWith("Windows", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(objOSInfo.ServicePack))
                 {
                     //Append service pack to the OS name.  i.e. "Windows XP Service Pack 3"
-                    strReturn += ' ' + objOSInfo.ServicePack;
+                    strReturn += " " + objOSInfo.ServicePack;
                 }
             }
             catch (Exception e)

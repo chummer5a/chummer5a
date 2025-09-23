@@ -79,7 +79,7 @@ namespace Chummer
                                                                 ? (i + 1).ToString(GlobalSettings
                                                                     .InvariantCultureInfo)
                                                                 .CleanXPath()
-                                                                : "\"5\"") + ']', token: token)?.Value;
+                                                                : "\"5\"") + "]", token: token)?.Value;
                     int j;
                     for (j = i; j < modules.Count; j++)
                     {
@@ -324,7 +324,7 @@ namespace Chummer
                                     break;
                                 }
                                 default:
-                                    return "(Formating error in $DOLLAR" + macroName + ')';
+                                    return "(Formating error in $DOLLAR" + macroName + ")";
                             }
                         }
 
@@ -342,13 +342,13 @@ namespace Chummer
                             return strDefault;
                         }
 
-                        return "(Unknown key " + macroPool + " in $DOLLAR" + macroName + ')';
+                        return "(Unknown key " + macroPool + " in $DOLLAR" + macroName + ")";
                     }
 
                     return xmlUserMacroNode.Value;
                 }
 
-                return "(Unknown Macro $DOLLAR" + innerText.Substring(1) + ')';
+                return "(Unknown Macro $DOLLAR" + innerText.Substring(1) + ")";
             }
             finally
             {

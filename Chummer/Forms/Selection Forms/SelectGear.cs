@@ -157,7 +157,7 @@ namespace Chummer
                         }
 
                         sbdMount.Append(". = \"General\"");
-                        objXmlCategoryList = _xmlBaseGearDataNode.Select("categories/category[" + sbdMount + ']');
+                        objXmlCategoryList = _xmlBaseGearDataNode.Select("categories/category[" + sbdMount.ToString() + "]");
                     }
                 }
                 else
@@ -935,7 +935,7 @@ namespace Chummer
                                 }
                             }
 
-                            objCostNode = objXmlGear.SelectSingleNode("cost" + intHighestCostNode);
+                            objCostNode = objXmlGear.SelectSingleNode("cost" + intHighestCostNode.ToString(GlobalSettings.InvariantCultureInfo));
                             for (int i = intRating; i <= intHighestCostNode; ++i)
                             {
                                 XPathNavigator objLoopNode
@@ -980,13 +980,13 @@ namespace Chummer
                                     strCost = (decMin * decQuantityMultiplier).ToString(strFormat,
                                                               GlobalSettings.CultureInfo)
                                               + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
-                                                                     .ConfigureAwait(false) + '+';
+                                                                     .ConfigureAwait(false) + "+";
                                 }
                                 else
                                 {
                                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                                     strCost = (decMin * decQuantityMultiplier).ToString(strFormat, GlobalSettings.CultureInfo)
-                                                                          + strSpace + '-' + strSpace
+                                                                          + strSpace + "-" + strSpace
                                                                           + (decMax * decQuantityMultiplier).ToString(strFormat, GlobalSettings.CultureInfo)
                                                                           + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                                 }
@@ -1019,7 +1019,7 @@ namespace Chummer
                     // Capacity.
 
                     if (_eCapacityStyle == CapacityStyle.Zero)
-                        await lblCapacity.DoThreadSafeAsync(x => x.Text = '[' + 0.ToString(GlobalSettings.CultureInfo) + ']', token: token).ConfigureAwait(false);
+                        await lblCapacity.DoThreadSafeAsync(x => x.Text = "[" + 0.ToString(GlobalSettings.CultureInfo) + "]", token: token).ConfigureAwait(false);
                     else
                     {
                         // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
@@ -1049,10 +1049,10 @@ namespace Chummer
                                         await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
 
                                     if (blnSquareBrackets)
-                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = '[' + x.Text + ']', token: token).ConfigureAwait(false);
+                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = "[" + x.Text + "]", token: token).ConfigureAwait(false);
                                 }
 
-                                await lblCapacity.DoThreadSafeAsync(x => x.Text += '/' + strSecondHalf, token: token).ConfigureAwait(false);
+                                await lblCapacity.DoThreadSafeAsync(x => x.Text += "/" + strSecondHalf, token: token).ConfigureAwait(false);
                             }
                             else if (strCapacityText == "[*]")
                                 await lblCapacity.DoThreadSafeAsync(x => x.Text = "*", token: token).ConfigureAwait(false);
@@ -1069,7 +1069,7 @@ namespace Chummer
                                     await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
 
                                 if (blnSquareBrackets)
-                                    await lblCapacity.DoThreadSafeAsync(x => x.Text = '[' + x.Text + ']', token: token).ConfigureAwait(false);
+                                    await lblCapacity.DoThreadSafeAsync(x => x.Text = "[" + x.Text + "]", token: token).ConfigureAwait(false);
                             }
                         }
                         else
@@ -1178,7 +1178,7 @@ namespace Chummer
                     sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
 
                 if (sbdFilter.Length > 0)
-                    strFilter = '[' + sbdFilter.ToString() + ']';
+                    strFilter = "[" + sbdFilter.ToString() + "]";
             }
 
             int intOverLimit = 0;
@@ -1301,7 +1301,7 @@ namespace Chummer
                                         if (!string.IsNullOrEmpty(objFoundItem.Name))
                                         {
                                             lstGears[i] = new ListItem(objLoopItem.Value,
-                                                                       objLoopItem.Name + strSpace + '[' + objFoundItem.Name + ']');
+                                                                       objLoopItem.Name + strSpace + "[" + objFoundItem.Name + "]");
                                         }
                                     }
                                 }
@@ -1413,11 +1413,11 @@ namespace Chummer
                         }
                         foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                         {
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + '}',
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + "}",
                                 () => (_objGearParent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(
                                         strMatrixAttribute).ToString(GlobalSettings.InvariantCultureInfo) ?? "0"
                                     , token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + '}',
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + "}",
                                 () => (_objGearParent as IHasMatrixAttributes)?.GetMatrixAttributeString(
                                     strMatrixAttribute) ?? "0", token: token).ConfigureAwait(false);
                         }

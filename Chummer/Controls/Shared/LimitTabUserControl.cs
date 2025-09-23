@@ -411,10 +411,10 @@ namespace Chummer.UI.Shared
                                              + await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                     .ConfigureAwait(false);
                             if (objImprovement.Value > 0)
-                                strName += '+';
+                                strName += "+";
                             strName += objImprovement.Value.ToString(GlobalSettings.CultureInfo);
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
-                                strName += ','
+                                strName += ","
                                            + await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                   .ConfigureAwait(false) + objImprovement.Condition;
                             TreeNodeCollection objParentNodeChildren = objParentNode.Nodes;

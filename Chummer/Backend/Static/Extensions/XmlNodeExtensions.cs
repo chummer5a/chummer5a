@@ -121,7 +121,7 @@ namespace Chummer
                         mth
                     );
 #else
-                string errorMsg = "Tried to read missing field \"" + field + '\"';
+                string errorMsg = "Tried to read missing field \"" + field + "\"";
 #endif
                 ex = ex.Demystify();
                 Log.Error(ex, errorMsg);

@@ -319,7 +319,7 @@ namespace Chummer
                         // We avoid weird issues with ProfileOptimization pointing JIT to the wrong place by checking for and removing all profile optimization files that
                         // were made in an older version (i.e. an older assembly)
                         string strProfileOptimizationName
-                            = "chummerprofile_" + Utils.CurrentChummerVersion + ".profile";
+                            = "chummerprofile_" + Utils.CurrentChummerVersion.ToString() + ".profile";
                         List<string> lstToDelete = new List<string>(1);
                         foreach (string strProfileFile in Directory.EnumerateFiles(Utils.GetStartupPath, "*.profile"))
                         {
@@ -430,7 +430,7 @@ namespace Chummer
                                     pvt = new PageViewTelemetry("frmChummerMain()")
                                     {
                                         Name = "Chummer Startup: " +
-                                               Utils.CurrentChummerVersion,
+                                               Utils.CurrentChummerVersion.ToString(),
                                         Id = Settings.Default.UploadClientId.ToString(),
                                         Timestamp = startTime
                                     };
@@ -668,7 +668,7 @@ namespace Chummer
                 {
                     // Get the last error and display it.
                     int intError = Marshal.GetLastWin32Error();
-                    Win32Exception exception = new Win32Exception(intError, "Error while unblocking " + strFile + '.');
+                    Win32Exception exception = new Win32Exception(intError, "Error while unblocking " + strFile + ".");
                     switch (exception.NativeErrorCode)
                     {
                         //file not found - that means the alternate data-stream is not present.

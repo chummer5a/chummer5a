@@ -164,10 +164,10 @@ namespace Chummer
             {
                 int intLoadingMaximum = x.Maximum;
                 if (intLoadingMaximum > 2)
-                    strNewText += strSpace + '('
+                    strNewText += strSpace + "("
                                            + (x.Value + 1).ToString(
                                                GlobalSettings.CultureInfo)
-                                           + '/' + (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo) + ')';
+                                           + "/" + (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo) + ")";
                 x.PerformStep();
             });
             lblLoadingInfo.DoThreadSafe(x => x.Text = strNewText);
@@ -229,10 +229,10 @@ namespace Chummer
             {
                 int intLoadingMaximum = x.Maximum;
                 if (intLoadingMaximum > 2)
-                    strNewText += strSpace + '('
+                    strNewText += strSpace + "("
                                            + (x.Value + 1).ToString(
                                                GlobalSettings.CultureInfo)
-                                           + '/' + (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo) + ')';
+                                           + "/" + (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo) + ")";
                 x.PerformStep();
             }, token).ConfigureAwait(false);
             await lblLoadingInfo.DoThreadSafeAsync(x => x.Text = strNewText, token).ConfigureAwait(false);

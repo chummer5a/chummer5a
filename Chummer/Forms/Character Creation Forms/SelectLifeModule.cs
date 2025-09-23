@@ -57,7 +57,7 @@ namespace Chummer
 
         private async void SelectLifeModule_Load(object sender, EventArgs e)
         {
-            string strSelectString = "stages/stage[@order = " + _intStage.ToString(GlobalSettings.InvariantCultureInfo).CleanXPath() + ']';
+            string strSelectString = "stages/stage[@order = " + _intStage.ToString(GlobalSettings.InvariantCultureInfo).CleanXPath() + "]";
 
             XPathNavigator xmlStageNode = _xmlLifeModulesDocumentChummerNode.SelectSingleNodeAndCacheExpression(strSelectString);
             if (xmlStageNode != null)
@@ -277,7 +277,7 @@ namespace Chummer
             _strWorkStage = strSelected == "0"
                 ? string.Empty
                 : _xmlLifeModulesDocumentChummerNode
-                    .SelectSingleNodeAndCacheExpression("stages/stage[@order = " + strSelected.CleanXPath() + ']')
+                    .SelectSingleNodeAndCacheExpression("stages/stage[@order = " + strSelected.CleanXPath() + "]")
                     ?.Value ?? string.Empty;
             await BuildTree(await GetSelectString().ConfigureAwait(false)).ConfigureAwait(false);
         }

@@ -937,7 +937,7 @@ namespace Chummer
         /// <summary>
         /// Key to use in character options files
         /// </summary>
-        public string CharacterSettingsSaveKey => HasManifest ? InternalId + '>' + MyVersion : Name;
+        public string CharacterSettingsSaveKey => HasManifest ? InternalId + ">" + MyVersion.ToString() : Name;
 
         public static string GetIdFromCharacterSettingsSaveKey(string strKey)
         {

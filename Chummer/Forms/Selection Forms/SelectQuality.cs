@@ -646,7 +646,7 @@ namespace Chummer
                     sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
 
                 if (sbdFilter.Length > 0)
-                    strFilter = '[' + sbdFilter.ToString() + ']';
+                    strFilter = "[" + sbdFilter.ToString() + "]";
             }
 
             string strCategoryLower = strCategory == "Show All" ? "*" : strCategory.ToLowerInvariant();
@@ -663,7 +663,7 @@ namespace Chummer
                         continue;
                     if (_xmlMetatypeQualityRestrictionNode != null
                         && _xmlMetatypeQualityRestrictionNode.SelectSingleNode(
-                            strCategoryLower + "/quality[. = " + strLoopName.CleanXPath() + ']') == null)
+                            strCategoryLower + "/quality[. = " + strLoopName.CleanXPath() + "]") == null)
                         continue;
                     if (!blnLimitList
                         || await objXmlQuality.RequirementsMetAsync(_objCharacter, strIgnoreQuality: IgnoreQuality, token: token).ConfigureAwait(false))

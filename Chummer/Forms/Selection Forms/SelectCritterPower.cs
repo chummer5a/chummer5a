@@ -199,7 +199,7 @@ namespace Chummer
                                                                     () => LanguageManager.GetStringAsync("String_SpellRangeLineOfInfluence"))
                                                  .CheapReplaceAsync("Touch", () => LanguageManager.GetStringAsync("String_SpellRangeTouchLong"))
                                                  .CheapReplaceAsync("T", () => LanguageManager.GetStringAsync("String_SpellRangeTouch"))
-                                                 .CheapReplaceAsync("(A)", async () => '(' + await LanguageManager.GetStringAsync("String_SpellRangeArea").ConfigureAwait(false) + ')')
+                                                 .CheapReplaceAsync("(A)", async () => "(" + await LanguageManager.GetStringAsync("String_SpellRangeArea").ConfigureAwait(false) + ")")
                                                  .CheapReplaceAsync("MAG", () => LanguageManager.GetStringAsync("String_AttributeMAGShort")).ConfigureAwait(false);
                     }
                     await lblCritterPowerRange.DoThreadSafeAsync(x => x.Text = strRange).ConfigureAwait(false);
@@ -406,7 +406,7 @@ namespace Chummer
                     sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
 
                 if (sbdFilter.Length > 0)
-                    strFilter = '[' + sbdFilter.ToString() + ']';
+                    strFilter = "[" + sbdFilter.ToString() + "]";
             }
 
             foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power" + strFilter))

@@ -137,7 +137,7 @@ namespace Chummer
                 foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.SelectAndCacheExpression("categories/category", _objGenericToken))
                 {
                     string strInnerText = objXmlCategory.Value;
-                    if (_xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + ']') != null)
+                    if (_xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + "]") != null)
                     {
                         _lstCategory.Add(new ListItem(strInnerText,
                             objXmlCategory.SelectSingleNodeAndCacheExpression("@translate", _objGenericToken)?.Value ?? strInnerText));
@@ -606,7 +606,7 @@ namespace Chummer
                             sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
                         if (sbdFilter.Length > 0)
-                            strFilter = '[' + sbdFilter.ToString() + ']';
+                            strFilter = "[" + sbdFilter.ToString() + "]";
                     }
 
                     await BuildVehicleList(_xmlBaseVehicleDataNode.Select("vehicles/vehicle" + strFilter), token)
@@ -885,7 +885,7 @@ namespace Chummer
                                         = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
                                     if (!string.IsNullOrEmpty(objFoundItem.Name))
                                     {
-                                        strDisplayname += strSpace + '[' + objFoundItem.Name + ']';
+                                        strDisplayname += strSpace + "[" + objFoundItem.Name + "]";
                                     }
                                 }
                             }

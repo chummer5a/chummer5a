@@ -281,7 +281,7 @@ namespace Chummer
                                     foreach (string strLimb in Character.LimbStrings)
                                     {
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        sbdLimitString.CheapReplace(strLimitString, '{' + strLimb + '}',
+                                        sbdLimitString.CheapReplace(strLimitString, "{" + strLimb + "}",
                                                                     () => (string.IsNullOrEmpty(strLocation)
                                                                             ? objCharacter.LimbCount(strLimb)
                                                                             : objCharacter.LimbCount(strLimb) / 2)
@@ -295,7 +295,7 @@ namespace Chummer
                                 {
                                     foreach (string strLimb in Character.LimbStrings)
                                     {
-                                        await sbdLimitString.CheapReplaceAsync(strLimitString, '{' + strLimb + '}',
+                                        await sbdLimitString.CheapReplaceAsync(strLimitString, "{" + strLimb + "}",
                                                                                () => (string.IsNullOrEmpty(strLocation)
                                                                                        ? objCharacter.LimbCount(strLimb)
                                                                                        : objCharacter.LimbCount(strLimb) / 2)
@@ -735,7 +735,7 @@ namespace Chummer
                                     string.Format(GlobalSettings.CultureInfo,
                                         // ReSharper disable once MethodHasAsyncOverload
                                         LanguageManager.GetString("Message_SelectGeneric_Restriction", token: token),
-                                        strLocalName) + sbdRequirement,
+                                        strLocalName) + sbdRequirement.ToString(),
                                     // ReSharper disable once MethodHasAsyncOverload
                                     string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -746,7 +746,7 @@ namespace Chummer
                                     string.Format(GlobalSettings.CultureInfo,
                                         await LanguageManager.GetStringAsync("Message_SelectGeneric_Restriction", token: token)
                                             .ConfigureAwait(false),
-                                        strLocalName) + sbdRequirement,
+                                        strLocalName) + sbdRequirement.ToString(),
                                     string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
                                         .ConfigureAwait(false), strLocalName),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
@@ -913,7 +913,7 @@ namespace Chummer
                 {
                     // Check Career Karma requirement.
                     if (blnShowMessage)
-                        strName = Environment.NewLine + '\t' + string.Format(
+                        strName = Environment.NewLine + "\t" + string.Format(
                             GlobalSettings.CultureInfo, blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? LanguageManager.GetString("Message_SelectQuality_RequireKarma", token: token)
@@ -927,7 +927,7 @@ namespace Chummer
                 case "chargenonly":
                 {
                     if (blnShowMessage)
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -943,7 +943,7 @@ namespace Chummer
                 case "careeronly":
                 {
                     if (blnShowMessage)
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -994,7 +994,7 @@ namespace Chummer
                             = objLoopDoc.TryGetNodeByNameOrId("/chummer/powers/power", strNodeInnerText);
                         string strTranslate =
                             objLoopNode?.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? string.Empty;
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
@@ -1002,14 +1002,14 @@ namespace Chummer
                                                                     .SelectSingleNodeAndCacheExpression(
                                                                         "name", token)?.Value
                                                                 ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + '('
+                                                              : strNodeInnerText) + strSpace + "("
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
                                                               "Tab_Critter",
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
-                                                              "Tab_Critter", token: token).ConfigureAwait(false)) + ')';
+                                                              "Tab_Critter", token: token).ConfigureAwait(false)) + ")";
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -1030,7 +1030,7 @@ namespace Chummer
                               ?? objLoopDoc
                                   .SelectSingleNode("/chummer/biowares/bioware[name = " + strNodeInnerText.CleanXPath()
                                       + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t' + (blnSync
+                        strName = Environment.NewLine + "\t" + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString(
                                           "Label_Bioware",
@@ -1119,7 +1119,7 @@ namespace Chummer
                               ?? objLoopDoc
                                   .SelectSingleNode("/chummer/cyberwares/cyberware[name = "
                                                     + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t' + (blnSync
+                        strName = Environment.NewLine + "\t" + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString("Label_Cyberware", token: token)
                                       : await LanguageManager.GetStringAsync("Label_Cyberware", token: token)
@@ -1225,7 +1225,7 @@ namespace Chummer
                             .SelectSingleNode(
                                 "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")
                             ?.Value;
-                        strName = Environment.NewLine + '\t' + (blnSync
+                        strName = Environment.NewLine + "\t" + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString(
                                           "Label_Bioware",
@@ -1310,7 +1310,7 @@ namespace Chummer
                             : await objCharacter.LoadDataXPathAsync("cyberware.xml", token: token)
                                 .ConfigureAwait(false)).SelectSingleNode(
                             "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t' + (blnSync
+                        strName = Environment.NewLine + "\t" + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString(
                                           "Label_Cyberware",
@@ -1398,7 +1398,7 @@ namespace Chummer
                                 "/chummer/biowares/bioware[name = "
                                 + strNodeInnerText.CleanXPath() + "]/translate")
                             ?.Value;
-                        strName = Environment.NewLine + '\t' + (blnSync
+                        strName = Environment.NewLine + "\t" + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString(
                                           "Label_Bioware",
@@ -1473,7 +1473,7 @@ namespace Chummer
                                 "/chummer/cyberwares/cyberware[name = "
                                 + strNodeInnerText.CleanXPath() + "]/translate")
                             ?.Value;
-                        strName = Environment.NewLine + '\t' + (blnSync
+                        strName = Environment.NewLine + "\t" + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString(
                                           "Label_Cyberware",
@@ -1536,7 +1536,7 @@ namespace Chummer
                 {
                     // Damage Resistance must be a particular value.
                     if (blnShowMessage)
-                        strName = Environment.NewLine + '\t' + (blnSync
+                        strName = Environment.NewLine + "\t" + (blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? LanguageManager.GetString(
                                 "String_DamageResistance",
@@ -1559,7 +1559,7 @@ namespace Chummer
                 case "depenabled":
                     // Character must be an AI.
                     if (blnShowMessage)
-                        strName = Environment.NewLine + '\t' + string.Format(GlobalSettings.CultureInfo, blnSync
+                        strName = Environment.NewLine + "\t" + string.Format(GlobalSettings.CultureInfo, blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? LanguageManager.GetString(
                                     "Message_SelectGeneric_HaveAttributeEnabled",
@@ -1610,7 +1610,7 @@ namespace Chummer
                         {
                             // Essence must be less than the value.
                             if (blnShowMessage)
-                                strName = Environment.NewLine + '\t' +
+                                strName = Environment.NewLine + "\t" +
                                           string.Format(GlobalSettings.CultureInfo, blnSync
                                                   // ReSharper disable once MethodHasAsyncOverload
                                                   ? LanguageManager.GetString(
@@ -1627,7 +1627,7 @@ namespace Chummer
 
                         // Essence must be equal to or greater than the value.
                         if (blnShowMessage)
-                            strName = Environment.NewLine + '\t' +
+                            strName = Environment.NewLine + "\t" +
                                       string.Format(GlobalSettings.CultureInfo, blnSync
                                               // ReSharper disable once MethodHasAsyncOverload
                                               ? LanguageManager.GetString(
@@ -1651,7 +1651,7 @@ namespace Chummer
                     {
                         // Essence must be less than the value.
                         if (blnShowMessage)
-                            strName = Environment.NewLine + '\t' +
+                            strName = Environment.NewLine + "\t" +
                                       string.Format(GlobalSettings.CultureInfo, blnSync
                                               // ReSharper disable once MethodHasAsyncOverload
                                               ? LanguageManager.GetString(
@@ -1667,7 +1667,7 @@ namespace Chummer
 
                     // Essence must be equal to or greater than the value.
                     if (blnShowMessage)
-                        strName = Environment.NewLine + '\t' +
+                        strName = Environment.NewLine + "\t" +
                                   string.Format(GlobalSettings.CultureInfo, blnSync
                                           // ReSharper disable once MethodHasAsyncOverload
                                           ? LanguageManager.GetString(
@@ -1715,7 +1715,7 @@ namespace Chummer
                               ?? objLoopDoc
                                   .SelectSingleNode("/chummer/echoes/echo[name = " + strNodeInnerText.CleanXPath()
                                       + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
@@ -1725,13 +1725,13 @@ namespace Chummer
                                                                         + strNodeInnerText.CleanXPath() + "]/name")
                                                                     ?.Value
                                                                 ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + '('
+                                                              : strNodeInnerText) + strSpace + "("
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString("String_Echo", token: token)
                                                           : await LanguageManager
                                                               .GetStringAsync("String_Echo", token: token)
-                                                              .ConfigureAwait(false)) + ')';
+                                                              .ConfigureAwait(false)) + ")";
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -1741,7 +1741,7 @@ namespace Chummer
                 {
                     // A particular gameplay option is required.
                     if (blnShowMessage)
-                        strName = Environment.NewLine + '\t' + (blnSync
+                        strName = Environment.NewLine + "\t" + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString(
                                           "String_GameplayOption",
@@ -1749,7 +1749,7 @@ namespace Chummer
                                       : await LanguageManager.GetStringAsync(
                                           "String_GameplayOption",
                                           token: token).ConfigureAwait(false))
-                                  + strSpace + '=' + strSpace + strNodeInnerText;
+                                  + strSpace + "=" + strSpace + strNodeInnerText;
                     return new ValueTuple<bool, string>(objCharacter.SettingsKey == strNodeInnerText, strName);
                 }
                 case "gear":
@@ -1844,7 +1844,7 @@ namespace Chummer
                               ?? objLoopDoc
                                   .SelectSingleNode("/chummer/gears/gear[name = " + strNodeInnerText.CleanXPath()
                                       + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
@@ -1854,7 +1854,7 @@ namespace Chummer
                                                                         + strNodeInnerText.CleanXPath() + "]/name")
                                                                     ?.Value
                                                                 ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + '('
+                                                              : strNodeInnerText) + strSpace + "("
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -1862,7 +1862,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_Gear",
-                                                              token: token).ConfigureAwait(false)) + ')';
+                                                              token: token).ConfigureAwait(false)) + ")";
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -1897,8 +1897,8 @@ namespace Chummer
                                 break;
                             if (!blnLoopResult)
                                 sbdResultName.Append(
-                                    strLoopResult.Replace(Environment.NewLine + '\t',
-                                        Environment.NewLine + '\t' + '\t'));
+                                    strLoopResult.Replace(Environment.NewLine + "\t",
+                                        Environment.NewLine + "\t" + "\t"));
                         }
 
                         if (blnShowMessage)
@@ -1936,8 +1936,8 @@ namespace Chummer
                             if (blnResult && !blnShowMessage)
                                 break;
                             sbdResultName.Append(
-                                strLoopResult.Replace(Environment.NewLine + '\t',
-                                    Environment.NewLine + '\t' + '\t'));
+                                strLoopResult.Replace(Environment.NewLine + "\t",
+                                    Environment.NewLine + "\t" + "\t"));
                         }
 
                         if (blnShowMessage)
@@ -1950,11 +1950,11 @@ namespace Chummer
                 {
                     // Character's initiate grade must be higher than or equal to the required value.
                     if (blnShowMessage)
-                        strName = Environment.NewLine + '\t' + (blnSync
+                        strName = Environment.NewLine + "\t" + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString("String_InitiateGrade", token: token)
                                       : await LanguageManager.GetStringAsync("String_InitiateGrade", token: token).ConfigureAwait(false))
-                                  + strSpace + '≥' + strSpace + strNodeInnerText;
+                                  + strSpace + "≥" + strSpace + strNodeInnerText;
                     int.TryParse(strNodeInnerText, System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intGrade);
                     return new ValueTuple<bool, string>(
                         (blnSync
@@ -1996,7 +1996,7 @@ namespace Chummer
                               ?? objLoopDoc
                                   .SelectSingleNode("/chummer/martialarts/martialart[name = "
                                                     + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
@@ -2006,7 +2006,7 @@ namespace Chummer
                                                                         + strNodeInnerText.CleanXPath() + "]/name")
                                                                     ?.Value
                                                                 ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + '('
+                                                              : strNodeInnerText) + strSpace + "("
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -2014,7 +2014,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_MartialArt",
-                                                              token: token).ConfigureAwait(false)) + ')';
+                                                              token: token).ConfigureAwait(false)) + ")";
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -2073,7 +2073,7 @@ namespace Chummer
                               ?? objLoopDoc
                                   .SelectSingleNode("/chummer/techniques/technique[name = "
                                                     + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
@@ -2083,7 +2083,7 @@ namespace Chummer
                                                                         + strNodeInnerText.CleanXPath() + "]/name")
                                                                     ?.Value
                                                                 ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + '('
+                                                              : strNodeInnerText) + strSpace + "("
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -2092,7 +2092,7 @@ namespace Chummer
                                                           : await LanguageManager.GetStringAsync(
                                                               "Label_Options_MartialArtTechnique",
                                                               token: token).ConfigureAwait(false))
-                                                      + ')';
+                                                      + ")";
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -2130,7 +2130,7 @@ namespace Chummer
                               ?? objLoopDoc
                                   .SelectSingleNode("/chummer/metamagics/metamagic[name = "
                                                     + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
@@ -2140,7 +2140,7 @@ namespace Chummer
                                                                         + strNodeInnerText.CleanXPath() + "]/name")
                                                                     ?.Value
                                                                 ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + '('
+                                                              : strNodeInnerText) + strSpace + "("
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -2148,7 +2148,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_Metamagic",
-                                                              token: token).ConfigureAwait(false)) + ')';
+                                                              token: token).ConfigureAwait(false)) + ")";
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -2181,10 +2181,10 @@ namespace Chummer
                                   ?? xmlMetamagicDoc
                                       ?.SelectSingleNode("arts/art[name = " + strNodeInnerText.CleanXPath()
                                                                             + "]/translate")?.Value;
-                            strName = Environment.NewLine + '\t'
+                            strName = Environment.NewLine + "\t"
                                                           + (!string.IsNullOrEmpty(strTranslateArt)
                                                               ? strTranslateArt
-                                                              : strNodeInnerText) + strSpace + '('
+                                                              : strNodeInnerText) + strSpace + "("
                                                           + (blnSync
                                                               // ReSharper disable once MethodHasAsyncOverload
                                                               ? LanguageManager.GetString(
@@ -2192,7 +2192,7 @@ namespace Chummer
                                                                   token: token)
                                                               : await LanguageManager.GetStringAsync(
                                                                   "String_Art",
-                                                                  token: token).ConfigureAwait(false)) + ')';
+                                                                  token: token).ConfigureAwait(false)) + ")";
                         }
 
                         if (xmlMetamagicDoc == null) return new ValueTuple<bool, string>(true, strName);
@@ -2205,7 +2205,7 @@ namespace Chummer
                                 ? objMetamagic.GetNodeXPath(token)
                                 : await objMetamagic.GetNodeXPathAsync(token).ConfigureAwait(false);
                             if (xmlMetamagicNode?.SelectSingleNode(
-                                    "forbidden/art[. = " + strNodeInnerTextCleaned + ']') != null)
+                                    "forbidden/art[. = " + strNodeInnerTextCleaned + "]") != null)
                             {
                                 return new ValueTuple<bool, string>(false, strName);
                             }
@@ -2264,7 +2264,7 @@ namespace Chummer
                           ?? objLoopDoc
                               .SelectSingleNode("/chummer/arts/art[name = " + strNodeInnerText.CleanXPath()
                                                                             + "]/translate")?.Value;
-                    strName = Environment.NewLine + '\t'
+                    strName = Environment.NewLine + "\t"
                                                   + (!string.IsNullOrEmpty(strTranslate)
                                                       ? strTranslate
                                                       : strNodeInnerText.IsGuid()
@@ -2273,7 +2273,7 @@ namespace Chummer
                                                                     "/chummer/arts/art[id = "
                                                                     + strNodeInnerText.CleanXPath() + "]/name")?.Value
                                                             ?? strNodeInnerText
-                                                          : strNodeInnerText) + strSpace + '('
+                                                          : strNodeInnerText) + strSpace + "("
                                                   + (blnSync
                                                       // ReSharper disable once MethodHasAsyncOverload
                                                       ? LanguageManager.GetString(
@@ -2281,14 +2281,14 @@ namespace Chummer
                                                           token: token)
                                                       : await LanguageManager.GetStringAsync(
                                                           "String_Art",
-                                                          token: token).ConfigureAwait(false)) + ')';
+                                                          token: token).ConfigureAwait(false)) + ")";
                     return new ValueTuple<bool, string>(false, strName);
                 }
                 case "magenabled":
                 {
                     // Character must be Awakened.
                     if (blnShowMessage)
-                        strName = Environment.NewLine + '\t' + string.Format(GlobalSettings.CultureInfo, blnSync
+                        strName = Environment.NewLine + "\t" + string.Format(GlobalSettings.CultureInfo, blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? LanguageManager.GetString(
                                     "Message_SelectGeneric_HaveAttributeEnabled",
@@ -2333,7 +2333,7 @@ namespace Chummer
                             strTranslate = objLoopDoc.SelectSingleNode(strXPathFilter)?.Value;
                         }
 
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
@@ -2342,7 +2342,7 @@ namespace Chummer
                                                                       "/chummer/metatypes/metatype[id = "
                                                                       + strNodeInnerText.CleanXPath()
                                                                       + "]/name")?.Value ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + '('
+                                                              : strNodeInnerText) + strSpace + "("
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -2350,7 +2350,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_Metatype",
-                                                              token: token).ConfigureAwait(false)) + ')';
+                                                              token: token).ConfigureAwait(false)) + ")";
                     }
 
                     return new ValueTuple<bool, string>(strNodeInnerText == objCharacter.Metatype
@@ -2380,10 +2380,10 @@ namespace Chummer
                             strTranslate = objLoopDoc.SelectSingleNode(strXPathFilter)?.Value;
                         }
 
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
-                                                          : strNodeInnerText) + strSpace + '('
+                                                          : strNodeInnerText) + strSpace + "("
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -2391,7 +2391,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_MetatypeCategory",
-                                                              token: token).ConfigureAwait(false)) + ')';
+                                                              token: token).ConfigureAwait(false)) + ")";
                     }
 
                     return new ValueTuple<bool, string>(strNodeInnerText == objCharacter.MetatypeCategory, strName);
@@ -2420,7 +2420,7 @@ namespace Chummer
                             strTranslate = objLoopDoc.SelectSingleNode(strXPathFilter)?.Value;
                         }
 
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
@@ -2429,7 +2429,7 @@ namespace Chummer
                                                                       "/chummer/metatypes/metatype/metavariants/metavariant[id = "
                                                                       + strNodeInnerText.CleanXPath()
                                                                       + "]/name")?.Value ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + '('
+                                                              : strNodeInnerText) + strSpace + "("
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -2437,7 +2437,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_Metavariant",
-                                                              token: token).ConfigureAwait(false)) + ')';
+                                                              token: token).ConfigureAwait(false)) + ")";
                     }
 
                     return new ValueTuple<bool, string>(strNodeInnerText == objCharacter.Metavariant
@@ -2448,7 +2448,7 @@ namespace Chummer
                 {
                     // Character's nuyen must be higher than or equal to the required value.
                     if (blnShowMessage)
-                        strName = Environment.NewLine + '\t' + (blnSync
+                        strName = Environment.NewLine + "\t" + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString(
                                           "String_Nuyen",
@@ -2456,7 +2456,7 @@ namespace Chummer
                                       : await LanguageManager.GetStringAsync(
                                           "String_Nuyen",
                                           token: token).ConfigureAwait(false)) + strSpace
-                                  + '≥' + strSpace + strNodeInnerText;
+                                  + "≥" + strSpace + strNodeInnerText;
                     return new ValueTuple<bool, string>(
                         (blnSync
                             ? objCharacter.Nuyen
@@ -2466,7 +2466,7 @@ namespace Chummer
                 case "onlyprioritygiven":
                 {
                     if (blnShowMessage)
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -2562,7 +2562,7 @@ namespace Chummer
                               ?? objLoopDoc
                                   .SelectSingleNode("/chummer/powers/power[name = " + strNodeInnerText.CleanXPath()
                                       + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
@@ -2572,7 +2572,7 @@ namespace Chummer
                                                                         + strNodeInnerText.CleanXPath() + "]/name")
                                                                     ?.Value
                                                                 ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + '('
+                                                              : strNodeInnerText) + strSpace + "("
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -2580,7 +2580,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "Tab_Adept",
-                                                              token: token).ConfigureAwait(false)) + ')';
+                                                              token: token).ConfigureAwait(false)) + ")";
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -2610,7 +2610,7 @@ namespace Chummer
                           ?? objLoopDoc
                               .SelectSingleNode("/chummer/programs/program[name = " + strNodeInnerText.CleanXPath()
                                   + "]/translate")?.Value;
-                    strName = Environment.NewLine + '\t'
+                    strName = Environment.NewLine + "\t"
                                                   + (!string.IsNullOrEmpty(strTranslate)
                                                       ? strTranslate
                                                       : strNodeInnerText.IsGuid()
@@ -2619,7 +2619,7 @@ namespace Chummer
                                                                     "/chummer/programs/program[id = "
                                                                     + strNodeInnerText.CleanXPath() + "]/name")?.Value
                                                             ?? strNodeInnerText
-                                                          : strNodeInnerText) + strSpace + '('
+                                                          : strNodeInnerText) + strSpace + "("
                                                   + (blnSync
                                                       // ReSharper disable once MethodHasAsyncOverload
                                                       ? LanguageManager.GetString(
@@ -2627,7 +2627,7 @@ namespace Chummer
                                                           token: token)
                                                       : await LanguageManager.GetStringAsync(
                                                           "String_Program",
-                                                          token: token).ConfigureAwait(false)) + ')';
+                                                          token: token).ConfigureAwait(false)) + ")";
                     return new ValueTuple<bool, string>(blnResult, strName);
                 }
                 case "characterquality":
@@ -2680,7 +2680,7 @@ namespace Chummer
                           ?? objLoopDoc
                               .SelectSingleNode("/chummer/qualities/quality[name = " + strNodeInnerText.CleanXPath()
                                   + "]/translate")?.Value;
-                    strName = Environment.NewLine + '\t'
+                    strName = Environment.NewLine + "\t"
                                                   + (!string.IsNullOrEmpty(strTranslate)
                                                       ? strTranslate
                                                       : strNodeInnerText.IsGuid()
@@ -2689,7 +2689,7 @@ namespace Chummer
                                                                     "/chummer/qualities/quality[id = "
                                                                     + strNodeInnerText.CleanXPath() + "]/name")?.Value
                                                             ?? strNodeInnerText
-                                                          : strNodeInnerText) + strSpace + '('
+                                                          : strNodeInnerText) + strSpace + "("
                                                   + (blnSync
                                                       // ReSharper disable once MethodHasAsyncOverload
                                                       ? LanguageManager.GetString(
@@ -2697,7 +2697,7 @@ namespace Chummer
                                                           token: token)
                                                       : await LanguageManager.GetStringAsync(
                                                           "String_Quality",
-                                                          token: token).ConfigureAwait(false)) + ')';
+                                                          token: token).ConfigureAwait(false)) + ")";
                     return new ValueTuple<bool, string>(false, strName);
                 }
                 case "lifestylequality":
@@ -2798,7 +2798,7 @@ namespace Chummer
                           ?? objLoopDoc
                               .SelectSingleNode("/chummer/qualities/quality[name = " + strNodeInnerText.CleanXPath()
                                   + "]/translate")?.Value;
-                    strName = Environment.NewLine + '\t'
+                    strName = Environment.NewLine + "\t"
                                                   + (!string.IsNullOrEmpty(strTranslate)
                                                       ? strTranslate
                                                       : strNodeInnerText.IsGuid()
@@ -2807,7 +2807,7 @@ namespace Chummer
                                                                     "/chummer/qualities/quality[id = "
                                                                     + strNodeInnerText.CleanXPath() + "]/name")?.Value
                                                             ?? strNodeInnerText
-                                                          : strNodeInnerText) + strSpace + '('
+                                                          : strNodeInnerText) + strSpace + "("
                                                   + (blnSync
                                                       // ReSharper disable once MethodHasAsyncOverload
                                                       ? LanguageManager.GetString(
@@ -2815,7 +2815,7 @@ namespace Chummer
                                                           token: token)
                                                       : await LanguageManager.GetStringAsync(
                                                           "String_Quality",
-                                                          token: token).ConfigureAwait(false)) + ')';
+                                                          token: token).ConfigureAwait(false)) + ")";
                     return new ValueTuple<bool, string>(false, strName);
                 }
                 case "lifestyle":
@@ -2835,7 +2835,7 @@ namespace Chummer
                                   .SelectSingleNode("/chummer/lifestyles/lifestyle[name = "
                                                     + strNodeInnerText.CleanXPath()
                                                     + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
@@ -2845,7 +2845,7 @@ namespace Chummer
                                                                         + strNodeInnerText.CleanXPath() + "]/name")
                                                                     ?.Value
                                                                 ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + '('
+                                                              : strNodeInnerText) + strSpace + "("
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -2853,7 +2853,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_Lifestyle",
-                                                              token: token).ConfigureAwait(false)) + ')';
+                                                              token: token).ConfigureAwait(false)) + ")";
                     }
 
                     return new ValueTuple<bool, string>(objParent is Lifestyle objLifestyle
@@ -2875,7 +2875,7 @@ namespace Chummer
                 case "resenabled":
                     // Character must be Emerged.
                     if (blnShowMessage)
-                        strName = Environment.NewLine + '\t' + string.Format(GlobalSettings.CultureInfo, blnSync
+                        strName = Environment.NewLine + "\t" + string.Format(GlobalSettings.CultureInfo, blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? LanguageManager.GetString(
                                     "Message_SelectGeneric_HaveAttributeEnabled",
@@ -2966,7 +2966,7 @@ namespace Chummer
                                                 token: token).ConfigureAwait(false)).Count
                                     == 0)
                                 {
-                                    strName += strSpace + '(' + strSpec + ')';
+                                    strName += strSpace + "(" + strSpec + ")";
                                 }
 
                                 if (!string.IsNullOrEmpty(strValue))
@@ -3000,10 +3000,10 @@ namespace Chummer
                             if (objSkill == null && !string.IsNullOrEmpty(strSpec))
                                 objSkill = blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    ? objSkillsSection.GetActiveSkill(strNodeName + strSpace + '(' + strSpec + ')',
+                                    ? objSkillsSection.GetActiveSkill(strNodeName + strSpace + "(" + strSpec + ")",
                                         token)
                                     : await objSkillsSection.GetActiveSkillAsync(
-                                        strNodeName + strSpace + '(' + strSpec + ')', token).ConfigureAwait(false);
+                                        strNodeName + strSpace + "(" + strSpec + ")", token).ConfigureAwait(false);
                         }
 
                         if (objSkill != null)
@@ -3038,7 +3038,7 @@ namespace Chummer
                                                     token: token).ConfigureAwait(false)).Count
                                         == 0)
                                     {
-                                        strName += strSpace + '(' + strSpec + ')';
+                                        strName += strSpace + "(" + strSpec + ")";
                                     }
 
                                     if (!string.IsNullOrEmpty(strValue))
@@ -3081,13 +3081,13 @@ namespace Chummer
                                   ?? xmlSkillDoc
                                       .SelectSingleNode("/chummer/knowledgeskills/skill[id = " + strSkillId.CleanXPath()
                                           + "]/name")?.Value;
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strSkillName);
                         if (!string.IsNullOrEmpty(strSpec))
                         {
-                            strName += strSpace + '(' + strSpec + ')';
+                            strName += strSpace + "(" + strSpec + ")";
                         }
 
                         if (!string.IsNullOrEmpty(strValue))
@@ -3095,14 +3095,14 @@ namespace Chummer
                             strName += strSpace + strValue;
                         }
 
-                        strName += strSpace + '(' + (blnSync
+                        strName += strSpace + "(" + (blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? LanguageManager.GetString(
                                 "Tab_Skills",
                                 token: token)
                             : await LanguageManager.GetStringAsync(
                                 "Tab_Skills",
-                                token: token).ConfigureAwait(false)) + ')';
+                                token: token).ConfigureAwait(false)) + ")";
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -3216,14 +3216,14 @@ namespace Chummer
                                 strName);
                         if (sbdOutput.Length > 0)
                             sbdOutput.Length -= 2;
-                        strName = sbdOutput + strSpace + '(' + (blnSync
+                        strName = sbdOutput.ToString() + strSpace + "(" + (blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? LanguageManager.GetString(
                                 "String_ExpenseSkill",
                                 token: token)
                             : await LanguageManager.GetStringAsync(
                                 "String_ExpenseSkill",
-                                token: token).ConfigureAwait(false)) + ')';
+                                token: token).ConfigureAwait(false)) + ")";
                     }
 
                     int intTarget = xmlNode.SelectSingleNodeAndCacheExpression("val", token)
@@ -3295,7 +3295,7 @@ namespace Chummer
                         {
                             if (sbdOutput.Length > 0)
                                 sbdOutput.Length -= 2;
-                            strName = sbdOutput + strSpace + '('
+                            strName = sbdOutput.ToString() + strSpace + "("
                                       + (blnSync
                                           // ReSharper disable once MethodHasAsyncOverload
                                           ? LanguageManager.GetString(
@@ -3303,7 +3303,7 @@ namespace Chummer
                                               token: token)
                                           : await LanguageManager.GetStringAsync(
                                               "String_ExpenseSkillGroup",
-                                              token: token).ConfigureAwait(false)) + ')';
+                                              token: token).ConfigureAwait(false)) + ")";
                         }
                     }
 
@@ -3356,7 +3356,7 @@ namespace Chummer
 
                     if (blnShowMessage)
                     {
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -3365,7 +3365,7 @@ namespace Chummer
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_SpecialModificationLimit",
                                                               token: token).ConfigureAwait(false))
-                                                      + strSpace + '≥' + strSpace + strNodeInnerText;
+                                                      + strSpace + "≥" + strSpace + strNodeInnerText;
                     }
 
                     return new ValueTuple<bool, string>(
@@ -3402,7 +3402,7 @@ namespace Chummer
                               ?? objLoopDoc
                                   .SelectSingleNode("/chummer/spells/spell[name = " + strNodeInnerText.CleanXPath()
                                       + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
@@ -3412,7 +3412,7 @@ namespace Chummer
                                                                         + strNodeInnerText.CleanXPath() + "]/name")
                                                                     ?.Value
                                                                 ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + '('
+                                                              : strNodeInnerText) + strSpace + "("
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -3420,7 +3420,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_DescSpell",
-                                                              token: token).ConfigureAwait(false)) + ')';
+                                                              token: token).ConfigureAwait(false)) + ")";
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -3439,10 +3439,10 @@ namespace Chummer
                             .SelectSingleNode(
                                 "/chummer/categories/category[. = "
                                 + strNodeName.CleanXPath() + "]/@translate")?.Value;
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
-                                                          : strNodeInnerText) + strSpace + '('
+                                                          : strNodeInnerText) + strSpace + "("
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -3450,7 +3450,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_SpellCategory",
-                                                              token: token).ConfigureAwait(false)) + ')';
+                                                              token: token).ConfigureAwait(false)) + ")";
                     }
 
                     int intTarget = xmlNode.SelectSingleNodeAndCacheExpression("count", token)?.ValueAsInt ?? 0;
@@ -3469,7 +3469,7 @@ namespace Chummer
                     int intCount = xmlNode.SelectSingleNodeAndCacheExpression("count", token)?.ValueAsInt ?? 0;
                     // Check for a specified amount of a particular Spell Descriptor.
                     if (blnShowMessage)
-                        strName = Environment.NewLine + '\t' + (blnSync
+                        strName = Environment.NewLine + "\t" + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString(
                                           "Label_Descriptors",
@@ -3477,7 +3477,7 @@ namespace Chummer
                                       : await LanguageManager.GetStringAsync(
                                           "Label_Descriptors",
                                           token: token).ConfigureAwait(false)) + strSpace
-                                  + '≥' + strSpace + intCount.ToString(GlobalSettings.CultureInfo);
+                                  + "≥" + strSpace + intCount.ToString(GlobalSettings.CultureInfo);
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
                         return new ValueTuple<bool, string>(objCharacter.Spells.Count(
@@ -3494,7 +3494,7 @@ namespace Chummer
                 {
                     // Street Cred must be higher than Notoriety.
                     if (blnShowMessage)
-                        strName = Environment.NewLine + '\t' + (blnSync
+                        strName = Environment.NewLine + "\t" + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString(
                                           "String_StreetCred",
@@ -3502,7 +3502,7 @@ namespace Chummer
                                       : await LanguageManager.GetStringAsync(
                                           "String_StreetCred",
                                           token: token).ConfigureAwait(false)) + strSpace
-                                  + '≥' + strSpace + (blnSync
+                                  + "≥" + strSpace + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString(
                                           "String_Notoriety",
@@ -3520,7 +3520,7 @@ namespace Chummer
                 {
                     // Character's initiate grade must be higher than or equal to the required value.
                     if (blnShowMessage)
-                        strName = Environment.NewLine + '\t' + (blnSync
+                        strName = Environment.NewLine + "\t" + (blnSync
                                       // ReSharper disable once MethodHasAsyncOverload
                                       ? LanguageManager.GetString(
                                           "String_SubmersionGrade",
@@ -3528,7 +3528,7 @@ namespace Chummer
                                       : await LanguageManager.GetStringAsync(
                                           "String_SubmersionGrade",
                                           token: token).ConfigureAwait(false))
-                                  + strSpace + '≥' + strSpace + strNodeInnerText;
+                                  + strSpace + "≥" + strSpace + strNodeInnerText;
                     return new ValueTuple<bool, string>(
                         (blnSync
                             ? objCharacter.SubmersionGrade
@@ -3551,7 +3551,7 @@ namespace Chummer
                               ?? objLoopDoc
                                   .SelectSingleNode("/chummer/traditions/tradition[name = "
                                                     + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
@@ -3561,7 +3561,7 @@ namespace Chummer
                                                                         + strNodeInnerText.CleanXPath() + "]/name")
                                                                     ?.Value
                                                                 ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + '('
+                                                              : strNodeInnerText) + strSpace + "("
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -3569,7 +3569,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_Tradition",
-                                                              token: token).ConfigureAwait(false)) + ')';
+                                                              token: token).ConfigureAwait(false)) + ")";
                     }
 
                     Backend.Uniques.Tradition objTradition = blnSync
@@ -3597,7 +3597,7 @@ namespace Chummer
                               ?? objLoopDoc
                                   .SelectSingleNode("/chummer/powers/power[name = " + strNodeInnerText.CleanXPath()
                                       + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
@@ -3607,7 +3607,7 @@ namespace Chummer
                                                                         + strNodeInnerText.CleanXPath() + "]/name")
                                                                     ?.Value
                                                                 ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + '('
+                                                              : strNodeInnerText) + strSpace + "("
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -3615,7 +3615,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_Tradition",
-                                                              token: token).ConfigureAwait(false)) + ')';
+                                                              token: token).ConfigureAwait(false)) + ")";
                     }
 
                     Backend.Uniques.Tradition objTradition = blnSync
@@ -3661,7 +3661,7 @@ namespace Chummer
                           ?? objLoopDoc
                               .SelectSingleNode("/chummer/weapons/weapon[name = " + strNodeInnerText.CleanXPath()
                                   + "]/translate")?.Value;
-                    strName = Environment.NewLine + '\t'
+                    strName = Environment.NewLine + "\t"
                                                   + (!string.IsNullOrEmpty(strTranslate)
                                                       ? strTranslate
                                                       : strNodeInnerText.IsGuid()
@@ -3670,7 +3670,7 @@ namespace Chummer
                                                                     "/chummer/weapons/weapon[id = "
                                                                     + strNodeInnerText.CleanXPath() + "]/name")?.Value
                                                             ?? strNodeInnerText
-                                                          : strNodeInnerText) + strSpace + '('
+                                                          : strNodeInnerText) + strSpace + "("
                                                   + (blnSync
                                                       // ReSharper disable once MethodHasAsyncOverload
                                                       ? LanguageManager.GetString(
@@ -3678,7 +3678,7 @@ namespace Chummer
                                                           token: token)
                                                       : await LanguageManager.GetStringAsync(
                                                           "String_Weapon",
-                                                          token: token).ConfigureAwait(false)) + ')';
+                                                          token: token).ConfigureAwait(false)) + ")";
                     return new ValueTuple<bool, string>(blnReturn, strName);
                 }
                 case "accessory" when objParent is Weapon objWeapon:
@@ -3707,7 +3707,7 @@ namespace Chummer
                           ?? objLoopDoc
                               .SelectSingleNode("/chummer/accessories/accessory[name = " + strNodeInnerText.CleanXPath()
                                   + "]/translate")?.Value;
-                    strName = Environment.NewLine + '\t'
+                    strName = Environment.NewLine + "\t"
                                                   + (!string.IsNullOrEmpty(strTranslate)
                                                       ? strTranslate
                                                       : strNodeInnerText.IsGuid()
@@ -3716,7 +3716,7 @@ namespace Chummer
                                                                     "/chummer/accessories/accessory[id = "
                                                                     + strNodeInnerText.CleanXPath() + "]/name")?.Value
                                                             ?? strNodeInnerText
-                                                          : strNodeInnerText) + strSpace + '('
+                                                          : strNodeInnerText) + strSpace + "("
                                                   + (blnSync
                                                       // ReSharper disable once MethodHasAsyncOverload
                                                       ? LanguageManager.GetString(
@@ -3724,7 +3724,7 @@ namespace Chummer
                                                           token: token)
                                                       : await LanguageManager.GetStringAsync(
                                                           "String_WeaponAccessory",
-                                                          token: token).ConfigureAwait(false)) + ')';
+                                                          token: token).ConfigureAwait(false)) + ")";
                     return new ValueTuple<bool, string>(blnReturn, strName);
                 }
                 case "weapondetails" when objParent is Weapon objWeapon:
@@ -3753,7 +3753,7 @@ namespace Chummer
                                   .SelectSingleNode("/chummer/armormods/armormod[name = " +
                                                     strNodeInnerText.CleanXPath()
                                                     + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t'
+                        strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
                                                           : strNodeInnerText.IsGuid()
@@ -3763,7 +3763,7 @@ namespace Chummer
                                                                         + strNodeInnerText.CleanXPath() + "]/name")
                                                                     ?.Value
                                                                 ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + '('
+                                                              : strNodeInnerText) + strSpace + "("
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -3771,7 +3771,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_ArmorMod",
-                                                              token: token).ConfigureAwait(false)) + ')';
+                                                              token: token).ConfigureAwait(false)) + ")";
                     }
 
                     if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
@@ -3859,7 +3859,7 @@ namespace Chummer
                         intHighestAvailNode = Math.Max(intHighestAvailNode, intTmp);
                     }
                 }
-                objAvailNode = objXmlGear.SelectSingleNode("avail" + intHighestAvailNode);
+                objAvailNode = objXmlGear.SelectSingleNode("avail" + intHighestAvailNode.ToString(GlobalSettings.InvariantCultureInfo));
                 for (int i = intRating; i <= intHighestAvailNode; ++i)
                 {
                     token.ThrowIfCancellationRequested();
@@ -3940,7 +3940,7 @@ namespace Chummer
                         intHighestAvailNode = Math.Max(intHighestAvailNode, intTmp);
                     }
                 }
-                objAvailNode = objXmlGear.SelectSingleNode("avail" + intHighestAvailNode);
+                objAvailNode = objXmlGear.SelectSingleNode("avail" + intHighestAvailNode.ToString(GlobalSettings.InvariantCultureInfo));
                 for (int i = intRating; i <= intHighestAvailNode; ++i)
                 {
                     XPathNavigator objLoopNode = objXmlGear.SelectSingleNode("avail" + i.ToString(GlobalSettings.InvariantCultureInfo));

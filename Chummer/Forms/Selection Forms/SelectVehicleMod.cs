@@ -114,7 +114,7 @@ namespace Chummer
                 {
                     string strInnerText = objXmlCategory.Value;
                     if ((string.IsNullOrEmpty(_strLimitToCategories) || setValues.Contains(strInnerText))
-                        && _xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + ']') != null)
+                        && _xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + "]") != null)
                     {
                         _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
                     }
@@ -293,7 +293,7 @@ namespace Chummer
         private async Task RefreshList(CancellationToken token = default)
         {
             string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
-            string strFilter = '(' + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + ')';
+            string strFilter = "(" + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + ")";
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (string.IsNullOrWhiteSpace(strSearch) || GlobalSettings.SearchInCategoryOnly))
                 strFilter += " and category = " + strCategory.CleanXPath();
@@ -311,7 +311,7 @@ namespace Chummer
                     if (sbdCategoryFilter.Length > 0)
                     {
                         sbdCategoryFilter.Length -= 4;
-                        strFilter += " and (" + sbdCategoryFilter.ToString() + ')';
+                        strFilter += " and (" + sbdCategoryFilter.ToString() + ")";
                     }
                 }
             }
@@ -322,8 +322,8 @@ namespace Chummer
 
             // Retrieve the list of Mods for the selected Category.
             XPathNodeIterator objXmlModList = VehicleMountMods
-                ? _xmlBaseVehicleDataNode.Select("weaponmountmods/mod[" + strFilter + ']')
-                : _xmlBaseVehicleDataNode.Select("mods/mod[" + strFilter + ']');
+                ? _xmlBaseVehicleDataNode.Select("weaponmountmods/mod[" + strFilter + "]")
+                : _xmlBaseVehicleDataNode.Select("mods/mod[" + strFilter + "]");
             // Update the list of Mods based on the selected Category.
             int intOverLimit = 0;
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMods))
@@ -728,7 +728,7 @@ namespace Chummer
                             if (decMax == decimal.MaxValue)
                             {
                                 string strText =
-                                    decMin.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyen + '+';
+                                    decMin.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyen + "+";
                                 await lblCost.DoThreadSafeAsync(x => x.Text = strText, token: token)
                                     .ConfigureAwait(false);
                             }
@@ -737,7 +737,7 @@ namespace Chummer
                                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                     .ConfigureAwait(false);
                                 string strText =
-                                    decMin.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strSpace + '-' + strSpace +
+                                    decMin.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strSpace + "-" + strSpace +
                                     decMax.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyen;
                                 await lblCost.DoThreadSafeAsync(x => x.Text = strText, token: token)
                                     .ConfigureAwait(false);
@@ -858,13 +858,13 @@ namespace Chummer
                                 = _xmlBaseVehicleDataNode.SelectSingleNode(
                                     "limits/limit[. = " + strLimit.CleanXPath() + "]/@translate");
                             strLimit = await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                            .ConfigureAwait(false) + '(' + objXmlLimit?.Value
-                                       ?? strLimit + ')';
+                                                            .ConfigureAwait(false) + "(" + objXmlLimit?.Value
+                                       ?? strLimit + ")";
                         }
                         else
                         {
                             strLimit = await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                            .ConfigureAwait(false) + '(' + strLimit + ')';
+                                                            .ConfigureAwait(false) + "(" + strLimit + ")";
                         }
 
                         await lblLimit.DoThreadSafeAsync(x => x.Text = strLimit, token: token).ConfigureAwait(false);

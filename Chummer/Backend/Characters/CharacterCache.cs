@@ -867,7 +867,7 @@ namespace Chummer
                                                        .ConfigureAwait(false) +
                                   await LanguageManager.GetStringAsync("String_Space", token: token)
                                                        .ConfigureAwait(false);
-                            _strSettingsFile = strTemp + '[' + strSettings + ']';
+                            _strSettingsFile = strTemp + "[" + strSettings + "]";
                         }
                     }
                     else
@@ -975,8 +975,8 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(ErrorText))
                 {
-                    strReturn = Path.GetFileNameWithoutExtension(FileName) + strSpace + '(' +
-                                LanguageManager.GetString("String_Error") + ')';
+                    strReturn = Path.GetFileNameWithoutExtension(FileName) + strSpace + "(" +
+                                LanguageManager.GetString("String_Error") + ")";
                 }
                 else
                 {
@@ -991,8 +991,8 @@ namespace Chummer
                     string strBuildMethod = LanguageManager.GetString("String_" + BuildMethod, false);
                     if (string.IsNullOrEmpty(strBuildMethod))
                         strBuildMethod = LanguageManager.GetString("String_Unknown");
-                    strReturn += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
-                                 + LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode") + ')';
+                    strReturn += strSpace + "(" + strBuildMethod + strSpace + "-" + strSpace
+                                 + LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode") + ")";
                 }
 
                 if (blnAddMarkerIfOpen && Program.MainForm != null)
@@ -1002,16 +1002,16 @@ namespace Chummer
                     if (Program.MainForm.OpenCharacterEditorForms?.Any(
                             x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, strFilePath,
                                 StringComparison.Ordinal)) == true)
-                        strMarker += '*';
+                        strMarker += "*";
                     if (Program.MainForm.OpenCharacterSheetViewers?.Any(
                             x => x.CharacterObjects.Any(y =>
                                 !y.IsDisposed && string.Equals(y.FileName, strFilePath,
                                     StringComparison.Ordinal))) == true)
-                        strMarker += '^';
+                        strMarker += "^";
                     if (Program.MainForm.OpenCharacterExportForms?.Any(
                             x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, strFilePath,
                                 StringComparison.Ordinal)) == true)
-                        strMarker += '\'';
+                        strMarker += "\'";
                     if (!string.IsNullOrEmpty(strMarker))
                         strReturn = strMarker + strSpace + strReturn;
                 }
@@ -1039,7 +1039,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strErrorText))
                 {
                     strReturn = Path.GetFileNameWithoutExtension(await GetFileNameAsync(token).ConfigureAwait(false))
-                        + strSpace + '(' + await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false) + ')';
+                        + strSpace + "(" + await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false) + ")";
                 }
                 else
                 {
@@ -1057,12 +1057,12 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strBuildMethod))
                         strBuildMethod = await LanguageManager.GetStringAsync("String_Unknown", token: token)
                             .ConfigureAwait(false);
-                    strReturn += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
+                    strReturn += strSpace + "(" + strBuildMethod + strSpace + "-" + strSpace
                                  + await LanguageManager
                                      .GetStringAsync(await GetCreatedAsync(token).ConfigureAwait(false)
                                         ? "Title_CareerMode"
                                         : "Title_CreateMode", token: token)
-                                     .ConfigureAwait(false) + ')';
+                                     .ConfigureAwait(false) + ")";
                 }
 
                 if (blnAddMarkerIfOpen && Program.MainForm != null)
@@ -1078,7 +1078,7 @@ namespace Chummer
                                                await x.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false),
                                                strFilePath, StringComparison.Ordinal), token)
                             .ConfigureAwait(false))
-                        strMarker += '*';
+                        strMarker += "*";
                     ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess2
                         = Program.MainForm.OpenCharacterSheetViewers;
                     if (lstToProcess2 != null && await lstToProcess2
@@ -1087,7 +1087,7 @@ namespace Chummer
                                     async y => !y.IsDisposed && string.Equals(
                                         await y.GetFileNameAsync(token).ConfigureAwait(false), strFilePath,
                                         StringComparison.Ordinal), token), token).ConfigureAwait(false))
-                        strMarker += '^';
+                        strMarker += "^";
                     ThreadSafeObservableCollection<ExportCharacter> lstToProcess3
                         = Program.MainForm.OpenCharacterExportForms;
                     if (lstToProcess3 != null && await lstToProcess3
@@ -1097,7 +1097,7 @@ namespace Chummer
                                                await x.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false),
                                                strFilePath, StringComparison.Ordinal), token)
                             .ConfigureAwait(false))
-                        strMarker += '\'';
+                        strMarker += "\'";
                     if (!string.IsNullOrEmpty(strMarker))
                         strReturn = strMarker + strSpace + strReturn;
                 }

@@ -73,7 +73,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            return Application.ProductName + strSpace + '-' + strSpace
+            return Application.ProductName + strSpace + "-" + strSpace
                 + await LanguageManager.GetStringAsync("String_Version", token: token).ConfigureAwait(false) + strSpace
 #if DEBUG
                 + _strCurrentVersion + " DEBUG BUILD";
@@ -702,7 +702,7 @@ namespace Chummer
                                 int intErrorCode = Marshal.GetLastWin32Error();
                                 Utils.BreakIfDebug();
                                 Log.Error(
-                                    "The error " + intErrorCode + " occurred while attempting to unblock WM_COPYDATA.");
+                                    "The error " + intErrorCode.ToString(GlobalSettings.InvariantCultureInfo) + " occurred while attempting to unblock WM_COPYDATA.");
                             }
 
                             string strMainTitle = await GetMainTitleAsync(_objGenericToken).ConfigureAwait(false);
@@ -711,13 +711,13 @@ namespace Chummer
                             dlgOpenFile.Filter
                                 = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: _objGenericToken)
                                                        .ConfigureAwait(false)
-                                  + '|' +
+                                  + "|" +
                                   await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: _objGenericToken)
                                                        .ConfigureAwait(false)
-                                  + '|' +
+                                  + "|" +
                                   await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objGenericToken)
                                                        .ConfigureAwait(false)
-                                  + '|' +
+                                  + "|" +
                                   await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken)
                                                        .ConfigureAwait(false);
 
@@ -1417,10 +1417,10 @@ namespace Chummer
                         if (Utils.GitUpdateAvailable > 0)
                         {
                             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: objNewToken);
-                            string strNewText = Application.ProductName + strSpace + '-' + strSpace +
+                            string strNewText = Application.ProductName + strSpace + "-" + strSpace +
                                                 await LanguageManager.GetStringAsync(
                                                     "String_Version", token: objNewToken)
-                                                + strSpace + _strCurrentVersion + strSpace + '-' + strSpace
+                                                + strSpace + _strCurrentVersion + strSpace + "-" + strSpace
                                                 + string.Format(GlobalSettings.CultureInfo,
                                                                 await LanguageManager.GetStringAsync(
                                                                     "String_Update_Available", token: objNewToken),
@@ -2089,7 +2089,7 @@ namespace Chummer
                                     x => x.Text = string.Format(
                                         GlobalSettings.CultureInfo,
                                         strSheet,
-                                        StringExtensions.JoinFast(',' + strSpace,
+                                        StringExtensions.JoinFast("," + strSpace,
                                                     frmSheetViewer.CharacterObjects.Select(y => y.CharacterName.Trim()))), token: _objGenericToken).ConfigureAwait(false);
                                 if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
                                 {
@@ -2485,7 +2485,7 @@ namespace Chummer
                                     = string.Format(
                                         GlobalSettings.CultureInfo,
                                         strSheet,
-                                        StringExtensions.JoinFast(',' + strSpace,
+                                        StringExtensions.JoinFast("," + strSpace,
                                                     frmCharacterSheetViewer.CharacterObjects.Select(
                                                         y => y.CharacterName.Trim())));
                                 break;
@@ -2530,7 +2530,7 @@ namespace Chummer
                                     = string.Format(
                                         GlobalSettings.CultureInfo,
                                         strSheet.Value,
-                                        StringExtensions.JoinFast(',' + strSpace.Value,
+                                        StringExtensions.JoinFast("," + strSpace.Value,
                                                     frmCharacterSheetViewer.CharacterObjects.Select(
                                                         y => y.CharacterName.Trim())));
                                 break;
@@ -2579,7 +2579,7 @@ namespace Chummer
                                     = string.Format(
                                         GlobalSettings.CultureInfo,
                                         strSheet,
-                                        StringExtensions.JoinFast(',' + strSpace,
+                                        StringExtensions.JoinFast("," + strSpace,
                                                     frmCharacterSheetViewer.CharacterObjects.Select(
                                                         y => y.CharacterName.Trim())));
                                 break;
@@ -3348,7 +3348,7 @@ namespace Chummer
                     Character[] lstCharacters = new Character[lstFilesToOpen.Count];
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
                                StringExtensions.JoinFast(
-                                   ',' + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
+                                   "," + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                     {
@@ -3441,9 +3441,9 @@ namespace Chummer
                                 token.ThrowIfCancellationRequested();
                                 await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
                                                                                 ? strUI
-                                                                                : strUI + strSpace + '('
+                                                                                : strUI + strSpace + "("
                                                                                 + objCharacter.CharacterName
-                                                                                + ')', token: token)
+                                                                                + ")", token: token)
                                                    .ConfigureAwait(false);
                                 if (objCharacter == null)
                                     continue;
@@ -3564,7 +3564,7 @@ namespace Chummer
                     Character[] lstCharacters = new Character[lstFilesToOpen.Count];
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
                                StringExtensions.JoinFast(
-                                   ',' + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
+                                   "," + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                     {
@@ -3655,9 +3655,9 @@ namespace Chummer
                                 token.ThrowIfCancellationRequested();
                                 await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
                                                                                 ? strUI
-                                                                                : strUI + strSpace + '('
+                                                                                : strUI + strSpace + "("
                                                                                 + objCharacter.CharacterName
-                                                                                + ')', token: token)
+                                                                                + ")", token: token)
                                                    .ConfigureAwait(false);
                                 if (objCharacter == null)
                                     continue;
@@ -3804,7 +3804,7 @@ namespace Chummer
                     Character[] lstCharacters = new Character[lstFilesToOpen.Count];
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
                                StringExtensions.JoinFast(
-                                   ',' + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
+                                   "," + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                     {
@@ -3892,9 +3892,9 @@ namespace Chummer
                             {
                                 await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
                                                                                 ? strUI
-                                                                                : strUI + strSpace + '('
+                                                                                : strUI + strSpace + "("
                                                                                 + objCharacter.CharacterName
-                                                                                + ')', token: token)
+                                                                                + ")", token: token)
                                                    .ConfigureAwait(false);
                                 if (objCharacter == null)
                                     continue;
@@ -4556,7 +4556,7 @@ namespace Chummer
                                 {
                                     throw new ArgumentException(
                                         "Chummer started with unknown command line arguments: " +
-                                        strArgs.Aggregate((j, k) => j + ' ' + k));
+                                        strArgs.Aggregate((j, k) => j + " " + k));
                                 }
 
                                 string strExtension = Path.GetExtension(strArg);

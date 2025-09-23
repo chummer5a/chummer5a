@@ -759,7 +759,7 @@ namespace Chummer.Tests
         {
             token.ThrowIfCancellationRequested();
             Assert.IsNotNull(objCharacter);
-            string strPath = Path.Combine(CommonTestData.TestPathInfo.FullName, strExportLanguage + ' ' + Path.GetFileNameWithoutExtension(objCharacter.FileName) + ".xml");
+            string strPath = Path.Combine(CommonTestData.TestPathInfo.FullName, strExportLanguage + " " + Path.GetFileNameWithoutExtension(objCharacter.FileName) + ".xml");
             try
             {
                 Debug.WriteLine("Exporting: " + objCharacter.Name + " to " + Path.GetFileName(strPath));

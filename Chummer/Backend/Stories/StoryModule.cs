@@ -260,11 +260,11 @@ namespace Chummer
                 string strReturn;
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
-                    return _dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>';
+                    return _dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : "<" + strKey + ">";
                 }
 
                 return this.GetNodeXPath(strLanguage)?.SelectSingleNode("alttexts/" + strKey)?.Value ??
-                       (_dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>');
+                       (_dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : "<" + strKey + ">");
             }
         }
 
@@ -283,7 +283,7 @@ namespace Chummer
                         return strReturn;
                 }
 
-                return _dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>';
+                return _dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : "<" + strKey + ">";
             }
             finally
             {

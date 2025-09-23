@@ -9506,7 +9506,7 @@ namespace Chummer
                                             XmlNode objNode =
                                                 objXmlCharacter.SelectSingleNode(
                                                     "powers/power[guid = " + objItem.Value.ToString().CleanXPath()
-                                                                           + ']');
+                                                                           + "]");
                                             if (objNode != null)
                                             {
                                                 Power objPower = new Power(this);
@@ -12255,11 +12255,11 @@ namespace Chummer
                                            .GetStringAsync("String_Space", strLanguageToPrint, token: token)
                                            .ConfigureAwait(false);
                             if (objImprovement.Value > 0)
-                                strName += '+';
+                                strName += "+";
                             strName += objImprovement.Value.ToString(objCulture);
 
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
-                                strName += ',' + await LanguageManager
+                                strName += "," + await LanguageManager
                                                .GetStringAsync("String_Space", strLanguageToPrint, token: token)
                                                .ConfigureAwait(false) +
                                            objImprovement.Condition;
@@ -12324,11 +12324,11 @@ namespace Chummer
                                            .GetStringAsync("String_Space", strLanguageToPrint, token: token)
                                            .ConfigureAwait(false);
                             if (objImprovement.Value > 0)
-                                strName += '+';
+                                strName += "+";
                             strName += objImprovement.Value.ToString(objCulture);
 
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
-                                strName += ',' + await LanguageManager
+                                strName += "," + await LanguageManager
                                                .GetStringAsync("String_Space", strLanguageToPrint, token: token)
                                                .ConfigureAwait(false) +
                                            objImprovement.Condition;
@@ -12391,11 +12391,11 @@ namespace Chummer
                                            .GetStringAsync("String_Space", strLanguageToPrint, token: token)
                                            .ConfigureAwait(false);
                             if (objImprovement.Value > 0)
-                                strName += '+';
+                                strName += "+";
                             strName += objImprovement.Value.ToString(objCulture);
 
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
-                                strName += ',' + await LanguageManager
+                                strName += "," + await LanguageManager
                                                .GetStringAsync("String_Space", strLanguageToPrint, token: token)
                                                .ConfigureAwait(false) +
                                            objImprovement.Condition;
@@ -12587,8 +12587,8 @@ namespace Chummer
                         await lstQualities.ForEachAsync(async objQuality =>
                         {
                             string strKey = await objQuality.GetSourceIDStringAsync(token).ConfigureAwait(false)
-                                + '|' + await objQuality.GetSourceNameAsync(token).ConfigureAwait(false)
-                                + '|' + await objQuality.GetExtraAsync(token).ConfigureAwait(false);
+                                + "|" + await objQuality.GetSourceNameAsync(token).ConfigureAwait(false)
+                                + "|" + await objQuality.GetExtraAsync(token).ConfigureAwait(false);
                             if (strQualitiesToPrint.TryGetValue(strKey, out int intExistingRating))
                             {
                                 strQualitiesToPrint[strKey] = intExistingRating + 1;
@@ -12602,8 +12602,8 @@ namespace Chummer
                         await lstQualities.ForEachAsync(async objQuality =>
                         {
                             string strKey = await objQuality.GetSourceIDStringAsync(token).ConfigureAwait(false)
-                                + '|' + await objQuality.GetSourceNameAsync(token).ConfigureAwait(false)
-                                + '|' + await objQuality.GetExtraAsync(token).ConfigureAwait(false);
+                                + "|" + await objQuality.GetSourceNameAsync(token).ConfigureAwait(false)
+                                + "|" + await objQuality.GetExtraAsync(token).ConfigureAwait(false);
                             if (strQualitiesToPrint.TryGetValue(strKey, out int intLoopRating))
                             {
                                 await objQuality.Print(objWriter, intLoopRating, objCulture, strLanguageToPrint, token)
@@ -14784,8 +14784,8 @@ namespace Chummer
                             {
                                 string strWareReturn = objCyberware.DisplayNameShort(strLanguage);
                                 if (objCyberware.Parent != null)
-                                    strWareReturn += strSpace + '(' + objCyberware.Parent.DisplayNameShort(strLanguage)
-                                                     + ')';
+                                    strWareReturn += strSpace + "(" + objCyberware.Parent.DisplayNameShort(strLanguage)
+                                                     + ")";
                                 if (blnWireless)
                                     strWareReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
                                 return strWareReturn;
@@ -14800,13 +14800,13 @@ namespace Chummer
                                     if (objCyberware != null)
                                     {
                                         string strWareReturn
-                                            = objCyberware.DisplayNameShort(strLanguage) + strSpace + '('
-                                              + objVehicle.DisplayNameShort(strLanguage) + ','
+                                            = objCyberware.DisplayNameShort(strLanguage) + strSpace + "("
+                                              + objVehicle.DisplayNameShort(strLanguage) + ","
                                               + strSpace + objVehicleMod.DisplayNameShort(strLanguage);
                                         if (objCyberware.Parent != null)
-                                            strWareReturn += ',' + strSpace
+                                            strWareReturn += "," + strSpace
                                                                  + objCyberware.Parent.DisplayNameShort(strLanguage);
-                                        strWareReturn += ')';
+                                        strWareReturn += ")";
                                         if (blnWireless)
                                             strWareReturn
                                                 += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
@@ -14823,14 +14823,14 @@ namespace Chummer
                                         if (objCyberware != null)
                                         {
                                             string strWareReturn
-                                                = objCyberware.DisplayNameShort(strLanguage) + strSpace + '('
-                                                  + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpace
-                                                  + objMount.DisplayNameShort(strLanguage) + ','
+                                                = objCyberware.DisplayNameShort(strLanguage) + strSpace + "("
+                                                  + objVehicle.DisplayNameShort(strLanguage) + "," + strSpace
+                                                  + objMount.DisplayNameShort(strLanguage) + ","
                                                   + strSpace + objVehicleMod.DisplayNameShort(strLanguage);
                                             if (objCyberware.Parent != null)
-                                                strWareReturn += ',' + strSpace
+                                                strWareReturn += "," + strSpace
                                                                      + objCyberware.Parent.DisplayNameShort(strLanguage);
-                                            strWareReturn += ')';
+                                            strWareReturn += ")";
                                             if (blnWireless)
                                                 strWareReturn += strSpace
                                                                  + LanguageManager.GetString(
@@ -14851,7 +14851,7 @@ namespace Chummer
                             {
                                 string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                 if (objReturnGear.Parent is Gear parent)
-                                    strGearReturn += strSpace + '(' + parent.DisplayNameShort(strLanguage) + ')';
+                                    strGearReturn += strSpace + "(" + parent.DisplayNameShort(strLanguage) + ")";
                                 if (blnWireless)
                                     strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
                                 return strGearReturn;
@@ -14864,15 +14864,15 @@ namespace Chummer
                             {
                                 string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                 if (objReturnGear.Parent is Gear parent)
-                                    strGearReturn += strSpace + '(' + objGearAccessory.Parent.DisplayNameShort(strLanguage)
-                                                     + ','
+                                    strGearReturn += strSpace + "(" + objGearAccessory.Parent.DisplayNameShort(strLanguage)
+                                                     + ","
                                                      + strSpace
-                                                     + objGearAccessory.DisplayNameShort(strLanguage) + ',' + strSpace
-                                                     + parent.DisplayNameShort(strLanguage) + ')';
+                                                     + objGearAccessory.DisplayNameShort(strLanguage) + "," + strSpace
+                                                     + parent.DisplayNameShort(strLanguage) + ")";
                                 else
-                                    strGearReturn += strSpace + '(' + objGearAccessory.Parent.DisplayNameShort(strLanguage)
-                                                     + ','
-                                                     + strSpace + objGearAccessory.DisplayNameShort(strLanguage) + ')';
+                                    strGearReturn += strSpace + "(" + objGearAccessory.Parent.DisplayNameShort(strLanguage)
+                                                     + ","
+                                                     + strSpace + objGearAccessory.DisplayNameShort(strLanguage) + ")";
                                 if (blnWireless)
                                     strGearReturn
                                         += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
@@ -14886,17 +14886,17 @@ namespace Chummer
                                 string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                 if (objReturnGear.Parent is Gear objParent)
                                 {
-                                    strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage, token) + ','
+                                    strGearReturn += strSpace + "(" + objArmor.DisplayNameShort(strLanguage, token) + ","
                                                      + strSpace
-                                                     + objArmorMod.DisplayNameShort(strLanguage) + ',' + strSpace
-                                                     + objParent.DisplayNameShort(strLanguage) + ')';
+                                                     + objArmorMod.DisplayNameShort(strLanguage) + "," + strSpace
+                                                     + objParent.DisplayNameShort(strLanguage) + ")";
                                 }
                                 else if (objArmorMod != null)
-                                    strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage, token) + ','
+                                    strGearReturn += strSpace + "(" + objArmor.DisplayNameShort(strLanguage, token) + ","
                                                      + strSpace
-                                                     + objArmorMod.DisplayNameShort(strLanguage) + ')';
+                                                     + objArmorMod.DisplayNameShort(strLanguage) + ")";
                                 else
-                                    strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage, token) + ')';
+                                    strGearReturn += strSpace + "(" + objArmor.DisplayNameShort(strLanguage, token) + ")";
 
                                 if (blnWireless)
                                     strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
@@ -14910,11 +14910,11 @@ namespace Chummer
                             {
                                 string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                 if (objReturnGear.Parent is Gear parent)
-                                    strGearReturn += strSpace + '(' + objGearCyberware.DisplayNameShort(strLanguage) + ','
+                                    strGearReturn += strSpace + "(" + objGearCyberware.DisplayNameShort(strLanguage) + ","
                                                      + strSpace
-                                                     + strSpace + parent.DisplayNameShort(strLanguage) + ')';
+                                                     + strSpace + parent.DisplayNameShort(strLanguage) + ")";
                                 else
-                                    strGearReturn += strSpace + '(' + objGearCyberware.DisplayNameShort(strLanguage) + ')';
+                                    strGearReturn += strSpace + "(" + objGearCyberware.DisplayNameShort(strLanguage) + ")";
                                 if (blnWireless)
                                     strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
                                 return strGearReturn;
@@ -14928,11 +14928,11 @@ namespace Chummer
                                 {
                                     string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                     if (objReturnGear.Parent is Gear parent)
-                                        strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                        strGearReturn += strSpace + "(" + objVehicle.DisplayNameShort(strLanguage) + ","
                                                          + strSpace
-                                                         + strSpace + parent.DisplayNameShort(strLanguage) + ')';
+                                                         + strSpace + parent.DisplayNameShort(strLanguage) + ")";
                                     else
-                                        strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ')';
+                                        strGearReturn += strSpace + "(" + objVehicle.DisplayNameShort(strLanguage) + ")";
                                     if (blnWireless)
                                         strGearReturn
                                             += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
@@ -14951,17 +14951,17 @@ namespace Chummer
                                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                             if (objReturnGear.Parent is Gear parent)
                                                 strGearReturn
-                                                    += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                    += strSpace + "(" + objVehicle.DisplayNameShort(strLanguage) + ","
                                                        + strSpace
-                                                       + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpace
-                                                       + objAccessory.DisplayNameShort(strLanguage) + ','
-                                                       + strSpace + parent.DisplayNameShort(strLanguage) + ')';
+                                                       + objWeapon.DisplayNameShort(strLanguage) + "," + strSpace
+                                                       + objAccessory.DisplayNameShort(strLanguage) + ","
+                                                       + strSpace + parent.DisplayNameShort(strLanguage) + ")";
                                             else
                                                 strGearReturn
-                                                    += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                    += strSpace + "(" + objVehicle.DisplayNameShort(strLanguage) + ","
                                                        + strSpace
-                                                       + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpace
-                                                       + objAccessory.DisplayNameShort(strLanguage) + ')';
+                                                       + objWeapon.DisplayNameShort(strLanguage) + "," + strSpace
+                                                       + objAccessory.DisplayNameShort(strLanguage) + ")";
                                             if (blnWireless)
                                                 strGearReturn += strSpace
                                                                  + LanguageManager.GetString(
@@ -14985,17 +14985,17 @@ namespace Chummer
                                                 string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                                 if (objReturnGear.Parent is Gear parent)
                                                     strGearReturn
-                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                        += strSpace + "(" + objVehicle.DisplayNameShort(strLanguage) + ","
                                                            + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
-                                                           + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage) + ','
+                                                           + "," + strSpace + objWeapon.DisplayNameShort(strLanguage) + ","
                                                            + strSpace + objAccessory.DisplayNameShort(strLanguage)
-                                                           + ',' + strSpace + parent.DisplayNameShort(strLanguage) + ')';
+                                                           + "," + strSpace + parent.DisplayNameShort(strLanguage) + ")";
                                                 else
                                                     strGearReturn
-                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                        += strSpace + "(" + objVehicle.DisplayNameShort(strLanguage) + ","
                                                            + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
-                                                           + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage) + ','
-                                                           + strSpace + objAccessory.DisplayNameShort(strLanguage) + ')';
+                                                           + "," + strSpace + objWeapon.DisplayNameShort(strLanguage) + ","
+                                                           + strSpace + objAccessory.DisplayNameShort(strLanguage) + ")";
                                                 if (blnWireless)
                                                     strGearReturn += strSpace
                                                                      + LanguageManager.GetString(
@@ -15015,15 +15015,15 @@ namespace Chummer
                                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                             if (objReturnGear.Parent is Gear parent)
                                                 strGearReturn
-                                                    += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                    += strSpace + "(" + objVehicle.DisplayNameShort(strLanguage) + ","
                                                        + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
-                                                       + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage) + ','
-                                                       + strSpace + parent.DisplayNameShort(strLanguage) + ')';
+                                                       + "," + strSpace + objCyberware.DisplayNameShort(strLanguage) + ","
+                                                       + strSpace + parent.DisplayNameShort(strLanguage) + ")";
                                             else
                                                 strGearReturn
-                                                    += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                    += strSpace + "(" + objVehicle.DisplayNameShort(strLanguage) + ","
                                                        + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
-                                                       + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage) + ')';
+                                                       + "," + strSpace + objCyberware.DisplayNameShort(strLanguage) + ")";
                                             if (blnWireless)
                                                 strGearReturn += strSpace
                                                                  + LanguageManager.GetString(
@@ -15050,25 +15050,25 @@ namespace Chummer
                                                     string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                                     if (objReturnGear.Parent is Gear parent)
                                                         strGearReturn
-                                                            += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage)
-                                                               + ','
-                                                               + strSpace + objMount.DisplayNameShort(strLanguage) + ','
+                                                            += strSpace + "(" + objVehicle.DisplayNameShort(strLanguage)
+                                                               + ","
+                                                               + strSpace + objMount.DisplayNameShort(strLanguage) + ","
                                                                + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
-                                                               + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage)
-                                                               + ','
+                                                               + "," + strSpace + objWeapon.DisplayNameShort(strLanguage)
+                                                               + ","
                                                                + strSpace + objAccessory.DisplayNameShort(strLanguage)
-                                                               + ',' + strSpace + parent.DisplayNameShort(strLanguage)
-                                                               + ')';
+                                                               + "," + strSpace + parent.DisplayNameShort(strLanguage)
+                                                               + ")";
                                                     else
                                                         strGearReturn
-                                                            += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage)
-                                                               + ','
-                                                               + strSpace + objMount.DisplayNameShort(strLanguage) + ','
+                                                            += strSpace + "(" + objVehicle.DisplayNameShort(strLanguage)
+                                                               + ","
+                                                               + strSpace + objMount.DisplayNameShort(strLanguage) + ","
                                                                + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
-                                                               + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage)
-                                                               + ','
+                                                               + "," + strSpace + objWeapon.DisplayNameShort(strLanguage)
+                                                               + ","
                                                                + strSpace + objAccessory.DisplayNameShort(strLanguage)
-                                                               + ')';
+                                                               + ")";
                                                     if (blnWireless)
                                                         strGearReturn += strSpace
                                                                          + LanguageManager.GetString(
@@ -15089,21 +15089,21 @@ namespace Chummer
                                                 string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                                 if (objReturnGear.Parent is Gear parent)
                                                     strGearReturn
-                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                           + strSpace + objMount.DisplayNameShort(strLanguage) + ','
+                                                        += strSpace + "(" + objVehicle.DisplayNameShort(strLanguage) + ","
+                                                           + strSpace + objMount.DisplayNameShort(strLanguage) + ","
                                                            + strSpace
                                                            + objVehicleMod.DisplayNameShort(strLanguage)
-                                                           + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage)
-                                                           + ','
-                                                           + strSpace + parent.DisplayNameShort(strLanguage) + ')';
+                                                           + "," + strSpace + objCyberware.DisplayNameShort(strLanguage)
+                                                           + ","
+                                                           + strSpace + parent.DisplayNameShort(strLanguage) + ")";
                                                 else
                                                     strGearReturn
-                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                           + strSpace + objMount.DisplayNameShort(strLanguage) + ','
+                                                        += strSpace + "(" + objVehicle.DisplayNameShort(strLanguage) + ","
+                                                           + strSpace + objMount.DisplayNameShort(strLanguage) + ","
                                                            + strSpace
                                                            + objVehicleMod.DisplayNameShort(strLanguage)
-                                                           + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage)
-                                                           + ')';
+                                                           + "," + strSpace + objCyberware.DisplayNameShort(strLanguage)
+                                                           + ")";
                                                 if (blnWireless)
                                                     strGearReturn += strSpace
                                                                      + LanguageManager.GetString(
@@ -15220,8 +15220,8 @@ namespace Chummer
                                 {
                                     if (objMod.InternalId == strImprovedSourceName)
                                     {
-                                        string strReturnArmorMod = objMod.DisplayNameShort(strLanguage) + strSpace + '('
-                                                                   + objArmor.DisplayNameShort(strLanguage, token) + ')';
+                                        string strReturnArmorMod = objMod.DisplayNameShort(strLanguage) + strSpace + "("
+                                                                   + objArmor.DisplayNameShort(strLanguage, token) + ")";
                                         if (blnWireless)
                                             strReturnArmorMod
                                                 += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
@@ -15402,9 +15402,9 @@ namespace Chummer
                                     .ConfigureAwait(false);
                                 Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
                                 if (objParent != null)
-                                    strWareReturn += strSpace + '(' + await objParent
+                                    strWareReturn += strSpace + "(" + await objParent
                                                          .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false)
-                                                     + ')';
+                                                     + ")";
                                 if (blnWireless)
                                     strWareReturn += strSpace + await LanguageManager
                                         .GetStringAsync(
@@ -15424,19 +15424,19 @@ namespace Chummer
                                     {
                                         strWareReturn
                                             = await objCyberware.DisplayNameShortAsync(strLanguage, token)
-                                                  .ConfigureAwait(false) + strSpace + '('
+                                                  .ConfigureAwait(false) + strSpace + "("
                                               + await objVehicle.DisplayNameShortAsync(strLanguage, token)
-                                                  .ConfigureAwait(false) + ','
+                                                  .ConfigureAwait(false) + ","
                                               + strSpace + await objVehicleMod
                                                   .DisplayNameShortAsync(strLanguage, token: token)
                                                   .ConfigureAwait(false);
                                         Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
                                         if (objParent != null)
-                                            strWareReturn += ',' + strSpace
+                                            strWareReturn += "," + strSpace
                                                                  + await objParent
                                                                      .DisplayNameShortAsync(strLanguage, token)
                                                                      .ConfigureAwait(false);
-                                        strWareReturn += ')';
+                                        strWareReturn += ")";
                                         if (blnWireless)
                                             strWareReturn
                                                 += strSpace + await LanguageManager
@@ -15462,21 +15462,21 @@ namespace Chummer
                                         {
                                             strWareReturn
                                                 = await objCyberware.DisplayNameShortAsync(strLanguage, token)
-                                                      .ConfigureAwait(false) + strSpace + '('
+                                                      .ConfigureAwait(false) + strSpace + "("
                                                   + await objVehicle.DisplayNameShortAsync(strLanguage, token)
-                                                      .ConfigureAwait(false) + ',' + strSpace
+                                                      .ConfigureAwait(false) + "," + strSpace
                                                   + await objMount.DisplayNameShortAsync(strLanguage, token)
-                                                      .ConfigureAwait(false) + ','
+                                                      .ConfigureAwait(false) + ","
                                                   + strSpace + await objVehicleMod
                                                       .DisplayNameShortAsync(strLanguage, token)
                                                       .ConfigureAwait(false);
                                             Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
                                             if (objParent != null)
-                                                strWareReturn += ',' + strSpace
+                                                strWareReturn += "," + strSpace
                                                                      + await objParent
                                                                          .DisplayNameShortAsync(strLanguage, token)
                                                                          .ConfigureAwait(false);
-                                            strWareReturn += ')';
+                                            strWareReturn += ")";
                                             if (blnWireless)
                                                 strWareReturn += strSpace
                                                                  + await LanguageManager.GetStringAsync(
@@ -15505,9 +15505,9 @@ namespace Chummer
                                 strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token: token)
                                     .ConfigureAwait(false);
                                 if (objReturnGear.Parent is Gear parent)
-                                    strGearReturn += strSpace + '(' +
+                                    strGearReturn += strSpace + "(" +
                                                      await parent.DisplayNameShortAsync(strLanguage, token: token)
-                                                         .ConfigureAwait(false) + ')';
+                                                         .ConfigureAwait(false) + ")";
                                 if (blnWireless)
                                     strGearReturn += strSpace + await LanguageManager
                                         .GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false);
@@ -15523,24 +15523,24 @@ namespace Chummer
                                 strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token: token)
                                     .ConfigureAwait(false);
                                 if (objReturnGear.Parent is Gear parent)
-                                    strGearReturn += strSpace + '(' + await objGearAccessory.Parent
+                                    strGearReturn += strSpace + "(" + await objGearAccessory.Parent
                                                          .DisplayNameShortAsync(strLanguage, token: token)
                                                          .ConfigureAwait(false)
-                                                     + ','
+                                                     + ","
                                                      + strSpace
                                                      + await objGearAccessory
                                                          .DisplayNameShortAsync(strLanguage, token: token)
-                                                         .ConfigureAwait(false) + ',' + strSpace
+                                                         .ConfigureAwait(false) + "," + strSpace
                                                      + await parent.DisplayNameShortAsync(strLanguage, token)
-                                                         .ConfigureAwait(false) + ')';
+                                                         .ConfigureAwait(false) + ")";
                                 else
-                                    strGearReturn += strSpace + '(' + await objGearAccessory.Parent
+                                    strGearReturn += strSpace + "(" + await objGearAccessory.Parent
                                                          .DisplayNameShortAsync(strLanguage, token: token)
                                                          .ConfigureAwait(false)
-                                                     + ','
+                                                     + ","
                                                      + strSpace + await objGearAccessory
                                                          .DisplayNameShortAsync(strLanguage, token: token)
-                                                         .ConfigureAwait(false) + ')';
+                                                         .ConfigureAwait(false) + ")";
                                 if (blnWireless)
                                     strGearReturn
                                         += strSpace + await LanguageManager
@@ -15559,26 +15559,26 @@ namespace Chummer
                                     .ConfigureAwait(false);
                                 if (objReturnGear.Parent is Gear objParent)
                                 {
-                                    strGearReturn += strSpace + '(' +
+                                    strGearReturn += strSpace + "(" +
                                                      await objArmor.DisplayNameShortAsync(strLanguage, token)
-                                                         .ConfigureAwait(false) + ','
+                                                         .ConfigureAwait(false) + ","
                                                      + strSpace
                                                      + await objArmorMod.DisplayNameShortAsync(strLanguage, token)
-                                                         .ConfigureAwait(false) + ',' + strSpace
+                                                         .ConfigureAwait(false) + "," + strSpace
                                                      + await objParent.DisplayNameShortAsync(strLanguage, token)
-                                                         .ConfigureAwait(false) + ')';
+                                                         .ConfigureAwait(false) + ")";
                                 }
                                 else if (objArmorMod != null)
-                                    strGearReturn += strSpace + '(' +
+                                    strGearReturn += strSpace + "(" +
                                                      await objArmor.DisplayNameShortAsync(strLanguage, token)
-                                                         .ConfigureAwait(false) + ','
+                                                         .ConfigureAwait(false) + ","
                                                      + strSpace
                                                      + await objArmorMod.DisplayNameShortAsync(strLanguage, token)
-                                                         .ConfigureAwait(false) + ')';
+                                                         .ConfigureAwait(false) + ")";
                                 else
-                                    strGearReturn += strSpace + '(' +
+                                    strGearReturn += strSpace + "(" +
                                                      await objArmor.DisplayNameShortAsync(strLanguage, token)
-                                                         .ConfigureAwait(false) + ')';
+                                                         .ConfigureAwait(false) + ")";
 
                                 if (blnWireless)
                                     strGearReturn += strSpace + await LanguageManager
@@ -15595,16 +15595,16 @@ namespace Chummer
                                 strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token: token)
                                     .ConfigureAwait(false);
                                 if (objReturnGear.Parent is Gear parent)
-                                    strGearReturn += strSpace + '(' + await objGearCyberware
+                                    strGearReturn += strSpace + "(" + await objGearCyberware
                                                          .DisplayNameShortAsync(strLanguage, token: token)
-                                                         .ConfigureAwait(false) + ','
+                                                         .ConfigureAwait(false) + ","
                                                      + strSpace
                                                      + strSpace +
                                                      await parent.DisplayNameShortAsync(strLanguage, token: token)
-                                                         .ConfigureAwait(false) + ')';
+                                                         .ConfigureAwait(false) + ")";
                                 else
-                                    strGearReturn += strSpace + '(' + await objGearCyberware
-                                        .DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false) + ')';
+                                    strGearReturn += strSpace + "(" + await objGearCyberware
+                                        .DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false) + ")";
                                 if (blnWireless)
                                     strGearReturn += strSpace + await LanguageManager
                                         .GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false);
@@ -15621,18 +15621,18 @@ namespace Chummer
                                         .ConfigureAwait(false);
                                     if (objReturnGear.Parent is Gear parent)
                                         strGearReturn
-                                            += strSpace + '(' + await objVehicle
+                                            += strSpace + "(" + await objVehicle
                                                    .DisplayNameShortAsync(strLanguage, token: token)
-                                                   .ConfigureAwait(false) + ','
+                                                   .ConfigureAwait(false) + ","
                                                + strSpace
                                                + strSpace + await parent
                                                    .DisplayNameShortAsync(strLanguage, token: token)
-                                                   .ConfigureAwait(false) + ')';
+                                                   .ConfigureAwait(false) + ")";
                                     else
-                                        strGearReturn += strSpace + '(' + await objVehicle
+                                        strGearReturn += strSpace + "(" + await objVehicle
                                                              .DisplayNameShortAsync(strLanguage, token: token)
                                                              .ConfigureAwait(false)
-                                                         + ')';
+                                                         + ")";
                                     if (blnWireless)
                                         strGearReturn
                                             += strSpace + await LanguageManager
@@ -15661,27 +15661,27 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                                             if (objReturnGear.Parent is Gear parent)
                                                 strGearReturn
-                                                    += strSpace + '(' + await objVehicle
+                                                    += strSpace + "(" + await objVehicle
                                                            .DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false) + ','
+                                                           .ConfigureAwait(false) + ","
                                                        + strSpace
                                                        + await objWeapon.DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false) + ',' + strSpace
+                                                           .ConfigureAwait(false) + "," + strSpace
                                                        + await objAccessory.DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false) + ','
+                                                           .ConfigureAwait(false) + ","
                                                        + strSpace + await parent
                                                            .DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false) + ')';
+                                                           .ConfigureAwait(false) + ")";
                                             else
                                                 strGearReturn
-                                                    += strSpace + '(' + await objVehicle
+                                                    += strSpace + "(" + await objVehicle
                                                            .DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false) + ','
+                                                           .ConfigureAwait(false) + ","
                                                        + strSpace
                                                        + await objWeapon.DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false) + ',' + strSpace
+                                                           .ConfigureAwait(false) + "," + strSpace
                                                        + await objAccessory.DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false) + ')';
+                                                           .ConfigureAwait(false) + ")";
                                             if (blnWireless)
                                                 strGearReturn += strSpace
                                                                  + await LanguageManager.GetStringAsync(
@@ -15717,35 +15717,35 @@ namespace Chummer
                                                     .ConfigureAwait(false);
                                                 if (objReturnGear.Parent is Gear parent)
                                                     strGearReturn
-                                                        += strSpace + '(' + await objVehicle
+                                                        += strSpace + "(" + await objVehicle
                                                                .DisplayNameShortAsync(strLanguage, token)
-                                                               .ConfigureAwait(false) + ','
+                                                               .ConfigureAwait(false) + ","
                                                            + strSpace + await objVehicleMod
                                                                .DisplayNameShortAsync(strLanguage, token)
                                                                .ConfigureAwait(false)
-                                                           + ',' + strSpace
+                                                           + "," + strSpace
                                                            + await objWeapon.DisplayNameShortAsync(strLanguage, token)
-                                                               .ConfigureAwait(false) + ','
+                                                               .ConfigureAwait(false) + ","
                                                            + strSpace + await objAccessory
                                                                .DisplayNameShortAsync(strLanguage, token)
                                                                .ConfigureAwait(false)
-                                                           + ',' + strSpace
+                                                           + "," + strSpace
                                                            + await parent.DisplayNameShortAsync(strLanguage, token)
-                                                               .ConfigureAwait(false) + ')';
+                                                               .ConfigureAwait(false) + ")";
                                                 else
                                                     strGearReturn
-                                                        += strSpace + '(' + await objVehicle
+                                                        += strSpace + "(" + await objVehicle
                                                                .DisplayNameShortAsync(strLanguage, token)
-                                                               .ConfigureAwait(false) + ','
+                                                               .ConfigureAwait(false) + ","
                                                            + strSpace + await objVehicleMod
                                                                .DisplayNameShortAsync(strLanguage, token)
                                                                .ConfigureAwait(false)
-                                                           + ',' + strSpace
+                                                           + "," + strSpace
                                                            + await objWeapon.DisplayNameShortAsync(strLanguage, token)
-                                                               .ConfigureAwait(false) + ','
+                                                               .ConfigureAwait(false) + ","
                                                            + strSpace + await objAccessory
                                                                .DisplayNameShortAsync(strLanguage, token)
-                                                               .ConfigureAwait(false) + ')';
+                                                               .ConfigureAwait(false) + ")";
                                                 if (blnWireless)
                                                     strGearReturn += strSpace
                                                                      + await LanguageManager.GetStringAsync(
@@ -15777,29 +15777,29 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                                             if (objReturnGear.Parent is Gear parent)
                                                 strGearReturn
-                                                    += strSpace + '(' + await objVehicle
+                                                    += strSpace + "(" + await objVehicle
                                                            .DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false) + ','
+                                                           .ConfigureAwait(false) + ","
                                                        + strSpace + await objVehicleMod
                                                            .DisplayNameShortAsync(strLanguage, token)
                                                            .ConfigureAwait(false)
-                                                       + ',' + strSpace + await objCyberware
+                                                       + "," + strSpace + await objCyberware
                                                            .DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false) + ','
+                                                           .ConfigureAwait(false) + ","
                                                        + strSpace + await parent
                                                            .DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false) + ')';
+                                                           .ConfigureAwait(false) + ")";
                                             else
                                                 strGearReturn
-                                                    += strSpace + '(' + await objVehicle
+                                                    += strSpace + "(" + await objVehicle
                                                            .DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false) + ','
+                                                           .ConfigureAwait(false) + ","
                                                        + strSpace + await objVehicleMod
                                                            .DisplayNameShortAsync(strLanguage, token)
                                                            .ConfigureAwait(false)
-                                                       + ',' + strSpace + await objCyberware
+                                                       + "," + strSpace + await objCyberware
                                                            .DisplayNameShortAsync(strLanguage, token)
-                                                           .ConfigureAwait(false) + ')';
+                                                           .ConfigureAwait(false) + ")";
                                             if (blnWireless)
                                                 strGearReturn += strSpace
                                                                  + await LanguageManager.GetStringAsync(
@@ -15838,47 +15838,47 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                                                         if (objReturnGear.Parent is Gear parent)
                                                             strGearReturn
-                                                                += strSpace + '(' + await objVehicle
+                                                                += strSpace + "(" + await objVehicle
                                                                        .DisplayNameShortAsync(strLanguage, token)
                                                                        .ConfigureAwait(false)
-                                                                   + ','
+                                                                   + ","
                                                                    + strSpace + await objMount
                                                                        .DisplayNameShortAsync(strLanguage, token)
-                                                                       .ConfigureAwait(false) + ','
+                                                                       .ConfigureAwait(false) + ","
                                                                    + strSpace + await objVehicleMod
                                                                        .DisplayNameShortAsync(strLanguage, token)
                                                                        .ConfigureAwait(false)
-                                                                   + ',' + strSpace + await objWeapon
+                                                                   + "," + strSpace + await objWeapon
                                                                        .DisplayNameShortAsync(strLanguage, token)
                                                                        .ConfigureAwait(false)
-                                                                   + ','
+                                                                   + ","
                                                                    + strSpace + await objAccessory
                                                                        .DisplayNameShortAsync(strLanguage, token)
                                                                        .ConfigureAwait(false)
-                                                                   + ',' + strSpace + await parent
+                                                                   + "," + strSpace + await parent
                                                                        .DisplayNameShortAsync(strLanguage, token)
                                                                        .ConfigureAwait(false)
-                                                                   + ')';
+                                                                   + ")";
                                                         else
                                                             strGearReturn
-                                                                += strSpace + '(' + await objVehicle
+                                                                += strSpace + "(" + await objVehicle
                                                                        .DisplayNameShortAsync(strLanguage, token)
                                                                        .ConfigureAwait(false)
-                                                                   + ','
+                                                                   + ","
                                                                    + strSpace + await objMount
                                                                        .DisplayNameShortAsync(strLanguage, token)
-                                                                       .ConfigureAwait(false) + ','
+                                                                       .ConfigureAwait(false) + ","
                                                                    + strSpace + await objVehicleMod
                                                                        .DisplayNameShortAsync(strLanguage, token)
                                                                        .ConfigureAwait(false)
-                                                                   + ',' + strSpace + await objWeapon
+                                                                   + "," + strSpace + await objWeapon
                                                                        .DisplayNameShortAsync(strLanguage, token)
                                                                        .ConfigureAwait(false)
-                                                                   + ','
+                                                                   + ","
                                                                    + strSpace + await objAccessory
                                                                        .DisplayNameShortAsync(strLanguage, token)
                                                                        .ConfigureAwait(false)
-                                                                   + ')';
+                                                                   + ")";
                                                         if (blnWireless)
                                                             strGearReturn += strSpace
                                                                              + await LanguageManager.GetStringAsync(
@@ -15905,39 +15905,39 @@ namespace Chummer
                                                     .ConfigureAwait(false);
                                                 if (objReturnGear.Parent is Gear parent)
                                                     strGearReturn
-                                                        += strSpace + '(' + await objVehicle
+                                                        += strSpace + "(" + await objVehicle
                                                                .DisplayNameShortAsync(strLanguage, token)
-                                                               .ConfigureAwait(false) + ','
+                                                               .ConfigureAwait(false) + ","
                                                            + strSpace + await objMount
                                                                .DisplayNameShortAsync(strLanguage, token)
-                                                               .ConfigureAwait(false) + ','
+                                                               .ConfigureAwait(false) + ","
                                                            + strSpace
                                                            + await objVehicleMod
                                                                .DisplayNameShortAsync(strLanguage, token)
                                                                .ConfigureAwait(false)
-                                                           + ',' + strSpace + await objCyberware
+                                                           + "," + strSpace + await objCyberware
                                                                .DisplayNameShortAsync(strLanguage, token)
                                                                .ConfigureAwait(false)
-                                                           + ','
+                                                           + ","
                                                            + strSpace + await parent
                                                                .DisplayNameShortAsync(strLanguage, token)
-                                                               .ConfigureAwait(false) + ')';
+                                                               .ConfigureAwait(false) + ")";
                                                 else
                                                     strGearReturn
-                                                        += strSpace + '(' + await objVehicle
+                                                        += strSpace + "(" + await objVehicle
                                                                .DisplayNameShortAsync(strLanguage, token)
-                                                               .ConfigureAwait(false) + ','
+                                                               .ConfigureAwait(false) + ","
                                                            + strSpace + await objMount
                                                                .DisplayNameShortAsync(strLanguage, token)
-                                                               .ConfigureAwait(false) + ','
+                                                               .ConfigureAwait(false) + ","
                                                            + strSpace
                                                            + await objVehicleMod
                                                                .DisplayNameShortAsync(strLanguage, token)
                                                                .ConfigureAwait(false)
-                                                           + ',' + strSpace + await objCyberware
+                                                           + "," + strSpace + await objCyberware
                                                                .DisplayNameShortAsync(strLanguage, token)
                                                                .ConfigureAwait(false)
-                                                           + ')';
+                                                           + ")";
                                                 if (blnWireless)
                                                     strGearReturn += strSpace
                                                                      + await LanguageManager.GetStringAsync(
@@ -16047,9 +16047,9 @@ namespace Chummer
                             {
                                 string strReturnArmorMod =
                                     await objMod.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false) +
-                                    strSpace + '('
+                                    strSpace + "("
                                     + await objMod.Parent.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false) +
-                                    ')';
+                                    ")";
                                 if (blnWireless)
                                     strReturnArmorMod
                                         += strSpace + await LanguageManager
@@ -16391,7 +16391,7 @@ namespace Chummer
                     if (sbdFilter.Length != 0)
                     {
                         sbdFilter.Length -= 5;
-                        strXPath = "/chummer/grades/grade[(" + sbdFilter + ")]";
+                        strXPath = "/chummer/grades/grade[(" + sbdFilter.ToString() + ")]";
                     }
                     else
                         strXPath = "/chummer/grades/grade";
@@ -16470,7 +16470,7 @@ namespace Chummer
                     if (sbdFilter.Length != 0)
                     {
                         sbdFilter.Length -= 5;
-                        strXPath = "/chummer/grades/grade[(" + sbdFilter + ")]";
+                        strXPath = "/chummer/grades/grade[(" + sbdFilter.ToString() + ")]";
                     }
                     else
                         strXPath = "/chummer/grades/grade";
@@ -16545,7 +16545,7 @@ namespace Chummer
                     if (sbdFilter.Length != 0)
                     {
                         sbdFilter.Length -= 5;
-                        strXPath = "/chummer/grades/grade[(" + sbdFilter + ")]";
+                        strXPath = "/chummer/grades/grade[(" + sbdFilter.ToString() + ")]";
                     }
                     else
                         strXPath = "/chummer/grades/grade";
@@ -16606,9 +16606,9 @@ namespace Chummer
                                                   .ValueOfAsync(this, Improvement.ImprovementType.FreeSpiritPowerPoints,
                                                                 token: token).ConfigureAwait(false)).StandardRound();
 
-                    return intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + '('
+                    return intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + "("
                            + (intPowerPoints - decPowerPoints).ToString(GlobalSettings.CultureInfo) + strSpace
-                           + await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false) + ')';
+                           + await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false) + ")";
                 }
                 else
                 {
@@ -16643,9 +16643,9 @@ namespace Chummer
                                             .SumAsync(x => x.Category != "Weakness" && x.CountTowardsLimit,
                                                       x => x.PowerPoints, token: token).ConfigureAwait(false);
 
-                    return intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + '('
+                    return intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + "("
                            + (intPowerPoints - decUsed).ToString(GlobalSettings.CultureInfo) + strSpace
-                           + await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false) + ')';
+                           + await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false) + ")";
                 }
             }
             finally
@@ -16676,9 +16676,9 @@ namespace Chummer
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
 
-                return intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + '('
+                return intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + "("
                        + (intPowerPoints - decUsedPowerPoints).ToString(GlobalSettings.CultureInfo)
-                       + strSpace + await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false) + ')';
+                       + strSpace + await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false) + ")";
             }
             finally
             {
@@ -18971,8 +18971,8 @@ namespace Chummer
                     if (objDisablingImprovement != null)
                     {
                         strDisabledSource = LanguageManager.GetString("String_Space", token: token) +
-                                            '(' + GetObjectName(objDisablingImprovement, GlobalSettings.Language, token: token) +
-                                            ')' +
+                                            "(" + GetObjectName(objDisablingImprovement, GlobalSettings.Language, token: token) +
+                                            ")" +
                                             LanguageManager.GetString("String_Space", token: token);
                     }
                 }
@@ -19034,8 +19034,8 @@ namespace Chummer
                     if (objDisablingImprovement != null)
                     {
                         strDisabledSource = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) +
-                                            '(' + await GetObjectNameAsync(objDisablingImprovement, GlobalSettings.Language, token: token).ConfigureAwait(false) +
-                                            ')' +
+                                            "(" + await GetObjectNameAsync(objDisablingImprovement, GlobalSettings.Language, token: token).ConfigureAwait(false) +
+                                            ")" +
                                             await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                     }
                 }
@@ -25801,9 +25801,9 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 using (LockObject.EnterReadLock())
-                    return PowerPointsTotal.ToString(GlobalSettings.CultureInfo) + strSpace + '(' +
+                    return PowerPointsTotal.ToString(GlobalSettings.CultureInfo) + strSpace + "(" +
                            (PowerPointsTotal - PowerPointsUsed).ToString(GlobalSettings.CultureInfo) + strSpace +
-                           LanguageManager.GetString("String_Remaining") + ')';
+                           LanguageManager.GetString("String_Remaining") + ")";
             }
         }
 
@@ -25815,11 +25815,11 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 decimal decTotal = await GetPowerPointsTotalAsync(token).ConfigureAwait(false);
-                return decTotal.ToString(GlobalSettings.CultureInfo) + strSpace + '(' +
+                return decTotal.ToString(GlobalSettings.CultureInfo) + strSpace + "(" +
                        (decTotal - await GetPowerPointsUsedAsync(token).ConfigureAwait(false)).ToString(
                            GlobalSettings.CultureInfo) + strSpace +
                        await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false)
-                       + ')';
+                       + ")";
             }
             finally
             {
@@ -28895,7 +28895,7 @@ namespace Chummer
                 {
                     string strEssenceFormat = Settings.EssenceFormat;
                     return PrototypeTranshumanEssenceUsed.ToString(strEssenceFormat, GlobalSettings.CultureInfo)
-                           + strSpace + '/' + strSpace +
+                           + strSpace + "/" + strSpace +
                            PrototypeTranshuman.ToString(strEssenceFormat, GlobalSettings.CultureInfo);
                 }
             }
@@ -28912,7 +28912,7 @@ namespace Chummer
                 string strEssenceFormat = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEssenceFormatAsync(token).ConfigureAwait(false);
                 return (await GetPrototypeTranshumanEssenceUsedAsync(token).ConfigureAwait(false)).ToString(
                            strEssenceFormat, GlobalSettings.CultureInfo) +
-                       strSpace + '/' + strSpace +
+                       strSpace + "/" + strSpace +
                        (await GetPrototypeTranshumanAsync(token).ConfigureAwait(false)).ToString(
                            strEssenceFormat, GlobalSettings.CultureInfo);
             }
@@ -28969,18 +28969,18 @@ namespace Chummer
                     int intINTAttributeModifiers = INT.AttributeModifiers;
                     string strSpace = LanguageManager.GetString("String_Space");
 
-                    string strInit = REA.CurrentDisplayAbbrev + strSpace + '(' + REA.Value.ToString(GlobalSettings.CultureInfo)
-                                     + ')'
-                                     + strSpace + '+' + strSpace + INT.CurrentDisplayAbbrev + strSpace + '('
-                                     + INT.Value.ToString(GlobalSettings.CultureInfo) + ')';
+                    string strInit = REA.CurrentDisplayAbbrev + strSpace + "(" + REA.Value.ToString(GlobalSettings.CultureInfo)
+                                     + ")"
+                                     + strSpace + "+" + strSpace + INT.CurrentDisplayAbbrev + strSpace + "("
+                                     + INT.Value.ToString(GlobalSettings.CultureInfo) + ")";
                     if (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) != 0
                         || intINTAttributeModifiers != 0 || intREAAttributeModifiers != 0 || WoundModifier != 0)
                     {
-                        strInit += strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Modifiers") + strSpace
-                                   + '('
+                        strInit += strSpace + "+" + strSpace + LanguageManager.GetString("Tip_Modifiers") + strSpace
+                                   + "("
                                    + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative)
                                       + intINTAttributeModifiers + intREAAttributeModifiers + WoundModifier)
-                                   .ToString(GlobalSettings.CultureInfo) + ')';
+                                   .ToString(GlobalSettings.CultureInfo) + ")";
                     }
 
                     return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Initiative"),
@@ -29004,25 +29004,25 @@ namespace Chummer
                     .ConfigureAwait(false);
                 string strInit =
                     await objRea.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) +
-                    strSpace + '(' +
+                    strSpace + "(" +
                     (await objRea.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) +
-                    ')' + strSpace + '+' + strSpace +
+                    ")" + strSpace + "+" + strSpace +
                     await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) +
-                    strSpace + '(' +
+                    strSpace + "(" +
                     (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) +
-                    ')';
+                    ")";
                 decimal decFromImprovements = await ImprovementManager
                     .ValueOfAsync(this, Improvement.ImprovementType.Initiative, token: token).ConfigureAwait(false);
                 int intWoundModifier = await GetWoundModifierAsync(token).ConfigureAwait(false);
                 if (decFromImprovements != 0 || intINTAttributeModifiers != 0 || intREAAttributeModifiers != 0 ||
                     intWoundModifier != 0)
                 {
-                    strInit += strSpace + '+' + strSpace +
+                    strInit += strSpace + "+" + strSpace +
                                await LanguageManager.GetStringAsync("Tip_Modifiers", token: token)
-                                   .ConfigureAwait(false) + strSpace + '(' +
+                                   .ConfigureAwait(false) + strSpace + "(" +
                                (decFromImprovements + intINTAttributeModifiers + intREAAttributeModifiers +
                                 intWoundModifier)
-                               .ToString(GlobalSettings.CultureInfo) + ')';
+                               .ToString(GlobalSettings.CultureInfo) + ")";
                 }
 
                 return string.Format(GlobalSettings.CultureInfo,
@@ -29182,12 +29182,12 @@ namespace Chummer
                         return string.Empty;
                     int intINTAttributeModifiers = INT.AttributeModifiers;
                     string strSpace = LanguageManager.GetString("String_Space");
-                    string strInit = INT.CurrentDisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalSettings.CultureInfo)
-                                     + ')' + strSpace + '×' + strSpace + 2.ToString(GlobalSettings.CultureInfo);
+                    string strInit = INT.CurrentDisplayAbbrev + strSpace + "(" + INT.Value.ToString(GlobalSettings.CultureInfo)
+                                     + ")" + strSpace + "×" + strSpace + 2.ToString(GlobalSettings.CultureInfo);
                     if (intINTAttributeModifiers != 0 || WoundModifier != 0)
-                        strInit += LanguageManager.GetString("Tip_Modifiers") + strSpace + '('
+                        strInit += LanguageManager.GetString("Tip_Modifiers") + strSpace + "("
                                    + (intINTAttributeModifiers + WoundModifier).ToString(GlobalSettings.CultureInfo)
-                                   + ')';
+                                   + ")";
                     return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Initiative"),
                                          strInit, AstralInitiativeDice.ToString(GlobalSettings.CultureInfo));
                 }
@@ -29207,17 +29207,17 @@ namespace Chummer
                     .ConfigureAwait(false);
                 string strInit =
                     await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) +
-                    strSpace + '(' +
+                    strSpace + "(" +
                     (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) +
-                    ')' + strSpace + '×' + strSpace + 2.ToString(GlobalSettings.CultureInfo);
+                    ")" + strSpace + "×" + strSpace + 2.ToString(GlobalSettings.CultureInfo);
 
                 int intWoundModifier = await GetWoundModifierAsync(token).ConfigureAwait(false);
                 if (intINTAttributeModifiers != 0 || intWoundModifier != 0)
                 {
-                    strInit += strSpace + '+' + strSpace +
+                    strInit += strSpace + "+" + strSpace +
                                await LanguageManager.GetStringAsync("Tip_Modifiers", token: token)
-                                   .ConfigureAwait(false) + strSpace + '(' +
-                               (intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ')';
+                                   .ConfigureAwait(false) + strSpace + "(" +
+                               (intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ")";
                 }
 
                 return string.Format(GlobalSettings.CultureInfo,
@@ -29352,8 +29352,8 @@ namespace Chummer
                     string strInit;
                     if (IsAI)
                     {
-                        strInit = INT.CurrentDisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalSettings.CultureInfo)
-                                  + ')';
+                        strInit = INT.CurrentDisplayAbbrev + strSpace + "(" + INT.Value.ToString(GlobalSettings.CultureInfo)
+                                  + ")";
 
                         if (HomeNode != null)
                         {
@@ -29365,35 +29365,35 @@ namespace Chummer
                                     intHomeNodeDP = intHomeNodePilot;
                             }
 
-                            strInit += strSpace + '+' + strSpace + LanguageManager.GetString("String_DataProcessing") +
-                                       strSpace + '(' + intHomeNodeDP.ToString(GlobalSettings.CultureInfo) + ')';
+                            strInit += strSpace + "+" + strSpace + LanguageManager.GetString("String_DataProcessing") +
+                                       strSpace + "(" + intHomeNodeDP.ToString(GlobalSettings.CultureInfo) + ")";
                         }
 
                         if (intINTAttributeModifiers != 0 || WoundModifier != 0)
                         {
-                            strInit += strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Modifiers") + strSpace
+                            strInit += strSpace + "+" + strSpace + LanguageManager.GetString("Tip_Modifiers") + strSpace
                                        +
-                                       '(' +
+                                       "(" +
                                        (intINTAttributeModifiers + WoundModifier).ToString(GlobalSettings.CultureInfo)
-                                       + ')';
+                                       + ")";
                         }
                     }
                     else
                     {
                         int intREAAttributeModifiers = REA.AttributeModifiers;
 
-                        strInit = REA.CurrentDisplayAbbrev + strSpace + '(' + REA.Value.ToString(GlobalSettings.CultureInfo)
-                                  + ')' +
-                                  strSpace + '+' + strSpace + INT.CurrentDisplayAbbrev + strSpace + '(' +
-                                  INT.Value.ToString(GlobalSettings.CultureInfo) + ')';
+                        strInit = REA.CurrentDisplayAbbrev + strSpace + "(" + REA.Value.ToString(GlobalSettings.CultureInfo)
+                                  + ")" +
+                                  strSpace + "+" + strSpace + INT.CurrentDisplayAbbrev + strSpace + "(" +
+                                  INT.Value.ToString(GlobalSettings.CultureInfo) + ")";
                         if (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) != 0
                             || intINTAttributeModifiers != 0 || intREAAttributeModifiers != 0 || WoundModifier != 0)
                         {
-                            strInit += strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Modifiers") + strSpace
+                            strInit += strSpace + "+" + strSpace + LanguageManager.GetString("Tip_Modifiers") + strSpace
                                        +
-                                       '(' + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) +
+                                       "(" + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) +
                                               intINTAttributeModifiers + intREAAttributeModifiers + WoundModifier)
-                                       .ToString(GlobalSettings.CultureInfo) + ')';
+                                       .ToString(GlobalSettings.CultureInfo) + ")";
                         }
                     }
 
@@ -29417,7 +29417,7 @@ namespace Chummer
                 string strInit;
                 if (await GetIsAIAsync(token).ConfigureAwait(false))
                 {
-                    strInit = await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + '(' + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
+                    strInit = await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + "(" + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ")";
 
                     IHasMatrixAttributes objHomeNode = await GetHomeNodeAsync(token).ConfigureAwait(false);
                     if (objHomeNode != null)
@@ -29430,13 +29430,13 @@ namespace Chummer
                                 intHomeNodeDP = intHomeNodePilot;
                         }
 
-                        strInit += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("String_DataProcessing", token: token).ConfigureAwait(false) + strSpace + '(' + intHomeNodeDP.ToString(GlobalSettings.CultureInfo) + ')';
+                        strInit += strSpace + "+" + strSpace + await LanguageManager.GetStringAsync("String_DataProcessing", token: token).ConfigureAwait(false) + strSpace + "(" + intHomeNodeDP.ToString(GlobalSettings.CultureInfo) + ")";
                     }
 
                     int intWoundModifier = await GetWoundModifierAsync(token).ConfigureAwait(false);
                     if (intINTAttributeModifiers != 0 || intWoundModifier != 0)
                     {
-                        strInit += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false) + strSpace + '(' + (intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ')';
+                        strInit += strSpace + "+" + strSpace + await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false) + strSpace + "(" + (intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ")";
                     }
                 }
                 else
@@ -29444,12 +29444,12 @@ namespace Chummer
                     CharacterAttrib objRea = await GetAttributeAsync("REA", token: token).ConfigureAwait(false);
                     int intREAAttributeModifiers = await objRea.GetAttributeModifiersAsync(token).ConfigureAwait(false);
 
-                    strInit = await objRea.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + '(' + (await objRea.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '+' + strSpace + await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + '(' + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
+                    strInit = await objRea.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + "(" + (await objRea.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ")" + strSpace + "+" + strSpace + await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + "(" + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ")";
                     decimal decFromImprovements = await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.Initiative, token: token).ConfigureAwait(false);
                     int intWoundModifier = await GetWoundModifierAsync(token).ConfigureAwait(false);
                     if (decFromImprovements != 0 || intINTAttributeModifiers != 0 || intREAAttributeModifiers != 0 || intWoundModifier != 0)
                     {
-                        strInit += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false) + strSpace + '(' + (decFromImprovements + intINTAttributeModifiers + intREAAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ')';
+                        strInit += strSpace + "+" + strSpace + await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false) + strSpace + "(" + (decFromImprovements + intINTAttributeModifiers + intREAAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ")";
                     }
                 }
 
@@ -29679,23 +29679,23 @@ namespace Chummer
 
                     string strSpace = LanguageManager.GetString("String_Space");
 
-                    string strInit = INT.CurrentDisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalSettings.CultureInfo)
-                                     + ')';
+                    string strInit = INT.CurrentDisplayAbbrev + strSpace + "(" + INT.Value.ToString(GlobalSettings.CultureInfo)
+                                     + ")";
                     if (ActiveCommlink != null)
                     {
-                        strInit += strSpace + '+' + strSpace + LanguageManager.GetString("String_DataProcessing") +
-                                   strSpace + '(' + ActiveCommlink.GetTotalMatrixAttribute("Data Processing")
-                                                                  .ToString(GlobalSettings.CultureInfo) + ')';
+                        strInit += strSpace + "+" + strSpace + LanguageManager.GetString("String_DataProcessing") +
+                                   strSpace + "(" + ActiveCommlink.GetTotalMatrixAttribute("Data Processing")
+                                                                  .ToString(GlobalSettings.CultureInfo) + ")";
                     }
 
                     if (ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative) != 0
                         || intINTAttributeModifiers != 0 || WoundModifier != 0)
                     {
-                        strInit += strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Modifiers") + strSpace
-                                   + '(' +
+                        strInit += strSpace + "+" + strSpace + LanguageManager.GetString("Tip_Modifiers") + strSpace
+                                   + "(" +
                                    (ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative) +
                                     intINTAttributeModifiers + WoundModifier).ToString(GlobalSettings.CultureInfo)
-                                   + ')';
+                                   + ")";
                     }
 
                     return string.Format(GlobalSettings.CultureInfo,
@@ -29725,19 +29725,19 @@ namespace Chummer
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
 
-                string strInit = await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + '(' + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
+                string strInit = await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + "(" + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ")";
 
                 IHasMatrixAttributes objActiveCommlink = await GetActiveCommlinkAsync(token).ConfigureAwait(false);
                 if (objActiveCommlink != null)
                 {
-                    strInit += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("String_DataProcessing", token: token).ConfigureAwait(false) + strSpace + '(' + (await objActiveCommlink.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
+                    strInit += strSpace + "+" + strSpace + await LanguageManager.GetStringAsync("String_DataProcessing", token: token).ConfigureAwait(false) + strSpace + "(" + (await objActiveCommlink.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ")";
                 }
 
                 decimal decFromImprovements = await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.MatrixInitiative, token: token).ConfigureAwait(false);
                 int intWoundModifier = await GetWoundModifierAsync(token).ConfigureAwait(false);
                 if (decFromImprovements != 0 || intINTAttributeModifiers != 0 || intWoundModifier != 0)
                 {
-                    strInit += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false) + strSpace + '(' + (decFromImprovements + intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ')';
+                    strInit += strSpace + "+" + strSpace + await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false) + strSpace + "(" + (decFromImprovements + intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ")";
                 }
 
                 return string.Format(GlobalSettings.CultureInfo,
@@ -29934,23 +29934,23 @@ namespace Chummer
 
                     string strSpace = LanguageManager.GetString("String_Space");
 
-                    string strInit = INT.CurrentDisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalSettings.CultureInfo)
-                                     + ')';
+                    string strInit = INT.CurrentDisplayAbbrev + strSpace + "(" + INT.Value.ToString(GlobalSettings.CultureInfo)
+                                     + ")";
                     if (ActiveCommlink != null)
                     {
-                        strInit += strSpace + '+' + strSpace + LanguageManager.GetString("String_DataProcessing") +
-                                   strSpace + '(' + ActiveCommlink.GetTotalMatrixAttribute("Data Processing")
-                                                                  .ToString(GlobalSettings.CultureInfo) + ')';
+                        strInit += strSpace + "+" + strSpace + LanguageManager.GetString("String_DataProcessing") +
+                                   strSpace + "(" + ActiveCommlink.GetTotalMatrixAttribute("Data Processing")
+                                                                  .ToString(GlobalSettings.CultureInfo) + ")";
                     }
 
                     if (ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative) != 0
                         || intINTAttributeModifiers != 0 || WoundModifier != 0)
                     {
-                        strInit += strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Modifiers") + strSpace
-                                   + '(' +
+                        strInit += strSpace + "+" + strSpace + LanguageManager.GetString("Tip_Modifiers") + strSpace
+                                   + "(" +
                                    (ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative) +
                                     intINTAttributeModifiers + WoundModifier).ToString(GlobalSettings.CultureInfo)
-                                   + ')';
+                                   + ")";
                     }
 
                     return string.Format(GlobalSettings.CultureInfo,
@@ -29980,19 +29980,19 @@ namespace Chummer
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
 
-                string strInit = await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + '(' + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
+                string strInit = await objInt.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + "(" + (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ")";
 
                 IHasMatrixAttributes objActiveCommlink = await GetActiveCommlinkAsync(token).ConfigureAwait(false);
                 if (objActiveCommlink != null)
                 {
-                    strInit += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("String_DataProcessing", token: token).ConfigureAwait(false) + strSpace + '(' + (await objActiveCommlink.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
+                    strInit += strSpace + "+" + strSpace + await LanguageManager.GetStringAsync("String_DataProcessing", token: token).ConfigureAwait(false) + strSpace + "(" + (await objActiveCommlink.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ")";
                 }
 
                 decimal decFromImprovements = await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.MatrixInitiative, token: token).ConfigureAwait(false);
                 int intWoundModifier = await GetWoundModifierAsync(token).ConfigureAwait(false);
                 if (decFromImprovements != 0 || intINTAttributeModifiers != 0 || intWoundModifier != 0)
                 {
-                    strInit += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false) + strSpace + '(' + (decFromImprovements + intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ')';
+                    strInit += strSpace + "+" + strSpace + await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false) + strSpace + "(" + (decFromImprovements + intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ")";
                 }
 
                 return string.Format(GlobalSettings.CultureInfo,
@@ -30132,7 +30132,7 @@ namespace Chummer
                 foreach (string strAttributeName in MatrixAttributes.MatrixAttributeStrings)
                 {
                     strReturn = strReturn
-                        .CheapReplace('{' + strAttributeName + '}', () =>
+                        .CheapReplace("{" + strAttributeName + "}", () =>
                             dicValueOverrides != null &&
                             dicValueOverrides.TryGetValue(strAttributeName, out int intOverride)
                                 ? intOverride.ToString()
@@ -30156,7 +30156,7 @@ namespace Chummer
             {
                 foreach (string strAttributeName in MatrixAttributes.MatrixAttributeStrings)
                 {
-                    sbdInput.CheapReplace('{' + strAttributeName + '}', () =>
+                    sbdInput.CheapReplace("{" + strAttributeName + "}", () =>
                         dicValueOverrides != null &&
                         dicValueOverrides.TryGetValue(strAttributeName, out int intOverride)
                             ? intOverride.ToString()
@@ -31963,10 +31963,10 @@ namespace Chummer
                 {
                     int intCalculatedNotoriety = CalculatedNotoriety;
                     return (intCalculatedNotoriety >= 0
-                               ? strSpace + '+' + strSpace +
+                               ? strSpace + "+" + strSpace +
                                  intCalculatedNotoriety.ToString(GlobalSettings.CultureInfo)
-                               : strSpace + '-' + strSpace +
-                                 (-intCalculatedNotoriety).ToString(GlobalSettings.CultureInfo)) + strSpace + '=' +
+                               : strSpace + "-" + strSpace +
+                                 (-intCalculatedNotoriety).ToString(GlobalSettings.CultureInfo)) + strSpace + "=" +
                            strSpace + TotalNotoriety.ToString(GlobalSettings.CultureInfo);
                 }
             }
@@ -31982,10 +31982,10 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 int intCalculatedNotoriety = await GetCalculatedNotorietyAsync(token).ConfigureAwait(false);
                 return (intCalculatedNotoriety >= 0
-                           ? strSpace + '+' + strSpace + intCalculatedNotoriety.ToString(GlobalSettings.CultureInfo)
-                           : strSpace + '-' + strSpace +
+                           ? strSpace + "+" + strSpace + intCalculatedNotoriety.ToString(GlobalSettings.CultureInfo)
+                           : strSpace + "-" + strSpace +
                              (-intCalculatedNotoriety).ToString(GlobalSettings.CultureInfo)) +
-                       strSpace + '=' + strSpace +
+                       strSpace + "=" + strSpace +
                        (await GetTotalNotorietyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
             }
             finally
@@ -32171,11 +32171,11 @@ namespace Chummer
                     int intTotalPublicAwareness = TotalPublicAwareness;
                     int intCalculatedPublicAwareness = CalculatedPublicAwareness;
                     return (intCalculatedPublicAwareness >= 0
-                               ? strSpace + '+' + strSpace +
+                               ? strSpace + "+" + strSpace +
                                  intCalculatedPublicAwareness.ToString(GlobalSettings.CultureInfo)
-                               : strSpace + '-' + strSpace +
+                               : strSpace + "-" + strSpace +
                                  (-intCalculatedPublicAwareness).ToString(GlobalSettings.CultureInfo)) + strSpace +
-                           '=' + strSpace + intTotalPublicAwareness.ToString(GlobalSettings.CultureInfo);
+                           "=" + strSpace + intTotalPublicAwareness.ToString(GlobalSettings.CultureInfo);
                 }
             }
         }
@@ -32191,11 +32191,11 @@ namespace Chummer
                 int intTotalPublicAwareness = await GetTotalPublicAwarenessAsync(token).ConfigureAwait(false);
                 int intCalculatedPublicAwareness = await GetCalculatedPublicAwarenessAsync(token).ConfigureAwait(false);
                 return (intCalculatedPublicAwareness >= 0
-                           ? strSpace + '+' + strSpace +
+                           ? strSpace + "+" + strSpace +
                              intCalculatedPublicAwareness.ToString(GlobalSettings.CultureInfo)
-                           : strSpace + '-' + strSpace +
+                           : strSpace + "-" + strSpace +
                              (-intCalculatedPublicAwareness).ToString(GlobalSettings.CultureInfo)) + strSpace +
-                       '=' + strSpace + intTotalPublicAwareness.ToString(GlobalSettings.CultureInfo);
+                       "=" + strSpace + intTotalPublicAwareness.ToString(GlobalSettings.CultureInfo);
             }
             finally
             {
@@ -34129,9 +34129,9 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intDodge.ToString(GlobalSettings.CultureInfo)
                         : intDodge.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intDodge + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                          + ')';
+                          + ")";
                 }
             }
         }
@@ -34148,7 +34148,7 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intDodge.ToString(GlobalSettings.CultureInfo)
                     : intDodge.ToString(GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
-                        + '(' + (intDodge + intCounterspellingDice).ToString(GlobalSettings.CultureInfo) + ')';
+                        + "(" + (intDodge + intCounterspellingDice).ToString(GlobalSettings.CultureInfo) + ")";
             }
             finally
             {
@@ -34167,10 +34167,10 @@ namespace Chummer
                     if (CurrentCounterspellingDice != 0)
                     {
                         string strSpace = LanguageManager.GetString("String_Space");
-                        strToolTip += strSpace + '+' + strSpace + LanguageManager.GetString("Label_CounterspellingDice")
+                        strToolTip += strSpace + "+" + strSpace + LanguageManager.GetString("Label_CounterspellingDice")
                                       +
-                                      strSpace + '(' + CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo)
-                                      + ')';
+                                      strSpace + "(" + CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo)
+                                      + ")";
                     }
 
                     return strToolTip;
@@ -34190,10 +34190,10 @@ namespace Chummer
                 if (intCounterspellingDice != 0)
                 {
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                    strToolTip += strSpace + '+' + strSpace + await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)
+                    strToolTip += strSpace + "+" + strSpace + await LanguageManager.GetStringAsync("Label_CounterspellingDice", token: token).ConfigureAwait(false)
                                   +
-                                  strSpace + '(' + intCounterspellingDice.ToString(GlobalSettings.CultureInfo)
-                                  + ')';
+                                  strSpace + "(" + intCounterspellingDice.ToString(GlobalSettings.CultureInfo)
+                                  + ")";
                 }
 
                 return strToolTip;
@@ -34270,9 +34270,9 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intSoak.ToString(GlobalSettings.CultureInfo)
                         : intSoak.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intSoak + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                          + ')';
+                          + ")";
                 }
             }
         }
@@ -34289,9 +34289,9 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intSoak.ToString(GlobalSettings.CultureInfo)
                     : intSoak.ToString(GlobalSettings.CultureInfo) +
-                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
                       (intSoak + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                      + ")";
             }
             finally
             {
@@ -34474,9 +34474,9 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intSoak.ToString(GlobalSettings.CultureInfo)
                         : intSoak.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intSoak + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                          + ')';
+                          + ")";
                 }
             }
         }
@@ -34493,9 +34493,9 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intSoak.ToString(GlobalSettings.CultureInfo)
                     : intSoak.ToString(GlobalSettings.CultureInfo) +
-                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
                       (intSoak + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                      + ")";
             }
             finally
             {
@@ -34662,10 +34662,10 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intSoak.ToString(GlobalSettings.CultureInfo)
                         : intSoak.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intSoak + intCounterspellingDice).ToString(
                               GlobalSettings.CultureInfo)
-                          + ')';
+                          + ")";
                 }
             }
         }
@@ -34682,9 +34682,9 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intSoak.ToString(GlobalSettings.CultureInfo)
                     : intSoak.ToString(GlobalSettings.CultureInfo) +
-                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
                       (intSoak + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                      + ")";
             }
             finally
             {
@@ -34857,9 +34857,9 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intDefense.ToString(GlobalSettings.CultureInfo)
                         : intDefense.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                          + ')';
+                          + ")";
                 }
             }
         }
@@ -34876,9 +34876,9 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intDefense.ToString(GlobalSettings.CultureInfo)
                     : intDefense.ToString(GlobalSettings.CultureInfo) +
-                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
                       (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                      + ")";
             }
             finally
             {
@@ -35055,9 +35055,9 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intDefense.ToString(GlobalSettings.CultureInfo)
                         : intDefense.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                          + ')';
+                          + ")";
                 }
             }
         }
@@ -35074,9 +35074,9 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intDefense.ToString(GlobalSettings.CultureInfo)
                     : intDefense.ToString(GlobalSettings.CultureInfo) +
-                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
                       (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                      + ")";
             }
             finally
             {
@@ -35253,9 +35253,9 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intDefense.ToString(GlobalSettings.CultureInfo)
                         : intDefense.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                          + ')';
+                          + ")";
                 }
             }
         }
@@ -35272,9 +35272,9 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intDefense.ToString(GlobalSettings.CultureInfo)
                     : intDefense.ToString(GlobalSettings.CultureInfo) +
-                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
                       (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                      + ")";
             }
             finally
             {
@@ -35426,9 +35426,9 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intDefense.ToString(GlobalSettings.CultureInfo)
                         : intDefense.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                          + ')';
+                          + ")";
                 }
             }
         }
@@ -35445,9 +35445,9 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intDefense.ToString(GlobalSettings.CultureInfo)
                     : intDefense.ToString(GlobalSettings.CultureInfo) +
-                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
                       (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                      + ")";
             }
             finally
             {
@@ -35618,9 +35618,9 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intDefense.ToString(GlobalSettings.CultureInfo)
                         : intDefense.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                          + ')';
+                          + ")";
                 }
             }
         }
@@ -35637,9 +35637,9 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intDefense.ToString(GlobalSettings.CultureInfo)
                     : intDefense.ToString(GlobalSettings.CultureInfo) +
-                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
                       (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                      + ")";
             }
             finally
             {
@@ -35816,9 +35816,9 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intDefense.ToString(GlobalSettings.CultureInfo)
                         : intDefense.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                          + ')';
+                          + ")";
                 }
             }
         }
@@ -35835,9 +35835,9 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intDefense.ToString(GlobalSettings.CultureInfo)
                     : intDefense.ToString(GlobalSettings.CultureInfo) +
-                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
                       (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                      + ")";
             }
             finally
             {
@@ -35989,9 +35989,9 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intDefense.ToString(GlobalSettings.CultureInfo)
                         : intDefense.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                          + ')';
+                          + ")";
                 }
             }
         }
@@ -36008,9 +36008,9 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intDefense.ToString(GlobalSettings.CultureInfo)
                     : intDefense.ToString(GlobalSettings.CultureInfo) +
-                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
                       (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                      + ")";
             }
             finally
             {
@@ -36162,9 +36162,9 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intDefense.ToString(GlobalSettings.CultureInfo)
                         : intDefense.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                          + ')';
+                          + ")";
                 }
             }
         }
@@ -36181,9 +36181,9 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intDefense.ToString(GlobalSettings.CultureInfo)
                     : intDefense.ToString(GlobalSettings.CultureInfo) +
-                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
                       (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                      + ")";
             }
             finally
             {
@@ -36334,9 +36334,9 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intDefense.ToString(GlobalSettings.CultureInfo)
                         : intDefense.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                          + ')';
+                          + ")";
                 }
             }
         }
@@ -36353,9 +36353,9 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intDefense.ToString(GlobalSettings.CultureInfo)
                     : intDefense.ToString(GlobalSettings.CultureInfo) +
-                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
                       (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                      + ")";
             }
             finally
             {
@@ -36510,9 +36510,9 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intDefense.ToString(GlobalSettings.CultureInfo)
                         : intDefense.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                          + ')';
+                          + ")";
                 }
             }
         }
@@ -36529,9 +36529,9 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intDefense.ToString(GlobalSettings.CultureInfo)
                     : intDefense.ToString(GlobalSettings.CultureInfo) +
-                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
                       (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                      + ")";
             }
             finally
             {
@@ -36683,10 +36683,10 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intDefense.ToString(GlobalSettings.CultureInfo)
                         : intDefense.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intDefense + intCounterspellingDice).ToString(
                               GlobalSettings.CultureInfo)
-                          + ')';
+                          + ")";
                 }
             }
         }
@@ -36703,9 +36703,9 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intDefense.ToString(GlobalSettings.CultureInfo)
                     : intDefense.ToString(GlobalSettings.CultureInfo) +
-                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
                       (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                      + ")";
             }
             finally
             {
@@ -36852,10 +36852,10 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intDefense.ToString(GlobalSettings.CultureInfo)
                         : intDefense.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intDefense + intCounterspellingDice).ToString(
                               GlobalSettings.CultureInfo)
-                          + ')';
+                          + ")";
                 }
             }
         }
@@ -36872,9 +36872,9 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intDefense.ToString(GlobalSettings.CultureInfo)
                     : intDefense.ToString(GlobalSettings.CultureInfo) +
-                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
                       (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                      + ")";
             }
             finally
             {
@@ -37040,9 +37040,9 @@ namespace Chummer
                     return intCounterspellingDice == 0
                         ? intDefense.ToString(GlobalSettings.CultureInfo)
                         : intDefense.ToString(GlobalSettings.CultureInfo) +
-                          LanguageManager.GetString("String_Space") + '(' +
+                          LanguageManager.GetString("String_Space") + "(" +
                           (intDefense + intCounterspellingDice).ToString(
-                              GlobalSettings.CultureInfo) + ')';
+                              GlobalSettings.CultureInfo) + ")";
                 }
             }
         }
@@ -37059,9 +37059,9 @@ namespace Chummer
                 return intCounterspellingDice == 0
                     ? intDefense.ToString(GlobalSettings.CultureInfo)
                     : intDefense.ToString(GlobalSettings.CultureInfo) +
-                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                      await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
                       (intDefense + intCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                      + ")";
             }
             finally
             {
@@ -37770,7 +37770,7 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                     return TotalCarriedWeight.ToString(Settings.WeightFormat, GlobalSettings.CultureInfo) + strSpace
                         + "kg"
-                        + strSpace + '/' + strSpace
+                        + strSpace + "/" + strSpace
                         + CarryLimit.ToString(Settings.WeightFormat, GlobalSettings.CultureInfo) + strSpace + "kg";
             }
         }
@@ -37791,7 +37791,7 @@ namespace Chummer
                 return (await GetTotalCarriedWeightAsync(token).ConfigureAwait(false)).ToString(strFormat,
                         GlobalSettings.CultureInfo) + strSpace
                                                     + "kg"
-                                                    + strSpace + '/' + strSpace
+                                                    + strSpace + "/" + strSpace
                                                     + (await GetCarryLimitAsync(token).ConfigureAwait(false)).ToString(
                                                         strFormat, GlobalSettings.CultureInfo) + strSpace + "kg";
             }
@@ -38187,42 +38187,42 @@ namespace Chummer
                         {
                             strCM = objVehicleHomeNode.BasePhysicalBoxes.ToString(GlobalSettings.CultureInfo) + strSpace
                                 +
-                                '+' + strSpace + '(' + LanguageManager.GetString("String_VehicleBody") + '÷' + 2.ToString(GlobalSettings.CultureInfo)
+                                "+" + strSpace + "(" + LanguageManager.GetString("String_VehicleBody") + "÷" + 2.ToString(GlobalSettings.CultureInfo)
                                 +
-                                ')' + strSpace + '(' +
-                                (objVehicleHomeNode.TotalBody.DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ')';
+                                ")" + strSpace + "(" +
+                                (objVehicleHomeNode.TotalBody.DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ")";
 
                             intBonus = objVehicleHomeNode.Mods.Sum(objMod => objMod.ConditionMonitor);
                             if (intBonus != 0)
-                                strCM += strSpace + '+' + strSpace + strModifiers + strSpace + '('
-                                         + intBonus.ToString(GlobalSettings.CultureInfo) + ')';
+                                strCM += strSpace + "+" + strSpace + strModifiers + strSpace + "("
+                                         + intBonus.ToString(GlobalSettings.CultureInfo) + ")";
                         }
                         else
                         {
-                            strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '(' +
-                                    DEP.CurrentDisplayAbbrev + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace
-                                    + '(' +
-                                    (DEP.TotalValue.DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ')';
+                            strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + "+" + strSpace + "(" +
+                                    DEP.CurrentDisplayAbbrev + "÷" + 2.ToString(GlobalSettings.CultureInfo) + ")" + strSpace
+                                    + "(" +
+                                    (DEP.TotalValue.DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ")";
 
                             intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM)
                                                          .StandardRound();
                             if (intBonus != 0)
-                                strCM += strSpace + '+' + strSpace + strModifiers + strSpace + '('
-                                         + intBonus.ToString(GlobalSettings.CultureInfo) + ')';
+                                strCM += strSpace + "+" + strSpace + strModifiers + strSpace + "("
+                                         + intBonus.ToString(GlobalSettings.CultureInfo) + ")";
                         }
                     }
                     else
                     {
-                        strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '(' +
-                                BOD.CurrentDisplayAbbrev + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '('
+                        strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + "+" + strSpace + "(" +
+                                BOD.CurrentDisplayAbbrev + "÷" + 2.ToString(GlobalSettings.CultureInfo) + ")" + strSpace + "("
                                 +
-                                (BOD.TotalValue.DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ')';
+                                (BOD.TotalValue.DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ")";
 
                         intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM)
                                                      .StandardRound();
                         if (intBonus != 0)
-                            strCM += strSpace + '+' + strSpace + strModifiers + strSpace + '('
-                                     + intBonus.ToString(GlobalSettings.CultureInfo) + ')';
+                            strCM += strSpace + "+" + strSpace + strModifiers + strSpace + "("
+                                     + intBonus.ToString(GlobalSettings.CultureInfo) + ")";
                     }
                 }
 
@@ -38247,50 +38247,50 @@ namespace Chummer
                     if (await GetHomeNodeAsync(token).ConfigureAwait(false) is Vehicle objVehicleHomeNode)
                     {
                         strCM = objVehicleHomeNode.BasePhysicalBoxes.ToString(GlobalSettings.CultureInfo) + strSpace +
-                                '+' + strSpace + '(' + await LanguageManager.GetStringAsync("String_VehicleBody", token: token).ConfigureAwait(false) +
-                                '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '(' +
-                                ((await objVehicleHomeNode.GetTotalBodyAsync(token).ConfigureAwait(false)).DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ')';
+                                "+" + strSpace + "(" + await LanguageManager.GetStringAsync("String_VehicleBody", token: token).ConfigureAwait(false) +
+                                "÷" + 2.ToString(GlobalSettings.CultureInfo) + ")" + strSpace + "(" +
+                                ((await objVehicleHomeNode.GetTotalBodyAsync(token).ConfigureAwait(false)).DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ")";
 
                         intBonus = await objVehicleHomeNode.Mods.SumAsync(objMod => objMod.ConditionMonitor,
                             token: token).ConfigureAwait(false);
                         if (intBonus != 0)
-                            strCM += strSpace + '+' + strSpace + strModifiers + strSpace + '('
-                                     + intBonus.ToString(GlobalSettings.CultureInfo) + ')';
+                            strCM += strSpace + "+" + strSpace + strModifiers + strSpace + "("
+                                     + intBonus.ToString(GlobalSettings.CultureInfo) + ")";
                     }
                     else
                     {
                         CharacterAttrib objDep = await GetAttributeAsync("DEP", token: token).ConfigureAwait(false);
-                        strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '(' +
+                        strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + "+" + strSpace + "(" +
                                 await objDep.GetCurrentDisplayAbbrevAsync(token)
-                                    .ConfigureAwait(false) + '÷' +
-                                2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace
-                                + '(' + ((await objDep.GetTotalValueAsync(token).ConfigureAwait(false)).DivAwayFromZero(2))
+                                    .ConfigureAwait(false) + "÷" +
+                                2.ToString(GlobalSettings.CultureInfo) + ")" + strSpace
+                                + "(" + ((await objDep.GetTotalValueAsync(token).ConfigureAwait(false)).DivAwayFromZero(2))
                                 .ToString(
-                                    GlobalSettings.CultureInfo) + ')';
+                                    GlobalSettings.CultureInfo) + ")";
 
                         intBonus = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PhysicalCM,
                                 token: token).ConfigureAwait(false))
                             .StandardRound();
                         if (intBonus != 0)
-                            strCM += strSpace + '+' + strSpace + strModifiers + strSpace + '('
-                                     + intBonus.ToString(GlobalSettings.CultureInfo) + ')';
+                            strCM += strSpace + "+" + strSpace + strModifiers + strSpace + "("
+                                     + intBonus.ToString(GlobalSettings.CultureInfo) + ")";
                     }
                 }
                 else
                 {
                     CharacterAttrib objBod = await GetAttributeAsync("BOD", token: token).ConfigureAwait(false);
-                    strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '(' +
+                    strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + "+" + strSpace + "(" +
                             await objBod.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) +
-                            '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '('
+                            "÷" + 2.ToString(GlobalSettings.CultureInfo) + ")" + strSpace + "("
                             + ((await objBod.GetTotalValueAsync(token).ConfigureAwait(false)).DivAwayFromZero(2)).ToString(
-                                GlobalSettings.CultureInfo) + ')';
+                                GlobalSettings.CultureInfo) + ")";
 
                     intBonus = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PhysicalCM,
                             token: token).ConfigureAwait(false))
                         .StandardRound();
                     if (intBonus != 0)
-                        strCM += strSpace + '+' + strSpace + strModifiers + strSpace + '('
-                                 + intBonus.ToString(GlobalSettings.CultureInfo) + ')';
+                        strCM += strSpace + "+" + strSpace + strModifiers + strSpace + "("
+                                 + intBonus.ToString(GlobalSettings.CultureInfo) + ")";
                 }
             }
             finally
@@ -38457,28 +38457,28 @@ namespace Chummer
                     {
                         if (HomeNode == null)
                             return string.Empty;
-                        strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '(' +
-                                LanguageManager.GetString("String_DeviceRating") + '÷' +
-                                2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '(' +
+                        strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + "+" + strSpace + "(" +
+                                LanguageManager.GetString("String_DeviceRating") + "÷" +
+                                2.ToString(GlobalSettings.CultureInfo) + ")" + strSpace + "(" +
                                 ((HomeNode.GetTotalMatrixAttribute("Device Rating")).DivAwayFromZero(2)).ToString(GlobalSettings
-                                    .CultureInfo) + ')';
+                                    .CultureInfo) + ")";
 
                         intBonus = HomeNode.TotalBonusMatrixBoxes;
                         if (intBonus != 0)
-                            strCM += strSpace + '+' + strSpace + strModifiers + strSpace + '(' +
-                                     intBonus.ToString(GlobalSettings.CultureInfo) + ')';
+                            strCM += strSpace + "+" + strSpace + strModifiers + strSpace + "(" +
+                                     intBonus.ToString(GlobalSettings.CultureInfo) + ")";
                     }
                     else
                     {
-                        strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '(' +
-                                WIL.CurrentDisplayAbbrev + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '('
+                        strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + "+" + strSpace + "(" +
+                                WIL.CurrentDisplayAbbrev + "÷" + 2.ToString(GlobalSettings.CultureInfo) + ")" + strSpace + "("
                                 +
-                                (WIL.TotalValue.DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ')';
+                                (WIL.TotalValue.DivAwayFromZero(2)).ToString(GlobalSettings.CultureInfo) + ")";
 
                         intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCM).StandardRound();
                         if (intBonus != 0)
-                            strCM += strSpace + '+' + strSpace + strModifiers + strSpace + '(' +
-                                     intBonus.ToString(GlobalSettings.CultureInfo) + ')';
+                            strCM += strSpace + "+" + strSpace + strModifiers + strSpace + "(" +
+                                     intBonus.ToString(GlobalSettings.CultureInfo) + ")";
                     }
                 }
 
@@ -38502,31 +38502,31 @@ namespace Chummer
                     IHasMatrixAttributes objHomeNode = await GetHomeNodeAsync(token).ConfigureAwait(false);
                     if (objHomeNode == null)
                         return string.Empty;
-                    strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '('
+                    strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + "+" + strSpace + "("
                             + await LanguageManager.GetStringAsync("String_DeviceRating", token: token)
-                                                   .ConfigureAwait(false) + '÷' + 2.ToString(GlobalSettings.CultureInfo)
-                            + ')' + strSpace + '('
+                                                   .ConfigureAwait(false) + "÷" + 2.ToString(GlobalSettings.CultureInfo)
+                            + ")" + strSpace + "("
                             + ((await objHomeNode.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false)).DivAwayFromZero(2)).ToString(
-                                GlobalSettings.CultureInfo) + ')';
+                                GlobalSettings.CultureInfo) + ")";
                     intBonus = objHomeNode.TotalBonusMatrixBoxes;
                     if (intBonus != 0)
-                        strCM += strSpace + '+' + strSpace + strModifiers + strSpace + '('
-                                 + intBonus.ToString(GlobalSettings.CultureInfo) + ')';
+                        strCM += strSpace + "+" + strSpace + strModifiers + strSpace + "("
+                                 + intBonus.ToString(GlobalSettings.CultureInfo) + ")";
                 }
                 else
                 {
                     CharacterAttrib objWil = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
-                    strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + '+' + strSpace + '('
+                    strCM = 8.ToString(GlobalSettings.CultureInfo) + strSpace + "+" + strSpace + "("
                             + await objWil.GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false)
-                            + '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '('
+                            + "÷" + 2.ToString(GlobalSettings.CultureInfo) + ")" + strSpace + "("
                             + ((await objWil.GetTotalValueAsync(token).ConfigureAwait(false)).DivAwayFromZero(2)).ToString(
-                                GlobalSettings.CultureInfo) + ')';
+                                GlobalSettings.CultureInfo) + ")";
                     intBonus = (await ImprovementManager
                                       .ValueOfAsync(this, Improvement.ImprovementType.StunCM, token: token)
                                       .ConfigureAwait(false)).StandardRound();
                     if (intBonus != 0)
-                        strCM += strSpace + '+' + strSpace + strModifiers + strSpace + '(' +
-                                 intBonus.ToString(GlobalSettings.CultureInfo) + ')';
+                        strCM += strSpace + "+" + strSpace + strModifiers + strSpace + "(" +
+                                 intBonus.ToString(GlobalSettings.CultureInfo) + ")";
                 }
             }
             finally
@@ -39167,7 +39167,7 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return '=' + LanguageManager.GetString("String_Space") +
+                    return "=" + LanguageManager.GetString("String_Space") +
                            TotalStartingNuyen.ToString(Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
             }
         }
@@ -39179,7 +39179,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return '=' + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) +
+                return "=" + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) +
                        (await GetTotalStartingNuyenAsync(token).ConfigureAwait(false)).ToString(await (await GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false),
                            GlobalSettings.CultureInfo) +
                        await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
@@ -40525,8 +40525,8 @@ namespace Chummer
 
                 if (MetavariantGuid != Guid.Empty)
                 {
-                    strMetatype += LanguageManager.GetString("String_Space") + '(' + DisplayMetavariant(strLanguage)
-                                   + ')';
+                    strMetatype += LanguageManager.GetString("String_Space") + "(" + DisplayMetavariant(strLanguage)
+                                   + ")";
                 }
 
                 return strMetatype;
@@ -40550,8 +40550,8 @@ namespace Chummer
 
                 if (await GetMetavariantGuidAsync(token).ConfigureAwait(false) != Guid.Empty)
                 {
-                    strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
-                        + await DisplayMetavariantAsync(strLanguage, token).ConfigureAwait(false) + ')';
+                    strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "("
+                        + await DisplayMetavariantAsync(strLanguage, token).ConfigureAwait(false) + ")";
                 }
 
                 return strMetatype;
@@ -41575,7 +41575,7 @@ namespace Chummer
                 if (decWalk != 0)
                 {
                     if (decRun != 0)
-                        strReturn = decWalk.ToString("#,0.##", objCulture) + '/'
+                        strReturn = decWalk.ToString("#,0.##", objCulture) + "/"
                                                                            + decRun.ToString("#,0.##", objCulture);
                     else
                         strReturn = decWalk.ToString("#,0.##", objCulture);
@@ -41586,7 +41586,7 @@ namespace Chummer
                 if (decSprint != 0)
                 {
                     if (!string.IsNullOrEmpty(strReturn))
-                        strReturn += ';' + LanguageManager.GetString("String_Space", strLanguage);
+                        strReturn += ";" + LanguageManager.GetString("String_Space", strLanguage);
                     strReturn += decSprint.ToString("#,0.##", objCulture)
                                  + LanguageManager.GetString("String_MetersPerHit", strLanguage);
                 }
@@ -41668,7 +41668,7 @@ namespace Chummer
                 if (decWalk != 0)
                 {
                     if (decRun != 0)
-                        strReturn = decWalk.ToString("#,0.##", objCulture) + '/'
+                        strReturn = decWalk.ToString("#,0.##", objCulture) + "/"
                                                                            + decRun.ToString("#,0.##", objCulture);
                     else
                         strReturn = decWalk.ToString("#,0.##", objCulture);
@@ -41679,7 +41679,7 @@ namespace Chummer
                 if (decSprint != 0)
                 {
                     if (!string.IsNullOrEmpty(strReturn))
-                        strReturn += ';' + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+                        strReturn += ";" + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
                     strReturn += decSprint.ToString("#,0.##", objCulture)
                                  + await LanguageManager.GetStringAsync("String_MetersPerHit", strLanguage, token: token).ConfigureAwait(false);
                 }
@@ -44160,8 +44160,8 @@ namespace Chummer
                 // Determine the interval based on the item's price.
                 string strInterval = item.Value.Item1 + strSpace + LanguageManager.GetString(item.Value.Item2);
 
-                return intPool.ToString(GlobalSettings.CultureInfo) + strSpace + '('
-                       + intAvailValue.ToString(GlobalSettings.CultureInfo) + ',' + strSpace + strInterval + ')';
+                return intPool.ToString(GlobalSettings.CultureInfo) + strSpace + "("
+                       + intAvailValue.ToString(GlobalSettings.CultureInfo) + "," + strSpace + strInterval + ")";
             }
         }
 
@@ -44274,8 +44274,8 @@ namespace Chummer
                 // Determine the interval based on the item's price.
                 string strInterval = item.Value.Item1 + strSpace + await LanguageManager.GetStringAsync(item.Value.Item2, token: token).ConfigureAwait(false);
 
-                return intPool.ToString(GlobalSettings.CultureInfo) + strSpace + '('
-                       + intAvailValue.ToString(GlobalSettings.CultureInfo) + ',' + strSpace + strInterval + ')';
+                return intPool.ToString(GlobalSettings.CultureInfo) + strSpace + "("
+                       + intAvailValue.ToString(GlobalSettings.CultureInfo) + "," + strSpace + strInterval + ")";
             }
             finally
             {
@@ -51076,7 +51076,7 @@ namespace Chummer
                                                                 {
                                                                     if (objDummy.SelectSingleNode(
                                                                             "/document/public/character[@name = " +
-                                                                            strCharacterId.CleanXPath() + ']') != null)
+                                                                            strCharacterId.CleanXPath() + "]") != null)
                                                                         xmlStatBlockDocument = objDummy;
                                                                 }
                                                                 else
@@ -51260,7 +51260,7 @@ namespace Chummer
                             {
                                 xmlStatBlockBaseNode =
                                     xmlStatBlockDocument.SelectSingleNode("/document/public/character[@name = " +
-                                                                          strCharacterId.CleanXPath() + ']');
+                                                                          strCharacterId.CleanXPath() + "]");
                                 xmlLeadsBaseNode =
                                     xmlLeadsDocument.SelectSingleNode("/document/hero[@heroname = " +
                                                                       strCharacterId.CleanXPath() +
@@ -55401,7 +55401,7 @@ namespace Chummer
                 decimal decEssence = await EssenceAsync(token: token).ConfigureAwait(false);
                 if (decEssence >= 0)
                 {
-                    strMessage += Environment.NewLine + '\t' +
+                    strMessage += Environment.NewLine + "\t" +
                                   await LanguageManager
                                       .GetStringAsync("Message_CyberzombieRequirementsEssence", token: token)
                                       .ConfigureAwait(false);
@@ -55413,7 +55413,7 @@ namespace Chummer
                         token: token).ConfigureAwait(false)).Count > 0;
 
                 if (!blnEnabled)
-                    strMessage += Environment.NewLine + '\t' +
+                    strMessage += Environment.NewLine + "\t" +
                                   await LanguageManager
                                       .GetStringAsync("Message_CyberzombieRequirementsImprovement", token: token)
                                       .ConfigureAwait(false);

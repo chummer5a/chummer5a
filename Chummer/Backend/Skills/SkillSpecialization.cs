@@ -262,7 +262,7 @@ namespace Chummer.Backend.Skills
                             : await Parent.GetNodeAsync(strLanguage, token: token).ConfigureAwait(false))
                         ?.SelectSingleNode("specs/spec[. = " +
                                            (blnSync ? Name : await GetNameAsync(token).ConfigureAwait(false))
-                                           .CleanXPath() + ']');
+                                           .CleanXPath() + "]");
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
@@ -305,7 +305,7 @@ namespace Chummer.Backend.Skills
                             : await Parent.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false))
                         ?.SelectSingleNode("specs/spec[. = " +
                                            (blnSync ? Name : await GetNameAsync(token).ConfigureAwait(false))
-                                           .CleanXPath() + ']');
+                                           .CleanXPath() + "]");
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;

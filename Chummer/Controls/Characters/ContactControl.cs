@@ -601,11 +601,11 @@ namespace Chummer
                 string strFilter =
                     await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: _objMyToken)
                         .ConfigureAwait(false) +
-                    '|' +
+                    "|" +
                     await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: _objMyToken)
                         .ConfigureAwait(false) +
-                    '|' + await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objMyToken)
-                        .ConfigureAwait(false) + '|' + await LanguageManager
+                    "|" + await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objMyToken)
+                        .ConfigureAwait(false) + "|" + await LanguageManager
                         .GetStringAsync("DialogFilter_All", token: _objMyToken).ConfigureAwait(false);
                 IAsyncDisposable objLocker = await _objContact.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
                 try
@@ -652,7 +652,7 @@ namespace Chummer
                     {
                         _objMyToken.ThrowIfCancellationRequested();
                         await _objContact.SetFileNameAsync(strFileName, _objMyToken).ConfigureAwait(false);
-                        await _objContact.SetRelativeFileNameAsync("../" + uriRelative, _objMyToken).ConfigureAwait(false);
+                        await _objContact.SetRelativeFileNameAsync("../" + uriRelative.ToString(), _objMyToken).ConfigureAwait(false);
                     }
                     finally
                     {

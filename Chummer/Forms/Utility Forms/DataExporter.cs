@@ -407,7 +407,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!(await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false) is CharacterSettings objSettings))
                 return;
-            dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Zip", token: token).ConfigureAwait(false) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
+            dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Zip", token: token).ConfigureAwait(false) + "|" + await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
             dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Export_SaveDataAs", token: token).ConfigureAwait(false);
             DialogResult eResult = await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token).ConfigureAwait(false);
             if (eResult == DialogResult.Cancel)

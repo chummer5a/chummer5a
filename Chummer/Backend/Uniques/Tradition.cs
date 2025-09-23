@@ -553,7 +553,7 @@ namespace Chummer.Backend.Uniques
                     if (IsCustomTradition)
                     {
                         foreach (string strAttribute in AttributeSection.AttributeStrings)
-                            _strDrainExpression = _strDrainExpression.Replace(strAttribute, '{' + strAttribute + '}');
+                            _strDrainExpression = _strDrainExpression.Replace(strAttribute, "{" + strAttribute + "}");
                         _strDrainExpression = _strDrainExpression.Replace("{MAG}Adept", "{MAGAdept}");
                     }
                     else
@@ -625,7 +625,7 @@ namespace Chummer.Backend.Uniques
                 if (blnDoDrainSweep)
                 {
                     foreach (string strAttribute in AttributeSection.AttributeStrings)
-                        _strDrainExpression = _strDrainExpression.Replace(strAttribute, '{' + strAttribute + '}');
+                        _strDrainExpression = _strDrainExpression.Replace(strAttribute, "{" + strAttribute + "}");
                     _strDrainExpression = _strDrainExpression.Replace("{MAG}Adept", "{MAGAdept}");
                 }
             }
@@ -671,7 +671,7 @@ namespace Chummer.Backend.Uniques
                 if (blnDoDrainSweep)
                 {
                     foreach (string strAttribute in AttributeSection.AttributeStrings)
-                        _strDrainExpression = _strDrainExpression.Replace(strAttribute, '{' + strAttribute + '}');
+                        _strDrainExpression = _strDrainExpression.Replace(strAttribute, "{" + strAttribute + "}");
                     _strDrainExpression = _strDrainExpression.Replace("{MAG}Adept", "{MAGAdept}");
                 }
             }
@@ -1262,8 +1262,8 @@ namespace Chummer.Backend.Uniques
                 string strReturn = DisplayNameShort(strLanguage);
 
                 if (!string.IsNullOrEmpty(Extra))
-                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + '('
-                        + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + "("
+                        + _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
 
                 return strReturn;
             }
@@ -1283,8 +1283,8 @@ namespace Chummer.Backend.Uniques
                 if (!string.IsNullOrEmpty(Extra))
                     strReturn
                         += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                                                .ConfigureAwait(false) + '(' + await _objCharacter
-                            .TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
+                                                .ConfigureAwait(false) + "(" + await _objCharacter
+                            .TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ")";
 
                 return strReturn;
             }

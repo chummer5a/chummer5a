@@ -59,28 +59,28 @@ namespace Chummer
                     int intRating = await objGear.GetRatingAsync().ConfigureAwait(false);
                     if (intRating > 0)
                     {
-                        strName += strSpace + '('
+                        strName += strSpace + "("
                                             + string.Format(
                                                 GlobalSettings.CultureInfo,
                                                 await LanguageManager.GetStringAsync("Label_RatingFormat")
                                                                      .ConfigureAwait(false),
                                                 await LanguageManager.GetStringAsync(objGear.RatingLabel)
                                                                      .ConfigureAwait(false)) + strSpace
-                                            + intRating.ToString(GlobalSettings.CultureInfo) + ')';
+                                            + intRating.ToString(GlobalSettings.CultureInfo) + ")";
                     }
 
                     if (objGear.Parent is Gear objParent)
                     {
                         if (!string.IsNullOrEmpty(await objParent.GetCurrentDisplayNameShortAsync().ConfigureAwait(false)))
                         {
-                            strName += strSpace + '(' + await objParent.GetCurrentDisplayNameShortAsync().ConfigureAwait(false);
+                            strName += strSpace + "(" + await objParent.GetCurrentDisplayNameShortAsync().ConfigureAwait(false);
                             if (objParent.Location != null)
-                                strName += strSpace + '@' + strSpace + await objParent.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false);
-                            strName += ')';
+                                strName += strSpace + "@" + strSpace + await objParent.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false);
+                            strName += ")";
                         }
                     }
                     else if (objGear.Location != null)
-                        strName += strSpace + '(' + await objGear.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false) + ')';
+                        strName += strSpace + "(" + await objGear.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false) + ")";
 
                     // Retrieve the plugin information if it has any.
                     if (await objGear.Children.GetCountAsync().ConfigureAwait(false) > 0)
@@ -95,7 +95,7 @@ namespace Chummer
                             // Remove the trailing comma.
                             sbdPlugins.Length -= 1 + strSpace.Length;
                             // Append the plugin information to the name.
-                            strName += strSpace + '[' + sbdPlugins + ']';
+                            strName += strSpace + "[" + sbdPlugins.ToString() + "]";
                         }
                     }
 

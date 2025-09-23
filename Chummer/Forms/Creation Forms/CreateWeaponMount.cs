@@ -98,7 +98,7 @@ namespace Chummer
                 using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSize))
                 {
                     XPathNodeIterator xmlSizeNodeList
-                        = _xmlDocXPath.Select("/chummer/weaponmounts/weaponmount[" + strSizeFilter + ']');
+                        = _xmlDocXPath.Select("/chummer/weaponmounts/weaponmount[" + strSizeFilter + "]");
                     if (xmlSizeNodeList.Count > 0)
                     {
                         foreach (XPathNavigator xmlSizeNode in xmlSizeNodeList)
@@ -1089,7 +1089,7 @@ namespace Chummer
                     if (!_objVehicle.IsDrone && await objSettings.GetDroneModsAsync(token).ConfigureAwait(false))
                         strFilter += " and not(optionaldrone)";
                     XPathNodeIterator xmlWeaponMountOptionNodeList
-                        = _xmlDocXPath.Select("/chummer/weaponmounts/weaponmount[" + strFilter + ']');
+                        = _xmlDocXPath.Select("/chummer/weaponmounts/weaponmount[" + strFilter + "]");
                     if (xmlWeaponMountOptionNodeList.Count > 0)
                     {
                         foreach (XPathNavigator xmlWeaponMountOptionNode in xmlWeaponMountOptionNodeList)

@@ -209,7 +209,7 @@ namespace Chummer
                         }
 
                         if (sbdFilter.Length > 0)
-                            strFilter = '[' + sbdFilter.ToString() + ']';
+                            strFilter = "[" + sbdFilter.ToString() + "]";
                     }
 
                     objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill" + strFilter);
@@ -392,8 +392,8 @@ namespace Chummer
                     if (intCount == 1)
                     {
                         _strReturnValue = tupSelected.Item1 + " ("
-                                                            + await cboExtra.DoThreadSafeFuncAsync(x => x.SelectedValue)
-                                                                            .ConfigureAwait(false) + ')';
+                                                            + await cboExtra.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty)
+                                                                            .ConfigureAwait(false) + ")";
                         await this.DoThreadSafeAsync(x =>
                         {
                             x.DialogResult = DialogResult.OK;
@@ -410,7 +410,7 @@ namespace Chummer
         {
             ValueTuple<string, bool> tupSelected = (ValueTuple<string, bool>)cboSkill.SelectedValue;
             if (tupSelected.Item2)
-                _strReturnValue = tupSelected.Item1 + " (" + cboExtra.SelectedValue + ')';
+                _strReturnValue = tupSelected.Item1 + " (" + (cboExtra.SelectedValue?.ToString() ?? string.Empty) + ")";
             else
                 _strReturnValue = tupSelected.Item1;
             DialogResult = DialogResult.OK;
@@ -565,7 +565,7 @@ namespace Chummer
                     CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
                     XPathNodeIterator xmlWeaponList = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false))
                         .Select("/chummer/weapons/weapon[(category = "
-                                + (strSelectedCategory + 's').CleanXPath()
+                                + (strSelectedCategory + "s").CleanXPath()
                                 + " or useskill = "
                                 + strSelectedCategory.CleanXPath() + ") and ("
                                 + await objSettings.BookXPathAsync(false, token).ConfigureAwait(false) + ")]");

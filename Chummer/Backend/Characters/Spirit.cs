@@ -610,11 +610,11 @@ namespace Chummer
                     string strDisplayDuration = string.Empty;
                     XPathNavigator objXmlPowerNode
                         = xmlSpiritPowersBaseChummerNode.SelectSingleNode(
-                              "powers/power[name = " + strPowerName.CleanXPath() + ']') ??
+                              "powers/power[name = " + strPowerName.CleanXPath() + "]") ??
                           xmlSpiritPowersBaseChummerNode.SelectSingleNode(
                               "powers/power[starts-with(" + strPowerName.CleanXPath() + ", name)]") ??
                           xmlCritterPowersBaseChummerNode.SelectSingleNode(
-                              "powers/power[name = " + strPowerName.CleanXPath() + ']') ??
+                              "powers/power[name = " + strPowerName.CleanXPath() + "]") ??
                           xmlCritterPowersBaseChummerNode.SelectSingleNode(
                               "powers/power[starts-with(" + strPowerName.CleanXPath() + ", name)]");
                     if (objXmlPowerNode != null)
@@ -776,10 +776,10 @@ namespace Chummer
                                     token: token)
                                 .CheapReplaceAsync(
                                     "(A)",
-                                    async () => '(' + await LanguageManager.GetStringAsync(
+                                    async () => "(" + await LanguageManager.GetStringAsync(
                                             "String_SpellRangeArea", strLanguageToPrint,
                                             token: token)
-                                        .ConfigureAwait(false) + ')', token: token)
+                                        .ConfigureAwait(false) + ")", token: token)
                                 .CheapReplaceAsync(
                                     "MAG",
                                     () => LanguageManager.GetStringAsync(

@@ -129,7 +129,7 @@ namespace Chummer
                     foreach (XPathNavigator objXmlCategory in _objXmlArmorDocumentChummerNode.SelectAndCacheExpression("/chummer/categories/category", _objGenericToken))
                     {
                         string strInnerText = objXmlCategory.Value;
-                        if (_objXmlArmorDocumentChummerNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + ']') != null)
+                        if (_objXmlArmorDocumentChummerNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + "]") != null)
                         {
                             _lstCategory.Add(new ListItem(strInnerText,
                                 objXmlCategory.SelectSingleNodeAndCacheExpression("@translate", _objGenericToken)?.Value ?? strInnerText));
@@ -606,7 +606,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strSearch))
                             sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
 
-                        await BuildArmorList(_objXmlDocument.SelectNodes("/chummer/armors/armor[" + sbdFilter + ']'),
+                        await BuildArmorList(_objXmlDocument.SelectNodes("/chummer/armors/armor[" + sbdFilter.ToString() + "]"),
                             token).ConfigureAwait(false);
                     }
                 }
@@ -762,7 +762,7 @@ namespace Chummer
                                             = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
                                         if (!string.IsNullOrEmpty(objFoundItem.Name))
                                         {
-                                            strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
+                                            strDisplayName += strSpace + "[" + objFoundItem.Name + "]";
                                         }
                                     }
                                 }

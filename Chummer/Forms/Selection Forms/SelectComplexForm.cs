@@ -350,7 +350,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strFilter = '(' + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + ')';
+            string strFilter = "(" + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + ")";
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
@@ -359,7 +359,7 @@ namespace Chummer
                                                            out List<ListItem> lstComplexFormItems))
             {
                 foreach (XPathNavigator xmlComplexForm in _xmlBaseComplexFormsNode.Select(
-                             "complexform[" + strFilter + ']'))
+                             "complexform[" + strFilter + "]"))
                 {
                     string strId = xmlComplexForm.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (string.IsNullOrEmpty(strId))
@@ -372,7 +372,7 @@ namespace Chummer
                                      ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                     // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
                     if (_xmlOptionalComplexFormNode?.SelectSingleNodeAndCacheExpression("complexform", token: token) != null
-                        && _xmlOptionalComplexFormNode.SelectSingleNode("complexform[. = " + strName.CleanXPath() + ']') == null)
+                        && _xmlOptionalComplexFormNode.SelectSingleNode("complexform[. = " + strName.CleanXPath() + "]") == null)
                         continue;
 
                     lstComplexFormItems.Add(

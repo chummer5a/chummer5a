@@ -364,7 +364,7 @@ namespace Chummer
                     if (uintAccumulator == uint.MaxValue)
                         uintAccumulator = uint.MinValue;
                     else if (++uintAccumulator == 1)
-                        strSeparator += '_';
+                        strSeparator += "_";
                 }
             } while (string.IsNullOrWhiteSpace(strSelectedName));
 
@@ -455,7 +455,7 @@ namespace Chummer
                                         "Message_CharacterOptions_OpenCharacterOnBuildMethodChange")
                                     .ConfigureAwait(false)
                                 +
-                                sbdConflictingCharacters,
+                                sbdConflictingCharacters.ToString(),
                                 await LanguageManager.GetStringAsync(
                                         "MessageTitle_CharacterOptions_OpenCharacterOnBuildMethodChange")
                                     .ConfigureAwait(false),
@@ -1560,7 +1560,7 @@ namespace Chummer
                                 = objXmlNode.SelectSingleNodeAndCacheExpression("exclude", token: token)?.Value
                                   ?? string.Empty;
                             if (!string.IsNullOrEmpty(strExclude))
-                                strExclude = '<' + strExclude;
+                                strExclude = "<" + strExclude;
                             lstLimbCount.Add(new ListItem(
                                                  objXmlNode
                                                      .SelectSingleNodeAndCacheExpression(
@@ -1581,7 +1581,7 @@ namespace Chummer
                             = (await _objCharacterSettings.GetLimbCountAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo);
                         string strExcludeLimbSlot = await _objCharacterSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(strExcludeLimbSlot))
-                            strLimbSlot += '<' + strExcludeLimbSlot;
+                            strLimbSlot += "<" + strExcludeLimbSlot;
 
                         await cboLimbCount.PopulateWithListItemsAsync(lstLimbCount, token).ConfigureAwait(false);
                         await cboLimbCount.DoThreadSafeAsync(x =>

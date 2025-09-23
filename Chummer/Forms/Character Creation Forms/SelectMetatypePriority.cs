@@ -156,7 +156,7 @@ namespace Chummer
                                 XPathNodeIterator objItems = xmlBasePrioritiesNode.Select(
                                     "priority[category = " + objXmlPriorityCategory.Value.CleanXPath()
                                                            + " and prioritytable = "
-                                                           + (await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).GetPriorityTableAsync(_objGenericToken).ConfigureAwait(false)).CleanXPath() + ']');
+                                                           + (await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).GetPriorityTableAsync(_objGenericToken).ConfigureAwait(false)).CleanXPath() + "]");
 
                                 if (objItems.Count == 0)
                                 {
@@ -600,7 +600,7 @@ namespace Chummer
                         {
                             xmlTalentNode
                                 = xmlBaseTalentPriority.SelectSingleNode(
-                                    "talents/talent[value = " + strSelectedTalents.CleanXPath() + ']');
+                                    "talents/talent[value = " + strSelectedTalents.CleanXPath() + "]");
                             break;
                         }
                     }
@@ -1364,7 +1364,7 @@ namespace Chummer
                         if (await frmSelectExotic.ShowDialogSafeAsync(this, token).ConfigureAwait(false) !=
                             DialogResult.OK)
                             return;
-                        strSkill1 += " (" + await frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ')';
+                        strSkill1 += " (" + await frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ")";
                     }
                 }
 
@@ -1378,7 +1378,7 @@ namespace Chummer
                         if (await frmSelectExotic.ShowDialogSafeAsync(this, token).ConfigureAwait(false) !=
                             DialogResult.OK)
                             return;
-                        strSkill2 += " (" + await frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ')';
+                        strSkill2 += " (" + await frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ")";
                     }
                 }
 
@@ -1392,7 +1392,7 @@ namespace Chummer
                         if (await frmSelectExotic.ShowDialogSafeAsync(this, token).ConfigureAwait(false) !=
                             DialogResult.OK)
                             return;
-                        strSkill3 += " (" + await frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ')';
+                        strSkill3 += " (" + await frmSelectExotic.MyForm.GetSelectedExoticSkillSpecialisationAsync(token).ConfigureAwait(false) + ")";
                     }
                 }
 
@@ -1639,7 +1639,7 @@ namespace Chummer
                                 XPathNavigator xmlTalentPriorityNode
                                     = xmlBaseTalentPriority.SelectSingleNode(
                                         "talents/talent[value = " + _objCharacter.TalentPriority.CleanXPath()
-                                                                  + ']');
+                                                                  + "]");
 
                                 if (xmlTalentPriorityNode != null)
                                 {
@@ -2378,7 +2378,7 @@ namespace Chummer
                     intReturn += _dicSumtoTenValues[await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
                     intReturn += _dicSumtoTenValues[await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
 
-                    string strText = intReturn.ToString(GlobalSettings.CultureInfo) + '/'
+                    string strText = intReturn.ToString(GlobalSettings.CultureInfo) + "/"
                                                                 + (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetSumtoTenAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                     await lblSumtoTen.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                 }
@@ -2567,7 +2567,7 @@ namespace Chummer
                         {
                             XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode(
                                 "talents/talent[value = "
-                                + (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + ']');
+                                + (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + "]");
                             if (objXmlTalentsNode != null
                                 && int.TryParse(
                                     objXmlTalentsNode.SelectSingleNodeAndCacheExpression("specialattribpoints", token)?.Value, out int intTemp))
@@ -2594,15 +2594,15 @@ namespace Chummer
 
                             string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select", token)?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
-                                strQuality += strSpace + '(' + await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false)
-                                              + ')';
+                                strQuality += strSpace + "(" + await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false)
+                                              + ")";
                         }
                         else
                         {
                             strQuality = objXmlQuality.Value;
                             string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select", token)?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
-                                strQuality += strSpace + '(' + strSelect + ')';
+                                strQuality += strSpace + "(" + strSelect + ")";
                         }
 
                         if (dicQualities.TryGetValue(strQuality, out int intExistingRating))
@@ -2719,15 +2719,15 @@ namespace Chummer
 
                             string strSelect = xmlQuality.SelectSingleNodeAndCacheExpression("@select", token)?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
-                                strQuality += strSpace + '(' + await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false)
-                                              + ')';
+                                strQuality += strSpace + "(" + await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false)
+                                              + ")";
                         }
                         else
                         {
                             strQuality = xmlQuality.Value;
                             string strSelect = xmlQuality.SelectSingleNodeAndCacheExpression("@select", token)?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
-                                strQuality += strSpace + '(' + strSelect + ')';
+                                strQuality += strSpace + "(" + strSelect + ")";
                         }
 
                         if (dicQualities.TryGetValue(strQuality, out int intExistingRating))
@@ -2810,7 +2810,7 @@ namespace Chummer
                         {
                             XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode(
                                 "talents/talent[value = "
-                                + (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + ']');
+                                + (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + "]");
                             if (objXmlTalentsNode != null
                                 && int.TryParse(
                                     objXmlTalentsNode.SelectSingleNodeAndCacheExpression(
@@ -2847,7 +2847,7 @@ namespace Chummer
                         {
                             XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode(
                                 "talents/talent[value = "
-                                + (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + ']');
+                                + (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + "]");
                             if (objXmlTalentsNode != null
                                 && int.TryParse(
                                     objXmlTalentsNode.SelectSingleNodeAndCacheExpression("specialattribpoints", token)
@@ -3142,7 +3142,7 @@ namespace Chummer
                             // Retrieve the list of Metavariants for the selected Metatype.
                             foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select(
                                          "metavariants/metavariant[" + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
-                                             .BookXPathAsync(token: token).ConfigureAwait(false) + ']'))
+                                             .BookXPathAsync(token: token).ConfigureAwait(false) + "]"))
                             {
                                 string strId = objXmlMetavariant
                                     .SelectSingleNodeAndCacheExpression("id", token)?.Value;
@@ -3324,7 +3324,7 @@ namespace Chummer
                                              + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token)
                                                                   .ConfigureAwait(false)
                                              + ") and category = " + strSelectedCategory.CleanXPath()
-                                             + ']'))
+                                             + "]"))
                                 {
                                     string strId = objXmlMetatype
                                         .SelectSingleNodeAndCacheExpression("id", token)?.Value;
@@ -3550,7 +3550,7 @@ namespace Chummer
         private XPathNodeIterator GetActiveSkillList(string strXPathFilter = "", CancellationToken token = default)
         {
             return _xmlBaseSkillDataNode.SelectAndCacheExpression(!string.IsNullOrEmpty(strXPathFilter)
-                ? "skills/skill[" + strXPathFilter + ']'
+                ? "skills/skill[" + strXPathFilter + "]"
                 : "skills/skill", token);
         }
 

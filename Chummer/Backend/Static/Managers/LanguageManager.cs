@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -83,13 +84,13 @@ namespace Chummer
                 {
                     ManagerErrorMessage = "Language strings for the default language (" + GlobalSettings.DefaultLanguage
                         + ") could not be loaded:"
-                        + Environment.NewLine + Environment.NewLine + ex;
+                        + Environment.NewLine + Environment.NewLine + ex.Demystify().ToString();
                 }
                 catch (XmlException ex)
                 {
                     ManagerErrorMessage = "Language strings for the default language (" + GlobalSettings.DefaultLanguage
                         + ") could not be loaded:"
-                        + Environment.NewLine + Environment.NewLine + ex;
+                        + Environment.NewLine + Environment.NewLine + ex.Demystify().ToString();
                 }
             }
             else
@@ -1234,7 +1235,7 @@ namespace Chummer
                             }
                         }, token)).ConfigureAwait(false);
 
-                    strMessage = (sbdMissingMessage + sbdUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
+                    strMessage = (sbdMissingMessage.ToString() + sbdUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
                 }
             }
 
@@ -1408,7 +1409,7 @@ namespace Chummer
                 strLanguage = GlobalSettings.Language;
             return GetString(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
                              token: token) + GetString("String_Space", strLanguage, token: token)
-                                           + '(' + GetString("String_DescAdept", strLanguage, token: token) + ')';
+                                           + "(" + GetString("String_DescAdept", strLanguage, token: token) + ")";
         }
 
         public static async Task<string> MAGAdeptStringAsync(string strLanguage = "", bool blnLong = false,
@@ -1419,8 +1420,8 @@ namespace Chummer
             return await GetStringAsync(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
                                         token: token).ConfigureAwait(false)
                    + await GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
-                   + '(' + await GetStringAsync(
-                       "String_DescAdept", strLanguage, token: token).ConfigureAwait(false) + ')';
+                   + "(" + await GetStringAsync(
+                       "String_DescAdept", strLanguage, token: token).ConfigureAwait(false) + ")";
         }
 
         /// <summary>
@@ -2773,19 +2774,19 @@ namespace Chummer
                         {
                             ErrorMessage = "Failed to load the strings file " + strLanguage
                                                                               + ".xml into an XmlDocument: "
-                                                                              + strExtraMessage + '.';
+                                                                              + strExtraMessage + ".";
                         }
                     }
                     else
                     {
                         ErrorMessage = "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: "
-                                       + strExtraMessage + '.';
+                                       + strExtraMessage + ".";
                     }
                 }
                 catch (Exception ex)
                 {
                     ErrorMessage = "Encountered the following the exception while loading " + strLanguage
-                        + ".xml into an XmlDocument: " + ex + '.';
+                        + ".xml into an XmlDocument: " + ex.Demystify().ToString() + ".";
                 }
             }
             else
@@ -2811,7 +2812,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(ErrorMessage))
                             ErrorMessage += Environment.NewLine;
                         ErrorMessage += "Failed to load the data file " + strLanguage
-                                                                        + "_data.xml into an XmlDocument: " + ex + '.';
+                                                                        + "_data.xml into an XmlDocument: " + ex.Demystify().ToString() + ".";
                     }
                     catch (XmlException ex)
                     {
@@ -2819,7 +2820,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(ErrorMessage))
                             ErrorMessage += Environment.NewLine;
                         ErrorMessage += "Failed to load the data file " + strLanguage
-                                                                        + "_data.xml into an XmlDocument: " + ex + '.';
+                                                                        + "_data.xml into an XmlDocument: " + ex.Demystify().ToString() + ".";
                     }
                 }
                 catch (Exception ex)
@@ -2828,7 +2829,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(ErrorMessage))
                         ErrorMessage += Environment.NewLine;
                     ErrorMessage += "Encountered the following the exception while loading " + strLanguage
-                        + "_data.xml into an XmlDocument: " + ex + '.';
+                        + "_data.xml into an XmlDocument: " + ex.Demystify().ToString() + ".";
                 }
             }
             else
@@ -2894,19 +2895,19 @@ namespace Chummer
                         {
                             objReturn.ErrorMessage = "Failed to load the strings file " + strLanguage
                                                                               + ".xml into an XmlDocument: "
-                                                                              + strExtraMessage + '.';
+                                                                              + strExtraMessage + ".";
                         }
                     }
                     else
                     {
                         objReturn.ErrorMessage = "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: "
-                                                 + strExtraMessage + '.';
+                                                 + strExtraMessage + ".";
                     }
                 }
                 catch (Exception ex)
                 {
                     objReturn.ErrorMessage = "Encountered the following the exception while loading " + strLanguage
-                        + ".xml into an XmlDocument: " + ex + '.';
+                        + ".xml into an XmlDocument: " + ex.Demystify().ToString() + ".";
                 }
             }
             else
@@ -2932,7 +2933,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(objReturn.ErrorMessage))
                             objReturn.ErrorMessage += Environment.NewLine;
                         objReturn.ErrorMessage += "Failed to load the data file " + strLanguage
-                                                                        + "_data.xml into an XmlDocument: " + ex + '.';
+                                                                        + "_data.xml into an XmlDocument: " + ex.Demystify().ToString() + ".";
                     }
                     catch (XmlException ex)
                     {
@@ -2940,7 +2941,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(objReturn.ErrorMessage))
                             objReturn.ErrorMessage += Environment.NewLine;
                         objReturn.ErrorMessage += "Failed to load the data file " + strLanguage
-                                                                        + "_data.xml into an XmlDocument: " + ex + '.';
+                                                                        + "_data.xml into an XmlDocument: " + ex.Demystify().ToString() + ".";
                     }
                 }
                 catch (Exception ex)
@@ -2949,7 +2950,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(objReturn.ErrorMessage))
                         objReturn.ErrorMessage += Environment.NewLine;
                     objReturn.ErrorMessage += "Encountered the following the exception while loading " + strLanguage
-                        + "_data.xml into an XmlDocument: " + ex + '.';
+                        + "_data.xml into an XmlDocument: " + ex.Demystify().ToString() + ".";
                 }
             }
             else

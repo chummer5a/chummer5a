@@ -480,7 +480,7 @@ namespace Chummer
 
                 using (SaveFileDialog dlgSave = new SaveFileDialog())
                 {
-                    dlgSave.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml", token: token).ConfigureAwait(false) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
+                    dlgSave.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml", token: token).ConfigureAwait(false) + "|" + await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
                     dlgSave.FileName = "amend_" + strSelectedFile;
                     dlgSave.DefaultExt = "xml";
                     dlgSave.Title = await LanguageManager.GetStringAsync("XmlEditor_SaveTitle", token: token).ConfigureAwait(false);
@@ -671,8 +671,8 @@ namespace Chummer
                             else if (!string.Equals(value, kvp.Value, StringComparison.Ordinal))
                             {
                                 sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_ModifiedAttribute", token: token).ConfigureAwait(false), strNodePath, kvp.Key).AppendLine();
-                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), '\"' + kvp.Value + '\"').AppendLine();
-                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_NewValue", token: token).ConfigureAwait(false), '\"' + value + '\"').AppendLine();
+                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), "\"" + kvp.Value + "\"").AppendLine();
+                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_NewValue", token: token).ConfigureAwait(false), "\"" + value + "\"").AppendLine();
                             }
                         }
 
@@ -705,8 +705,8 @@ namespace Chummer
                             if (!string.Equals(strBaseText, strResultText, StringComparison.Ordinal))
                             {
                                 sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Modified", token: token).ConfigureAwait(false), strNodePath).AppendLine();
-                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), '\"' + strBaseText + '\"').AppendLine();
-                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_NewValue", token: token).ConfigureAwait(false), '\"' + strResultText + '\"').AppendLine();
+                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), "\"" + strBaseText + "\"").AppendLine();
+                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_NewValue", token: token).ConfigureAwait(false), "\"" + strResultText + "\"").AppendLine();
                             }
                         }
                     }
@@ -766,7 +766,7 @@ namespace Chummer
                     // If still no key, use the node name with index
                     if (string.IsNullOrEmpty(strKey))
                     {
-                        strKey = node.Name + '_' + groups.Count.ToString(GlobalSettings.InvariantCultureInfo);
+                        strKey = node.Name + "_" + groups.Count.ToString(GlobalSettings.InvariantCultureInfo);
                     }
                 }
                 
@@ -790,19 +790,19 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(strId))
                 {
-                    strNodeName = strNodeName + "[id=" + strId + ']';
+                    strNodeName = strNodeName + "[id=" + strId + "]";
                 }
                 else
                 {
                     string strName = node.Attributes?["name"]?.Value;
                     if (!string.IsNullOrEmpty(strName))
                     {
-                        strNodeName = strNodeName + "[name=" + strName + ']';
+                        strNodeName = strNodeName + "[name=" + strName + "]";
                     }
                 }
             }
             
-            return string.IsNullOrEmpty(strCurrentPath) ? strNodeName : strCurrentPath + '/' + strNodeName;
+            return string.IsNullOrEmpty(strCurrentPath) ? strNodeName : strCurrentPath + "/" + strNodeName;
         }
 
         private static async Task<string> FormatXmlNode(XmlNode xmlNode, CancellationToken token = default)
@@ -812,7 +812,7 @@ namespace Chummer
             {
                 if (xmlNode.NodeType == XmlNodeType.Text)
                 {
-                    return '\"' + xmlNode.Value + '\"';
+                    return "\"" + xmlNode.Value + "\"";
                 }
                 
                 if (xmlNode.NodeType == XmlNodeType.Element)

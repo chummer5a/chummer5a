@@ -230,7 +230,7 @@ namespace Codaxy.WkHtmlToPdf
             bool blnTemporaryFile = false;
             if (string.IsNullOrWhiteSpace(outputPdfFilePath))
             {
-                outputPdfFilePath = Path.Combine(environment.TempFolderPath, Guid.NewGuid() + ".pdf");
+                outputPdfFilePath = Path.Combine(environment.TempFolderPath, Guid.NewGuid().ToString("D", GlobalSettings.InvariantCultureInfo) + ".pdf");
                 blnTemporaryFile = true;
             }
 
@@ -584,7 +584,7 @@ namespace Codaxy.WkHtmlToPdf
     //    {
     //        FileInfo fi = new FileInfo(filename);
     //        response.ContentType = "application/force-download";
-    //        response.AddHeader("Content-Disposition", "attachment; filename=\"" + fi.Name + '\"');
+    //        response.AddHeader("Content-Disposition", "attachment; filename=\"" + fi.Name + "\"");
     //    }
     //}
 }

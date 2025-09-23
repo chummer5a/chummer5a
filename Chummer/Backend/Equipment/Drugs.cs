@@ -1068,7 +1068,7 @@ namespace Chummer.Backend.Equipment
                 string strDisplayDuration = intDuration.ToString(objCulture) + strSpace;
                 if (DurationDice > 0)
                 {
-                    strDisplayDuration += '×' + strSpace + DurationDice.ToString(objCulture) +
+                    strDisplayDuration += "×" + strSpace + DurationDice.ToString(objCulture) +
                                             LanguageManager.GetString("String_D6", strLanguage) + strSpace;
                 }
                 if (blnDoCache)
@@ -1093,7 +1093,7 @@ namespace Chummer.Backend.Equipment
                 string strDisplayDuration = intDuration.ToString(objCulture) + strSpace;
                 if (DurationDice > 0)
                 {
-                    strDisplayDuration += '×' + strSpace + DurationDice.ToString(objCulture) +
+                    strDisplayDuration += "×" + strSpace + DurationDice.ToString(objCulture) +
                                           await LanguageManager.GetStringAsync("String_D6", strLanguage, token: token).ConfigureAwait(false) + strSpace;
                 }
                 return _strCachedDisplayDuration = strDisplayDuration + await CommonFunctions.GetTimescaleStringAsync(DurationTimescale, intDuration > 1, token: token).ConfigureAwait(false);
@@ -1677,7 +1677,7 @@ namespace Chummer.Backend.Equipment
                 return;
             await (await _objCharacter.GetImprovementGroupsAsync(token).ConfigureAwait(false)).AddAsync(Name, token).ConfigureAwait(false);
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            string strNamePrefix = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false) + strSpace + '-' +
+            string strNamePrefix = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false) + strSpace + "-" +
                                    strSpace;
             List<Improvement> lstImprovements = new List<Improvement>(16);
             foreach (KeyValuePair<string, decimal> kvpAttribute in await GetAttributesAsync(token).ConfigureAwait(false))
@@ -2200,7 +2200,7 @@ namespace Chummer.Backend.Equipment
             if (Level != 0)
             {
                 string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-                strReturn += strSpace + '(' + LanguageManager.GetString("String_Level", strLanguage) + strSpace + Level.ToString(objCulture) + ')';
+                strReturn += strSpace + "(" + LanguageManager.GetString("String_Level", strLanguage) + strSpace + Level.ToString(objCulture) + ")";
             }
             return strReturn;
         }
@@ -2235,7 +2235,7 @@ namespace Chummer.Backend.Equipment
             if (Level != 0)
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
-                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync("String_Level", strLanguage, token: token).ConfigureAwait(false) + strSpace + Level.ToString(objCulture) + ')';
+                strReturn += strSpace + "(" + await LanguageManager.GetStringAsync("String_Level", strLanguage, token: token).ConfigureAwait(false) + strSpace + Level.ToString(objCulture) + ")";
             }
             return strReturn;
         }

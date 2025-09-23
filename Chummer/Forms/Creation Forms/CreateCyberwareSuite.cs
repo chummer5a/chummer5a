@@ -67,7 +67,7 @@ namespace Chummer
             }
 
             // Make sure the file name starts with custom and ends with _cyberware.xml.
-            if (!strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || !strFileName.EndsWith('_' + _strType + ".xml", StringComparison.OrdinalIgnoreCase))
+            if (!strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || !strFileName.EndsWith("_" + _strType + ".xml", StringComparison.OrdinalIgnoreCase))
             {
                 await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CyberwareSuite_InvalidFileName").ConfigureAwait(false), _strType),
                     await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_InvalidFileName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
@@ -119,8 +119,8 @@ namespace Chummer
                         if (!blnNewFile)
                         {
                             // <cyberwares>
-                            await objWriter.WriteStartElementAsync(_strType + 's').ConfigureAwait(false);
-                            using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/" + _strType + 's'))
+                            await objWriter.WriteStartElementAsync(_strType + "s").ConfigureAwait(false);
+                            using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/" + _strType + "s"))
                                 if (xmlCyberwareList?.Count > 0)
                                     foreach (XmlNode xmlCyberware in xmlCyberwareList)
                                         xmlCyberware.WriteContentTo(objWriter);
@@ -155,7 +155,7 @@ namespace Chummer
                         // <grade />
                         await objWriter.WriteElementStringAsync("grade", strGrade).ConfigureAwait(false);
                         // <cyberwares>
-                        await objWriter.WriteStartElementAsync(_strType + 's').ConfigureAwait(false);
+                        await objWriter.WriteStartElementAsync(_strType + "s").ConfigureAwait(false);
 
                         // Write out the Cyberware.
                         await _objCharacter.Cyberware.ForEachAsync(async objCyberware =>
@@ -177,7 +177,7 @@ namespace Chummer
                             if (await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).GetCountAsync().ConfigureAwait(false) > 0)
                             {
                                 // <cyberwares>
-                                await objWriter.WriteStartElementAsync(_strType + 's').ConfigureAwait(false);
+                                await objWriter.WriteStartElementAsync(_strType + "s").ConfigureAwait(false);
                                 await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).ForEachAsync(async objChild =>
                                 {
                                     // Do not include items that come with the base item by default.

@@ -67,11 +67,11 @@ namespace Chummer
                                 if (sbdExclude.Length > 0)
                                 {
                                     sbdExclude.Length -= 5;
-                                    strExclude = '(' + sbdExclude.ToString() + ") and ";
+                                    strExclude = "(" + sbdExclude.ToString() + ") and ";
                                 }
                                 if (_objXmlDocument.SelectSingleNode(
                                         "/chummer/skills/skill[" + strExclude + "skillgroup = "
-                                        + objXmlSkill.Value.CleanXPath() + ']') == null)
+                                        + objXmlSkill.Value.CleanXPath() + "]") == null)
                                     continue;
                             }
                         }

@@ -346,7 +346,7 @@ namespace Chummer.Backend.Skills
                 XPathNavigator xmlSkillNode = (await CharacterObject.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
                                                              .SelectSingleNode(
                                                                  "/chummer/knowledgeskills/skill[name = "
-                                                                 + strSkillName.CleanXPath() + ']');
+                                                                 + strSkillName.CleanXPath() + "]");
 
                 if (xmlSkillNode == null)
                 {
@@ -392,7 +392,7 @@ namespace Chummer.Backend.Skills
             {
                 XPathNavigator xmlSkillTranslationNode = CharacterObject.LoadDataXPath("skills.xml")
                     .SelectSingleNode("/chummer/knowledgeskills/skill[translate = " + strInputSkillName.CleanXPath() +
-                                      ']');
+                                      "]");
 
                 if (xmlSkillTranslationNode == null)
                 {
@@ -417,7 +417,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 XPathNavigator xmlSkillTranslationNode = (await CharacterObject.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
                                                                         .SelectSingleNode("/chummer/knowledgeskills/skill[translate = " + strInputSkillName.CleanXPath() +
-                                                                            ']');
+                                                                            "]");
 
                 if (xmlSkillTranslationNode == null)
                 {

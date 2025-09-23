@@ -745,12 +745,12 @@ namespace Chummer
                     string strSourceNameEnglish = string.Empty;
                     if (!string.IsNullOrWhiteSpace(await GetSourceNameAsync(token).ConfigureAwait(false)))
                     {
-                        strSourceName = strSpace + '('
+                        strSourceName = strSpace + "("
                                                  + await DisplaySourceNameAsync(strLanguageToPrint, token)
-                                                     .ConfigureAwait(false) + ')';
-                        strSourceNameEnglish = strSpaceEnglish + '('
+                                                     .ConfigureAwait(false) + ")";
+                        strSourceNameEnglish = strSpaceEnglish + "("
                                                  + await DisplaySourceNameAsync(GlobalSettings.DefaultLanguage, token)
-                                                     .ConfigureAwait(false) + ')';
+                                                     .ConfigureAwait(false) + ")";
                     }
                     string strExtra = await GetExtraAsync(token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
@@ -1454,7 +1454,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Extra))
                 {
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+                    strReturn += strSpace + "(" + _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
                 }
 
                 int intLevels = Levels;
@@ -1505,9 +1505,9 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Extra))
                 {
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += strSpace + '(' + await _objCharacter
+                    strReturn += strSpace + "(" + await _objCharacter
                                                         .TranslateExtraAsync(Extra, strLanguage, token: token)
-                                                        .ConfigureAwait(false) + ')';
+                                                        .ConfigureAwait(false) + ")";
                 }
 
                 int intLevels = await GetLevelsAsync(token).ConfigureAwait(false);
@@ -2702,7 +2702,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(xmlDoc));
             XmlNode node = xmlDoc.TryGetNodeByNameOrId(".//*", id)
                            ?? throw new ArgumentException("Could not find node " + id + " in xmlDoc " + xmlDoc.Name
-                                                          + '.');
+                                                          + ".");
             return GetNodeOverrideable(node);
         }
 

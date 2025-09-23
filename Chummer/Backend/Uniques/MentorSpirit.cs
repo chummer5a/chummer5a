@@ -252,10 +252,10 @@ namespace Chummer
                 /*
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
+                    _strNotes = CommonFunctions.GetTextFromPdf(_strSource + " " + _strPage, _strName);
                     if (string.IsNullOrEmpty(_strNotes))
                     {
-                        _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
+                        _strNotes = CommonFunctions.GetTextFromPdf(Source + " " + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
                     }
                 }
                 */
@@ -434,10 +434,10 @@ namespace Chummer
                 /*
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
+                    _strNotes = CommonFunctions.GetTextFromPdf(_strSource + " " + _strPage, _strName);
                     if (string.IsNullOrEmpty(_strNotes))
                     {
-                        _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
+                        _strNotes = CommonFunctions.GetTextFromPdf(Source + " " + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
                     }
                 }
                 */

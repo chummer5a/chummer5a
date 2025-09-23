@@ -163,7 +163,7 @@ namespace Chummer
                 /*
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetText(_strSource + ' ' + _strPage, Name);
+                    _strNotes = CommonFunctions.GetText(_strSource + " " + _strPage, Name);
                 }
                 */
             }
@@ -258,7 +258,7 @@ namespace Chummer
                 /*
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetText(_strSource + ' ' + _strPage, Name);
+                    _strNotes = CommonFunctions.GetText(_strSource + " " + _strPage, Name);
                 }
                 */
             }
@@ -1243,7 +1243,7 @@ namespace Chummer
                                     "T", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguage))
                                 .CheapReplace(
                                     "(A)",
-                                    () => '(' + LanguageManager.GetString("String_SpellRangeArea", strLanguage) + ')')
+                                    () => "(" + LanguageManager.GetString("String_SpellRangeArea", strLanguage) + ")")
                                 .CheapReplace(
                                     "MAG", () => LanguageManager.GetString("String_AttributeMAGShort", strLanguage))
                                 .CheapReplace(
@@ -1291,10 +1291,10 @@ namespace Chummer
                                               "String_SpellRangeTouch", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "(A)",
-                                          async () => '(' + await LanguageManager
+                                          async () => "(" + await LanguageManager
                                                                   .GetStringAsync(
                                                                       "String_SpellRangeArea", strLanguage,
-                                                                      token: token).ConfigureAwait(false) + ')',
+                                                                      token: token).ConfigureAwait(false) + ")",
                                           token: token)
                                       .CheapReplaceAsync(
                                           "MAG",
@@ -1553,9 +1553,9 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strToAppend))
                         {
-                            strReturn += 'F' + strToAppend;
+                            strReturn += "F" + strToAppend;
                             if (BarehandedAdept)
-                                strReturn = "2 * (" + strReturn + ')';
+                                strReturn = "2 * (" + strReturn + ")";
                         }
                         else
                             strReturn = string.Format(GlobalSettings.InvariantCultureInfo,
@@ -1565,7 +1565,7 @@ namespace Chummer
                     {
                         strReturn += strToAppend;
                         if (BarehandedAdept)
-                            strReturn = "2 * (" + strReturn + ')';
+                            strReturn = "2 * (" + strReturn + ")";
                     }
                     else
                         // Drain always minimum 2 (doubled for Barehanded Adept)
@@ -1668,7 +1668,7 @@ namespace Chummer
                     {
                         strReturn += "F" + strToAppend;
                         if (BarehandedAdept)
-                            strReturn = "2 * (" + strReturn + ')';
+                            strReturn = "2 * (" + strReturn + ")";
                     }
                     else
                         strReturn = string.Format(GlobalSettings.InvariantCultureInfo,
@@ -1678,7 +1678,7 @@ namespace Chummer
                 {
                     strReturn += strToAppend;
                     if (BarehandedAdept)
-                        strReturn = "2 * (" + strReturn + ')';
+                        strReturn = "2 * (" + strReturn + ")";
                 }
                 else
                     // Drain always minimum 2 (doubled for Barehanded Adept)
@@ -2034,7 +2034,7 @@ namespace Chummer
                         ? this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name
                         : Name;
                 if (Extended && _blnCustomExtended)
-                    strReturn += ',' + LanguageManager.GetString("String_Space", strLanguage)
+                    strReturn += "," + LanguageManager.GetString("String_Space", strLanguage)
                                      + LanguageManager.GetString("String_SpellExtended", strLanguage);
 
                 return strReturn;
@@ -2063,7 +2063,7 @@ namespace Chummer
                 }
 
                 if (Extended && _blnCustomExtended)
-                    strReturn += ','
+                    strReturn += ","
                                  + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                                                         .ConfigureAwait(false) + await LanguageManager
                                      .GetStringAsync("String_SpellExtended", strLanguage, token: token)
@@ -2087,16 +2087,16 @@ namespace Chummer
                 string strReturn = DisplayNameShort(strLanguage);
 
                 if (Limited)
-                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + '('
-                        + LanguageManager.GetString("String_SpellLimited", strLanguage) + ')';
+                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + "("
+                        + LanguageManager.GetString("String_SpellLimited", strLanguage) + ")";
                 if (Alchemical)
-                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + '('
-                        + LanguageManager.GetString("String_SpellAlchemical", strLanguage) + ')';
+                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + "("
+                        + LanguageManager.GetString("String_SpellAlchemical", strLanguage) + ")";
                 if (!string.IsNullOrEmpty(Extra))
                 {
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + '('
-                        + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + "("
+                        + _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
                 }
 
                 return strReturn;
@@ -2116,19 +2116,19 @@ namespace Chummer
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                                                        .ConfigureAwait(false);
                 if (Limited)
-                    strReturn += strSpace + '(' + await LanguageManager
+                    strReturn += strSpace + "(" + await LanguageManager
                                                         .GetStringAsync("String_SpellLimited", strLanguage,
-                                                                        token: token).ConfigureAwait(false) + ')';
+                                                                        token: token).ConfigureAwait(false) + ")";
                 if (Alchemical)
-                    strReturn += strSpace + '(' + await LanguageManager
+                    strReturn += strSpace + "(" + await LanguageManager
                                                         .GetStringAsync("String_SpellAlchemical", strLanguage,
-                                                                        token: token).ConfigureAwait(false) + ')';
+                                                                        token: token).ConfigureAwait(false) + ")";
                 if (!string.IsNullOrEmpty(Extra))
                 {
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += strSpace + '(' + await _objCharacter
+                    strReturn += strSpace + "(" + await _objCharacter
                                                         .TranslateExtraAsync(Extra, strLanguage, token: token)
-                                                        .ConfigureAwait(false) + ')';
+                                                        .ConfigureAwait(false) + ")";
                 }
 
                 return strReturn;
@@ -2219,7 +2219,7 @@ namespace Chummer
                         XPathNavigator objCategoryNode = _objCharacter.LoadDataXPath("spells.xml")
                                               .SelectSingleNode(
                                                   "/chummer/categories/category[. = "
-                                                  + Category.CleanXPath() + ']');
+                                                  + Category.CleanXPath() + "]");
                         if (objCategoryNode == null)
                             return null;
                         objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
@@ -2261,7 +2261,7 @@ namespace Chummer
                     XPathNavigator objCategoryNode = (await _objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false))
                     .SelectSingleNode(
                         "/chummer/categories/category[. = "
-                        + Category.CleanXPath() + ']');
+                        + Category.CleanXPath() + "]");
                     if (objCategoryNode == null)
                         return null;
                     objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);

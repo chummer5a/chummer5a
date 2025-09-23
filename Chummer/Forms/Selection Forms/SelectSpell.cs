@@ -352,7 +352,7 @@ namespace Chummer
                         }
 
                         if (sbdFilter.Length > 0)
-                            strFilter = '[' + sbdFilter.ToString() + ']';
+                            strFilter = "[" + sbdFilter.ToString() + "]";
                     }
 
                     foreach (XPathNavigator objXmlSpell in _xmlBaseSpellDataNode.Select("spells/spell" + strFilter))
@@ -437,7 +437,7 @@ namespace Chummer
                             = _lstCategory.Find(objFind => objFind.Value.ToString() == strSpellCategory);
                         if (!string.IsNullOrEmpty(objFoundItem.Name))
                         {
-                            strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
+                            strDisplayName += strSpace + "[" + objFoundItem.Name + "]";
                         }
                     }
 
@@ -852,7 +852,7 @@ namespace Chummer
                                  .CheapReplaceAsync("LOI", () => LanguageManager.GetStringAsync("String_SpellRangeLineOfInfluence", token: token), token: token)
                                  .CheapReplaceAsync("Touch", () => LanguageManager.GetStringAsync("String_SpellRangeTouchLong", token: token), token: token)
                                  .CheapReplaceAsync("T", () => LanguageManager.GetStringAsync("String_SpellRangeTouch", token: token), token: token)
-                                 .CheapReplaceAsync("(A)", async () => '(' + await LanguageManager.GetStringAsync("String_SpellRangeArea", token: token).ConfigureAwait(false) + ')', token: token)
+                                 .CheapReplaceAsync("(A)", async () => "(" + await LanguageManager.GetStringAsync("String_SpellRangeArea", token: token).ConfigureAwait(false) + ")", token: token)
                                  .CheapReplaceAsync("MAG", () => LanguageManager.GetStringAsync("String_AttributeMAGShort", token: token), token: token).ConfigureAwait(false);
             }
             await lblRange.DoThreadSafeAsync(x => x.Text = strRange, token: token).ConfigureAwait(false);
@@ -984,7 +984,7 @@ namespace Chummer
                 {
                     strDv += "F" + strToAppend;
                     if (blnBarehandedAdept)
-                        strDv = "2 * (" + strDv + ')';
+                        strDv = "2 * (" + strDv + ")";
                 }
                 else
                     strDv = string.Format(GlobalSettings.CultureInfo, blnBarehandedAdept ? "2 * (F{0:+0;-0;})" : "F{0:+0;-0;}", intDrainDv);
@@ -993,7 +993,7 @@ namespace Chummer
             {
                 strDv += strToAppend;
                 if (blnBarehandedAdept)
-                    strDv = "2 * (" + strDv + ')';
+                    strDv = "2 * (" + strDv + ")";
             }
             else
                 // Drain always minimum 2 (doubled for Barehanded Adept)

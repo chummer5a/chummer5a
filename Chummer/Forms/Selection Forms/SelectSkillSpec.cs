@@ -55,7 +55,7 @@ namespace Chummer
                 xmlParentSkill
                     = _objXmlDocument.TryGetNodeByNameOrId("/chummer/knowledgeskills/skill", strSkillName)
                       ?? _objXmlDocument.SelectSingleNode(
-                          "/chummer/knowledgeskills/skill[translate = " + strSkillName.CleanXPath() + ']');
+                          "/chummer/knowledgeskills/skill[translate = " + strSkillName.CleanXPath() + "]");
             }
             else
             {

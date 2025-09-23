@@ -532,7 +532,7 @@ namespace Chummer
                     string strExtra = Extra;
                     if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                         strExtra = _objCharacter.TranslateExtra(Extra, strLanguage);
-                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strExtra + ')';
+                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + "(" + strExtra + ")";
                 }
                 return strReturn;
             }
@@ -547,7 +547,7 @@ namespace Chummer
                 string strExtra = Extra;
                 if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     strExtra = await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false);
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + '(' + strExtra + ')';
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + "(" + strExtra + ")";
             }
             return strReturn;
         }

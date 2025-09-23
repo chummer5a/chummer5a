@@ -856,10 +856,10 @@ namespace Chummer.Backend.Equipment
             {
                 if (objCulture == null)
                     objCulture = GlobalSettings.CultureInfo;
-                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + intRating.ToString(objCulture) + ')';
+                strReturn += strSpace + "(" + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + intRating.ToString(objCulture) + ")";
             }
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += strSpace + "(" + _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
             return strReturn;
         }
 
@@ -875,10 +875,10 @@ namespace Chummer.Backend.Equipment
             {
                 if (objCulture == null)
                     objCulture = GlobalSettings.CultureInfo;
-                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false) + strSpace + intRating.ToString(objCulture) + ')';
+                strReturn += strSpace + "(" + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false) + strSpace + intRating.ToString(objCulture) + ")";
             }
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
+                strReturn += strSpace + "(" + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ")";
             return strReturn;
         }
 
@@ -1881,7 +1881,7 @@ namespace Chummer.Backend.Equipment
             else
                 strReturn = decValue.ToString("#,0.##", objCulture);
             if (blnSquareBrackets)
-                strReturn = '[' + strReturn + ']';
+                strReturn = "[" + strReturn + "]";
 
             return strReturn;
         }
@@ -1920,7 +1920,7 @@ namespace Chummer.Backend.Equipment
             else
                 strReturn = decValue.ToString("#,0.##", objCulture);
             if (blnSquareBrackets)
-                strReturn = '[' + strReturn + ']';
+                strReturn = "[" + strReturn + "]";
             return strReturn;
         }
 
@@ -2345,7 +2345,7 @@ namespace Chummer.Backend.Equipment
 
                         string strNameToUse = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         if (Parent != null)
-                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ')';
+                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ")";
 
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
@@ -2485,7 +2485,7 @@ namespace Chummer.Backend.Equipment
             }
             // Create the Expense Log Entry for the sale.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorMod") + ' ' + CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorMod") + " " + CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
             return true;
@@ -2522,7 +2522,7 @@ namespace Chummer.Backend.Equipment
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(decAmount,
                 await LanguageManager.GetStringAsync("String_ExpenseSoldArmorMod", token: token).ConfigureAwait(false) +
-                ' ' + await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
+                " " + await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
                 DateTime.Now);
             await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
             await _objCharacter.ModifyNuyenAsync(decAmount, token).ConfigureAwait(false);

@@ -2346,7 +2346,7 @@ namespace Chummer.Backend.Skills
                     {
                         string strSpace = LanguageManager.GetString("String_Space");
                         sbdTooltip.Append(LanguageManager.GetString("Tip_SkillGroup_Skills")).Append(strSpace)
-                            .AppendJoin(',' + strSpace, SkillList.Select(x => x.CurrentDisplayName)).AppendLine();
+                            .AppendJoin("," + strSpace, SkillList.Select(x => x.CurrentDisplayName)).AppendLine();
 
                         if (IsDisabled)
                         {
@@ -2406,7 +2406,7 @@ namespace Chummer.Backend.Skills
                         (await sbdTooltip
                             .Append(await LanguageManager.GetStringAsync("Tip_SkillGroup_Skills", token: token)
                                 .ConfigureAwait(false)).Append(strSpace)
-                            .AppendJoinAsync(',' + strSpace,
+                            .AppendJoinAsync("," + strSpace,
                                 SkillList.Select(x => x.GetCurrentDisplayNameAsync(token)),
                                 token).ConfigureAwait(false)).AppendLine();
 

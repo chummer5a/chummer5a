@@ -56,9 +56,9 @@ namespace Chummer
             try
             {
                 dlgOpenFile.Title = await LanguageManager.GetStringAsync("Title_PrintMultiple", token: _objGenericToken).ConfigureAwait(false);
-                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: _objGenericToken).ConfigureAwait(false) + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: _objGenericToken).ConfigureAwait(false) + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objGenericToken).ConfigureAwait(false) + '|' +
+                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: _objGenericToken).ConfigureAwait(false) + "|" +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: _objGenericToken).ConfigureAwait(false) + "|" +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objGenericToken).ConfigureAwait(false) + "|" +
                                      await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)

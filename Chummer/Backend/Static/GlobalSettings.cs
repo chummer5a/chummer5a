@@ -470,7 +470,7 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                ErrorMessage += ex;
+                ErrorMessage += ex.Demystify().ToString();
             }
             if (s_ObjBaseChummerKey == null)
                 return;
@@ -989,7 +989,7 @@ namespace Chummer
                         {
                             SourcebookInfo objSourcebookInfo = kvpSourcebookInfo.Value; // Set up this way to avoid race condition in underlying SourcebookInfos dictionary
                             objSourceRegistry.SetValue(objSourcebookInfo.Code,
-                                objSourcebookInfo.Path + '|'
+                                objSourcebookInfo.Path + "|"
                                                        + objSourcebookInfo.Offset.ToString(
                                                            InvariantCultureInfo));
                         }

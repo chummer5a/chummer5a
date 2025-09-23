@@ -139,7 +139,7 @@ namespace Chummer.Backend.Skills
             {
                 using (LockObject.EnterReadLock())
                 {
-                    return _strDictionaryKey = _strDictionaryKey ?? Name + " (" + Specific + ')';
+                    return _strDictionaryKey = _strDictionaryKey ?? Name + " (" + Specific + ")";
                 }
             }
         }
@@ -152,7 +152,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 return _strDictionaryKey = _strDictionaryKey
                                            ?? await GetNameAsync(token).ConfigureAwait(false) + " (" +
-                                           await GetSpecificAsync(token).ConfigureAwait(false) + ')';
+                                           await GetSpecificAsync(token).ConfigureAwait(false) + ")";
             }
             finally
             {

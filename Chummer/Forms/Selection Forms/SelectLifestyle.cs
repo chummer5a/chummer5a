@@ -450,7 +450,7 @@ namespace Chummer
                 if (await _objLifestyle.GetStyleTypeAsync().ConfigureAwait(false) == LifestyleType.Standard)
                     strFilter += " and (source = \"SR5\" or category = \"Contracts\")";
                 using (XmlNodeList xmlLifestyleList
-                       = _xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + strFilter + ']'))
+                       = _xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + strFilter + "]"))
                 {
                     if (xmlLifestyleList?.Count > 0)
                     {

@@ -239,16 +239,16 @@ namespace Chummer
         /// </summary>
         private async Task RefreshArtList(CancellationToken token = default)
         {
-            string strFilter = '(' + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + ')';
+            string strFilter = "(" + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + ")";
             if (ShowQualities)
                 strFilter += " and isquality = " + bool.TrueString.CleanXPath();
             else
-                strFilter += " and not(isquality = " + bool.TrueString.CleanXPath() + ')';
+                strFilter += " and not(isquality = " + bool.TrueString.CleanXPath() + ")";
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
 
-            XPathNodeIterator objArtList = _xmlBaseMartialArtsNode.Select("martialart[" + strFilter + ']');
+            XPathNodeIterator objArtList = _xmlBaseMartialArtsNode.Select("martialart[" + strFilter + "]");
 
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMartialArt))
             {

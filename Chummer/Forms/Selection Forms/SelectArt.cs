@@ -75,14 +75,14 @@ namespace Chummer
                     _strLocalName = LanguageManager.GetString("String_Enchantment");
                     _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").SelectSingleNodeAndCacheExpression("/chummer/spells");
                     _strBaseXPath = "spell";
-                    _strXPathFilter = "category = 'Enchantments' and (" + _objCharacter.Settings.BookXPath() + ')';
+                    _strXPathFilter = "category = 'Enchantments' and (" + _objCharacter.Settings.BookXPath() + ")";
                     break;
 
                 case Mode.Ritual:
                     _strLocalName = LanguageManager.GetString("String_Ritual");
                     _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").SelectSingleNodeAndCacheExpression("/chummer/spells");
                     _strBaseXPath = "spell";
-                    _strXPathFilter = "category = 'Rituals' and (" + _objCharacter.Settings.BookXPath() + ')';
+                    _strXPathFilter = "category = 'Rituals' and (" + _objCharacter.Settings.BookXPath() + ")";
                     break;
             }
         }
@@ -185,7 +185,7 @@ namespace Chummer
             {
                 bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 foreach (XPathNavigator objXmlMetamagic in
-                         _objXmlDocument.Select(_strBaseXPath + '[' + strFilter + ']'))
+                         _objXmlDocument.Select(_strBaseXPath + "[" + strFilter + "]"))
                 {
                     string strId = objXmlMetamagic.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (!string.IsNullOrEmpty(strId)

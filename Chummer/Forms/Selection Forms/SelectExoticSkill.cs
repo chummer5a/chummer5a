@@ -72,7 +72,7 @@ namespace Chummer
                 // Build the list of Exotic Active Skills from the Skills file.
                 using (XmlNodeList objXmlSkillList = (await _objCharacter.LoadDataAsync("skills.xml").ConfigureAwait(false))
                                                                   .SelectNodes(
-                                                                      "/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath() + ']'))
+                                                                      "/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath() + "]"))
                 {
                     if (objXmlSkillList?.Count > 0)
                     {
@@ -154,7 +154,7 @@ namespace Chummer
             CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
             XPathNodeIterator xmlWeaponList = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false))
                                                            .Select("/chummer/weapons/weapon[(category = "
-                                                                   + (strSelectedCategory + 's').CleanXPath()
+                                                                   + (strSelectedCategory + "s").CleanXPath()
                                                                    + " or useskill = "
                                                                    + strSelectedCategory.CleanXPath() + ") and ("
                                                                    + await objSettings.BookXPathAsync(false, token).ConfigureAwait(false) + ")]");

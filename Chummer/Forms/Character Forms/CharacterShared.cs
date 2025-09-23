@@ -146,8 +146,8 @@ namespace Chummer
         {
             try
             {
-                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: GenericToken).ConfigureAwait(false) + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: GenericToken).ConfigureAwait(false) + '|' +
+                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: GenericToken).ConfigureAwait(false) + "|" +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: GenericToken).ConfigureAwait(false) + "|" +
                                      await LanguageManager.GetStringAsync("DialogFilter_All", token: GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -427,7 +427,7 @@ namespace Chummer
                                                 .ConfigureAwait(false))
                                         {
                                             Log.Info("Autosave failed for character " + strCharacterName + " (" +
-                                                     strAutosaveFileName + ')');
+                                                     strAutosaveFileName + ")");
                                         }
                                         else
                                             _intAutosaveTimeoutsCount =
@@ -444,12 +444,12 @@ namespace Chummer
                                                 if (intAutosaveTimeoutsCount >= MaximumAutosaveTimeouts)
                                                 {
                                                     Log.Error(ex, "Autosave timed out too many times for character " +
-                                                              strCharacterName + " (" + strAutosaveFileName + ')');
+                                                              strCharacterName + " (" + strAutosaveFileName + ")");
                                                 }
                                                 else
                                                 {
                                                     Log.Info(ex, "Autosave timed out for character " + strCharacterName +
-                                                             " (" + strAutosaveFileName + ')');
+                                                             " (" + strAutosaveFileName + ")");
                                                 }
                                             }
                                         }
@@ -2486,20 +2486,20 @@ namespace Chummer
                     {
                         await CharacterObject.Qualities.ForEachAsync(async objQuality =>
                         {
-                            setQualitiesToPrint.Add(objQuality.SourceIDString + '|' +
+                            setQualitiesToPrint.Add(objQuality.SourceIDString + "|" +
                                                     await objQuality.DisplaySourceNameAsync(GlobalSettings.Language, token)
-                                                                    .ConfigureAwait(false) + '|' +
+                                                                    .ConfigureAwait(false) + "|" +
                                                     objQuality.Extra);
                         }, token).ConfigureAwait(false);
 
                         // Add Qualities
                         await CharacterObject.Qualities.ForEachAsync(async objQuality =>
                         {
-                            if (!setQualitiesToPrint.Remove(objQuality.SourceIDString + '|' +
+                            if (!setQualitiesToPrint.Remove(objQuality.SourceIDString + "|" +
                                                             await objQuality
                                                                   .DisplaySourceNameAsync(GlobalSettings.Language, token)
                                                                   .ConfigureAwait(false)
-                                                            + '|' +
+                                                            + "|" +
                                                             objQuality.Extra))
                                 return;
 
@@ -7347,10 +7347,10 @@ namespace Chummer
                                                  await LanguageManager.GetStringAsync("String_Space", token: token)
                                                      .ConfigureAwait(false);
                                 if (objImprovement.Value > 0)
-                                    strName += '+';
+                                    strName += "+";
                                 strName += objImprovement.Value.ToString(GlobalSettings.CultureInfo);
                                 if (!string.IsNullOrEmpty(objImprovement.Condition))
-                                    strName += ',' + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                    strName += "," + await LanguageManager.GetStringAsync("String_Space", token: token)
                                                        .ConfigureAwait(false)
                                                    + objImprovement.Condition;
                                 if (objParentNode?.Nodes.ContainsKey(strName) == false)
@@ -9523,7 +9523,7 @@ namespace Chummer
                     XPathDocument xmlDoc;
                     string strFileName = string.Empty;
                     string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Xml", token: token)
-                                           .ConfigureAwait(false) + '|' +
+                                           .ConfigureAwait(false) + "|" +
                                        await LanguageManager.GetStringAsync("DialogFilter_All", token: token)
                                            .ConfigureAwait(false);
                     // Displays an OpenFileDialog so the user can select the XML to read.
@@ -11040,9 +11040,9 @@ namespace Chummer
                 return;
 
             string strSpace = LanguageManager.GetString("String_Space", token: GenericToken);
-            string strTitle = CharacterObject.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' + CharacterObjectSettings.Name + ')';
+            string strTitle = CharacterObject.CharacterName + strSpace + "-" + strSpace + FormMode + strSpace + "(" + CharacterObjectSettings.Name + ")";
             if (IsDirty)
-                strTitle += '*';
+                strTitle += "*";
             this.DoThreadSafe((x, y) => x.Text = strTitle, token: GenericToken);
         }
 
@@ -11069,11 +11069,11 @@ namespace Chummer
                 if (blnCanSkip && (await this.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false)).EndsWith('*') == IsDirty)
                     return;
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                string strTitle = await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false) + strSpace + '-' + strSpace
+                string strTitle = await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false) + strSpace + "-" + strSpace
                     + await GetFormModeAsync(token).ConfigureAwait(false) + strSpace
-                    + '(' + await CharacterObjectSettings.GetNameAsync(token).ConfigureAwait(false) + ')';
+                    + "(" + await CharacterObjectSettings.GetNameAsync(token).ConfigureAwait(false) + ")";
                 if (IsDirty)
-                    strTitle += '*';
+                    strTitle += "*";
                 await this.DoThreadSafeAsync(x => x.Text = strTitle, token).ConfigureAwait(false);
             }
             finally
@@ -11484,7 +11484,7 @@ namespace Chummer
 
                                 // Reduce the cost for Do It Yourself components.
                                 if (frmPickGear.MyForm.DoItYourself)
-                                    objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                                    objGear.Cost = "(" + objGear.Cost + ") * 0.5";
                                 // If the item was marked as free, change its cost.
                                 if (frmPickGear.MyForm.FreeCost)
                                     objGear.Cost = "0";

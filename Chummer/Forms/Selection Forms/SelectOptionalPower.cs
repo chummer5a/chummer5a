@@ -64,8 +64,8 @@ namespace Chummer
                     string strName = string.IsNullOrEmpty(strPowerExtra)
                         ? await _objCharacter.TranslateExtraAsync(strPowerName).ConfigureAwait(false)
                         : await _objCharacter.TranslateExtraAsync(strPowerName).ConfigureAwait(false)
-                          + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false) + '('
-                          + await _objCharacter.TranslateExtraAsync(strPowerExtra).ConfigureAwait(false) + ')';
+                          + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false) + "("
+                          + await _objCharacter.TranslateExtraAsync(strPowerExtra).ConfigureAwait(false) + ")";
                     lstPowerItems.Add(new ListItem(new ValueTuple<string, string>(strPowerName, strPowerExtra), strName));
                 }
 

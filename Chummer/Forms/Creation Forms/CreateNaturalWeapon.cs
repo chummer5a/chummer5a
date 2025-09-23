@@ -73,8 +73,8 @@ namespace Chummer
 
                 CharacterAttrib objAttribute = await _objCharacter.GetAttributeAsync("STR").ConfigureAwait(false);
                 string strAbbrev = await objAttribute.GetCurrentDisplayAbbrevAsync().ConfigureAwait(false);
-                lstDVBase.Add(new ListItem("({STR}/2)", '(' + strAbbrev + "/2)"));
-                lstDVBase.Add(new ListItem("({STR})", '(' + strAbbrev + ')'));
+                lstDVBase.Add(new ListItem("({STR}/2)", "(" + strAbbrev + "/2)"));
+                lstDVBase.Add(new ListItem("({STR})", "(" + strAbbrev + ")"));
                 for (int i = 1; i <= 20; ++i)
                 {
                     lstDVBase.Add(new ListItem(i.ToString(GlobalSettings.InvariantCultureInfo),
@@ -137,7 +137,7 @@ namespace Chummer
                 if (intDVMod < 0)
                     strDamage += intDVMod.ToString(GlobalSettings.InvariantCultureInfo);
                 else
-                    strDamage += '+' + intDVMod.ToString(GlobalSettings.InvariantCultureInfo);
+                    strDamage += "+" + intDVMod.ToString(GlobalSettings.InvariantCultureInfo);
             }
             strDamage += await cboDVType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
 
@@ -147,7 +147,7 @@ namespace Chummer
             if (intAP == 0)
                 strAP = "0";
             else if (intAP > 0)
-                strAP = '+' + intAP.ToString(GlobalSettings.InvariantCultureInfo);
+                strAP = "+" + intAP.ToString(GlobalSettings.InvariantCultureInfo);
             else
                 strAP = intAP.ToString(GlobalSettings.InvariantCultureInfo);
 

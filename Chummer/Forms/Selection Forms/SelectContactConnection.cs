@@ -146,22 +146,22 @@ namespace Chummer
                 await cboMembership
                       .DoThreadSafeAsync(x => x.SelectedIndex
                                              = x.FindString(
-                                                 '+' + _intMembership.ToString(GlobalSettings.InvariantCultureInfo)))
+                                                 "+" + _intMembership.ToString(GlobalSettings.InvariantCultureInfo)))
                       .ConfigureAwait(false);
                 await cboAreaOfInfluence
                       .DoThreadSafeAsync(x => x.SelectedIndex
                                              = x.FindString(
-                                                 '+' + _intAreaOfInfluence.ToString(
+                                                 "+" + _intAreaOfInfluence.ToString(
                                                      GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
                 await cboMagicalResources
                       .DoThreadSafeAsync(x => x.SelectedIndex
                                              = x.FindString(
-                                                 '+' + _intMagicalResources.ToString(
+                                                 "+" + _intMagicalResources.ToString(
                                                      GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
                 await cboMatrixResources
                       .DoThreadSafeAsync(x => x.SelectedIndex
                                              = x.FindString(
-                                                 '+' + _intMatrixResources.ToString(
+                                                 "+" + _intMatrixResources.ToString(
                                                      GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
                 await txtGroupName.DoThreadSafeAsync(x => x.Text = _strGroupName).ConfigureAwait(false);
                 await cmdChangeColor.DoThreadSafeAsync(x => x.BackColor = _objColor).ConfigureAwait(false);

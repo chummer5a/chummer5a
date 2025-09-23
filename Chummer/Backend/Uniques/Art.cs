@@ -108,15 +108,15 @@ namespace Chummer
                 }
                 string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                 if (!string.IsNullOrEmpty(strSelectedValue))
-                    _strName += LanguageManager.GetString("String_Space") + '(' + strSelectedValue + ')';
+                    _strName += LanguageManager.GetString("String_Space") + "(" + strSelectedValue + ")";
             }
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
+                _strNotes = CommonFunctions.GetTextFromPdf(_strSource + " " + _strPage, _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
+                    _strNotes = CommonFunctions.GetTextFromPdf(Source + " " + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
                 }
             }
             */
@@ -170,15 +170,15 @@ namespace Chummer
                 }
                 string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                 if (!string.IsNullOrEmpty(strSelectedValue))
-                    _strName += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + strSelectedValue + ')';
+                    _strName += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" + strSelectedValue + ")";
             }
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
+                _strNotes = CommonFunctions.GetTextFromPdf(_strSource + " " + _strPage, _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
+                    _strNotes = CommonFunctions.GetTextFromPdf(Source + " " + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
                 }
             }
             */

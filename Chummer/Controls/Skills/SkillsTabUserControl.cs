@@ -192,7 +192,7 @@ namespace Chummer.UI.Skills
                     .SelectSingleNode(
                         "/chummer/skills/skill[exotic = "
                         + bool.TrueString.CleanXPath()
-                        + ']') != null;
+                        + "]") != null;
 
                 SkillsSection objSkillSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                 ThreadSafeBindingList<Skill> lstSkills = await objSkillSection.GetSkillsAsync(token).ConfigureAwait(false);

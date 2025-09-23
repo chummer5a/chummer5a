@@ -259,7 +259,7 @@ namespace Chummer
                         if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
                             int intAvailModifier = (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: xmlDrug.SelectSingleNodeAndCacheExpression("id")?.Value, blnIncludeNonImproved: true).ConfigureAwait(false)).StandardRound()
-                                + strForceGrade == "None" ? 0 : _intAvailModifier;
+                                + (strForceGrade == "None" ? 0 : _intAvailModifier);
                             while (intMaxRating > intMinRating
                                    && !await xmlDrug.CheckAvailRestrictionAsync(
                                        _objCharacter, intMaxRating, intAvailModifier).ConfigureAwait(false))
@@ -722,7 +722,7 @@ namespace Chummer
                         string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                         await lblCost.DoThreadSafeAsync(x => x.Text = decMax == decimal.MaxValue
                                                             ? decMin.ToString(strNuyenFormat,
-                                                                              GlobalSettings.CultureInfo) + strNuyen + '+'
+                                                                              GlobalSettings.CultureInfo) + strNuyen + "+"
                                                             : decMin.ToString(strNuyenFormat,
                                                                               GlobalSettings.CultureInfo) + " - "
                                                             + decMax.ToString(strNuyenFormat,
@@ -827,7 +827,7 @@ namespace Chummer
                     sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
 
                 if (sbdFilter.Length > 0)
-                    strFilter = '[' + sbdFilter.ToString() + ']';
+                    strFilter = "[" + sbdFilter.ToString() + "]";
             }
 
             int intOverLimit = 0;

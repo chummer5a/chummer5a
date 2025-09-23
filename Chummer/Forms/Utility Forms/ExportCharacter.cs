@@ -617,11 +617,11 @@ namespace Chummer
         protected async Task UpdateWindowTitleAsync(CancellationToken token = default)
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            string strTitle = await LanguageManager.GetStringAsync("Title_ExportCharacter", token: token).ConfigureAwait(false) + ':' + strSpace
-                              + await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false) + strSpace + '-' + strSpace
+            string strTitle = await LanguageManager.GetStringAsync("Title_ExportCharacter", token: token).ConfigureAwait(false) + ":" + strSpace
+                              + await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false) + strSpace + "-" + strSpace
                               + await LanguageManager.GetStringAsync(
                                   await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) ? "Title_CareerMode" : "Title_CreateNewCharacter", token: token).ConfigureAwait(false) + strSpace
-                              + '(' + await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetNameAsync(token).ConfigureAwait(false) + ')';
+                              + "(" + await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetNameAsync(token).ConfigureAwait(false) + ")";
             await this.DoThreadSafeAsync(x => x.Text = strTitle, token).ConfigureAwait(false);
         }
 
@@ -673,10 +673,10 @@ namespace Chummer
                 strSaveFile = dlgSaveFile.FileName;
                 if (string.IsNullOrEmpty(strSaveFile))
                     return;
-                if (!strSaveFile.EndsWith('.' + strExtensionLower, StringComparison.OrdinalIgnoreCase)
+                if (!strSaveFile.EndsWith("." + strExtensionLower, StringComparison.OrdinalIgnoreCase)
                     && (!strExtensionLower.TrimEndOnce('l').Equals("htm", StringComparison.OrdinalIgnoreCase)
                         || !strSaveFile.TrimEndOnce('l', 'L').EndsWith(".htm", StringComparison.OrdinalIgnoreCase)))
-                    strSaveFile += '.' + strExtensionLower;
+                    strSaveFile += "." + strExtensionLower;
             }
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
@@ -916,7 +916,7 @@ namespace Chummer
             string strSaveFile = strDestination;
             if (string.IsNullOrEmpty(strSaveFile))
             {
-                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json", token: token).ConfigureAwait(false) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
+                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json", token: token).ConfigureAwait(false) + "|" + await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
                 dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Export_SaveJsonAs", token: token).ConfigureAwait(false);
                 if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token).ConfigureAwait(false) != DialogResult.OK)
                     return;

@@ -212,14 +212,14 @@ namespace Chummer
         {
             string strForceId = string.Empty;
 
-            string strFilter = '(' + await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false) + ')';
+            string strFilter = "(" + await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false) + ")";
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMentors))
             {
                 foreach (XPathNavigator objXmlMentor in _xmlBaseMentorSpiritDataNode.Select(
-                             "mentors/mentor[" + strFilter + ']'))
+                             "mentors/mentor[" + strFilter + "]"))
                 {
                     if (!await objXmlMentor.RequirementsMetAsync(_objCharacter).ConfigureAwait(false))
                         continue;

@@ -251,12 +251,11 @@ namespace Chummer
                 string strOldFileName = await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
                 string strFileName = string.Empty;
                 string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: _objMyToken).ConfigureAwait(false) +
-                                   '|'
-                                   +
+                                   "|" +
                                    await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: _objMyToken).ConfigureAwait(false) +
-                                   '|' +
+                                   "|" +
                                    await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objMyToken).ConfigureAwait(false) +
-                                   '|' +
+                                   "|" +
                                    await LanguageManager.GetStringAsync("DialogFilter_All", token: _objMyToken).ConfigureAwait(false);
                 // Prompt the user to select a save file to associate with this Contact.
                 DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
@@ -294,7 +293,7 @@ namespace Chummer
                     {
                         _objMyToken.ThrowIfCancellationRequested();
                         await _objContact.SetFileNameAsync(strFileName, _objMyToken).ConfigureAwait(false);
-                        await _objContact.SetRelativeFileNameAsync("../" + uriRelative, _objMyToken).ConfigureAwait(false);
+                        await _objContact.SetRelativeFileNameAsync("../" + uriRelative.ToString(), _objMyToken).ConfigureAwait(false);
                     }
                     finally
                     {

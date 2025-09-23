@@ -206,7 +206,7 @@ namespace Chummer
                     // - Forgetting to dispose/unset a locker that has been set. If it is an asynchronous locker, it needs to have a try-finally disposal immediately after it is set, even if (and especially if) the next line is cancellation token check, otherwise AsyncLocals won't update themselves properly even after a cancellation.
                     Utils.BreakIfDebug();
 #elif DEBUG
-                    Log.Warn("Ran into an improperly set AsyncLocal that needs to be reset, location: " + Environment.NewLine + EnhancedStackTrace.Current());
+                    Log.Warn("Ran into an improperly set AsyncLocal that needs to be reset, location: " + Environment.NewLine + EnhancedStackTrace.Current().ToString());
 #endif
                     while (objCurrentHelper != null && objCurrentHelper.IsDisposed)
                         objCurrentHelper = objCurrentHelper.ParentLinkedHelper;

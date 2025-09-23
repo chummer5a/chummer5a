@@ -1849,18 +1849,18 @@ namespace Chummer.Backend.Equipment
                 }
 
                 if (blnSquareBrackets)
-                    strReturn = '[' + strReturn + ']';
+                    strReturn = "[" + strReturn + "]";
 
                 if (strSecondHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     strSecondHalf = strSecondHalf.Trim('[', ']');
                     decValue = ProcessRatingStringAsDec(strFirstHalf, () => Rating, out bool blnIsSuccess);
-                    strSecondHalf = '[' + (blnIsSuccess ? decValue.ToString("#,0.##", objCulture) : strSecondHalf) + ']';
+                    strSecondHalf = "[" + (blnIsSuccess ? decValue.ToString("#,0.##", objCulture) : strSecondHalf) + "]";
                 }
                 else
                     strSecondHalf = decValue.ToString("#,0.##", objCulture);
 
-                strReturn += '/' + strSecondHalf;
+                strReturn += "/" + strSecondHalf;
             }
             else if (strReturn.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {
@@ -1873,7 +1873,7 @@ namespace Chummer.Backend.Equipment
                 decReturn = ProcessRatingStringAsDec(strCapacity, () => Rating, out bool blnIsSuccess);
                 strReturn = blnIsSuccess ? decReturn.ToString("#,0.##", objCulture) : strCapacity;
                 if (blnSquareBrackets)
-                    strReturn = '[' + strReturn + ']';
+                    strReturn = "[" + strReturn + "]";
             }
             else
                 return decReturn.ToString("#,0.##", objCulture);
@@ -1928,19 +1928,19 @@ namespace Chummer.Backend.Equipment
                 }
 
                 if (blnSquareBrackets)
-                    strReturn = '[' + strReturn + ']';
+                    strReturn = "[" + strReturn + "]";
 
                 if (strSecondHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     strSecondHalf = strSecondHalf.Trim('[', ']');
                     bool blnIsSuccess;
                     (decValue, blnIsSuccess) = await ProcessRatingStringAsDecAsync(strSecondHalf, () => GetRatingAsync(token), token).ConfigureAwait(false);
-                    strSecondHalf = '[' + (blnIsSuccess ? decValue.ToString("#,0.##", objCulture) : strSecondHalf) + ']';
+                    strSecondHalf = "[" + (blnIsSuccess ? decValue.ToString("#,0.##", objCulture) : strSecondHalf) + "]";
                 }
                 else
                     strSecondHalf = decValue.ToString("#,0.##", objCulture);
 
-                strReturn += '/' + strSecondHalf;
+                strReturn += "/" + strSecondHalf;
             }
             else if (strReturn.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {
@@ -1954,7 +1954,7 @@ namespace Chummer.Backend.Equipment
                 (decReturn, blnIsSuccess) = await ProcessRatingStringAsDecAsync(strCapacity, () => GetRatingAsync(token), token).ConfigureAwait(false);
                 strReturn = blnIsSuccess ? decReturn.ToString("#,0.##", objCulture) : strCapacity;
                 if (blnSquareBrackets)
-                    strReturn = '[' + strReturn + ']';
+                    strReturn = "[" + strReturn + "]";
             }
             else
                 return decReturn.ToString("#,0.##", objCulture);
@@ -2220,13 +2220,13 @@ namespace Chummer.Backend.Equipment
             string strReturn = DisplayNameShort(strLanguage);
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += strSpace + "(" + _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
             int intRating = Rating;
             if (intRating > 0)
             {
                 if (objCulture == null)
                     objCulture = GlobalSettings.CultureInfo;
-                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + intRating.ToString(objCulture) + ')';
+                strReturn += strSpace + "(" + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + intRating.ToString(objCulture) + ")";
             }
             return strReturn;
         }
@@ -2239,13 +2239,13 @@ namespace Chummer.Backend.Equipment
             string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
+                strReturn += strSpace + "(" + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ")";
             int intRating = await GetRatingAsync(token).ConfigureAwait(false);
             if (intRating > 0)
             {
                 if (objCulture == null)
                     objCulture = GlobalSettings.CultureInfo;
-                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false) + strSpace + intRating.ToString(objCulture) + ')';
+                strReturn += strSpace + "(" + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false) + strSpace + intRating.ToString(objCulture) + ")";
             }
             return strReturn;
         }
@@ -2537,7 +2537,7 @@ namespace Chummer.Backend.Equipment
 
                         string strNameToUse = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         if (Parent != null)
-                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ')';
+                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ")";
 
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
@@ -2764,7 +2764,7 @@ namespace Chummer.Backend.Equipment
             }
             // Create the Expense Log Entry for the sale.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod") + ' ' + CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod") + " " + CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
             return true;
@@ -2801,7 +2801,7 @@ namespace Chummer.Backend.Equipment
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(decAmount,
                 await LanguageManager.GetStringAsync("String_ExpenseSoldVehicleMod", token: token).ConfigureAwait(false) +
-                ' ' + await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
+                " " + await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
                 DateTime.Now);
             await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
             await _objCharacter.ModifyNuyenAsync(decAmount, token).ConfigureAwait(false);

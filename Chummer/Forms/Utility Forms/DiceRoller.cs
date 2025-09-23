@@ -178,7 +178,7 @@ namespace Chummer
                                                                                  : "String_DiceRoller_Failure").ConfigureAwait(false)).Append(strSpace)
                                 .Append('(')
                                 .AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Hit" : "String_DiceRoller_Hits").ConfigureAwait(false),
-                                              intHitCount + ')');
+                                              intHitCount.ToString(GlobalSettings.CultureInfo) + ")");
                         }
                         else
                         {

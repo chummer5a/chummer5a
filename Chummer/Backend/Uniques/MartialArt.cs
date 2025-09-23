@@ -1123,7 +1123,7 @@ namespace Chummer
                                 objExpense.Create(intKarmaCost * -1,
                                     await LanguageManager.GetStringAsync(
                                         "String_ExpenseLearnMartialArt", token: token).ConfigureAwait(false)
-                                    + ' '
+                                    + " "
                                     + await objMartialArt.GetCurrentDisplayNameShortAsync(token)
                                         .ConfigureAwait(false),
                                     ExpenseType.Karma,

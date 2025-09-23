@@ -1813,7 +1813,7 @@ namespace Chummer.Backend.Equipment
                 decimal decCapacity = ProcessRatingStringAsDec(strCapacity, () => Rating, out bool blnIsSuccess);
                 string strReturn = blnIsSuccess ? decCapacity.ToString("#,0.##", objCultureInfo) : strCapacity;
                 if (blnSquareBrackets)
-                    strReturn = '[' + strReturn + ']';
+                    strReturn = "[" + strReturn + "]";
 
                 return strReturn;
             }
@@ -1844,7 +1844,7 @@ namespace Chummer.Backend.Equipment
                     ? decCapacity.ToString("#,0.##", objCultureInfo)
                     : strCapacity;
                 if (blnSquareBrackets)
-                    strReturn = '[' + strReturn + ']';
+                    strReturn = "[" + strReturn + "]";
 
                 return strReturn;
             }
@@ -1914,7 +1914,7 @@ namespace Chummer.Backend.Equipment
 
                 string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                 if (decMax == decimal.MaxValue)
-                    strReturn = decMin.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyenSymbol + '+';
+                    strReturn = decMin.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyenSymbol + "+";
                 else
                     strReturn = decMin.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + " - " + decMax.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyenSymbol;
 
@@ -2289,7 +2289,7 @@ namespace Chummer.Backend.Equipment
                 int intArmor = GetTotalArmor();
                 if (!string.IsNullOrWhiteSpace(strArmorOverrideValue))
                 {
-                    return intArmor.ToString(GlobalSettings.CultureInfo) + '/' + strArmorOverrideValue;
+                    return intArmor.ToString(GlobalSettings.CultureInfo) + "/" + strArmorOverrideValue;
                 }
 
                 string strArmor = ArmorValue;
@@ -2308,7 +2308,7 @@ namespace Chummer.Backend.Equipment
             int intArmor = await GetTotalArmorAsync(token: token).ConfigureAwait(false);
             if (!string.IsNullOrWhiteSpace(strArmorOverrideValue))
             {
-                return intArmor.ToString(GlobalSettings.CultureInfo) + '/' + strArmorOverrideValue;
+                return intArmor.ToString(GlobalSettings.CultureInfo) + "/" + strArmorOverrideValue;
             }
 
             string strArmor = ArmorValue;
@@ -3124,10 +3124,10 @@ namespace Chummer.Backend.Equipment
             {
                 if (objCulture == null)
                     objCulture = GlobalSettings.CultureInfo;
-                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage, token: token) + strSpace + intRating.ToString(objCulture) + ')';
+                strReturn += strSpace + "(" + LanguageManager.GetString(RatingLabel, strLanguage, token: token) + strSpace + intRating.ToString(objCulture) + ")";
             }
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage, token: token) + ')';
+                strReturn += strSpace + "(" + _objCharacter.TranslateExtra(Extra, strLanguage, token: token) + ")";
             return strReturn;
         }
 
@@ -3145,10 +3145,10 @@ namespace Chummer.Backend.Equipment
             {
                 if (objCulture == null)
                     objCulture = GlobalSettings.CultureInfo;
-                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false) + strSpace + intRating.ToString(objCulture) + ')';
+                strReturn += strSpace + "(" + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false) + strSpace + intRating.ToString(objCulture) + ")";
             }
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
+                strReturn += strSpace + "(" + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ")";
             return strReturn;
         }
 
@@ -3264,12 +3264,12 @@ namespace Chummer.Backend.Equipment
                         sbdValue.Append(strExpression);
                         foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                         {
-                            sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}', () => "0");
-                            sbdValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}', () => "0");
-                            if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                            sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + "}", () => "0");
+                            sbdValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + "}", () => "0");
+                            if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + "}"))
                             {
                                 int intTotalChildrenValue = Children.Sum(x => x.Equipped, x => x.GetBaseMatrixAttribute(strMatrixAttribute));
-                                sbdValue.Replace("{Children " + strMatrixAttribute + '}',
+                                sbdValue.Replace("{Children " + strMatrixAttribute + "}",
                                                  intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
                             }
                         }
@@ -3332,18 +3332,18 @@ namespace Chummer.Backend.Equipment
                         foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                         {
                             await sbdValue
-                                .CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + '}', () => "0",
+                                .CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + "}", () => "0",
                                     token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + '}',
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + "}",
                                 () => "0", token: token).ConfigureAwait(false);
                             if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0 &&
-                                strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                                strExpression.Contains("{Children " + strMatrixAttribute + "}"))
                             {
                                 int intTotalChildrenValue = await Children.SumAsync(x => x.Equipped,
                                         x => x.GetBaseMatrixAttributeAsync(strAttributeName, token), token)
                                     .ConfigureAwait(false);
 
-                                sbdValue.Replace("{Children " + strMatrixAttribute + '}',
+                                sbdValue.Replace("{Children " + strMatrixAttribute + "}",
                                     intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
                             }
                         }
@@ -3690,7 +3690,7 @@ namespace Chummer.Backend.Equipment
             decimal decAmount = TotalCost * decPercentage;
             decAmount += DeleteArmor() * decPercentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor") + ' ' + CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor") + " " + CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
             return true;
@@ -3715,7 +3715,7 @@ namespace Chummer.Backend.Equipment
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(decAmount,
                 await LanguageManager.GetStringAsync("String_ExpenseSoldArmor", token: token).ConfigureAwait(false) +
-                ' ' + await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
+                " " + await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
                 DateTime.Now);
             await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
             await _objCharacter.ModifyNuyenAsync(decAmount, token).ConfigureAwait(false);

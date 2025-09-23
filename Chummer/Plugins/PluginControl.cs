@@ -346,10 +346,10 @@ namespace Chummer.Plugins
 
                                 string msg
                                     = "Plugins (at least not all of them) could not be loaded. Logs are uploaded to the ChummerDevs. Maybe ping one of the Devs on Discord and provide your Installation-id: "
-                                      + Properties.Settings.Default.UploadClientId + Environment.NewLine + "Exception: "
-                                      + Environment.NewLine + Environment.NewLine + e + Environment.NewLine
+                                      + Properties.Settings.Default.UploadClientId.ToString("D", GlobalSettings.InvariantCultureInfo) + Environment.NewLine + "Exception: "
+                                      + Environment.NewLine + Environment.NewLine + e.ToString() + Environment.NewLine
                                       + Environment.NewLine + "The LoaderExceptions are: " + Environment.NewLine
-                                      + sbdLoaderExceptions + Environment.NewLine + Environment.NewLine;
+                                      + sbdLoaderExceptions.ToString() + Environment.NewLine + Environment.NewLine;
 
                                 Log.Info(e, msg);
                             }
@@ -364,12 +364,12 @@ namespace Chummer.Plugins
 
                     if (MyPlugins.Count == 0)
                     {
-                        throw new ArgumentException("No plugins found in " + path + '.');
+                        throw new ArgumentException("No plugins found in " + path + ".");
                     }
 
                     IReadOnlyList<IPlugin> lstActivePlugins = MyActivePlugins;
-                    Log.Info("Plugins found: " + MyPlugins.Count + Environment.NewLine + "Plugins active: "
-                             + lstActivePlugins.Count);
+                    Log.Info("Plugins found: " + MyPlugins.Count.ToString(GlobalSettings.InvariantCultureInfo) + Environment.NewLine + "Plugins active: "
+                             + lstActivePlugins.Count.ToString(GlobalSettings.InvariantCultureInfo));
                     foreach (IPlugin plugin in lstActivePlugins)
                     {
                         try
@@ -396,9 +396,10 @@ namespace Chummer.Plugins
                 }
                 catch (System.Security.SecurityException e)
                 {
+                    e = e.Demystify();
                     string msg
                         = "Well, the Plugin wanted to do something that requires Admin rights. Let's just ignore this: "
-                          + Environment.NewLine + Environment.NewLine + e;
+                          + Environment.NewLine + Environment.NewLine + e.ToString();
                     Log.Warn(e, msg);
                 }
                 catch (Exception e) when (!(e is ApplicationException))
@@ -547,7 +548,8 @@ namespace Chummer.Plugins
                 }
                 catch (Exception e)
                 {
-                    string msg = "Exception loading plugins: " + Environment.NewLine + Environment.NewLine + e;
+                    e = e.Demystify();
+                    string msg = "Exception loading plugins: " + Environment.NewLine + Environment.NewLine + e.ToString();
                     Log.Error(e, msg);
                 }
             }

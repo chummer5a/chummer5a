@@ -103,7 +103,7 @@ namespace Chummer
                 string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                 if (!string.IsNullOrEmpty(strSelectedValue))
                 {
-                    _strName += LanguageManager.GetString("String_Space") + '(' + strSelectedValue + ')';
+                    _strName += LanguageManager.GetString("String_Space") + "(" + strSelectedValue + ")";
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
                 }
@@ -163,8 +163,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strSelectedValue))
                 {
                     _strName +=
-                        await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
-                        strSelectedValue + ')';
+                        await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
+                        strSelectedValue + ")";
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
                 }

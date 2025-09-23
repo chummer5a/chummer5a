@@ -1824,7 +1824,7 @@ namespace Chummer
                                                     }
 
                                                     string strFilter = sbdFilter.Length > 0
-                                                        ? ") and (" + sbdFilter
+                                                        ? ") and (" + sbdFilter.ToString()
                                                         : string.Empty;
                                                     foreach (XPathNavigator xmlSkill in (blnSync
                                                                  ? objCharacter
@@ -4285,7 +4285,7 @@ namespace Chummer
                 if (strSourceName.IsGuid())
                 {
                     string strSourceNameSpaced = strSourceName + LanguageManager.GetString("String_Space", token: token);
-                    string strSourceNameSpacedInvariant = strSourceName + ' ';
+                    string strSourceNameSpacedInvariant = strSourceName + " ";
                     objImprovementList.AddRange(objCharacter.Improvements.Where(
                                                     objImprovement =>
                                                         objImprovement.ImproveSource == objImprovementSource &&
@@ -4334,7 +4334,7 @@ namespace Chummer
                 {
                     string strSourceNameSpaced =
                         strSourceName + LanguageManager.GetString("String_Space", token: token);
-                    string strSourceNameSpacedInvariant = strSourceName + ' ';
+                    string strSourceNameSpacedInvariant = strSourceName + " ";
                     objImprovementList.AddRange(objCharacter.Improvements.Where(
                         objImprovement =>
                             lstImprovementSources.Contains(objImprovement.ImproveSource) &&
@@ -4387,7 +4387,7 @@ namespace Chummer
                         setSpacedSourceNames.Add(
                             strSourceName + LanguageManager.GetString("String_Space", token: token));
                         setSpacedSourceNames.Add(
-                            strSourceName + ' ');
+                            strSourceName + " ");
                     }
 
                     objImprovementList = new List<Improvement>(objCharacter.Improvements.Count);
@@ -4456,7 +4456,7 @@ namespace Chummer
                         setSpacedSourceNames.Add(
                             strSourceName + LanguageManager.GetString("String_Space", token: token));
                         setSpacedSourceNames.Add(
-                            strSourceName + ' ');
+                            strSourceName + " ");
                     }
 
                     objImprovementList = new List<Improvement>(objCharacter.Improvements.Count);
@@ -4521,7 +4521,7 @@ namespace Chummer
                     string strSourceNameSpaced = strSourceName +
                                                  await LanguageManager.GetStringAsync("String_Space", token: token)
                                                      .ConfigureAwait(false);
-                    string strSourceNameSpacedInvariant = strSourceName + ' ';
+                    string strSourceNameSpacedInvariant = strSourceName + " ";
                     objImprovementList.AddRange(objCharacter.Improvements.Where(
                         objImprovement =>
                             objImprovement.ImproveSource == objImprovementSource &&
@@ -4578,7 +4578,7 @@ namespace Chummer
                     string strSourceNameSpaced = strSourceName +
                                                  await LanguageManager.GetStringAsync("String_Space", token: token)
                                                      .ConfigureAwait(false);
-                    string strSourceNameSpacedInvariant = strSourceName + ' ';
+                    string strSourceNameSpacedInvariant = strSourceName + " ";
                     objImprovementList.AddRange(objCharacter.Improvements.Where(
                         objImprovement =>
                             lstImprovementSources.Contains(objImprovement.ImproveSource) &&
@@ -4639,7 +4639,7 @@ namespace Chummer
                             strSourceName + await LanguageManager.GetStringAsync("String_Space", token: token)
                                 .ConfigureAwait(false));
                         setSpacedSourceNames.Add(
-                            strSourceName + ' ');
+                            strSourceName + " ");
                     }
 
                     objImprovementList = new List<Improvement>(await objCharacter.Improvements.GetCountAsync(token).ConfigureAwait(false));
@@ -4716,7 +4716,7 @@ namespace Chummer
                             strSourceName + await LanguageManager.GetStringAsync("String_Space", token: token)
                                 .ConfigureAwait(false));
                         setSpacedSourceNames.Add(
-                            strSourceName + ' ');
+                            strSourceName + " ");
                     }
 
                     objImprovementList = new List<Improvement>(await objCharacter.Improvements.GetCountAsync(token).ConfigureAwait(false));

@@ -72,7 +72,7 @@ namespace Chummer
                                 {
                                     // Append the plugin information to the name.
                                     (await sbdAmmoName.Append(strSpace).Append('[')
-                                                      .AppendJoinAsync(',' + strSpace,
+                                                      .AppendJoinAsync("," + strSpace,
                                                                        objGear.Children.Select(
                                                                            x => x.GetCurrentDisplayNameShortAsync())).ConfigureAwait(false))
                                         .Append(']');

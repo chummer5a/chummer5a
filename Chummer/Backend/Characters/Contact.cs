@@ -838,11 +838,11 @@ namespace Chummer
                             await LanguageManager.GetStringAsync(
                                     "String_Group", strLanguageToPrint,
                                     token: token)
-                                .ConfigureAwait(false) + '('
+                                .ConfigureAwait(false) + "("
                                                        + (await GetConnectionAsync(token)
                                                            .ConfigureAwait(false))
                                                        .ToString(objCulture)
-                                                       + ')', token: token).ConfigureAwait(false);
+                                                       + ")", token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
                         "loyalty", (await GetLoyaltyAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
@@ -1316,12 +1316,12 @@ namespace Chummer
                     string strMetatypeTranslate
                         = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate")?.Value;
                     strReturn += LanguageManager.GetString("String_Space", strLanguage)
-                                 + '('
+                                 + "("
                                  + (!string.IsNullOrEmpty(strMetatypeTranslate)
                                      ? strMetatypeTranslate
                                      : _objCharacter.TranslateExtra(LinkedCharacter.Metavariant, strLanguage,
                                                                     "metatypes.xml"))
-                                 + ')';
+                                 + ")";
                 }
                 else
                     strReturn = _objCharacter.TranslateExtra(Metatype, strLanguage, "metatypes.xml");
@@ -1361,14 +1361,14 @@ namespace Chummer
                         ?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value;
                     strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                                      .ConfigureAwait(false)
-                                 + '('
+                                 + "("
                                  + (!string.IsNullOrEmpty(strMetatypeTranslate)
                                      ? strMetatypeTranslate
                                      : await _objCharacter.TranslateExtraAsync(
                                          await objLinkedCharacter.GetMetavariantAsync(token).ConfigureAwait(false),
                                          strLanguage, "metatypes.xml",
                                          token).ConfigureAwait(false))
-                                 + ')';
+                                 + ")";
                 }
                 else
                     strReturn = await _objCharacter.TranslateExtraAsync(
@@ -1412,8 +1412,8 @@ namespace Chummer
                         string strMetatype = LinkedCharacter.Metatype;
                         if (!string.IsNullOrEmpty(LinkedCharacter.Metavariant))
                         {
-                            strMetatype += LanguageManager.GetString("String_Space") + '(' + LinkedCharacter.Metavariant
-                                           + ')';
+                            strMetatype += LanguageManager.GetString("String_Space") + "(" + LinkedCharacter.Metavariant
+                                           + ")";
                         }
 
                         return strMetatype;
@@ -1450,8 +1450,8 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strMetavariant))
                     {
                         strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                            .ConfigureAwait(false) + '('
-                            + strMetavariant + ')';
+                                                            .ConfigureAwait(false) + "("
+                            + strMetavariant + ")";
                     }
 
                     return strMetatype;
