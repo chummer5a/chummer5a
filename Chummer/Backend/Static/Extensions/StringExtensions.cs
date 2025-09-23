@@ -102,7 +102,7 @@ namespace Chummer
             if (intStringsCount == 0)
                 return string.Empty;
             if (intStringsCount == 1)
-                return lstStrings.ElementAt(0);
+                return lstStrings.ElementAtBetter(0);
             int intTotalLength = 0;
             using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
             {
@@ -204,7 +204,7 @@ namespace Chummer
             if (intStringsCount == 0)
                 return Task.FromResult(string.Empty);
             if (intStringsCount == 1)
-                return Task.FromResult(lstStrings.ElementAt(0));
+                return lstStrings.ElementAtBetterAsync(0, token);
             return Inner();
             async Task<string> Inner()
             {
@@ -346,7 +346,7 @@ namespace Chummer
             if (count <= 0)
                 return string.Empty;
             if (count == 1)
-                return lstStrings.ElementAt(startIndex);
+                return lstStrings.ElementAtBetter(startIndex);
             int intFinalIndex = startIndex + count;
             if (intFinalIndex >= lstStrings.Count)
                 throw new ArgumentOutOfRangeException(nameof(count));
@@ -405,7 +405,7 @@ namespace Chummer
             if (count <= 0)
                 return string.Empty;
             if (count == 1)
-                return lstStrings.ElementAt(startIndex);
+                return await lstStrings.ElementAtBetterAsync(startIndex, token).ConfigureAwait(false);
             int intFinalIndex = startIndex + count;
             if (intFinalIndex >= lstStrings.Count)
                 throw new ArgumentOutOfRangeException(nameof(count));
@@ -849,7 +849,7 @@ namespace Chummer
             if (intStringsCount == 0)
                 return string.Empty;
             if (intStringsCount == 1)
-                return lstStrings.ElementAt(0);
+                return lstStrings.ElementAtBetter(0);
             int intSeparatorLength = strSeparator.Length;
             if (intSeparatorLength == 0)
                 return ConcatFast(lstStrings);
@@ -1039,7 +1039,7 @@ namespace Chummer
             if (intStringsCount == 0)
                 return Task.FromResult(string.Empty);
             if (intStringsCount == 1)
-                return Task.FromResult(lstStrings.ElementAt(0));
+                return lstStrings.ElementAtBetterAsync(0, token);
             return Inner();
             async Task<string> Inner()
             {
@@ -1256,7 +1256,7 @@ namespace Chummer
             if (count == 0)
                 return string.Empty;
             if (count == 1)
-                return lstStrings.ElementAt(startIndex);
+                return lstStrings.ElementAtBetter(startIndex);
             int intFinalIndex = startIndex + count;
             if (intFinalIndex >= lstStrings.Count)
                 throw new ArgumentOutOfRangeException(nameof(count));
@@ -1361,7 +1361,7 @@ namespace Chummer
             if (count == 0)
                 return string.Empty;
             if (count == 1)
-                return lstStrings.ElementAt(startIndex);
+                return await lstStrings.ElementAtBetterAsync(startIndex, token).ConfigureAwait(false);
             int intFinalIndex = startIndex + count;
             if (intFinalIndex >= lstStrings.Count)
                 throw new ArgumentOutOfRangeException(nameof(count));
