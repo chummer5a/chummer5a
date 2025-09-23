@@ -710,9 +710,8 @@ namespace Chummer
                             sbdQualities.Append(Environment.NewLine);
                         }
 
-                        await lblQualities.DoThreadSafeAsync(x => x.Text = sbdQualities.Length == 0
-                                                                 ? strNone
-                                                                 : sbdQualities.ToString(), token).ConfigureAwait(false);
+                        string strText = sbdQualities.Length > 0 ? sbdQualities.ToString() : strNone;
+                        await lblQualities.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                     }
 
                     string strKarma = objXmlMetavariant.SelectSingleNodeAndCacheExpression("karma", token: token)?.Value;
@@ -862,9 +861,8 @@ namespace Chummer
                             sbdQualities.Append(Environment.NewLine);
                         }
 
-                        await lblQualities.DoThreadSafeAsync(x => x.Text = sbdQualities.Length == 0
-                                                                 ? strNone
-                                                                 : sbdQualities.ToString(), token).ConfigureAwait(false);
+                        string strText = sbdQualities.Length > 0 ? sbdQualities.ToString() : strNone;
+                        await lblQualities.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                     }
 
                     string strKarma = objXmlMetatype.SelectSingleNodeAndCacheExpression("karma", token: token)?.Value;

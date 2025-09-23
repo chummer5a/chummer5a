@@ -2105,13 +2105,13 @@ namespace Chummer.Backend.Attributes
         {
             using (LockObject.EnterReadLock())
             {
-                string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+                string strSpacePlusParen = LanguageManager.GetString("String_Space", strLanguage) + "(";
                 if (Abbrev == "MAGAdept")
-                    return LanguageManager.GetString("String_AttributeMAGLong", strLanguage) + strSpace + "(" +
+                    return LanguageManager.GetString("String_AttributeMAGLong", strLanguage) + strSpacePlusParen +
                            LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + ")"
-                           + strSpace + "(" + LanguageManager.GetString("String_DescAdept", strLanguage) + ")";
+                           + strSpacePlusParen + LanguageManager.GetString("String_DescAdept", strLanguage) + ")";
 
-                return DisplayNameLong(strLanguage) + strSpace + "(" + DisplayNameShort(strLanguage) + ")";
+                return DisplayNameLong(strLanguage) + strSpacePlusParen + DisplayNameShort(strLanguage) + ")";
             }
         }
 
@@ -2121,17 +2121,17 @@ namespace Chummer.Backend.Attributes
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                    .ConfigureAwait(false);
+                string strSpacePlusParen = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
+                    .ConfigureAwait(false) + "(";
                 if (Abbrev == "MAGAdept")
                     return await LanguageManager.GetStringAsync("String_AttributeMAGLong", strLanguage, token: token)
-                               .ConfigureAwait(false) + strSpace + "(" + await LanguageManager
+                               .ConfigureAwait(false) + strSpacePlusParen + await LanguageManager
                                .GetStringAsync("String_AttributeMAGShort", strLanguage, token: token)
                                .ConfigureAwait(false) + ")"
-                           + strSpace + "(" + await LanguageManager
+                           + strSpacePlusParen + await LanguageManager
                                .GetStringAsync("String_DescAdept", strLanguage, token: token).ConfigureAwait(false) + ")";
 
-                return await DisplayNameLongAsync(strLanguage, token).ConfigureAwait(false) + strSpace + "(" +
+                return await DisplayNameLongAsync(strLanguage, token).ConfigureAwait(false) + strSpacePlusParen +
                        await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false) + ")";
             }
             finally

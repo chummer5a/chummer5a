@@ -34,7 +34,6 @@ namespace Chummer
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder in which appending is to take place.</param>
         /// <param name="chrValue">New character to append before the new line is appended.</param>
-        /// <returns></returns>
         public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, char chrValue)
         {
             return sbdInput.Append(chrValue).AppendLine();
@@ -258,15 +257,18 @@ namespace Chummer
         {
             if (lstValues == null)
                 throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (T objValue in lstValues)
+            using (IEnumerator<T> objEnumerator = lstValues.GetEnumerator())
             {
-                if (!blnFirst)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(objValue);
-                blnFirst = false;
+                if (objEnumerator.MoveNext())
+                {
+                    sbdInput.Append(objEnumerator.Current);
+                    while (objEnumerator.MoveNext())
+                    {
+                        sbdInput.Append(strSeparator).Append(objEnumerator.Current);
+                    }
+                }
+                return sbdInput;
             }
-            return sbdInput;
         }
 
         /// <summary>
@@ -281,15 +283,18 @@ namespace Chummer
         {
             if (lstValues == null)
                 throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (string strValue in lstValues)
+            using (IEnumerator<string> objEnumerator = lstValues.GetEnumerator())
             {
-                if (!blnFirst)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(strValue);
-                blnFirst = false;
+                if (objEnumerator.MoveNext())
+                {
+                    sbdInput.Append(objEnumerator.Current);
+                    while (objEnumerator.MoveNext())
+                    {
+                        sbdInput.Append(strSeparator).Append(objEnumerator.Current);
+                    }
+                }
+                return sbdInput;
             }
-            return sbdInput;
         }
 
         /// <summary>
@@ -312,11 +317,13 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intCount));
             if (intStartIndex + intCount >= astrValues.Length)
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
-            for (int i = 0; i < intCount; ++i)
+            if (intCount > 0)
             {
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(astrValues[i + intStartIndex]);
+                sbdInput.Append(astrValues[intStartIndex]);
+                for (int i = 1; i < intCount; ++i)
+                {
+                    sbdInput.Append(strSeparator).Append(astrValues[i + intStartIndex]);
+                }
             }
             return sbdInput;
         }
@@ -333,11 +340,14 @@ namespace Chummer
         {
             if (astrValues == null)
                 throw new ArgumentNullException(nameof(astrValues));
-            for (int i = 0; i < astrValues.Length; ++i)
+            int intLength = astrValues.Length;
+            if (intLength > 0)
             {
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(astrValues[i]);
+                sbdInput.Append(astrValues[0]);
+                for (int i = 1; i < intLength; ++i)
+                {
+                    sbdInput.Append(strSeparator).Append(astrValues[i]);
+                }
             }
             return sbdInput;
         }
@@ -354,11 +364,14 @@ namespace Chummer
         {
             if (aobjValues == null)
                 throw new ArgumentNullException(nameof(aobjValues));
-            for (int i = 0; i < aobjValues.Length; ++i)
+            int intLength = aobjValues.Length;
+            if (intLength > 0)
             {
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(aobjValues[i]);
+                sbdInput.Append(aobjValues[0]);
+                for (int i = 1; i < intLength; ++i)
+                {
+                    sbdInput.Append(strSeparator).Append(aobjValues[i]);
+                }
             }
             return sbdInput;
         }
@@ -376,15 +389,18 @@ namespace Chummer
         {
             if (lstValues == null)
                 throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (T objValue in lstValues)
+            using (IEnumerator<T> objEnumerator = lstValues.GetEnumerator())
             {
-                if (!blnFirst)
-                    sbdInput.Append(chrSeparator);
-                sbdInput.Append(objValue);
-                blnFirst = false;
+                if (objEnumerator.MoveNext())
+                {
+                    sbdInput.Append(objEnumerator.Current);
+                    while (objEnumerator.MoveNext())
+                    {
+                        sbdInput.Append(chrSeparator).Append(objEnumerator.Current);
+                    }
+                }
+                return sbdInput;
             }
-            return sbdInput;
         }
 
         /// <summary>
@@ -399,15 +415,18 @@ namespace Chummer
         {
             if (lstValues == null)
                 throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (string strValue in lstValues)
+            using (IEnumerator<string> objEnumerator = lstValues.GetEnumerator())
             {
-                if (!blnFirst)
-                    sbdInput.Append(chrSeparator);
-                sbdInput.Append(strValue);
-                blnFirst = false;
+                if (objEnumerator.MoveNext())
+                {
+                    sbdInput.Append(objEnumerator.Current);
+                    while (objEnumerator.MoveNext())
+                    {
+                        sbdInput.Append(chrSeparator).Append(objEnumerator.Current);
+                    }
+                }
+                return sbdInput;
             }
-            return sbdInput;
         }
 
         /// <summary>
@@ -430,12 +449,13 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intCount));
             if (intStartIndex + intCount >= astrValues.Length)
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
-            for (int i = 0; i < intCount; ++i)
+            if (intCount > 0)
             {
-                if (i > 0)
-                    sbdInput.Append(chrSeparator);
-                string strLoop = astrValues[i + intStartIndex];
-                sbdInput.Append(strLoop);
+                sbdInput.Append(astrValues[intStartIndex]);
+                for (int i = 1; i < intCount; ++i)
+                {
+                    sbdInput.Append(chrSeparator).Append(astrValues[i + intStartIndex]);
+                }
             }
             return sbdInput;
         }
@@ -452,12 +472,14 @@ namespace Chummer
         {
             if (astrValues == null)
                 throw new ArgumentNullException(nameof(astrValues));
-            for (int i = 0; i < astrValues.Length; ++i)
+            int intLength = astrValues.Length;
+            if (intLength > 0)
             {
-                if (i > 0)
-                    sbdInput.Append(chrSeparator);
-                string strLoop = astrValues[i];
-                sbdInput.Append(strLoop);
+                sbdInput.Append(astrValues[0]);
+                for (int i = 1; i < intLength; ++i)
+                {
+                    sbdInput.Append(chrSeparator).Append(astrValues[i]);
+                }
             }
             return sbdInput;
         }
@@ -474,12 +496,14 @@ namespace Chummer
         {
             if (aobjValues == null)
                 throw new ArgumentNullException(nameof(aobjValues));
-            for (int i = 0; i < aobjValues.Length; ++i)
+            int intLength = aobjValues.Length;
+            if (intLength > 0)
             {
-                string strLoop = aobjValues[i].ToString();
-                if (i > 0)
-                    sbdInput.Append(chrSeparator);
-                sbdInput.Append(strLoop);
+                sbdInput.Append(aobjValues[0]);
+                for (int i = 1; i < intLength; ++i)
+                {
+                    sbdInput.Append(chrSeparator).Append(aobjValues[i]);
+                }
             }
             return sbdInput;
         }
@@ -498,16 +522,22 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (lstValues == null)
                 throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (Task<T> tskValue in lstValues)
+            using (IEnumerator<Task<T>> objEnumerator = lstValues.GetEnumerator())
             {
                 token.ThrowIfCancellationRequested();
-                if (!blnFirst)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(await tskValue.ConfigureAwait(false));
-                blnFirst = false;
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(await objEnumerator.Current.ConfigureAwait(false));
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        sbdInput.Append(strSeparator).Append(await objEnumerator.Current.ConfigureAwait(false));
+                    }
+                }
+                return sbdInput;
             }
-            return sbdInput;
         }
 
         /// <summary>
@@ -524,16 +554,22 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (lstValues == null)
                 throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (Task<string> tskValue in lstValues)
+            using (IEnumerator<Task<string>> objEnumerator = lstValues.GetEnumerator())
             {
                 token.ThrowIfCancellationRequested();
-                if (!blnFirst)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(await tskValue.ConfigureAwait(false));
-                blnFirst = false;
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(await objEnumerator.Current.ConfigureAwait(false));
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        sbdInput.Append(strSeparator).Append(await objEnumerator.Current.ConfigureAwait(false));
+                    }
+                }
+                return sbdInput;
             }
-            return sbdInput;
         }
 
         /// <summary>
@@ -558,12 +594,16 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intCount));
             if (intStartIndex + intCount >= astrValues.Length)
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
-            for (int i = 0; i < intCount; ++i)
+            if (intCount > 0)
             {
                 token.ThrowIfCancellationRequested();
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(await astrValues[i + intStartIndex].ConfigureAwait(false));
+                sbdInput.Append(await astrValues[intStartIndex].ConfigureAwait(false));
+                token.ThrowIfCancellationRequested();
+                for (int i = 1; i < intCount; ++i)
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(strSeparator).Append(await astrValues[i + intStartIndex].ConfigureAwait(false));
+                }
             }
             return sbdInput;
         }
@@ -582,12 +622,17 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (astrValues == null)
                 throw new ArgumentNullException(nameof(astrValues));
-            for (int i = 0; i < astrValues.Length; ++i)
+            int intLength = astrValues.Length;
+            if (intLength > 0)
             {
                 token.ThrowIfCancellationRequested();
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(await astrValues[i].ConfigureAwait(false));
+                sbdInput.Append(await astrValues[0].ConfigureAwait(false));
+                token.ThrowIfCancellationRequested();
+                for (int i = 1; i < intLength; ++i)
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(strSeparator).Append(await astrValues[i].ConfigureAwait(false));
+                }
             }
             return sbdInput;
         }
@@ -606,12 +651,17 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (aobjValues == null)
                 throw new ArgumentNullException(nameof(aobjValues));
-            for (int i = 0; i < aobjValues.Length; ++i)
+            int intLength = aobjValues.Length;
+            if (intLength > 0)
             {
                 token.ThrowIfCancellationRequested();
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(await aobjValues[i].ConfigureAwait(false));
+                sbdInput.Append(await aobjValues[0].ConfigureAwait(false));
+                token.ThrowIfCancellationRequested();
+                for (int i = 1; i < intLength; ++i)
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(strSeparator).Append(await aobjValues[i].ConfigureAwait(false));
+                }
             }
             return sbdInput;
         }
@@ -631,16 +681,22 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (lstValues == null)
                 throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (Task<T> tskValue in lstValues)
+            using (IEnumerator<Task<T>> objEnumerator = lstValues.GetEnumerator())
             {
                 token.ThrowIfCancellationRequested();
-                if (!blnFirst)
-                    sbdInput.Append(chrSeparator);
-                sbdInput.Append(await tskValue.ConfigureAwait(false));
-                blnFirst = false;
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(await objEnumerator.Current.ConfigureAwait(false));
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        sbdInput.Append(chrSeparator).Append(await objEnumerator.Current.ConfigureAwait(false));
+                    }
+                }
+                return sbdInput;
             }
-            return sbdInput;
         }
 
         /// <summary>
@@ -657,16 +713,23 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (lstValues == null)
                 throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (Task<string> tskValue in lstValues)
+            token.ThrowIfCancellationRequested();
+            using (IEnumerator<Task<string>> objEnumerator = lstValues.GetEnumerator())
             {
                 token.ThrowIfCancellationRequested();
-                if (!blnFirst)
-                    sbdInput.Append(chrSeparator);
-                sbdInput.Append(await tskValue.ConfigureAwait(false));
-                blnFirst = false;
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(await objEnumerator.Current.ConfigureAwait(false));
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        sbdInput.Append(chrSeparator).Append(await objEnumerator.Current.ConfigureAwait(false));
+                    }
+                }
+                return sbdInput;
             }
-            return sbdInput;
         }
 
         /// <summary>
@@ -691,12 +754,16 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intCount));
             if (intStartIndex + intCount >= astrValues.Length)
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
-            for (int i = 0; i < intCount; ++i)
+            if (intCount > 0)
             {
                 token.ThrowIfCancellationRequested();
-                if (i > 0)
-                    sbdInput.Append(chrSeparator);
-                sbdInput.Append(await astrValues[i + intStartIndex].ConfigureAwait(false));
+                sbdInput.Append(await astrValues[intStartIndex].ConfigureAwait(false));
+                token.ThrowIfCancellationRequested();
+                for (int i = 1; i < intCount; ++i)
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(chrSeparator).Append(await astrValues[i + intStartIndex].ConfigureAwait(false));
+                }
             }
             return sbdInput;
         }
@@ -715,12 +782,17 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (astrValues == null)
                 throw new ArgumentNullException(nameof(astrValues));
-            for (int i = 0; i < astrValues.Length; ++i)
+            int intLength = astrValues.Length;
+            if (intLength > 0)
             {
                 token.ThrowIfCancellationRequested();
-                if (i > 0)
-                    sbdInput.Append(chrSeparator);
-                sbdInput.Append(await astrValues[i].ConfigureAwait(false));
+                sbdInput.Append(await astrValues[0].ConfigureAwait(false));
+                token.ThrowIfCancellationRequested();
+                for (int i = 1; i < intLength; ++i)
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(chrSeparator).Append(await astrValues[i].ConfigureAwait(false));
+                }
             }
             return sbdInput;
         }
@@ -739,14 +811,181 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (aobjValues == null)
                 throw new ArgumentNullException(nameof(aobjValues));
-            for (int i = 0; i < aobjValues.Length; ++i)
+            int intLength = aobjValues.Length;
+            if (intLength > 0)
             {
                 token.ThrowIfCancellationRequested();
-                if (i > 0)
-                    sbdInput.Append(chrSeparator);
-                sbdInput.Append(await aobjValues[i].ConfigureAwait(false));
+                sbdInput.Append(await aobjValues[0].ConfigureAwait(false));
+                token.ThrowIfCancellationRequested();
+                for (int i = 1; i < intLength; ++i)
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(chrSeparator).Append(await aobjValues[i].ConfigureAwait(false));
+                }
             }
             return sbdInput;
+        }
+
+        /// <summary>
+        /// Async combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="lstValues">A collection that contains the objects to append.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync<T>([NotNull] this StringBuilder sbdInput, string strSeparator, IAsyncEnumerable<T> lstValues, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstValues == null)
+                throw new ArgumentNullException(nameof(lstValues));
+            IEnumerator<T> objEnumerator = lstValues.GetEnumerator();
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(objEnumerator.Current);
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        sbdInput.Append(strSeparator).Append(objEnumerator.Current);
+                    }
+                }
+                return sbdInput;
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumerator is IDisposable objDispose)
+                    objDispose.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="chrSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="lstValues">A collection that contains the strings to append.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, string strSeparator, IAsyncEnumerable<string> lstValues, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstValues == null)
+                throw new ArgumentNullException(nameof(lstValues));
+            IEnumerator<string> objEnumerator = lstValues.GetEnumerator();
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(objEnumerator.Current);
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        sbdInput.Append(strSeparator).Append(objEnumerator.Current);
+                    }
+                }
+                return sbdInput;
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumerator is IDisposable objDispose)
+                    objDispose.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Async combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="lstValues">A collection that contains the objects to append.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync<T>([NotNull] this StringBuilder sbdInput, char chrSeparator, IAsyncEnumerable<T> lstValues, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstValues == null)
+                throw new ArgumentNullException(nameof(lstValues));
+            IEnumerator<T> objEnumerator = lstValues.GetEnumerator();
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(objEnumerator.Current);
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        sbdInput.Append(chrSeparator).Append(objEnumerator.Current);
+                    }
+                }
+                return sbdInput;
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumerator is IDisposable objDispose)
+                    objDispose.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="lstValues">A collection that contains the strings to append.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, char chrSeparator, IAsyncEnumerable<string> lstValues, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstValues == null)
+                throw new ArgumentNullException(nameof(lstValues));
+            IEnumerator<string> objEnumerator = lstValues.GetEnumerator();
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(objEnumerator.Current);
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        sbdInput.Append(chrSeparator).Append(objEnumerator.Current);
+                    }
+                }
+                return sbdInput;
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumerator is IDisposable objDispose)
+                    objDispose.Dispose();
+            }
         }
 
         /// <summary>

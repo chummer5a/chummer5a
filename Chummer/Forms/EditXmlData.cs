@@ -572,9 +572,9 @@ namespace Chummer
                     sbdOutput.AppendLine();
 
                     // Compare the documents and generate a clean diff
-                    await CompareXmlDocumentsAsync(_objDiffBaseXmlDocument, _objDiffResultXmlDocument, sbdOutput, string.Empty, token).ConfigureAwait(false);
+                    bool blnAnyChanges = await CompareXmlDocumentsAsync(_objDiffBaseXmlDocument, _objDiffResultXmlDocument, sbdOutput, string.Empty, token).ConfigureAwait(false);
 
-                    if (sbdOutput.Length <= 30) // Only header was added
+                    if (!blnAnyChanges)
                     {
                         sbdOutput.AppendLine(await LanguageManager.GetStringAsync("XmlEditor_NoChanges", token: token).ConfigureAwait(false));
                         sbdOutput.AppendLine(await LanguageManager.GetStringAsync("XmlEditor_NoChangesDescription", token: token).ConfigureAwait(false));
@@ -591,13 +591,13 @@ namespace Chummer
             }
         }
 
-        private static async Task CompareXmlDocumentsAsync(XmlDocument objBaseDoc, XmlDocument objResultDoc, StringBuilder sbdOutput, string strCurrentPath, CancellationToken token = default)
+        private static async Task<bool> CompareXmlDocumentsAsync(XmlDocument objBaseDoc, XmlDocument objResultDoc, StringBuilder sbdOutput, string strCurrentPath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             try
             {
                 // Compare root elements
-                await CompareXmlNodesAsync(objBaseDoc.DocumentElement, objResultDoc.DocumentElement, sbdOutput, strCurrentPath, token).ConfigureAwait(false);
+                return await CompareXmlNodesAsync(objBaseDoc.DocumentElement, objResultDoc.DocumentElement, sbdOutput, strCurrentPath, token).ConfigureAwait(false);
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))
             {
@@ -605,32 +605,36 @@ namespace Chummer
                 Log.Error(ex, "Error comparing XML documents");
                 sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_ErrorComparingDocuments", token: token).ConfigureAwait(false), ex.Message).AppendLine();
             }
+            return false;
         }
 
-        private static async Task CompareXmlNodesAsync(XmlNode objBaseNode, XmlNode objResultNode, StringBuilder sbdOutput, string strCurrentPath, CancellationToken token = default)
+        private static async Task<bool> CompareXmlNodesAsync(XmlNode objBaseNode, XmlNode objResultNode, StringBuilder sbdOutput, string strCurrentPath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            bool blnReturn = false;
             try
             {
                 if (objBaseNode == null && objResultNode == null)
-                    return;
+                    return false;
 
                 string strNodePath = GetNodePath(objBaseNode ?? objResultNode, strCurrentPath);
 
                 // Node was added
                 if (objBaseNode == null && objResultNode != null)
                 {
+                    blnReturn = true;
                     sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Added", token: token).ConfigureAwait(false), strNodePath).AppendLine();
                     sbdOutput.AppendLine("  ").Append(await FormatXmlNode(objResultNode, token).ConfigureAwait(false));
-                    return;
+                    return true;
                 }
 
                 // Node was removed
                 if (objBaseNode != null && objResultNode == null)
                 {
+                    blnReturn = true;
                     sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Removed", token: token).ConfigureAwait(false), strNodePath).AppendLine();
                     sbdOutput.AppendLine("  ").Append(await FormatXmlNode(objBaseNode, token).ConfigureAwait(false));
-                    return;
+                    return true;
                 }
 
                 // Compare text nodes
@@ -638,11 +642,13 @@ namespace Chummer
                 {
                     if (!string.Equals(objBaseNode.Value, objResultNode.Value, StringComparison.Ordinal))
                     {
+                        blnReturn = true;
                         sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Modified", token: token).ConfigureAwait(false), strNodePath).AppendLine();
                         sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), FormatXmlNode(objBaseNode, token)).AppendLine();
                         sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_NewValue", token: token).ConfigureAwait(false), FormatXmlNode(objResultNode, token)).AppendLine();
+                        return true;
                     }
-                    return;
+                    return false;
                 }
 
                 // Compare element nodes
@@ -666,16 +672,19 @@ namespace Chummer
                         {
                             if (!resultAttribs.TryGetValue(kvp.Key, out string value) || !resultAttribs.Remove(kvp.Key))
                             {
+                                blnReturn = true;
                                 sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_RemovedAttribute", token: token).ConfigureAwait(false), strNodePath, kvp.Key, kvp.Value).AppendLine();
                             }
                             else if (!string.Equals(value, kvp.Value, StringComparison.Ordinal))
                             {
+                                blnReturn = true;
                                 sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_ModifiedAttribute", token: token).ConfigureAwait(false), strNodePath, kvp.Key).AppendLine();
                                 sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), "\"" + kvp.Value + "\"").AppendLine();
                                 sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_NewValue", token: token).ConfigureAwait(false), "\"" + value + "\"").AppendLine();
                             }
                         }
 
+                        blnReturn = blnReturn || resultAttribs.Count > 0;
                         foreach (KeyValuePair<string, string> kvp in resultAttribs)
                         {
                             sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_AddedAttribute", token: token).ConfigureAwait(false), strNodePath, kvp.Key, kvp.Value).AppendLine();
@@ -704,6 +713,7 @@ namespace Chummer
 
                             if (!string.Equals(strBaseText, strResultText, StringComparison.Ordinal))
                             {
+                                blnReturn = true;
                                 sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Modified", token: token).ConfigureAwait(false), strNodePath).AppendLine();
                                 sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), "\"" + strBaseText + "\"").AppendLine();
                                 sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_NewValue", token: token).ConfigureAwait(false), "\"" + strResultText + "\"").AppendLine();
@@ -721,16 +731,18 @@ namespace Chummer
                     {
                         if (!baseGroups.TryGetValue(kvp.Key, out XmlNode value) || !baseGroups.Remove(kvp.Key))
                         {
+                            blnReturn = true;
                             string strChildPath = GetNodePath(kvp.Value, strNodePath);
                             sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Added", token: token).ConfigureAwait(false), strChildPath).AppendLine();
                             sbdOutput.Append("  ").Append(await FormatXmlNode(kvp.Value, token).ConfigureAwait(false));
                         }
                         else
                         {
-                            await CompareXmlNodesAsync(value, kvp.Value, sbdOutput, strNodePath, token).ConfigureAwait(false);
+                            blnReturn = await CompareXmlNodesAsync(value, kvp.Value, sbdOutput, strNodePath, token).ConfigureAwait(false) || blnReturn;
                         }
                     }
 
+                    blnReturn = blnReturn || baseGroups.Count > 0;
                     foreach (KeyValuePair<string, XmlNode> kvp in baseGroups)
                     {
                         string strChildPath = GetNodePath(kvp.Value, strNodePath);
@@ -745,6 +757,7 @@ namespace Chummer
                 Log.Error(ex, "Error comparing XML nodes");
                 sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_ErrorComparingNodes", token: token).ConfigureAwait(false ), strCurrentPath, ex.Message).AppendLine();
             }
+            return blnReturn;
         }
 
         private static Dictionary<string, XmlNode> GroupChildNodes(XmlNodeList childNodes)

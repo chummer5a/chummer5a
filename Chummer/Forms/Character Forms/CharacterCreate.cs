@@ -20669,8 +20669,6 @@ namespace Chummer
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdMessage))
             {
-                sbdMessage.Append(await LanguageManager.GetStringAsync("Message_InvalidBeginning", token: token)
-                                                       .ConfigureAwait(false));
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
@@ -21919,14 +21917,16 @@ namespace Chummer
                     await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
 
-                if (!blnValid && sbdMessage.Length > (await LanguageManager
-                                                            .GetStringAsync("Message_InvalidBeginning", token: token)
-                                                            .ConfigureAwait(false)).Length)
+                if (!blnValid && sbdMessage.Length > 0)
+                {
+                    sbdMessage.Insert(0, await LanguageManager.GetStringAsync("Message_InvalidBeginning", token: token)
+                                                       .ConfigureAwait(false));
                     await Program.ShowScrollableMessageBoxAsync(this, sbdMessage.ToString(),
                         await LanguageManager
                             .GetStringAsync("MessageTitle_Invalid", token: token)
                             .ConfigureAwait(false),
                         MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                }
             }
 
             return blnValid;

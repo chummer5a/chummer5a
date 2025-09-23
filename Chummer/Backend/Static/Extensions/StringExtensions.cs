@@ -86,7 +86,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string ConcatFast(params string[] lstStrings)
         {
@@ -94,7 +94,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string ConcatFast(IReadOnlyCollection<string> lstStrings)
         {
@@ -210,7 +210,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(IEnumerable{string})"> that is faster than the built-in version for shorter strings because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
+        /// Version of <see cref="string.Concat(IEnumerable{string})"> that is faster for shorter strings because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
         /// </summary>
         public static string ConcatFast(IEnumerable<string> lstStrings)
         {
@@ -264,7 +264,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static Task<string> ConcatFastAsync(IAsyncReadOnlyCollection<string> lstStrings, CancellationToken token = default)
         {
@@ -450,7 +450,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async version of <see cref="string.Concat(IEnumerable{string})"> that is faster than the built-in version for shorter strings because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
+        /// Async version of <see cref="string.Concat(IEnumerable{string})"> that is faster for shorter strings because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
         /// </summary>
         public static async Task<string> ConcatFastAsync(IAsyncEnumerable<string> lstStrings, CancellationToken token = default)
         {
@@ -522,7 +522,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string ConcatFast(string[] lstStrings, int startIndex, int count)
         {
@@ -530,7 +530,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string ConcatFast(IReadOnlyCollection<string> lstStrings, int startIndex, int count)
         {
@@ -673,7 +673,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static async Task<string> ConcatFastAsync(IAsyncReadOnlyCollection<string> lstStrings, int startIndex, int count, CancellationToken token = default)
         {
@@ -874,7 +874,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
+        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
         /// </summary>
         public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4)
         {
@@ -942,7 +942,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
+        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
         /// </summary>
         public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5)
         {
@@ -1019,7 +1019,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
+        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
         /// </summary>
         public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5, string strArg6)
         {
@@ -1191,7 +1191,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Join(string, IEnumerable{string})"> that is faster than the built-in version for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
+        /// Version of <see cref="string.Join(string, IEnumerable{string})"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
         /// </summary>
         public static string JoinFast(string strSeparator, IEnumerable<string> lstStrings)
         {
@@ -1513,7 +1513,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Join(string, string[], int, int)"> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder">, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Join(string, string[], int, int)"> that is faster for non-arrays because it does not need to transform the collection to an array first.
         /// </summary>
         public static string JoinFast(string strSeparator, IReadOnlyCollection<string> lstStrings, int startIndex, int count)
         {
@@ -1617,7 +1617,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Join(string, string[], int, int)"> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder">, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Join(string, string[], int, int)"> that is faster for non-arrays because it does not need to transform the collection to an array first.
         /// </summary>
         public static async Task<string> JoinFastAsync(string strSeparator, IAsyncReadOnlyCollection<string> lstStrings, int startIndex, int count, CancellationToken token = default)
         {

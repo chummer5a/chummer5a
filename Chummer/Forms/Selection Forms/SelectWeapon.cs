@@ -446,12 +446,13 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
 
                             if (sbdAccessories.Length > 0)
+                            {
                                 sbdAccessories.Length -= Environment.NewLine.Length;
-
-                            strIncludedAccessories = sbdAccessories.Length == 0
-                                ? await LanguageManager.GetStringAsync("String_None", token: token)
-                                                        .ConfigureAwait(false)
-                                : sbdAccessories.ToString();
+                                strIncludedAccessories = sbdAccessories.ToString();
+                            }
+                            else
+                                strIncludedAccessories = await LanguageManager.GetStringAsync("String_None", token: token)
+                                                            .ConfigureAwait(false);
                         }
 
                         await lblIncludedAccessories

@@ -6212,7 +6212,7 @@ namespace Chummer
                     }
                 }
 
-                if (sbdPath.Length > 1)
+                if (sbdPath.Length > 0)
                     return "(" + sbdPath.ToString() + ")";
             }
 
@@ -6267,7 +6267,7 @@ namespace Chummer
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
-                if (sbdPath.Length > 1)
+                if (sbdPath.Length > 0)
                     return "(" + sbdPath.ToString() + ")";
             }
 

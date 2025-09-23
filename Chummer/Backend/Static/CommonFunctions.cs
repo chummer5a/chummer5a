@@ -378,10 +378,14 @@ namespace Chummer
             foreach (string strCharAttributeName in Backend.Attributes.AttributeSection.AttributeStrings)
             {
                 if (!string.IsNullOrEmpty(strXPathExpression))
-                    strXPathExpression = strXPathExpression
-                                         .Replace("{" + strCharAttributeName + "}", "1")
-                                         .Replace("{" + strCharAttributeName + "Unaug}", "1")
-                                         .Replace("{" + strCharAttributeName + "Base}", "1");
+                {
+                    string strNeedleCommon = "{" + strCharAttributeName;
+                    if (strXPathExpression.Contains(strNeedleCommon))
+                        strXPathExpression = strXPathExpression
+                                             .Replace(strNeedleCommon + "}", "1")
+                                             .Replace(strNeedleCommon + "Unaug}", "1")
+                                             .Replace(strNeedleCommon + "Base}", "1");
+                }
             }
 
             if (string.IsNullOrEmpty(strXPathExpression))
@@ -399,15 +403,21 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<bool> IsCharacterAttributeXPathValidOrNullAsync(string strXPathExpression, bool blnIsNullSuccess = true, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strXPathExpression))
                 return blnIsNullSuccess;
             foreach (string strCharAttributeName in Backend.Attributes.AttributeSection.AttributeStrings)
             {
+                token.ThrowIfCancellationRequested();
                 if (!string.IsNullOrEmpty(strXPathExpression))
-                    strXPathExpression = strXPathExpression
-                                         .Replace("{" + strCharAttributeName + "}", "1")
-                                         .Replace("{" + strCharAttributeName + "Unaug}", "1")
-                                         .Replace("{" + strCharAttributeName + "Base}", "1");
+                {
+                    string strNeedleCommon = "{" + strCharAttributeName;
+                    if (strXPathExpression.Contains(strNeedleCommon))
+                        strXPathExpression = strXPathExpression
+                                             .Replace(strNeedleCommon + "}", "1")
+                                             .Replace(strNeedleCommon + "Unaug}", "1")
+                                             .Replace(strNeedleCommon + "Base}", "1");
+                }
             }
 
             if (string.IsNullOrEmpty(strXPathExpression))

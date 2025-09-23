@@ -1898,7 +1898,7 @@ namespace Chummer
                             if (!blnLoopResult)
                                 sbdResultName.Append(
                                     strLoopResult.Replace(Environment.NewLine + "\t",
-                                        Environment.NewLine + "\t" + "\t"));
+                                        Environment.NewLine + "\t\t"));
                         }
 
                         if (blnShowMessage)
@@ -1937,7 +1937,7 @@ namespace Chummer
                                 break;
                             sbdResultName.Append(
                                 strLoopResult.Replace(Environment.NewLine + "\t",
-                                    Environment.NewLine + "\t" + "\t"));
+                                    Environment.NewLine + "\t\t"));
                         }
 
                         if (blnShowMessage)
