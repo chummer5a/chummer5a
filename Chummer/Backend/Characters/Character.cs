@@ -39567,11 +39567,11 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 using (LockObject.EnterReadLock())
-                    return StringExtensions.ConcatFast(LanguageManager.GetString("Label_Options_Maximum"),
-                                         strSpace, "(", LanguageManager.GetString("String_LimitMentalShort"),
-                                         strSpace, "[", LimitMental.ToString(GlobalSettings.CultureInfo), "],",
-                                         strSpace, LanguageManager.GetString("String_LimitSocialShort"),
-                                         strSpace, "[", LimitSocial.ToString(GlobalSettings.CultureInfo), "])");
+                    return LanguageManager.GetString("Label_Options_Maximum") +
+                        strSpace + "(" + LanguageManager.GetString("String_LimitMentalShort") +
+                        strSpace + "[" + LimitMental.ToString(GlobalSettings.CultureInfo) + "]," +
+                        strSpace + LanguageManager.GetString("String_LimitSocialShort") +
+                        strSpace + "[" + LimitSocial.ToString(GlobalSettings.CultureInfo) + "])";
             }
         }
 
@@ -39583,11 +39583,11 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return StringExtensions.ConcatFast(await LanguageManager.GetStringAsync("Label_Options_Maximum", token: token).ConfigureAwait(false),
-                    strSpace, "(", await LanguageManager.GetStringAsync("String_LimitMentalShort", token: token).ConfigureAwait(false),
-                    strSpace, "[", (await GetLimitMentalAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), "],",
-                    strSpace, await LanguageManager.GetStringAsync("String_LimitSocialShort", token: token).ConfigureAwait(false),
-                    strSpace, "[", (await GetLimitSocialAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), "])");
+                return await LanguageManager.GetStringAsync("Label_Options_Maximum", token: token).ConfigureAwait(false) +
+                    strSpace + "(" + await LanguageManager.GetStringAsync("String_LimitMentalShort", token: token).ConfigureAwait(false) +
+                    strSpace + "[" + (await GetLimitMentalAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + "]," +
+                    strSpace + await LanguageManager.GetStringAsync("String_LimitSocialShort", token: token).ConfigureAwait(false) +
+                    strSpace + "[" + (await GetLimitSocialAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + "])";
             }
             finally
             {
