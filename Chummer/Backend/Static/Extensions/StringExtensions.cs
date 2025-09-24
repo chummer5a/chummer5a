@@ -790,7 +790,7 @@ namespace Chummer
                             for (int i = 0; i < startIndex; ++i)
                             {
                                 if (!objEnumerator.MoveNext())
-                                    return string.Concat(str1, str2);
+                                    return string.Empty;
                             }
                             if (objEnumerator.MoveNext())
                             {
@@ -813,7 +813,7 @@ namespace Chummer
                             for (int i = 0; i < startIndex; ++i)
                             {
                                 if (!objEnumerator.MoveNext())
-                                    return string.Concat(str1, str2, str3);
+                                    return string.Empty;
                             }
                             if (objEnumerator.MoveNext())
                             {
@@ -841,7 +841,7 @@ namespace Chummer
                             for (int i = 0; i < startIndex; ++i)
                             {
                                 if (!objEnumerator.MoveNext())
-                                    return string.Concat(str1, str2, str3, str4);
+                                    return string.Empty;
                             }
                             if (objEnumerator.MoveNext())
                             {
