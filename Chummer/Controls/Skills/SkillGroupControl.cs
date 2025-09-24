@@ -318,14 +318,14 @@ namespace Chummer.UI.Skills
 
         public void UnbindSkillGroupControl()
         {
-            _skillGroup = null;
+            foreach (Control objControl in Controls)
+                objControl.ResetBindings();
 
             ButtonWithToolTip objOld = Interlocked.Exchange(ref _activeButton, null);
             if (!objOld.IsNullOrDisposed())
                 objOld.Dispose();
 
-            foreach (Control objControl in Controls)
-                objControl.ResetBindings();
+            _skillGroup = null;
         }
 
         #region Control Events

@@ -39,6 +39,7 @@ namespace Chummer.UI.Skills
         private readonly bool _blnLoading = true;
         private int _intUpdatingSpec = 1;
         private Skill _objSkill;
+        private Character _objCharacter;
         private readonly Timer _tmrSpecChangeTimer;
         private readonly Font _fntNormal;
         private readonly Font _fntItalic;
@@ -80,6 +81,7 @@ namespace Chummer.UI.Skills
                 return;
             _objMyToken = objMyToken;
             _objSkill = objSkill;
+            _objCharacter = objSkill.CharacterObject;
             _objAttributeActive = objSkill.AttributeObject;
             InitializeComponent();
             SuspendLayout();
@@ -118,7 +120,7 @@ namespace Chummer.UI.Skills
                     tlpRight.Controls.Add(cmdDelete, 4, 0);
                 }
 
-                if (objSkill.CharacterObject.Created)
+                if (_objCharacter.Created)
                 {
                     lblCareerRating = new Label
                     {
@@ -304,7 +306,7 @@ namespace Chummer.UI.Skills
 
                 RefreshPoolTooltipAndDisplay(_objMyToken);
 
-                if (_objSkill.CharacterObject.Created)
+                if (_objCharacter.Created)
                 {
                     lblCareerRating.RegisterOneWayAsyncDataBinding(
                         (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objSkill,
@@ -348,7 +350,7 @@ namespace Chummer.UI.Skills
                         {
                             if (strLoopAttribute == "MAGAdept")
                             {
-                                if (!_objSkill.CharacterObject.Settings.MysAdeptSecondMAGAttribute)
+                                if (!_objCharacter.Settings.MysAdeptSecondMAGAttribute)
                                     continue;
                                 lstAttributeItems.Add(new ListItem(strLoopAttribute,
                                                                    LanguageManager.MAGAdeptString(token: _objMyToken)));
@@ -374,7 +376,7 @@ namespace Chummer.UI.Skills
                 else
                 {
                     nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y,
-                                                            _objSkill.CharacterObject,
+                                                            _objCharacter,
                                                             nameof(Character
                                                                        .EffectiveBuildMethodUsesPriorityTables),
                                                             x => x
@@ -420,7 +422,7 @@ namespace Chummer.UI.Skills
                     else
                     {
                         chkKarma.RegisterOneWayAsyncDataBinding(
-                            (x, y) => x.Visible = y, _objSkill.CharacterObject,
+                            (x, y) => x.Visible = y, _objCharacter,
                             nameof(Character
                                        .EffectiveBuildMethodUsesPriorityTables),
                             x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(
@@ -513,7 +515,7 @@ namespace Chummer.UI.Skills
 
             await RefreshPoolTooltipAndDisplayAsync(token).ConfigureAwait(false);
 
-            if (await _objSkill.CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+            if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
             {
                 await lblCareerRating.RegisterOneWayAsyncDataBindingAsync(
                     (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objSkill,
@@ -556,7 +558,7 @@ namespace Chummer.UI.Skills
                     {
                         if (strLoopAttribute == "MAGAdept")
                         {
-                            if (!await (await _objSkill.CharacterObject.GetSettingsAsync(_objMyToken).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
+                            if (!await (await _objCharacter.GetSettingsAsync(_objMyToken).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
                                 continue;
                             lstAttributeItems.Add(new ListItem(strLoopAttribute,
                                                                await LanguageManager
@@ -587,7 +589,7 @@ namespace Chummer.UI.Skills
             else
             {
                 await nudSkill.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y,
-                                                              _objSkill.CharacterObject,
+                                                              _objCharacter,
                                                               nameof(Character
                                                                          .EffectiveBuildMethodUsesPriorityTables),
                                                               x => x
@@ -633,7 +635,7 @@ namespace Chummer.UI.Skills
                 else
                 {
                     await chkKarma.RegisterOneWayAsyncDataBindingAsync(
-                        (x, y) => x.Visible = y, _objSkill.CharacterObject,
+                        (x, y) => x.Visible = y, _objCharacter,
                         nameof(Character
                                    .EffectiveBuildMethodUsesPriorityTables),
                         x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(
@@ -779,7 +781,7 @@ namespace Chummer.UI.Skills
                 if ((blnAll || e.PropertyNames.Contains(nameof(Skill.CanHaveSpecs))))
                 {
                     bool blnCanHaveSpecs = await _objSkill.GetCanHaveSpecsAsync(token).ConfigureAwait(false);
-                    if (await _objSkill.CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                    if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                     {
                         await this.DoThreadSafeAsync(x =>
                         {
@@ -921,7 +923,7 @@ namespace Chummer.UI.Skills
                 }
                 if ((blnAll || e.PropertyNames.Contains(nameof(KnowledgeSkill.Specializations)))
                     && await Program
-                        .GetFormForDialogAsync(_objSkill.CharacterObject, token)
+                        .GetFormForDialogAsync(_objCharacter, token)
                         .ConfigureAwait(false) is CharacterShared frmParent)
                 {
                     frmParent.RequestCharacterUpdate(token);
@@ -998,7 +1000,7 @@ namespace Chummer.UI.Skills
                 try
                 {
                     _objMyToken.ThrowIfCancellationRequested();
-                    Character objCharacter = _objSkill.CharacterObject;
+                    Character objCharacter = _objCharacter;
                     int intPrice = await (await objCharacter.GetSettingsAsync(_objMyToken).ConfigureAwait(false))
                         .GetKarmaKnowledgeSpecializationAsync(_objMyToken).ConfigureAwait(false);
 
@@ -1080,7 +1082,7 @@ namespace Chummer.UI.Skills
             await btnAttribute.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
             await cboSelectAttribute.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
             await SetAttributeActiveAsync(
-                await _objSkill.CharacterObject.GetAttributeAsync(
+                await _objCharacter.GetAttributeAsync(
                     await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token)
                                              .ConfigureAwait(false),
                     token: token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -1129,7 +1131,7 @@ namespace Chummer.UI.Skills
 
         [UsedImplicitly]
         public int NudSkillWidth =>
-            !_objSkill.CharacterObject.Created && _objSkill.CharacterObject.EffectiveBuildMethodUsesPriorityTables
+            !_objCharacter.Created && _objCharacter.EffectiveBuildMethodUsesPriorityTables
                 ? nudSkill.Width
                 : 0;
 
@@ -1154,7 +1156,7 @@ namespace Chummer.UI.Skills
                     return x.SelectedValue?.ToString() ?? string.Empty;
                 }, token: token).ConfigureAwait(false);
                 await SetAttributeActiveAsync(
-                    await _objSkill.CharacterObject.GetAttributeAsync(strNewAttribute, token: token)
+                    await _objCharacter.GetAttributeAsync(strNewAttribute, token: token)
                         .ConfigureAwait(false), token).ConfigureAwait(false);
             }
             finally
@@ -1183,7 +1185,7 @@ namespace Chummer.UI.Skills
                                          _objSkill.IsExoticSkill ? "Message_DeleteExoticSkill" : "Message_DeleteSkill",
                                          token: _objMyToken).ConfigureAwait(false), _objMyToken).ConfigureAwait(false))
                     return;
-                await _objSkill.CharacterObject.SkillsSection.Skills.RemoveAsync(_objSkill, _objMyToken)
+                await _objCharacter.SkillsSection.Skills.RemoveAsync(_objSkill, _objMyToken)
                                .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -1204,7 +1206,7 @@ namespace Chummer.UI.Skills
                                                                               strNotes, objColor, _objMyToken),
                                                                           _objMyToken).ConfigureAwait(false))
                 {
-                    if (await frmItemNotes.ShowDialogSafeAsync(_objSkill.CharacterObject, _objMyToken)
+                    if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter, _objMyToken)
                                           .ConfigureAwait(false) != DialogResult.OK)
                         return;
                     await _objSkill.SetNotesAsync(frmItemNotes.MyForm.Notes, _objMyToken).ConfigureAwait(false);
@@ -1224,7 +1226,7 @@ namespace Chummer.UI.Skills
                     = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
                 try
                 {
-                    Character objCharacter = _objSkill.CharacterObject;
+                    Character objCharacter = _objCharacter;
                     await CommonFunctions.OpenPdf(
                         _objSkill.Source + " " + await _objSkill.DisplayPageAsync(GlobalSettings.Language, _objMyToken)
                                                                 .ConfigureAwait(false),
@@ -1261,8 +1263,14 @@ namespace Chummer.UI.Skills
 
         private void UnbindSkillControl()
         {
+            foreach (Control objControl in Controls)
+                objControl.ResetBindings();
             CustomAttributeChanged = null;
             _tmrSpecChangeTimer?.Dispose();
+            ButtonWithToolTip objOld = Interlocked.Exchange(ref _activeButton, null);
+            if (!objOld.IsNullOrDisposed())
+                objOld.Dispose();
+            _objCharacter = null;
             Skill objSkill = Interlocked.Exchange(ref _objSkill, null); // for thread safety
             if (objSkill?.IsDisposed == false)
             {
@@ -1287,13 +1295,6 @@ namespace Chummer.UI.Skills
                     //swallow this
                 }
             }
-
-            ButtonWithToolTip objOld = Interlocked.Exchange(ref _activeButton, null);
-            if (!objOld.IsNullOrDisposed())
-                objOld.Dispose();
-
-            foreach (Control objControl in Controls)
-                objControl.ResetBindings();
         }
 
         /// <summary>

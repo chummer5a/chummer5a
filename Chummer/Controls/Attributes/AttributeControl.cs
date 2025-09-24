@@ -510,6 +510,8 @@ namespace Chummer.UI.Attributes
 
         private void UnbindAttributeControl()
         {
+            foreach (Control objControl in Controls)
+                objControl.ResetBindings();
             _tmrKarmaChangeTimer?.Dispose();
             _tmrBaseChangeTimer?.Dispose();
             ButtonWithToolTip objOld = Interlocked.Exchange(ref _activeButton, null);
@@ -517,10 +519,16 @@ namespace Chummer.UI.Attributes
                 objOld.Dispose();
             Character objCharacter = Interlocked.Exchange(ref _objCharacter, null); // for thread safety
             if (objCharacter?.IsDisposed == false)
-                objCharacter.AttributeSection.DeregisterAsyncPropertyChangedForActiveAttribute(AttributeName, OnAttributePropertyChanged);
-
-            foreach (Control objControl in Controls)
-                objControl.ResetBindings();
+            {
+                try
+                {
+                    objCharacter.AttributeSection.DeregisterAsyncPropertyChangedForActiveAttribute(AttributeName, OnAttributePropertyChanged);
+                }
+                catch (ObjectDisposedException)
+                {
+                    // swallow this
+                }
+            }
         }
 
         private async void cmdImproveATT_Click(object sender, EventArgs e)
