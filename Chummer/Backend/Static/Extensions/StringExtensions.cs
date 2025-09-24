@@ -2087,7 +2087,7 @@ namespace Chummer
                         // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
                         int intCurrent = 0;
                         int intSeparatorByteLength = intSeparatorLength * sizeof(char);
-
+                        ++intIndex;
                         fixed (char* sep = strSeparator)
                         {
                             string strLoop = objEnumerator.Current;
@@ -2100,7 +2100,7 @@ namespace Chummer
                                 }
                                 intCurrent = intLoopLength;
                             }
-                            else
+                            else if (intIndex < intFinalIndex)
                             {
                                 while (objEnumerator.MoveNext())
                                 {
@@ -2115,24 +2115,29 @@ namespace Chummer
                                         intCurrent = intLoopLength;
                                         break;
                                     }
+                                    if (++intIndex == intFinalIndex)
+                                        break;
                                 }
                             }
-                            while (objEnumerator.MoveNext())
+                            if (intIndex < intFinalIndex)
                             {
-                                strLoop = objEnumerator.Current;
-                                intLoopLength = strLoop?.Length ?? 0;
-                                if (intLoopLength > 0)
+                                while (objEnumerator.MoveNext())
                                 {
-                                    Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intSeparatorByteLength);
-                                    intCurrent += intSeparatorLength;
-                                    fixed (char* src = strLoop)
+                                    strLoop = objEnumerator.Current;
+                                    intLoopLength = strLoop?.Length ?? 0;
+                                    if (intLoopLength > 0)
                                     {
-                                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                        Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                        intCurrent += intSeparatorLength;
+                                        fixed (char* src = strLoop)
+                                        {
+                                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                        }
+                                        intCurrent += intLoopLength;
                                     }
-                                    intCurrent += intLoopLength;
+                                    if (++intIndex == intFinalIndex)
+                                        break;
                                 }
-                                if (++intIndex == intFinalIndex)
-                                    break;
                             }
                         }
                         // ... then we create a new string from the new CharArray (using intCurrent just in case)
@@ -2229,7 +2234,7 @@ namespace Chummer
                         // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
                         int intCurrent = 0;
                         int intSeparatorByteLength = intSeparatorLength * sizeof(char);
-
+                        ++intIndex;
                         fixed (char* sep = strSeparator)
                         {
                             string strLoop = objEnumerator.Current;
@@ -2242,7 +2247,7 @@ namespace Chummer
                                 }
                                 intCurrent = intLoopLength;
                             }
-                            else
+                            else if (intIndex < intFinalIndex)
                             {
                                 while (objEnumerator.MoveNext())
                                 {
@@ -2262,23 +2267,26 @@ namespace Chummer
                                         break;
                                 }
                             }
-                            while (objEnumerator.MoveNext())
+                            if (intIndex < intFinalIndex)
                             {
-                                token.ThrowIfCancellationRequested();
-                                strLoop = objEnumerator.Current;
-                                intLoopLength = strLoop?.Length ?? 0;
-                                if (intLoopLength > 0)
+                                while (objEnumerator.MoveNext())
                                 {
-                                    Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intSeparatorByteLength);
-                                    intCurrent += intSeparatorLength;
-                                    fixed (char* src = strLoop)
+                                    token.ThrowIfCancellationRequested();
+                                    strLoop = objEnumerator.Current;
+                                    intLoopLength = strLoop?.Length ?? 0;
+                                    if (intLoopLength > 0)
                                     {
-                                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                        Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                        intCurrent += intSeparatorLength;
+                                        fixed (char* src = strLoop)
+                                        {
+                                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                        }
+                                        intCurrent += intLoopLength;
                                     }
-                                    intCurrent += intLoopLength;
+                                    if (++intIndex == intFinalIndex)
+                                        break;
                                 }
-                                if (++intIndex == intFinalIndex)
-                                    break;
                             }
                         }
                         // ... then we create a new string from the new CharArray (using intCurrent just in case)
