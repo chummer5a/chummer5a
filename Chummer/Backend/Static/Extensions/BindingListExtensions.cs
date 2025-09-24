@@ -63,7 +63,7 @@ namespace Chummer
             int intResetThreshold = length / 2;
             int intCountChanges = 0;
             // Not BitArray because read/write performance is much more important here than memory footprint
-            bool[] ablnItemChanged = length > GlobalSettings.MaxStackLimit8BitTypes
+            bool[] ablnItemChanged = length > Utils.MaxStackLimit8BitTypes
                 ? ArrayPool<bool>.Shared.Rent(length)
                 : null;
             try
@@ -142,7 +142,7 @@ namespace Chummer
             int intResetThreshold = intCollectionSize / 2;
             int intCountChanges = 0;
             // Not BitArray because read/write performance is much more important here than memory footprint
-            bool[] ablnItemChanged = intCollectionSize > GlobalSettings.MaxStackLimit8BitTypes
+            bool[] ablnItemChanged = intCollectionSize > Utils.MaxStackLimit8BitTypes
                 ? ArrayPool<bool>.Shared.Rent(intCollectionSize)
                 : null;
             try
@@ -219,7 +219,7 @@ namespace Chummer
             int intResetThreshold = intCollectionSize / 2;
             int intCountChanges = 0;
             // Not BitArray because read/write performance is much more important here than memory footprint
-            bool[] ablnItemChanged = intCollectionSize > GlobalSettings.MaxStackLimit8BitTypes
+            bool[] ablnItemChanged = intCollectionSize > Utils.MaxStackLimit8BitTypes
                 ? ArrayPool<bool>.Shared.Rent(intCollectionSize)
                 : null;
             try

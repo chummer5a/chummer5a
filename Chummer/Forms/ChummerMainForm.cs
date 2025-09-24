@@ -4343,7 +4343,7 @@ namespace Chummer
         {
             try
             {
-                await Utils.RestartApplication(string.Empty, "Message_Options_Restart", _objGenericToken).ConfigureAwait(false);
+                await Utils.RestartApplication(strText: "Message_Options_Restart", token: _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

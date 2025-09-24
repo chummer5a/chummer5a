@@ -270,7 +270,7 @@ namespace Chummer
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
-                                            ? await GlobalSettings.RandomGenerator
+                                            ? await Utils.GlobalRandom
                                                 .NextModuloBiasRemovedAsync(
                                                     xmlPossibleNodeList.Count, token: token)
                                                 .ConfigureAwait(false)
@@ -299,7 +299,7 @@ namespace Chummer
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
-                                            ? await GlobalSettings.RandomGenerator
+                                            ? await Utils.GlobalRandom
                                                 .NextModuloBiasRemovedAsync(
                                                     xmlPossibleNodeList.Count, token: token)
                                                 .ConfigureAwait(false)

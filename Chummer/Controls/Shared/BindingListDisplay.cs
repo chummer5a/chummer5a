@@ -223,7 +223,7 @@ namespace Chummer.Controls.Shared
             int intDisplayIndexCount = _lstDisplayIndex.Count;
 
             // Array is temporary and of primitives, so stackalloc used instead of List.ToArray() (which would put the array on the heap) when possible
-            int[] aintSharedOldDisplayIndexes = intDisplayIndexCount > GlobalSettings.MaxStackLimit32BitTypes
+            int[] aintSharedOldDisplayIndexes = intDisplayIndexCount > Utils.MaxStackLimit32BitTypes
                 ? ArrayPool<int>.Shared.Rent(intDisplayIndexCount)
                 : null;
             try

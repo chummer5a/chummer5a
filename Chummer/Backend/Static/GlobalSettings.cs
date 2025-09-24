@@ -214,7 +214,7 @@ namespace Chummer
     }
 
     /// <summary>
-    /// Global Settings. A single instance class since Settings are common for all characters, reduces execution time and memory usage.
+    /// Global Settings. A static class since these settings are common across all characters, reducing execution time and memory usage.
     /// </summary>
     public static class GlobalSettings
     {
@@ -284,30 +284,7 @@ namespace Chummer
         private static bool _blnPrintSkillsWithZeroRating = true;
         private static bool _blnInsertPdfNotesIfAvailable = true;
 
-        /// <summary>
-        /// Maximum size of a stackalloc'ed array for an 8-bit type (byte, sbyte, bool)
-        /// </summary>
-        public const int MaxStackLimit8BitTypes = 4096;
-        /// <summary>
-        /// Maximum size of a stackalloc'ed array for a 16-bit type (short, ushort, char)
-        /// </summary>
-        public const int MaxStackLimit16BitTypes = MaxStackLimit8BitTypes * sizeof(byte) / sizeof(short);
-        /// <summary>
-        /// Maximum size of a stackalloc'ed array for a 32-bit type (int, uint, float)
-        /// </summary>
-        public const int MaxStackLimit32BitTypes = MaxStackLimit8BitTypes * sizeof(byte) / sizeof(int);
-        /// <summary>
-        /// Maximum size of a stackalloc'ed array for a 64-bit type (long, ulong, double)
-        /// </summary>
-        public const int MaxStackLimit64BitTypes = MaxStackLimit8BitTypes * sizeof(byte) / sizeof(long);
-        /// <summary>
-        /// Maximum size of a stackalloc'ed array for a 128-bit type (decimal)
-        /// </summary>
-        public const int MaxStackLimit128BitTypes = MaxStackLimit8BitTypes * sizeof(byte) / sizeof(decimal);
-
         private static bool _blnShowCharacterCustomDataWarning;
-
-        public static ThreadSafeCachedRandom RandomGenerator { get; } = new ThreadSafeCachedRandom(new XoRoShiRo128starstar(), true);
 
         // Plugins information
         private static readonly ConcurrentDictionary<string, bool> s_dicPluginsEnabled = new ConcurrentDictionary<string, bool>();
@@ -595,7 +572,7 @@ namespace Chummer
 
             // Which version of the Internet Explorer's rendering engine will be emulated for rendering the character view.
             LoadInt32FromRegistry(ref _intEmulatedBrowserVersion, "emulatedbrowserversion");
-            Utils.SetupWebBrowserRegistryKeys();
+            Utils.SetupWebBrowserRegistryKeys(_intEmulatedBrowserVersion);
 
             // Default character sheet.
             LoadStringFromRegistry(ref _strDefaultCharacterSheet, "defaultsheet");
@@ -1372,7 +1349,7 @@ namespace Chummer
             set
             {
                 if (Interlocked.Exchange(ref _intEmulatedBrowserVersion, value) != value)
-                    Utils.SetupWebBrowserRegistryKeys();
+                    Utils.SetupWebBrowserRegistryKeys(value);
             }
         }
 

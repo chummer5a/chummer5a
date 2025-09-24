@@ -863,7 +863,7 @@ namespace Chummer
                 return;
             if (await chkBonusLPRandomize.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
             {
-                int intRandom = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync().ConfigureAwait(false);
+                int intRandom = await Utils.GlobalRandom.NextD6ModuloBiasRemovedAsync().ConfigureAwait(false);
                 await nudBonusLP.DoThreadSafeAsync(x =>
                 {
                     x.Enabled = false;
@@ -1116,7 +1116,7 @@ namespace Chummer
 
                 if (await chkBonusLPRandomize.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                 {
-                    int intValue = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync(token).ConfigureAwait(false);
+                    int intValue = await Utils.GlobalRandom.NextD6ModuloBiasRemovedAsync(token).ConfigureAwait(false);
                     await nudBonusLP.DoThreadSafeAsync(x =>
                     {
                         x.Enabled = false;

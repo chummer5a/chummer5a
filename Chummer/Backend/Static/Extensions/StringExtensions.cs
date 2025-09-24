@@ -179,7 +179,7 @@ namespace Chummer
                 while (objEnumerator.MoveNext())
                 {
                     string strLoop = objEnumerator.Current;
-                    if (!string.IsNullOrEmpty(strLoop) && (intTotalLength += strLoop.Length) > GlobalSettings.MaxStackLimit16BitTypes)
+                    if (!string.IsNullOrEmpty(strLoop) && (intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
                         return string.Concat(lstStrings);
                 }
                 objEnumerator.Reset();
@@ -244,7 +244,7 @@ namespace Chummer
                 string strSecondPart = string.Empty;
                 string strLoop = objEnumerator.Current;
                 int intLoopLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (strLoop?.Length ?? 0);
-                if (intLoopLength > GlobalSettings.MaxStackLimit16BitTypes)
+                if (intLoopLength > Utils.MaxStackLimit16BitTypes)
                 {
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                     {
@@ -259,7 +259,7 @@ namespace Chummer
                 unsafe
                 {
                     // We don't know the exact length we'll need, so allocate the maximum size we're allowed on the stack
-                    char* achrNewChars = stackalloc char[GlobalSettings.MaxStackLimit16BitTypes];
+                    char* achrNewChars = stackalloc char[Utils.MaxStackLimit16BitTypes];
                     // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
                     int intCurrent = 0;
                     intLoopLength = str1?.Length ?? 0;
@@ -267,7 +267,7 @@ namespace Chummer
                     {
                         fixed (char* src = str1)
                         {
-                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                         }
                         intCurrent += intLoopLength;
                     }
@@ -276,7 +276,7 @@ namespace Chummer
                     {
                         fixed (char* src = str2)
                         {
-                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                         }
                         intCurrent += intLoopLength;
                     }
@@ -285,7 +285,7 @@ namespace Chummer
                     {
                         fixed (char* src = str3)
                         {
-                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                         }
                         intCurrent += intLoopLength;
                     }
@@ -294,14 +294,14 @@ namespace Chummer
                     {
                         fixed (char* src = str4)
                         {
-                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                         }
                         intCurrent += intLoopLength;
                     }
                     intLoopLength = strLoop?.Length ?? 0;
                     if (intLoopLength > 0)
                     {
-                        if (intCurrent + intLoopLength > GlobalSettings.MaxStackLimit16BitTypes)
+                        if (intCurrent + intLoopLength > Utils.MaxStackLimit16BitTypes)
                         {
                             strFirstPart = new string(achrNewChars, 0, intCurrent);
                             strSecondPart = strLoop;
@@ -310,7 +310,7 @@ namespace Chummer
                         {
                             fixed (char* src = strLoop)
                             {
-                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                             }
                             intCurrent += intLoopLength;
                         }
@@ -323,7 +323,7 @@ namespace Chummer
                             intLoopLength = strLoop?.Length ?? 0;
                             if (intLoopLength > 0)
                             {
-                                if (intCurrent + intLoopLength > GlobalSettings.MaxStackLimit16BitTypes)
+                                if (intCurrent + intLoopLength > Utils.MaxStackLimit16BitTypes)
                                 {
                                     strFirstPart = new string(achrNewChars, 0, intCurrent);
                                     strSecondPart = strLoop;
@@ -331,7 +331,7 @@ namespace Chummer
                                 }
                                 fixed (char* src = strLoop)
                                 {
-                                    Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                    Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                                 }
                                 intCurrent += intLoopLength;
                             }
@@ -501,7 +501,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         string strLoop = objEnumerator.Current;
-                        if (!string.IsNullOrEmpty(strLoop) && (intTotalLength += strLoop.Length) > GlobalSettings.MaxStackLimit16BitTypes)
+                        if (!string.IsNullOrEmpty(strLoop) && (intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
                             return string.Concat(lstStrings);
                     }
                     token.ThrowIfCancellationRequested();
@@ -596,7 +596,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 string strLoop = objEnumerator.Current;
                 int intLoopLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (strLoop?.Length ?? 0);
-                if (intLoopLength > GlobalSettings.MaxStackLimit16BitTypes)
+                if (intLoopLength > Utils.MaxStackLimit16BitTypes)
                 {
                     token.ThrowIfCancellationRequested();
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
@@ -627,7 +627,7 @@ namespace Chummer
                 unsafe
                 {
                     // We don't know the exact length we'll need, so allocate the maximum size we're allowed on the stack
-                    char* achrNewChars = stackalloc char[GlobalSettings.MaxStackLimit16BitTypes];
+                    char* achrNewChars = stackalloc char[Utils.MaxStackLimit16BitTypes];
                     // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
                     int intCurrent = 0;
                     intLoopLength = str1?.Length ?? 0;
@@ -636,7 +636,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         fixed (char* src = str1)
                         {
-                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                         }
                         token.ThrowIfCancellationRequested();
                         intCurrent += intLoopLength;
@@ -647,7 +647,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         fixed (char* src = str2)
                         {
-                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                         }
                         token.ThrowIfCancellationRequested();
                         intCurrent += intLoopLength;
@@ -658,7 +658,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         fixed (char* src = str3)
                         {
-                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                         }
                         token.ThrowIfCancellationRequested();
                         intCurrent += intLoopLength;
@@ -669,7 +669,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         fixed (char* src = str4)
                         {
-                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                         }
                         token.ThrowIfCancellationRequested();
                         intCurrent += intLoopLength;
@@ -678,7 +678,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (intLoopLength > 0)
                     {
-                        if (intCurrent + intLoopLength > GlobalSettings.MaxStackLimit16BitTypes)
+                        if (intCurrent + intLoopLength > Utils.MaxStackLimit16BitTypes)
                         {
                             token.ThrowIfCancellationRequested();
                             strFirstPart = new string(achrNewChars, 0, intCurrent);
@@ -690,7 +690,7 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             fixed (char* src = strLoop)
                             {
-                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                             }
                             token.ThrowIfCancellationRequested();
                             intCurrent += intLoopLength;
@@ -707,7 +707,7 @@ namespace Chummer
                             if (intLoopLength > 0)
                             {
                                 token.ThrowIfCancellationRequested();
-                                if (intCurrent + intLoopLength > GlobalSettings.MaxStackLimit16BitTypes)
+                                if (intCurrent + intLoopLength > Utils.MaxStackLimit16BitTypes)
                                 {
                                     token.ThrowIfCancellationRequested();
                                     strFirstPart = new string(achrNewChars, 0, intCurrent);
@@ -717,7 +717,7 @@ namespace Chummer
                                 token.ThrowIfCancellationRequested();
                                 fixed (char* src = strLoop)
                                 {
-                                    Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                    Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                                 }
                                 token.ThrowIfCancellationRequested();
                                 intCurrent += intLoopLength;
@@ -875,7 +875,7 @@ namespace Chummer
                     if (intIndex++ < startIndex)
                         continue;
                     string strLoop = objEnumerator.Current;
-                    if (!string.IsNullOrEmpty(strLoop) && (intTotalLength += strLoop.Length) > GlobalSettings.MaxStackLimit16BitTypes)
+                    if (!string.IsNullOrEmpty(strLoop) && (intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
                         return string.Concat(lstStrings);
                     if (intIndex == intFinalIndex)
                         break;
@@ -1066,7 +1066,7 @@ namespace Chummer
                     if (intIndex++ < startIndex)
                         continue;
                     string strLoop = objEnumerator.Current;
-                    if (!string.IsNullOrEmpty(strLoop) && (intTotalLength += strLoop.Length) > GlobalSettings.MaxStackLimit16BitTypes)
+                    if (!string.IsNullOrEmpty(strLoop) && (intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
                         return string.Concat(lstStrings);
                     if (intIndex == intFinalIndex)
                         break;
@@ -1119,10 +1119,10 @@ namespace Chummer
         public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4)
         {
             int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
                 return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4);
             intTotalLength += (strArg4?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
                 return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4);
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
@@ -1187,10 +1187,10 @@ namespace Chummer
         public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5)
         {
             int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
                 return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4, strArg5);
             intTotalLength += (strArg4?.Length ?? 0) + (strArg5?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
                 return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4, strArg5);
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
@@ -1264,10 +1264,10 @@ namespace Chummer
         public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5, string strArg6)
         {
             int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
                 return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4, strArg5, strArg6);
             intTotalLength += (strArg4?.Length ?? 0) + (strArg5?.Length ?? 0) + (strArg6?.Length ?? 0);
-            if (intTotalLength > GlobalSettings.MaxStackLimit16BitTypes)
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
                 return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4, strArg5, strArg6);
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
@@ -1383,7 +1383,7 @@ namespace Chummer
                 while (objEnumerator.MoveNext())
                 {
                     string strLoop = objEnumerator.Current;
-                    if ((intTotalLength += strLoop.Length) > GlobalSettings.MaxStackLimit16BitTypes)
+                    if ((intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
                         return string.Join(strSeparator, lstStrings);
                 }
                 objEnumerator.Reset();
@@ -1489,7 +1489,7 @@ namespace Chummer
                         intLoopLength += intSeparatorLength;
                     intLoopLength += strLoop.Length;
                 }
-                if (intLoopLength > GlobalSettings.MaxStackLimit16BitTypes)
+                if (intLoopLength > Utils.MaxStackLimit16BitTypes)
                 {
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                     {
@@ -1522,7 +1522,7 @@ namespace Chummer
                 // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
                 unsafe
                 {
-                    char* achrNewChars = stackalloc char[GlobalSettings.MaxStackLimit16BitTypes];
+                    char* achrNewChars = stackalloc char[Utils.MaxStackLimit16BitTypes];
                     // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
                     int intCurrent = 0;
                     int intSeparatorByteLength = intSeparatorLength * sizeof(char);
@@ -1533,7 +1533,7 @@ namespace Chummer
                         {
                             fixed (char* src = str1)
                             {
-                                Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, GlobalSettings.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
+                                Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, Utils.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
                             }
                             intCurrent = intLoopLength;
                         }
@@ -1542,12 +1542,12 @@ namespace Chummer
                         {
                             if (intCurrent > 0)
                             {
-                                Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
                                 intCurrent += intSeparatorLength;
                             }
                             fixed (char* src = str2)
                             {
-                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                             }
                             intCurrent += intLoopLength;
                         }
@@ -1556,12 +1556,12 @@ namespace Chummer
                         {
                             if (intCurrent > 0)
                             {
-                                Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
                                 intCurrent += intSeparatorLength;
                             }
                             fixed (char* src = strLoop)
                             {
-                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                             }
                             intCurrent += intLoopLength;
                         }
@@ -1573,7 +1573,7 @@ namespace Chummer
                                 intLoopLength = strLoop?.Length ?? 0;
                                 if (intLoopLength > 0)
                                 {
-                                    if (intCurrent + intLoopLength + intSeparatorLength > GlobalSettings.MaxStackLimit16BitTypes)
+                                    if (intCurrent + intLoopLength + intSeparatorLength > Utils.MaxStackLimit16BitTypes)
                                     {
                                         strFirstPart = new string(achrNewChars, 0, intCurrent);
                                         strSecondPart = strSeparator + strLoop;
@@ -1582,12 +1582,12 @@ namespace Chummer
                                     {
                                         if (intCurrent > 0)
                                         {
-                                            Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                            Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
                                             intCurrent += intSeparatorLength;
                                         }
                                         fixed (char* src = strLoop)
                                         {
-                                            Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, GlobalSettings.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
+                                            Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, Utils.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
                                         }
                                         intCurrent = intLoopLength;
                                     }
@@ -1603,17 +1603,17 @@ namespace Chummer
                                 intLoopLength = strLoop?.Length ?? 0;
                                 if (intLoopLength > 0)
                                 {
-                                    if (intCurrent + intLoopLength + intSeparatorLength > GlobalSettings.MaxStackLimit16BitTypes)
+                                    if (intCurrent + intLoopLength + intSeparatorLength > Utils.MaxStackLimit16BitTypes)
                                     {
                                         strFirstPart = new string(achrNewChars, 0, intCurrent);
                                         strSecondPart = strSeparator + strLoop;
                                         break; // We want to exit out of the score where we did our stackalloc to free it up
                                     }
-                                    Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                    Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
                                     intCurrent += intSeparatorLength;
                                     fixed (char* src = strLoop)
                                     {
-                                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                                     }
                                     intCurrent += intLoopLength;
                                 }
@@ -1697,7 +1697,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         string strLoop = objEnumerator.Current;
-                        if ((intTotalLength += strLoop.Length) > GlobalSettings.MaxStackLimit16BitTypes)
+                        if ((intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
                             return string.Join(strSeparator, lstStrings);
                     }
                     objEnumerator.Reset();
@@ -1824,7 +1824,7 @@ namespace Chummer
                     intLoopLength += strLoop.Length;
                 }
                 token.ThrowIfCancellationRequested();
-                if (intLoopLength > GlobalSettings.MaxStackLimit16BitTypes)
+                if (intLoopLength > Utils.MaxStackLimit16BitTypes)
                 {
                     token.ThrowIfCancellationRequested();
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
@@ -1866,7 +1866,7 @@ namespace Chummer
                 // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
                 unsafe
                 {
-                    char* achrNewChars = stackalloc char[GlobalSettings.MaxStackLimit16BitTypes];
+                    char* achrNewChars = stackalloc char[Utils.MaxStackLimit16BitTypes];
                     // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
                     int intCurrent = 0;
                     int intSeparatorByteLength = intSeparatorLength * sizeof(char);
@@ -1878,7 +1878,7 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             fixed (char* src = str1)
                             {
-                                Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, GlobalSettings.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
+                                Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, Utils.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
                             }
                             intCurrent = intLoopLength;
                             token.ThrowIfCancellationRequested();
@@ -1889,13 +1889,13 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             if (intCurrent > 0)
                             {
-                                Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
                                 intCurrent += intSeparatorLength;
                             }
                             token.ThrowIfCancellationRequested();
                             fixed (char* src = str2)
                             {
-                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                             }
                             intCurrent += intLoopLength;
                             token.ThrowIfCancellationRequested();
@@ -1906,13 +1906,13 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             if (intCurrent > 0)
                             {
-                                Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
                                 intCurrent += intSeparatorLength;
                             }
                             token.ThrowIfCancellationRequested();
                             fixed (char* src = strLoop)
                             {
-                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                             }
                             intCurrent += intLoopLength;
                             token.ThrowIfCancellationRequested();
@@ -1926,7 +1926,7 @@ namespace Chummer
                                 intLoopLength = strLoop?.Length ?? 0;
                                 if (intLoopLength > 0)
                                 {
-                                    if (intCurrent + intLoopLength + intSeparatorLength > GlobalSettings.MaxStackLimit16BitTypes)
+                                    if (intCurrent + intLoopLength + intSeparatorLength > Utils.MaxStackLimit16BitTypes)
                                     {
                                         strFirstPart = new string(achrNewChars, 0, intCurrent);
                                         strSecondPart = strSeparator + strLoop;
@@ -1935,12 +1935,12 @@ namespace Chummer
                                     {
                                         if (intCurrent > 0)
                                         {
-                                            Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                            Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
                                             intCurrent += intSeparatorLength;
                                         }
                                         fixed (char* src = strLoop)
                                         {
-                                            Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, GlobalSettings.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
+                                            Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, Utils.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
                                         }
                                         intCurrent = intLoopLength;
                                     }
@@ -1957,19 +1957,19 @@ namespace Chummer
                                 intLoopLength = strLoop?.Length ?? 0;
                                 if (intLoopLength > 0)
                                 {
-                                    if (intCurrent + intLoopLength + intSeparatorLength > GlobalSettings.MaxStackLimit16BitTypes)
+                                    if (intCurrent + intLoopLength + intSeparatorLength > Utils.MaxStackLimit16BitTypes)
                                     {
                                         strFirstPart = new string(achrNewChars, 0, intCurrent);
                                         strSecondPart = strSeparator + strLoop;
                                         break; // We want to exit out of the score where we did our stackalloc to free it up
                                     }
                                     token.ThrowIfCancellationRequested();
-                                    Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                    Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
                                     intCurrent += intSeparatorLength;
                                     token.ThrowIfCancellationRequested();
                                     fixed (char* src = strLoop)
                                     {
-                                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                                     }
                                     intCurrent += intLoopLength;
                                     token.ThrowIfCancellationRequested();
@@ -2063,7 +2063,7 @@ namespace Chummer
                     if (intIndex++ < startIndex)
                         continue;
                     string strLoop = objEnumerator.Current;
-                    if ((intTotalLength += strLoop.Length) > GlobalSettings.MaxStackLimit16BitTypes)
+                    if ((intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
                         return string.Join(strSeparator, lstStrings);
                     if (intIndex == intFinalIndex)
                         break;
@@ -2203,7 +2203,7 @@ namespace Chummer
                         continue;
                     token.ThrowIfCancellationRequested();
                     string strLoop = objEnumerator.Current;
-                    if ((intTotalLength += strLoop.Length) > GlobalSettings.MaxStackLimit16BitTypes)
+                    if ((intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
                         return string.Join(strSeparator, lstStrings);
                     if (intIndex == intFinalIndex)
                         break;
@@ -2378,7 +2378,7 @@ namespace Chummer
             int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
-            if (intLength > GlobalSettings.MaxStackLimit16BitTypes)
+            if (intLength > Utils.MaxStackLimit16BitTypes)
             {
                 string strReturn;
                 using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))
@@ -2433,7 +2433,7 @@ namespace Chummer
             int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
-            if (intLength > GlobalSettings.MaxStackLimit16BitTypes)
+            if (intLength > Utils.MaxStackLimit16BitTypes)
             {
                 string strReturn;
                 using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))
@@ -3831,7 +3831,7 @@ namespace Chummer
                 return strInput;
             if (funcIsWhiteSpace == null)
                 funcIsWhiteSpace = x => char.IsWhiteSpace(x) && !char.IsControl(x);
-            if (intLength > GlobalSettings.MaxStackLimit16BitTypes)
+            if (intLength > Utils.MaxStackLimit16BitTypes)
             {
                 string strReturn;
                 using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))
