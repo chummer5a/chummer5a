@@ -347,8 +347,8 @@ namespace Chummer
                 // Backup for if our string ended up being too long
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
-                    sbdReturn.Append(strFirstPart);
-                    sbdReturn.Append(strSecondPart);
+                    sbdReturn.EnsureCapacity(strFirstPart.Length + strSecondPart.Length);
+                    sbdReturn.Append(strFirstPart).Append(strSecondPart);
                     while (objEnumerator.MoveNext())
                         sbdReturn.Append(objEnumerator.Current);
                     return sbdReturn.ToString();
@@ -736,6 +736,8 @@ namespace Chummer
                 // Backup for if our string ended up being too long
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.EnsureCapacity(strFirstPart.Length + strSecondPart.Length);
                     token.ThrowIfCancellationRequested();
                     sbdReturn.Append(strFirstPart);
                     token.ThrowIfCancellationRequested();
@@ -1348,10 +1350,30 @@ namespace Chummer
         public static string JoinFast(string strSeparator, IReadOnlyCollection<string> lstStrings)
         {
             int intStringsCount = lstStrings.Count;
-            if (intStringsCount == 0)
-                return string.Empty;
-            if (intStringsCount == 1)
-                return lstStrings.ElementAtBetter(0);
+            // Handle trivial cases first
+            switch (intStringsCount)
+            {
+                case 0:
+                    return string.Empty;
+                case 1:
+                    return lstStrings.ElementAtBetter(0);
+                case 2:
+                    using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+                    {
+                        objEnumerator.MoveNext();
+                        string str1 = objEnumerator.Current;
+                        objEnumerator.MoveNext();
+                        if (string.IsNullOrEmpty(str1))
+                        {
+                            return objEnumerator.Current;
+                        }
+                        else
+                        {
+                            string str2 = objEnumerator.Current;
+                            return string.IsNullOrEmpty(str2) ? str1 : string.Concat(str1, strSeparator, str2);
+                        }
+                    }
+            }
             int intSeparatorLength = strSeparator.Length;
             if (intSeparatorLength == 0)
                 return ConcatFast(lstStrings);
@@ -1436,98 +1458,185 @@ namespace Chummer
             int intSeparatorLength = strSeparator.Length;
             if (intSeparatorLength == 0)
                 return ConcatFast(lstStrings);
-            string strFirstPart = string.Empty;
-            string strSecondPart = string.Empty;
             using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
             {
-                if (objEnumerator.MoveNext())
+                // Handle trivial cases first
+                if (!objEnumerator.MoveNext())
+                    return string.Empty;
+                string str1 = objEnumerator.Current;
+                if (!objEnumerator.MoveNext())
+                    return str1;
+                // Handle cases where we can rely on the internal Concat methods that do not need allocations and can make use of faster string construction
+                string str2 = objEnumerator.Current;
+                if (!objEnumerator.MoveNext())
                 {
-                    // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-                    unsafe
+                    if (string.IsNullOrEmpty(str1))
+                        return str2;
+                    else
+                        return string.IsNullOrEmpty(str2) ? str1 : string.Concat(str1, strSeparator, str2);
+                }
+                string strLoop = objEnumerator.Current;
+                int intLoopLength = str1?.Length ?? 0;
+                if (!string.IsNullOrEmpty(str2))
+                {
+                    if (intLoopLength > 0)
+                        intLoopLength += intSeparatorLength;
+                    intLoopLength += str2.Length;
+                }
+                if (!string.IsNullOrEmpty(strLoop))
+                {
+                    if (intLoopLength > 0)
+                        intLoopLength += intSeparatorLength;
+                    intLoopLength += strLoop.Length;
+                }
+                if (intLoopLength > GlobalSettings.MaxStackLimit16BitTypes)
+                {
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                     {
-                        char* achrNewChars = stackalloc char[GlobalSettings.MaxStackLimit16BitTypes];
-                        // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                        int intCurrent = 0;
-                        int intSeparatorByteLength = intSeparatorLength * sizeof(char);
-
-                        fixed (char* sep = strSeparator)
+                        sbdReturn.EnsureCapacity(intLoopLength);
+                        sbdReturn.Append(str1);
+                        if (!string.IsNullOrEmpty(str2))
                         {
-                            string strLoop = objEnumerator.Current;
-                            int intLoopLength = strLoop?.Length ?? 0;
-                            if (intLoopLength > 0)
+                            if (sbdReturn.Length > 0)
+                                sbdReturn.Append(strSeparator);
+                            sbdReturn.Append(str2);
+                        }
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            if (sbdReturn.Length > 0)
+                                sbdReturn.Append(strSeparator);
+                            sbdReturn.Append(strLoop);
+                        }
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current;
+                            if (!string.IsNullOrEmpty(strLoop))
+                                sbdReturn.Append(strSeparator).Append(objEnumerator.Current);
+                        }
+                        return sbdReturn.ToString();
+                    }
+                }
+
+                string strFirstPart = string.Empty;
+                string strSecondPart = string.Empty;
+                // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+                unsafe
+                {
+                    char* achrNewChars = stackalloc char[GlobalSettings.MaxStackLimit16BitTypes];
+                    // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                    int intCurrent = 0;
+                    int intSeparatorByteLength = intSeparatorLength * sizeof(char);
+                    fixed (char* sep = strSeparator)
+                    {
+                        intLoopLength = str1?.Length ?? 0;
+                        if (intLoopLength > 0)
+                        {
+                            fixed (char* src = str1)
                             {
-                                if (intCurrent + intLoopLength > GlobalSettings.MaxStackLimit16BitTypes)
-                                {
-                                    strFirstPart = new string(achrNewChars, 0, intCurrent);
-                                    strSecondPart = strLoop;
-                                }
-                                fixed (char* src = strLoop)
-                                {
-                                    Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, GlobalSettings.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
-                                }
-                                intCurrent = intLoopLength;
+                                Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, GlobalSettings.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
                             }
-                            else
+                            intCurrent = intLoopLength;
+                        }
+                        intLoopLength = str2?.Length ?? 0;
+                        if (intLoopLength > 0)
+                        {
+                            if (intCurrent > 0)
                             {
-                                while (objEnumerator.MoveNext())
+                                Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                intCurrent += intSeparatorLength;
+                            }
+                            fixed (char* src = str2)
+                            {
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            }
+                            intCurrent += intLoopLength;
+                        }
+                        intLoopLength = strLoop?.Length ?? 0;
+                        if (intLoopLength > 0)
+                        {
+                            if (intCurrent > 0)
+                            {
+                                Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                intCurrent += intSeparatorLength;
+                            }
+                            fixed (char* src = strLoop)
+                            {
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            }
+                            intCurrent += intLoopLength;
+                        }
+                        else
+                        {
+                            while (objEnumerator.MoveNext())
+                            {
+                                strLoop = objEnumerator.Current;
+                                intLoopLength = strLoop?.Length ?? 0;
+                                if (intLoopLength > 0)
                                 {
-                                    strLoop = objEnumerator.Current;
-                                    intLoopLength = strLoop?.Length ?? 0;
-                                    if (intLoopLength > 0)
+                                    if (intCurrent + intLoopLength + intSeparatorLength > GlobalSettings.MaxStackLimit16BitTypes)
                                     {
+                                        strFirstPart = new string(achrNewChars, 0, intCurrent);
+                                        strSecondPart = strSeparator + strLoop;
+                                    }
+                                    else
+                                    {
+                                        if (intCurrent > 0)
+                                        {
+                                            Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                            intCurrent += intSeparatorLength;
+                                        }
                                         fixed (char* src = strLoop)
                                         {
                                             Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, GlobalSettings.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
                                         }
                                         intCurrent = intLoopLength;
-                                        break;
                                     }
-                                }
-                            }
-                            if (string.IsNullOrEmpty(strFirstPart))
-                            {
-                                while (objEnumerator.MoveNext())
-                                {
-                                    strLoop = objEnumerator.Current;
-                                    intLoopLength = strLoop?.Length ?? 0;
-                                    if (intLoopLength > 0)
-                                    {
-                                        if (intCurrent + intLoopLength + intSeparatorLength > GlobalSettings.MaxStackLimit16BitTypes)
-                                        {
-                                            strFirstPart = new string(achrNewChars, 0, intCurrent);
-                                            strSecondPart = ConcatFast(strSeparator, strLoop);
-                                            break; // We want to exit out of the score where we did our stackalloc to free it up
-                                        }
-                                        Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
-                                        intCurrent += intSeparatorLength;
-                                        fixed (char* src = strLoop)
-                                        {
-                                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                                        }
-                                        intCurrent += intLoopLength;
-                                    }
+                                    break;
                                 }
                             }
                         }
                         if (string.IsNullOrEmpty(strFirstPart))
                         {
-                            // ... then we create a new string from the new CharArray
-                            return new string(achrNewChars, 0, intCurrent);
+                            while (objEnumerator.MoveNext())
+                            {
+                                strLoop = objEnumerator.Current;
+                                intLoopLength = strLoop?.Length ?? 0;
+                                if (intLoopLength > 0)
+                                {
+                                    if (intCurrent + intLoopLength + intSeparatorLength > GlobalSettings.MaxStackLimit16BitTypes)
+                                    {
+                                        strFirstPart = new string(achrNewChars, 0, intCurrent);
+                                        strSecondPart = strSeparator + strLoop;
+                                        break; // We want to exit out of the score where we did our stackalloc to free it up
+                                    }
+                                    Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                    intCurrent += intSeparatorLength;
+                                    fixed (char* src = strLoop)
+                                    {
+                                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                    }
+                                    intCurrent += intLoopLength;
+                                }
+                            }
                         }
                     }
-
-                    // Backup for if our string ended up being too long
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                    if (string.IsNullOrEmpty(strFirstPart))
                     {
-                        sbdReturn.Append(strFirstPart);
-                        sbdReturn.Append(strSecondPart);
-                        while (objEnumerator.MoveNext())
-                            sbdReturn.Append(strSeparator).Append(objEnumerator.Current);
-                        return sbdReturn.ToString();
+                        // ... then we create a new string from the new CharArray
+                        return new string(achrNewChars, 0, intCurrent);
                     }
                 }
+
+                // Backup for if our string ended up being too long
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                {
+                    sbdReturn.EnsureCapacity(strFirstPart.Length + strSecondPart.Length);
+                    sbdReturn.Append(strFirstPart).Append(strSecondPart);
+                    while (objEnumerator.MoveNext())
+                        sbdReturn.Append(strSeparator).Append(objEnumerator.Current);
+                    return sbdReturn.ToString();
+                }
             }
-            return string.Empty;
         }
 
         /// <summary>
@@ -1538,10 +1647,42 @@ namespace Chummer
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<string>(token);
             int intStringsCount = lstStrings.Count;
-            if (intStringsCount == 0)
-                return Task.FromResult(string.Empty);
-            if (intStringsCount == 1)
-                return lstStrings.ElementAtBetterAsync(0, token);
+            // Handle trivial cases first
+            switch (intStringsCount)
+            {
+                case 0:
+                    return Task.FromResult(string.Empty);
+                case 1:
+                    return lstStrings.ElementAtBetterAsync(0, token);
+                case 2:
+                    return Inner2();
+                    async Task<string> Inner2()
+                    {
+                        IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            objEnumerator.MoveNext();
+                            string str1 = objEnumerator.Current;
+                            objEnumerator.MoveNext();
+                            if (string.IsNullOrEmpty(str1))
+                            {
+                                return objEnumerator.Current;
+                            }
+                            else
+                            {
+                                string str2 = objEnumerator.Current;
+                                return string.IsNullOrEmpty(str2) ? str1 : string.Concat(str1, strSeparator, str2);
+                            }
+                        }
+                        finally
+                        {
+                            if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                                await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                            else if (objEnumerator is IDisposable objDispose)
+                                objDispose.Dispose();
+                        }
+                    }
+            }
             return Inner();
             async Task<string> Inner()
             {
@@ -1644,100 +1785,224 @@ namespace Chummer
             int intSeparatorLength = strSeparator.Length;
             if (intSeparatorLength == 0)
                 return await ConcatFastAsync(lstStrings, token).ConfigureAwait(false);
-            string strFirstPart = string.Empty;
-            string strSecondPart = string.Empty;
             IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (objEnumerator.MoveNext())
+                // Handle trivial cases first
+                if (!objEnumerator.MoveNext())
+                    return string.Empty;
+                token.ThrowIfCancellationRequested();
+                string str1 = objEnumerator.Current;
+                if (!objEnumerator.MoveNext())
+                    return str1;
+                token.ThrowIfCancellationRequested();
+                // Handle cases where we can rely on the internal Concat methods that do not need allocations and can make use of faster string construction
+                string str2 = objEnumerator.Current;
+                if (!objEnumerator.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
-                    // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-                    unsafe
+                    if (string.IsNullOrEmpty(str1))
+                        return str2;
+                    else
+                        return string.IsNullOrEmpty(str2) ? str1 : string.Concat(str1, strSeparator, str2);
+                }
+                token.ThrowIfCancellationRequested();
+                string strLoop = objEnumerator.Current;
+                int intLoopLength = str1?.Length ?? 0;
+                if (!string.IsNullOrEmpty(str2))
+                {
+                    if (intLoopLength > 0)
+                        intLoopLength += intSeparatorLength;
+                    intLoopLength += str2.Length;
+                }
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(strLoop))
+                {
+                    if (intLoopLength > 0)
+                        intLoopLength += intSeparatorLength;
+                    intLoopLength += strLoop.Length;
+                }
+                token.ThrowIfCancellationRequested();
+                if (intLoopLength > GlobalSettings.MaxStackLimit16BitTypes)
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                     {
-                        char* achrNewChars = stackalloc char[GlobalSettings.MaxStackLimit16BitTypes];
-                        // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                        int intCurrent = 0;
-                        int intSeparatorByteLength = intSeparatorLength * sizeof(char);
-
-                        fixed (char* sep = strSeparator)
+                        token.ThrowIfCancellationRequested();
+                        sbdReturn.EnsureCapacity(intLoopLength);
+                        token.ThrowIfCancellationRequested();
+                        sbdReturn.Append(str1);
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(str2))
                         {
-                            string strLoop = objEnumerator.Current;
-                            int intLoopLength = strLoop?.Length ?? 0;
-                            if (intLoopLength > 0)
+                            token.ThrowIfCancellationRequested();
+                            if (sbdReturn.Length > 0)
+                                sbdReturn.Append(strSeparator);
+                            sbdReturn.Append(str2);
+                        }
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (sbdReturn.Length > 0)
+                                sbdReturn.Append(strSeparator);
+                            sbdReturn.Append(strLoop);
+                        }
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            strLoop = objEnumerator.Current;
+                            if (!string.IsNullOrEmpty(strLoop))
+                                sbdReturn.Append(strSeparator).Append(objEnumerator.Current);
+                        }
+                        token.ThrowIfCancellationRequested();
+                        return sbdReturn.ToString();
+                    }
+                }
+
+                string strFirstPart = string.Empty;
+                string strSecondPart = string.Empty;
+                token.ThrowIfCancellationRequested();
+                // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+                unsafe
+                {
+                    char* achrNewChars = stackalloc char[GlobalSettings.MaxStackLimit16BitTypes];
+                    // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                    int intCurrent = 0;
+                    int intSeparatorByteLength = intSeparatorLength * sizeof(char);
+                    fixed (char* sep = strSeparator)
+                    {
+                        intLoopLength = str1?.Length ?? 0;
+                        if (intLoopLength > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            fixed (char* src = str1)
                             {
-                                if (intCurrent + intLoopLength > GlobalSettings.MaxStackLimit16BitTypes)
-                                {
-                                    strFirstPart = new string(achrNewChars, 0, intCurrent);
-                                    strSecondPart = strLoop;
-                                }
-                                fixed (char* src = strLoop)
-                                {
-                                    Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, GlobalSettings.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
-                                }
-                                intCurrent = intLoopLength;
+                                Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, GlobalSettings.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
                             }
-                            else
+                            intCurrent = intLoopLength;
+                            token.ThrowIfCancellationRequested();
+                        }
+                        intLoopLength = str2?.Length ?? 0;
+                        if (intLoopLength > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (intCurrent > 0)
                             {
-                                while (objEnumerator.MoveNext())
+                                Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                intCurrent += intSeparatorLength;
+                            }
+                            token.ThrowIfCancellationRequested();
+                            fixed (char* src = str2)
+                            {
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            }
+                            intCurrent += intLoopLength;
+                            token.ThrowIfCancellationRequested();
+                        }
+                        intLoopLength = strLoop?.Length ?? 0;
+                        if (intLoopLength > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (intCurrent > 0)
+                            {
+                                Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                intCurrent += intSeparatorLength;
+                            }
+                            token.ThrowIfCancellationRequested();
+                            fixed (char* src = strLoop)
+                            {
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            }
+                            intCurrent += intLoopLength;
+                            token.ThrowIfCancellationRequested();
+                        }
+                        else
+                        {
+                            while (objEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                strLoop = objEnumerator.Current;
+                                intLoopLength = strLoop?.Length ?? 0;
+                                if (intLoopLength > 0)
                                 {
-                                    token.ThrowIfCancellationRequested();
-                                    strLoop = objEnumerator.Current;
-                                    intLoopLength = strLoop?.Length ?? 0;
-                                    if (intLoopLength > 0)
+                                    if (intCurrent + intLoopLength + intSeparatorLength > GlobalSettings.MaxStackLimit16BitTypes)
                                     {
+                                        strFirstPart = new string(achrNewChars, 0, intCurrent);
+                                        strSecondPart = strSeparator + strLoop;
+                                    }
+                                    else
+                                    {
+                                        if (intCurrent > 0)
+                                        {
+                                            Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                            intCurrent += intSeparatorLength;
+                                        }
                                         fixed (char* src = strLoop)
                                         {
                                             Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, GlobalSettings.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
                                         }
                                         intCurrent = intLoopLength;
-                                        break;
                                     }
-                                }
-                            }
-                            if (string.IsNullOrEmpty(strFirstPart))
-                            {
-                                while (objEnumerator.MoveNext())
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    strLoop = objEnumerator.Current;
-                                    intLoopLength = strLoop?.Length ?? 0;
-                                    if (intLoopLength > 0)
-                                    {
-                                        if (intCurrent + intLoopLength + intSeparatorLength > GlobalSettings.MaxStackLimit16BitTypes)
-                                        {
-                                            strFirstPart = new string(achrNewChars, 0, intCurrent);
-                                            strSecondPart = ConcatFast(strSeparator, strLoop);
-                                            break; // We want to exit out of the score where we did our stackalloc to free it up
-                                        }
-                                        Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
-                                        intCurrent += intSeparatorLength;
-                                        fixed (char* src = strLoop)
-                                        {
-                                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                                        }
-                                        intCurrent += intLoopLength;
-                                    }
+                                    break;
                                 }
                             }
                         }
                         if (string.IsNullOrEmpty(strFirstPart))
                         {
-                            // ... then we create a new string from the new CharArray
-                            return new string(achrNewChars, 0, intCurrent);
+                            while (objEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                strLoop = objEnumerator.Current;
+                                intLoopLength = strLoop?.Length ?? 0;
+                                if (intLoopLength > 0)
+                                {
+                                    if (intCurrent + intLoopLength + intSeparatorLength > GlobalSettings.MaxStackLimit16BitTypes)
+                                    {
+                                        strFirstPart = new string(achrNewChars, 0, intCurrent);
+                                        strSecondPart = strSeparator + strLoop;
+                                        break; // We want to exit out of the score where we did our stackalloc to free it up
+                                    }
+                                    token.ThrowIfCancellationRequested();
+                                    Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                    intCurrent += intSeparatorLength;
+                                    token.ThrowIfCancellationRequested();
+                                    fixed (char* src = strLoop)
+                                    {
+                                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (GlobalSettings.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                    }
+                                    intCurrent += intLoopLength;
+                                    token.ThrowIfCancellationRequested();
+                                }
+                            }
                         }
                     }
-
-                    // Backup for if our string ended up being too long
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                    if (string.IsNullOrEmpty(strFirstPart))
                     {
-                        sbdReturn.Append(strFirstPart);
-                        sbdReturn.Append(strSecondPart);
-                        while (objEnumerator.MoveNext())
-                            sbdReturn.Append(strSeparator).Append(objEnumerator.Current);
-                        return sbdReturn.ToString();
+                        token.ThrowIfCancellationRequested();
+                        // ... then we create a new string from the new CharArray
+                        return new string(achrNewChars, 0, intCurrent);
                     }
+                }
+
+                token.ThrowIfCancellationRequested();
+                // Backup for if our string ended up being too long
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.EnsureCapacity(strFirstPart.Length + strSecondPart.Length);
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.Append(strFirstPart);
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.Append(strSecondPart);
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        sbdReturn.Append(strSeparator).Append(objEnumerator.Current);
+                    }
+                    token.ThrowIfCancellationRequested();
+                    return sbdReturn.ToString();
                 }
             }
             finally
@@ -1747,7 +2012,6 @@ namespace Chummer
                 else if (objEnumerator is IDisposable objDispose)
                     objDispose.Dispose();
             }
-            return string.Empty;
         }
 
         /// <summary>
@@ -1755,10 +2019,35 @@ namespace Chummer
         /// </summary>
         public static string JoinFast(string strSeparator, IReadOnlyCollection<string> lstStrings, int startIndex, int count)
         {
-            if (count == 0)
-                return string.Empty;
-            if (count == 1)
-                return lstStrings.ElementAtBetter(startIndex);
+            // Handle trivial cases first
+            switch (count)
+            {
+                case 0:
+                    return string.Empty;
+                case 1:
+                    return lstStrings.ElementAtBetter(startIndex);
+                case 2:
+                    using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+                    {
+                        for (int i = 0; i < startIndex; ++i)
+                        {
+                            if (!objEnumerator.MoveNext())
+                                throw new ArgumentOutOfRangeException(nameof(count));
+                        }
+                        objEnumerator.MoveNext();
+                        string str1 = objEnumerator.Current;
+                        objEnumerator.MoveNext();
+                        if (string.IsNullOrEmpty(str1))
+                        {
+                            return objEnumerator.Current;
+                        }
+                        else
+                        {
+                            string str2 = objEnumerator.Current;
+                            return string.IsNullOrEmpty(str2) ? str1 : string.Concat(str1, strSeparator, str2);
+                        }
+                    }
+            }
             int intFinalIndex = startIndex + count;
             if (intFinalIndex >= lstStrings.Count)
                 throw new ArgumentOutOfRangeException(nameof(count));
@@ -1860,10 +2149,43 @@ namespace Chummer
         public static async Task<string> JoinFastAsync(string strSeparator, IAsyncReadOnlyCollection<string> lstStrings, int startIndex, int count, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (count == 0)
-                return string.Empty;
-            if (count == 1)
-                return await lstStrings.ElementAtBetterAsync(startIndex, token).ConfigureAwait(false);
+            // Handle trivial cases first
+            switch (count)
+            {
+                case 0:
+                    return string.Empty;
+                case 1:
+                    return await lstStrings.ElementAtBetterAsync(startIndex, token).ConfigureAwait(false);
+                case 2:
+                    IEnumerator<string> objLoopEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        for (int i = 0; i < startIndex; ++i)
+                        {
+                            if (!objLoopEnumerator.MoveNext())
+                                throw new ArgumentOutOfRangeException(nameof(count));
+                        }
+                        objLoopEnumerator.MoveNext();
+                        string str1 = objLoopEnumerator.Current;
+                        objLoopEnumerator.MoveNext();
+                        if (string.IsNullOrEmpty(str1))
+                        {
+                            return objLoopEnumerator.Current;
+                        }
+                        else
+                        {
+                            string str2 = objLoopEnumerator.Current;
+                            return string.IsNullOrEmpty(str2) ? str1 : string.Concat(str1, strSeparator, str2);
+                        }
+                    }
+                    finally
+                    {
+                        if (objLoopEnumerator is IAsyncDisposable objDisposeAsync)
+                            await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                        else if (objLoopEnumerator is IDisposable objDispose)
+                            objDispose.Dispose();
+                    }
+            }
             int intFinalIndex = startIndex + count;
             if (intFinalIndex >= lstStrings.Count)
                 throw new ArgumentOutOfRangeException(nameof(count));
