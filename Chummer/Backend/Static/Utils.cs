@@ -329,11 +329,6 @@ namespace Chummer
         public const int MaxStackLimit128BitTypes = MaxStackLimit8BitTypes * sizeof(byte) / sizeof(decimal);
 
         /// <summary>
-        /// Global random number generator.
-        /// </summary>
-        public static ThreadSafeCachedRandom GlobalRandom { get; } = new ThreadSafeCachedRandom(new XoRoShiRo128starstar(), true);
-
-        /// <summary>
         /// Maximum amount of tasks to run in parallel, useful to use with batching to avoid overloading the task scheduler.
         /// </summary>
         public static int MaxParallelBatchSize { get; } = Environment.ProcessorCount * 2;
@@ -2880,5 +2875,10 @@ namespace Chummer
         /// RecyclableMemoryStreamManager to be used for all RecyclableMemoryStream constructors.
         /// </summary>
         public static RecyclableMemoryStreamManager MemoryStreamManager { get; } = new RecyclableMemoryStreamManager();
+
+        /// <summary>
+        /// Global random number generator.
+        /// </summary>
+        public static ThreadSafeCachedRandom GlobalRandom { get; } = new ThreadSafeCachedRandom(new XoRoShiRo128starstar(), true);
     }
 }
