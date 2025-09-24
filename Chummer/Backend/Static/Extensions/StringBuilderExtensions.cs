@@ -24,6 +24,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Chummer.Annotations;
+using iText.Kernel.Pdf.Canvas.Parser.ClipperLib;
 
 namespace Chummer
 {
@@ -351,10 +352,27 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
             if (intCount > 0)
             {
-                sbdInput.Append(astrValues[intStartIndex]);
-                for (int i = 1; i < intCount; ++i)
+                int i = 1;
+                string strLoop = astrValues[intStartIndex];
+                if (string.IsNullOrEmpty(strLoop))
                 {
-                    sbdInput.Append(strSeparator).Append(astrValues[i + intStartIndex]);
+                    for (; i < intCount; ++i)
+                    {
+                        strLoop = astrValues[i + intStartIndex];
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intCount; ++i)
+                {
+                    strLoop = astrValues[i + intStartIndex];
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(strSeparator).Append(strLoop);
                 }
             }
             return sbdInput;
@@ -375,10 +393,27 @@ namespace Chummer
             int intLength = astrValues.Length;
             if (intLength > 0)
             {
-                sbdInput.Append(astrValues[0]);
-                for (int i = 1; i < intLength; ++i)
+                int i = 1;
+                string strLoop = astrValues[0];
+                if (string.IsNullOrEmpty(strLoop))
                 {
-                    sbdInput.Append(strSeparator).Append(astrValues[i]);
+                    for (; i < intLength; ++i)
+                    {
+                        strLoop = astrValues[i];
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intLength; ++i)
+                {
+                    strLoop = astrValues[i];
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(strSeparator).Append(strLoop);
                 }
             }
             return sbdInput;
@@ -399,10 +434,27 @@ namespace Chummer
             int intLength = aobjValues.Length;
             if (intLength > 0)
             {
-                sbdInput.Append(aobjValues[0]);
-                for (int i = 1; i < intLength; ++i)
+                int i = 1;
+                string strLoop = aobjValues[0]?.ToString();
+                if (string.IsNullOrEmpty(strLoop))
                 {
-                    sbdInput.Append(strSeparator).Append(aobjValues[i]);
+                    for (; i < intLength; ++i)
+                    {
+                        strLoop = aobjValues[i]?.ToString();
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intLength; ++i)
+                {
+                    strLoop = aobjValues[i]?.ToString();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(strSeparator).Append(strLoop);
                 }
             }
             return sbdInput;
@@ -515,10 +567,27 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
             if (intCount > 0)
             {
-                sbdInput.Append(astrValues[intStartIndex]);
-                for (int i = 1; i < intCount; ++i)
+                int i = 1;
+                string strLoop = astrValues[intStartIndex];
+                if (string.IsNullOrEmpty(strLoop))
                 {
-                    sbdInput.Append(chrSeparator).Append(astrValues[i + intStartIndex]);
+                    for (; i < intCount; ++i)
+                    {
+                        strLoop = astrValues[i + intStartIndex];
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intCount; ++i)
+                {
+                    strLoop = astrValues[i + intStartIndex];
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(chrSeparator).Append(strLoop);
                 }
             }
             return sbdInput;
@@ -539,10 +608,27 @@ namespace Chummer
             int intLength = astrValues.Length;
             if (intLength > 0)
             {
-                sbdInput.Append(astrValues[0]);
-                for (int i = 1; i < intLength; ++i)
+                int i = 1;
+                string strLoop = astrValues[0];
+                if (string.IsNullOrEmpty(strLoop))
                 {
-                    sbdInput.Append(chrSeparator).Append(astrValues[i]);
+                    for (; i < intLength; ++i)
+                    {
+                        strLoop = astrValues[i];
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intLength; ++i)
+                {
+                    strLoop = astrValues[i];
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(chrSeparator).Append(strLoop);
                 }
             }
             return sbdInput;
@@ -563,10 +649,27 @@ namespace Chummer
             int intLength = aobjValues.Length;
             if (intLength > 0)
             {
-                sbdInput.Append(aobjValues[0]);
-                for (int i = 1; i < intLength; ++i)
+                int i = 1;
+                string strLoop = aobjValues[0]?.ToString();
+                if (string.IsNullOrEmpty(strLoop))
                 {
-                    sbdInput.Append(chrSeparator).Append(aobjValues[i]);
+                    for (; i < intLength; ++i)
+                    {
+                        strLoop = aobjValues[i]?.ToString();
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intLength; ++i)
+                {
+                    strLoop = aobjValues[i]?.ToString();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(chrSeparator).Append(strLoop);
                 }
             }
             return sbdInput;
@@ -699,12 +802,32 @@ namespace Chummer
             if (intCount > 0)
             {
                 token.ThrowIfCancellationRequested();
-                sbdInput.Append(await astrValues[intStartIndex].ConfigureAwait(false));
+                int i = 1;
+                string strLoop = await astrValues[intStartIndex].ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
-                for (int i = 1; i < intCount; ++i)
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intCount; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        strLoop = await astrValues[i + intStartIndex].ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intCount; ++i)
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdInput.Append(strSeparator).Append(await astrValues[i + intStartIndex].ConfigureAwait(false));
+                    strLoop = await astrValues[i + intStartIndex].ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(strSeparator).Append(strLoop);
                 }
             }
             return sbdInput;
@@ -728,12 +851,32 @@ namespace Chummer
             if (intLength > 0)
             {
                 token.ThrowIfCancellationRequested();
-                sbdInput.Append(await astrValues[0].ConfigureAwait(false));
+                int i = 1;
+                string strLoop = await astrValues[0].ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
-                for (int i = 1; i < intLength; ++i)
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intLength; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        strLoop = await astrValues[i].ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intLength; ++i)
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdInput.Append(strSeparator).Append(await astrValues[i].ConfigureAwait(false));
+                    strLoop = await astrValues[i].ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(strSeparator).Append(strLoop);
                 }
             }
             return sbdInput;
@@ -757,12 +900,32 @@ namespace Chummer
             if (intLength > 0)
             {
                 token.ThrowIfCancellationRequested();
-                sbdInput.Append(await aobjValues[0].ConfigureAwait(false));
+                int i = 1;
+                string strLoop = (await aobjValues[0].ConfigureAwait(false))?.ToString();
                 token.ThrowIfCancellationRequested();
-                for (int i = 1; i < intLength; ++i)
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intLength; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        strLoop = (await aobjValues[i].ConfigureAwait(false))?.ToString();
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intLength; ++i)
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdInput.Append(strSeparator).Append(await aobjValues[i].ConfigureAwait(false));
+                    strLoop = (await aobjValues[i].ConfigureAwait(false))?.ToString();
+                    token.ThrowIfCancellationRequested();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(strSeparator).Append(strLoop);
                 }
             }
             return sbdInput;
@@ -905,12 +1068,32 @@ namespace Chummer
             if (intCount > 0)
             {
                 token.ThrowIfCancellationRequested();
-                sbdInput.Append(await astrValues[intStartIndex].ConfigureAwait(false));
+                int i = 1;
+                string strLoop = await astrValues[intStartIndex].ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
-                for (int i = 1; i < intCount; ++i)
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intCount; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        strLoop = await astrValues[i + intStartIndex].ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intCount; ++i)
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdInput.Append(chrSeparator).Append(await astrValues[i + intStartIndex].ConfigureAwait(false));
+                    strLoop = await astrValues[i + intStartIndex].ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(chrSeparator).Append(strLoop);
                 }
             }
             return sbdInput;
@@ -934,12 +1117,32 @@ namespace Chummer
             if (intLength > 0)
             {
                 token.ThrowIfCancellationRequested();
-                sbdInput.Append(await astrValues[0].ConfigureAwait(false));
+                int i = 1;
+                string strLoop = await astrValues[0].ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
-                for (int i = 1; i < intLength; ++i)
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intLength; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        strLoop = await astrValues[i].ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intLength; ++i)
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdInput.Append(chrSeparator).Append(await astrValues[i].ConfigureAwait(false));
+                    strLoop = await astrValues[i].ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(chrSeparator).Append(strLoop);
                 }
             }
             return sbdInput;
@@ -963,12 +1166,32 @@ namespace Chummer
             if (intLength > 0)
             {
                 token.ThrowIfCancellationRequested();
-                sbdInput.Append(await aobjValues[0].ConfigureAwait(false));
+                int i = 1;
+                string strLoop = (await aobjValues[0].ConfigureAwait(false))?.ToString();
                 token.ThrowIfCancellationRequested();
-                for (int i = 1; i < intLength; ++i)
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intLength; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        strLoop = (await aobjValues[i].ConfigureAwait(false))?.ToString();
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intLength; ++i)
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdInput.Append(chrSeparator).Append(await aobjValues[i].ConfigureAwait(false));
+                    strLoop = (await aobjValues[i].ConfigureAwait(false))?.ToString();
+                    token.ThrowIfCancellationRequested();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(chrSeparator).Append(strLoop);
                 }
             }
             return sbdInput;
