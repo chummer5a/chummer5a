@@ -261,10 +261,26 @@ namespace Chummer
             {
                 if (objEnumerator.MoveNext())
                 {
-                    sbdInput.Append(objEnumerator.Current);
+                    string strLoop = objEnumerator.Current?.ToString();
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current?.ToString();
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
                     while (objEnumerator.MoveNext())
                     {
-                        sbdInput.Append(strSeparator).Append(objEnumerator.Current);
+                        strLoop = objEnumerator.Current?.ToString();
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(strSeparator).Append(strLoop);
                     }
                 }
                 return sbdInput;
@@ -287,10 +303,26 @@ namespace Chummer
             {
                 if (objEnumerator.MoveNext())
                 {
-                    sbdInput.Append(objEnumerator.Current);
+                    string strLoop = objEnumerator.Current;
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current;
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
                     while (objEnumerator.MoveNext())
                     {
-                        sbdInput.Append(strSeparator).Append(objEnumerator.Current);
+                        strLoop = objEnumerator.Current;
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(strSeparator).Append(strLoop);
                     }
                 }
                 return sbdInput;
@@ -393,10 +425,26 @@ namespace Chummer
             {
                 if (objEnumerator.MoveNext())
                 {
-                    sbdInput.Append(objEnumerator.Current);
+                    string strLoop = objEnumerator.Current?.ToString();
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current?.ToString();
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
                     while (objEnumerator.MoveNext())
                     {
-                        sbdInput.Append(chrSeparator).Append(objEnumerator.Current);
+                        strLoop = objEnumerator.Current?.ToString();
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(chrSeparator).Append(strLoop);
                     }
                 }
                 return sbdInput;
@@ -419,10 +467,26 @@ namespace Chummer
             {
                 if (objEnumerator.MoveNext())
                 {
-                    sbdInput.Append(objEnumerator.Current);
+                    string strLoop = objEnumerator.Current;
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current;
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
                     while (objEnumerator.MoveNext())
                     {
-                        sbdInput.Append(chrSeparator).Append(objEnumerator.Current);
+                        strLoop = objEnumerator.Current;
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(chrSeparator).Append(strLoop);
                     }
                 }
                 return sbdInput;
@@ -528,12 +592,31 @@ namespace Chummer
                 if (objEnumerator.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdInput.Append(await objEnumerator.Current.ConfigureAwait(false));
+                    string strLoop = (await objEnumerator.Current.ConfigureAwait(false))?.ToString();
                     token.ThrowIfCancellationRequested();
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            strLoop = (await objEnumerator.Current.ConfigureAwait(false))?.ToString();
+                            token.ThrowIfCancellationRequested();
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        sbdInput.Append(strSeparator).Append(await objEnumerator.Current.ConfigureAwait(false));
+                        strLoop = (await objEnumerator.Current.ConfigureAwait(false))?.ToString();
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(strSeparator).Append(strLoop);
                     }
                 }
                 return sbdInput;
@@ -560,12 +643,31 @@ namespace Chummer
                 if (objEnumerator.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdInput.Append(await objEnumerator.Current.ConfigureAwait(false));
+                    string strLoop = await objEnumerator.Current.ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            strLoop = await objEnumerator.Current.ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        sbdInput.Append(strSeparator).Append(await objEnumerator.Current.ConfigureAwait(false));
+                        strLoop = await objEnumerator.Current.ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(strSeparator).Append(strLoop);
                     }
                 }
                 return sbdInput;
@@ -687,12 +789,35 @@ namespace Chummer
                 if (objEnumerator.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdInput.Append(await objEnumerator.Current.ConfigureAwait(false));
-                    token.ThrowIfCancellationRequested();
-                    while (objEnumerator.MoveNext())
+                    if (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        sbdInput.Append(chrSeparator).Append(await objEnumerator.Current.ConfigureAwait(false));
+                        string strLoop = (await objEnumerator.Current.ConfigureAwait(false))?.ToString();
+                        token.ThrowIfCancellationRequested();
+                        if (string.IsNullOrEmpty(strLoop))
+                        {
+                            while (objEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                strLoop = (await objEnumerator.Current.ConfigureAwait(false))?.ToString();
+                                token.ThrowIfCancellationRequested();
+                                if (!string.IsNullOrEmpty(strLoop))
+                                {
+                                    sbdInput.Append(strLoop);
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                            sbdInput.Append(strLoop);
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            strLoop = (await objEnumerator.Current.ConfigureAwait(false))?.ToString();
+                            token.ThrowIfCancellationRequested();
+                            if (!string.IsNullOrEmpty(strLoop))
+                                sbdInput.Append(chrSeparator).Append(strLoop);
+                        }
                     }
                 }
                 return sbdInput;
@@ -720,12 +845,35 @@ namespace Chummer
                 if (objEnumerator.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdInput.Append(await objEnumerator.Current.ConfigureAwait(false));
-                    token.ThrowIfCancellationRequested();
-                    while (objEnumerator.MoveNext())
+                    if (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        sbdInput.Append(chrSeparator).Append(await objEnumerator.Current.ConfigureAwait(false));
+                        string strLoop = await objEnumerator.Current.ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        if (string.IsNullOrEmpty(strLoop))
+                        {
+                            while (objEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                strLoop = await objEnumerator.Current.ConfigureAwait(false);
+                                token.ThrowIfCancellationRequested();
+                                if (!string.IsNullOrEmpty(strLoop))
+                                {
+                                    sbdInput.Append(strLoop);
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                            sbdInput.Append(strLoop);
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            strLoop = await objEnumerator.Current.ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            if (!string.IsNullOrEmpty(strLoop))
+                                sbdInput.Append(chrSeparator).Append(strLoop);
+                        }
                     }
                 }
                 return sbdInput;
@@ -848,12 +996,28 @@ namespace Chummer
                 if (objEnumerator.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdInput.Append(objEnumerator.Current);
+                    string strLoop = objEnumerator.Current?.ToString();
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current?.ToString();
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
                     token.ThrowIfCancellationRequested();
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        sbdInput.Append(strSeparator).Append(objEnumerator.Current);
+                        strLoop = objEnumerator.Current?.ToString();
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(strSeparator).Append(strLoop);
                     }
                 }
                 return sbdInput;
@@ -888,12 +1052,28 @@ namespace Chummer
                 if (objEnumerator.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdInput.Append(objEnumerator.Current);
+                    string strLoop = objEnumerator.Current;
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current;
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
                     token.ThrowIfCancellationRequested();
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        sbdInput.Append(strSeparator).Append(objEnumerator.Current);
+                        strLoop = objEnumerator.Current;
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(strSeparator).Append(strLoop);
                     }
                 }
                 return sbdInput;
@@ -929,12 +1109,28 @@ namespace Chummer
                 if (objEnumerator.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdInput.Append(objEnumerator.Current);
+                    string strLoop = objEnumerator.Current?.ToString();
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current?.ToString();
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
                     token.ThrowIfCancellationRequested();
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        sbdInput.Append(chrSeparator).Append(objEnumerator.Current);
+                        strLoop = objEnumerator.Current?.ToString();
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(chrSeparator).Append(strLoop);
                     }
                 }
                 return sbdInput;
@@ -969,12 +1165,28 @@ namespace Chummer
                 if (objEnumerator.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdInput.Append(objEnumerator.Current);
+                    string strLoop = objEnumerator.Current;
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current;
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
                     token.ThrowIfCancellationRequested();
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        sbdInput.Append(chrSeparator).Append(objEnumerator.Current);
+                        strLoop = objEnumerator.Current;
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(chrSeparator).Append(strLoop);
                     }
                 }
                 return sbdInput;
