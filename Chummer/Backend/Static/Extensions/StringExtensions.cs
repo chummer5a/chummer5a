@@ -214,41 +214,34 @@ namespace Chummer
         /// </summary>
         public static string ConcatFast(IEnumerable<string> lstStrings)
         {
-            string strFirstPart = string.Empty;
-            string strSecondPart = string.Empty;
             using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
             {
+                // Handle trivial cases first
+                if (!objEnumerator.MoveNext())
+                    return string.Empty;
+                string str1 = objEnumerator.Current;
+                if (!objEnumerator.MoveNext())
+                    return str1;
                 // Handle cases where we can rely on the faster string.Concat methods that work off of a fixed number of string parameters
-                string str1 = string.Empty;
-                string str2 = string.Empty;
+                string str2 = objEnumerator.Current;
                 string str3 = string.Empty;
                 string str4 = string.Empty;
                 if (objEnumerator.MoveNext())
                 {
-                    str1 = objEnumerator.Current;
+                    str3 = objEnumerator.Current;
                     if (objEnumerator.MoveNext())
                     {
-                        str2 = objEnumerator.Current;
-                        if (objEnumerator.MoveNext())
-                        {
-                            str3 = objEnumerator.Current;
-                            if (objEnumerator.MoveNext())
-                            {
-                                str4 = objEnumerator.Current;
-                                if (!objEnumerator.MoveNext())
-                                    return string.Concat(str1, str2, str3, str4);
-                            }
-                            else
-                                return string.Concat(str1, str2, str3);
-                        }
-                        else
-                            return string.Concat(str1, str2);
+                        str4 = objEnumerator.Current;
+                        if (!objEnumerator.MoveNext())
+                            return string.Concat(str1, str2, str3, str4);
                     }
                     else
-                        return str1;
+                        return string.Concat(str1, str2, str3);
                 }
                 else
-                    return string.Empty;
+                    return string.Concat(str1, str2);
+                string strFirstPart = string.Empty;
+                string strSecondPart = string.Empty;
                 string strLoop = objEnumerator.Current;
                 int intLoopLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (strLoop?.Length ?? 0);
                 if (intLoopLength > GlobalSettings.MaxStackLimit16BitTypes)
@@ -555,58 +548,51 @@ namespace Chummer
         public static async Task<string> ConcatFastAsync(IAsyncEnumerable<string> lstStrings, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strFirstPart = string.Empty;
-            string strSecondPart = string.Empty;
             IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
+                // Handle trivial cases first
+                if (!objEnumerator.MoveNext())
+                    return string.Empty;
+                token.ThrowIfCancellationRequested();
+                string str1 = objEnumerator.Current;
+                if (!objEnumerator.MoveNext())
+                    return str1;
+                token.ThrowIfCancellationRequested();
                 // Handle cases where we can rely on the faster string.Concat methods that work off of a fixed number of string parameters
-                string str1 = string.Empty;
-                string str2 = string.Empty;
+                string str2 = objEnumerator.Current;
                 string str3 = string.Empty;
                 string str4 = string.Empty;
                 if (objEnumerator.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
-                    str1 = objEnumerator.Current;
+                    str3 = objEnumerator.Current;
                     if (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        str2 = objEnumerator.Current;
+                        str4 = objEnumerator.Current;
                         if (objEnumerator.MoveNext())
-                        {
                             token.ThrowIfCancellationRequested();
-                            str3 = objEnumerator.Current;
-                            if (objEnumerator.MoveNext())
-                            {
-                                token.ThrowIfCancellationRequested();
-                                str4 = objEnumerator.Current;
-                                if (objEnumerator.MoveNext())
-                                    token.ThrowIfCancellationRequested();
-                                else
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    return string.Concat(str1, str2, str3, str4);
-                                }
-                            }
-                            else
-                            {
-                                token.ThrowIfCancellationRequested();
-                                return string.Concat(str1, str2, str3);
-                            }
-                        }
                         else
                         {
                             token.ThrowIfCancellationRequested();
-                            return string.Concat(str1, str2);
+                            return string.Concat(str1, str2, str3, str4);
                         }
                     }
                     else
-                        return str1;
+                    {
+                        token.ThrowIfCancellationRequested();
+                        return string.Concat(str1, str2, str3);
+                    }
                 }
                 else
-                    return string.Empty;
+                {
+                    token.ThrowIfCancellationRequested();
+                    return string.Concat(str1, str2);
+                }
+                string strFirstPart = string.Empty;
+                string strSecondPart = string.Empty;
                 token.ThrowIfCancellationRequested();
                 string strLoop = objEnumerator.Current;
                 int intLoopLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (strLoop?.Length ?? 0);
