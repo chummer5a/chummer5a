@@ -19365,4 +19365,43 @@
     </quality>
     <!-- End Region -->
   </qualities>
+  
+  <!-- XPath Query Templates for Advanced Filtering -->
+  <xpathqueries>
+    <query>
+      <id>bc8adb44-f2a6-43c6-b3e8-e0825209f86c</id>
+      <display>String_SelectQuality_XPathQuery_AddQualityBonus</display>
+      <xpath>bonus/addquality</xpath>
+    </query>
+    <query>
+      <id>02d0c37b-c3c4-4892-ad32-c91e4de72742</id>
+      <display>String_SelectQuality_XPathQuery_KarmaRange</display>
+      <xpath>karma >= 5 and karma <= 10</xpath>
+    </query>
+    <query>
+      <id>33868824-d80c-4db5-baee-d993d87fc70a</id>
+      <display>String_SelectQuality_XPathQuery_RunFasterSource</display>
+      <xpath>source = 'RF'</xpath>
+    </query>
+    <query>
+      <id>3b5fca95-9f04-4815-999a-a35fca1f856a</id>
+      <display>String_SelectQuality_XPathQuery_SpellPoints</display>
+      <xpath>canbuywithspellpoints = 'True'</xpath>
+    </query>
+    <query>
+      <id>5760ec8d-f7ca-4290-8f9f-c711da200353</id>
+      <display>String_SelectQuality_XPathQuery_MetagenicOnly</display>
+      <xpath>metagenic = 'True'</xpath>
+    </query>
+    <query>
+      <id>d6a8a731-0225-4123-9388-212024bacd35</id>
+      <display>String_SelectQuality_XPathQuery_PositiveOnly</display>
+      <xpath>category = 'Positive'</xpath>
+    </query>
+    <query>
+      <id>cdd640dc-5b69-45a5-8d5e-5367ed3dddbc</id>
+      <display>String_SelectQuality_XPathQuery_NegativeOnly</display>
+      <xpath>category = 'Negative'</xpath>
+    </query>
+  </xpathqueries>
 </chummer>

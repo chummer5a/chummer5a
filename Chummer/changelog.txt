@@ -115,6 +115,13 @@ Application Changes:
 - Implemented an essence filter for the SelectCyberware form to allow filtering available Cyberware. 
 - Implemented an xpath filter for Weapon Mounts to further refine the available weapons. This uses the weaponfilter property, which takes an XPath expression that is evaluated against each weapon in the database. If the expression returns true, the weapon is shown as available for the mount. As an example, the Mini weapon mount uses ((type != "Melee") or (type = "Melee" and reach = "0")) to exclude melee weapons with reach greater than 0.
 - Implemented skillenablemovement improvement. This is used to enable skills that are usually kept disabled by movement types (i.e. Flight requiring a movement speed type that includes Flight speed)
+- Implemented XPath mode toggle for advanced quality filtering using our XML-based XPath query system with precanned queries:
+  * Add Quality Bonus (bonus/addquality)
+  * Karma Range 5-10 (karma >= 5 and karma <= 10)
+  * Run Faster Source (source = 'RF')
+  * Can Buy with Spell Points (canbuywithspellpoints = 'True')
+  * Metagenic Only (metagenic = 'True')
+  * Positive/Negative Qualities (category filtering)
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://jackpoint.live/index.php?topic=31750.msg544923#msg544923.
@@ -396,6 +403,15 @@ Changed/New Strings:
 - Button_SaveAmendment
 - Label_AmendSystemDocumentation
 - Label_ResultAndDiffPreview
+- String_SelectQuality_XPathQuery_AddQualityBonus
+- String_SelectQuality_XPathQuery_KarmaRange
+- String_SelectQuality_XPathQuery_RunFasterSource
+- String_SelectQuality_XPathQuery_SpellPoints
+- String_SelectQuality_XPathQuery_MetagenicOnly
+- String_SelectQuality_XPathQuery_PositiveOnly
+- String_SelectQuality_XPathQuery_NegativeOnly
+- Checkbox_SelectQuality_XPathMode
+- Tip_SelectQuality_XPathMode
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage

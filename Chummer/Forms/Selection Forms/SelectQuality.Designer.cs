@@ -16,6 +16,7 @@ namespace Chummer
             if (disposing)
             {
                 Utils.ListItemListPool.Return(ref _lstCategory);
+                Utils.ListItemListPool.Return(ref _lstXPathQueries);
                 if (components != null)
                     components.Dispose();
             }
@@ -42,8 +43,9 @@ namespace Chummer
             this.lblBPLabel = new System.Windows.Forms.Label();
             this.chkFree = new Chummer.ColorableCheckBox();
             this.chkMetagenic = new Chummer.ColorableCheckBox();
-            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.txtSearch = new Chummer.ElasticComboBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
+            this.chkXPathMode = new Chummer.ColorableCheckBox();
             this.chkNotMetagenic = new Chummer.ColorableCheckBox();
             this.nudMinimumBP = new Chummer.NumericUpDownEx();
             this.nudValueBP = new Chummer.NumericUpDownEx();
@@ -245,13 +247,31 @@ namespace Chummer
             // txtSearch
             // 
             this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSearch.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
+            this.txtSearch.FormattingEnabled = true;
             this.txtSearch.Location = new System.Drawing.Point(53, 3);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(247, 20);
+            this.txtSearch.Size = new System.Drawing.Size(247, 21);
             this.txtSearch.TabIndex = 1;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
             this.txtSearch.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyUp);
+            this.txtSearch.SelectedIndexChanged += new System.EventHandler(this.txtSearch_SelectedIndexChanged);
+            // 
+            // chkXPathMode
+            // 
+            this.chkXPathMode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkXPathMode.AutoSize = true;
+            this.chkXPathMode.DefaultColorScheme = true;
+            this.chkXPathMode.Location = new System.Drawing.Point(3, 29);
+            this.chkXPathMode.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkXPathMode.Name = "chkXPathMode";
+            this.chkXPathMode.Size = new System.Drawing.Size(80, 17);
+            this.chkXPathMode.TabIndex = 2;
+            this.chkXPathMode.Tag = "Checkbox_SelectQuality_XPathMode";
+            this.chkXPathMode.Text = "XPath Mode";
+            this.chkXPathMode.UseVisualStyleBackColor = true;
+            this.chkXPathMode.CheckedChanged += new System.EventHandler(this.chkXPathMode_CheckedChanged);
             // 
             // lblSearchLabel
             // 
@@ -400,7 +420,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(606, 423);
+            this.tlpMain.Size = new System.Drawing.Size(606, 449);
             this.tlpMain.TabIndex = 23;
             // 
             // tableLayoutPanel2
@@ -419,7 +439,7 @@ namespace Chummer
             this.tlpMain.SetRowSpan(this.tableLayoutPanel2, 5);
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(303, 423);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(303, 449);
             this.tableLayoutPanel2.TabIndex = 24;
             // 
             // tlpButtons
@@ -434,7 +454,7 @@ namespace Chummer
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOKAdd, 1, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 2, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(348, 394);
+            this.tlpButtons.Location = new System.Drawing.Point(348, 420);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -453,7 +473,7 @@ namespace Chummer
             this.tlpLowerRight.Controls.Add(this.chkLimitList, 0, 1);
             this.tlpLowerRight.Controls.Add(this.gpbKarmaFilter, 0, 0);
             this.tlpLowerRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpLowerRight.Location = new System.Drawing.Point(303, 216);
+            this.tlpLowerRight.Location = new System.Drawing.Point(303, 242);
             this.tlpLowerRight.Margin = new System.Windows.Forms.Padding(0);
             this.tlpLowerRight.Name = "tlpLowerRight";
             this.tlpLowerRight.RowCount = 4;
@@ -532,7 +552,7 @@ namespace Chummer
             this.tlpRight.Controls.Add(this.lblBP, 1, 0);
             this.tlpRight.Controls.Add(this.chkFree, 0, 2);
             this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpRight.Location = new System.Drawing.Point(303, 26);
+            this.tlpRight.Location = new System.Drawing.Point(303, 52);
             this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
             this.tlpRight.Name = "tlpRight";
             this.tlpRight.RowCount = 4;
@@ -618,13 +638,15 @@ namespace Chummer
             this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.bufferedTableLayoutPanel1.Controls.Add(this.txtSearch, 1, 0);
             this.bufferedTableLayoutPanel1.Controls.Add(this.lblSearchLabel, 0, 0);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.chkXPathMode, 0, 1);
             this.bufferedTableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.bufferedTableLayoutPanel1.Location = new System.Drawing.Point(303, 0);
             this.bufferedTableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.bufferedTableLayoutPanel1.Name = "bufferedTableLayoutPanel1";
-            this.bufferedTableLayoutPanel1.RowCount = 1;
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(303, 26);
+            this.bufferedTableLayoutPanel1.RowCount = 2;
+            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(303, 52);
             this.bufferedTableLayoutPanel1.TabIndex = 30;
             // 
             // SelectQuality
@@ -634,7 +656,7 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(624, 441);
+            this.ClientSize = new System.Drawing.Size(624, 467);
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -687,8 +709,9 @@ namespace Chummer
         private System.Windows.Forms.Label lblBPLabel;
         private Chummer.ColorableCheckBox chkFree;
         private Chummer.ColorableCheckBox chkMetagenic;
-        private System.Windows.Forms.TextBox txtSearch;
+        private Chummer.ElasticComboBox txtSearch;
         private System.Windows.Forms.Label lblSearchLabel;
+        private Chummer.ColorableCheckBox chkXPathMode;
         private Chummer.ColorableCheckBox chkNotMetagenic;
         private Chummer.NumericUpDownEx nudMinimumBP;
         private Chummer.NumericUpDownEx nudValueBP;
