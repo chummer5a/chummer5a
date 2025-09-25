@@ -694,14 +694,16 @@ namespace Chummer
                 if (objEnumerator.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
-                    string strLoop = objEnumerator.Current != null ? (await objEnumerator.Current.ConfigureAwait(false))?.ToString() : string.Empty;
+                    Task<T> tskCurrent = objEnumerator.Current;
+                    string strLoop = tskCurrent != null ? (await tskCurrent.ConfigureAwait(false))?.ToString() : string.Empty;
                     token.ThrowIfCancellationRequested();
                     if (string.IsNullOrEmpty(strLoop))
                     {
                         while (objEnumerator.MoveNext())
                         {
                             token.ThrowIfCancellationRequested();
-                            strLoop = objEnumerator.Current != null ? (await objEnumerator.Current.ConfigureAwait(false))?.ToString() : string.Empty;
+                            tskCurrent = objEnumerator.Current;
+                            strLoop = tskCurrent != null ? (await tskCurrent.ConfigureAwait(false))?.ToString() : string.Empty;
                             token.ThrowIfCancellationRequested();
                             if (!string.IsNullOrEmpty(strLoop))
                             {
@@ -715,7 +717,8 @@ namespace Chummer
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        strLoop = objEnumerator.Current != null ? (await objEnumerator.Current.ConfigureAwait(false))?.ToString() : string.Empty;
+                        tskCurrent = objEnumerator.Current;
+                        strLoop = tskCurrent != null ? (await tskCurrent.ConfigureAwait(false))?.ToString() : string.Empty;
                         token.ThrowIfCancellationRequested();
                         if (!string.IsNullOrEmpty(strLoop))
                             sbdInput.Append(strSeparator).Append(strLoop);
@@ -745,14 +748,16 @@ namespace Chummer
                 if (objEnumerator.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
-                    string strLoop = objEnumerator.Current != null ? await objEnumerator.Current.ConfigureAwait(false) : string.Empty;
+                    Task<string> tskCurrent = objEnumerator.Current;
+                    string strLoop = tskCurrent != null ? await tskCurrent.ConfigureAwait(false) : string.Empty;
                     token.ThrowIfCancellationRequested();
                     if (string.IsNullOrEmpty(strLoop))
                     {
                         while (objEnumerator.MoveNext())
                         {
                             token.ThrowIfCancellationRequested();
-                            strLoop = objEnumerator.Current != null ? await objEnumerator.Current.ConfigureAwait(false) : string.Empty;
+                            tskCurrent = objEnumerator.Current;
+                            strLoop = tskCurrent != null ? await tskCurrent.ConfigureAwait(false) : string.Empty;
                             token.ThrowIfCancellationRequested();
                             if (!string.IsNullOrEmpty(strLoop))
                             {
@@ -766,7 +771,8 @@ namespace Chummer
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        strLoop = objEnumerator.Current != null ? await objEnumerator.Current.ConfigureAwait(false) : string.Empty;
+                        tskCurrent = objEnumerator.Current;
+                        strLoop = tskCurrent != null ? await tskCurrent.ConfigureAwait(false) : string.Empty;
                         token.ThrowIfCancellationRequested();
                         if (!string.IsNullOrEmpty(strLoop))
                             sbdInput.Append(strSeparator).Append(strLoop);
@@ -954,14 +960,16 @@ namespace Chummer
                     if (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        string strLoop = objEnumerator.Current != null ? (await objEnumerator.Current.ConfigureAwait(false))?.ToString() : string.Empty;
+                        Task<T> tskCurrent = objEnumerator.Current;
+                        string strLoop = tskCurrent != null ? (await tskCurrent.ConfigureAwait(false))?.ToString() : string.Empty;
                         token.ThrowIfCancellationRequested();
                         if (string.IsNullOrEmpty(strLoop))
                         {
                             while (objEnumerator.MoveNext())
                             {
                                 token.ThrowIfCancellationRequested();
-                                strLoop = objEnumerator.Current != null ? (await objEnumerator.Current.ConfigureAwait(false))?.ToString() : string.Empty;
+                                tskCurrent = objEnumerator.Current;
+                                strLoop = tskCurrent != null ? (await tskCurrent.ConfigureAwait(false))?.ToString() : string.Empty;
                                 token.ThrowIfCancellationRequested();
                                 if (!string.IsNullOrEmpty(strLoop))
                                 {
@@ -975,7 +983,8 @@ namespace Chummer
                         while (objEnumerator.MoveNext())
                         {
                             token.ThrowIfCancellationRequested();
-                            strLoop = objEnumerator.Current != null ? (await objEnumerator.Current.ConfigureAwait(false))?.ToString() : string.Empty;
+                            tskCurrent = objEnumerator.Current;
+                            strLoop = tskCurrent != null ? (await tskCurrent.ConfigureAwait(false))?.ToString() : string.Empty;
                             token.ThrowIfCancellationRequested();
                             if (!string.IsNullOrEmpty(strLoop))
                                 sbdInput.Append(chrSeparator).Append(strLoop);
@@ -1010,14 +1019,16 @@ namespace Chummer
                     if (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        string strLoop = objEnumerator.Current != null ? await objEnumerator.Current.ConfigureAwait(false) : string.Empty;
+                        Task<string> tskCurrent = objEnumerator.Current;
+                        string strLoop = tskCurrent != null ? await tskCurrent.ConfigureAwait(false) : string.Empty;
                         token.ThrowIfCancellationRequested();
                         if (string.IsNullOrEmpty(strLoop))
                         {
                             while (objEnumerator.MoveNext())
                             {
                                 token.ThrowIfCancellationRequested();
-                                strLoop = objEnumerator.Current != null ? await objEnumerator.Current.ConfigureAwait(false) : string.Empty;
+                                tskCurrent = objEnumerator.Current;
+                                strLoop = tskCurrent != null ? await tskCurrent.ConfigureAwait(false) : string.Empty;
                                 token.ThrowIfCancellationRequested();
                                 if (!string.IsNullOrEmpty(strLoop))
                                 {
@@ -1031,7 +1042,8 @@ namespace Chummer
                         while (objEnumerator.MoveNext())
                         {
                             token.ThrowIfCancellationRequested();
-                            strLoop = objEnumerator.Current != null ? await objEnumerator.Current.ConfigureAwait(false) : string.Empty;
+                            tskCurrent = objEnumerator.Current;
+                            strLoop = tskCurrent != null ? await tskCurrent.ConfigureAwait(false) : string.Empty;
                             token.ThrowIfCancellationRequested();
                             if (!string.IsNullOrEmpty(strLoop))
                                 sbdInput.Append(chrSeparator).Append(strLoop);
