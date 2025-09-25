@@ -843,6 +843,42 @@
       <text>&amp;Search:</text>
     </string>
     <string>
+      <key>Checkbox_SelectQuality_XPathMode</key>
+      <text>XPath Mode</text>
+    </string>
+    <string>
+      <key>Tip_SelectQuality_XPathMode</key>
+      <text>Enable XPath mode for advanced filtering. When enabled, the search box accepts XPath expressions instead of text search.</text>
+    </string>
+    <string>
+      <key>String_SelectQuality_XPathQuery_AddQualityBonus</key>
+      <text>Add Quality Bonus</text>
+    </string>
+    <string>
+      <key>String_SelectQuality_XPathQuery_KarmaRange</key>
+      <text>Karma 5-10</text>
+    </string>
+    <string>
+      <key>String_SelectQuality_XPathQuery_RunFasterSource</key>
+      <text>Run Faster Source</text>
+    </string>
+    <string>
+      <key>String_SelectQuality_XPathQuery_SpellPoints</key>
+      <text>Can Buy with Spell Points</text>
+    </string>
+    <string>
+      <key>String_SelectQuality_XPathQuery_MetagenicOnly</key>
+      <text>Metagenic Only</text>
+    </string>
+    <string>
+      <key>String_SelectQuality_XPathQuery_PositiveOnly</key>
+      <text>Positive Qualities</text>
+    </string>
+    <string>
+      <key>String_SelectQuality_XPathQuery_NegativeOnly</key>
+      <text>Negative Qualities</text>
+    </string>
+    <string>
       <key>Label_Capacity</key>
       <text>Capacity:</text>
     </string>

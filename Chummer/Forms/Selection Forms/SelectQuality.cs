@@ -43,8 +43,10 @@ namespace Chummer
         private readonly XPathNavigator _xmlMetatypeQualityRestrictionNode;
 
         private List<ListItem> _lstCategory;
+        private List<ListItem> _lstXPathQueries;
 
         private static string _strSelectCategory = string.Empty;
+        private bool _blnXPathMode = false;
 
         #region Control Events
 
@@ -60,6 +62,7 @@ namespace Chummer
             _xmlBaseQualityDataNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _xmlMetatypeQualityRestrictionNode = _objCharacter.GetNodeXPath().SelectSingleNodeAndCacheExpression("qualityrestriction");
             _lstCategory = Utils.ListItemListPool.Get();
+            _lstXPathQueries = Utils.ListItemListPool.Get();
         }
 
         private async void SelectQuality_Load(object sender, EventArgs e)
@@ -91,6 +94,12 @@ namespace Chummer
 
                 x.Enabled = _lstCategory.Count > 1;
             }).ConfigureAwait(false);
+
+            // Populate the XPath queries list.
+            await PopulateXPathQueries().ConfigureAwait(false);
+
+            // Initialize control mode
+            await UpdateSearchControlMode().ConfigureAwait(false);
 
             if (_objCharacter.MetagenicLimit == 0)
                 await chkNotMetagenic.DoThreadSafeAsync(x => x.Checked = true).ConfigureAwait(false);
@@ -235,6 +244,26 @@ namespace Chummer
             await BuildQualityList().ConfigureAwait(false);
         }
 
+        private async void chkXPathMode_CheckedChanged(object sender, EventArgs e)
+        {
+            _blnXPathMode = await chkXPathMode.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false);
+            await UpdateSearchControlMode().ConfigureAwait(false);
+            await BuildQualityList().ConfigureAwait(false);
+        }
+
+        private async void txtSearch_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_blnXPathMode)
+            {
+                object objSelectedItem = await txtSearch.DoThreadSafeFuncAsync(x => x.SelectedItem).ConfigureAwait(false);
+                if (objSelectedItem is ListItem objListItem)
+                {
+                    await txtSearch.DoThreadSafeAsync(x => x.Text = objListItem.Value.ToString()).ConfigureAwait(false);
+                    await BuildQualityList().ConfigureAwait(false);
+                }
+            }
+        }
+
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
@@ -271,7 +300,7 @@ namespace Chummer
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up)
-                txtSearch.Select(txtSearch.TextLength, 0);
+                txtSearch.Select(txtSearch.Text.Length, 0);
         }
 
         private async void KarmaFilter(object sender, EventArgs e)
@@ -515,7 +544,7 @@ namespace Chummer
                                                        && (GlobalSettings.SearchInCategoryOnly
                                                            || await txtSearch
                                                                .DoThreadSafeFuncAsync(
-                                                                   x => x.TextLength, token: token)
+                                                                   x => x.Text.Length, token: token)
                                                                .ConfigureAwait(false) == 0))
                 {
                     sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
@@ -719,7 +748,7 @@ namespace Chummer
 
             _strSelectedQuality = strSelectedQuality;
             _intSelectedRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
-            _strSelectCategory = GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0
+            _strSelectCategory = GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.Text.Length, token: token).ConfigureAwait(false) == 0
                 ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false)
                 : objNode.SelectSingleNodeAndCacheExpression("category", token)?.Value;
             _blnFreeCost = await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
@@ -735,6 +764,58 @@ namespace Chummer
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Populate the XPath queries dropdown with precanned queries from XML.
+        /// </summary>
+        private async Task PopulateXPathQueries(CancellationToken token = default)
+        {
+            _lstXPathQueries.Clear();
+            
+            // Read XPath queries from the qualities.xml file
+            foreach (XPathNavigator objXmlQuery in _xmlBaseQualityDataNode.SelectAndCacheExpression("xpathqueries/query", token: token))
+            {
+                string strDisplayKey = objXmlQuery.SelectSingleNodeAndCacheExpression("display", token: token)?.Value;
+                string strXPath = objXmlQuery.SelectSingleNodeAndCacheExpression("xpath", token: token)?.Value;
+                
+                if (!string.IsNullOrEmpty(strDisplayKey) && !string.IsNullOrEmpty(strXPath))
+                {
+                    string strDisplayText = await LanguageManager.GetStringAsync(strDisplayKey, token: token).ConfigureAwait(false);
+                    _lstXPathQueries.Add(new ListItem(strDisplayText, strXPath));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Update the search control mode based on XPath toggle.
+        /// </summary>
+        private async Task UpdateSearchControlMode(CancellationToken token = default)
+        {
+            await txtSearch.DoThreadSafeAsync(x =>
+            {
+                if (_blnXPathMode)
+                {
+                    // In XPath mode, populate with XPath queries and enable dropdown
+                    x.DataSource = null;
+                    x.Items.Clear();
+                    foreach (ListItem objItem in _lstXPathQueries)
+                    {
+                        x.Items.Add(objItem);
+                    }
+                    x.DropDownStyle = ComboBoxStyle.DropDown;
+                    x.DisplayMember = "Name";
+                    x.ValueMember = "Value";
+                }
+                else
+                {
+                    // In normal mode, clear items and make it behave like a textbox
+                    x.DataSource = null;
+                    x.Items.Clear();
+                    x.DropDownStyle = ComboBoxStyle.DropDown;
+                    x.DisplayMember = string.Empty;
+                    x.ValueMember = string.Empty;
+                }
+            }, token: token).ConfigureAwait(false);
+        }
         #endregion Methods
     }
 }
