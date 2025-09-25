@@ -46,7 +46,7 @@ namespace Chummer
         private List<ListItem> _lstXPathQueries;
 
         private static string _strSelectCategory = string.Empty;
-        private bool _blnXPathMode = false;
+        private bool _blnXPathMode;
 
         #region Control Events
 
@@ -774,12 +774,22 @@ namespace Chummer
             // Read XPath queries from the qualities.xml file
             foreach (XPathNavigator objXmlQuery in _xmlBaseQualityDataNode.SelectAndCacheExpression("xpathqueries/query", token: token))
             {
-                string strDisplayKey = objXmlQuery.SelectSingleNodeAndCacheExpression("display", token: token)?.Value;
                 string strXPath = objXmlQuery.SelectSingleNodeAndCacheExpression("xpath", token: token)?.Value;
                 
-                if (!string.IsNullOrEmpty(strDisplayKey) && !string.IsNullOrEmpty(strXPath))
+                if (!string.IsNullOrEmpty(strXPath))
                 {
-                    string strDisplayText = await LanguageManager.GetStringAsync(strDisplayKey, token: token).ConfigureAwait(false);
+                    string strDisplayText;
+                    string strDisplayKey = objXmlQuery.SelectSingleNodeAndCacheExpression("display", token: token)?.Value;
+                    if (!string.IsNullOrEmpty(strDisplayKey))
+                    {
+                        strDisplayText = await LanguageManager.GetStringAsync(strDisplayKey, token: token)
+                            .ConfigureAwait(false);
+                        if (string.IsNullOrEmpty(strDisplayText))
+                            strDisplayText = strDisplayKey;
+                    }
+                    else
+                        strDisplayText = strXPath;
+
                     _lstXPathQueries.Add(new ListItem(strDisplayText, strXPath));
                 }
             }
@@ -788,9 +798,9 @@ namespace Chummer
         /// <summary>
         /// Update the search control mode based on XPath toggle.
         /// </summary>
-        private async Task UpdateSearchControlMode(CancellationToken token = default)
+        private Task UpdateSearchControlMode(CancellationToken token = default)
         {
-            await txtSearch.DoThreadSafeAsync(x =>
+            return txtSearch.DoThreadSafeAsync(x =>
             {
                 if (_blnXPathMode)
                 {
@@ -814,7 +824,7 @@ namespace Chummer
                     x.DisplayMember = string.Empty;
                     x.ValueMember = string.Empty;
                 }
-            }, token: token).ConfigureAwait(false);
+            }, token: token);
         }
         #endregion Methods
     }

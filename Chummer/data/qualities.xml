@@ -19376,7 +19376,7 @@
     <query>
       <id>02d0c37b-c3c4-4892-ad32-c91e4de72742</id>
       <display>String_SelectQuality_XPathQuery_KarmaRange</display>
-      <xpath>karma >= 5 and karma <= 10</xpath>
+      <xpath>karma &gt;= 5 and karma &lt;= 10</xpath>
     </query>
     <query>
       <id>33868824-d80c-4db5-baee-d993d87fc70a</id>
