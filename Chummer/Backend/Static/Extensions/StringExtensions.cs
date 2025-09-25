@@ -267,9 +267,9 @@ namespace Chummer
                     {
                         fixed (char* src = str1)
                         {
-                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), Utils.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
                         }
-                        intCurrent += intLoopLength;
+                        intCurrent = intLoopLength;
                     }
                     intLoopLength = str2?.Length ?? 0;
                     if (intLoopLength > 0)
@@ -347,7 +347,7 @@ namespace Chummer
                 // Backup for if our string ended up being too long
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
-                    sbdReturn.EnsureCapacity(strFirstPart.Length + strSecondPart.Length);
+                    sbdReturn.EnsureCapacity(strFirstPart.Length + (strSecondPart?.Length ?? 0));
                     sbdReturn.Append(strFirstPart).Append(strSecondPart);
                     while (objEnumerator.MoveNext())
                         sbdReturn.Append(objEnumerator.Current);
@@ -636,10 +636,10 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         fixed (char* src = str1)
                         {
-                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, Utils.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
                         }
                         token.ThrowIfCancellationRequested();
-                        intCurrent += intLoopLength;
+                        intCurrent = intLoopLength;
                     }
                     intLoopLength = str2?.Length ?? 0;
                     if (intLoopLength > 0)
@@ -737,7 +737,7 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdReturn.EnsureCapacity(strFirstPart.Length + strSecondPart.Length);
+                    sbdReturn.EnsureCapacity(strFirstPart.Length + (strSecondPart?.Length ?? 0));
                     token.ThrowIfCancellationRequested();
                     sbdReturn.Append(strFirstPart);
                     token.ThrowIfCancellationRequested();
@@ -1382,7 +1382,7 @@ namespace Chummer
             {
                 while (objEnumerator.MoveNext())
                 {
-                    string strLoop = objEnumerator.Current;
+                    string strLoop = objEnumerator.Current ?? string.Empty;
                     if ((intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
                         return string.Join(strSeparator, lstStrings);
                 }
@@ -1587,9 +1587,9 @@ namespace Chummer
                                         }
                                         fixed (char* src = strLoop)
                                         {
-                                            Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, Utils.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
+                                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                                         }
-                                        intCurrent = intLoopLength;
+                                        intCurrent += intLoopLength;
                                     }
                                     break;
                                 }
@@ -1696,7 +1696,7 @@ namespace Chummer
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        string strLoop = objEnumerator.Current;
+                        string strLoop = objEnumerator.Current ?? string.Empty;
                         if ((intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
                             return string.Join(strSeparator, lstStrings);
                     }
@@ -1940,9 +1940,9 @@ namespace Chummer
                                         }
                                         fixed (char* src = strLoop)
                                         {
-                                            Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, Utils.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
+                                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                                         }
-                                        intCurrent = intLoopLength;
+                                        intCurrent += intLoopLength;
                                     }
                                     break;
                                 }
@@ -2062,7 +2062,7 @@ namespace Chummer
                 {
                     if (intIndex++ < startIndex)
                         continue;
-                    string strLoop = objEnumerator.Current;
+                    string strLoop = objEnumerator.Current ?? string.Empty;
                     if ((intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
                         return string.Join(strSeparator, lstStrings);
                     if (intIndex == intFinalIndex)
@@ -2207,7 +2207,7 @@ namespace Chummer
                     if (intIndex++ < startIndex)
                         continue;
                     token.ThrowIfCancellationRequested();
-                    string strLoop = objEnumerator.Current;
+                    string strLoop = objEnumerator.Current ?? string.Empty;
                     if ((intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
                         return string.Join(strSeparator, lstStrings);
                     if (intIndex == intFinalIndex)

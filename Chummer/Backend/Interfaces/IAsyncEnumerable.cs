@@ -273,7 +273,7 @@ namespace Chummer
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        result = result * 31u + (uint)objEnumerator.Current.GetHashCode();
+                        result = result * 31u + (uint)(objEnumerator.Current?.GetHashCode() ?? 0);
                     }
                 }
                 finally
@@ -311,7 +311,7 @@ namespace Chummer
                     while (objEnumerator.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        result += (uint)objEnumerator.Current.GetHashCode();
+                        result += (uint)(objEnumerator.Current?.GetHashCode() ?? 0);
                     }
                 }
                 finally
@@ -356,7 +356,7 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             T objCurrent = objEnumerator.Current;
-                            lstTasks.Add(Task.Run(() => objCurrent.GetHashCode(), token));
+                            lstTasks.Add(Task.Run(() => objCurrent?.GetHashCode() ?? 0, token));
                             blnMoveNext = objEnumerator.MoveNext();
                         }
 

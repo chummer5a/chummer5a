@@ -256,8 +256,6 @@ namespace Chummer
         {
             if (intYear <= 0)
                 --intYear; // Account for year 0 not existing
-            if (intWeek > 53 || intWeek < 1)
-                throw new ArgumentOutOfRangeException(nameof(intWeek));
             // Create the GUID for the new CalendarWeek.
             _guiID = Guid.NewGuid();
             _intYear = intYear;

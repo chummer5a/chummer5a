@@ -353,12 +353,12 @@ namespace Chummer
                     if (_frmPrintView == null)
                     {
                         CharacterSheetViewer frmPrintView = await this.DoThreadSafeFuncAsync(() => new CharacterSheetViewer(), token).ConfigureAwait(false);
-                        CharacterSheetViewer frmOld = Interlocked.CompareExchange(ref frmPrintView, frmPrintView, null);
+                        CharacterSheetViewer frmOld = Interlocked.CompareExchange(ref _frmPrintView, frmPrintView, null);
                         if (frmOld == null)
                         {
-                            await _frmPrintView.SetSelectedSheet("Game Master Summary", token).ConfigureAwait(false);
-                            await _frmPrintView.SetCharacters(token, lstCharacters).ConfigureAwait(false);
-                            await _frmPrintView.DoThreadSafeAsync(x => x.Show(), token).ConfigureAwait(false);
+                            await frmPrintView.SetSelectedSheet("Game Master Summary", token).ConfigureAwait(false);
+                            await frmPrintView.SetCharacters(token, lstCharacters).ConfigureAwait(false);
+                            await frmPrintView.DoThreadSafeAsync(x => x.Show(), token).ConfigureAwait(false);
                         }
                         else
                         {

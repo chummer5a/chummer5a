@@ -19388,7 +19388,7 @@ namespace Chummer
                                         .ConfigureAwait(false);
                                 });
                             }
-                            else
+                            else if (objOldSettings != null)
                             {
                                 Utils.SafelyRunSynchronously(async () =>
                                 {
@@ -19477,7 +19477,7 @@ namespace Chummer
                                     .GetDifferingPropertyNamesAsync(objOldSettings, token).ConfigureAwait(false), token)
                                 .ConfigureAwait(false);
                         }
-                        else
+                        else if (objOldSettings != null)
                         {
                             await OptionsOnMultiplePropertyChanged(await objOldSettings
                                     .GetDifferingPropertyNamesAsync(null, token).ConfigureAwait(false), token)

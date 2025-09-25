@@ -1564,7 +1564,7 @@ namespace Chummer
                                 T objLoop = aobjSorted[i];
                                 if (ReferenceEquals(objLoop, _lstData[i]))
                                     continue;
-                                ablnItemChanged[i] = true;
+                                pblnItemChanged[i] = true;
                                 ++intCountChanges;
                                 _lstData[i] = objLoop;
                             }
@@ -1582,7 +1582,7 @@ namespace Chummer
                         {
                             for (int i = 0; i < intCollectionSize; ++i)
                             {
-                                if (ablnItemChanged[i])
+                                if (pblnItemChanged[i])
                                     _lstData.ResetItem(i);
                             }
                         }

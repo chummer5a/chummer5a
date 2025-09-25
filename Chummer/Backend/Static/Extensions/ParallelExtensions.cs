@@ -497,7 +497,7 @@ namespace Chummer
                             {
                                 token.ThrowIfCancellationRequested();
                                 lstBuffer.Add(funcCodeToRunWithPotentialBreak(objEnumerator.Current, objBreakLoop));
-                                if (i == intBufferSize)
+                                if (++i == intBufferSize)
                                 {
                                     if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
                                         return;
