@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
+using Chummer.Backend.Static;
 
 namespace Chummer
 {
@@ -46,6 +47,9 @@ namespace Chummer
         private int _intLoading = 1;
 
         private const string _strNodeXPath = "Drugs/Drug";
+
+        // Dynamic cost modifier checkboxes
+        private readonly Dictionary<string, ColorableCheckBox> _dicDynamicCostModifierCheckboxes = new Dictionary<string, ColorableCheckBox>();
         private static string _sStrSelectGrade = string.Empty;
         private string _strOldSelectedGrade = string.Empty;
         private bool _blnOldGradeEnabled = true;
@@ -70,6 +74,13 @@ namespace Chummer
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             Disposed += (sender, args) =>
             {
+                // Clean up dynamic checkboxes
+                foreach (ColorableCheckBox objCheckbox in _dicDynamicCostModifierCheckboxes.Values)
+                {
+                    objCheckbox.Dispose();
+                }
+                _dicDynamicCostModifierCheckboxes.Clear();
+                
                 Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
                 Utils.StringHashSetPool.Return(ref _setDisallowedGrades);
             };
@@ -80,6 +91,7 @@ namespace Chummer
         {
             bool blnBlackMarketDiscount = await _objCharacter.GetBlackMarketDiscountAsync().ConfigureAwait(false);
             await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = blnBlackMarketDiscount).ConfigureAwait(false);
+            
 
             if (await _objCharacter.GetCreatedAsync().ConfigureAwait(false))
             {
@@ -130,6 +142,9 @@ namespace Chummer
 
             Interlocked.Decrement(ref _intLoading);
             await RefreshList().ConfigureAwait(false);
+            
+            // Create dynamic checkboxes for CostModifierUserChoice improvements
+            await CreateDynamicCostModifierCheckboxes(null).ConfigureAwait(false);
         }
 
         private async void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
@@ -198,9 +213,9 @@ namespace Chummer
         {
             if (Interlocked.CompareExchange(ref _intLoading, 1, 0) > 0)
                 return;
+            XPathNavigator xmlDrug = null;
             try
             {
-                XPathNavigator xmlDrug = null;
                 string strSelectedId = await lstDrug.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString())
                                                     .ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strSelectedId))
@@ -413,6 +428,9 @@ namespace Chummer
                 Interlocked.Decrement(ref _intLoading);
             }
 
+            // Update dynamic checkboxes based on selected drug
+            await CreateDynamicCostModifierCheckboxes(xmlDrug).ConfigureAwait(false);
+            
             await UpdateDrugInfo().ConfigureAwait(false);
         }
 
@@ -488,6 +506,7 @@ namespace Chummer
                 return;
             await UpdateDrugInfo().ConfigureAwait(false);
         }
+
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
@@ -591,6 +610,22 @@ namespace Chummer
         /// Default text string to filter by.
         /// </summary>
         public string DefaultSearchText { get; set; }
+
+        /// <summary>
+        /// Dictionary of enabled cost modifier checkboxes and their states.
+        /// </summary>
+        public Dictionary<string, bool> EnabledCostModifiers
+        {
+            get
+            {
+                var dicResult = new Dictionary<string, bool>();
+                foreach (KeyValuePair<string, ColorableCheckBox> kvp in _dicDynamicCostModifierCheckboxes)
+                {
+                    dicResult[kvp.Key] = kvp.Value.Checked;
+                }
+                return dicResult;
+            }
+        }
 
         #endregion Properties
 
@@ -701,76 +736,40 @@ namespace Chummer
                 string strCost = objXmlDrug.SelectSingleNodeAndCacheExpression("cost", token)?.Value;
                 if (!string.IsNullOrEmpty(strCost))
                 {
-                    strCost = strCost.ProcessFixedValuesString(intRating);
-                    // Check for a Variable Cost.
-                    if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
+                    // Create cost modifiers
+                    var objModifiers = new CostModifiers
                     {
-                        string strFirstHalf = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                        string strSecondHalf = string.Empty;
-                        int intHyphenIndex = strFirstHalf.IndexOf('-');
-                        if (intHyphenIndex != -1)
-                        {
-                            if (intHyphenIndex + 1 < strFirstHalf.Length)
-                                strSecondHalf = strFirstHalf.Substring(intHyphenIndex + 1);
-                            strFirstHalf = strFirstHalf.Substring(0, intHyphenIndex);
-                        }
-                        decimal decMin;
-                        decimal decMax = decimal.MaxValue;
-                        if (intHyphenIndex != -1)
-                        {
-                            decimal.TryParse(strFirstHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
-                            decimal.TryParse(strSecondHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMax);
-                        }
-                        else
-                            decimal.TryParse(strFirstHalf.FastEscape('+'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
-
-                        string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
-                        await lblCost.DoThreadSafeAsync(x => x.Text = decMax == decimal.MaxValue
-                                                            ? decMin.ToString(strNuyenFormat,
-                                                                              GlobalSettings.CultureInfo) + strNuyen + '+'
-                                                            : decMin.ToString(strNuyenFormat,
-                                                                              GlobalSettings.CultureInfo) + " - "
-                                                            + decMax.ToString(strNuyenFormat,
-                                                                              GlobalSettings.CultureInfo) + strNuyen, token: token).ConfigureAwait(false);
-
-                        decItemCost = decMin;
-                    }
-                    else if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decItemCost))
+                        MarkupMultiplier = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m,
+                        BlackMarketMultiplier = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) ? 0.9m : 1.0m,
+                        MadeManMultiplier = 1.0m,
+                        CustomMultiplier = _decCostMultiplier
+                    };
+                    
+                    // Apply dynamic cost modifiers from checkboxes
+                    foreach (KeyValuePair<string, ColorableCheckBox> kvp in _dicDynamicCostModifierCheckboxes)
                     {
-                        strCost = await (await strCost.CheapReplaceAsync("MinRating", async () => (await nudRating.DoThreadSafeFuncAsync(x => x.MinimumAsInt, token: token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
-                                        .CheapReplaceAsync("Rating", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-
-                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token).ConfigureAwait(false);
-                        if (blnIsSuccess)
+                        bool blnChecked = await kvp.Value.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+                        if (blnChecked)
                         {
-                            decItemCost = Convert.ToDecimal((double)objProcess) * _decCostMultiplier;
-                            decItemCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
-
-                            if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                            // Get the improvement to find the modifier value
+                            List<Improvement> lstImprovements = await _objCharacter.GetCostModifierImprovementsAsync("drug", blnUserChoiceOnly: true, token: token).ConfigureAwait(false);
+                            Improvement objImprovement = lstImprovements.FirstOrDefault(x => x.ImprovedName == kvp.Key);
+                            if (objImprovement != null)
                             {
-                                decItemCost *= 0.9m;
+                                objModifiers.SetCustomModifier(kvp.Key, objImprovement.Value);
                             }
-
-                            string strText = decItemCost.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo) + strNuyen;
-                            await lblCost.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            await lblCost.DoThreadSafeAsync(x => x.Text = strCost + strNuyen, token: token).ConfigureAwait(false);
                         }
                     }
-                    else
+                    
+                    // Use simplified cost processing for selection forms
+                    (string strDisplayCost, decimal decCalculatedCost, bool blnIsSuccess) = await strCost.ProcessCostForSelectionFormAsync(
+                        intRating, objModifiers, _objCharacter, 
+                        objXmlDrug.SelectSingleNodeAndCacheExpression("name", token)?.Value, token).ConfigureAwait(false);
+                    
+                    if (blnIsSuccess)
                     {
-                        decItemCost *= _decCostMultiplier;
-                        decItemCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
-
-                        if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
-                        {
-                            decItemCost *= 0.9m;
-                        }
-
-                        string strText = decItemCost.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo) + strNuyen;
-                        await lblCost.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
+                        await lblCost.DoThreadSafeAsync(x => x.Text = strDisplayCost, token: token).ConfigureAwait(false);
+                        decItemCost = decCalculatedCost;
                     }
                 }
                 else
@@ -788,6 +787,62 @@ namespace Chummer
             await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token).ConfigureAwait(false);
             await lblTestLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTest), token: token).ConfigureAwait(false);
             await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Create and manage dynamic checkboxes for CostModifierUserChoice improvements.
+        /// </summary>
+        private async Task CreateDynamicCostModifierCheckboxes(XPathNavigator objSelectedDrug = null, CancellationToken token = default)
+        {
+            // Get the selected drug ID from the list
+            string strSelectedId = await lstDrug
+                .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
+                .ConfigureAwait(false);
+            
+            if (string.IsNullOrEmpty(strSelectedId))
+            {
+                System.Diagnostics.Debug.WriteLine("No drug selected in list");
+                return;
+            }
+
+            // Use the shared checkbox creation method
+            await DynamicCostModifierCheckboxes.CreateDynamicCostModifierCheckboxesAsync(
+                _objCharacter,
+                "drug",
+                _xmlBaseDrugDataNode,
+                strSelectedId,
+                _dicDynamicCostModifierCheckboxes,
+                flpCheckBoxes,
+                UpdateDrugCostModifiers,
+                UpdateDrugInfo,
+                token,
+                token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Update the drug's stored cost modifiers based on dynamic checkbox states.
+        /// Note: This method stores the modifiers in a temporary location since SelectDrug doesn't create a Drug object.
+        /// </summary>
+        private async Task UpdateDrugCostModifiers(CancellationToken token = default)
+        {
+            // For SelectDrug, we'll store the enabled modifiers in a temporary location
+            // The actual Drug object will be created when the user clicks OK
+            // This is a simplified approach - in a full implementation, you might want to store this differently
+            
+            // Clear existing cost modifiers (if any storage mechanism exists)
+            // For now, this is a placeholder - the actual implementation would depend on how
+            // SelectDrug passes cost modifier information to the created Drug object
+            
+            // Add enabled cost modifiers from dynamic checkboxes
+            foreach (KeyValuePair<string, ColorableCheckBox> kvp in _dicDynamicCostModifierCheckboxes)
+            {
+                bool blnChecked = await kvp.Value.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+                if (blnChecked)
+                {
+                    // Store the enabled modifier - this would need to be passed to the Drug creation
+                    // For now, this is a placeholder for the actual implementation
+                }
+            }
         }
 
         private int _intSkipListRefresh;

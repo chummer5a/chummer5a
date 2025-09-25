@@ -42806,6 +42806,80 @@ namespace Chummer
                    > 0;
         }
 
+        /// <summary>
+        /// Whether any cost modifier improvements are active.
+        /// </summary>
+        public bool CostModifierImprovements => ImprovementManager
+                                               .GetCachedImprovementListForValueOf(
+                                                   this, Improvement.ImprovementType.CostModifier).Count > 0
+                                               || ImprovementManager
+                                                  .GetCachedImprovementListForValueOf(
+                                                      this, Improvement.ImprovementType.CostModifierUserChoice).Count > 0;
+
+        /// <summary>
+        /// Whether any cost modifier improvements are active.
+        /// </summary>
+        public async Task<bool> GetCostModifierImprovementsAsync(CancellationToken token = default)
+        {
+            int intCostModifierCount = (await ImprovementManager
+                                           .GetCachedImprovementListForValueOfAsync(
+                                               this, Improvement.ImprovementType.CostModifier, token: token).ConfigureAwait(false)).Count;
+            int intCostModifierUserChoiceCount = (await ImprovementManager
+                                                     .GetCachedImprovementListForValueOfAsync(
+                                                         this, Improvement.ImprovementType.CostModifierUserChoice, token: token).ConfigureAwait(false)).Count;
+            return intCostModifierCount > 0 || intCostModifierUserChoiceCount > 0;
+        }
+
+        /// <summary>
+        /// Get all cost modifier improvements that apply to the specified equipment type.
+        /// </summary>
+        public List<Improvement> GetCostModifierImprovements(string strEquipmentType, bool blnUserChoiceOnly = false, CancellationToken token = default)
+        {
+            List<Improvement> lstReturn = new List<Improvement>();
+            
+            Improvement.ImprovementType eTypeToCheck = blnUserChoiceOnly 
+                ? Improvement.ImprovementType.CostModifierUserChoice 
+                : Improvement.ImprovementType.CostModifier;
+            
+            List<Improvement> lstImprovements = ImprovementManager
+                .GetCachedImprovementListForValueOf(this, eTypeToCheck, token: token);
+            
+            foreach (Improvement objImprovement in lstImprovements)
+            {
+                if (objImprovement.MatchesEquipmentType(strEquipmentType, this, token))
+                {
+                    lstReturn.Add(objImprovement);
+                }
+            }
+            
+            return lstReturn;
+        }
+
+        /// <summary>
+        /// Get all cost modifier improvements that apply to the specified equipment type.
+        /// </summary>
+        public async Task<List<Improvement>> GetCostModifierImprovementsAsync(string strEquipmentType, bool blnUserChoiceOnly = false, CancellationToken token = default)
+        {
+            List<Improvement> lstReturn = new List<Improvement>();
+            
+            Improvement.ImprovementType eTypeToCheck = blnUserChoiceOnly 
+                ? Improvement.ImprovementType.CostModifierUserChoice 
+                : Improvement.ImprovementType.CostModifier;
+            
+            List<Improvement> lstImprovements = await ImprovementManager
+                .GetCachedImprovementListForValueOfAsync(this, eTypeToCheck, token: token).ConfigureAwait(false);
+            
+            foreach (Improvement objImprovement in lstImprovements)
+            {
+                if (await objImprovement.MatchesEquipmentTypeAsync(strEquipmentType, this, token).ConfigureAwait(false))
+                {
+                    lstReturn.Add(objImprovement);
+                }
+            }
+            
+            return lstReturn;
+        }
+
         public void RefreshBlackMarketDiscounts(CancellationToken token = default)
         {
             // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.

@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,6 +28,8 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
+using Chummer.Backend.Static;
+using NLog;
 
 // ReSharper disable LocalizableElement
 
@@ -46,11 +49,15 @@ namespace Chummer
         private static string _strSelectCategory = string.Empty;
         private readonly Character _objCharacter;
         private readonly XmlDocument _objXmlDocument;
+        
+        // Dynamic cost modifier checkbox states
+        private Dictionary<string, bool> _dicEnabledCostModifiers = new Dictionary<string, bool>();
         private Weapon _objSelectedWeapon;
 
         private List<ListItem> _lstCategory;
         private HashSet<string> _setBlackMarketMaps;
         private HashSet<string> _setMounts;
+        private Dictionary<string, ColorableCheckBox> _dicDynamicCostModifierCheckboxes;
 
         private CancellationTokenSource _objUpdateWeaponInfoCancellationTokenSource;
         private CancellationTokenSource _objDoRefreshListCancellationTokenSource;
@@ -72,6 +79,7 @@ namespace Chummer
             _setLimitToCategories = Utils.StringHashSetPool.Get();
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             _setMounts = Utils.StringHashSetPool.Get();
+            _dicDynamicCostModifierCheckboxes = new Dictionary<string, ColorableCheckBox>();
             _objGenericCancellationTokenSource = new CancellationTokenSource();
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             Disposed += (sender, args) =>
@@ -98,6 +106,13 @@ namespace Chummer
                 Utils.ListItemListPool.Return(ref _lstCategory);
                 Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
                 Utils.StringHashSetPool.Return(ref _setLimitToCategories);
+                
+                // Clean up dynamic checkboxes
+                foreach (ColorableCheckBox objCheckbox in _dicDynamicCostModifierCheckboxes.Values)
+                {
+                    objCheckbox?.Dispose();
+                }
+                _dicDynamicCostModifierCheckboxes.Clear();
                 Utils.StringHashSetPool.Return(ref _setMounts);
             };
             // Load the Weapon information.
@@ -168,6 +183,10 @@ namespace Chummer
 
                     bool blnBlackMarketDiscount = await _objCharacter.GetBlackMarketDiscountAsync(_objGenericToken).ConfigureAwait(false);
                     await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = blnBlackMarketDiscount, _objGenericToken).ConfigureAwait(false);
+                    
+                    
+                    // Create dynamic checkboxes for CostModifierUserChoice improvements
+                    await CreateDynamicCostModifierCheckboxes(_objSelectedWeapon, _objGenericToken).ConfigureAwait(false);
 
                     if (await _objCharacter.GetCreatedAsync(_objGenericToken).ConfigureAwait(false))
                     {
@@ -430,9 +449,15 @@ namespace Chummer
                         }
                         else
                         {
-                            (strWeaponCost, decItemCost) = await objSelectedWeapon.DisplayCost(
-                                await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false)
-                                / 100.0m, token).ConfigureAwait(false);
+                            // Update the weapon's cost modifiers from current checkbox states
+                            await UpdateWeaponCostModifiers(token).ConfigureAwait(false);
+                            
+                            // Set markup as a custom cost modifier on the weapon
+                            decimal decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                            objSelectedWeapon.SetMarkup(decMarkup);
+                            
+                            // Use the weapon's DisplayCost method which handles all cost modifiers
+                            (strWeaponCost, decItemCost) = await objSelectedWeapon.DisplayCost(token: token).ConfigureAwait(false);
                         }
 
                         await lblWeaponCost.DoThreadSafeAsync(x => x.Text = strWeaponCost, token: token)
@@ -440,6 +465,14 @@ namespace Chummer
                         await lblWeaponCostLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strWeaponCost), token: token)
                                 .ConfigureAwait(false);
+                        
+                        // Set cost tooltip if weapon is selected
+                        if (objSelectedWeapon != null)
+                        {
+                            string strCostTooltip = await objSelectedWeapon.GetCostTooltipAsync(token: token).ConfigureAwait(false);
+                            await lblWeaponCost.DoThreadSafeAsync(x => x.SetToolTip(strCostTooltip), token: token)
+                                                .ConfigureAwait(false);
+                        }
 
                         AvailabilityValue objTotalAvail = await objSelectedWeapon.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                         string strAvail = await objTotalAvail.ToStringAsync(token).ConfigureAwait(false);
@@ -496,6 +529,9 @@ namespace Chummer
                         await gpbIncludedAccessories.DoThreadSafeAsync(x => x.Visible = false, token: token)
                                                     .ConfigureAwait(false);
                     }
+                    
+                    // Update dynamic checkboxes based on selected weapon
+                    await CreateDynamicCostModifierCheckboxes(objSelectedWeapon, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -956,7 +992,73 @@ namespace Chummer
             }
         }
 
+
         #endregion Control Events
+
+        #region Dynamic Cost Modifier Checkboxes
+
+        /// <summary>
+        /// Check if an improvement matches a specific weapon by evaluating its XPath filter against the weapon's XML node.
+        /// </summary>
+        private async Task<bool> MatchesSpecificWeaponAsync(Improvement objImprovement, Weapon objSelectedWeapon, CancellationToken token = default)
+        {
+            if (objSelectedWeapon == null)
+                return false;
+
+            // Get the selected weapon ID from the list (this is the XML id element)
+            string strSelectedId = await lstWeapon
+                .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
+                .ConfigureAwait(false);
+            
+            if (string.IsNullOrEmpty(strSelectedId))
+            {
+                System.Diagnostics.Debug.WriteLine("No weapon selected in list");
+                return false;
+            }
+
+            // Use the shared XPath evaluation method
+            return await XPathEvaluation.MatchesSpecificEquipmentAsync(objImprovement, _objXmlDocument, strSelectedId, "weapon", token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Create and manage dynamic checkboxes for CostModifierUserChoice improvements.
+        /// </summary>
+        private async Task CreateDynamicCostModifierCheckboxes(Weapon objSelectedWeapon = null, CancellationToken token = default)
+        {
+            // Get the selected weapon ID from the list
+            string strSelectedId = await lstWeapon
+                .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
+                .ConfigureAwait(false);
+            
+            if (string.IsNullOrEmpty(strSelectedId))
+            {
+                System.Diagnostics.Debug.WriteLine("No weapon selected in list");
+                return;
+            }
+
+            // Use the shared checkbox creation method
+            await DynamicCostModifierCheckboxes.CreateDynamicCostModifierCheckboxesAsync(
+                _objCharacter,
+                "weapon",
+                _objXmlDocument,
+                strSelectedId,
+                _dicDynamicCostModifierCheckboxes,
+                flpCheckBoxes,
+                UpdateWeaponCostModifiers,
+                UpdateWeaponInfo,
+                _objGenericToken,
+                token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Get the current state of dynamic cost modifier checkboxes.
+        /// </summary>
+        private async Task<Dictionary<string, bool>> GetDynamicCostModifierStates(CancellationToken token = default)
+        {
+            return await DynamicCostModifierCheckboxes.GetDynamicCostModifierStatesAsync(_dicDynamicCostModifierCheckboxes, token).ConfigureAwait(false);
+        }
+
+        #endregion Dynamic Cost Modifier Checkboxes
 
         #region Properties
 
@@ -969,6 +1071,22 @@ namespace Chummer
         /// Whether the selected Vehicle is used.
         /// </summary>
         public bool BlackMarketDiscount => _blnBlackMarketDiscount;
+
+        /// <summary>
+        /// Dictionary of enabled cost modifier checkboxes and their states.
+        /// </summary>
+        public Dictionary<string, bool> EnabledCostModifiers 
+        { 
+            get 
+            {
+                System.Diagnostics.Debug.WriteLine($"EnabledCostModifiers getter called, returning {_dicEnabledCostModifiers.Count} items");
+                foreach (var kvp in _dicEnabledCostModifiers)
+                {
+                    System.Diagnostics.Debug.WriteLine($"  - {kvp.Key}: {kvp.Value}");
+                }
+                return _dicEnabledCostModifiers;
+            }
+        }
 
         /// <summary>
         /// Name of Weapon that was selected in the dialogue.
@@ -1117,6 +1235,16 @@ namespace Chummer
                             _decMarkup = nudMarkup.Value;
                             _blnFreeCost = chkFreeItem.Checked;
                             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
+                            
+                            // Save dynamic cost modifier checkbox states
+                            _dicEnabledCostModifiers.Clear();
+                            System.Diagnostics.Debug.WriteLine($"Saving {_dicDynamicCostModifierCheckboxes.Count} dynamic cost modifier checkboxes");
+                            foreach (KeyValuePair<string, ColorableCheckBox> kvp in _dicDynamicCostModifierCheckboxes)
+                            {
+                                _dicEnabledCostModifiers[kvp.Key] = kvp.Value.Checked;
+                                System.Diagnostics.Debug.WriteLine($"  - {kvp.Key}: {kvp.Value.Checked}");
+                            }
+                            System.Diagnostics.Debug.WriteLine($"Final _dicEnabledCostModifiers count: {_dicEnabledCostModifiers.Count}");
 
                             DialogResult = DialogResult.OK;
                         }
@@ -1164,6 +1292,35 @@ namespace Chummer
                 //swallow this
             }
         }
+
+        /// <summary>
+        /// Update the weapon's stored cost modifiers based on current checkbox states.
+        /// </summary>
+        private async Task UpdateWeaponCostModifiers(CancellationToken token = default)
+        {
+            if (_objSelectedWeapon == null)
+                return;
+
+            try
+            {
+                // Get current checkbox states
+                Dictionary<string, bool> dicDynamicStates = await GetDynamicCostModifierStates(token).ConfigureAwait(false);
+                
+                // Update the weapon's stored cost modifiers
+                _objSelectedWeapon.EnabledCostModifiers = dicDynamicStates;
+                
+                System.Diagnostics.Debug.WriteLine($"Updated weapon cost modifiers: {dicDynamicStates.Count} modifiers");
+                foreach (var kvp in dicDynamicStates)
+                {
+                    System.Diagnostics.Debug.WriteLine($"  - {kvp.Key}: {kvp.Value}");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error updating weapon cost modifiers: {ex.Message}");
+            }
+        }
+
 
         #endregion Methods
     }

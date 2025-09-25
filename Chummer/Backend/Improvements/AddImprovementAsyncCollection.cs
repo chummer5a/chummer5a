@@ -6718,6 +6718,56 @@ namespace Chummer
                 Improvement.ImprovementType.SkillGroupDisable, _strUnique, token: token).ConfigureAwait(false);
         }
 
+        // Check for Cost Modifier (Async).
+        public async Task costmodifier(XmlNode bonusNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+
+            // Get the modifier name from the improvement XML
+            string strModifierName = bonusNode.SelectSingleNode("name")?.InnerText ?? SelectedValue;
+            if (string.IsNullOrEmpty(strModifierName))
+                strModifierName = SelectedValue;
+
+            // Get the modifier value from the improvement XML
+            string strModifierValue = bonusNode.SelectSingleNode("val")?.InnerText ?? "1.0";
+            if (!decimal.TryParse(strModifierValue, out decimal decModifierValue))
+                decModifierValue = 1.0m;
+
+            // Get the equipment filter from the improvement XML
+            string strEquipmentFilter = bonusNode.SelectSingleNode("equipmentfilter/@xpath")?.Value ?? string.Empty;
+
+            // Create the Improvement with the modifier information
+            await CreateImprovementAsync(strModifierName, _objImprovementSource, SourceName, Improvement.ImprovementType.CostModifier,
+                _strUnique, decModifierValue, strTarget: strEquipmentFilter, token: token).ConfigureAwait(false);
+        }
+
+        // Check for Cost Modifier (User Choice) (Async).
+        public async Task costmodifieruserchoice(XmlNode bonusNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+
+            // Get the modifier name from the improvement XML
+            string strModifierName = bonusNode.SelectSingleNode("name")?.InnerText ?? SelectedValue;
+            if (string.IsNullOrEmpty(strModifierName))
+                strModifierName = SelectedValue;
+
+            // Get the modifier value from the improvement XML
+            string strModifierValue = bonusNode.SelectSingleNode("val")?.InnerText ?? "1.0";
+            if (!decimal.TryParse(strModifierValue, out decimal decModifierValue))
+                decModifierValue = 1.0m;
+
+            // Get the equipment filter from the improvement XML
+            string strEquipmentFilter = bonusNode.SelectSingleNode("equipmentfilter/@xpath")?.Value ?? string.Empty;
+
+            // Create the Improvement with the modifier information
+            await CreateImprovementAsync(strModifierName, _objImprovementSource, SourceName, Improvement.ImprovementType.CostModifierUserChoice,
+                _strUnique, decModifierValue, strTarget: strEquipmentFilter, token: token).ConfigureAwait(false);
+        }
+
         public Task skillgroupcategorydisable(XmlNode bonusNode, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)

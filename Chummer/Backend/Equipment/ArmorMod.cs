@@ -30,6 +30,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Backend.Static;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -38,7 +39,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Armor Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(null, \"en-us\")}")]
-    public sealed class ArmorMod : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasGear, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable, IHasCharacterObject
+    public sealed class ArmorMod : EquipmentWithCostModifiers, IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasGear, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -65,6 +66,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodWirelessBonus;
         private bool _blnWirelessOn = true;
         private readonly Character _objCharacter;
+        private Dictionary<string, bool> _dicEnabledCostModifiers = new Dictionary<string, bool>();
         private readonly TaggedObservableCollection<Gear> _lstGear;
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
@@ -84,6 +86,57 @@ namespace Chummer.Backend.Equipment
             _lstGear = new TaggedObservableCollection<Gear>(objCharacter.LockObject);
             _lstGear.AddTaggedCollectionChanged(this, GearOnCollectionChanged);
         }
+
+        #region Abstract Method Implementations
+
+        /// <summary>
+        /// The character object that owns this armor mod.
+        /// </summary>
+        public override Character CharacterObject => _objCharacter;
+
+        /// <summary>
+        /// The equipment type string used for filtering improvements.
+        /// </summary>
+        public override string EquipmentType => "armormod";
+
+        /// <summary>
+        /// Get the base cost of this armor mod (without modifiers).
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>Base cost</returns>
+        protected override async Task<decimal> GetBaseCostAsync(CancellationToken token = default)
+        {
+            return await GetOwnCostAsync(token).ConfigureAwait(false)
+                   + await GearChildren.SumAsync(objGear => objGear.GetTotalCostAsync(token), token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Clean up any enabled cost modifiers that are no longer valid (e.g., when improvements are removed).
+        /// Override to handle children cleanup.
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        public override void CleanupInvalidCostModifiers(CancellationToken token = default)
+        {
+            base.CleanupInvalidCostModifiers(token);
+            
+            // Clean up children (GearChildren)
+            GearChildren.ForEach(x => x.CleanupInvalidCostModifiers(token: token), token: token);
+        }
+
+        /// <summary>
+        /// Clean up any enabled cost modifiers that are no longer valid (async version).
+        /// Override to handle children cleanup.
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        public override async Task CleanupInvalidCostModifiersAsync(CancellationToken token = default)
+        {
+            await base.CleanupInvalidCostModifiersAsync(token).ConfigureAwait(false);
+            
+            // Clean up children (GearChildren)
+            await GearChildren.ForEachAsync(x => x.CleanupInvalidCostModifiersAsync(token: token), token: token).ConfigureAwait(false);
+        }
+
+        #endregion
 
         private async Task GearOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
@@ -231,90 +284,13 @@ namespace Chummer.Backend.Equipment
             objXmlArmorNode.TryGetStringFieldQuickly("weight", ref _strWeight);
 
             // Check for a Variable Cost.
-            if (!blnForSelectForm && !blnSkipCost && _strCost.StartsWith("Variable(", StringComparison.Ordinal))
+            if (_strCost.PromptForVariableCost(_objCharacter, CurrentDisplayNameShort, blnForSelectForm, blnSkipCost, 
+                blnSkipSelectForms, false, blnSync, out string strUpdatedCost, token))
             {
-                string strFirstHalf = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                string strSecondHalf = string.Empty;
-                int intHyphenIndex = strFirstHalf.IndexOf('-');
-                if (intHyphenIndex != -1)
-                {
-                    if (intHyphenIndex + 1 < strFirstHalf.Length)
-                        strSecondHalf = strFirstHalf.Substring(intHyphenIndex + 1);
-                    strFirstHalf = strFirstHalf.Substring(0, intHyphenIndex);
-                }
-
-                if (!blnSkipSelectForms)
-                {
-                    decimal decMin;
-                    decimal decMax = decimal.MaxValue;
-                    if (intHyphenIndex != -1)
-                    {
-                        decimal.TryParse(strFirstHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
-                        decimal.TryParse(strSecondHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMax);
-                    }
-                    else
-                        decimal.TryParse(strFirstHalf.FastEscape('+'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
-
-                    if (decMin != decimal.MinValue || decMax != decimal.MaxValue)
-                    {
-                        if (decMax > 1000000)
-                            decMax = 1000000;
-
-                        if (blnSync)
-                        {
-                            using (ThreadSafeForm<SelectNumber> frmPickNumber
-                                   // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                   = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
-                                   {
-                                       Minimum = decMin,
-                                       Maximum = decMax,
-                                       Description = string.Format(
-                                           GlobalSettings.CultureInfo,
-                                           LanguageManager.GetString("String_SelectVariableCost", token: token),
-                                           CurrentDisplayNameShort),
-                                       AllowCancel = false
-                                   }))
-                            {
-                                // ReSharper disable once MethodHasAsyncOverload
-                                if (frmPickNumber.ShowDialogSafe(_objCharacter, token) == DialogResult.Cancel)
-                                {
-                                    _guiID = Guid.Empty;
-                                    return;
-                                }
-                                _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
-                            }
-                        }
-                        else
-                        {
-                            string strDescription = string.Format(
-                                GlobalSettings.CultureInfo,
-                                await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
-                                await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
-                            int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
-                            using (ThreadSafeForm<SelectNumber> frmPickNumber
-                                   = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(intDecimalPlaces)
-                                   {
-                                       Minimum = decMin,
-                                       Maximum = decMax,
-                                       Description = strDescription,
-                                       AllowCancel = false
-                                   }, token).ConfigureAwait(false))
-                            {
-                                if (await frmPickNumber.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
-                                {
-                                    _guiID = Guid.Empty;
-                                    return;
-                                }
-                                _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
-                            }
-                        }
-                    }
-                    else
-                        _strCost = strFirstHalf;
-                }
-                else
-                    _strCost = strFirstHalf;
+                _guiID = Guid.Empty;
+                return;
             }
+            _strCost = strUpdatedCost;
 
             if (!blnForSelectForm && objXmlArmorNode["bonus"] != null && !blnSkipSelectForms)
             {
@@ -524,6 +500,15 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
+            
+            // Save enabled cost modifiers
+            objWriter.WriteStartElement("enabledcostmodifiers");
+            foreach (KeyValuePair<string, bool> kvp in _dicEnabledCostModifiers)
+            {
+                objWriter.WriteElementString(kvp.Key, kvp.Value.ToString(GlobalSettings.InvariantCultureInfo));
+            }
+            objWriter.WriteEndElement();
+            
             objWriter.WriteEndElement();
         }
 
@@ -608,6 +593,20 @@ namespace Chummer.Backend.Equipment
                 _blnEncumbrance = true;
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+            
+            // Load enabled cost modifiers
+            XmlNode objEnabledCostModifiersNode = objNode["enabledcostmodifiers"];
+            if (objEnabledCostModifiersNode != null)
+            {
+                _dicEnabledCostModifiers.Clear();
+                foreach (XmlNode objModifierNode in objEnabledCostModifiersNode.ChildNodes)
+                {
+                    if (bool.TryParse(objModifierNode.InnerText, out bool blnValue))
+                    {
+                        _dicEnabledCostModifiers[objModifierNode.Name] = blnValue;
+                    }
+                }
+            }
 
             XmlElement xmlChildrenNode = objNode["gears"];
             if (xmlChildrenNode != null)
@@ -1574,6 +1573,7 @@ namespace Chummer.Backend.Equipment
             set => _blnDiscountCost = value;
         }
 
+
         /// <summary>
         /// Used by our sorting algorithm to remember which order the user moves things to
         /// </summary>
@@ -1967,17 +1967,66 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Armor Mod.
         /// </summary>
-        public decimal TotalCost => OwnCost + GearChildren.Sum(x => x.TotalCost);
+        public new decimal TotalCost => OwnCost + GearChildren.Sum(x => x.TotalCost);
 
         /// <summary>
-        /// Total cost of the Armor Mod.
+        /// Total cost of the Armor Mod with all modifiers applied.
         /// </summary>
         public async Task<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return await GetOwnCostAsync(token).ConfigureAwait(false)
+            
+            // Get base cost
+            decimal decBaseCost = await GetOwnCostAsync(token).ConfigureAwait(false)
                    + await GearChildren.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
+            
+            // Apply modifiers
+            var objModifiers = new CostModifiers
+            {
+                BlackMarketMultiplier = DiscountCost ? 0.9m : 1.0m
+            };
+            
+            // Apply stored cost modifiers (including markup)
+            foreach (KeyValuePair<string, bool> kvp in _dicEnabledCostModifiers)
+            {
+                if (kvp.Value) // If this modifier was enabled
+                {
+                    // Check if this is a stored custom modifier (like markup)
+                    if (kvp.Key.StartsWith("Custom_"))
+                    {
+                        // Extract the modifier value from the key (e.g., "Custom_Markup_10" -> 1.1)
+                        string strModifierValue = kvp.Key.Substring(kvp.Key.LastIndexOf('_') + 1);
+                        if (decimal.TryParse(strModifierValue, out decimal decModifierValue))
+                        {
+                            // Convert percentage to multiplier (e.g., 10 -> 1.1)
+                            if (kvp.Key.Contains("Markup"))
+                            {
+                                objModifiers.SetCustomModifier("Markup", 1.0m + (decModifierValue / 100.0m));
+                            }
+                            else
+                            {
+                                objModifiers.SetCustomModifier(kvp.Key, decModifierValue);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Get the improvement to find the modifier value
+                        List<Improvement> lstImprovements = await _objCharacter.GetCostModifierImprovementsAsync("armormod", blnUserChoiceOnly: true, token: token).ConfigureAwait(false);
+                        Improvement objImprovement = lstImprovements.FirstOrDefault(x => x.ImprovedName == kvp.Key);
+                        if (objImprovement != null)
+                        {
+                            objModifiers.SetCustomModifier(kvp.Key, objImprovement.Value);
+                        }
+                    }
+                }
+            }
+            
+            // Return final cost with all modifiers applied
+            return decBaseCost * objModifiers.GetTotalMultiplier();
         }
+
+
 
         public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
 
@@ -2586,6 +2635,7 @@ namespace Chummer.Backend.Equipment
             throw new NotImplementedException();
         }
 
+
         /// <inheritdoc />
         public void Dispose()
         {
@@ -2610,6 +2660,5 @@ namespace Chummer.Backend.Equipment
             return _lstGear.DisposeAsync();
         }
 
-        public Character CharacterObject => _objCharacter;
     }
 }

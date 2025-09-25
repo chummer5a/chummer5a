@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -28,6 +29,7 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Enums;
 using Chummer.Backend.Equipment;
+using Chummer.Backend.Static;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Chummer
@@ -47,12 +49,19 @@ namespace Chummer
         private readonly Timer _tmrDistrictChangeTimer;
         private readonly Timer _tmrBoroughChangeTimer;
 
+        // Dynamic cost modifier checkboxes
+        private readonly Dictionary<string, ColorableCheckBox> _dicDynamicCostModifierCheckboxes = new Dictionary<string, ColorableCheckBox>();
+        private readonly CancellationTokenSource _objGenericCancellationTokenSource;
+        private readonly CancellationToken _objGenericToken;
+
         #region Control Events
 
         public SelectLifestyle(Character objCharacter, Lifestyle objLifestyle)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objLifestyle = objLifestyle ?? throw new ArgumentNullException(nameof(objLifestyle));
+            _objGenericCancellationTokenSource = new CancellationTokenSource();
+            _objGenericToken = _objGenericCancellationTokenSource.Token;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -89,6 +98,15 @@ namespace Chummer
                 _tmrCityChangeTimer?.Dispose();
                 _tmrDistrictChangeTimer?.Dispose();
                 _tmrBoroughChangeTimer?.Dispose();
+                
+                // Clean up dynamic checkboxes
+                foreach (ColorableCheckBox objCheckbox in _dicDynamicCostModifierCheckboxes.Values)
+                {
+                    objCheckbox.Dispose();
+                }
+                _dicDynamicCostModifierCheckboxes.Clear();
+                
+                _objGenericCancellationTokenSource?.Dispose();
             };
             _tmrCityChangeTimer.Tick += CityChangeTimer_Tick;
             _tmrDistrictChangeTimer.Tick += DistrictChangeTimer_Tick;
@@ -708,6 +726,9 @@ namespace Chummer
             Interlocked.Decrement(ref _intUpdatingDistrict);
             Interlocked.Decrement(ref _intUpdatingBorough);
             await RefreshSelectedLifestyle().ConfigureAwait(false);
+            
+            // Create dynamic cost modifier checkboxes
+            await CreateDynamicCostModifierCheckboxes(_objGenericToken).ConfigureAwait(false);
         }
 
         private async void cmdOK_Click(object sender, EventArgs e)
@@ -1230,6 +1251,82 @@ namespace Chummer
                 }
             }
         }
+
+        #region Dynamic Cost Modifier Checkboxes
+
+        /// <summary>
+        /// Create and manage dynamic checkboxes for CostModifierUserChoice improvements.
+        /// </summary>
+        private async Task CreateDynamicCostModifierCheckboxes(CancellationToken token = default)
+        {
+            System.Diagnostics.Debug.WriteLine($"CreateDynamicCostModifierCheckboxes called for lifestyle");
+            
+            // Get the lifestyle's XML node
+            string strLifestyleId = _objLifestyle.SourceIDString;
+            if (string.IsNullOrEmpty(strLifestyleId))
+            {
+                System.Diagnostics.Debug.WriteLine("No lifestyle ID available");
+                return;
+            }
+
+            // Use the shared checkbox creation method
+            await DynamicCostModifierCheckboxes.CreateDynamicCostModifierCheckboxesAsync(
+                _objCharacter,
+                "lifestyle",
+                _xmlDocument.CreateNavigator(),
+                strLifestyleId,
+                _dicDynamicCostModifierCheckboxes,
+                flpCheckBoxes,
+                UpdateLifestyleCostModifiers,
+                UpdateLifestyleCost,
+                _objGenericToken,
+                token).ConfigureAwait(false);
+                
+            System.Diagnostics.Debug.WriteLine($"CreateDynamicCostModifierCheckboxes completed - {_dicDynamicCostModifierCheckboxes.Count} checkboxes created");
+        }
+
+        /// <summary>
+        /// Update the lifestyle's stored cost modifiers based on dynamic checkbox states.
+        /// </summary>
+        private async Task UpdateLifestyleCostModifiers(CancellationToken token = default)
+        {
+            System.Diagnostics.Debug.WriteLine($"UpdateLifestyleCostModifiers called - {_dicDynamicCostModifierCheckboxes.Count} dynamic checkboxes available");
+            
+            // Update the lifestyle's enabled cost modifiers
+            var dicEnabledModifiers = new Dictionary<string, bool>();
+            foreach (KeyValuePair<string, ColorableCheckBox> kvp in _dicDynamicCostModifierCheckboxes)
+            {
+                bool blnChecked = await kvp.Value.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+                dicEnabledModifiers[kvp.Key] = blnChecked;
+                System.Diagnostics.Debug.WriteLine($"Checkbox {kvp.Key}: {(blnChecked ? "Checked" : "Unchecked")}");
+            }
+            
+            // Update the lifestyle's enabled cost modifiers
+            _objLifestyle.EnabledCostModifiers = dicEnabledModifiers;
+        }
+
+        /// <summary>
+        /// Update the lifestyle cost display.
+        /// </summary>
+        private async Task UpdateLifestyleCost(CancellationToken token = default)
+        {
+            try
+            {
+                // Update the cost display
+                string strCost = await _objLifestyle.GetDisplayTotalMonthlyCostAsync(token).ConfigureAwait(false);
+                await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token: token).ConfigureAwait(false);
+                
+                // Update cost tooltip
+                string strTooltip = await _objLifestyle.GetCostTooltipAsync(token).ConfigureAwait(false);
+                await lblCost.DoThreadSafeAsync(x => x.SetToolTip(strTooltip), token: token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        #endregion Dynamic Cost Modifier Checkboxes
 
         #endregion Methods
     }

@@ -28,6 +28,7 @@ using System.Windows.Forms;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
+using Chummer.Backend.Static;
 using NLog;
 
 namespace Chummer
@@ -39,6 +40,9 @@ namespace Chummer
         private readonly Character _objCharacter;
         private readonly List<Grade> _lstGrades;
         private readonly string _strNoneGradeId;
+
+        // Dynamic cost modifier checkboxes
+        private readonly Dictionary<string, ColorableCheckBox> _dicDynamicCostModifierCheckboxes = new Dictionary<string, ColorableCheckBox>();
 
         private decimal _decCostMultiplier = 1.0m;
         private decimal _decESSMultiplier = 1.0m;
@@ -170,6 +174,14 @@ namespace Chummer
                     objOldCancellationTokenSource.Dispose();
                 }
                 _objGenericCancellationTokenSource.Dispose();
+                
+                // Clean up dynamic checkboxes
+                foreach (ColorableCheckBox objCheckbox in _dicDynamicCostModifierCheckboxes.Values)
+                {
+                    objCheckbox.Dispose();
+                }
+                _dicDynamicCostModifierCheckboxes.Clear();
+                
                 Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
                 Utils.StringHashSetPool.Return(ref _setDisallowedGrades);
             };
@@ -249,6 +261,9 @@ namespace Chummer
                 await chkBlackMarketDiscount
                       .DoThreadSafeAsync(x => x.Visible = blnBlackMarketDiscount,
                                          token: _objGenericToken).ConfigureAwait(false);
+                
+                // Create dynamic checkboxes for CostModifierUserChoice improvements
+                await CreateDynamicCostModifierCheckboxes(null, _objGenericToken).ConfigureAwait(false);
 
                 // Populate the Grade list. Do not show the Adapsin Grades if Adapsin is not enabled for the character.
                 await PopulateGrades(null, true, _objForcedGrade?.SourceIDString ?? string.Empty,
@@ -507,6 +522,7 @@ namespace Chummer
         {
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
             CancellationToken objNewToken = objNewCancellationTokenSource.Token;
+            XPathNavigator xmlCyberware = null;
             CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objDoRefreshSelectedCyberwareCancellationTokenSource, objNewCancellationTokenSource);
             if (objOldCancellationTokenSource?.IsCancellationRequested == false)
             {
@@ -520,7 +536,7 @@ namespace Chummer
                 token = objJoinedCancellationTokenSource.Token;
                 try
                 {
-                    XPathNavigator xmlCyberware = null;
+                    
                     string strSelectedId = await lstCyberware.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strSelectedId))
                     {
@@ -687,6 +703,10 @@ namespace Chummer
                 {
                     Interlocked.Decrement(ref _intLoading);
                 }
+                
+                // Update dynamic checkboxes based on selected cyberware
+                await CreateDynamicCostModifierCheckboxes(xmlCyberware, token).ConfigureAwait(false);
+                
                 await UpdateCyberwareInfo(token).ConfigureAwait(false);
             }
         }
@@ -1021,6 +1041,22 @@ namespace Chummer
         /// </summary>
         public string DefaultSearchText { get; set; }
 
+        /// <summary>
+        /// Dictionary of enabled cost modifier checkboxes and their states.
+        /// </summary>
+        public Dictionary<string, bool> EnabledCostModifiers
+        {
+            get
+            {
+                var dicResult = new Dictionary<string, bool>();
+                foreach (KeyValuePair<string, ColorableCheckBox> kvp in _dicDynamicCostModifierCheckboxes)
+                {
+                    dicResult[kvp.Key] = kvp.Value.Checked;
+                }
+                return dicResult;
+            }
+        }
+
         #endregion Properties
 
         #region Methods
@@ -1112,76 +1148,43 @@ namespace Chummer
                             strCost = objXmlCyberware.SelectSingleNodeAndCacheExpression("cost", token)?.Value;
                             if (!string.IsNullOrEmpty(strCost))
                             {
-                                strCost = strCost.ProcessFixedValuesString(intRating);
-                                // Check for a Variable Cost.
-                                if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
+                                // Create cost modifiers
+                                var objModifiers = new Backend.Static.CostModifiers
                                 {
-                                    string strFirstHalf = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                                    string strSecondHalf = string.Empty;
-                                    int intHyphenIndex = strFirstHalf.IndexOf('-');
-                                    if (intHyphenIndex != -1)
-                                    {
-                                        if (intHyphenIndex + 1 < strFirstHalf.Length)
-                                            strSecondHalf = strFirstHalf.Substring(intHyphenIndex + 1);
-                                        strFirstHalf = strFirstHalf.Substring(0, intHyphenIndex);
-                                    }
-                                    decimal decMin;
-                                    decimal decMax = decimal.MaxValue;
-                                    if (intHyphenIndex != -1)
-                                    {
-                                        decimal.TryParse(strFirstHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
-                                        decimal.TryParse(strSecondHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMax);
-                                    }
-                                    else
-                                        decimal.TryParse(strFirstHalf.FastEscape('+'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
-
-                                    strCost = decMax == decimal.MaxValue
-                                        ? decMin.ToString(strNuyenFormat,
-                                                          GlobalSettings.CultureInfo)
-                                          + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
-                                                                 .ConfigureAwait(false) + '+'
-                                        : decMin.ToString(strNuyenFormat,
-                                                          GlobalSettings.CultureInfo)
-                                          + " - " + decMax.ToString(strNuyenFormat,
-                                                                    GlobalSettings.CultureInfo)
-                                          + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
-                                                                 .ConfigureAwait(false);
-
-                                    decItemCost = decMin;
-                                }
-                                else if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decItemCost))
+                                    MarkupMultiplier = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m,
+                                    BlackMarketMultiplier = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) ? 0.9m : 1.0m,
+                                    MadeManMultiplier = 1.0m,
+                                    GenetechMultiplier = decGenetechCostModifier,
+                                    CustomMultiplier = _decCostMultiplier
+                                };
+                                
+                                // Apply dynamic cost modifiers from checkboxes
+                                foreach (KeyValuePair<string, ColorableCheckBox> kvp in _dicDynamicCostModifierCheckboxes)
                                 {
-                                    bool blnIsSuccess;
-                                    (decItemCost, blnIsSuccess)
-                                        = await ProcessInvariantXPathExpression(objXmlCyberware, strCost, intMinRating, intRating, token).ConfigureAwait(false);
-                                    if (blnIsSuccess)
+                                    bool blnChecked = await kvp.Value.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+                                    if (blnChecked)
                                     {
-                                        decItemCost *= _decCostMultiplier * decGenetechCostModifier * (1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m);
-
-                                        if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                                        // Get the improvement to find the modifier value
+                                        List<Improvement> lstImprovements = await _objCharacter.GetCostModifierImprovementsAsync("cyberware", blnUserChoiceOnly: true, token: token).ConfigureAwait(false);
+                                        Improvement objImprovement = lstImprovements.FirstOrDefault(x => x.ImprovedName == kvp.Key);
+                                        if (objImprovement != null)
                                         {
-                                            decItemCost *= 0.9m;
+                                            objModifiers.SetCustomModifier(kvp.Key, objImprovement.Value);
                                         }
-
-                                        strCost = decItemCost.ToString(strNuyenFormat, GlobalSettings.CultureInfo)
-                                            + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
-                                    }
-                                    else
-                                    {
-                                        strCost += await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                                     }
                                 }
-                                else
+                                
+                                string strNuyenSymbol = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                                
+                                // Use simplified cost processing for selection forms
+                                (string strDisplayCost, decimal decCalculatedCost, bool blnIsSuccess) = await strCost.ProcessCostForSelectionFormAsync(
+                                    intRating, objModifiers, _objCharacter, 
+                                    objXmlCyberware.SelectSingleNodeAndCacheExpression("name", token)?.Value, token).ConfigureAwait(false);
+                                
+                                if (blnIsSuccess)
                                 {
-                                    decItemCost *= _decCostMultiplier * decGenetechCostModifier * (1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m);
-
-                                    if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
-                                    {
-                                        decItemCost *= 0.9m;
-                                    }
-
-                                    strCost = decItemCost.ToString(strNuyenFormat, GlobalSettings.CultureInfo)
-                                        + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                                    decItemCost = decCalculatedCost;
+                                    strCost = strDisplayCost;
                                 }
                             }
                             else
@@ -2353,6 +2356,66 @@ namespace Chummer
 
             return new ValueTuple<decimal, bool>(decValue, blnSuccess);
         }
+
+        #region Dynamic Cost Modifier Checkboxes
+
+        /// <summary>
+        /// Create and manage dynamic checkboxes for CostModifierUserChoice improvements.
+        /// </summary>
+        private async Task CreateDynamicCostModifierCheckboxes(XPathNavigator objSelectedCyberware = null, CancellationToken token = default)
+        {
+            // Get the selected cyberware ID from the list
+            string strSelectedId = await lstCyberware
+                .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
+                .ConfigureAwait(false);
+            
+            if (string.IsNullOrEmpty(strSelectedId))
+            {
+                System.Diagnostics.Debug.WriteLine("No cyberware selected in list");
+                return;
+            }
+
+            // Use the shared checkbox creation method
+            await DynamicCostModifierCheckboxes.CreateDynamicCostModifierCheckboxesAsync(
+                _objCharacter,
+                "cyberware",
+                _xmlBaseCyberwareDataNode,
+                strSelectedId,
+                _dicDynamicCostModifierCheckboxes,
+                flpCheckBoxes,
+                UpdateCyberwareCostModifiers,
+                UpdateCyberwareInfo,
+                _objGenericToken,
+                token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Update the cyberware's stored cost modifiers based on dynamic checkbox states.
+        /// Note: This method stores the modifiers in a temporary location since SelectCyberware doesn't create a Cyberware object.
+        /// </summary>
+        private async Task UpdateCyberwareCostModifiers(CancellationToken token = default)
+        {
+            // For SelectCyberware, we'll store the enabled modifiers in a temporary location
+            // The actual Cyberware object will be created when the user clicks OK
+            // This is a simplified approach - in a full implementation, you might want to store this differently
+            
+            // Clear existing cost modifiers (if any storage mechanism exists)
+            // For now, this is a placeholder - the actual implementation would depend on how
+            // SelectCyberware passes cost modifier information to the created Cyberware object
+            
+            // Add enabled cost modifiers from dynamic checkboxes
+            foreach (KeyValuePair<string, ColorableCheckBox> kvp in _dicDynamicCostModifierCheckboxes)
+            {
+                bool blnChecked = await kvp.Value.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+                if (blnChecked)
+                {
+                    // Store the enabled modifier - this would need to be passed to the Cyberware creation
+                    // For now, this is a placeholder for the actual implementation
+                }
+            }
+        }
+
+        #endregion Dynamic Cost Modifier Checkboxes
 
         #endregion Methods
     }

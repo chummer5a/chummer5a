@@ -43,7 +43,7 @@ namespace Chummer.Backend.Equipment
     /// Lifestyle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(\"en-us\")}")]
-    public sealed class Lifestyle : IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasCustomName, IHasSourceId, IHasSource, ICanSort, INotifyMultiplePropertiesChangedAsync, IHasLockObject, IHasCost, IHasCharacterObject
+    public sealed class Lifestyle : EquipmentWithCostModifiers, IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasCustomName, IHasSourceId, IHasSource, ICanSort, INotifyMultiplePropertiesChangedAsync, IHasLockObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -151,6 +151,30 @@ namespace Chummer.Backend.Equipment
             LifestyleQualities.CollectionChangedAsync += LifestyleQualitiesCollectionChanged;
             LifestyleQualities.BeforeClearCollectionChangedAsync += LifestyleQualitiesOnBeforeClearCollectionChanged;
         }
+
+        #region Abstract Method Implementations
+
+        /// <summary>
+        /// The character object that owns this lifestyle.
+        /// </summary>
+        public override Character CharacterObject => _objCharacter;
+
+        /// <summary>
+        /// The equipment type string used for filtering improvements.
+        /// </summary>
+        public override string EquipmentType => "lifestyle";
+
+        /// <summary>
+        /// Get the base cost of this lifestyle (without modifiers).
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>Base cost</returns>
+        protected override async Task<decimal> GetBaseCostAsync(CancellationToken token = default)
+        {
+            return await GetCostAsync(token).ConfigureAwait(false);
+        }
+
+        #endregion
 
         /// <summary>
         /// Create a Lifestyle from an XmlNode and return the TreeNodes for it.
@@ -3587,16 +3611,11 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                token.ThrowIfCancellationRequested();
-                return await GetTotalMonthlyCostAsync(token: token).ConfigureAwait(false) * await GetIncrementsAsync(token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
+            // Get base cost (monthly cost * increments)
+            decimal decBaseCost = await GetBaseCostAsync(token).ConfigureAwait(false);
+            
+            // Use the base class's cost modifier application logic
+            return await ApplyCostModifiersAsync(decBaseCost, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -5184,7 +5203,5 @@ namespace Chummer.Backend.Equipment
 
         /// <inheritdoc />
         public AsyncFriendlyReaderWriterLock LockObject { get; }
-
-        public Character CharacterObject => _objCharacter; // readonly member, no locking required
     }
 }

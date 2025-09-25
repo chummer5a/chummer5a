@@ -143,6 +143,8 @@ namespace Chummer
             SkillsoftAccess,
             AddSprite,
             BlackMarketDiscount,
+            CostModifier,
+            CostModifierUserChoice,
             ComplexFormLimit,
             SpellLimit,
             QuickeningMetamagic,
@@ -1592,6 +1594,14 @@ namespace Chummer
                 {
                     yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                         nameof(Character.BlackMarketDiscount));
+                }
+                    break;
+
+                case ImprovementType.CostModifier:
+                case ImprovementType.CostModifierUserChoice:
+                {
+                    yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                        nameof(Character.CostModifierImprovements));
                 }
                     break;
 
@@ -4217,6 +4227,14 @@ namespace Chummer
                     }
                     break;
 
+                case ImprovementType.CostModifier:
+                case ImprovementType.CostModifierUserChoice:
+                    {
+                        lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.CostModifierImprovements)));
+                    }
+                    break;
+
                 case ImprovementType.ComplexFormLimit:
                     break;
 
@@ -6405,6 +6423,152 @@ namespace Chummer
         #endregion UI Methods
 
         #endregion Methods
+
+        #region Cost Modifier Methods
+
+        /// <summary>
+        /// Check if this improvement matches the specified equipment type based on its XPath filter.
+        /// </summary>
+        public bool MatchesEquipmentType(string strEquipmentType, Character objCharacter, CancellationToken token = default)
+        {
+            if (ImproveType != ImprovementType.CostModifier && ImproveType != ImprovementType.CostModifierUserChoice)
+                return false;
+
+            // Get the equipment filter XPath from the improvement's Target property
+            string strEquipmentFilter = Target;
+            if (string.IsNullOrEmpty(strEquipmentFilter))
+                return true; // No filter means it applies to all equipment types
+
+            try
+            {
+                // Get the XML filename for the equipment type
+                string strXmlFileName = GetEquipmentXmlFileName(strEquipmentType);
+                if (string.IsNullOrEmpty(strXmlFileName))
+                    return false; // Equipment type not supported
+
+                // Load the actual equipment XML file using the existing system
+                XmlDocument objEquipmentDoc = objCharacter.LoadData(strXmlFileName, token: token);
+                
+                // Test the XPath against the actual equipment XML
+                XmlNodeList objNodes = objEquipmentDoc.SelectNodes(strEquipmentFilter);
+                return objNodes?.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(ex, $"Error evaluating equipment filter XPath '{strEquipmentFilter}' for improvement {SourceName}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Get the XML filename for the specified equipment type.
+        /// </summary>
+        private static string GetEquipmentXmlFileName(string strEquipmentType)
+        {
+            switch (strEquipmentType)
+            {
+                case "armor":
+                case "armormod":
+                    return "armor.xml";
+                case "bioware":
+                    return "bioware.xml";
+                case "cyberware":
+                    return "cyberware.xml";
+                case "drug":
+                    return "drugs.xml";
+                case "gear":
+                    return "gear.xml";
+                case "lifestyle":
+                    return "lifestyles.xml";
+                case "power":
+                    return "powers.xml";
+                case "quality":
+                    return "qualities.xml";
+                case "spell":
+                    return "spells.xml";
+                case "vehicle":
+                case "vehiclemod":
+                    return "vehicles.xml";
+                case "weapon":
+                case "weaponaccessory":
+                    return "weapons.xml";
+                default:
+                    return null; // Unknown equipment type
+            }
+        }
+
+        /// <summary>
+        /// Check if this improvement matches the specified equipment type based on its XPath filter.
+        /// </summary>
+        public async Task<bool> MatchesEquipmentTypeAsync(string strEquipmentType, Character objCharacter, CancellationToken token = default)
+        {
+            if (ImproveType != ImprovementType.CostModifier && ImproveType != ImprovementType.CostModifierUserChoice)
+                return false;
+
+            // Get the equipment filter XPath from the improvement's Target property
+            string strEquipmentFilter = Target;
+            if (string.IsNullOrEmpty(strEquipmentFilter))
+            {
+                System.Diagnostics.Debug.WriteLine($"Improvement '{ImprovedName}' has no equipment filter, applying to all {strEquipmentType}");
+                return true; // No filter means it applies to all equipment types
+            }
+
+            try
+            {
+                // Get the XML filename for the equipment type
+                string strXmlFileName = GetEquipmentXmlFileName(strEquipmentType);
+                if (string.IsNullOrEmpty(strXmlFileName))
+                {
+                    System.Diagnostics.Debug.WriteLine($"No XML file found for equipment type: {strEquipmentType}");
+                    return false; // Equipment type not supported
+                }
+
+                System.Diagnostics.Debug.WriteLine($"Testing XPath '{strEquipmentFilter}' against {strXmlFileName} for improvement '{ImprovedName}'");
+
+                // Load the actual equipment XML file using the existing system
+                XmlDocument objEquipmentDoc = await objCharacter.LoadDataAsync(strXmlFileName, token: token).ConfigureAwait(false);
+                
+                // Test the XPath against the actual equipment XML
+                XmlNodeList objNodes = objEquipmentDoc.SelectNodes(strEquipmentFilter);
+                bool blnMatches = objNodes?.Count > 0;
+                System.Diagnostics.Debug.WriteLine($"XPath '{strEquipmentFilter}' matched {objNodes?.Count ?? 0} nodes in {strXmlFileName}: {blnMatches}");
+                return blnMatches;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error evaluating equipment filter XPath '{strEquipmentFilter}' for improvement {SourceName}: {ex.Message}");
+                Log.Warn(ex, $"Error evaluating equipment filter XPath '{strEquipmentFilter}' for improvement {SourceName}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Get the cost modifier name and value from this improvement.
+        /// </summary>
+        public (string strModifierName, decimal decValue) GetCostModifier()
+        {
+            if (ImproveType != ImprovementType.CostModifier && ImproveType != ImprovementType.CostModifierUserChoice)
+                return (string.Empty, 1.0m);
+
+            // The modifier name is stored in ImprovedName and the value is stored in Value
+            string strModifierName = ImprovedName;
+            decimal decValue = Value;
+            
+            return (strModifierName, decValue);
+        }
+
+        /// <summary>
+        /// Get the cost modifier name and value from this improvement.
+        /// </summary>
+        public async Task<(string strModifierName, decimal decValue)> GetCostModifierAsync(CancellationToken token = default)
+        {
+            if (ImproveType != ImprovementType.CostModifier && ImproveType != ImprovementType.CostModifierUserChoice)
+                return (string.Empty, 1.0m);
+            
+            return (ImprovedName, Value);
+        }
+
+        #endregion Cost Modifier Methods
 
         public string InternalId => SourceName;
     }

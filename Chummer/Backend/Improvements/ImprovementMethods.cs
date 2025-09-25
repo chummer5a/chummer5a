@@ -488,6 +488,10 @@ namespace Chummer
                     return objImprovementAdder.selectsprite;
                 case "BLACKMARKETDISCOUNT":
                     return objImprovementAdder.blackmarketdiscount;
+                case "COSTMODIFIER":
+                    return objImprovementAdder.costmodifier;
+                case "COSTMODIFIERUSERCHOICE":
+                    return objImprovementAdder.costmodifieruserchoice;
                 case "SELECTARMOR":
                     return objImprovementAdder.selectarmor;
                 case "SELECTCYBERWARE":
@@ -546,10 +550,10 @@ namespace Chummer
                     return objImprovementAdder.knowledgeskillkarmacost;
                 case "KNOWLEDGESKILLKARMACOSTMIN":
                     return objImprovementAdder.knowledgeskillkarmacostmin;
-                case "SKILLENABLEMOVEMENT":
-                    return objImprovementAdder.skillenablemovement;
                 case "SKILLDISABLE":
                     return objImprovementAdder.skilldisable;
+                case "SKILLENABLEMOVEMENT":
+                    return objImprovementAdder.skillenablemovement;
                 case "SKILLGROUPDISABLE":
                     return objImprovementAdder.skillgroupdisable;
                 case "SKILLGROUPDISABLECHOICE":
@@ -1195,14 +1199,18 @@ namespace Chummer
                     return objImprovementAsyncAdder.knowledgeskillkarmacost;
                 case "KNOWLEDGESKILLKARMACOSTMIN":
                     return objImprovementAsyncAdder.knowledgeskillkarmacostmin;
-                case "SKILLENABLEMOVEMENT":
-                    return objImprovementAsyncAdder.skillenablemovement;
                 case "SKILLDISABLE":
                     return objImprovementAsyncAdder.skilldisable;
+                case "SKILLENABLEMOVEMENT":
+                    return objImprovementAsyncAdder.skillenablemovement;
                 case "SKILLGROUPDISABLE":
                     return objImprovementAsyncAdder.skillgroupdisable;
                 case "SKILLGROUPDISABLECHOICE":
                     return objImprovementAsyncAdder.skillgroupdisablechoice;
+                case "COSTMODIFIER":
+                    return objImprovementAsyncAdder.costmodifier;
+                case "COSTMODIFIERUSERCHOICE":
+                    return objImprovementAsyncAdder.costmodifieruserchoice;
                 case "SKILLGROUPCATEGORYDISABLE":
                     return objImprovementAsyncAdder.skillgroupcategorydisable;
                 case "SKILLGROUPCATEGORYKARMACOST":

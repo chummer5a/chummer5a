@@ -3092,6 +3092,114 @@
           <group />
         </addcontact>
         <mademan />
+        <costmodifieruserchoice>
+          <name>RangedWeaponDiscount</name>
+          <val>0.9</val>
+          <equipmentfilter xpath="/chummer/weapons/weapon[category = 'Shotguns']"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>GearDiscount</name>
+          <val>0.9</val>
+          <equipmentfilter xpath="/chummer/gears/gear[category = 'Commlinks']"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>ArmorDiscount</name>
+          <val>0.9</val>
+          <equipmentfilter xpath="/chummer/armors/armor[category = 'Armor']"/>
+        </costmodifieruserchoice>
+        <!-- Comprehensive test nodes for all equipment types -->
+        <costmodifieruserchoice>
+          <name>WeaponDiscount</name>
+          <val>0.85</val>
+          <equipmentfilter xpath="/chummer/weapons/weapon[category = 'Assault Rifles']"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>MeleeWeaponDiscount</name>
+          <val>0.8</val>
+          <equipmentfilter xpath="/chummer/weapons/weapon[category = 'Blades']"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>ArmorModDiscount</name>
+          <val>0.9</val>
+          <equipmentfilter xpath="/chummer/mods/mod"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>CyberwareDiscount</name>
+          <val>0.85</val>
+          <equipmentfilter xpath="/chummer/cyberwares/cyberware[category = 'Eyeware']"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>BiowareDiscount</name>
+          <val>0.9</val>
+          <equipmentfilter xpath="/chummer/biowares/bioware[category = 'Basic']"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>VehicleDiscount</name>
+          <val>0.8</val>
+          <equipmentfilter xpath="/chummer/vehicles/vehicle[category = 'Bikes']"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>VehicleModDiscount</name>
+          <val>0.9</val>
+          <equipmentfilter xpath="/chummer/mods/mod"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>WeaponAccessoryDiscount</name>
+          <val>0.85</val>
+          <equipmentfilter xpath="/chummer/accessories/accessory"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>DrugDiscount</name>
+          <val>0.7</val>
+          <equipmentfilter xpath="/chummer/drugs/drug[category = 'Drugs']"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>LifestyleDiscount</name>
+          <val>0.9</val>
+          <equipmentfilter xpath="/chummer/lifestyles/lifestyle"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>WeaponMountDiscount</name>
+          <val>0.85</val>
+          <equipmentfilter xpath="/chummer/weaponmounts/weaponmount"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>WeaponMountOptionDiscount</name>
+          <val>0.9</val>
+          <equipmentfilter xpath="/chummer/weaponmountoptions/weaponmountoption"/>
+        </costmodifieruserchoice>
+        <!-- Test nodes with different discount values for variety -->
+        <costmodifieruserchoice>
+          <name>HighValueDiscount</name>
+          <val>0.5</val>
+          <equipmentfilter xpath="/chummer/weapons/weapon[cost &gt; 10000]"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>LowValueDiscount</name>
+          <val>0.95</val>
+          <equipmentfilter xpath="/chummer/gears/gear[cost &lt; 100]"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>RareItemDiscount</name>
+          <val>0.6</val>
+          <equipmentfilter xpath="/chummer/cyberwares/cyberware[availability &gt; 12]"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>CommonItemDiscount</name>
+          <val>0.9</val>
+          <equipmentfilter xpath="/chummer/gears/gear[availability &lt; 6]"/>
+        </costmodifieruserchoice>
+        <!-- Test nodes with markup (values > 1.0) -->
+        <costmodifieruserchoice>
+          <name>LuxuryMarkup</name>
+          <val>1.2</val>
+          <equipmentfilter xpath="/chummer/vehicles/vehicle[category = 'Aircraft']"/>
+        </costmodifieruserchoice>
+        <costmodifieruserchoice>
+          <name>ExoticMarkup</name>
+          <val>1.5</val>
+          <equipmentfilter xpath="/chummer/cyberwares/cyberware[category = 'Cultured Bioware']"/>
+        </costmodifieruserchoice>
       </bonus>
       <source>RF</source>
       <page>148</page>

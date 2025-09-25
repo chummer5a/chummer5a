@@ -890,5 +890,29 @@
       <xml><![CDATA[{val}]]></xml>
       <page>Adjusts the availability of all of the character's items by the value entered. Positive numbers increase availability. Negative numbers reduce availability.</page>
     </improvement>
+    <improvement>
+      <name>Cost Modifier</name>
+      <id>costmodifier</id>
+      <internal>costmodifier</internal>
+      <fields>
+        <field>SelectCostModifier</field>
+        <field>val</field>
+        <field>SelectEquipmentFilter</field>
+      </fields>
+      <xml><![CDATA[<name>{select}</name><val>{val}</val><modifier name="{select}" value="{val}"/><equipmentfilter xpath="{equipmentfilter}"/>]]></xml>
+      <page>Applies a cost modifier to equipment purchases. The modifier name should be unique (e.g., "CorporateDiscount", "LoyaltyDiscount"). The value is a multiplier (0.9 for 10% discount, 1.1 for 10% markup). The equipment filter is an XPath expression to determine which equipment types this applies to (e.g., "weapons/weapon or armors/armor").</page>
+    </improvement>
+    <improvement>
+      <name>Cost Modifier (User Choice)</name>
+      <id>costmodifieruserchoice</id>
+      <internal>costmodifieruserchoice</internal>
+      <fields>
+        <field>SelectCostModifier</field>
+        <field>val</field>
+        <field>SelectEquipmentFilter</field>
+      </fields>
+      <xml><![CDATA[<name>{select}</name><val>{val}</val><modifier name="{select}" value="{val}"/><equipmentfilter xpath="{equipmentfilter}"/>]]></xml>
+      <page>Applies a cost modifier to equipment purchases that can be toggled by the user via checkboxes in selection forms. The modifier name should be unique (e.g., "CorporateDiscount", "LoyaltyDiscount"). The value is a multiplier (0.9 for 10% discount, 1.1 for 10% markup). The equipment filter is an XPath expression to determine which equipment types this applies to (e.g., "weapons/weapon or armors/armor").</page>
+    </improvement>
   </improvements>
 </chummer>

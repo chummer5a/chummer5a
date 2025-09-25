@@ -5830,6 +5830,35 @@ namespace Chummer
                     await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
 
+            // Clean up invalid cost modifiers from all equipment after improvements are removed
+            // Only clean up if the character hasn't been created yet (to preserve expense history)
+            bool blnCharacterCreated = blnSync ? objCharacter.Created : await objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
+            if (!blnCharacterCreated)
+            {
+                if (blnSync)
+                {
+                    // Clean up cost modifiers for all equipment types using the interface
+                    // Note: Equipment with children (Armor, Weapons, Vehicles) will handle their own children
+                    objCharacter.Weapons.OfType<IHasCostModifiers>().ForEach(x => x.CleanupInvalidCostModifiers(token: token), token: token);
+                    objCharacter.Armor.OfType<IHasCostModifiers>().ForEach(x => x.CleanupInvalidCostModifiers(token: token), token: token);
+                    objCharacter.Gear.OfType<IHasCostModifiers>().ForEach(x => x.CleanupInvalidCostModifiers(token: token), token: token);
+                    objCharacter.Cyberware.OfType<IHasCostModifiers>().ForEach(x => x.CleanupInvalidCostModifiers(token: token), token: token);
+                    objCharacter.Vehicles.OfType<IHasCostModifiers>().ForEach(x => x.CleanupInvalidCostModifiers(token: token), token: token);
+                    objCharacter.Lifestyles.OfType<IHasCostModifiers>().ForEach(x => x.CleanupInvalidCostModifiers(token: token), token: token);
+                }
+                else
+                {
+                    // Clean up cost modifiers for all equipment types using the interface
+                    // Note: Equipment with children (Armor, Weapons, Vehicles) will handle their own children
+                    await objCharacter.Weapons.OfType<IHasCostModifiers>().ForEachAsync(x => x.CleanupInvalidCostModifiersAsync(token: token), token: token).ConfigureAwait(false);
+                    await objCharacter.Armor.OfType<IHasCostModifiers>().ForEachAsync(x => x.CleanupInvalidCostModifiersAsync(token: token), token: token).ConfigureAwait(false);
+                    await objCharacter.Gear.OfType<IHasCostModifiers>().ForEachAsync(x => x.CleanupInvalidCostModifiersAsync(token: token), token: token).ConfigureAwait(false);
+                    await objCharacter.Cyberware.OfType<IHasCostModifiers>().ForEachAsync(x => x.CleanupInvalidCostModifiersAsync(token: token), token: token).ConfigureAwait(false);
+                    await objCharacter.Vehicles.OfType<IHasCostModifiers>().ForEachAsync(x => x.CleanupInvalidCostModifiersAsync(token: token), token: token).ConfigureAwait(false);
+                    await objCharacter.Lifestyles.OfType<IHasCostModifiers>().ForEachAsync(x => x.CleanupInvalidCostModifiersAsync(token: token), token: token).ConfigureAwait(false);
+                }
+            }
+
             Log.Debug("RemoveImprovements exit");
             return decReturn;
         }

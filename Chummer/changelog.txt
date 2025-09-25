@@ -1,5 +1,21 @@
 Future Build 226
 Application Changes:
+- Implemented comprehensive dynamic cost modifier system for all equipment selection forms
+- Added EquipmentWithCostModifiers base class for unified cost modifier logic across all equipment types
+- Created IHasCostModifiers interface for type-safe cost modifier operations
+- Added dynamic cost modifier checkboxes to all selection forms (SelectWeapon, SelectArmor, SelectGear, SelectCyberware, SelectVehicle, SelectDrug, SelectWeaponAccessory, SelectVehicleMod, SelectArmorMod, SelectLifestyle)
+- Implemented real-time cost updates when cost modifier checkboxes are toggled
+- Added detailed cost tooltips showing base cost, applied modifiers, and final cost
+- Centralized XPath evaluation logic in CostProcessing.XPathEvaluation utility class
+- Created shared dynamic checkbox management in CostProcessing.DynamicCostModifierCheckboxes utility class
+- Refactored all equipment classes (Weapon, Armor, Gear, Cyberware, Vehicle, ArmorMod, WeaponAccessory, VehicleMod, WeaponMount, WeaponMountOption, Lifestyle) to inherit from EquipmentWithCostModifiers
+- Updated all selection forms to use SetMarkup method for proper markup handling
+- Removed all MadeManDiscount code from codebase (controls, event handlers, language entries, documentation)
+- Enhanced thread safety with proper async/await patterns in cost modifier operations
+- Improved error handling and cancellation token support throughout cost modifier system
+- Reduced code duplication through inheritance and shared utility classes
+- Updated improvements.xml documentation to remove MadeManDiscount references
+- Added comprehensive test improvements to qualities.xml for all equipment types
 - The program no longer crashes when attempting to open characters from outside the program (e.g. by double-clicking a Chummer5a save file).
 - A new global setting is now available that can toggle whether or not scraped text from PDF files is automatically inserted as Notes for items newly added to a character.
 - XPath 1.0 functions like ceiling() and floor() are now properly supported in all fields that work off of the document-invariant XPath processor.

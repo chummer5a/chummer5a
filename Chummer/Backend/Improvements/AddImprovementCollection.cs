@@ -5220,6 +5220,54 @@ namespace Chummer
                 _strUnique);
         }
 
+        // Check for Cost Modifier.
+        public void costmodifier(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+
+            // Get the modifier name from the improvement XML
+            string strModifierName = bonusNode.SelectSingleNode("modifier/@name")?.Value ?? SelectedValue;
+            if (string.IsNullOrEmpty(strModifierName))
+                strModifierName = SelectedValue;
+
+            // Get the modifier value from the improvement XML
+            string strModifierValue = bonusNode.SelectSingleNode("modifier/@value")?.Value ?? "1.0";
+            if (!decimal.TryParse(strModifierValue, out decimal decModifierValue))
+                decModifierValue = 1.0m;
+
+            // Get the equipment filter from the improvement XML
+            string strEquipmentFilter = bonusNode.SelectSingleNode("equipmentfilter/@xpath")?.Value ?? string.Empty;
+
+            // Create the Improvement with the modifier information
+            CreateImprovement(strModifierName, _objImprovementSource, SourceName, Improvement.ImprovementType.CostModifier,
+                _strUnique, decModifierValue, strTarget: strEquipmentFilter);
+        }
+
+        // Check for Cost Modifier (User Choice).
+        public void costmodifieruserchoice(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+
+            // Get the modifier name from the improvement XML
+            string strModifierName = bonusNode.SelectSingleNode("modifier/@name")?.Value ?? SelectedValue;
+            if (string.IsNullOrEmpty(strModifierName))
+                strModifierName = SelectedValue;
+
+            // Get the modifier value from the improvement XML
+            string strModifierValue = bonusNode.SelectSingleNode("modifier/@value")?.Value ?? "1.0";
+            if (!decimal.TryParse(strModifierValue, out decimal decModifierValue))
+                decModifierValue = 1.0m;
+
+            // Get the equipment filter from the improvement XML
+            string strEquipmentFilter = bonusNode.SelectSingleNode("equipmentfilter/@xpath")?.Value ?? string.Empty;
+
+            // Create the Improvement with the modifier information
+            CreateImprovement(strModifierName, _objImprovementSource, SourceName, Improvement.ImprovementType.CostModifierUserChoice,
+                _strUnique, decModifierValue, strTarget: strEquipmentFilter);
+        }
+
         // Select Armor (Mostly used for Custom Fit (Stack)).
         public void selectarmor(XmlNode bonusNode)
         {

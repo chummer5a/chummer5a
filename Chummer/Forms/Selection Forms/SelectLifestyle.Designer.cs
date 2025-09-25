@@ -42,6 +42,7 @@ namespace Chummer
             this.lblTotalLP = new System.Windows.Forms.Label();
             this.lblCostLabel = new System.Windows.Forms.Label();
             this.lblCost = new System.Windows.Forms.Label();
+            this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
             this.lblLifestyleNameLabel = new System.Windows.Forms.Label();
             this.txtLifestyleName = new System.Windows.Forms.TextBox();
             this.lblPercentage = new System.Windows.Forms.Label();
@@ -217,6 +218,18 @@ namespace Chummer
             this.lblCost.Size = new System.Drawing.Size(34, 13);
             this.lblCost.TabIndex = 19;
             this.lblCost.Text = "[Cost]";
+            // 
+            // flpCheckBoxes
+            // 
+            this.flpCheckBoxes.AutoSize = true;
+            this.flpCheckBoxes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpRight.SetColumnSpan(this.flpCheckBoxes, 4);
+            this.flpCheckBoxes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpCheckBoxes.Location = new System.Drawing.Point(0, 251);
+            this.flpCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
+            this.flpCheckBoxes.Name = "flpCheckBoxes";
+            this.flpCheckBoxes.Size = new System.Drawing.Size(460, 0);
+            this.flpCheckBoxes.TabIndex = 20;
             // 
             // lblLifestyleNameLabel
             // 
@@ -620,6 +633,7 @@ namespace Chummer
             this.tlpRight.Controls.Add(this.lblComfortsLabel, 0, 2);
             this.tlpRight.Controls.Add(this.nudArea, 2, 3);
             this.tlpRight.Controls.Add(this.lblCost, 1, 8);
+            this.tlpRight.Controls.Add(this.flpCheckBoxes, 0, 9);
             this.tlpRight.Controls.Add(this.nudSecurity, 2, 4);
             this.tlpRight.Controls.Add(this.lblSecurity, 1, 4);
             this.tlpRight.Controls.Add(this.lblCostLabel, 0, 8);
@@ -1098,6 +1112,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblTotalLP;
         private System.Windows.Forms.Label lblCostLabel;
         private System.Windows.Forms.Label lblCost;
+        private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes;
         private System.Windows.Forms.Label lblLifestyleNameLabel;
         private System.Windows.Forms.TextBox txtLifestyleName;
         private Chummer.NumericUpDownEx nudPercentage;

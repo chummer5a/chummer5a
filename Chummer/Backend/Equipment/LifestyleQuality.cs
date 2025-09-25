@@ -137,7 +137,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objLifestyleQualitySource">Source of the LifestyleQuality.</param>
         /// <param name="strExtra">Forced value for the LifestyleQuality's Extra string (also used by its bonus node).</param>
         public void Create(XmlNode objXmlLifestyleQuality, Lifestyle objParentLifestyle, Character objCharacter,
-            QualitySource objLifestyleQualitySource, string strExtra = "")
+            QualitySource objLifestyleQualitySource, string strExtra = "", bool blnForSelectForm = false)
         {
             using (LockObject.EnterWriteLock())
             {
@@ -161,6 +161,15 @@ namespace Chummer.Backend.Equipment
 
                 objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLPCost);
                 objXmlLifestyleQuality.TryGetStringFieldQuickly("cost", ref _strCost);
+                
+                // Check for a Variable Cost.
+                if (_strCost.PromptForVariableCost(_objCharacter, CurrentDisplayNameShort, blnForSelectForm, false, 
+                    false, false, true, out string strUpdatedCost, CancellationToken.None))
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+                _strCost = strUpdatedCost;
                 objXmlLifestyleQuality.TryGetDecFieldQuickly("multiplier", ref _decMultiplier);
                 objXmlLifestyleQuality.TryGetDecFieldQuickly("multiplierbaseonly", ref _decBaseMultiplier);
                 if (objXmlLifestyleQuality.TryGetStringFieldQuickly("category", ref _strCategory))
@@ -249,7 +258,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strExtra">Forced value for the LifestyleQuality's Extra string (also used by its bonus node).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task CreateAsync(XmlNode objXmlLifestyleQuality, Lifestyle objParentLifestyle, Character objCharacter,
-            QualitySource objLifestyleQualitySource, string strExtra = "", CancellationToken token = default)
+            QualitySource objLifestyleQualitySource, string strExtra = "", bool blnForSelectForm = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -276,6 +285,16 @@ namespace Chummer.Backend.Equipment
 
                 objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLPCost);
                 objXmlLifestyleQuality.TryGetStringFieldQuickly("cost", ref _strCost);
+                
+                // Check for a Variable Cost.
+                (bool blnCancelled, string strUpdatedCost) = await _strCost.PromptForVariableCostAsync(_objCharacter, CurrentDisplayNameShort, blnForSelectForm, false, 
+                    false, false, token).ConfigureAwait(false);
+                if (blnCancelled)
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+                _strCost = strUpdatedCost;
                 objXmlLifestyleQuality.TryGetDecFieldQuickly("multiplier", ref _decMultiplier);
                 objXmlLifestyleQuality.TryGetDecFieldQuickly("multiplierbaseonly", ref _decBaseMultiplier);
                 if (objXmlLifestyleQuality.TryGetStringFieldQuickly("category", ref _strCategory))
@@ -1615,15 +1634,25 @@ namespace Chummer.Backend.Equipment
                         sbdReturn.Append(decMultiplier.ToString(objCulture)).Append('%');
                     }
 
-                    decimal decCost = Cost;
-                    if (decCost != 0)
+                    // Handle Variable cost display
+                    if (_strCost.StartsWith("Variable(", StringComparison.Ordinal))
                     {
                         if (sbdReturn.Length > 0)
                             sbdReturn.Append(',').Append(LanguageManager.GetString("String_Space", strLanguage));
-                        if (decCost > 0)
-                            sbdReturn.Append('+');
-                        sbdReturn.Append(decCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture))
-                            .Append(LanguageManager.GetString("String_NuyenSymbol", strLanguage));
+                        sbdReturn.Append(_strCost.FormatVariableCostForDisplay(_objCharacter.Settings.NuyenFormat, LanguageManager.GetString("String_NuyenSymbol", strLanguage), objCulture));
+                    }
+                    else
+                    {
+                        decimal decCost = Cost;
+                        if (decCost != 0)
+                        {
+                            if (sbdReturn.Length > 0)
+                                sbdReturn.Append(',').Append(LanguageManager.GetString("String_Space", strLanguage));
+                            if (decCost > 0)
+                                sbdReturn.Append('+');
+                            sbdReturn.Append(decCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture))
+                                .Append(LanguageManager.GetString("String_NuyenSymbol", strLanguage));
+                        }
                     }
                     strReturn = sbdReturn.ToString();
                 }
@@ -1663,15 +1692,27 @@ namespace Chummer.Backend.Equipment
                         sbdReturn.Append(decMultiplier.ToString(objCulture)).Append('%');
                     }
 
-                    decimal decCost = await GetCostAsync(token).ConfigureAwait(false);
-                    if (decCost != 0)
+                    // Handle Variable cost display
+                    if (_strCost.StartsWith("Variable(", StringComparison.Ordinal))
                     {
                         if (sbdReturn.Length > 0)
                             sbdReturn.Append(',').Append(await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false));
-                        if (decCost > 0)
-                            sbdReturn.Append('+');
-                        sbdReturn.Append(decCost.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token: token).ConfigureAwait(false), objCulture))
-                            .Append(await LanguageManager.GetStringAsync("String_NuyenSymbol", strLanguage, token: token).ConfigureAwait(false));
+                        string strFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token: token).ConfigureAwait(false);
+                        string strNuyenSymbol = await LanguageManager.GetStringAsync("String_NuyenSymbol", strLanguage, token: token).ConfigureAwait(false);
+                        sbdReturn.Append(_strCost.FormatVariableCostForDisplay(strFormat, strNuyenSymbol, objCulture));
+                    }
+                    else
+                    {
+                        decimal decCost = await GetCostAsync(token).ConfigureAwait(false);
+                        if (decCost != 0)
+                        {
+                            if (sbdReturn.Length > 0)
+                                sbdReturn.Append(',').Append(await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false));
+                            if (decCost > 0)
+                                sbdReturn.Append('+');
+                            sbdReturn.Append(decCost.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token: token).ConfigureAwait(false), objCulture))
+                                .Append(await LanguageManager.GetStringAsync("String_NuyenSymbol", strLanguage, token: token).ConfigureAwait(false));
+                        }
                     }
                     strReturn = sbdReturn.ToString();
                 }

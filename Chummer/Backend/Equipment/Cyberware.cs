@@ -43,7 +43,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(null, \"en-us\")}")]
-    public sealed class Cyberware : ICanPaste, IHasChildrenAsyncAndCost<Cyberware>, IHasGear, IHasName, IHasInternalId,
+    public sealed class Cyberware : EquipmentWithCostModifiers, ICanPaste, IHasChildrenAsyncAndCost<Cyberware>, IHasGear, IHasName, IHasInternalId,
         IHasSourceId, IHasXmlDataNode,
         IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasStolenProperty,
         IHasWirelessBonus, ICanBlackMarketDiscount, IHasLockObject
@@ -131,6 +131,7 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
 
         private readonly Character _objCharacter;
+        private Dictionary<string, bool> _dicEnabledCostModifiers = new Dictionary<string, bool>();
 
         private bool _blnDoPropertyChangedInCollectionChanged = true;
 
@@ -211,6 +212,60 @@ namespace Chummer.Backend.Equipment
             _lstGear = new TaggedObservableCollection<Gear>(LockObject);
             _lstGear.AddTaggedCollectionChanged(this, GearChildrenOnCollectionChanged);
         }
+
+        #region Abstract Method Implementations
+
+        /// <summary>
+        /// The character object that owns this cyberware.
+        /// </summary>
+        public override Character CharacterObject => _objCharacter;
+
+        /// <summary>
+        /// The equipment type string used for filtering improvements.
+        /// </summary>
+        public override string EquipmentType => "cyberware";
+
+        /// <summary>
+        /// Get the base cost of this cyberware (without modifiers).
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>Base cost</returns>
+        protected override async Task<decimal> GetBaseCostAsync(CancellationToken token = default)
+        {
+            return await GetOwnCostAsync(token).ConfigureAwait(false)
+                   + await Children.SumAsync(objChild => objChild.GetTotalCostAsync(token), token).ConfigureAwait(false)
+                   + await GearChildren.SumAsync(objGear => objGear.GetTotalCostAsync(token), token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Clean up any enabled cost modifiers that are no longer valid (e.g., when improvements are removed).
+        /// Override to handle children cleanup.
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        public override void CleanupInvalidCostModifiers(CancellationToken token = default)
+        {
+            base.CleanupInvalidCostModifiers(token);
+            
+            // Clean up children (Children and GearChildren)
+            Children.ForEach(x => x.CleanupInvalidCostModifiers(token: token), token: token);
+            GearChildren.ForEach(x => x.CleanupInvalidCostModifiers(token: token), token: token);
+        }
+
+        /// <summary>
+        /// Clean up any enabled cost modifiers that are no longer valid (async version).
+        /// Override to handle children cleanup.
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        public override async Task CleanupInvalidCostModifiersAsync(CancellationToken token = default)
+        {
+            await base.CleanupInvalidCostModifiersAsync(token).ConfigureAwait(false);
+            
+            // Clean up children (Children and GearChildren)
+            await Children.ForEachAsync(x => x.CleanupInvalidCostModifiersAsync(token: token), token: token).ConfigureAwait(false);
+            await GearChildren.ForEachAsync(x => x.CleanupInvalidCostModifiersAsync(token: token), token: token).ConfigureAwait(false);
+        }
+
+        #endregion
 
         private async Task CyberwareChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
@@ -1013,96 +1068,13 @@ namespace Chummer.Backend.Equipment
                     objXmlCyberware.TryGetStringFieldQuickly("weight", ref _strWeight);
 
                     // Check for a Variable Cost.
-                    if (_strCost.StartsWith("Variable(", StringComparison.Ordinal))
+                    if (_strCost.PromptForVariableCost(_objCharacter, CurrentDisplayNameShort, false, false, 
+                        blnSkipSelectForms, false, blnSync, out string strUpdatedCost, token))
                     {
-                        string strFirstHalf = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                        string strSecondHalf = string.Empty;
-                        int intHyphenIndex = strFirstHalf.IndexOf('-');
-                        if (intHyphenIndex != -1)
-                        {
-                            if (intHyphenIndex + 1 < strFirstHalf.Length)
-                                strSecondHalf = strFirstHalf.Substring(intHyphenIndex + 1);
-                            strFirstHalf = strFirstHalf.Substring(0, intHyphenIndex);
-                        }
-
-                        if (!blnSkipSelectForms)
-                        {
-                            decimal decMin;
-                            decimal decMax = decimal.MaxValue;
-                            if (intHyphenIndex != -1)
-                            {
-                                decimal.TryParse(strFirstHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
-                                decimal.TryParse(strSecondHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMax);
-                            }
-                            else
-                                decimal.TryParse(strFirstHalf.FastEscape('+'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
-
-                            if (decMin != decimal.MinValue || decMax != decimal.MaxValue)
-                            {
-                                if (decMax > 1000000)
-                                    decMax = 1000000;
-
-                                if (blnSync)
-                                {
-                                    using (ThreadSafeForm<SelectNumber> frmPickNumber
-                                           // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                           = ThreadSafeForm<SelectNumber>.Get(
-                                               () => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
-                                               {
-                                                   Minimum = decMin,
-                                                   Maximum = decMax,
-                                                   Description = string.Format(
-                                                       GlobalSettings.CultureInfo,
-                                                       LanguageManager.GetString("String_SelectVariableCost", token: token),
-                                                       CurrentDisplayNameShort),
-                                                   AllowCancel = false
-                                               }))
-                                    {
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        if (frmPickNumber.ShowDialogSafe(_objCharacter, token) == DialogResult.Cancel)
-                                        {
-                                            _guiID = Guid.Empty;
-                                            return;
-                                        }
-
-                                        _strCost = frmPickNumber.MyForm.SelectedValue.ToString(
-                                            GlobalSettings.InvariantCultureInfo);
-                                    }
-                                }
-                                else
-                                {
-                                    string strDescription = string.Format(
-                                        GlobalSettings.CultureInfo,
-                                        await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
-                                        await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
-                                    int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
-                                    using (ThreadSafeForm<SelectNumber> frmPickNumber
-                                           = await ThreadSafeForm<SelectNumber>.GetAsync(
-                                               () => new SelectNumber(intDecimalPlaces)
-                                               {
-                                                   Minimum = decMin,
-                                                   Maximum = decMax,
-                                                   Description = strDescription,
-                                                   AllowCancel = false
-                                               }, token).ConfigureAwait(false))
-                                    {
-                                        if (await frmPickNumber.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
-                                        {
-                                            _guiID = Guid.Empty;
-                                            return;
-                                        }
-
-                                        _strCost = frmPickNumber.MyForm.SelectedValue.ToString(
-                                            GlobalSettings.InvariantCultureInfo);
-                                    }
-                                }
-                            }
-                            else
-                                _strCost = strFirstHalf;
-                        }
-                        else
-                            _strCost = strFirstHalf;
+                        _guiID = Guid.Empty;
+                        return;
                     }
+                    _strCost = strUpdatedCost;
 
                     if (blnCreateChildren)
                     {
@@ -2354,6 +2326,15 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("canswapattributes",
                     _blnCanSwapAttributes.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
+                
+                // Save enabled cost modifiers
+                objWriter.WriteStartElement("enabledcostmodifiers");
+                foreach (KeyValuePair<string, bool> kvp in _dicEnabledCostModifiers)
+                {
+                    objWriter.WriteElementString(kvp.Key, kvp.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                }
+                objWriter.WriteEndElement();
+                
                 objWriter.WriteEndElement();
             }
         }
@@ -2484,6 +2465,24 @@ namespace Chummer.Backend.Equipment
                     objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
                     objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
                     objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+                    
+                    // Load enabled cost modifiers
+                    XmlNode objEnabledCostModifiersNode = objNode["enabledcostmodifiers"];
+                    if (objEnabledCostModifiersNode != null)
+                    {
+                        using (LockObject.EnterWriteLock())
+                        {
+                            _dicEnabledCostModifiers.Clear();
+                            foreach (XmlNode objModifierNode in objEnabledCostModifiersNode.ChildNodes)
+                            {
+                                if (bool.TryParse(objModifierNode.InnerText, out bool blnValue))
+                                {
+                                    _dicEnabledCostModifiers[objModifierNode.Name] = blnValue;
+                                }
+                            }
+                        }
+                    }
+                    
                     // Legacy shim for old-form customized attribute
                     if (s_AttributeAffectingCyberwares.Values.Any(x => x.Contains(Name)) &&
                         int.TryParse(MaxRatingString, out int _))
@@ -7371,6 +7370,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+
         /// <summary>
         /// Whether the Cyberware's cost should be discounted by 10% through the Black Market Pipeline Quality.
         /// </summary>
@@ -10092,17 +10092,14 @@ namespace Chummer.Backend.Equipment
 
         public async Task<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                token.ThrowIfCancellationRequested();
-                return await CalculatedTotalCostAsync(() => GetRatingAsync(token), await GetGradeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
+            // Get base cost (calculated cost + children + gear children)
+            decimal decBaseCost = await GetBaseCostAsync(token).ConfigureAwait(false);
+            
+            // Use the base class's cost modifier application logic
+            return await ApplyCostModifiersAsync(decBaseCost, token).ConfigureAwait(false);
         }
+
+
 
         public decimal OwnCost
         {
@@ -13210,6 +13207,7 @@ namespace Chummer.Backend.Equipment
 
         public bool IsDisposed => _intIsDisposed > 0;
 
+
         /// <inheritdoc />
         public void Dispose()
         {
@@ -13280,6 +13278,5 @@ namespace Chummer.Backend.Equipment
         /// <inheritdoc />
         public AsyncFriendlyReaderWriterLock LockObject { get; }
 
-        public Character CharacterObject => _objCharacter; // readonly member, no locking required
     }
 }

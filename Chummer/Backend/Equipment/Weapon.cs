@@ -35,6 +35,7 @@ using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Enums;
 using Chummer.Backend.Skills;
+using Chummer.Backend.Static;
 using Microsoft.VisualStudio.Threading;
 using NLog;
 using IAsyncDisposable = System.IAsyncDisposable;
@@ -46,7 +47,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(null, \"en-us\")}")]
-    public sealed class Weapon : IHasChildren<Weapon>, IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode,
+    public sealed class Weapon : EquipmentWithCostModifiers, IHasChildren<Weapon>, IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode,
         IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort,
         IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasRating, ICanBlackMarketDiscount, IDisposable,
         IAsyncDisposable
@@ -110,6 +111,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnEquipped = true;
         private bool _blnSkipEvents;
         private bool _blnDiscountCost;
+        private Dictionary<string, bool> _dicEnabledCostModifiers = new Dictionary<string, bool>();
         private bool _blnRequireAmmo = true;
         private string _strAccuracy = string.Empty;
         private string _strWeaponSlots = string.Empty;
@@ -170,6 +172,60 @@ namespace Chummer.Backend.Equipment
             _lstAccessories = new TaggedObservableCollection<WeaponAccessory>(objCharacter.LockObject);
             _lstAccessories.AddTaggedCollectionChanged(this, AccessoriesOnCollectionChanged);
         }
+
+        #region Abstract Method Implementations
+
+        /// <summary>
+        /// The character object that owns this weapon.
+        /// </summary>
+        public override Character CharacterObject => _objCharacter;
+
+        /// <summary>
+        /// The equipment type string used for filtering improvements.
+        /// </summary>
+        public override string EquipmentType => "weapon";
+
+        /// <summary>
+        /// Get the base cost of this weapon (without modifiers).
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>Base cost</returns>
+        protected override async Task<decimal> GetBaseCostAsync(CancellationToken token = default)
+        {
+            return await GetOwnCostAsync(token).ConfigureAwait(false)
+                   + await WeaponAccessories.SumAsync(objAccessory => objAccessory.GetTotalCostAsync(token), token).ConfigureAwait(false)
+                   + await Children.SumAsync(objUnderbarrel => objUnderbarrel.GetTotalCostAsync(token), token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Clean up any enabled cost modifiers that are no longer valid (e.g., when improvements are removed).
+        /// Override to handle children cleanup.
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        public override void CleanupInvalidCostModifiers(CancellationToken token = default)
+        {
+            base.CleanupInvalidCostModifiers(token);
+            
+            // Clean up children (WeaponAccessories and UnderbarrelWeapons)
+            WeaponAccessories.ForEach(x => x.CleanupInvalidCostModifiers(token: token), token: token);
+            Children.ForEach(x => x.CleanupInvalidCostModifiers(token: token), token: token);
+        }
+
+        /// <summary>
+        /// Clean up any enabled cost modifiers that are no longer valid (async version).
+        /// Override to handle children cleanup.
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        public override async Task CleanupInvalidCostModifiersAsync(CancellationToken token = default)
+        {
+            await base.CleanupInvalidCostModifiersAsync(token).ConfigureAwait(false);
+            
+            // Clean up children (WeaponAccessories and UnderbarrelWeapons)
+            await WeaponAccessories.ForEachAsync(x => x.CleanupInvalidCostModifiersAsync(token: token), token: token).ConfigureAwait(false);
+            await Children.ForEachAsync(x => x.CleanupInvalidCostModifiersAsync(token: token), token: token).ConfigureAwait(false);
+        }
+
+        #endregion
 
         private async Task AccessoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e,
             CancellationToken token = default)
@@ -576,98 +632,13 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
 
             // Check for a Variable Cost.
-            if (!blnForSelectForm && !blnSkipCost && _strCost.StartsWith("Variable(", StringComparison.Ordinal))
+            if (_strCost.PromptForVariableCost(_objCharacter, CurrentDisplayNameShort, blnForSelectForm, blnSkipCost, 
+                !blnCreateImprovements, blnCreateImprovements, blnSync, out string strUpdatedCost, token))
             {
-                string strFirstHalf = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                string strSecondHalf = string.Empty;
-                int intHyphenIndex = strFirstHalf.IndexOf('-');
-                if (intHyphenIndex != -1)
-                {
-                    if (intHyphenIndex + 1 < strFirstHalf.Length)
-                        strSecondHalf = strFirstHalf.Substring(intHyphenIndex + 1);
-                    strFirstHalf = strFirstHalf.Substring(0, intHyphenIndex);
-                }
-
-                if (blnCreateImprovements)
-                {
-                    decimal decMin;
-                    decimal decMax = decimal.MaxValue;
-                    if (intHyphenIndex != -1)
-                    {
-                        decimal.TryParse(strFirstHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
-                        decimal.TryParse(strSecondHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMax);
-                    }
-                    else
-                        decimal.TryParse(strFirstHalf.FastEscape('+'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
-
-                    if (decMin != decimal.MinValue || decMax != decimal.MaxValue)
-                    {
-                        if (decMax > 1000000)
-                            decMax = 1000000;
-
-                        if (blnSync)
-                        {
-                            using (ThreadSafeForm<SelectNumber> frmPickNumber
-                                   // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                   = ThreadSafeForm<SelectNumber>.Get(() =>
-                                       new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
-                                       {
-                                           Minimum = decMin,
-                                           Maximum = decMax,
-                                           Description = string.Format(
-                                               GlobalSettings.CultureInfo,
-                                               LanguageManager.GetString("String_SelectVariableCost", token: token),
-                                               CurrentDisplayNameShort),
-                                           AllowCancel = false
-                                       }))
-                            {
-                                // ReSharper disable once MethodHasAsyncOverload
-                                if (frmPickNumber.ShowDialogSafe(_objCharacter, token) == DialogResult.Cancel)
-                                {
-                                    _guiID = Guid.Empty;
-                                    return;
-                                }
-
-                                _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings
-                                    .InvariantCultureInfo);
-                            }
-                        }
-                        else
-                        {
-                            string strDescription = string.Format(
-                                GlobalSettings.CultureInfo,
-                                await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token)
-                                    .ConfigureAwait(false),
-                                await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
-                            int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
-                            using (ThreadSafeForm<SelectNumber> frmPickNumber
-                                   = await ThreadSafeForm<SelectNumber>.GetAsync(() =>
-                                       new SelectNumber(intDecimalPlaces)
-                                       {
-                                           Minimum = decMin,
-                                           Maximum = decMax,
-                                           Description = strDescription,
-                                           AllowCancel = false
-                                       }, token).ConfigureAwait(false))
-                            {
-                                if (await frmPickNumber.ShowDialogSafeAsync(_objCharacter, token)
-                                        .ConfigureAwait(false) == DialogResult.Cancel)
-                                {
-                                    _guiID = Guid.Empty;
-                                    return;
-                                }
-
-                                _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings
-                                    .InvariantCultureInfo);
-                            }
-                        }
-                    }
-                    else
-                        _strCost = strFirstHalf;
-                }
-                else
-                    _strCost = strFirstHalf;
+                _guiID = Guid.Empty;
+                return;
             }
+            _strCost = strUpdatedCost;
 
             objXmlWeapon.TryGetStringFieldQuickly("sizecategory", ref _strSizeCategory);
             objXmlWeapon.TryGetBoolFieldQuickly("cyberware", ref _blnCyberware);
@@ -1202,6 +1173,15 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost",
                 _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));
+            
+            // Save enabled cost modifiers
+            objWriter.WriteStartElement("enabledcostmodifiers");
+            foreach (KeyValuePair<string, bool> kvp in _dicEnabledCostModifiers)
+            {
+                objWriter.WriteElementString(kvp.Key, kvp.Value.ToString(GlobalSettings.InvariantCultureInfo));
+            }
+            objWriter.WriteEndElement();
+            
             objWriter.WriteElementString("weaponslots", _strWeaponSlots);
             objWriter.WriteElementString("doubledcostweaponslots", _strDoubledCostWeaponSlots);
 
@@ -1929,6 +1909,21 @@ namespace Chummer.Backend.Equipment
                     await _objLocation.Children.AddAsync(this, token).ConfigureAwait(false);
             }
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
+            
+            // Load enabled cost modifiers
+            XmlNode objEnabledCostModifiersNode = objNode["enabledcostmodifiers"];
+            if (objEnabledCostModifiersNode != null)
+            {
+                _dicEnabledCostModifiers.Clear();
+                foreach (XmlNode objModifierNode in objEnabledCostModifiersNode.ChildNodes)
+                {
+                    if (bool.TryParse(objModifierNode.InnerText, out bool blnValue))
+                    {
+                        _dicEnabledCostModifiers[objModifierNode.Name] = blnValue;
+                    }
+                }
+            }
+            
             if (!objNode.TryGetStringFieldQuickly("weaponslots", ref _strWeaponSlots))
             {
                 XmlNode objXmlWeapon = blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
@@ -3602,51 +3597,28 @@ namespace Chummer.Backend.Equipment
             set => _strWeight = value;
         }
 
-        public async Task<ValueTuple<string, decimal>> DisplayCost(decimal decMarkup = 0.0m, CancellationToken token = default)
+        /// <summary>
+        /// Display the weapon's cost with all modifiers applied and formatted as a string.
+        /// This is used for UI display and user-facing cost information.
+        /// </summary>
+        public async Task<ValueTuple<string, decimal>> DisplayCost(CancellationToken token = default)
         {
-            string strReturn = Cost;
+            // Get the total cost with all modifiers applied (including markup)
+            decimal decFinalCost = await GetTotalCostAsync(token).ConfigureAwait(false);
+            
+            // Format for display
             string strFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
                 .GetNuyenFormatAsync(token).ConfigureAwait(false);
             string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
-            if (strReturn.StartsWith("Variable(", StringComparison.Ordinal))
-            {
-                string strFirstHalf = strReturn.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                string strSecondHalf = string.Empty;
-                int intHyphenIndex = strFirstHalf.IndexOf('-');
-                if (intHyphenIndex != -1)
-                {
-                    if (intHyphenIndex + 1 < strFirstHalf.Length)
-                        strSecondHalf = strFirstHalf.Substring(intHyphenIndex + 1);
-                    strFirstHalf = strFirstHalf.Substring(0, intHyphenIndex);
-                }
-                decimal decMin;
-                decimal decMax = decimal.MaxValue;
-                if (intHyphenIndex != -1)
-                {
-                    decimal.TryParse(strFirstHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
-                    decimal.TryParse(strSecondHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMax);
-                }
-                else
-                    decimal.TryParse(strFirstHalf.FastEscape('+'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
-
-                if (decMax == decimal.MaxValue)
-                    strReturn = decMin.ToString(strFormat, GlobalSettings.CultureInfo) + strNuyen + '+';
-                else
-                    strReturn = decMin.ToString(strFormat, GlobalSettings.CultureInfo) + " - " +
-                                decMax.ToString(strFormat, GlobalSettings.CultureInfo) + strNuyen;
-
-                return new ValueTuple<string, decimal>(strReturn, decMin);
-            }
-
-            decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTotalCost);
-
-            decTotalCost *= 1.0m + decMarkup;
-
-            if (DiscountCost)
-                decTotalCost *= 0.9m;
-
-            return new ValueTuple<string, decimal>(decTotalCost.ToString(strFormat, GlobalSettings.CultureInfo) + strNuyen, decTotalCost);
+            string strDisplayCost = decFinalCost.ToString(strFormat, GlobalSettings.CultureInfo) + strNuyen;
+            
+            return new ValueTuple<string, decimal>(strDisplayCost, decFinalCost);
         }
+
+        /// <summary>
+        /// Generate a detailed cost tooltip showing base cost, applied modifiers, and final cost.
+        /// </summary>
+
 
         /// <summary>
         /// Sourcebook.
@@ -4208,6 +4180,8 @@ namespace Chummer.Backend.Equipment
             get => _blnDiscountCost;
             set => _blnDiscountCost = value;
         }
+
+
 
         /// <summary>
         /// Whether the Weapon requires Ammo to be reloaded.
@@ -6314,25 +6288,24 @@ namespace Chummer.Backend.Equipment
         public Task<string> GetCurrentDisplayAccessoryMounts(CancellationToken token = default) => DisplayAccessoryMountsAsync(GlobalSettings.Language, token);
 
         /// <summary>
-        /// The Weapon's total cost including Accessories and Modifications.
+        /// The Weapon's total cost including Accessories, Modifications, and all modifiers (discounts, etc.).
+        /// This is the final cost with all applicable modifiers applied.
         /// </summary>
-        public decimal TotalCost => OwnCost + WeaponAccessories.Sum(x => x.TotalCost) + Children.Sum(x => x.TotalCost);
+        public decimal TotalCost => (OwnCost + WeaponAccessories.Sum(x => x.TotalCost) + Children.Sum(x => x.TotalCost)) * (DiscountCost ? 0.9m : 1.0m);
 
         /// <summary>
-        /// The Weapon's total cost including Accessories and Modifications.
+        /// The Weapon's total cost including Accessories, Modifications, and all modifiers (discounts, etc.).
+        /// This is the final cost used for calculations and should include all applicable modifiers.
         /// </summary>
         public async Task<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return await GetOwnCostAsync(token).ConfigureAwait(false)
-                   // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
-                   + await WeaponAccessories
-                       .SumAsync(objAccessory => objAccessory.GetTotalCostAsync(token), token)
-                       .ConfigureAwait(false)
-                   // Include the cost of any Underbarrel Weapon.
-                   + await Children
-                       .SumAsync(objUnderbarrel => objUnderbarrel.GetTotalCostAsync(token),
-                           token).ConfigureAwait(false);
+            
+            // Get base cost (own cost + accessories + modifications)
+            decimal decBaseCost = await GetBaseCostAsync(token).ConfigureAwait(false);
+            
+            // Use the base class's cost modifier application logic
+            return await ApplyCostModifiersAsync(decBaseCost, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -14669,6 +14642,5 @@ namespace Chummer.Backend.Equipment
             await _lstUnderbarrel.DisposeAsync().ConfigureAwait(false);
         }
 
-        public Character CharacterObject => _objCharacter;
     }
 }

@@ -22,6 +22,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -30,6 +31,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Chummer.Backend.Static;
 using RtfPipe;
 
 namespace Chummer
@@ -4736,5 +4738,118 @@ namespace Chummer
                 }
             }
         }
+
+        /// <summary>
+        /// Prompts the user for a variable cost if the cost string starts with "Variable(".
+        /// Returns the updated cost string or the original string if no prompting is needed.
+        /// </summary>
+        /// <param name="strCost">The cost string to check and potentially prompt for</param>
+        /// <param name="objCharacter">The character object for settings and display</param>
+        /// <param name="strDisplayName">The display name to show in the prompt</param>
+        /// <param name="blnForSelectForm">Whether this is for a select form (skip prompting)</param>
+        /// <param name="blnSkipCost">Whether to skip cost prompting</param>
+        /// <param name="blnSkipSelectForms">Whether to skip select forms</param>
+        /// <param name="blnCreateImprovements">Whether creating improvements (affects validation)</param>
+        /// <param name="blnSync">Whether to use synchronous methods</param>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>True if the operation was cancelled, false otherwise</returns>
+        public static bool PromptForVariableCost(this string strCost, Character objCharacter, string strDisplayName,
+            bool blnForSelectForm, bool blnSkipCost, bool blnSkipSelectForms, bool blnCreateImprovements, bool blnSync,
+            out string strUpdatedCost, CancellationToken token = default)
+        {
+            return CostProcessing.PromptForVariableCost(strCost, objCharacter, strDisplayName, blnForSelectForm, 
+                blnSkipCost, blnSkipSelectForms, blnCreateImprovements, out strUpdatedCost, token);
+        }
+
+        /// <summary>
+        /// Async version of PromptForVariableCost.
+        /// </summary>
+        public static async Task<(bool blnCancelled, string strUpdatedCost)> PromptForVariableCostAsync(this string strCost, Character objCharacter, string strDisplayName,
+            bool blnForSelectForm, bool blnSkipCost, bool blnSkipSelectForms, bool blnCreateImprovements,
+            CancellationToken token = default)
+        {
+            return await CostProcessing.PromptForVariableCostAsync(strCost, objCharacter, strDisplayName, blnForSelectForm, 
+                blnSkipCost, blnSkipSelectForms, blnCreateImprovements, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Comprehensive cost processing extension method that handles all cost types using a context object.
+        /// </summary>
+        /// <param name="strCost">The cost string to process</param>
+        /// <param name="context">The cost processing context</param>
+        /// <returns>Tuple containing display string, calculated cost value, and success status</returns>
+        public static async Task<(string strDisplayCost, decimal decCalculatedCost, bool blnIsSuccess)> ProcessCostAsync(this string strCost, CostProcessingContext context)
+        {
+            context.CostString = strCost;
+            return await CostProcessing.ProcessCostComprehensiveAsync(context).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Quick cost processing for selection forms with minimal parameters.
+        /// </summary>
+        /// <param name="strCost">The cost string to process</param>
+        /// <param name="intRating">The rating to use for calculations</param>
+        /// <param name="objModifiers">Cost modifiers to apply</param>
+        /// <param name="objCharacter">Character object for context</param>
+        /// <param name="strDisplayName">Display name for the item</param>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>Tuple containing display string, calculated cost value, and success status</returns>
+        public static async Task<(string strDisplayCost, decimal decCalculatedCost, bool blnIsSuccess)> ProcessCostForSelectionFormAsync(
+            this string strCost, int intRating, CostModifiers objModifiers, Character objCharacter, string strDisplayName, CancellationToken token = default)
+        {
+            var context = CostProcessingContext.ForSelectionForm(strCost, intRating, objModifiers, objCharacter, strDisplayName, token);
+            return await CostProcessing.ProcessCostComprehensiveAsync(context).ConfigureAwait(false);
+        }
+
+
+        /// <summary>
+        /// Formats a Variable cost string for display purposes.
+        /// Converts "Variable(min-max)" to "min¥-max¥" or "Variable(min+)" to "min¥+"
+        /// </summary>
+        /// <param name="strCost">The cost string to format</param>
+        /// <param name="strFormat">The number format string</param>
+        /// <param name="strNuyenSymbol">The currency symbol</param>
+        /// <param name="objCulture">The culture info for formatting</param>
+        /// <returns>Formatted cost string for display</returns>
+        public static string FormatVariableCostForDisplay(this string strCost, string strFormat, string strNuyenSymbol, CultureInfo objCulture)
+        {
+            return CostProcessing.FormatVariableCostForDisplay(strCost, strFormat, strNuyenSymbol, objCulture);
+        }
+
+        /// <summary>
+        /// Formats a Variable cost string for display purposes with cost modifiers.
+        /// Converts "Variable(min-max)" to "min¥-max¥" or "Variable(min+)" to "min¥+" with modifiers applied
+        /// </summary>
+        /// <param name="strCost">The cost string to format</param>
+        /// <param name="strFormat">The number format string</param>
+        /// <param name="strNuyenSymbol">The currency symbol</param>
+        /// <param name="objCulture">The culture info for formatting</param>
+        /// <param name="decMarkupMultiplier">Markup multiplier (e.g., 1.2 for 20% markup)</param>
+        /// <param name="decBlackMarketMultiplier">Black market discount multiplier (e.g., 0.9 for 10% discount)</param>
+        /// <param name="decOtherMultiplier">Other cost multiplier (e.g., quantity, stolen, etc.)</param>
+        /// <returns>Formatted cost string for display with modifiers applied</returns>
+        public static string FormatVariableCostForDisplay(this string strCost, string strFormat, string strNuyenSymbol, CultureInfo objCulture,
+            decimal decMarkupMultiplier, decimal decBlackMarketMultiplier, decimal decOtherMultiplier)
+        {
+            return CostProcessing.FormatVariableCostForDisplay(strCost, strFormat, strNuyenSymbol, objCulture, 
+                decMarkupMultiplier, decBlackMarketMultiplier, decOtherMultiplier);
+        }
+
+        /// <summary>
+        /// Formats a Variable cost string for display purposes with comprehensive cost modifiers.
+        /// Converts "Variable(min-max)" to "min¥-max¥" or "Variable(min+)" to "min¥+" with modifiers applied
+        /// </summary>
+        /// <param name="strCost">The cost string to format</param>
+        /// <param name="strFormat">The number format string</param>
+        /// <param name="strNuyenSymbol">The currency symbol</param>
+        /// <param name="objCulture">The culture info for formatting</param>
+        /// <param name="objModifiers">Cost modifiers to apply</param>
+        /// <returns>Formatted cost string for display with modifiers applied</returns>
+        public static string FormatVariableCostForDisplay(this string strCost, string strFormat, string strNuyenSymbol, CultureInfo objCulture,
+            CostModifiers objModifiers)
+        {
+            return CostProcessing.FormatVariableCostForDisplay(strCost, strFormat, strNuyenSymbol, objCulture, objModifiers);
+        }
     }
+
 }

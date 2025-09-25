@@ -28,6 +28,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
+using Chummer.Backend.Static;
 
 // ReSharper disable LocalizableElement
 
@@ -47,6 +48,9 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument;
         private readonly XPathNavigator _objXmlArmorDocumentChummerNode;
         private readonly Character _objCharacter;
+
+        // Dynamic cost modifier checkboxes
+        private readonly Dictionary<string, ColorableCheckBox> _dicDynamicCostModifierCheckboxes = new Dictionary<string, ColorableCheckBox>();
 
         private List<ListItem> _lstCategory;
         private HashSet<string> _setBlackMarketMaps;
@@ -100,6 +104,14 @@ namespace Chummer
                     objOldCancellationTokenSource.Dispose();
                 }
                 _objGenericCancellationTokenSource.Dispose();
+                
+                // Clean up dynamic checkboxes
+                foreach (ColorableCheckBox objCheckbox in _dicDynamicCostModifierCheckboxes.Values)
+                {
+                    objCheckbox?.Dispose();
+                }
+                _dicDynamicCostModifierCheckboxes.Clear();
+                
                 Utils.ListItemListPool.Return(ref _lstCategory);
                 Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             };
@@ -111,6 +123,9 @@ namespace Chummer
             {
                 bool blnBlackMarketDiscount = await _objCharacter.GetBlackMarketDiscountAsync(_objGenericToken).ConfigureAwait(false);
                 await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = blnBlackMarketDiscount, _objGenericToken).ConfigureAwait(false);
+                
+                // Create dynamic checkboxes for CostModifierUserChoice improvements
+                await CreateDynamicCostModifierCheckboxes(_objSelectedArmor, _objGenericToken).ConfigureAwait(false);
 
                 if (await _objCharacter.GetCreatedAsync(_objGenericToken).ConfigureAwait(false))
                 {
@@ -266,6 +281,9 @@ namespace Chummer
                                     Armor objOldArmor = Interlocked.Exchange(ref _objSelectedArmor, objArmor);
                                     if (objOldArmor != null)
                                         await objOldArmor.DisposeAsync().ConfigureAwait(false);
+                                    
+                                    // Update dynamic checkboxes based on selected armor
+                                    await CreateDynamicCostModifierCheckboxes(objArmor, token).ConfigureAwait(false);
 
                                     int intRating = 0;
                                     if (xmlArmor.TryGetInt32FieldQuickly("rating", ref intRating))
@@ -456,6 +474,7 @@ namespace Chummer
             }
         }
 
+
         private async void nudRating_ValueChanged(object sender, EventArgs e)
         {
             try
@@ -562,6 +581,22 @@ namespace Chummer
         /// Markup percentage.
         /// </summary>
         public int Rating => _intRating;
+
+        /// <summary>
+        /// Dictionary of enabled cost modifier checkboxes and their states.
+        /// </summary>
+        public Dictionary<string, bool> EnabledCostModifiers
+        {
+            get
+            {
+                var dicResult = new Dictionary<string, bool>();
+                foreach (KeyValuePair<string, ColorableCheckBox> kvp in _dicDynamicCostModifierCheckboxes)
+                {
+                    dicResult[kvp.Key] = kvp.Value.Checked;
+                }
+                return dicResult;
+            }
+        }
 
         #endregion Properties
 
@@ -730,8 +765,12 @@ namespace Chummer
                                                 GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter,
                                                 token)
                                             .ConfigureAwait(false);
+                                        // Set markup as a custom cost modifier on the armor
+                                        decimal decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                                        objArmor.SetMarkup(decMarkup);
+                                        
                                         NuyenString strCost =
-                                            await NuyenString.GetNuyenStringAsync((await objArmor.DisplayCost(false, token: token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+                                            await NuyenString.GetNuyenStringAsync((await objArmor.DisplayCost(token: token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
 
                                         tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail,
                                             sbdAccessories.ToString(), strSource, strCost);
@@ -949,8 +988,15 @@ namespace Chummer
                     }
                     else
                     {
-                        (strCost, decItemCost) = await objSelectedArmor.DisplayCost(true,
-                            await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m, token).ConfigureAwait(false);
+                        // Update the armor's cost modifiers from current checkbox states
+                        await UpdateArmorCostModifiers(token).ConfigureAwait(false);
+                        
+                        // Set markup as a custom cost modifier on the armor
+                        decimal decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                        objSelectedArmor.SetMarkup(decMarkup);
+                        
+                        // Use the armor's DisplayCost method which handles all cost modifiers
+                        (strCost, decItemCost) = await objSelectedArmor.DisplayCost(token: token).ConfigureAwait(false);
                     }
                     await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token).ConfigureAwait(false);
 
@@ -1004,6 +1050,85 @@ namespace Chummer
                 //swallow this
             }
         }
+
+        #region Dynamic Cost Modifier Checkboxes
+
+        /// <summary>
+        /// Check if an improvement matches a specific armor by evaluating its XPath filter against the armor's XML node.
+        /// </summary>
+        private async Task<bool> MatchesSpecificArmorAsync(Improvement objImprovement, Armor objSelectedArmor, CancellationToken token = default)
+        {
+            if (objSelectedArmor == null)
+                return false;
+
+            // Get the selected armor ID from the list (this is the XML id element)
+            string strSelectedId = await lstArmor
+                .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
+                .ConfigureAwait(false);
+            
+            if (string.IsNullOrEmpty(strSelectedId))
+            {
+                System.Diagnostics.Debug.WriteLine("No armor selected in list");
+                return false;
+            }
+
+            // Use the shared XPath evaluation method
+            return await XPathEvaluation.MatchesSpecificEquipmentAsync(objImprovement, _objXmlDocument, strSelectedId, "armor", token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Create and manage dynamic checkboxes for CostModifierUserChoice improvements.
+        /// </summary>
+        private async Task CreateDynamicCostModifierCheckboxes(Armor objSelectedArmor = null, CancellationToken token = default)
+        {
+            // Get the selected armor ID from the list
+            string strSelectedId = await lstArmor
+                .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
+                .ConfigureAwait(false);
+            
+            if (string.IsNullOrEmpty(strSelectedId))
+            {
+                System.Diagnostics.Debug.WriteLine("No armor selected in list");
+                return;
+            }
+
+            // Use the shared checkbox creation method
+            await DynamicCostModifierCheckboxes.CreateDynamicCostModifierCheckboxesAsync(
+                _objCharacter,
+                "armor",
+                _objXmlDocument,
+                strSelectedId,
+                _dicDynamicCostModifierCheckboxes,
+                flpCheckBoxes,
+                UpdateArmorCostModifiers,
+                UpdateArmorInfo,
+                _objGenericToken,
+                token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Update the armor's stored cost modifiers based on dynamic checkbox states.
+        /// </summary>
+        private async Task UpdateArmorCostModifiers(CancellationToken token = default)
+        {
+            if (_objSelectedArmor == null)
+                return;
+
+            // Clear existing cost modifiers
+            _objSelectedArmor.EnabledCostModifiers.Clear();
+
+            // Add enabled cost modifiers from dynamic checkboxes
+            foreach (KeyValuePair<string, ColorableCheckBox> kvp in _dicDynamicCostModifierCheckboxes)
+            {
+                bool blnChecked = await kvp.Value.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+                if (blnChecked)
+                {
+                    _objSelectedArmor.EnabledCostModifiers[kvp.Key] = true;
+                }
+            }
+        }
+
+        #endregion Dynamic Cost Modifier Checkboxes
 
         #endregion Methods
     }

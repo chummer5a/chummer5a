@@ -21315,6 +21315,11 @@ namespace Chummer
                                                       x => x.Text = strCost,
                                                       token)
                                                   .ConfigureAwait(false);
+                            
+                            // Set cost tooltip
+                            string strCostTooltip = await objCyberware.GetCostTooltipAsync(token: token).ConfigureAwait(false);
+                            await lblCyberwareCost.DoThreadSafeAsync(x => x.SetToolTip(strCostTooltip), token)
+                                                  .ConfigureAwait(false);
                             if (await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false))
                             {
                                 await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = true, token)
@@ -21440,6 +21445,10 @@ namespace Chummer
                                              + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
                                                                     .ConfigureAwait(false);
                             await lblCyberwareCost.DoThreadSafeAsync(x => x.Text = strCost, token).ConfigureAwait(false);
+                            
+                            // Set cost tooltip
+                            string strCostTooltip = await objGear.GetCostTooltipAsync(token: token).ConfigureAwait(false);
+                            await lblCyberwareCost.DoThreadSafeAsync(x => x.SetToolTip(strCostTooltip), token).ConfigureAwait(false);
                             await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                       .ConfigureAwait(false);
                             await lblCyberlimbAGI.DoThreadSafeAsync(x => x.Visible = false, token)
@@ -21698,6 +21707,11 @@ namespace Chummer
                                              + await LanguageManager.GetStringAsync(
                                                  "String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblWeaponCost.DoThreadSafeAsync(x => x.Text = strCost, token)
+                                               .ConfigureAwait(false);
+                            
+                            // Set cost tooltip
+                            string strCostTooltip = await objWeapon.GetCostTooltipAsync(token: token).ConfigureAwait(false);
+                            await lblWeaponCost.DoThreadSafeAsync(x => x.SetToolTip(strCostTooltip), token)
                                                .ConfigureAwait(false);
                             await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                      .ConfigureAwait(false);
@@ -22202,6 +22216,11 @@ namespace Chummer
                                                  "String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblWeaponCost.DoThreadSafeAsync(x => x.Text = strCost, token: token)
                                                .ConfigureAwait(false);
+                            
+                            // Set cost tooltip
+                            string strCostTooltip = await objSelectedAccessory.GetCostTooltipAsync(token: token).ConfigureAwait(false);
+                            await lblWeaponCost.DoThreadSafeAsync(x => x.SetToolTip(strCostTooltip), token: token)
+                                               .ConfigureAwait(false);
                             await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                      .ConfigureAwait(false);
                             string strSlotsText;
@@ -22511,6 +22530,11 @@ namespace Chummer
                                                                     .ConfigureAwait(false);
                             await lblWeaponCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                                .ConfigureAwait(false);
+                            
+                            // Set cost tooltip
+                            string strCostTooltip = await objGear.GetCostTooltipAsync(token: token).ConfigureAwait(false);
+                            await lblWeaponCost.DoThreadSafeAsync(x => x.SetToolTip(strCostTooltip), token)
+                                               .ConfigureAwait(false);
                             await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                      .ConfigureAwait(false);
                             await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
@@ -22786,6 +22810,11 @@ namespace Chummer
                                          + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                         await lblArmorCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                           .ConfigureAwait(false);
+                        
+                        // Set cost tooltip
+                        string strCostTooltip = await objArmor.GetCostTooltipAsync(token: token).ConfigureAwait(false);
+                        await lblArmorCost.DoThreadSafeAsync(x => x.SetToolTip(strCostTooltip), token)
+                                          .ConfigureAwait(false);
                         await chkArmorEquipped.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
@@ -22878,6 +22907,11 @@ namespace Chummer
                                                  "String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblArmorCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                               .ConfigureAwait(false);
+                            
+                            // Set cost tooltip
+                            string strCostTooltip = await objArmorMod.GetCostTooltipAsync(token: token).ConfigureAwait(false);
+                            await lblArmorCost.DoThreadSafeAsync(x => x.SetToolTip(strCostTooltip), token)
+                                              .ConfigureAwait(false);
                             await chkArmorEquipped.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -22959,6 +22993,11 @@ namespace Chummer
                                                                 GlobalSettings.CultureInfo)
                                                             + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                                     await lblArmorCost.DoThreadSafeAsync(x => x.Text = strCost, token)
+                                                    .ConfigureAwait(false);
+                                    
+                                    // Set cost tooltip
+                                    string strCostTooltip = await objSelectedGear.GetCostTooltipAsync(token: token).ConfigureAwait(false);
+                                    await lblArmorCost.DoThreadSafeAsync(x => x.SetToolTip(strCostTooltip), token)
                                                     .ConfigureAwait(false);
                                     await chkArmorEquipped.DoThreadSafeAsync(x =>
                                     {
@@ -23417,6 +23456,11 @@ namespace Chummer
                                                            .ConfigureAwait(false);
                         }
                         await lblGearCost.DoThreadSafeAsync(x => x.Text = strCost, token)
+                                         .ConfigureAwait(false);
+                        
+                        // Set cost tooltip
+                        string strCostTooltip = await objGear.GetCostTooltipAsync(token: token).ConfigureAwait(false);
+                        await lblGearCost.DoThreadSafeAsync(x => x.SetToolTip(strCostTooltip), token)
                                          .ConfigureAwait(false);
                         string strCapacity = await objGear.GetDisplayCapacityAsync(token).ConfigureAwait(false);
                         await lblGearCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token)
@@ -25045,6 +25089,11 @@ namespace Chummer
                                                                     .ConfigureAwait(false);
                             await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                             .ConfigureAwait(false);
+                            
+                            // Set cost tooltip
+                            string strCostTooltip = await objVehicle.GetCostTooltipAsync(token: token).ConfigureAwait(false);
+                            await lblVehicleCost.DoThreadSafeAsync(x => x.SetToolTip(strCostTooltip), token)
+                                            .ConfigureAwait(false);
                             if (await CharacterObjectSettings.BookEnabledAsync("R5", token).ConfigureAwait(false))
                             {
                                 await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = false, token)
@@ -25331,6 +25380,11 @@ namespace Chummer
                                                  "String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                                 .ConfigureAwait(false);
+                            
+                            // Set cost tooltip
+                            string strCostTooltip = await objWeaponMount.GetCostTooltipAsync(token: token).ConfigureAwait(false);
+                            await lblVehicleCost.DoThreadSafeAsync(x => x.SetToolTip(strCostTooltip), token)
+                                                .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
                             string strSlots = (await objWeaponMount.GetCalculatedSlotsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
@@ -25413,6 +25467,11 @@ namespace Chummer
                                                     + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                             .ConfigureAwait(false);
+                            
+                            // Set cost tooltip
+                            string strCostTooltip = await objMod.GetCostTooltipAsync(token: token).ConfigureAwait(false);
+                            await lblVehicleCost.DoThreadSafeAsync(x => x.SetToolTip(strCostTooltip), token)
+                                            .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
                             string strSlots = (await objMod.GetCalculatedSlotsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
@@ -25482,6 +25541,11 @@ namespace Chummer
                                              + await LanguageManager.GetStringAsync(
                                                  "String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost, token)
+                                                .ConfigureAwait(false);
+                            
+                            // Set cost tooltip
+                            string strCostTooltip = await objWeapon.GetCostTooltipAsync(token: token).ConfigureAwait(false);
+                            await lblVehicleCost.DoThreadSafeAsync(x => x.SetToolTip(strCostTooltip), token)
                                                 .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
@@ -25962,6 +26026,11 @@ namespace Chummer
                                                  "String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                                 .ConfigureAwait(false);
+                            
+                            // Set cost tooltip
+                            string strCostTooltip = await objAccessory.GetCostTooltipAsync(token: token).ConfigureAwait(false);
+                            await lblVehicleCost.DoThreadSafeAsync(x => x.SetToolTip(strCostTooltip), token)
+                                                .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                     .ConfigureAwait(false);
                             string strMountText;
@@ -26360,6 +26429,11 @@ namespace Chummer
                                              + await LanguageManager.GetStringAsync(
                                                  "String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost, token)
+                                                .ConfigureAwait(false);
+                            
+                            // Set cost tooltip
+                            string strCostTooltip = await objGear.GetCostTooltipAsync(token: token).ConfigureAwait(false);
+                            await lblVehicleCost.DoThreadSafeAsync(x => x.SetToolTip(strCostTooltip), token)
                                                 .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);

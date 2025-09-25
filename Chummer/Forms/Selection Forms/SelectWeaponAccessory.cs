@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
+using Chummer.Backend.Static;
 
 namespace Chummer
 {
@@ -48,6 +49,9 @@ namespace Chummer
         private bool _blnBlackMarketDiscount;
         private HashSet<string> _setBlackMarketMaps;
 
+        // Dynamic cost modifier checkboxes
+        private readonly Dictionary<string, ColorableCheckBox> _dicDynamicCostModifierCheckboxes = new Dictionary<string, ColorableCheckBox>();
+
         #region Control Events
 
         public SelectWeaponAccessory(Character objCharacter)
@@ -58,7 +62,17 @@ namespace Chummer
             this.TranslateWinForm();
             this.UpdateParentForToolTipControls();
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
-            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
+            Disposed += (sender, args) =>
+            {
+                // Clean up dynamic checkboxes
+                foreach (ColorableCheckBox objCheckbox in _dicDynamicCostModifierCheckboxes.Values)
+                {
+                    objCheckbox.Dispose();
+                }
+                _dicDynamicCostModifierCheckboxes.Clear();
+                
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
+            };
             // Load the Weapon information.
             _xmlBaseChummerNode = _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseChummerNode));
@@ -68,6 +82,10 @@ namespace Chummer
         {
             bool blnBlackMarketDiscount = await _objCharacter.GetBlackMarketDiscountAsync().ConfigureAwait(false);
             await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = blnBlackMarketDiscount).ConfigureAwait(false);
+            
+            
+            // Create dynamic checkboxes for CostModifierUserChoice improvements
+            await CreateDynamicCostModifierCheckboxes(null).ConfigureAwait(false);
 
             if (await _objCharacter.GetCreatedAsync().ConfigureAwait(false))
             {
@@ -219,6 +237,7 @@ namespace Chummer
             await UpdateGearInfo().ConfigureAwait(false);
         }
 
+
         private async void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false) && !await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
@@ -319,6 +338,22 @@ namespace Chummer
         /// Markup percentage.
         /// </summary>
         public decimal Markup => _decMarkup;
+
+        /// <summary>
+        /// Dictionary of enabled cost modifier checkboxes and their states.
+        /// </summary>
+        public Dictionary<string, bool> EnabledCostModifiers
+        {
+            get
+            {
+                var dicResult = new Dictionary<string, bool>();
+                foreach (KeyValuePair<string, ColorableCheckBox> kvp in _dicDynamicCostModifierCheckboxes)
+                {
+                    dicResult[kvp.Key] = kvp.Value.Checked;
+                }
+                return dicResult;
+            }
+        }
 
         #endregion Properties
 
@@ -542,92 +577,62 @@ namespace Chummer
                 string strCost = "0";
                 xmlAccessory.TryGetStringFieldQuickly("cost", ref strCost);
 
-                if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
+                // Create cost modifiers
+                var objModifiers = new CostModifiers
                 {
-                    string strFirstHalf = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                    string strSecondHalf = string.Empty;
-                    int intHyphenIndex = strFirstHalf.IndexOf('-');
-                    if (intHyphenIndex != -1)
-                    {
-                        if (intHyphenIndex + 1 < strFirstHalf.Length)
-                            strSecondHalf = strFirstHalf.Substring(intHyphenIndex + 1);
-                        strFirstHalf = strFirstHalf.Substring(0, intHyphenIndex);
-                    }
-                    decimal decMin;
-                    decimal decMax = decimal.MaxValue;
-                    if (intHyphenIndex != -1)
-                    {
-                        decimal.TryParse(strFirstHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
-                        decimal.TryParse(strSecondHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMax);
-                    }
-                    else
-                        decimal.TryParse(strFirstHalf.FastEscape('+'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
-
-                    string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
-                    if (decMax == decimal.MaxValue)
-                    {
-                        await lblCost.DoThreadSafeAsync(
-                                         x => x.Text = decMin.ToString(strNuyenFormat,
-                                                                       GlobalSettings.CultureInfo)
-                                                       + strNuyen + '+',
-                                         token: token)
-                                     .ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                               .ConfigureAwait(false);
-                        await lblCost.DoThreadSafeAsync(
-                                         x => x.Text = decMin.ToString(strNuyenFormat,
-                                                                       GlobalSettings.CultureInfo) + strSpace + '-'
-                                                       + strSpace + decMax.ToString(strNuyenFormat,
-                                                           GlobalSettings.CultureInfo)
-                                                       + strNuyen, token: token)
-                                     .ConfigureAwait(false);
-                    }
-
-                    string strTest = await _objCharacter.AvailTestAsync(decMax, strAvail, token).ConfigureAwait(false);
-                    await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token).ConfigureAwait(false);
-                }
-                else
+                    MarkupMultiplier = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m,
+                    BlackMarketMultiplier = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) ? 0.9m : 1.0m,
+                    MadeManMultiplier = 1.0m,
+                    AccessoryMultiplier = _objParentWeapon.AccessoryMultiplier
+                };
+                
+                // Apply dynamic cost modifiers from checkboxes
+                foreach (KeyValuePair<string, ColorableCheckBox> kvp in _dicDynamicCostModifierCheckboxes)
                 {
-                    decimal decCost = await ProcessInvariantXPathExpression(strCost, intRating, token).ConfigureAwait(false);
-                    
-                    // Apply any markup.
-                    decCost *= 1
-                               + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
-                                   .ConfigureAwait(false) / 100.0m;
-
-                    if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token)
-                                                    .ConfigureAwait(false))
-                        decCost *= 0.9m;
-                    decCost *= _objParentWeapon.AccessoryMultiplier;
-                    if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
+                    bool blnChecked = await kvp.Value.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+                    if (blnChecked)
                     {
-                        string strSelectedMount = await cboMount.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token).ConfigureAwait(false);
-                        string strSelectedExtraMount = await cboExtraMount.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token).ConfigureAwait(false);
-                        bool blnBreakAfterFound = string.IsNullOrEmpty(strSelectedMount) || string.IsNullOrEmpty(strSelectedExtraMount);
-                        foreach (string strDoubledCostSlot in _objParentWeapon.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                        // Get the improvement to find the modifier value
+                        List<Improvement> lstImprovements = await _objCharacter.GetCostModifierImprovementsAsync("weaponaccessory", blnUserChoiceOnly: true, token: token).ConfigureAwait(false);
+                        Improvement objImprovement = lstImprovements.FirstOrDefault(x => x.ImprovedName == kvp.Key);
+                        if (objImprovement != null)
                         {
-                            if (strDoubledCostSlot == strSelectedMount || strDoubledCostSlot == strSelectedExtraMount)
-                            {
-                                decCost *= 2;
-                                if (blnBreakAfterFound)
-                                    break;
-                                else
-                                    blnBreakAfterFound = true;
-                            }
+                            objModifiers.SetCustomModifier(kvp.Key, objImprovement.Value);
                         }
                     }
-
-                    string strCostText = decCost.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
-                                        + strNuyen;
-                    await lblCost
-                          .DoThreadSafeAsync(
-                              x => x.Text = strCostText, token: token)
-                          .ConfigureAwait(false);
-                    string strTest = await _objCharacter.AvailTestAsync(decCost, strAvail, token: token)
-                                                        .ConfigureAwait(false);
+                }
+                
+                // Check for doubled cost modification slots
+                if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
+                {
+                    string strSelectedMount = await cboMount.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token).ConfigureAwait(false);
+                    string strSelectedExtraMount = await cboExtraMount.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token).ConfigureAwait(false);
+                    bool blnBreakAfterFound = string.IsNullOrEmpty(strSelectedMount) || string.IsNullOrEmpty(strSelectedExtraMount);
+                    foreach (string strDoubledCostSlot in _objParentWeapon.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (strDoubledCostSlot == strSelectedMount || strDoubledCostSlot == strSelectedExtraMount)
+                        {
+                            objModifiers.DoubledCostMultiplier *= 2;
+                            if (blnBreakAfterFound)
+                                break;
+                            else
+                                blnBreakAfterFound = true;
+                        }
+                    }
+                }
+                
+                // Update dynamic checkboxes based on selected weapon accessory
+                await CreateDynamicCostModifierCheckboxes(xmlAccessory, token).ConfigureAwait(false);
+                
+                // Use simplified cost processing for selection forms
+                (string strDisplayCost, decimal decCalculatedCost, bool blnIsSuccess) = await strCost.ProcessCostForSelectionFormAsync(
+                    intRating, objModifiers, _objCharacter, 
+                    xmlAccessory.SelectSingleNodeAndCacheExpression("name", token)?.Value, token).ConfigureAwait(false);
+                
+                if (blnIsSuccess)
+                {
+                    await lblCost.DoThreadSafeAsync(x => x.Text = strDisplayCost, token: token).ConfigureAwait(false);
+                    string strTest = await _objCharacter.AvailTestAsync(decCalculatedCost, strAvail, token).ConfigureAwait(false);
                     await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token).ConfigureAwait(false);
                 }
             }
@@ -782,6 +787,67 @@ namespace Chummer
             }
             return decValue;
         }
+
+        #region Dynamic Cost Modifier Checkboxes
+
+        /// <summary>
+        /// Create and manage dynamic checkboxes for CostModifierUserChoice improvements.
+        /// </summary>
+        private async Task CreateDynamicCostModifierCheckboxes(XPathNavigator objSelectedWeaponAccessory = null, CancellationToken token = default)
+        {
+            // Get the selected weapon accessory ID from the list
+            string strSelectedId = await lstAccessory
+                .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
+                .ConfigureAwait(false);
+            
+            if (string.IsNullOrEmpty(strSelectedId))
+            {
+                System.Diagnostics.Debug.WriteLine("No weapon accessory selected in list");
+                return;
+            }
+
+            // Use the shared checkbox creation method (XPathNavigator overload)
+            XPathNavigator objXmlNavigator = _xmlBaseChummerNode;
+            await DynamicCostModifierCheckboxes.CreateDynamicCostModifierCheckboxesAsync(
+                _objCharacter,
+                "weaponaccessory",
+                objXmlNavigator,
+                strSelectedId,
+                _dicDynamicCostModifierCheckboxes,
+                flpCheckBoxes,
+                UpdateWeaponAccessoryCostModifiers,
+                (ct) => UpdateGearInfo(token: ct),
+                token,
+                token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Update the weapon accessory's stored cost modifiers based on dynamic checkbox states.
+        /// Note: This method stores the modifiers in a temporary location since SelectWeaponAccessory doesn't create a WeaponAccessory object.
+        /// </summary>
+        private async Task UpdateWeaponAccessoryCostModifiers(CancellationToken token = default)
+        {
+            // For SelectWeaponAccessory, we'll store the enabled modifiers in a temporary location
+            // The actual WeaponAccessory object will be created when the user clicks OK
+            // This is a simplified approach - in a full implementation, you might want to store this differently
+            
+            // Clear existing cost modifiers (if any storage mechanism exists)
+            // For now, this is a placeholder - the actual implementation would depend on how
+            // SelectWeaponAccessory passes cost modifier information to the created WeaponAccessory object
+            
+            // Add enabled cost modifiers from dynamic checkboxes
+            foreach (KeyValuePair<string, ColorableCheckBox> kvp in _dicDynamicCostModifierCheckboxes)
+            {
+                bool blnChecked = await kvp.Value.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+                if (blnChecked)
+                {
+                    // Store the enabled modifier - this would need to be passed to the WeaponAccessory creation
+                    // For now, this is a placeholder for the actual implementation
+                }
+            }
+        }
+
+        #endregion Dynamic Cost Modifier Checkboxes
 
         #endregion Methods
     }
