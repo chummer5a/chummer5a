@@ -100,6 +100,7 @@ namespace Chummer
         /// </summary>
         /// <param name="first">First collection to compare.</param>
         /// <param name="second">Second collection to compare.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>True if <paramref name="first"/> and <paramref name="second"/> are of the same size and have the same contents, false otherwise.</returns>
         public static async Task<bool> CollectionEqualAsync<T>([NotNull] this IAsyncReadOnlyCollection<T> first, [NotNull] IReadOnlyCollection<T> second, CancellationToken token = default)
         {
@@ -164,6 +165,7 @@ namespace Chummer
         /// <param name="first">First collection to compare.</param>
         /// <param name="second">Second collection to compare.</param>
         /// <param name="comparer">Special equality comparer to use instead of the default one.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>True if <paramref name="first"/> and <paramref name="second"/> are of the same size and have the same contents, false otherwise.</returns>
         public static async Task<bool> CollectionEqualAsync<T>([NotNull] this IAsyncReadOnlyCollection<T> first, [NotNull] IReadOnlyCollection<T> second, IEqualityComparer<T> comparer, CancellationToken token = default)
         {

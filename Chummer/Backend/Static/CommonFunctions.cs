@@ -450,6 +450,7 @@ namespace Chummer
         /// <param name="objFoundVehicle">Vehicle that the Gear was found in.</param>
         /// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
         /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -513,6 +514,7 @@ namespace Chummer
         /// </summary>
         /// <param name="funcPredicate">Predicate to locate the VehicleMod.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static VehicleMod FindVehicleMod([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate, CancellationToken token = default)
         {
             if (lstVehicles == null)
@@ -527,6 +529,7 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle that the VehicleMod was found in.</param>
         /// <param name="objFoundWeaponMount">Weapon Mount that the VehicleMod was found in.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static VehicleMod FindVehicleMod([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -574,6 +577,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Weapon to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid, CancellationToken token = default)
         {
             if (lstVehicles == null)
@@ -589,6 +593,7 @@ namespace Chummer
         /// <param name="objFoundVehicle">Vehicle that the Weapon was found in.</param>
         /// <param name="objFoundVehicleMod">Vehicle mod that the Weapon was found in.</param>
         /// <param name="objFoundWeaponMount">Weapon Mount that the Weapon was found in.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount, out VehicleMod objFoundVehicleMod, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1018,6 +1023,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstArmors">List of Armors to search.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static Gear FindArmorGear(this IEnumerable<Armor> lstArmors, string strGuid, CancellationToken token = default)
         {
             if (lstArmors == null)
@@ -1032,6 +1038,7 @@ namespace Chummer
         /// <param name="lstArmors">List of Armors to search.</param>
         /// <param name="objFoundArmor">Armor that the Gear was found in.</param>
         /// <param name="objFoundArmorMod">Armor mod that the Gear was found in.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static Gear FindArmorGear(this IEnumerable<Armor> lstArmors, string strGuid, out Armor objFoundArmor, out ArmorMod objFoundArmorMod, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1158,6 +1165,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstCyberware">List of Cyberware to search.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static Gear FindCyberwareGear(this IEnumerable<Cyberware> lstCyberware, string strGuid, CancellationToken token = default)
         {
             if (lstCyberware == null)
@@ -1171,6 +1179,7 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstCyberware">List of Cyberware to search.</param>
         /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static Gear FindCyberwareGear(this IEnumerable<Cyberware> lstCyberware, string strGuid, out Cyberware objFoundCyberware, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

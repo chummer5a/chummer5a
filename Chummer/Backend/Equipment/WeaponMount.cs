@@ -2452,6 +2452,7 @@ namespace Chummer.Backend.Equipment
         /// Load the Weapon Mount Option from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public async Task LoadAsync(XmlNode objNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

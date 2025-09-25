@@ -150,6 +150,7 @@ namespace Chummer
         /// Async version of <see cref="Random.Next(int, int)"/> with a wrapper that eliminates modulo bias (i.e. the fact that certain results will be more common based on the remainder when dividing <see cref="int.MaxValue"/> by them)
         /// </summary>
         /// <param name="objRandom">Instance of Random to use.</param>
+        /// <param name="minValue">Minimum value (inclusive) to generate.</param>
         /// <param name="maxValue">Maximum value (exclusive) to generate.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<int> NextModuloBiasRemovedAsync(this Random objRandom, int minValue, int maxValue, CancellationToken token = default)

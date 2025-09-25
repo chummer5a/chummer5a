@@ -16570,6 +16570,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
         /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public List<Grade> GetGradesList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false, CancellationToken token = default)
         {
             return GetGrades(objSource, blnIgnoreBannedGrades, token).ToList();
@@ -16833,6 +16834,7 @@ namespace Chummer
         /// Construct a list of possible places to put a piece of modular cyberware. Names are display names of the given items, values are internalIDs of the given items.
         /// </summary>
         /// <param name="objModularCyberware">Cyberware for which to construct the list.</param>
+        /// <param name="blnUsePool">If set to true, the returned list will be taken from <see cref="Utils.ListItemListPool"/> instead of newly allocated.</param>
         /// <param name="token">CancellationToken to listen to.</param>
         public async Task<List<ListItem>> ConstructModularCyberlimbListAsync([NotNull] Cyberware objModularCyberware, bool blnUsePool = false,
             CancellationToken token = default)

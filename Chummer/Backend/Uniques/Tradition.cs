@@ -496,6 +496,7 @@ namespace Chummer.Backend.Uniques
         /// Load the Tradition from the XmlNode.
         /// </summary>
         /// <param name="xmlNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public Task LoadAsync(XmlNode xmlNode, CancellationToken token = default)
         {
             return LoadCoreAsync(false, xmlNode, token);

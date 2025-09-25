@@ -5501,6 +5501,7 @@ namespace Chummer.Backend.Equipment
         /// Locate a VehicleMod within this vehicle based on a predicate.
         /// </summary>
         /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public VehicleMod FindVehicleMod([NotNull] Func<VehicleMod, bool> funcPredicate, CancellationToken token = default)
         {
             return FindVehicleMod(funcPredicate, out WeaponMount _, token);
@@ -5511,6 +5512,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
         /// <param name="objFoundWeaponMount">Weapon Mount that the VehicleMod was found in.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public VehicleMod FindVehicleMod([NotNull] Func<VehicleMod, bool> funcPredicate, out WeaponMount objFoundWeaponMount, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -5565,6 +5567,7 @@ namespace Chummer.Backend.Equipment
         /// Locate a piece of Gear within one of a character's Vehicles.
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public Gear FindVehicleGear(string strGuid, CancellationToken token = default)
         {
             return FindVehicleGear(strGuid, out WeaponAccessory _, out Cyberware _, token);
@@ -5576,6 +5579,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
         /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public Gear FindVehicleGear(string strGuid, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

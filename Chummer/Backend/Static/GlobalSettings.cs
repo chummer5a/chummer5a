@@ -2361,6 +2361,7 @@ namespace Chummer
         /// Converts an image to its Base64 string equivalent with compression settings specified by <see cref="SavedImageQuality"/>.
         /// </summary>
         /// <param name="objImageToSave">Image whose Base64 string should be created.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static string ImageToBase64StringForStorage(Image objImageToSave, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

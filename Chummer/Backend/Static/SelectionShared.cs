@@ -3818,11 +3818,6 @@ namespace Chummer
         /// <summary>
         ///     Evaluates the availability of a given node against Availability Limits in Create Mode
         /// </summary>
-        /// <param name="objXmlGear"></param>
-        /// <param name="objCharacter"></param>
-        /// <param name="intRating"></param>
-        /// <param name="intAvailModifier"></param>
-        /// <returns></returns>
         public static bool CheckAvailRestriction(XmlNode objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -3836,6 +3831,7 @@ namespace Chummer
         /// <param name="objCharacter">Character that we're comparing the Availability against.</param>
         /// <param name="intRating">Effective Rating of the object.</param>
         /// <param name="intAvailModifier">Availability Modifier from other sources.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Returns False if not permitted with the current gameplay restrictions. Returns True if valid.</returns>
         public static bool CheckAvailRestriction(this XPathNavigator objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0, CancellationToken token = default)
         {
@@ -3991,6 +3987,7 @@ namespace Chummer
         ///     Evaluates whether a given node can be purchased.
         /// </summary>
         /// <param name="objXmlGear">XPathNavigator element to evaluate.</param>
+        /// <param name="objCharacter">Character to use for compound cost strings.</param>
         /// <param name="decMaxNuyen">Total nuyen amount that the character possesses.</param>
         /// <param name="decCostMultiplier">Multiplier of the object's cost value.</param>
         /// <param name="intRating">Effective Rating of the object.</param>
@@ -4054,6 +4051,7 @@ namespace Chummer
         ///     Evaluates whether a given node can be purchased.
         /// </summary>
         /// <param name="objXmlGear">XPathNavigator element to evaluate.</param>
+        /// <param name="objCharacter">Character to use for compound cost strings.</param>
         /// <param name="decMaxNuyen">Total nuyen amount that the character possesses.</param>
         /// <param name="decCostMultiplier">Multiplier of the object's cost value.</param>
         /// <param name="intRating">Effective Rating of the object.</param>

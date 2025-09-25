@@ -233,6 +233,7 @@ namespace Chummer
         /// <param name="blnIsOrNode">Whether this is an OR node (true) or an AND node (false). Default is AND (false).</param>
         /// <param name="xmlOperationNode">The node containing the filter operation or a list of filter operations. Every element here is checked against corresponding elements in the parent node, using an operation specified in the element's attributes.</param>
         /// <param name="xmlParentNode">The parent node against which the filter operations are checked.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
         public static bool ProcessFilterOperationNode(this XmlNode xmlParentNode, XPathNavigator xmlOperationNode,
                                                       bool blnIsOrNode, CancellationToken token = default)
@@ -248,6 +249,7 @@ namespace Chummer
         /// <param name="blnIsOrNode">Whether this is an OR node (true) or an AND node (false). Default is AND (false).</param>
         /// <param name="xmlOperationNode">The node containing the filter operation or a list of filter operations. Every element here is checked against corresponding elements in the parent node, using an operation specified in the element's attributes.</param>
         /// <param name="xmlParentNode">The parent node against which the filter operations are checked.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
         public static bool ProcessFilterOperationNode(this XmlNode xmlParentNode, XmlNode xmlOperationNode, bool blnIsOrNode, CancellationToken token = default)
         {

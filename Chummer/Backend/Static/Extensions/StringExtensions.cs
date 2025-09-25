@@ -762,7 +762,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string ConcatFast(string[] lstStrings, int startIndex, int count)
         {
@@ -770,7 +770,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string ConcatFast(IReadOnlyCollection<string> lstStrings, int startIndex, int count)
         {
@@ -913,7 +913,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static async Task<string> ConcatFastAsync(IAsyncReadOnlyCollection<string> lstStrings, int startIndex, int count, CancellationToken token = default)
         {
@@ -1114,7 +1114,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
         /// </summary>
         public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4)
         {
@@ -1182,7 +1182,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
         /// </summary>
         public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5)
         {
@@ -1259,7 +1259,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
         /// </summary>
         public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5, string strArg6)
         {
@@ -1345,7 +1345,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Join(string, IEnumerable{string})"> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder">, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Join(string, IEnumerable{string})"/> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder"/>, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string JoinFast(string strSeparator, IReadOnlyCollection<string> lstStrings)
         {
@@ -1451,7 +1451,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Join(string, IEnumerable{string})"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
+        /// Version of <see cref="string.Join(string, IEnumerable{string})"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
         /// </summary>
         public static string JoinFast(string strSeparator, IEnumerable<string> lstStrings)
         {
@@ -1640,7 +1640,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async version of <see cref="string.Join(string, IEnumerable{string})"> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder">, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Async version of <see cref="string.Join(string, IEnumerable{string})"/> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder"/>, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static Task<string> JoinFastAsync(string strSeparator, IAsyncReadOnlyCollection<string> lstStrings, CancellationToken token = default)
         {
@@ -2845,6 +2845,7 @@ namespace Chummer
         /// Syntactic sugar for <see cref="string.Split(char[], int)"/> that uses one separator char in its argument.
         /// </summary>
         /// <param name="strInput">String to search.</param>
+        /// <param name="chrSeparator">Separator to use.</param>
         /// <param name="intCount">The maximum number of substrings to return.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] Split(this string strInput, char chrSeparator, int intCount)
@@ -3120,6 +3121,7 @@ namespace Chummer
         /// Version of <see cref="string.Split(char[], StringSplitOptions)"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
+        /// <param name="eSplitOptions">Split options to use.</param>
         /// <param name="achrSplit">Characters to use for splitting.</param>
         /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
         public static IEnumerable<string> SplitNoAlloc(this string strInput, StringSplitOptions eSplitOptions, params char[] achrSplit)

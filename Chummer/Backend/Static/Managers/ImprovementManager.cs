@@ -1401,6 +1401,7 @@ namespace Chummer
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="strValue">String value to parse.</param>
         /// <param name="intRating">Integer value to replace "Rating" with.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static int ValueToInt(Character objCharacter, string strValue, int intRating, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1471,6 +1472,7 @@ namespace Chummer
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="strValue">String value to parse.</param>
         /// <param name="intRating">Integer value to replace "Rating" with.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static decimal ValueToDec(Character objCharacter, string strValue, int intRating, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

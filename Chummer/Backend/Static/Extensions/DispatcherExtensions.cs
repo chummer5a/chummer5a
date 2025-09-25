@@ -38,6 +38,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objDispatcher">Dispatcher object whose dispatcher's Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
         public static void DoThreadSafe<T>(this T objDispatcher, Action funcToRun, CancellationToken token = default) where T : DispatcherObject
@@ -82,6 +83,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objDispatcher">Dispatcher object whose dispatcher's Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
         public static void DoThreadSafe<T>(this T objDispatcher, Action<T> funcToRun, CancellationToken token = default) where T : DispatcherObject
@@ -412,6 +414,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objDispatcher">Dispatcher object whose dispatcher's Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
         public static T2 DoThreadSafeFunc<T1, T2>(this T1 objDispatcher, Func<T2> funcToRun, CancellationToken token = default) where T1 : DispatcherObject
@@ -455,6 +458,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objDispatcher">Dispatcher object whose dispatcher's Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
         public static T2 DoThreadSafeFunc<T1, T2>(this T1 objDispatcher, Func<T1, T2> funcToRun, CancellationToken token = default) where T1 : DispatcherObject

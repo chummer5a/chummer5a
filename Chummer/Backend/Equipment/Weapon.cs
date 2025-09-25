@@ -6039,6 +6039,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="strFindMode">Firing mode to find.</param>
         /// <param name="strLanguage">Language of <paramref name="strFindMode"/>. Uses current UI language if unset.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public async Task<bool> AllowModeAsync(string strFindMode, string strLanguage = "", CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -6050,6 +6051,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Determine if the Weapon is capable of firing in one of a set of particular modes.
         /// </summary>
+        /// <param name="strLanguage">Language of <paramref name="astrModes"/>. Uses current UI language if unset.</param>
         /// <param name="astrModes">Firing modes to find.</param>
         public Task<bool> AllowModesAsync(string strLanguage, params string[] astrModes)
         {
@@ -6060,6 +6062,7 @@ namespace Chummer.Backend.Equipment
         /// Determine if the Weapon is capable of firing in one of a set of particular modes.
         /// </summary>
         /// <param name="astrModes">Firing modes to find.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public Task<bool> AllowModesAsync(CancellationToken token, params string[] astrModes)
         {
             return AllowModesAsync(GlobalSettings.Language, token, astrModes);
@@ -6070,6 +6073,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="astrModes">Firing modes to find.</param>
         /// <param name="strLanguage">Language of <paramref name="astrModes"/>. Uses current UI language if unset.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public async Task<bool> AllowModesAsync(string strLanguage, CancellationToken token, params string[] astrModes)
         {
             token.ThrowIfCancellationRequested();

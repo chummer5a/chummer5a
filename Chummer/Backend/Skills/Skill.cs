@@ -442,7 +442,7 @@ namespace Chummer.Backend.Skills
         /// <param name="objCharacter">The character this skill belongs to</param>
         /// <param name="xmlSkillNode">The XML node describing the skill</param>
         /// <param name="objLoadingSkill">Pre-existing skill object into which to load (if it exists)</param>
-        /// <returns></returns>
+        /// <param name="blnNewSkill">Whether the returned skill is a newly created one (true) or an existing one that got its values overwritten (false).</param>
         public static Skill Load(Character objCharacter, XmlNode xmlSkillNode, out bool blnNewSkill, Skill objLoadingSkill = null)
         {
             if (!xmlSkillNode.TryGetField("suid", Guid.TryParse, out Guid suid))
@@ -692,6 +692,7 @@ namespace Chummer.Backend.Skills
         /// <param name="objCharacter">The character this skill belongs to</param>
         /// <param name="xmlSkillNode">The XML node describing the skill</param>
         /// <param name="objLoadingSkill">Pre-existing skill object into which to load (if it exists)</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<ValueTuple<Skill, bool>> LoadAsync(Character objCharacter, XmlNode xmlSkillNode, Skill objLoadingSkill = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

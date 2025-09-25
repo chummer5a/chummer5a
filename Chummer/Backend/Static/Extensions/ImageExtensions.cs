@@ -42,6 +42,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strBase64String">String representing image to compress.</param>
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>String of compressed image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string JpegCompressBase64String(this string strBase64String, int intQuality = -1, CancellationToken token = default)
@@ -86,7 +87,7 @@ namespace Chummer
         /// <param name="intThumbHeight">Height of the thumbnail.</param>
         /// <param name="blnKeepAspectRatio">Whether to make sure we retain the aspect ratio of the old image.</param>
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
-        /// <returns></returns>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Image GetCompressedThumbnailImage(this Image imgToConvert, int intThumbWidth, int intThumbHeight,
             bool blnKeepAspectRatio = true, int intQuality = -1, CancellationToken token = default)
@@ -182,6 +183,7 @@ namespace Chummer
         /// </summary>
         /// <param name="imgToConvert">Image to convert.</param>
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A clone of <paramref name="imgToConvert"/> that is compressed.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Image GetCompressedImage(this Image imgToConvert, int intQuality = -1, CancellationToken token = default)
@@ -290,6 +292,7 @@ namespace Chummer
         /// Converts a Base64 String into an Image.
         /// </summary>
         /// <param name="strBase64String">String to convert.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Image from the Base64 string.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Image ToImage(this string strBase64String, CancellationToken token = default)
@@ -320,6 +323,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strBase64String">String to convert.</param>
         /// <param name="eFormat">Pixel format in which the Bitmap is returned.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Image from the Base64 string.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Bitmap ToImage(this string strBase64String, PixelFormat eFormat, CancellationToken token = default)
@@ -413,6 +417,7 @@ namespace Chummer
         /// </summary>
         /// <param name="imgToConvert">Image to convert.</param>
         /// <param name="eOverrideFormat">The image format in which the image should be saved. If null, will use <paramref name="imgToConvert"/>'s RawFormat.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Base64 string from Image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string ToBase64String(this Image imgToConvert, ImageFormat eOverrideFormat = null, CancellationToken token = default)
@@ -470,6 +475,7 @@ namespace Chummer
         /// <param name="imgToConvert">Image to convert.</param>
         /// <param name="objCodecInfo">Encoder to use to encode the image.</param>
         /// <param name="lstEncoderParameters">List of parameters for <paramref name="objCodecInfo"/>.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Base64 string from Image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string ToBase64String(this Image imgToConvert, ImageCodecInfo objCodecInfo, EncoderParameters lstEncoderParameters, CancellationToken token = default)
@@ -619,6 +625,7 @@ namespace Chummer
         /// </summary>
         /// <param name="imgToConvert">Image to convert.</param>
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Base64 string of Jpeg version of Image with a quality of <paramref name="intQuality"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string ToBase64StringAsJpeg(this Image imgToConvert, int intQuality = -1, CancellationToken token = default)

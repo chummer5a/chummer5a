@@ -977,6 +977,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Whether we are loading a copy of an existing armor.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public Task LoadAsync(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
         {
             return LoadCoreAsync(false, objNode, blnCopy, token);

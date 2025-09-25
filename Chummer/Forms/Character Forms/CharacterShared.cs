@@ -10357,7 +10357,6 @@ namespace Chummer
         /// <summary>
         /// Remove a mugshot of a character.
         /// </summary>
-        /// <param name="intCurrentMugshotIndexInList"></param>
         protected async Task RemoveMugshot(int intCurrentMugshotIndexInList, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

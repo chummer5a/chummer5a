@@ -2414,6 +2414,7 @@ namespace Chummer
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
         /// <param name="afuncToRun">Codes to wait for.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RunWithoutThreadLock(CancellationToken token, params Func<Task>[] afuncToRun)
         {

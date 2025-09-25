@@ -469,6 +469,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="objParentLifestyle">Lifestyle object to which this LifestyleQuality belongs.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public Task LoadAsync(XmlNode objNode, Lifestyle objParentLifestyle, CancellationToken token = default)
         {
             return LoadCoreAsync(false, objNode, objParentLifestyle, token);

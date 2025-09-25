@@ -1448,6 +1448,7 @@ namespace Chummer.Backend.Equipment
         /// Copy a piece of Gear.
         /// </summary>
         /// <param name="objGear">Gear object to copy.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public async Task CopyAsync(Gear objGear, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1659,6 +1660,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Whether we are loading a copy of an existing gear.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public Task LoadAsync(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
         {
             return LoadCoreAsync(false, objNode, blnCopy, token);

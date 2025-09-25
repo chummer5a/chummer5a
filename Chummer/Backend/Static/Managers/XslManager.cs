@@ -40,6 +40,7 @@ namespace Chummer
         /// If we've already compiled the same Xsl Transform before, we'll fetch the cached version of that transform instead of repeating it.
         /// </summary>
         /// <param name="strXslFilePath">Absolute path to the Xsl file to be transformed.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The compiled Xsl transform of <paramref name="strXslFilePath"/>.</returns>
         public static XslCompiledTransform GetTransformForFile(string strXslFilePath, CancellationToken token = default)
         {
