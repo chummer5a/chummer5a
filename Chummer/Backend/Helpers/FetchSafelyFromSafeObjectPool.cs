@@ -26,7 +26,7 @@ namespace Chummer
     /// Syntactic Sugar for wrapping <see cref="SafeObjectPool{T}.Get"/> and <see cref="SafeObjectPool{T}.Return"/> into something that hooks into `using`
     /// and that guarantees that pooled objects will be returned
     /// </summary>
-    public sealed class FetchSafelyFromSafeObjectPool<T> : IDisposable where T : class
+    public struct FetchSafelyFromSafeObjectPool<T> : IDisposable where T : class // struct unfortunately cannot be readonly because SafeObjectPool.Return requires a reference argument
     {
         private readonly SafeObjectPool<T> _objMySafePool;
         private T _objMyValue;
