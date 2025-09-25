@@ -591,7 +591,7 @@ namespace Chummer.UI.Table
             }
         }
 
-        private int _intDisposingAll = 0;
+        private int _intDisposingAll;
 
         private void DisposeAll()
         {
@@ -828,7 +828,7 @@ namespace Chummer.UI.Table
                         {
                             await objCursorWait.DisposeAsync().ConfigureAwait(false);
                         }
-                        }
+                    }
                     catch
                     {
                         foreach (Control objLoop in lstToAdd)

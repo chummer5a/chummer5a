@@ -462,7 +462,7 @@ namespace Chummer
                                             = new ConcurrentBag<ListItem>();
                                         IReadOnlyList<string> lstCustomDataPaths = await _objSelectedSetting.GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
                                         // Preload all data first to prevent weird locking issues with the rest of the program
-                                        await ParallelExtensions.ForEachAsync(_astrFileNames, strFile => XmlManager.LoadXPathAsync(strFile, lstCustomDataPaths), token).ConfigureAwait(false);
+                                        await ParallelExtensions.ForEachAsync(_astrFileNames, strFile => XmlManager.LoadXPathAsync(strFile, lstCustomDataPaths, token: token), token).ConfigureAwait(false);
                                         await ParallelExtensions.ForEachAsync(_astrFileNames, async strFileName =>
                                         {
                                             XPathNavigator xmlBaseNode

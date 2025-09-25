@@ -142,10 +142,12 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXPathNode = null;
             if (!objXmlData.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
+                // ReSharper disable once MethodHasAsyncOverload
                 (blnSync ? this.GetNodeXPath(token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
             Grade = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
                 ? Grade.ConvertToCyberwareGrade(objXmlData["grade"]?.InnerTextViaPool(token), Improvement.ImprovementSource.Drug, _objCharacter, token)
                 : await Grade.ConvertToCyberwareGradeAsync(objXmlData["grade"]?.InnerTextViaPool(token), Improvement.ImprovementSource.Drug, _objCharacter, token).ConfigureAwait(false);
 
@@ -157,7 +159,9 @@ namespace Chummer.Backend.Equipment
                     foreach (XmlNode objXmlLevel in xmlComponentsNodeList)
                     {
                         DrugComponent c = new DrugComponent(_objCharacter);
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         c.Load(objXmlLevel);
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         Components.Add(c);
                     }
                 }
@@ -1058,7 +1062,7 @@ namespace Chummer.Backend.Equipment
 
         public string GetDisplayDuration(CultureInfo objCulture, string strLanguage)
         {
-            bool blnDoCache = strLanguage.Equals(GlobalSettings.Language, StringComparison.OrdinalIgnoreCase) && objCulture == GlobalSettings.CultureInfo;
+            bool blnDoCache = strLanguage.Equals(GlobalSettings.Language, StringComparison.OrdinalIgnoreCase) && ReferenceEquals(objCulture, GlobalSettings.CultureInfo);
             if (!string.IsNullOrWhiteSpace(_strCachedDisplayDuration) && blnDoCache)
                 return _strCachedDisplayDuration;
             int intDuration = Duration;
@@ -1083,7 +1087,7 @@ namespace Chummer.Backend.Equipment
         public async Task<string> GetDisplayDurationAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            bool blnDoCache = strLanguage.Equals(GlobalSettings.Language, StringComparison.OrdinalIgnoreCase) && objCulture == GlobalSettings.CultureInfo;
+            bool blnDoCache = strLanguage.Equals(GlobalSettings.Language, StringComparison.OrdinalIgnoreCase) && ReferenceEquals(objCulture, GlobalSettings.CultureInfo);
             if (!string.IsNullOrWhiteSpace(_strCachedDisplayDuration) && blnDoCache)
                 return _strCachedDisplayDuration;
             int intDuration = await GetDurationAsync(token).ConfigureAwait(false);
@@ -2004,6 +2008,7 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXPathNode = null;
             if (!objXmlData.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
+                // ReSharper disable once MethodHasAsyncOverload
                 (blnSync ? this.GetNodeXPath(token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objXmlData.TryGetField("internalid", Guid.TryParse, out _guidId);

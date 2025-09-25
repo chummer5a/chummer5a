@@ -261,7 +261,7 @@ namespace Chummer
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="BindingList{T}.OnAddingNew(AddingNewEventArgs)" />
         protected virtual async Task OnAddingNewAsync(AddingNewEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -375,9 +375,8 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (_setBeforeRemoveAsync.Count > 0)
                 {
-                    List<RemovingOldEventArgs> lstArgsList = new List<RemovingOldEventArgs>(Items.Count);
                     List<ValueTuple<AsyncBeforeRemoveEventHandler, RemovingOldEventArgs>> lstAsyncEventsList
-                            = new List<ValueTuple<AsyncBeforeRemoveEventHandler, RemovingOldEventArgs>>(lstArgsList.Count * _setBeforeRemoveAsync.Count);
+                            = new List<ValueTuple<AsyncBeforeRemoveEventHandler, RemovingOldEventArgs>>(Items.Count * _setBeforeRemoveAsync.Count);
                     foreach (AsyncBeforeRemoveEventHandler objEvent in _setBeforeRemoveAsync)
                     {
                         for (int j = 0; j < Items.Count; ++j)

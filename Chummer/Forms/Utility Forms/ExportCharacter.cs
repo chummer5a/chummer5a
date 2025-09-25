@@ -842,39 +842,39 @@ namespace Chummer
             try
             {
                 // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massive enough to slow down the program
-                int intSnipStartIndex = strDisplayText.IndexOf("<mainmugshotbase64>");
+                int intSnipStartIndex = strDisplayText.IndexOf("<mainmugshotbase64>", StringComparison.Ordinal);
                 while (intSnipStartIndex >= 0)
                 {
                     if (token.IsCancellationRequested)
                         return Task.FromCanceled(token);
-                    int intSnipEndIndex = strDisplayText.IndexOf("</mainmugshotbase64>", intSnipStartIndex);
+                    int intSnipEndIndex = strDisplayText.IndexOf("</mainmugshotbase64>", intSnipStartIndex, StringComparison.Ordinal);
                     if (intSnipEndIndex > intSnipStartIndex)
                     {
                         string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 19);
                         string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
                         strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
-                        intSnipStartIndex = strDisplayText.IndexOf("<mainmugshotbase64>");
+                        intSnipStartIndex = strDisplayText.IndexOf("<mainmugshotbase64>", StringComparison.Ordinal);
                     }
                     else
                         intSnipStartIndex = -1;
                 }
-                intSnipStartIndex = strDisplayText.IndexOf("<stringbase64>");
+                intSnipStartIndex = strDisplayText.IndexOf("<stringbase64>", StringComparison.Ordinal);
                 while (intSnipStartIndex >= 0)
                 {
                     if (token.IsCancellationRequested)
                         return Task.FromCanceled(token);
-                    int intSnipEndIndex = strDisplayText.IndexOf("</stringbase64>", intSnipStartIndex);
+                    int intSnipEndIndex = strDisplayText.IndexOf("</stringbase64>", intSnipStartIndex, StringComparison.Ordinal);
                     if (intSnipEndIndex > intSnipStartIndex)
                     {
                         string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 14);
                         string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
                         strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
-                        intSnipStartIndex = strDisplayText.IndexOf("<stringbase64>");
+                        intSnipStartIndex = strDisplayText.IndexOf("<stringbase64>", StringComparison.Ordinal);
                     }
                     else
                         intSnipStartIndex = -1;
                 }
-                intSnipStartIndex = strDisplayText.IndexOf("base64\": \"");
+                intSnipStartIndex = strDisplayText.IndexOf("base64\": \"", StringComparison.Ordinal);
                 while (intSnipStartIndex >= 0)
                 {
                     if (token.IsCancellationRequested)
@@ -888,7 +888,7 @@ namespace Chummer
                         string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 10);
                         string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
                         strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
-                        intSnipStartIndex = strDisplayText.IndexOf("base64\": \"", intSnipStartIndex + 16);
+                        intSnipStartIndex = strDisplayText.IndexOf("base64\": \"", intSnipStartIndex + 16, StringComparison.Ordinal);
                     }
                     else
                         intSnipStartIndex = -1;

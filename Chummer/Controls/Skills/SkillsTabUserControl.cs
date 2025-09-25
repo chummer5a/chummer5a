@@ -671,18 +671,18 @@ namespace Chummer.UI.Skills
             {
                 try
                 {
-                    SkillsSection objSkillsSection = await objCharacter.GetSkillsSectionAsync().ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await objSkillsSection.LockObject.EnterWriteLockAsync();
+                    SkillsSection objSkillsSection = await objCharacter.GetSkillsSectionAsync(CancellationToken.None).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await objSkillsSection.LockObject.EnterWriteLockAsync(CancellationToken.None);
                     try
                     {
                         objSkillsSection.MultiplePropertiesChangedAsync -= SkillsSectionOnPropertyChanged;
-                        ThreadSafeBindingList<Skill> lstSkills = await objSkillsSection.GetSkillsAsync().ConfigureAwait(false);
+                        ThreadSafeBindingList<Skill> lstSkills = await objSkillsSection.GetSkillsAsync(CancellationToken.None).ConfigureAwait(false);
                         if (lstSkills?.IsDisposed == false)
                             lstSkills.ListChangedAsync -= SkillsOnListChanged;
-                        ThreadSafeBindingList<SkillGroup> lstSkillGroups = await objSkillsSection.GetSkillGroupsAsync().ConfigureAwait(false);
+                        ThreadSafeBindingList<SkillGroup> lstSkillGroups = await objSkillsSection.GetSkillGroupsAsync(CancellationToken.None).ConfigureAwait(false);
                         if (lstSkillGroups?.IsDisposed == false)
                             lstSkillGroups.ListChanged -= SkillGroupsOnListChanged;
-                        ThreadSafeBindingList<KnowledgeSkill> lstKnoSkills = await objSkillsSection.GetKnowledgeSkillsAsync().ConfigureAwait(false);
+                        ThreadSafeBindingList<KnowledgeSkill> lstKnoSkills = await objSkillsSection.GetKnowledgeSkillsAsync(CancellationToken.None).ConfigureAwait(false);
                         if (lstKnoSkills?.IsDisposed == false)
                             lstKnoSkills.ListChanged -= KnowledgeSkillsOnListChanged;
                     }

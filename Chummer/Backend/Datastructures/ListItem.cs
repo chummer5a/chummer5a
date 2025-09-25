@@ -190,12 +190,7 @@ namespace Chummer
         private int _intColumnToSort;
         private SortOrder _eOrderOfSort;
 
-        private readonly char[] _achrCachedNuyenSymbols;
-
-        public ListViewColumnSorter()
-        {
-            _achrCachedNuyenSymbols = LanguageManager.GetString("String_NuyenSymbol").ToCharArray();
-        }
+        private readonly char[] _achrCachedNuyenSymbols = LanguageManager.GetString("String_NuyenSymbol").ToCharArray();
 
         public int Compare(object x, object y)
         {
@@ -285,16 +280,9 @@ namespace Chummer
         private int _intColumnToSort;
         private SortOrder _objOrderOfSort;
 
-        private readonly char[] _achrCachedNuyenSymbols;
-        private readonly string _strCachedRestrictedSymbol;
-        private readonly string _strCachedForbiddenSymbol;
-
-        public DataGridViewColumnSorter()
-        {
-            _achrCachedNuyenSymbols = LanguageManager.GetString("String_NuyenSymbol").ToCharArray();
-            _strCachedRestrictedSymbol = LanguageManager.GetString("String_AvailRestricted");
-            _strCachedForbiddenSymbol = LanguageManager.GetString("String_AvailForbidden");
-        }
+        private readonly char[] _achrCachedNuyenSymbols = LanguageManager.GetString("String_NuyenSymbol").ToCharArray();
+        private readonly string _strCachedRestrictedSymbol = LanguageManager.GetString("String_AvailRestricted");
+        private readonly string _strCachedForbiddenSymbol = LanguageManager.GetString("String_AvailForbidden");
 
         public int Compare(object x, object y)
         {

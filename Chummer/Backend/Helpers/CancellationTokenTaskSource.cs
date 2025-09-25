@@ -67,7 +67,7 @@ namespace Chummer
 
         public bool Equals(CancellationTokenTaskSource<T> other)
         {
-            return _objTokenRegistration == other._objTokenRegistration;
+            return ReferenceEquals(_objTokenRegistration, other._objTokenRegistration);
         }
 
         public override bool Equals(object obj)
@@ -134,7 +134,7 @@ namespace Chummer
 
         public bool Equals(CancellationTokenTaskSource other)
         {
-            return _objTokenRegistration == other._objTokenRegistration;
+            return ReferenceEquals(_objTokenRegistration, other._objTokenRegistration);
         }
 
         public override bool Equals(object obj)

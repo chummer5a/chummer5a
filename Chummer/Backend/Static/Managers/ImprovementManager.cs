@@ -1567,7 +1567,7 @@ namespace Chummer
                 string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrWhiteSpace(strMinimumRating))
                     intMinimumRating = blnSync
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        // ReSharper disable once MethodHasAsyncOverload
                         ? ValueToInt(objCharacter, strMinimumRating, intRating, token)
                         : await ValueToIntAsync(objCharacter, strMinimumRating, intRating, token).ConfigureAwait(false);
                 int intMaximumRating = int.MaxValue;
@@ -1576,7 +1576,7 @@ namespace Chummer
 
                 if (!string.IsNullOrWhiteSpace(strMaximumRating))
                     intMaximumRating = blnSync
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        // ReSharper disable once MethodHasAsyncOverload
                         ? ValueToInt(objCharacter, strMaximumRating, intRating, token)
                         : await ValueToIntAsync(objCharacter, strMaximumRating, intRating, token).ConfigureAwait(false);
 
@@ -1954,7 +1954,7 @@ namespace Chummer
                     string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrWhiteSpace(strMinimumRating))
                         intMinimumRating = blnSync
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            // ReSharper disable once MethodHasAsyncOverload
                             ? ValueToInt(objCharacter, strMinimumRating, intRating, token)
                             : await ValueToIntAsync(objCharacter, strMinimumRating, intRating, token)
                                 .ConfigureAwait(false);
@@ -1962,7 +1962,7 @@ namespace Chummer
                     string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrWhiteSpace(strMaximumRating))
                         intMaximumRating = blnSync
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            // ReSharper disable once MethodHasAsyncOverload
                             ? ValueToInt(objCharacter, strMaximumRating, intRating, token)
                             : await ValueToIntAsync(objCharacter, strMaximumRating, intRating, token)
                                 .ConfigureAwait(false);
@@ -2125,7 +2125,7 @@ namespace Chummer
                                 .SelectSingleNodeAndCacheExpressionAsNavigator("@minimumrating", token)?.Value;
                         if (!string.IsNullOrWhiteSpace(strMinimumRating))
                             frmPickSkill.MyForm.MinimumRating = blnSync
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                // ReSharper disable once MethodHasAsyncOverload
                                 ? ValueToInt(objCharacter, strMinimumRating, intRating, token)
                                 : await ValueToIntAsync(objCharacter, strMinimumRating, intRating, token)
                                     .ConfigureAwait(false);
@@ -2133,7 +2133,7 @@ namespace Chummer
                             .SelectSingleNodeAndCacheExpressionAsNavigator("@maximumrating", token)?.Value;
                         if (!string.IsNullOrWhiteSpace(strMaximumRating))
                             frmPickSkill.MyForm.MaximumRating = blnSync
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                // ReSharper disable once MethodHasAsyncOverload
                                 ? ValueToInt(objCharacter, strMaximumRating, intRating, token)
                                 : await ValueToIntAsync(objCharacter, strMaximumRating, intRating, token)
                                     .ConfigureAwait(false);
@@ -2660,7 +2660,7 @@ namespace Chummer
                         {
                             sbdTrace.AppendLine("Committing improvements.");
                             if (blnSync)
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                // ReSharper disable once MethodHasAsyncOverload
                                 Commit(objCharacter, token);
                             else
                                 await CommitAsync(objCharacter, token).ConfigureAwait(false);
@@ -2752,11 +2752,7 @@ namespace Chummer
                 SetLimitSelection(container.LimitSelection, objCharacter);
                 SetSelectedValue(container.SelectedValue, objCharacter);
             }
-            else if (blnIgnoreMethodNotFound || bonusNode.ChildNodes.Count == 0)
-            {
-                return true;
-            }
-            else if (bonusNode.NodeType != XmlNodeType.Comment)
+            else if (!blnIgnoreMethodNotFound && bonusNode.ChildNodes.Count > 0 && bonusNode.NodeType != XmlNodeType.Comment)
             {
                 Utils.BreakIfDebug();
                 Log.Warn(new object[] { "Tried to get unknown bonus", bonusNode.OuterXmlViaPool(token) });
@@ -2812,11 +2808,7 @@ namespace Chummer
                 SetLimitSelection(container.LimitSelection, objCharacter);
                 SetSelectedValue(container.SelectedValue, objCharacter);
             }
-            else if (blnIgnoreMethodNotFound || bonusNode.ChildNodes.Count == 0)
-            {
-                return new ValueTuple<bool, string>(true, strSourceName);
-            }
-            else if (bonusNode.NodeType != XmlNodeType.Comment)
+            else if (!blnIgnoreMethodNotFound && bonusNode.ChildNodes.Count > 0 && bonusNode.NodeType != XmlNodeType.Comment)
             {
                 Utils.BreakIfDebug();
                 Log.Warn(new object[] { "Tried to get unknown bonus", bonusNode.OuterXmlViaPool(token) });
@@ -3100,7 +3092,7 @@ namespace Chummer
                             }
                             else if (blnSync)
                             {
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                // ReSharper disable once MethodHasAsyncOverload
                                 decimal decValue = ValueToDec(objCharacter, strImprovedName, objImprovement.Rating, token);
                                 objCharacter.PrototypeTranshuman += decValue;
                             }
@@ -3796,7 +3788,7 @@ namespace Chummer
                             }
                             else if (blnSync)
                             {
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                // ReSharper disable once MethodHasAsyncOverload
                                 decimal decValue = ValueToDec(objCharacter, strImprovedName, objImprovement.Rating, token);
                                 objCharacter.PrototypeTranshuman -= decValue;
                             }
@@ -4109,6 +4101,7 @@ namespace Chummer
                                 if (blnSync)
                                 {
                                     foreach (Improvement objLoopImprovement in
+                                             // ReSharper disable once MethodHasAsyncOverload
                                              GetCachedImprovementListForValueOf(
                                                      objCharacter, Improvement.ImprovementType.SpecialSkills,
                                                      token: token))
@@ -5250,6 +5243,7 @@ namespace Chummer
                             }
                             else if (blnSync)
                             {
+                                // ReSharper disable once MethodHasAsyncOverload
                                 decimal decValue = ValueToDec(objCharacter, strImprovedName, objImprovement.Rating, token);
                                 objCharacter.PrototypeTranshuman -= decValue;
                             }
@@ -5279,6 +5273,7 @@ namespace Chummer
                                         // Determine which GradeList to use for the Cyberware.
                                         if (blnSync)
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             objCyberware.Grade = objCharacter.GetGradeByName(objCyberware.SourceType, strNewName, true, token);
                                         }
                                         else

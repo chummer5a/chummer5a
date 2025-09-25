@@ -178,15 +178,14 @@ namespace Chummer
         private async void cmdChangeColor_Click(object sender, EventArgs e)
         {
             Color objPreviewColor = ColorManager.GenerateCurrentModeColor(_objColor);
-            Color objSelectedColor = _objColor;
-            DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
+            (DialogResult eResult, Color objSelectedColor) = await this.DoThreadSafeFuncAsync(x =>
             {
                 using (ColorDialog dlgColor = new ColorDialog())
                 {
                     dlgColor.Color = objPreviewColor;
                     DialogResult eReturn = dlgColor.ShowDialog(x);
                     objSelectedColor = ColorManager.GenerateModeIndependentColor(dlgColor.Color);
-                    return eReturn;
+                    return new ValueTuple<DialogResult, Color>(eReturn, objSelectedColor);
                 }
             }).ConfigureAwait(false);
             if (eResult != DialogResult.OK)

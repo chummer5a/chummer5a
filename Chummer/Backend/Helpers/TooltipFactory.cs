@@ -28,7 +28,7 @@ namespace Chummer
 {
     public static class ToolTipFactory
     {
-        private static ConcurrentDictionary<Form, HtmlToolTip> s_dicToolTipFactories = new ConcurrentDictionary<Form, HtmlToolTip>();
+        private static readonly ConcurrentDictionary<Form, HtmlToolTip> s_dicToolTipFactories = new ConcurrentDictionary<Form, HtmlToolTip>();
 
         private static void TryClearToolTips(object sender, EventArgs e)
         {
@@ -44,7 +44,7 @@ namespace Chummer
         /// In order to prevent memory leaks through HtmlToolTip's implementation, we need to create a separate object for each form.
         /// When a form is disposed, we will then clear out and dispose the associated HtmlToolTip to prevent leaks through static references.
         /// </summary>
-        [System.CLSCompliant(false)]
+        [CLSCompliant(false)]
         public static HtmlToolTip GetToolTipForForm(Form form)
         {
             if (form == null)
@@ -79,7 +79,7 @@ namespace Chummer
         /// In order to prevent memory leaks through HtmlToolTip's implementation, we need to create a separate object for each form.
         /// When a form is disposed, we will then clear out and dispose the associated HtmlToolTip to prevent leaks through static references.
         /// </summary>
-        [System.CLSCompliant(false)]
+        [CLSCompliant(false)]
         public static Task<HtmlToolTip> GetToolTipForFormAsync(Form form, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)

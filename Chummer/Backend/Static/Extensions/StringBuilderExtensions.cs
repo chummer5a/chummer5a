@@ -24,7 +24,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Chummer.Annotations;
-using iText.Kernel.Pdf.Canvas.Parser.ClipperLib;
 
 namespace Chummer
 {
@@ -331,7 +330,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[], int, int)"/>, appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[], int, int)"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -379,7 +378,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -420,7 +419,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -546,7 +545,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[], int, int)"/>, appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[], int, int)"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -594,7 +593,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -635,7 +634,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -778,7 +777,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[], int, int)"/>, appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[], int, int)"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -834,7 +833,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -883,7 +882,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -1044,7 +1043,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[], int, int)"/>, appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[], int, int)"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -1100,7 +1099,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -1149,7 +1148,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -1258,7 +1257,7 @@ namespace Chummer
         /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
-        /// <param name="chrSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
         /// <param name="lstValues">A collection that contains the strings to append.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns><paramref name="sbdInput" /> with values appended.</returns>
@@ -1424,8 +1423,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="StringBuilder.ToString()"> that returns a trimmed version of the string.
-        /// Faster than doing <see cref="StringBuilder.ToString()"> and then <see cref="string.Trim()"> because it takes advantage of StringBuilder internals that can modify string contents quickly without needing to allocate new strings.
+        /// Version of <see cref="StringBuilder.ToString()"/> that returns a trimmed version of the string.
+        /// Faster than doing <see cref="StringBuilder.ToString()"/> and then <see cref="string.Trim()"/> because it takes advantage of StringBuilder internals that can modify string contents quickly without needing to allocate new strings.
         /// </summary>
         /// <param name="sbdInput">StringBuilder containing the string to be trimmed and returned.</param>
         /// <returns>The trimmed version of the string inside of <paramref name="sbdInput"/>.</returns>

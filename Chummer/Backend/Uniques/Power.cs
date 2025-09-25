@@ -611,6 +611,7 @@ namespace Chummer
                             };
                             if (blnSync)
                             {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objEnhancement.Load(nodEnhancement);
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 Enhancements.Add(objEnhancement);

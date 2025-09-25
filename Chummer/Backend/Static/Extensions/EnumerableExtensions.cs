@@ -272,7 +272,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for <see cref="Enumerable.Any{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> that will use <see cref="List.Exists(Predicate{T})"/> if possible.
+        /// Syntactic sugar for <see cref="Enumerable.Any{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> that will use <see cref="List{T}.Exists(Predicate{T})"/> if possible.
         /// </summary>
         public static bool Exists<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
         {
@@ -282,7 +282,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> that will use <see cref="List.Find(Predicate{T})"/> if possible.
+        /// Syntactic sugar for <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> that will use <see cref="List{T}.Find(Predicate{T})"/> if possible.
         /// </summary>
         public static T Find<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
         {
@@ -292,7 +292,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for <see cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> that will use <see cref="List.FindLast(Predicate{T})"/> if possible.
+        /// Syntactic sugar for <see cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> that will use <see cref="List{T}.FindLast(Predicate{T})"/> if possible.
         /// </summary>
         public static T FindLast<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
         {
@@ -302,7 +302,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for <see cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> plus <see cref="Enumerable.ToList{TSource}(IEnumerable{TSource})"/> that will use <see cref="List.FindAll(Predicate{T})"/> if possible.
+        /// Syntactic sugar for <see cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> plus <see cref="Enumerable.ToList{TSource}(IEnumerable{TSource})"/> that will use <see cref="List{T}.FindAll(Predicate{T})"/> if possible.
         /// </summary>
         public static List<T> FindAll<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
         {

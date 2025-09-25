@@ -174,7 +174,7 @@ namespace Chummer
 
         /// <summary>
         /// Dictionary of nodes in the graph. This is where the graph is actually stored, and doubles as a fast way to get any node in the graph.
-        /// It's an <see cref="IReadOnlyDictionary{T, DependencyGraphNode{T, T2}}"/> because dependency graphs are intended to be set up once based on a blueprint called as part of the constructor.
+        /// It's an <see cref="IReadOnlyDictionary{TKey,TValue}"/> because dependency graphs are intended to be set up once based on a blueprint called as part of the constructor.
         /// </summary>
         public IReadOnlyDictionary<T, DependencyGraphNode<T, T2>> NodeDictionary => _dicNodeDictionary;
 

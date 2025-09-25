@@ -134,7 +134,6 @@ namespace Chummer
         {
             string strSelectedSuite = await lstCyberware.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString()).ConfigureAwait(false);
             XmlNode xmlSuite = null;
-            string strGrade;
             Grade objGrade = null;
             if (strSelectedSuite != null)
             {
@@ -142,7 +141,7 @@ namespace Chummer
                 string strSuiteGradeEntry = xmlSuite?["grade"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strSuiteGradeEntry))
                 {
-                    strGrade = CyberwareGradeName(strSuiteGradeEntry);
+                    string strGrade = CyberwareGradeName(strSuiteGradeEntry);
                     if (!string.IsNullOrEmpty(strGrade))
                     {
                         objGrade = await _objCharacter.GetGradeByNameAsync(_eSource, strGrade).ConfigureAwait(false);

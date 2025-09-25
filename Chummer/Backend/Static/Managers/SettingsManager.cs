@@ -330,7 +330,7 @@ namespace Chummer
             string strSettingsPath = Utils.GetSettingsFolderPath;
             if (Directory.Exists(strSettingsPath))
             {
-                await ParallelExtensions.ForEachAsync(Directory.EnumerateFiles(strSettingsPath, "*.xml"), strSettingsFilePath => LoadSettingsFromFile(strSettingsFilePath), token).ConfigureAwait(false);
+                await ParallelExtensions.ForEachAsync(Directory.EnumerateFiles(strSettingsPath, "*.xml"), LoadSettingsFromFile, token).ConfigureAwait(false);
                 
                 async Task LoadSettingsFromFile(string strSettingsFilePath)
                 {

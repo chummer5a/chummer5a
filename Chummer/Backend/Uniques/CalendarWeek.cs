@@ -36,7 +36,7 @@ namespace Chummer
     public sealed class CalendarWeek : IHasInternalId, IComparable, INotifyMultiplePropertiesChangedAsync, IEquatable<CalendarWeek>, IComparable<CalendarWeek>, IHasNotes, IHasLockObject
     {
         private Guid _guiID;
-        private bool _blnIsLongYear = false;
+        private bool _blnIsLongYear;
         private bool _blnIsLeapYear = true;
         private int _intYear = 2072;
         private int _intWeek = 1;

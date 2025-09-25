@@ -2680,7 +2680,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    if (objSemaphore?.IsDisposed == false)
+                    if (!objSemaphore.IsDisposed)
                         objSemaphore.Release();
                 }
             }
@@ -14574,8 +14574,8 @@ namespace Chummer
                             if (!await objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware,
                                     frmPickCyberware.MyForm.SelectedGrade,
                                     frmPickCyberware.MyForm.SelectedRating,
-                                    objVehicle, objMod.Cyberware, await CharacterObject.GetVehiclesAsync(GenericToken).ConfigureAwait(false),
-                                    objVehicle.Weapons,
+                                    objVehicle ?? objMod.Parent, objMod.Cyberware, await CharacterObject.GetVehiclesAsync(GenericToken).ConfigureAwait(false),
+                                    (objVehicle ?? objMod.Parent).Weapons,
                                     frmPickCyberware.MyForm.Markup, frmPickCyberware.MyForm.FreeCost,
                                     frmPickCyberware.MyForm.BlackMarketDiscount, true,
                                     "String_ExpensePurchaseVehicleCyberware", objCyberwareParent).ConfigureAwait(false))

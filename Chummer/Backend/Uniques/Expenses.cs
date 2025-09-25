@@ -342,6 +342,7 @@ namespace Chummer
             DateTime.TryParse(objNode["date"]?.InnerTextViaPool(token), GlobalSettings.InvariantCultureInfo, DateTimeStyles.None, out _datDate);
             objNode.TryGetDecFieldQuickly("amount", ref _decAmount);
             if (objNode.TryGetStringFieldQuickly("reason", ref _strReason))
+                // ReSharper disable once MethodHasAsyncOverload
                 _strReason = _strReason.TrimEndOnce(" (" + (blnSync ? LanguageManager.GetString("String_Expense_Refund", token: token) : await LanguageManager.GetStringAsync("String_Expense_Refund", token: token).ConfigureAwait(false)) + ")").Replace("🡒", "->");
             if (objNode["type"] != null)
                 _eExpenseType = ConvertToExpenseType(objNode["type"].InnerTextViaPool(token));

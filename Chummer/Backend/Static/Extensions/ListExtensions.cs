@@ -420,7 +420,7 @@ namespace Chummer
                 await AddWithSortAsync(lstCollection, objItem, funcComparison, funcOverrideIfEquals, token).ConfigureAwait(false);
         }
 
-        /// <inheritdoc cref="List.RemoveRange(int, int)"/>
+        /// <inheritdoc cref="List{T}.RemoveRange(int, int)"/>
         public static void RemoveRange<T>(this IList<T> lstCollection, int index, int count,
             CancellationToken token = default)
         {
@@ -457,7 +457,7 @@ namespace Chummer
             }
         }
 
-        /// <inheritdoc cref="List.RemoveAll(Predicate{T})"/>
+        /// <inheritdoc cref="List{T}.RemoveAll(Predicate{T})"/>
         public static int RemoveAll<T>(this IList<T> lstCollection, Predicate<T> predicate,
             CancellationToken token = default)
         {
@@ -492,7 +492,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async version of <see cref="List.RemoveAll(Predicate{T})"/>, but for the entire <see cref="IList{T}"/> interface.
+        /// Async version of <see cref="List{T}.RemoveAll(Predicate{T})"/>, but for the entire <see cref="IList{T}"/> interface.
         /// </summary>
         public static async Task<int> RemoveAllAsync<T>(this IList<T> lstCollection, Func<T, Task<bool>> predicate,
             CancellationToken token = default)
@@ -526,7 +526,7 @@ namespace Chummer
             }
         }
 
-        /// <inheritdoc cref="List.InsertRange(int, IEnumerable{T})"/>
+        /// <inheritdoc cref="List{T}.InsertRange(int, IEnumerable{T})"/>
         public static void InsertRange<T>(this IList<T> lstCollection, int index, [NotNull] IEnumerable<T> collection,
             CancellationToken token = default)
         {
@@ -550,7 +550,7 @@ namespace Chummer
             }
         }
 
-        /// <inheritdoc cref="List.Sort()"/>
+        /// <inheritdoc cref="List{T}.Sort()"/>
         public static void Sort<T>(this IList<T> lstCollection)
         {
             if (lstCollection is List<T> lstCollectionCast)
@@ -561,7 +561,7 @@ namespace Chummer
                 lstCollection.Sort(0, lstCollection.Count, null);
         }
 
-        /// <inheritdoc cref="List.Sort(IComparer{T})"/>
+        /// <inheritdoc cref="List{T}.Sort(IComparer{T})"/>
         public static void Sort<T>(this IList<T> lstCollection, IComparer<T> comparer)
         {
             if (lstCollection is List<T> lstCollectionCast)
@@ -572,7 +572,7 @@ namespace Chummer
                 lstCollection.Sort(0, lstCollection.Count, comparer);
         }
 
-        /// <inheritdoc cref="List.Sort(int, int, IComparer{T})"/>
+        /// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})"/>
         public static void Sort<T>(this IList<T> lstCollection, int index, int count, IComparer<T> comparer)
         {
             if (lstCollection is List<T> lstCollectionCast)
@@ -601,7 +601,7 @@ namespace Chummer
             IntrospectiveSort(lstCollection, index, count, comparer);
         }
 
-        /// <inheritdoc cref="List.Sort(Comparison{T})"/>
+        /// <inheritdoc cref="List{T}.Sort(Comparison{T})"/>
         public static void Sort<T>(this IList<T> lstCollection, Comparison<T> comparison)
         {
             if (lstCollection is List<T> lstCollectionCast)

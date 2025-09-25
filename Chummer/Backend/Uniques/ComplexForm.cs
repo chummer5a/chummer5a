@@ -259,6 +259,7 @@ namespace Chummer
                 _objCachedMyXPathNode = null;
                 if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
                 {
+                    // ReSharper disable once MethodHasAsyncOverload
                     (blnSync ? this.GetNodeXPath(token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
@@ -758,14 +759,7 @@ namespace Chummer
                         bool blnForce = strReturn.StartsWith('L');
                         string strFv = blnForce ? strReturn.TrimStartOnce("L", true) : strReturn;
                         //Navigator can't do math on a single value, so inject a mathable value.
-                        if (string.IsNullOrEmpty(strFv))
-                        {
-                            strFv = "0";
-                        }
-                        else
-                        {
-                            strFv = strFv.TrimStart('+');
-                        }
+                        strFv = string.IsNullOrEmpty(strFv) ? "0" : strFv.TrimStart('+');
 
                         string strToAppend = string.Empty;
                         int intFadingDv = 0;
@@ -810,8 +804,6 @@ namespace Chummer
                         else
                             // Fading always minimum 2
                             strReturn = Math.Max(intFadingDv, 2).ToString(GlobalSettings.InvariantCultureInfo);
-
-                        return strReturn;
                     }
                     return strReturn;
                 }
@@ -837,14 +829,7 @@ namespace Chummer
                     bool blnForce = strReturn.StartsWith('L');
                     string strFv = blnForce ? strReturn.TrimStartOnce("L", true) : strReturn;
                     //Navigator can't do math on a single value, so inject a mathable value.
-                    if (string.IsNullOrEmpty(strFv))
-                    {
-                        strFv = "0";
-                    }
-                    else
-                    {
-                        strFv = strFv.TrimStart('+');
-                    }
+                    strFv = string.IsNullOrEmpty(strFv) ? "0" : strFv.TrimStart('+');
 
                     string strToAppend = string.Empty;
                     int intFadingDv = 0;
@@ -889,8 +874,6 @@ namespace Chummer
                     else
                         // Fading always minimum 2
                         strReturn = Math.Max(intFadingDv, 2).ToString(GlobalSettings.InvariantCultureInfo);
-
-                    return strReturn;
                 }
                 return strReturn;
             }

@@ -166,7 +166,7 @@ namespace Chummer.Tests
             {
                 Debug.WriteLine("Unit test initialized for: Test01_LoadContent()");
                 // Attempt to cache all XML files that are used the most.
-                Utils.RunWithoutThreadLock(() => ParallelExtensions.ForEachAsync(Utils.BasicDataFileNames, strLoopFile => CacheCommonFileAsync(strLoopFile), TestContext.CancellationTokenSource.Token), token: TestContext.CancellationTokenSource.Token);
+                Utils.RunWithoutThreadLock(() => ParallelExtensions.ForEachAsync(Utils.BasicDataFileNames, CacheCommonFileAsync, TestContext.CancellationTokenSource.Token), token: TestContext.CancellationTokenSource.Token);
                 async Task CacheCommonFileAsync(string strFile)
                 {
                     // Load default language data first for performance reasons

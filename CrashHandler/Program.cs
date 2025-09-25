@@ -66,8 +66,7 @@ namespace CrashHandler
                 }
                 else if (funcToRun == null)
                 {
-                    if (!s_DictionaryFunctions.TryGetValue(strArg, out funcToRun))
-                        funcToRun = null;
+                    s_DictionaryFunctions.TryGetValue(strArg, out funcToRun);
                 }
                 else
                     lstArgsForFunc.Add(strArg.Trim('\"'));

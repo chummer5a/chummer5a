@@ -393,6 +393,7 @@ namespace Chummer
 
                 if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
                 {
+                    // ReSharper disable once MethodHasAsyncOverload
                     (blnSync ? this.GetNodeXPath(token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
@@ -411,7 +412,9 @@ namespace Chummer
                             foreach (XmlNode nodTechnique in xmlLegacyTechniqueList)
                             {
                                 MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objTechnique.Load(nodTechnique);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 _lstTechniques.Add(objTechnique);
                             }
                         }
@@ -436,7 +439,9 @@ namespace Chummer
                             foreach (XmlNode nodTechnique in xmlTechniqueList)
                             {
                                 MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objTechnique.Load(nodTechnique);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 _lstTechniques.Add(objTechnique);
                             }
                         }

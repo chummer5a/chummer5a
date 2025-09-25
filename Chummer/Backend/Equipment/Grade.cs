@@ -82,7 +82,10 @@ namespace Chummer.Backend.Equipment
             }
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XPathNavigator xmlDataNode = (blnSync ? _objCharacter.LoadDataXPath(GetDataFileNameFromImprovementSource(_eSource), token: token) : await _objCharacter.LoadDataXPathAsync(GetDataFileNameFromImprovementSource(_eSource), token: token).ConfigureAwait(false))
+                XPathNavigator xmlDataNode = (blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? _objCharacter.LoadDataXPath(GetDataFileNameFromImprovementSource(_eSource), token: token)
+                        : await _objCharacter.LoadDataXPathAsync(GetDataFileNameFromImprovementSource(_eSource), token: token).ConfigureAwait(false))
                     .TryGetNodeByNameOrId("/chummer/grades/grade", Name);
                 if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
                     _guiSourceID = Guid.NewGuid();

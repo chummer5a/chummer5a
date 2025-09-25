@@ -906,9 +906,9 @@ namespace Chummer
                         Image imgNewMugshot;
                         if (blnSync)
                         {
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            // ReSharper disable once MethodHasAsyncOverload
                             using (Image imgMugshot = strMugshotBase64.ToImage(token))
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                // ReSharper disable once MethodHasAsyncOverload
                                 imgNewMugshot = imgMugshot.GetCompressedImage(token: token);
                         }
                         else

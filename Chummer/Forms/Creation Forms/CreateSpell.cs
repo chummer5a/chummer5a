@@ -34,7 +34,7 @@ namespace Chummer
         private bool _blnLoading = true;
         private int _intSkipRefresh;
         private readonly Character _objCharacter;
-        private Spell _objSpell = null;
+        private Spell _objSpell;
 
         #region Control Events
 

@@ -597,7 +597,8 @@ namespace Chummer
                     && (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
                 {
                     (blnSync
-                        ? _objCharacter.LoadDataXPath("qualities.xml", token: token)
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? _objCharacter.LoadDataXPath("qualities.xml", token: token)
                         : await _objCharacter.LoadDataXPathAsync("qualities.xml", token: token).ConfigureAwait(false))
                                  .TryGetNodeByNameOrId("/chummer/mentors/mentor", Name)
                                  ?.TryGetGuidFieldQuickly("id", ref _guiSourceID);

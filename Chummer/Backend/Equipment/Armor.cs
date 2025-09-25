@@ -606,6 +606,7 @@ namespace Chummer.Backend.Equipment
                             catch
                             {
                                 if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objMod.DeleteArmorMod();
                                 else
                                     await objMod.DeleteArmorModAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -712,6 +713,7 @@ namespace Chummer.Backend.Equipment
                         catch
                         {
                             if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objMod.DeleteArmorMod();
                             else
                                 await objMod.DeleteArmorModAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -741,6 +743,7 @@ namespace Chummer.Backend.Equipment
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             if (!objGear.CreateFromNode(objXmlGearDocument, objXmlArmorGear, lstChildWeapons, !blnSkipSelectForms))
                             {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objGear.DeleteGear();
                                 continue;
                             }
@@ -768,6 +771,7 @@ namespace Chummer.Backend.Equipment
                     catch
                     {
                         if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             objGear.DeleteGear();
                         else
                             await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -864,6 +868,7 @@ namespace Chummer.Backend.Equipment
                     catch
                     {
                         if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             objGearWeapon.DeleteWeapon();
                         else
                             await objGearWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -1022,6 +1027,7 @@ namespace Chummer.Backend.Equipment
                                 _objCharacter.ArmorLocations.FirstOrDefault(location =>
                                     location.Name == strLocation);
                         }
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         _objLocation?.Children.Add(this);
                     }
                     else
@@ -1091,9 +1097,11 @@ namespace Chummer.Backend.Equipment
             if (blnSync)
             {
                 if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     this.SetActiveCommlink(_objCharacter, true);
                 if (blnCopy)
                 {
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     this.SetHomeNode(_objCharacter, false);
                 }
                 else
@@ -1101,6 +1109,7 @@ namespace Chummer.Backend.Equipment
                     bool blnIsHomeNode = false;
                     if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
                     {
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         this.SetHomeNode(_objCharacter, true);
                     }
                 }
@@ -1166,11 +1175,14 @@ namespace Chummer.Backend.Equipment
                                 ArmorMod objMod = new ArmorMod(_objCharacter);
                                 try
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objMod.Load(nodMod, blnCopy);
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     _lstArmorMods.Add(objMod);
                                 }
                                 catch
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objMod.DeleteArmorMod();
                                     throw;
                                 }
@@ -1210,11 +1222,14 @@ namespace Chummer.Backend.Equipment
                                 Gear objGear = new Gear(_objCharacter);
                                 try
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objGear.Load(nodGear, blnCopy);
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     _lstGear.Add(objGear);
                                 }
                                 catch
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objGear.DeleteGear();
                                     throw;
                                 }
@@ -1250,6 +1265,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (!string.IsNullOrEmpty(Extra))
                         ImprovementManager.SetForcedValue(Extra, _objCharacter);
+                    // ReSharper disable once MethodHasAsyncOverload
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, Rating, CurrentDisplayNameShort, token: token);
                     string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                     if (!string.IsNullOrEmpty(strSelectedValue))
@@ -1262,6 +1278,7 @@ namespace Chummer.Backend.Equipment
                 {
                     ImprovementManager.SetForcedValue(Extra, _objCharacter);
 
+                    // ReSharper disable once MethodHasAsyncOverload
                     if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), WirelessBonus, Rating, CurrentDisplayNameShort, token: token))
                     {
                         _guiID = Guid.Empty;
@@ -1275,6 +1292,7 @@ namespace Chummer.Backend.Equipment
                     Equipped = false;
                 }
 
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                 RefreshWirelessBonuses();
             }
             else
@@ -1750,7 +1768,6 @@ namespace Chummer.Backend.Equipment
             strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                blnIsSuccess = false;
                 if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
                 {
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))

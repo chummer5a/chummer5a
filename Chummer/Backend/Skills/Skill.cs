@@ -457,9 +457,9 @@ namespace Chummer.Backend.Skills
             bool blnIsKnowledgeSkill = false;
             if (xmlSkillNode.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
             {
-                if (!(objLoadingSkill is KnowledgeSkill objKnowledgeSkill))
+                if (!(objLoadingSkill is KnowledgeSkill))
                 {
-                    objKnowledgeSkill = null;
+                    KnowledgeSkill objKnowledgeSkill = null;
                     if (guidSkillId != Guid.Empty)
                         objKnowledgeSkill =
                             objCharacter.SkillsSection.KnowledgeSkills.Find(x => x.SkillId == guidSkillId);
@@ -707,9 +707,9 @@ namespace Chummer.Backend.Skills
             bool blnIsKnowledgeSkill = false;
             if (xmlSkillNode.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
             {
-                if (!(objLoadingSkill is KnowledgeSkill objKnowledgeSkill))
+                if (!(objLoadingSkill is KnowledgeSkill))
                 {
-                    objKnowledgeSkill = null;
+                    KnowledgeSkill objKnowledgeSkill = null;
                     if (guidSkillId != Guid.Empty)
                         objKnowledgeSkill =
                             await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false))
@@ -994,6 +994,7 @@ namespace Chummer.Backend.Skills
                 catch
                 {
                     if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         objKnoSkill.Remove();
                     else
                         await objKnoSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
@@ -1002,6 +1003,7 @@ namespace Chummer.Backend.Skills
             }
             else
             {
+                // ReSharper disable once MethodHasAsyncOverload
                 XmlDocument xmlSkillsDocument = blnSync ? objCharacter.LoadData("skills.xml", token: token) : await objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
                 XmlNode xmlSkillDataNode = xmlSkillsDocument.TryGetNodeById("/chummer/skills/skill", suid)
                     //Some stuff apparently have a guid of 0000-000... (only exotic?)
@@ -1014,6 +1016,7 @@ namespace Chummer.Backend.Skills
                                                   + xmlSkillDataNode["category"]?.InnerTextViaPool(token).CleanXPath() + "]/@type", token)
                                               ?.Value != "active";
 
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                 objSkill = blnSync ? FromData(xmlSkillDataNode, objCharacter, blnIsKnowledgeSkill) : await FromDataAsync(xmlSkillDataNode, objCharacter, blnIsKnowledgeSkill, token).ConfigureAwait(false);
                 try
                 {
@@ -1035,6 +1038,7 @@ namespace Chummer.Backend.Skills
                 catch
                 {
                     if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         objSkill?.Remove();
                     else if (objSkill != null)
                         await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
@@ -1056,6 +1060,7 @@ namespace Chummer.Backend.Skills
                                 try
                                 {
                                     if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objSkill.Specializations.Add(objSpec);
                                     else
                                         await (await objSkill.GetSpecializationsAsync(token).ConfigureAwait(false)).AddAsync(objSpec, token).ConfigureAwait(false);
@@ -1065,6 +1070,7 @@ namespace Chummer.Backend.Skills
                                     try
                                     {
                                         if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objSkill.Specializations.Remove(objSpec);
                                         else
                                             await (await objSkill.GetSpecializationsAsync(token).ConfigureAwait(false)).RemoveAsync(objSpec, CancellationToken.None).ConfigureAwait(false);
@@ -1074,6 +1080,7 @@ namespace Chummer.Backend.Skills
                                         //swallow this
                                     }
                                     if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         objSpec.Dispose();
                                     else
                                         await objSpec.DisposeAsync().ConfigureAwait(false);
@@ -1089,8 +1096,9 @@ namespace Chummer.Backend.Skills
             catch
             {
                 if (blnSync)
-                    objSkill?.Remove();
-                else if (objSkill != null)
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    objSkill.Remove();
+                else
                     await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
                 throw;
             }
@@ -2737,7 +2745,7 @@ namespace Chummer.Backend.Skills
                                 return _intCachedPoolModifiers;
                             using (_objCachedPoolModifiersLock.EnterWriteLock())
                             {
-                                return _intCachedPoolModifiers = Bonus(false, strUseAttribute, blnIncludeConditionals);
+                                return _intCachedPoolModifiers = Bonus(false, strUseAttribute);
                             }
                         }
                     }
@@ -2782,7 +2790,7 @@ namespace Chummer.Backend.Skills
                             try
                             {
                                 token.ThrowIfCancellationRequested();
-                                return _intCachedPoolModifiers = await BonusAsync(false, strUseAttribute, blnIncludeConditionals, token).ConfigureAwait(false);
+                                return _intCachedPoolModifiers = await BonusAsync(false, strUseAttribute, token: token).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -2826,7 +2834,7 @@ namespace Chummer.Backend.Skills
                                 return _intCachedRatingModifiers;
                             using (_objCachedRatingModifiersLock.EnterWriteLock())
                             {
-                                return _intCachedRatingModifiers = Bonus(true, strUseAttribute, blnIncludeConditionals);
+                                return _intCachedRatingModifiers = Bonus(true, strUseAttribute);
                             }
                         }
                     }
@@ -2871,7 +2879,7 @@ namespace Chummer.Backend.Skills
                             try
                             {
                                 token.ThrowIfCancellationRequested();
-                                return _intCachedRatingModifiers = await BonusAsync(true, strUseAttribute, blnIncludeConditionals, token).ConfigureAwait(false);
+                                return _intCachedRatingModifiers = await BonusAsync(true, strUseAttribute, token: token).ConfigureAwait(false);
                             }
                             finally
                             {

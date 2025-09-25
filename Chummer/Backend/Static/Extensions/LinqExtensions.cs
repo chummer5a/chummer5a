@@ -29,7 +29,7 @@ namespace Chummer
     public static class LinqExtensions
     {
         /// <summary>
-        /// Version of <see cref="Enumerable.ElementAt{TSource}(IEnumerable{TSource}, int)"/> that also supports <see cref="IReadOnlyList{T}">.
+        /// Version of <see cref="Enumerable.ElementAt{TSource}(IEnumerable{TSource}, int)"/> that also supports <see cref="IReadOnlyList{T}"/>.
         /// </summary>
         public static T ElementAtBetter<T>(this IEnumerable<T> source, int index)
         {
@@ -54,7 +54,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="Enumerable.ElementAtOrDefault{TSource}(IEnumerable{TSource}, int)"/> that also supports <see cref="IReadOnlyList{T}">.
+        /// Version of <see cref="Enumerable.ElementAtOrDefault{TSource}(IEnumerable{TSource}, int)"/> that also supports <see cref="IReadOnlyList{T}"/>.
         /// </summary>
         public static T ElementAtOrDefaultBetter<T>(this IEnumerable<T> source, int index)
         {

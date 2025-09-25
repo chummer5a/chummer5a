@@ -19,15 +19,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using NLog;
-using System.Diagnostics;
 
 namespace Chummer
 {
@@ -49,8 +50,8 @@ namespace Chummer
         private bool _blnLoading = true;
 
         private DebuggableSemaphoreSlim _objFormClosingSemaphore = new DebuggableSemaphoreSlim();
-        private CancellationTokenSource _objApplyAmendmentCancellationTokenSource = null;
-        private CancellationTokenSource _objSaveAmendmentCancellationTokenSource = null;
+        private CancellationTokenSource _objApplyAmendmentCancellationTokenSource;
+        private CancellationTokenSource _objSaveAmendmentCancellationTokenSource;
 
         #region Form Events
 
@@ -229,7 +230,9 @@ namespace Chummer
                                                 Log.Error(ex, "Error saving on form close");
                                                 try
                                                 {
-                                                    await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_ErrorSaving").ConfigureAwait(false), ex.Message), await LanguageManager.GetStringAsync("XmlEditor_Error_SavingAmendment", token: objNewSourceToken).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: objNewSourceToken).ConfigureAwait(false);
+                                                    await Program.ShowScrollableMessageBoxAsync(this,
+                                                        string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_ErrorSaving", token: objNewSourceToken).ConfigureAwait(false), ex.Message),
+                                                        await LanguageManager.GetStringAsync("XmlEditor_Error_SavingAmendment", token: objNewSourceToken).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: objNewSourceToken).ConfigureAwait(false);
                                                 }
                                                 catch (OperationCanceledException)
                                                 {
@@ -280,7 +283,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    if (objSemaphore?.IsDisposed == false)
+                    if (!objSemaphore.IsDisposed)
                         objSemaphore.Release();
                 }
             }
@@ -306,11 +309,10 @@ namespace Chummer
                 }
 
                 // Get base XML files (exclude custom files)
-                List<string> lstXmlFiles = new List<string>(Utils.BasicDataFileNames);
                 await cboXmlFiles.DoThreadSafeAsync(x =>
                 {
                     x.Items.Clear();
-                    x.Items.AddRange(lstXmlFiles.ToArray());
+                    x.Items.AddRange(Utils.BasicDataFileNames.ToArray<object>());
                     if (x.Items.Count > 0)
                         x.SelectedIndex = 0;
                 }, token).ConfigureAwait(false);
@@ -349,7 +351,7 @@ namespace Chummer
                         return;
                     }
 
-                    await _objBaseXmlDocument.LoadStandardAsync(strFilePath, true, token: token).ConfigureAwait(false);
+                    await _objBaseXmlDocument.LoadStandardAsync(strFilePath, token: token).ConfigureAwait(false);
                     _blnDirty = false;
                     _strBaseXmlContent = _objBaseXmlDocument.OuterXmlViaPool(token);
                     string strText = await FormatXml(_strBaseXmlContent, token).ConfigureAwait(false);
@@ -620,7 +622,7 @@ namespace Chummer
                 string strNodePath = GetNodePath(objBaseNode ?? objResultNode, strCurrentPath);
 
                 // Node was added
-                if (objBaseNode == null && objResultNode != null)
+                if (objBaseNode == null)
                 {
                     blnReturn = true;
                     sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Added", token: token).ConfigureAwait(false), strNodePath).AppendLine();
@@ -629,7 +631,7 @@ namespace Chummer
                 }
 
                 // Node was removed
-                if (objBaseNode != null && objResultNode == null)
+                if (objResultNode == null)
                 {
                     blnReturn = true;
                     sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Removed", token: token).ConfigureAwait(false), strNodePath).AppendLine();
@@ -657,16 +659,29 @@ namespace Chummer
                     // Compare attributes
                     if (objBaseNode.Attributes != null || objResultNode.Attributes != null)
                     {
-                        Dictionary<string, string> baseAttribs = new Dictionary<string, string>(objBaseNode.Attributes?.Count ?? 0);
-                        foreach (XmlAttribute objAttribute in objBaseNode.Attributes)
+                        Dictionary<string, string> baseAttribs;
+                        if (objBaseNode.Attributes != null)
                         {
-                            baseAttribs.Add(objAttribute.Name, objAttribute.Value);
+                            baseAttribs = new Dictionary<string, string>(objBaseNode.Attributes.Count);
+                            foreach (XmlAttribute objAttribute in objBaseNode.Attributes)
+                            {
+                                baseAttribs.Add(objAttribute.Name, objAttribute.Value);
+                            }
                         }
-                        Dictionary<string, string> resultAttribs = new Dictionary<string, string>(objResultNode.Attributes?.Count ?? 0);
-                        foreach (XmlAttribute objAttribute in objResultNode.Attributes)
+                        else
+                            baseAttribs = new Dictionary<string, string>(0);
+
+                        Dictionary<string, string> resultAttribs;
+                        if (objResultNode.Attributes != null)
                         {
-                            resultAttribs.Add(objAttribute.Name, objAttribute.Value);
+                            resultAttribs = new Dictionary<string, string>(objResultNode.Attributes.Count);
+                            foreach (XmlAttribute objAttribute in objResultNode.Attributes)
+                            {
+                                resultAttribs.Add(objAttribute.Name, objAttribute.Value);
+                            }
                         }
+                        else
+                            resultAttribs = new Dictionary<string, string>(0);
 
                         foreach (KeyValuePair<string, string> kvp in baseAttribs)
                         {

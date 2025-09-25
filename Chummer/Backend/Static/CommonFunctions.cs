@@ -101,7 +101,7 @@ namespace Chummer
         /// Checks if a string that is meant to hold an expression that is to be processed by an invariant XPath processor has any values that need substitution.
         /// Useful as a sort of initial check to see if we can jump straight to the evaluator or not.
         /// </summary>
-        /// <param name="strExpression">String to check.</param>
+        /// <param name="sbdExpression">String builder containing the string to check.</param>
         /// <param name="blnIncludeLetters">If true, check for uppercase latin letters and opening curly brackets. Otherwise, only check for opening curly brackets.</param>
         public static bool HasValuesNeedingReplacementForXPathProcessing([NotNull] this StringBuilder sbdExpression, bool blnIncludeLetters = true)
         {
@@ -2076,8 +2076,6 @@ namespace Chummer
                     Character objCharacter = objShared.CharacterObject;
                     if (objCharacter != null)
                         objSettings = await objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
-                    else
-                        objSettings = null;
                     break;
                 }
 

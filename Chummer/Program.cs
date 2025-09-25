@@ -383,7 +383,7 @@ namespace Chummer
 
                             LogManager.ThrowExceptions = false;
                             Log = LogManager.GetCurrentClassLogger();
-                            if (GlobalSettings.UseLogging)
+                            if (GlobalSettings.UseLogging && LogManager.Configuration != null)
                             {
                                 foreach (LoggingRule objRule in LogManager.Configuration.LoggingRules)
                                 {
@@ -1459,6 +1459,7 @@ namespace Chummer
                     if (!blnLoaded)
                     {
                         blnLoaded = blnSync
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             ? OpenCharacters.Remove(objCharacter)
                             : await OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                     }
@@ -1469,11 +1470,13 @@ namespace Chummer
                     if (!blnLoaded)
                     {
                         if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             OpenCharacters.Remove(objCharacter);
                         else
                             await OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                     }
                     if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
                         objCharacter.Dispose();
                     else
                         await objCharacter.DisposeAsync().ConfigureAwait(false);

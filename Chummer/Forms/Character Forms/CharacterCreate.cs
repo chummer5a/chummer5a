@@ -2057,7 +2057,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    if (objSemaphore?.IsDisposed == false)
+                    if (!objSemaphore.IsDisposed)
                         objSemaphore.Release();
                 }
             }
@@ -4758,7 +4758,7 @@ namespace Chummer
                                 await objLifestyle.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
                                 throw;
                             }
-                                break;
+                            break;
                         }
                         case ClipboardContentType.Vehicle:
                         {

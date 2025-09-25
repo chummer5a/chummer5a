@@ -823,7 +823,7 @@ namespace Chummer
                 // and Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); to throw an exception if they are called after
                 // SetProcessDPI(GlobalSettings.DpiScalingMethodSetting); in program.cs. To prevent any unexpected problems with moving those to methods to the start of
                 // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterSettings are opened.
-                if (string.IsNullOrEmpty(_strDisplayAuthors) || _objDisplayAuthorsCulture != GlobalSettings.CultureInfo || _strDisplayAuthorsLanguage != GlobalSettings.Language)
+                if (string.IsNullOrEmpty(_strDisplayAuthors) || !ReferenceEquals(_objDisplayAuthorsCulture, GlobalSettings.CultureInfo) || _strDisplayAuthorsLanguage != GlobalSettings.Language)
                 {
                     _strDisplayAuthors = DisplayAuthors(_objDisplayAuthorsCulture = GlobalSettings.CultureInfo, _strDisplayAuthorsLanguage = GlobalSettings.Language);
                 }
@@ -840,7 +840,7 @@ namespace Chummer
             // and Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); to throw an exception if they are called after
             // SetProcessDPI(GlobalSettings.DpiScalingMethodSetting); in program.cs. To prevent any unexpected problems with moving those to methods to the start of
             // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterSettings are opened.
-            if (string.IsNullOrEmpty(_strDisplayAuthors) || _objDisplayAuthorsCulture != GlobalSettings.CultureInfo || _strDisplayAuthorsLanguage != GlobalSettings.Language)
+            if (string.IsNullOrEmpty(_strDisplayAuthors) || !ReferenceEquals(_objDisplayAuthorsCulture, GlobalSettings.CultureInfo) || _strDisplayAuthorsLanguage != GlobalSettings.Language)
             {
                 _strDisplayAuthors = await DisplayAuthorsAsync(_objDisplayAuthorsCulture = GlobalSettings.CultureInfo, _strDisplayAuthorsLanguage = GlobalSettings.Language, token).ConfigureAwait(false);
             }

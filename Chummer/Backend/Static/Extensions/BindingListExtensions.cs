@@ -27,13 +27,13 @@ namespace Chummer
     public static class BindingListExtensions
     {
         /// <summary>
-        /// Sorts the elements in a range of elements in a <see cref="System.ComponentModel.BindingList{T}"/> using the specified <see cref="System.Collections.Generic.IComparer{T}"> generic interface.
+        /// Sorts the elements in a range of elements in a <see cref="System.ComponentModel.BindingList{T}"/> using the specified <see cref="System.Collections.Generic.IComparer{T}"/> generic interface.
         /// If more than half of the list is changed, a <see cref="System.ComponentModel.ListChangedType.Reset"/> event is fired, otherwise it will be a series of <see cref="System.ComponentModel.ListChangedType.ItemChanged"/> events.
         /// </summary>
         /// <param name="lstCollection">The list to sort.</param>
         /// <param name="index">The starting index of the range to sort.</param>
         /// <param name="length">The number of elements in the range to sort.</param>
-        /// <param name="objComparer">The <see cref="System.Collections.Generic.IComparer{T}"> generic interface implementation to use when comparing elements, or null to use the <see cref="System.IComparable{T}"> generic interface implementation of each element.</param>
+        /// <param name="objComparer">The <see cref="System.Collections.Generic.IComparer{T}"/> generic interface implementation to use when comparing elements, or null to use the <see cref="System.IComparable{T}"/> generic interface implementation of each element.</param>
         public static void Sort<T>(this BindingList<T> lstCollection, int index, int length, IComparer<T> objComparer = null) where T : IComparable
         {
             if (lstCollection == null)
@@ -113,11 +113,11 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Sorts the elements in a range of elements in a <see cref="System.ComponentModel.BindingList{T}"/> using the specified <see cref="System.Comparison{T}">.
+        /// Sorts the elements in a range of elements in a <see cref="System.ComponentModel.BindingList{T}"/> using the specified <see cref="System.Comparison{T}"/>.
         /// If more than half of the list is changed, a <see cref="System.ComponentModel.ListChangedType.Reset"/> event is fired, otherwise it will be a series of <see cref="System.ComponentModel.ListChangedType.ItemChanged"/> events.
         /// </summary>
         /// <param name="lstCollection">The list to sort.</param>
-        /// <param name="funcComparison">The <see cref="System.Comparison{T}"> to use when comparing elements.</param>
+        /// <param name="funcComparison">The <see cref="System.Comparison{T}"/> to use when comparing elements.</param>
         public static void Sort<T>(this BindingList<T> lstCollection, Comparison<T> funcComparison)
         {
             if (lstCollection == null)
@@ -192,11 +192,11 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Sorts the elements in a range of elements in a <see cref="System.ComponentModel.BindingList{T}"/> using the specified <see cref="System.Collections.Generic.IComparer{T}"> generic interface.
+        /// Sorts the elements in a range of elements in a <see cref="System.ComponentModel.BindingList{T}"/> using the specified <see cref="System.Collections.Generic.IComparer{T}"/> generic interface.
         /// If more than half of the list is changed, a <see cref="System.ComponentModel.ListChangedType.Reset"/> event is fired, otherwise it will be a series of <see cref="System.ComponentModel.ListChangedType.ItemChanged"/> events.
         /// </summary>
         /// <param name="lstCollection">The list to sort.</param>
-        /// <param name="objComparer">The <see cref="System.Collections.Generic.IComparer{T}"> generic interface implementation to use when comparing elements, or null to use the <see cref="System.IComparable{T}"> generic interface implementation of each element.</param>
+        /// <param name="objComparer">The <see cref="System.Collections.Generic.IComparer{T}"/> generic interface implementation to use when comparing elements, or null to use the <see cref="System.IComparable{T}"/> generic interface implementation of each element.</param>
         public static void Sort<T>(this BindingList<T> lstCollection, IComparer<T> objComparer = null) where T : IComparable
         {
             if (lstCollection == null)

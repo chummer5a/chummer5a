@@ -465,6 +465,7 @@ namespace Chummer.Backend.Equipment
                             catch
                             {
                                 if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objGear.DeleteGear();
                                 else
                                     await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -692,11 +693,14 @@ namespace Chummer.Backend.Equipment
                                 Gear objGear = new Gear(_objCharacter);
                                 try
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objGear.Load(nodChild, blnCopy);
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     _lstGear.Add(objGear);
                                 }
                                 catch
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objGear.DeleteGear();
                                     throw;
                                 }
@@ -781,6 +785,7 @@ namespace Chummer.Backend.Equipment
                         _blnEquipped = true;
                         Equipped = false;
                     }
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     RefreshWirelessBonuses();
                 }
                 else
@@ -1313,7 +1318,7 @@ namespace Chummer.Backend.Equipment
                     if (!objChild.MaxRating.Contains("Parent") && objChild.MinRating.Contains("Parent"))
                         return;
                     // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                    await objChild.SetRatingAsync(await objChild.GetRatingAsync(token).ConfigureAwait(false)).ConfigureAwait(false);
+                    await objChild.SetRatingAsync(await objChild.GetRatingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
             }
         }

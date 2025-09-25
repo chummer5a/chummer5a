@@ -312,7 +312,7 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(strCostFor))
                             {
-                                decimal.TryParse(strCostFor, System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCostFor);
+                                decimal.TryParse(strCostFor, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCostFor);
                                 await nudGearQty.DoThreadSafeAsync(x =>
                                 {
                                     x.Value = decCostFor;

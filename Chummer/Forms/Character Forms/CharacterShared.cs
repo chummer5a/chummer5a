@@ -1790,13 +1790,14 @@ namespace Chummer
                 {
                     if (objComplexForm.Grade == objInitiationGrade.Grade)
                     {
-                        TreeNode objNode = await objComplexForm.CreateTreeNode(cmsInitiationNotes, true).ConfigureAwait(false);
+                        TreeNode objNode = await objComplexForm.CreateTreeNode(cmsInitiationNotes, true, token).ConfigureAwait(false);
                         if (objNode == null)
                             return;
                         int intNodesCount = lstParentNodeChildren.Count;
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
                             {
                                 break;

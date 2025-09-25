@@ -482,6 +482,7 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXPathNode = null;
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
+                // ReSharper disable once MethodHasAsyncOverload
                 XPathNavigator node = blnSync ? this.GetNodeXPath(token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false);
                 if (node != null)
                     node.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -519,7 +520,9 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode xmlWeaponMountOptionNode in xmlWeaponMountOptionList)
                         {
                             WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             objWeaponMountOption.Load(xmlWeaponMountOptionNode);
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             WeaponMountOptions.Add(objWeaponMountOption);
                         }
                     }
@@ -547,11 +550,14 @@ namespace Chummer.Backend.Equipment
                             VehicleMod objMod = new VehicleMod(_objCharacter);
                             try
                             {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objMod.Load(xmlModNode, blnCopy);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 Mods.Add(objMod);
                             }
                             catch
                             {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objMod.DeleteVehicleMod();
                                 throw;
                             }
@@ -592,18 +598,23 @@ namespace Chummer.Backend.Equipment
                                 if (Weapons.Count >= WeaponCapacity)
                                 {
                                     // Stop loading more weapons than we can actually mount and dump the rest into the character's basic inventory
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objWeapon.Load(xmlWeaponNode, blnCopy);
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     _objCharacter.Weapons.Add(objWeapon);
                                 }
                                 else
                                 {
                                     objWeapon.ParentMount = this;
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objWeapon.Load(xmlWeaponNode, blnCopy);
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     Weapons.Add(objWeapon);
                                 }
                             }
                             catch
                             {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objWeapon.DeleteWeapon();
                                 throw;
                             }
@@ -1464,16 +1475,15 @@ namespace Chummer.Backend.Equipment
             }
 
             // Run through the Accessories and add in their availability.
-            await WeaponMountOptions.ForEachAsync(async objLoopOption =>
+            intAvail += await WeaponMountOptions.SumAsync(async objLoopOption =>
             {
                 AvailabilityValue objLoopAvailTuple
                     = await objLoopOption.GetTotalAvailTupleAsync(token).ConfigureAwait(false);
-                //if (objLoopAvailTuple.Item3)
-                intAvail += await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false);
                 if (objLoopAvailTuple.Suffix == 'F')
                     chrLastAvailChar = 'F';
                 else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                     chrLastAvailChar = 'R';
+                return await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false);
             }, token).ConfigureAwait(false);
 
             if (blnCheckChildren)

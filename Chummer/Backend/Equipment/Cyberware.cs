@@ -1163,6 +1163,7 @@ namespace Chummer.Backend.Equipment
                                 catch
                                 {
                                     if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objGearWeapon.DeleteWeapon();
                                     else
                                         await objGearWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -1249,6 +1250,7 @@ namespace Chummer.Backend.Equipment
                                     catch
                                     {
                                         if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objGearWeapon.DeleteWeaponAccessory();
                                         else
                                             await objGearWeapon.DeleteWeaponAccessoryAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -1292,6 +1294,7 @@ namespace Chummer.Backend.Equipment
                                 catch
                                 {
                                     if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objVehicle.DeleteVehicle();
                                     else
                                         await objVehicle.DeleteVehicleAsync(CancellationToken.None).ConfigureAwait(false);
@@ -1730,12 +1733,12 @@ namespace Chummer.Backend.Equipment
                                     return;
                             }
 
-                            if (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Count > 0)
+                            if (!string.IsNullOrEmpty(strBlocksMounts) && lstCyberwareToCheck.Count > 0)
                             {
                                 using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(
                                            Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
                                 {
-                                    setBlocksMounts.AddRange(BlocksMounts
+                                    setBlocksMounts.AddRange(strBlocksMounts
                                         .SplitNoAlloc(
                                             ',', StringSplitOptions.RemoveEmptyEntries));
                                     blnAllowSide = !await lstCyberwareToCheck.AnyAsync(async x =>
@@ -2415,11 +2418,11 @@ namespace Chummer.Backend.Equipment
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
                     Lazy<XmlNode> objMyNode = null;
-                    Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode> objMyNodeAsync = null;
+                    AsyncLazy<XmlNode> objMyNodeAsync = null;
                     if (blnSync)
                         objMyNode = new Lazy<XmlNode>(() => this.GetNode());
                     else
-                        objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode>(() => this.GetNodeAsync(token), Utils.JoinableTaskFactory);
+                        objMyNodeAsync = new AsyncLazy<XmlNode>(() => this.GetNodeAsync(token), Utils.JoinableTaskFactory);
                     if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
                     {
                         (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -2513,7 +2516,7 @@ namespace Chummer.Backend.Equipment
                     objNode.TryGetStringFieldQuickly("subsystems", ref _strAllowSubsystems);
                     if (objNode["grade"] != null)
                         _objGrade = blnSync
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            // ReSharper disable once MethodHasAsyncOverload
                             ? Grade.ConvertToCyberwareGrade(objNode["grade"].InnerTextViaPool(token), _eImprovementSource,
                                 _objCharacter, token)
                             : await Grade.ConvertToCyberwareGradeAsync(objNode["grade"].InnerTextViaPool(token), _eImprovementSource,
@@ -2597,7 +2600,7 @@ namespace Chummer.Backend.Equipment
                         _strForceGrade = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["forcegrade"]?.InnerTextViaPool(token);
                         if (!string.IsNullOrEmpty(_strForceGrade))
                             _objGrade = blnSync
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                // ReSharper disable once MethodHasAsyncOverload
                                 ? Grade.ConvertToCyberwareGrade(_strForceGrade, _eImprovementSource,
                                     _objCharacter, token)
                                 : await Grade.ConvertToCyberwareGradeAsync(_strForceGrade, _eImprovementSource,
@@ -2633,6 +2636,7 @@ namespace Chummer.Backend.Equipment
                                 }
                                 catch
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objChild.DeleteCyberware();
                                     throw;
                                 }
@@ -2663,12 +2667,14 @@ namespace Chummer.Backend.Equipment
                             {
                                 try
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objGear.Load(nodChild, blnCopy);
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     _lstGear.Add(objGear);
                                 }
                                 catch
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objGear.DeleteGear();
                                     throw;
                                 }
@@ -5419,7 +5425,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Rating
         {
-            get => GetRating(false);
+            get => GetRating();
             set
             {
                 using (LockObject.EnterUpgradeableReadLock())
@@ -8404,10 +8410,8 @@ namespace Chummer.Backend.Equipment
                 {
                     // Run through cyberware children and increase the Avail by any installed Mod whose Avail starts with "+" or "-".
                     intAvail += await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(async objChild =>
-                    {
-                        return objChild.ParentID != InternalId && await objChild.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false)
-                            && string.IsNullOrEmpty(await objChild.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false));
-                    }, async objChild =>
+                        objChild.ParentID != InternalId && await objChild.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false)
+                        && string.IsNullOrEmpty(await objChild.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), async objChild =>
                     {
                         AvailabilityValue objLoopAvailTuple = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                         if (objLoopAvailTuple.Suffix == 'F')
@@ -8965,14 +8969,19 @@ namespace Chummer.Backend.Equipment
                     {
                         if (blnSync)
                         {
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             strESS = strESS.CheapReplace("{MinRating}",
                                                       () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             strESS = strESS.CheapReplace("MinRating",
                                                       () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             strESS = strESS.CheapReplace("{Rating}",
                                                   () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             strESS = strESS.CheapReplace("Rating",
                                                   () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             strESS = ProcessAttributesInXPath(strESS);
                         }
                         else
@@ -9181,14 +9190,19 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (blnSync)
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     strPostModifierExpression = strPostModifierExpression.CheapReplace("{MinRating}",
                                         () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     strPostModifierExpression = strPostModifierExpression.CheapReplace("MinRating",
                                         () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     strPostModifierExpression = strPostModifierExpression.CheapReplace("{Rating}",
                                         () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     strPostModifierExpression = strPostModifierExpression.CheapReplace("Rating",
                                         () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     strPostModifierExpression = ProcessAttributesInXPath(strPostModifierExpression);
                                 }
                                 else
@@ -10362,10 +10376,8 @@ namespace Chummer.Backend.Equipment
                     decimal.TryParse(strBaseCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decCapacity);
                     // Run through its Children and deduct the Capacity costs.
                     decCapacity -= await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(async objChildCyberware =>
-                                  {
-                                      // Skip children that are built into the parent
-                                      return !await objChildCyberware.PlugsIntoTargetCyberwareAsync(this, token).ConfigureAwait(false) && objChildCyberware.ParentID != InternalId;
-                                  }, async objChildCyberware =>
+                                       // Skip children that are built into the parent
+                                       !await objChildCyberware.PlugsIntoTargetCyberwareAsync(this, token).ConfigureAwait(false) && objChildCyberware.ParentID != InternalId, async objChildCyberware =>
                                   {
                                       string strCapacity = await objChildCyberware.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false);
                                       int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
@@ -10401,10 +10413,8 @@ namespace Chummer.Backend.Equipment
                     decimal.TryParse(await GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decCapacity);
                     // Run through its Children and deduct the Capacity costs.
                     decCapacity -= await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(async objChildCyberware =>
-                                  {
-                                      // Skip children that are built into the parent
-                                      return !await objChildCyberware.PlugsIntoTargetCyberwareAsync(this, token).ConfigureAwait(false) && objChildCyberware.ParentID != InternalId;
-                                  }, async objChildCyberware =>
+                                       // Skip children that are built into the parent
+                                       !await objChildCyberware.PlugsIntoTargetCyberwareAsync(this, token).ConfigureAwait(false) && objChildCyberware.ParentID != InternalId, async objChildCyberware =>
                                   {
                                       string strCapacity = await objChildCyberware.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false);
                                       int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);

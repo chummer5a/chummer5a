@@ -369,10 +369,6 @@ namespace SevenZip.Compression.LZMA
             private int _tableSize;
             private readonly int[] _counters = new int[Base.kNumPosStatesEncodingMax];
 
-            public LenPriceTableEncoder() : base()
-            {
-            }
-
             public void SetTableSize(int tableSize)
             { _tableSize = tableSize; }
 

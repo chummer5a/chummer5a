@@ -1196,7 +1196,7 @@ namespace Chummer
 
                     token.ThrowIfCancellationRequested();
 
-                    if (lstFavoritesNodes?.Length > 0 && objFavoriteNode != null)
+                    if (lstFavoritesNodes.Length > 0 && objFavoriteNode != null)
                     {
                         foreach (TreeNode objNode in lstFavoritesNodes)
                         {
@@ -1216,7 +1216,7 @@ namespace Chummer
                         }
                     }
 
-                    if (lstRecentsNodes?.Length > 0 && objRecentNode != null)
+                    if (lstRecentsNodes.Length > 0 && objRecentNode != null)
                     {
                         foreach (TreeNode objNode in lstRecentsNodes)
                         {
@@ -1254,7 +1254,7 @@ namespace Chummer
                             {
                                 treList.Nodes.Insert(0, objFavoriteNode);
                             }
-                            else if (lstFavoritesNodes?.Length > 0)
+                            else if (lstFavoritesNodes.Length > 0)
                             {
                                 try
                                 {
@@ -1280,7 +1280,7 @@ namespace Chummer
                             {
                                 treList.Nodes.Insert((objFavoriteNode != null).ToInt32(), objRecentNode);
                             }
-                            else if (lstRecentsNodes?.Length > 0)
+                            else if (lstRecentsNodes.Length > 0)
                             {
                                 try
                                 {
@@ -1685,7 +1685,7 @@ namespace Chummer
                                                      .ConfigureAwait(false),
                                                  async (x, y) =>
                                                  {
-                                                     if (!await y.LoadFromFileAsync(strFile).ConfigureAwait(false))
+                                                     if (!await y.LoadFromFileAsync(strFile, token).ConfigureAwait(false))
                                                      {
                                                          objToDispose = y;
                                                          return objTemp = await objGeneratedCache.GetValueAsync(token).ConfigureAwait(false);
@@ -1807,34 +1807,22 @@ namespace Chummer
                                 string strPlayerName = await objCache.GetPlayerNameAsync(token).ConfigureAwait(false);
                                 await lblPlayerName.DoThreadSafeAsync(x =>
                                 {
-                                    if (string.IsNullOrEmpty(strPlayerName))
-                                        x.Text = strUnknown;
-                                    else
-                                        x.Text = strPlayerName;
+                                    x.Text = string.IsNullOrEmpty(strPlayerName) ? strUnknown : strPlayerName;
                                 }, token).ConfigureAwait(false);
                                 string strCharacterName = await objCache.GetCharacterNameAsync(token).ConfigureAwait(false);
                                 await lblCharacterName.DoThreadSafeAsync(x =>
                                 {
-                                    if (string.IsNullOrEmpty(strCharacterName))
-                                        x.Text = strUnknown;
-                                    else
-                                        x.Text = strCharacterName;
+                                    x.Text = string.IsNullOrEmpty(strCharacterName) ? strUnknown : strCharacterName;
                                 }, token).ConfigureAwait(false);
                                 string strCharacterAlias = await objCache.GetCharacterAliasAsync(token).ConfigureAwait(false);
                                 await lblCharacterAlias.DoThreadSafeAsync(x =>
                                 {
-                                    if (string.IsNullOrEmpty(strCharacterAlias))
-                                        x.Text = strUnknown;
-                                    else
-                                        x.Text = strCharacterAlias;
+                                    x.Text = string.IsNullOrEmpty(strCharacterAlias) ? strUnknown : strCharacterAlias;
                                 }, token).ConfigureAwait(false);
                                 string strEssence = await objCache.GetEssenceAsync(token).ConfigureAwait(false);
                                 await lblEssence.DoThreadSafeAsync(x =>
                                 {
-                                    if (string.IsNullOrEmpty(strEssence))
-                                        x.Text = strUnknown;
-                                    else
-                                        x.Text = strEssence;
+                                    x.Text = string.IsNullOrEmpty(strEssence) ? strUnknown : strEssence;
                                 }, token).ConfigureAwait(false);
                                 string strText2 = await objCache.GetFileNameAsync(token).ConfigureAwait(false);
                                 if (string.IsNullOrEmpty(strText2))
@@ -1843,10 +1831,7 @@ namespace Chummer
                                 string strSettingsFile = await objCache.GetSettingsFileAsync(token).ConfigureAwait(false);
                                 await lblSettings.DoThreadSafeAsync(x =>
                                 {
-                                    if (string.IsNullOrEmpty(strSettingsFile))
-                                        x.Text = strUnknown;
-                                    else
-                                        x.Text = strSettingsFile;
+                                    x.Text = string.IsNullOrEmpty(strSettingsFile) ? strUnknown : strSettingsFile;
                                 }, token).ConfigureAwait(false);
                                 await lblFilePath.SetToolTipTextAsync(
                                     await (await objCache.GetFilePathAsync(token).ConfigureAwait(false))

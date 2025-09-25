@@ -568,11 +568,14 @@ namespace Chummer.Backend.Equipment
                             {
                                 objWeapon.ParentVehicle = Parent;
                                 objWeapon.ParentVehicleMod = this;
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objWeapon.Load(nodChild, blnCopy);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 _lstVehicleWeapons.Add(objWeapon);
                             }
                             catch
                             {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objWeapon.DeleteWeapon();
                                 throw;
                             }
@@ -613,11 +616,14 @@ namespace Chummer.Backend.Equipment
                             try
                             {
                                 objCyberware.ParentVehicle = Parent;
+                                // ReSharper disable once MethodHasAsyncOverload
                                 objCyberware.Load(nodChild, blnCopy, token);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 _lstCyberware.Add(objCyberware);
                             }
                             catch
                             {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objCyberware.DeleteCyberware();
                                 throw;
                             }
@@ -1086,12 +1092,11 @@ namespace Chummer.Backend.Equipment
                         intReturn = Parent.GetTotalBody(this);
                         break;
                     default:
-                        {
-                            if (strText.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decNumber))
-                                intReturn = ProcessRatingString(strText, _intRating);
-                            else
-                                intReturn = decNumber.StandardRound();
-                        }
+                    {
+                        intReturn = strText.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decNumber)
+                            ? ProcessRatingString(strText, _intRating)
+                            : decNumber.StandardRound();
+                    }
                         break;
                 }
 

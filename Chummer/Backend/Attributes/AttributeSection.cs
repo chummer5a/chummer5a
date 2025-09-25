@@ -1547,7 +1547,9 @@ namespace Chummer.Backend.Attributes
                                     {
                                         if (blnSync)
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             SpecialAttributeList.Remove(objAttribute);
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             objAttribute.Dispose();
                                         }
                                         else
@@ -1582,7 +1584,9 @@ namespace Chummer.Backend.Attributes
                                     {
                                         if (blnSync)
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             AttributeList.Remove(objAttribute);
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             objAttribute.Dispose();
                                         }
                                         else
@@ -1638,13 +1642,16 @@ namespace Chummer.Backend.Attributes
                                     switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
                                     {
                                         case AttributeCategory.Special:
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             SpecialAttributeList.Remove(objAttribute);
                                             break;
                                         case AttributeCategory.Standard:
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             AttributeList.Remove(objAttribute);
                                             break;
                                     }
 
+                                    // ReSharper disable once MethodHasAsyncOverload
                                     objAttribute.Dispose();
                                 }
                                 else
@@ -1685,7 +1692,9 @@ namespace Chummer.Backend.Attributes
                                             }
                                             catch
                                             {
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 SpecialAttributeList.Remove(objAttribute);
+                                                // ReSharper disable once MethodHasAsyncOverload
                                                 objAttribute.Dispose();
                                                 throw;
                                             }
@@ -1720,7 +1729,9 @@ namespace Chummer.Backend.Attributes
                                             }
                                             catch
                                             {
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 AttributeList.Remove(objAttribute);
+                                                // ReSharper disable once MethodHasAsyncOverload
                                                 objAttribute.Dispose();
                                                 throw;
                                             }
@@ -3562,11 +3573,9 @@ namespace Chummer.Backend.Attributes
                 case "Special":
                     return AttributeCategory.Special;
 
-                case "Metahuman":
-                case "Standard":
+                default:
                     return AttributeCategory.Standard;
             }
-            return AttributeCategory.Standard;
         }
 
         /// <summary>

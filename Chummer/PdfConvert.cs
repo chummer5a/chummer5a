@@ -495,6 +495,7 @@ namespace Codaxy.WkHtmlToPdf
                 {
                     if (woutput.OutputCallback != null || woutput.OutputCallbackAsync != null)
                     {
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         byte[] pdfFileBytes = FileExtensions.ReadAllBytesToPooledArray(outputPdfFilePath);
                         try
                         {

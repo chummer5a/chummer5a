@@ -200,7 +200,7 @@ namespace Chummer
                 }
                 catch (InvalidOperationException)
                 {
-                    Utils.SafeSleep();
+                    Utils.SafeSleep(token);
                     continue;
                 }
                 break;
@@ -431,7 +431,7 @@ namespace Chummer
                 }
                 catch (InvalidOperationException)
                 {
-                    Utils.SafeSleep();
+                    Utils.SafeSleep(token);
                     continue;
                 }
                 break;
@@ -488,7 +488,7 @@ namespace Chummer
                 }
                 catch (InvalidOperationException)
                 {
-                    Utils.SafeSleep();
+                    Utils.SafeSleep(token);
                     continue;
                 }
                 break;
@@ -637,7 +637,7 @@ namespace Chummer
                 }
                 catch (InvalidOperationException)
                 {
-                    Utils.SafeSleep();
+                    Utils.SafeSleep(token);
                     continue;
                 }
                 break;

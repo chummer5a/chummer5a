@@ -451,10 +451,8 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstTasks))
                 using (CancellationTokenSource objBreakSource = new CancellationTokenSource())
-                using (CancellationTokenSource objLinkedSource = CancellationTokenSource.CreateLinkedTokenSource(objBreakSource.Token, token))
                 {
                     token.ThrowIfCancellationRequested();
-                    CancellationToken objLinkedToken = objLinkedSource.Token;
                     bool blnMoveNext = objEnumerator.MoveNext();
                     while (blnMoveNext)
                     {

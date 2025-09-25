@@ -266,9 +266,9 @@ namespace Chummer
                     if (xmlGrade != null)
                     {
                         decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("cost", token: _objGenericToken)?.Value,
-                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCostMultiplier);
+                            NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCostMultiplier);
                         decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("ess", token: _objGenericToken)?.Value,
-                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decESSMultiplier);
+                            NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decESSMultiplier);
                         _intAvailModifier
                             = xmlGrade.SelectSingleNodeAndCacheExpression("avail", token: _objGenericToken)?.ValueAsInt ?? 0;
                     }
@@ -372,9 +372,9 @@ namespace Chummer
                     if (xmlGrade != null)
                     {
                         decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("cost", token: _objGenericToken)?.Value,
-                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCostMultiplier);
+                            NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCostMultiplier);
                         decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("ess", token: _objGenericToken)?.Value,
-                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decESSMultiplier);
+                            NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decESSMultiplier);
                         _intAvailModifier
                             = xmlGrade.SelectSingleNodeAndCacheExpression("avail", token)
                             ?.ValueAsInt ?? 0;
@@ -1644,20 +1644,14 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
                         {
                             (decimal decValue, bool blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strMinRating, 1, 0, token).ConfigureAwait(false);
-                            if (blnIsSuccess)
-                                intMinRating = decValue.StandardRound();
-                            else
-                                intMinRating = 1;
+                            intMinRating = blnIsSuccess ? decValue.StandardRound() : 1;
                         }
                         string strMaxRating = xmlCyberware
                             .SelectSingleNodeAndCacheExpression("rating", token: token)?.Value ?? string.Empty;
                         if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out intMaxRating))
                         {
                             (decimal decValue, bool blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strMaxRating, intMinRating, intMinRating, token).ConfigureAwait(false);
-                            if (blnIsSuccess)
-                                intMaxRating = decValue.StandardRound();
-                            else
-                                intMaxRating = 1;
+                            intMaxRating = blnIsSuccess ? decValue.StandardRound() : 1;
                         }
                         if (intMaxRating < intMinRating)
                             continue;
@@ -1740,10 +1734,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(strEssenceExpr) && !decimal.TryParse(strEssenceExpr, out decEssenceCost))
                             {
                                 (decimal decValue, bool blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strEssenceExpr, intMinRating, intMinRating, token).ConfigureAwait(false);
-                                if (blnIsSuccess)
-                                    decEssenceCost = decValue;
-                                else
-                                    decEssenceCost = 0;
+                                decEssenceCost = blnIsSuccess ? decValue : 0;
                             }
                             
                             // Apply essence discount if applicable

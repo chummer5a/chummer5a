@@ -37,7 +37,6 @@ using iText.Kernel.Pdf;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Win32;
 using NLog;
-using Xoshiro.PRNG64;
 
 namespace Chummer
 {
@@ -541,10 +540,9 @@ namespace Chummer
                 _eColorMode = ColorMode.Light;
 
             int intColor = -1;
-            if (LoadInt32FromRegistry(ref intColor, "defaulthasnotescolor"))
-                _objDefaultHasNotesColor = Color.FromArgb(intColor);
-            else
-                _objDefaultHasNotesColor = Color.Chocolate;
+            _objDefaultHasNotesColor = LoadInt32FromRegistry(ref intColor, "defaulthasnotescolor")
+                ? Color.FromArgb(intColor)
+                : Color.Chocolate;
 
             // Whether dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");

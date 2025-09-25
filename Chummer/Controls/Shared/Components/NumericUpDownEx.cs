@@ -96,20 +96,20 @@ namespace Chummer
         protected override void OnParentChanged(EventArgs e)
         {
             base.OnParentChanged(e);
-            OnMarginChanged(this, e);
+            OnMarginChangedCommon();
         }
         protected override void OnMarginChanged(EventArgs e)
         {
             base.OnMarginChanged(e);
-            OnMarginChanged(this, e);
+            OnMarginChangedCommon();
         }
         protected override void OnDpiChangedAfterParent(EventArgs e)
         {
             base.OnDpiChangedAfterParent(e);
-            OnMarginChanged(this, e);
+            OnMarginChangedCommon();
         }
 
-        private void OnMarginChanged(object sender, EventArgs e)
+        private void OnMarginChangedCommon()
         {
             if (_intSkipOnMarginChanged > 0)
                 return;

@@ -767,6 +767,7 @@ namespace Chummer.Backend.Equipment
                         catch
                         {
                             if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objUnderbarrelWeapon.DeleteWeapon();
                             else
                                 await objUnderbarrelWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -817,6 +818,7 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
 
             // create a weapon's initial clips
+            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
             CreateClips();
 
             // If there are any Accessories that come with the Weapon, add them.
@@ -973,6 +975,7 @@ namespace Chummer.Backend.Equipment
                                     catch
                                     {
                                         if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objGear.DeleteGear();
                                         else
                                             await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -997,6 +1000,7 @@ namespace Chummer.Backend.Equipment
                         catch
                         {
                             if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objAccessory.DeleteWeaponAccessory();
                             else
                                 await objAccessory.DeleteWeaponAccessoryAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -1055,6 +1059,7 @@ namespace Chummer.Backend.Equipment
                     catch
                     {
                         if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             objSubWeapon.DeleteWeapon();
                         else
                             await objSubWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -1431,11 +1436,11 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXmlNode = null;
             _objCachedMyXPathNode = null;
             Lazy<XmlNode> objMyNode = null;
-            Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode> objMyNodeAsync = null;
+            AsyncLazy<XmlNode> objMyNodeAsync = null;
             if (blnSync)
                 objMyNode = new Lazy<XmlNode>(() => this.GetNode());
             else
-                objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode>(() => this.GetNodeAsync(token), Utils.JoinableTaskFactory);
+                objMyNodeAsync = new AsyncLazy<XmlNode>(() => this.GetNodeAsync(token), Utils.JoinableTaskFactory);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -1479,6 +1484,7 @@ namespace Chummer.Backend.Equipment
             // Legacy shim
             if (Name.Contains("Osmium Mace (STR"))
             {
+                // ReSharper disable once MethodHasAsyncOverload
                 XmlNode objNewOsmiumMaceNode = (blnSync ? _objCharacter.LoadData("weapons.xml", token: token) : await _objCharacter.LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false))
                     .SelectSingleNode("/chummer/weapons/weapon[name = \"Osmium Mace\"]");
                 if (objNewOsmiumMaceNode != null)
@@ -1555,6 +1561,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("requireammo", ref _blnRequireAmmo);
             if (!objNode.TryGetStringFieldQuickly("weapontype", ref _strWeaponType))
                 _strWeaponType = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["weapontype"]?.InnerTextViaPool(token)
+                                 // ReSharper disable once MethodHasAsyncOverload
                                  ?? (blnSync ? _objCharacter.LoadDataXPath("weapons.xml", token: token) : await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false))
                                      .SelectSingleNodeAndCacheExpression(
                                          "/chummer/categories/category[. = " + Category.CleanXPath()
@@ -1575,12 +1582,15 @@ namespace Chummer.Backend.Equipment
                                 WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
                                 try
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objAccessory.Load(nodChild, blnCopy);
                                     objAccessory.Parent = this;
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     _lstAccessories.Add(objAccessory);
                                 }
                                 catch
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objAccessory.DeleteWeaponAccessory();
                                     throw;
                                 }
@@ -1615,6 +1625,7 @@ namespace Chummer.Backend.Equipment
                 _lstAmmo.Clear();
                 _intActiveAmmoSlot = 1;
                 if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     CreateClips();
                 else
                     await CreateClipsAsync(token).ConfigureAwait(false);
@@ -1634,6 +1645,7 @@ namespace Chummer.Backend.Equipment
                 // Legacy for items that were saved before internal clip tracking for weapons that don't need ammo was implemented
                 else if (blnSync)
                 {
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     RecreateInternalClip();
                 }
                 else
@@ -1855,7 +1867,9 @@ namespace Chummer.Backend.Equipment
                                 objUnderbarrel.ParentVehicle = ParentVehicle;
                                 if (blnSync)
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objUnderbarrel.Load(nodWeapon, blnCopy);
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     _lstUnderbarrel.Add(objUnderbarrel);
                                 }
                                 else
@@ -1867,6 +1881,7 @@ namespace Chummer.Backend.Equipment
                             catch
                             {
                                 if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objUnderbarrel.DeleteWeapon();
                                 else
                                     await objUnderbarrel.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -1924,6 +1939,7 @@ namespace Chummer.Backend.Equipment
             if (_objLocation != null)
             {
                 if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     _objLocation.Children.Add(this);
                 else
                     await _objLocation.Children.AddAsync(this, token).ConfigureAwait(false);
@@ -1981,9 +1997,11 @@ namespace Chummer.Backend.Equipment
             if (blnSync)
             {
                 if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     this.SetActiveCommlink(_objCharacter, true);
                 if (blnCopy)
                 {
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     this.SetHomeNode(_objCharacter, false);
                 }
                 else
@@ -1991,6 +2009,7 @@ namespace Chummer.Backend.Equipment
                     bool blnIsHomeNode = false;
                     if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
                     {
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         this.SetHomeNode(_objCharacter, true);
                     }
                 }
@@ -2559,7 +2578,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 Dictionary<string, string> dicRanges =
-                    await GetRangeStringsAsync(objCulture, true, token: token).ConfigureAwait(false);
+                    await GetRangeStringsAsync(objCulture, token: token).ConfigureAwait(false);
 
                 Dictionary<string, string> dicRangesNoAmmo =
                     await GetRangeStringsAsync(objCulture, false, token).ConfigureAwait(false);
@@ -3187,7 +3206,6 @@ namespace Chummer.Backend.Equipment
             bool blnIsSuccess = true;
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                blnIsSuccess = false;
                 if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
                 {
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
@@ -3226,7 +3244,7 @@ namespace Chummer.Backend.Equipment
                             sbdValue.Replace("{Parent Rating}", strParentRating);
                             sbdValue.Replace("Parent Rating", strParentRating);
                         }
-                        Microsoft.VisualStudio.Threading.AsyncLazy<string> strRating = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
+                        AsyncLazy<string> strRating = new AsyncLazy<string>(async () => (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
                         await sbdValue.CheapReplaceAsync("{Weapon Rating}", () => strRating.GetValueAsync(token), token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync("Weapon Rating", () => strRating.GetValueAsync(token), token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync("{Rating}", () => strRating.GetValueAsync(token), token: token).ConfigureAwait(false);
@@ -4795,8 +4813,8 @@ namespace Chummer.Backend.Equipment
                     strReturn = strDamage.Replace("//", "/") + strDamageType + strDamageExtra;
                 else
                 {
-                    bool blnIsSuccess = false;
-                    decimal decValue = 0;
+                    bool blnIsSuccess;
+                    decimal decValue;
                     if (blnSync)
                         decValue = ProcessRatingStringAsDec(strDamage, () => Rating, out blnIsSuccess);
                     else
@@ -4861,8 +4879,8 @@ namespace Chummer.Backend.Equipment
                     strReturn = strDamage.Replace("//", "/") + strDamageType + strDamageExtra;
                 else
                 {
-                    bool blnIsSuccess = false;
-                    decimal decValue = 0;
+                    bool blnIsSuccess;
+                    decimal decValue;
                     if (blnSync)
                         decValue = ProcessRatingStringAsDec(strDamage, () => Rating, out blnIsSuccess);
                     else
@@ -5217,6 +5235,7 @@ namespace Chummer.Backend.Equipment
 
                         if (blnSync)
                         {
+                            // ReSharper disable once MethodHasAsyncOverload
                             if (WeaponAccessories.Any(x => x.Equipped && !string.IsNullOrEmpty(x.ModifyAmmoCapacity), token))
                             {
                                 using (new FetchSafelyFromObjectPool<StringBuilder>(
@@ -6002,7 +6021,7 @@ namespace Chummer.Backend.Equipment
         /// Determine if the Weapon is capable of firing in one of a set of particular modes.
         /// </summary>
         /// <param name="astrModes">Firing modes to find.</param>
-        /// <param name="strLanguage">Language of <paramref name="strFindMode"/>. Uses current UI language if unset.</param>
+        /// <param name="strLanguage">Language of <paramref name="astrModes"/>. Uses current UI language if unset.</param>
         public bool AllowModes(string strLanguage, params string[] astrModes)
         {
             if (string.IsNullOrEmpty(strLanguage))
@@ -6050,7 +6069,7 @@ namespace Chummer.Backend.Equipment
         /// Determine if the Weapon is capable of firing in one of a set of particular modes.
         /// </summary>
         /// <param name="astrModes">Firing modes to find.</param>
-        /// <param name="strLanguage">Language of <paramref name="strFindMode"/>. Uses current UI language if unset.</param>
+        /// <param name="strLanguage">Language of <paramref name="astrModes"/>. Uses current UI language if unset.</param>
         public async Task<bool> AllowModesAsync(string strLanguage, CancellationToken token, params string[] astrModes)
         {
             token.ThrowIfCancellationRequested();
@@ -6488,7 +6507,9 @@ namespace Chummer.Backend.Equipment
                             if (!string.IsNullOrEmpty(strAPReplace))
                             {
                                 strAPReplace = strAPReplace
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     .CheapReplace("{Rating}", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
                                 strAP = strAPReplace;
                             }
@@ -6497,8 +6518,12 @@ namespace Chummer.Backend.Equipment
                             if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
                             {
                                 strAPAdd = strAPAdd
-                                    .CheapReplace("{Rating}", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    .CheapReplace("{Rating}",
+                                        () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    .CheapReplace("Rating",
+                                        () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
                                 sbdBonusAP.Append("+(").Append(strAPAdd.TrimStart('+')).Append(')');
                             }
 
@@ -6509,7 +6534,9 @@ namespace Chummer.Backend.Equipment
                                 if (!string.IsNullOrEmpty(strAPReplace))
                                 {
                                     strAPReplace = strAPReplace
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         .CheapReplace("{Rating}", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
                                     strAP = strAPReplace;
                                 }
@@ -6518,7 +6545,9 @@ namespace Chummer.Backend.Equipment
                                 if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
                                 {
                                     strAPAdd = strAPAdd
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         .CheapReplace("{Rating}", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
                                     sbdBonusAP.Append("+(").Append(strAPAdd.TrimStart('+')).Append(')');
                                 }
@@ -6594,7 +6623,9 @@ namespace Chummer.Backend.Equipment
                             {
                                 strAPReplace = blnSync
                                     ? strAPReplace
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
                                     : await strAPReplace
                                         .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
@@ -6607,7 +6638,9 @@ namespace Chummer.Backend.Equipment
                             {
                                 strAPAdd = blnSync
                                     ? strAPAdd
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
                                     : await strAPAdd
                                         .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
@@ -6623,7 +6656,9 @@ namespace Chummer.Backend.Equipment
                             {
                                 strAPReplace = blnSync
                                     ? strAPReplace
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
                                     : await strAPReplace
                                         .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
@@ -6636,7 +6671,9 @@ namespace Chummer.Backend.Equipment
                             {
                                 strAPAdd = blnSync
                                     ? strAPAdd
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
                                     : await strAPAdd
                                         .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
@@ -6660,7 +6697,9 @@ namespace Chummer.Backend.Equipment
                                 {
                                     strAPReplace = blnSync
                                         ? strAPReplace
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
                                         : await strAPReplace
                                             .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
@@ -6673,7 +6712,9 @@ namespace Chummer.Backend.Equipment
                                 {
                                     strAPAdd = blnSync
                                         ? strAPAdd
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
                                         : await strAPAdd
                                             .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
@@ -6689,7 +6730,9 @@ namespace Chummer.Backend.Equipment
                                 {
                                     strAPReplace = blnSync
                                         ? strAPReplace
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
                                         : await strAPReplace
                                             .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
@@ -6702,7 +6745,9 @@ namespace Chummer.Backend.Equipment
                                 {
                                     strAPAdd = blnSync
                                         ? strAPAdd
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
                                         : await strAPAdd
                                             .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
@@ -6904,7 +6949,7 @@ namespace Chummer.Backend.Equipment
                         if (blnWithTooltip)
                             sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                 .Append(blnSync
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    // ReSharper disable once MethodHasAsyncOverload
                                     ? LanguageManager.GetString("String_Wireless", strLanguage, token: token)
                                     : await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token)
                                         .ConfigureAwait(false))
@@ -6990,10 +7035,10 @@ namespace Chummer.Backend.Equipment
                                 sbdRCTip.Append(strSpace).Append('+').Append(strSpace);
                                 if (blnSync)
                                 {
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    // ReSharper disable once MethodHasAsyncOverload
                                     sbdRCTip.Append(await objAccessory.DisplayNameAsync(strLanguage, token).ConfigureAwait(false))
                                         .Append(strSpace)
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         .Append(LanguageManager.GetString("String_Wireless", strLanguage, token: token));
                                 }
                                 else
@@ -8061,7 +8106,7 @@ namespace Chummer.Backend.Equipment
             {
                 return strRange;
             }
-            strRange += " (" + (await AmmoLoaded?.DisplayNameShortAsync(strLanguage, token: token)) + ")";
+            strRange += " (" + (await AmmoLoaded.DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false)) + ")";
 
             return strRange;
         }
@@ -8559,7 +8604,7 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(strRange))
                 return string.Empty;
-            string strToEvaluate = string.Empty;
+            string strToEvaluate;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBaseModifier))
             {
                 string strBaseModifier = (await _objCharacter.LoadDataXPathAsync("ranges.xml", token: token).ConfigureAwait(false))
@@ -8575,8 +8620,8 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strLoopModifier) && strLoopModifier != "0" && strLoopModifier != "+0")
                     {
                         strLoopModifier = await strLoopModifier.TrimStart('+')
-                            .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                            .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
                             .ConfigureAwait(false);
                         sbdBaseModifier.Append("+(").Append(strLoopModifier).Append(')');
                     }

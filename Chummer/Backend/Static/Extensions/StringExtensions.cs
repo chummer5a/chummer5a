@@ -86,7 +86,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string ConcatFast(params string[] lstStrings)
         {
@@ -94,7 +94,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string ConcatFast(IReadOnlyCollection<string> lstStrings)
         {
@@ -210,7 +210,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(IEnumerable{string})"> that is faster for shorter strings because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
+        /// Version of <see cref="string.Concat(IEnumerable{string})"/> that is faster for shorter strings because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
         /// </summary>
         public static string ConcatFast(IEnumerable<string> lstStrings)
         {
@@ -224,8 +224,8 @@ namespace Chummer
                     return str1;
                 // Handle cases where we can rely on the faster string.Concat methods that work off of a fixed number of string parameters
                 string str2 = objEnumerator.Current;
-                string str3 = string.Empty;
-                string str4 = string.Empty;
+                string str3;
+                string str4;
                 if (objEnumerator.MoveNext())
                 {
                     str3 = objEnumerator.Current;
@@ -357,7 +357,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Concat(string[])"> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static Task<string> ConcatFastAsync(IAsyncReadOnlyCollection<string> lstStrings, CancellationToken token = default)
         {
@@ -543,7 +543,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async version of <see cref="string.Concat(IEnumerable{string})"> that is faster for shorter strings because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
+        /// Async version of <see cref="string.Concat(IEnumerable{string})"/> that is faster for shorter strings because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
         /// </summary>
         public static async Task<string> ConcatFastAsync(IAsyncEnumerable<string> lstStrings, CancellationToken token = default)
         {
@@ -562,8 +562,8 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 // Handle cases where we can rely on the faster string.Concat methods that work off of a fixed number of string parameters
                 string str2 = objEnumerator.Current;
-                string str3 = string.Empty;
-                string str4 = string.Empty;
+                string str3;
+                string str4;
                 if (objEnumerator.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
@@ -1777,7 +1777,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async version of <see cref="string.Join(string, IEnumerable{string})"> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder">, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// Async version of <see cref="string.Join(string, IEnumerable{string})"/> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder"/>, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static async Task<string> JoinFastAsync(string strSeparator, IAsyncEnumerable<string> lstStrings, CancellationToken token = default)
         {
@@ -2015,7 +2015,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Join(string, string[], int, int)"> that is faster for non-arrays because it does not need to transform the collection to an array first.
+        /// Version of <see cref="string.Join(string, string[], int, int)"/> that is faster for non-arrays because it does not need to transform the collection to an array first.
         /// </summary>
         public static string JoinFast(string strSeparator, IReadOnlyCollection<string> lstStrings, int startIndex, int count)
         {
@@ -2149,7 +2149,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Join(string, string[], int, int)"> that is faster for non-arrays because it does not need to transform the collection to an array first.
+        /// Version of <see cref="string.Join(string, string[], int, int)"/> that is faster for non-arrays because it does not need to transform the collection to an array first.
         /// </summary>
         public static async Task<string> JoinFastAsync(string strSeparator, IAsyncReadOnlyCollection<string> lstStrings, int startIndex, int count, CancellationToken token = default)
         {
@@ -2691,7 +2691,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfAny(this string strHaystack, int intStartIndex, params string[] astrNeedles)
         {
-            return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
+            return strHaystack.IndexOfAny(astrNeedles, intStartIndex);
         }
 
         /// <summary>
@@ -2828,20 +2828,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for <see cref="string.Split(char[])"> that uses one separator char in its argument.
-        /// </summary>
-        /// <param name="strInput">String to search.</param>
-        /// <param name="chrSeparator">Separator to use.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string[] Split(this string strInput, char chrSeparator)
-        {
-            if (strInput == null)
-                throw new ArgumentNullException(nameof(strInput));
-            return strInput.Split(new[] { chrSeparator });
-        }
-
-        /// <summary>
-        /// Syntactic sugar for <see cref="string.Split(char[], StringSplitOptions)"> that uses one separator char in its argument.
+        /// Syntactic sugar for <see cref="string.Split(char[], StringSplitOptions)"/> that uses one separator char in its argument.
         /// </summary>
         /// <param name="strInput">String to search.</param>
         /// <param name="chrSeparator">Separator to use.</param>
@@ -2855,7 +2842,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for <see cref="string.Split(char[], int)"> that uses one separator char in its argument.
+        /// Syntactic sugar for <see cref="string.Split(char[], int)"/> that uses one separator char in its argument.
         /// </summary>
         /// <param name="strInput">String to search.</param>
         /// <param name="intCount">The maximum number of substrings to return.</param>
@@ -2868,7 +2855,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for <see cref="string.Split(char[], int, StringSplitOptions)"> that uses one separator char in its argument.
+        /// Syntactic sugar for <see cref="string.Split(char[], int, StringSplitOptions)"/> that uses one separator char in its argument.
         /// </summary>
         /// <param name="strInput">String to search.</param>
         /// <param name="chrSeparator">Separator to use.</param>
@@ -2950,7 +2937,7 @@ namespace Chummer
         {
             if (strHaystack == null)
                 throw new ArgumentNullException(nameof(strHaystack));
-            return strHaystack.IndexOf(strNeedle, intStartIndex) != -1;
+            return strHaystack.IndexOf(strNeedle, intStartIndex, StringComparison.Ordinal) != -1;
         }
 
         /// <summary>
@@ -2969,7 +2956,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="StringExtensions.Split(string, char, StringSplitOptions)"> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
+        /// Version of <see cref="StringExtensions.Split(string, char, StringSplitOptions)"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="chrSplit">Character to use for splitting.</param>
@@ -3000,7 +2987,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="StringExtensions.Split(string, char, int, StringSplitOptions)"> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
+        /// Version of <see cref="StringExtensions.Split(string, char, int, StringSplitOptions)"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="chrSplit">Character to use for splitting.</param>
@@ -3036,7 +3023,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="StringExtensions.Split(string, string, StringSplitOptions)"> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
+        /// Version of <see cref="StringExtensions.Split(string, string, StringSplitOptions)"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="strSplit">String to use for splitting.</param>
@@ -3075,7 +3062,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
+        /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="strSplit">String to use for splitting.</param>
@@ -3119,7 +3106,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Split(char[])"> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
+        /// Version of <see cref="string.Split(char[])"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="achrSplit">Characters to use for splitting.</param>
@@ -3130,7 +3117,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Split(char[], StringSplitOptions)"> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
+        /// Version of <see cref="string.Split(char[], StringSplitOptions)"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="achrSplit">Characters to use for splitting.</param>
@@ -3167,8 +3154,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="StringExtensions.Split(string, char, int, StringSplitOptions)"> that guarantees that the returned string will be of a specific size, padding with <see cref="string.Empty"> when needed.
-        /// Slightly faster than built-in versions of <see cref="string.Split"> because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Version of <see cref="StringExtensions.Split(string, char, int, StringSplitOptions)"/> that guarantees that the returned string will be of a specific size, padding with <see cref="string.Empty"/> when needed.
+        /// Slightly faster than built-in versions of <see cref="string.Split"/> because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="intSize">Size of the array to return.</param>
@@ -3209,8 +3196,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"> that guarantees that the returned string will be of a specific size, padding with <see cref="string.Empty"> when needed.
-        /// Slightly faster than built-in versions of <see cref="string.Split"> because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"/> that guarantees that the returned string will be of a specific size, padding with <see cref="string.Empty"/> when needed.
+        /// Slightly faster than built-in versions of <see cref="string.Split"/> because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="intSize">Size of the array to return.</param>
@@ -3254,8 +3241,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Split(char[], int)"> that guarantees that the returned string will be of a specific size, padding with <see cref="string.Empty"> when needed.
-        /// Slightly faster than built-in versions of <see cref="string.Split"> because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Version of <see cref="string.Split(char[], int)"/> that guarantees that the returned string will be of a specific size, padding with <see cref="string.Empty"/> when needed.
+        /// Slightly faster than built-in versions of <see cref="string.Split"/> because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="intSize">Size of the array to return.</param>
@@ -3292,8 +3279,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Split(char[], int, StringSplitOptions)"> that returns an array from <see cref="ArrayPool{string}.Shared"/> instead of allocating it, and only splits to a specific array size, padding with <see cref="string.Empty"> when necessary.
-        /// Slightly faster than built-in versions of <see cref="string.Split"> because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Version of <see cref="string.Split(char[], int, StringSplitOptions)"/> that returns an array from <see cref="ArrayPool{string}.Shared"/> instead of allocating it, and only splits to a specific array size, padding with <see cref="string.Empty"/> when necessary.
+        /// Slightly faster than built-in versions of <see cref="string.Split"/> because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
         /// Remember to return the result to <see cref="ArrayPool{string}.Shared"/> when finished with it!
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
@@ -3345,8 +3332,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"> that returns an array from <see cref="ArrayPool{string}.Shared"/> instead of allocating it, and only splits to a specific array size, padding with <see cref="string.Empty"> when necessary.
-        /// Slightly faster than built-in versions of <see cref="string.Split"> because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"/> that returns an array from <see cref="ArrayPool{string}.Shared"/> instead of allocating it, and only splits to a specific array size, padding with <see cref="string.Empty"/> when necessary.
+        /// Slightly faster than built-in versions of <see cref="string.Split"/> because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
         /// Remember to return the result to <see cref="ArrayPool{string}.Shared"/> when finished with it!
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
@@ -3401,8 +3388,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Split(char[], int)"> that returns an array from <see cref="ArrayPool{string}.Shared"/> instead of allocating it, and only splits to a specific array size, padding with <see cref="string.Empty"> when necessary.
-        /// Slightly faster than built-in versions of <see cref="string.Split"> because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Version of <see cref="string.Split(char[], int)"/> that returns an array from <see cref="ArrayPool{string}.Shared"/> instead of allocating it, and only splits to a specific array size, padding with <see cref="string.Empty"/> when necessary.
+        /// Slightly faster than built-in versions of <see cref="string.Split"/> because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
         /// Remember to return the result to <see cref="ArrayPool{string}.Shared"/> when finished with it!
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
@@ -3450,7 +3437,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="StringExtensions.Split(string, char, StringSplitOptions)"> that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
+        /// Version of <see cref="StringExtensions.Split(string, char, StringSplitOptions)"/> that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
@@ -3511,7 +3498,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="StringExtensions.Split(string, char, int, StringSplitOptions)"> that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
+        /// Version of <see cref="StringExtensions.Split(string, char, int, StringSplitOptions)"/> that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
@@ -3579,7 +3566,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="StringExtensions.Split(string, string, StringSplitOptions)"> that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
+        /// Version of <see cref="StringExtensions.Split(string, string, StringSplitOptions)"/> that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
@@ -3648,7 +3635,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"> that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
+        /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"/> that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
@@ -3725,7 +3712,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.Split(char[])"> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
+        /// Version of <see cref="string.Split(char[])"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
@@ -3785,7 +3772,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Special version of <see cref="StringExtensions.SplitNoAlloc(string, char, StringSplitOptions)"> that is meant for processing command-line arguments (where we are supposed to ignore spaces inside of quotation mark blocks)
+        /// Special version of <see cref="StringExtensions.SplitNoAlloc(string, char, StringSplitOptions)"/> that is meant for processing command-line arguments (where we are supposed to ignore spaces inside of quotation mark blocks)
         /// </summary>
         /// <param name="strInput">String to process.</param>
         /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split by whitespace</returns>
@@ -3828,7 +3815,7 @@ namespace Chummer
         /// Normalizes whitespace for a given textblock, removing extra spaces and trimming the string.
         /// </summary>
         /// <param name="strInput">Input textblock</param>
-        /// <param name="funcIsWhiteSpace">Custom function with which to check if a character should count as whitespace. If null, defaults to <see cref="char.IsWhiteSpace(char)"/> && !<see cref="char.IsControl(char)(char)"/>.</param>
+        /// <param name="funcIsWhiteSpace">Custom function with which to check if a character should count as whitespace. If null, defaults to <see cref="char.IsWhiteSpace(char)"/> && !<see cref="char.IsControl(char)"/>.</param>
         /// <returns>New string with any chars that return true from <paramref name="funcIsWhiteSpace"/> replaced with the first whitespace in a sequence and any excess whitespace removed.</returns>
         public static string NormalizeWhiteSpace(this string strInput, Func<char, bool> funcIsWhiteSpace = null)
         {
@@ -5102,10 +5089,10 @@ namespace Chummer
             if (intIndex < 0 || intIndex + 1 >= intInputLength)
                 return false;
             // First check for special tags that are easy to identify: comments and doctypes
-            int intCommentOpener = strInput.IndexOf("<!--", intIndex);
-            if (intCommentOpener > 0 && intCommentOpener + 7 < intInputLength && strInput.IndexOf("-->", intCommentOpener + 4) > intCommentOpener)
+            int intCommentOpener = strInput.IndexOf("<!--", intIndex, StringComparison.Ordinal);
+            if (intCommentOpener > 0 && intCommentOpener + 7 < intInputLength && strInput.IndexOf("-->", intCommentOpener + 4, StringComparison.Ordinal) > intCommentOpener)
                 return true;
-            int intDoctypeOpener = strInput.IndexOf("<!DOCTYPE", intIndex);
+            int intDoctypeOpener = strInput.IndexOf("<!DOCTYPE", intIndex, StringComparison.Ordinal);
             if (intDoctypeOpener > 0 && intDoctypeOpener + 10 < intInputLength && strInput.IndexOf('>', intDoctypeOpener + 9) > intDoctypeOpener)
                 return true;
             int intClosingIndex = strInput.IndexOf('>', intIndex + 1);
@@ -5123,7 +5110,6 @@ namespace Chummer
                         case ' ':
                             if (i > intIndex + 1)
                                 continue;
-                            blnValidTag = false;
                             break;
                         case '/':
                             // Slash only allowed as part of a closing tag
@@ -5132,13 +5118,11 @@ namespace Chummer
                                 blnHasSlash = true;
                                 continue;
                             }
-                            blnValidTag = false;
                             break;
                         case '=':
                             // Equals signs only valid as part of an attribute assignment
                             if (i > intIndex + 1 && i < intClosingIndex - 1 && strInput[i+1] == '\"' && char.IsLetterOrDigit(strInput[i-1]))
                                 continue;
-                            blnValidTag = false;
                             break;
                         case '\"':
                             // If we have a quote, skip immediately to the next instance of a quote
@@ -5151,14 +5135,11 @@ namespace Chummer
                                     continue;
                                 }
                             }
-                            blnValidTag = false;
-                            break;
-                        default:
-                            blnValidTag = false;
                             break;
                     }
-                    if (!blnValidTag)
-                        break;
+
+                    blnValidTag = false;
+                    break;
                 }
                 if (blnValidTag)
                     return true;
@@ -5375,7 +5356,7 @@ namespace Chummer
         /// <param name="strInput">String to process (should not have FixedValues trimmed).</param>
         /// <param name="funcRating">Function to get the rating to use for FixedValues.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async static Task<string> ProcessFixedValuesStringAsync(this string strInput, Func<Task<int>> funcRating, CancellationToken token = default)
+        public static async Task<string> ProcessFixedValuesStringAsync(this string strInput, Func<Task<int>> funcRating, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))

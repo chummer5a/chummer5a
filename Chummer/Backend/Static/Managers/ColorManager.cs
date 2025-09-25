@@ -45,11 +45,11 @@ namespace Chummer
     {
         // The setting for whether stuff uses dark mode or light mode is accessible purely through a specific registry key
         // So we save that key for accessing both at startup and should the setting be changed while Chummer is running
-        private static readonly RegistryKey s_ObjPersonalizeKey = null;
+        private static readonly RegistryKey s_ObjPersonalizeKey;
 
         // While events that trigger on changes to a registry value are possible, they're a PITA in C#.
         // Checking for dark mode on a timer interval is less elegant, but also easier to set up, track, and debug.
-        private static readonly Timer s_TmrDarkModeCheckerTimer = null;
+        private static readonly Timer s_TmrDarkModeCheckerTimer;
 
         static ColorManager()
         {

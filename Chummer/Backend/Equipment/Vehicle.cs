@@ -550,6 +550,7 @@ namespace Chummer.Backend.Equipment
                                     catch
                                     {
                                         if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objMod.DeleteVehicleMod();
                                         else
                                             await objMod.DeleteVehicleModAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -646,6 +647,7 @@ namespace Chummer.Backend.Equipment
                                                         catch
                                                         {
                                                             if (blnSync)
+                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                 objSubsystem.DeleteCyberware();
                                                             else
                                                                 await objSubsystem.DeleteCyberwareAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -664,6 +666,7 @@ namespace Chummer.Backend.Equipment
                                     catch
                                     {
                                         if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objMod.DeleteVehicleMod();
                                         else
                                             await objMod.DeleteVehicleModAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -698,6 +701,7 @@ namespace Chummer.Backend.Equipment
                             }
                             catch
                             {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objWeaponMount.DeleteWeaponMount();
                                 throw;
                             }
@@ -758,6 +762,7 @@ namespace Chummer.Backend.Equipment
                                             await GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
                                     }
                                     else if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objGear.DeleteGear();
                                     else
                                         await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
@@ -765,6 +770,7 @@ namespace Chummer.Backend.Equipment
                                 catch
                                 {
                                     if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objGear.DeleteGear();
                                     else
                                         await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -927,6 +933,7 @@ namespace Chummer.Backend.Equipment
                                     catch
                                     {
                                         if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objMod.DeleteWeaponAccessory();
                                         else
                                             await objMod.DeleteWeaponAccessoryAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -940,7 +947,9 @@ namespace Chummer.Backend.Equipment
                             if (blnSync)
                             {
                                 foreach (Weapon objSubWeapon in lstSubWeapons)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objSubWeapon.DeleteWeapon();
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objWeapon.DeleteWeapon();
                             }
                             else
@@ -1114,6 +1123,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (blnCopy)
                 {
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     this.SetHomeNode(_objCharacter, false);
                 }
                 else
@@ -1121,11 +1131,13 @@ namespace Chummer.Backend.Equipment
                     bool blnIsHomeNode = false;
                     if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
                     {
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         this.SetHomeNode(_objCharacter, true);
                     }
                 }
                 bool blnIsActive = false;
                 if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     this.SetActiveCommlink(_objCharacter, true);
             }
             else
@@ -1254,7 +1266,7 @@ namespace Chummer.Backend.Equipment
             if (objNode.HasChildWithName("mods"))
             {
                 XmlNodeList nodChildren = objNode.SelectNodes("mods/mod");
-                if (nodChildren.Count > 0)
+                if (nodChildren != null && nodChildren.Count > 0)
                 {
                     if (blnSync)
                     {
@@ -1264,11 +1276,14 @@ namespace Chummer.Backend.Equipment
                             try
                             {
                                 objMod.Parent = this;
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objMod.Load(nodChild, blnCopy);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 _lstVehicleMods.Add(objMod);
                             }
                             catch
                             {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objMod.DeleteVehicleMod();
                                 throw;
                             }
@@ -1310,12 +1325,15 @@ namespace Chummer.Backend.Equipment
                             Gear objGear = new Gear(_objCharacter);
                             try
                             {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objGear.Load(nodChild, blnCopy);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 _lstGear.Add(objGear);
                                 objGear.Parent = this;
                             }
                             catch
                             {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objGear.DeleteGear();
                                 throw;
                             }
@@ -1353,11 +1371,14 @@ namespace Chummer.Backend.Equipment
                         try
                         {
                             objWeapon.ParentVehicle = this;
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             objWeapon.Load(nodChild, blnCopy);
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             _lstWeapons.Add(objWeapon);
                         }
                         catch
                         {
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             objWeapon.DeleteWeapon();
                             throw;
                         }
@@ -1394,7 +1415,9 @@ namespace Chummer.Backend.Equipment
                     {
                         try
                         {
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             if (wm.Load(nodChild, blnCopy))
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 WeaponMounts.Add(wm);
                             else
                             {
@@ -1418,12 +1441,15 @@ namespace Chummer.Backend.Equipment
                                                 WeaponMount objWeaponMount = new WeaponMount(_objCharacter, this);
                                                 try
                                                 {
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     objWeaponMount.CreateByName(objXmlVehicleMod);
                                                     objWeaponMount.IncludedInVehicle = true;
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     WeaponMounts.Add(objWeaponMount);
                                                 }
                                                 catch
                                                 {
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     objWeaponMount.DeleteWeaponMount();
                                                     throw;
                                                 }
@@ -1433,6 +1459,7 @@ namespace Chummer.Backend.Equipment
                                         xmlDataNodesForMissingKrakeStuff = xmlVehicleDataNode["weapons"];
                                         if (xmlDataNodesForMissingKrakeStuff != null)
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml", token: token);
 
                                             foreach (XmlNode objXmlWeapon in xmlDataNodesForMissingKrakeStuff.SelectNodes("weapon"))
@@ -1447,6 +1474,7 @@ namespace Chummer.Backend.Equipment
                                                 try
                                                 {
                                                     objWeapon.ParentVehicle = this;
+                                                    // ReSharper disable once MethodHasAsyncOverload
                                                     objWeapon.Create(objXmlWeaponNode, lstSubWeapons, token: token);
                                                     objWeapon.ParentID = InternalId;
                                                     objWeapon.Cost = "0";
@@ -1462,8 +1490,10 @@ namespace Chummer.Backend.Equipment
                                                             !string.IsNullOrEmpty(objWeaponMount.AllowedWeaponCategories))
                                                             continue;
                                                         blnAttached = true;
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         objWeaponMount.Weapons.Add(objWeapon);
                                                         foreach (Weapon objSubWeapon in lstSubWeapons)
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                             objWeaponMount.Weapons.Add(objSubWeapon);
                                                         break;
                                                     }
@@ -1479,8 +1509,10 @@ namespace Chummer.Backend.Equipment
                                                                 objMod.Weapons.Count == 0)
                                                             {
                                                                 blnAttached = true;
+                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                 objMod.Weapons.Add(objWeapon);
                                                                 foreach (Weapon objSubWeapon in lstSubWeapons)
+                                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                     objMod.Weapons.Add(objSubWeapon);
                                                                 break;
                                                             }
@@ -1493,8 +1525,10 @@ namespace Chummer.Backend.Equipment
                                                                     !string.IsNullOrEmpty(objMod.WeaponMountCategories) &&
                                                                     objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory))
                                                                 {
+                                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                     objMod.Weapons.Add(objWeapon);
                                                                     foreach (Weapon objSubWeapon in lstSubWeapons)
+                                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                         objMod.Weapons.Add(objSubWeapon);
                                                                     break;
                                                                 }
@@ -1519,12 +1553,15 @@ namespace Chummer.Backend.Equipment
                                                             WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
                                                             try
                                                             {
+                                                                // ReSharper disable once MethodHasAsyncOverload
                                                                 objMod.Create(objXmlAccessoryNode, new ValueTuple<string, string>(strMount, strExtraMount), 0, token: token);
                                                                 objMod.Cost = "0";
+                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                 objWeapon.WeaponAccessories.Add(objMod);
                                                             }
                                                             catch
                                                             {
+                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                 objMod.DeleteWeaponAccessory();
                                                                 throw;
                                                             }
@@ -1534,7 +1571,9 @@ namespace Chummer.Backend.Equipment
                                                 catch
                                                 {
                                                     foreach (Weapon objSubWeapon in lstSubWeapons)
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         objSubWeapon.DeleteWeapon();
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     objWeapon.DeleteWeapon();
                                                     throw;
                                                 }
@@ -1546,6 +1585,7 @@ namespace Chummer.Backend.Equipment
                         }
                         catch
                         {
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             wm.DeleteWeaponMount();
                             throw;
                         }
@@ -1740,6 +1780,7 @@ namespace Chummer.Backend.Equipment
                             _objCharacter.VehicleLocations.FirstOrDefault(location =>
                                 location.Name == strLocation);
                     }
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     _objLocation?.Children.Add(this);
                 }
                 else
@@ -1772,6 +1813,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             if (!objNode.TryGetBoolFieldQuickly("dealerconnection", ref _blnDealerConnectionDiscount))
             {
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                 _blnDealerConnectionDiscount = blnSync ? DoesDealerConnectionCurrentlyApply() : await DoesDealerConnectionCurrentlyApplyAsync(token).ConfigureAwait(false);
             }
 
@@ -1809,6 +1851,7 @@ namespace Chummer.Backend.Equipment
                     foreach (XmlNode objXmlLocation in objNode.SelectNodes("locations/location"))
                     {
                         Location objLocation = new Location(_objCharacter, _lstLocations);
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         objLocation.Load(objXmlLocation);
                     }
                 }
@@ -2668,11 +2711,10 @@ namespace Chummer.Backend.Equipment
         /// Parse a given string from a Mod's bonus node to calculate new bonus or base value.
         /// </summary>
         /// <param name="strBonus">String that will be parsed, replacing values.</param>
-        /// <param name="intModRating">Current Rating of the relevant Mod.</param>
+        /// <param name="objMod">Mod whose bonus is to be processed.</param>
         /// <param name="intTotalRating">Total current Rating of the value that is being improved.</param>
         /// <param name="strReplaceRating">String value that will be replaced by intModRating.</param>
         /// <param name="blnBonus">Whether the value must be prefixed with + or - to return a value.</param>
-        /// <returns></returns>
         private static int ParseBonus(string strBonus, VehicleMod objMod, int intTotalRating, string strReplaceRating, bool blnBonus = true)
         {
             if (strBonus.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
@@ -2699,12 +2741,11 @@ namespace Chummer.Backend.Equipment
         /// Parse a given string from a Mod's bonus node to calculate new bonus or base value.
         /// </summary>
         /// <param name="strBonus">String that will be parsed, replacing values.</param>
-        /// <param name="intModRating">Current Rating of the relevant Mod.</param>
+        /// <param name="objMod">Mod whose bonus is to be processed.</param>
         /// <param name="intTotalRating">Total current Rating of the value that is being improved.</param>
         /// <param name="strReplaceRating">String value that will be replaced by intModRating.</param>
         /// <param name="blnBonus">Whether the value must be prefixed with + or - to return a value.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns></returns>
         private static async Task<int> ParseBonusAsync(string strBonus, VehicleMod objMod, int intTotalRating, string strReplaceRating, bool blnBonus = true, CancellationToken token = default)
         {
             if (strBonus.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
@@ -6175,7 +6216,7 @@ namespace Chummer.Backend.Equipment
                         return i.ToString(GlobalSettings.InvariantCultureInfo);
                     return "0.5";
                 })
-                : new Lazy<string>(() => GetTotalBody(objExcludeMod).ToString(GlobalSettings.InvariantCultureInfo));
+                : new Lazy<string>(() => GetTotalBody().ToString(GlobalSettings.InvariantCultureInfo));
             Lazy<ValueTuple<string, string>> strHandlingValues = new Lazy<ValueTuple<string, string>>(() =>
             {
                 bool blnFirst = true;
@@ -6413,7 +6454,7 @@ namespace Chummer.Backend.Equipment
                         return i.ToString(GlobalSettings.InvariantCultureInfo);
                     return "0.5";
                 }, Utils.JoinableTaskFactory)
-                : new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await GetTotalBodyAsync(objExcludeMod, token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
+                : new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await GetTotalBodyAsync(token: token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
             Microsoft.VisualStudio.Threading.AsyncLazy<ValueTuple<string, string>> strHandlingValues = new Microsoft.VisualStudio.Threading.AsyncLazy<ValueTuple<string, string>>(async () =>
             {
                 bool blnFirst = true;

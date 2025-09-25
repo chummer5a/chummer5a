@@ -509,8 +509,7 @@ namespace Chummer
                             if (i > 0)
                             {
                                 token.ThrowIfCancellationRequested();
-                                if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
-                                    return;
+                                await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false);
                             }
                         }
                     }
@@ -598,6 +597,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
+                int intBufferSize = Utils.MaxParallelBatchSize;
+                if (lstItems is IAsyncReadOnlyCollection<TSource> lstItemsCollection)
+                    intBufferSize = Math.Min(await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false), intBufferSize);
                 using (CancellationTokenSource objBreakLoop = new CancellationTokenSource())
                 {
                     token.ThrowIfCancellationRequested();
@@ -605,9 +607,6 @@ namespace Chummer
                     using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(objBreakToken))
                     {
                         Task objBreakTokenTask = objBreakTokenTaskSource.Task;
-                        int intBufferSize = Utils.MaxParallelBatchSize;
-                        if (lstItems is IAsyncReadOnlyCollection<TSource> lstItemsCollection)
-                            intBufferSize = Math.Min(await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false), intBufferSize);
                         using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                         {
                             token.ThrowIfCancellationRequested();
@@ -658,6 +657,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
+                int intBufferSize = Utils.MaxParallelBatchSize;
+                if (lstItems is IAsyncReadOnlyCollection<TSource> lstItemsCollection)
+                    intBufferSize = Math.Min(await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false), intBufferSize);
                 using (CancellationTokenSource objBreakLoop = new CancellationTokenSource())
                 {
                     token.ThrowIfCancellationRequested();
@@ -665,9 +667,6 @@ namespace Chummer
                     using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(objBreakToken))
                     {
                         Task objBreakTokenTask = objBreakTokenTaskSource.Task;
-                        int intBufferSize = Utils.MaxParallelBatchSize;
-                        if (lstItems is IAsyncReadOnlyCollection<TSource> lstItemsCollection)
-                            intBufferSize = Math.Min(await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false), intBufferSize);
                         using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                         {
                             token.ThrowIfCancellationRequested();
@@ -710,7 +709,7 @@ namespace Chummer
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>List of the results of <paramref name="funcCodeToRun"/> when run over <paramref name="lstItems"/>.</returns>
+        /// <returns>List of the results of <paramref name="funcCodeToRunWithPotentialBreak"/> when run over <paramref name="lstItems"/>.</returns>
         public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IEnumerable<TSource> lstItems, Func<TSource, CancellationTokenSource, Task<TResult>> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -801,7 +800,7 @@ namespace Chummer
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>List of the results of <paramref name="funcCodeToRun"/> when run over <paramref name="lstItems"/>.</returns>
+        /// <returns>List of the results of <paramref name="funcCodeToRunWithPotentialBreak"/> when run over <paramref name="lstItems"/>.</returns>
         public static async Task<List<TResult>> ForEachAsync<TResult>(IEnumerable lstItems, Func<object, CancellationTokenSource, Task<TResult>> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -893,7 +892,7 @@ namespace Chummer
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>List of the results of <paramref name="funcCodeToRun"/> when run over <paramref name="lstItems"/>.</returns>
+        /// <returns>List of the results of <paramref name="funcCodeToRunWithPotentialBreak"/> when run over <paramref name="lstItems"/>.</returns>
         public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IAsyncEnumerable<TSource> lstItems, Func<TSource, CancellationTokenSource, Task<TResult>> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -987,7 +986,7 @@ namespace Chummer
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>List of the results of <paramref name="funcCodeToRun"/> when run over <paramref name="lstItems"/>.</returns>
+        /// <returns>List of the results of <paramref name="funcCodeToRunWithPotentialBreak"/> when run over <paramref name="lstItems"/>.</returns>
         public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IAsyncEnumerable<TSource> lstItems, Func<TSource, CancellationTokenSource, TResult> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1348,7 +1347,7 @@ namespace Chummer
         /// <param name="intUpperBound">Terminating value of the iterating variable (exclusive).</param>
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>Array of the results of <paramref name="funcCodeToRun"/> when run from <paramref name="intLowerBound"/> (inclusive) to <paramref name="intUpperBound"/> (exclusive).</returns>
+        /// <returns>Array of the results of <paramref name="funcCodeToRunWithPotentialBreak"/> when run from <paramref name="intLowerBound"/> (inclusive) to <paramref name="intUpperBound"/> (exclusive).</returns>
         public static Task<List<TResult>> ForAsync<TResult>(int intLowerBound, int intUpperBound, Func<int, CancellationTokenSource, Task<TResult>> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)

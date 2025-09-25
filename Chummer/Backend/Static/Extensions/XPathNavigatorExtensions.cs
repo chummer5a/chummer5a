@@ -679,7 +679,7 @@ namespace Chummer
         }
 
         // XmlWriterSettings used for InnerXml and OuterXml extension methods
-        private static Lazy<XmlWriterSettings> s_xmlWriterSettings = new Lazy<XmlWriterSettings>(() => new XmlWriterSettings
+        private static readonly Lazy<XmlWriterSettings> s_xmlWriterSettings = new Lazy<XmlWriterSettings>(() => new XmlWriterSettings
         {
             Indent = true,
             OmitXmlDeclaration = true,

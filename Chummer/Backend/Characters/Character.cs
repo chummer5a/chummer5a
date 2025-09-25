@@ -482,7 +482,7 @@ namespace Chummer
                         await SetSubmersionGradeAsync(intSubmersion, token).ConfigureAwait(false);
                     await SetInitiateGradeAsync(intInitiation, token).ConfigureAwait(false);
                 }
-                else if (blnUpdateSubmersion)
+                else
                     await SetSubmersionGradeAsync(intSubmersion, token).ConfigureAwait(false);
             }
             finally
@@ -6253,7 +6253,7 @@ namespace Chummer
                                     catch (XmlException ex)
                                     {
                                         ex = ex.Demystify();
-                                        if (ex.Message?.HasAnyXmlInvalidUnicodeChars() == true)
+                                        if (ex.Message.HasAnyXmlInvalidUnicodeChars())
                                         {
                                             /*If we found a known control character that's preventing the character from
                                             being loaded (Expected to be notes ingested from PDF mostly) prompt the user whether to use unsafe methods.
@@ -6319,7 +6319,7 @@ namespace Chummer
                                     catch (XmlException ex)
                                     {
                                         ex = ex.Demystify();
-                                        if (ex.Message?.HasAnyXmlInvalidUnicodeChars() == true)
+                                        if (ex.Message.HasAnyXmlInvalidUnicodeChars())
                                         {
                                             /*If we found a known control character that's preventing the character from
                                             being loaded (Expected to be notes ingested from PDF mostly) prompt the user whether to use unsafe methods.
@@ -7518,6 +7518,7 @@ namespace Chummer
                                         {
                                             if (blnSync)
                                             {
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 objMentor.Load(objXmlMentor);
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstMentorSpirits.Add(objMentor);
@@ -7531,6 +7532,7 @@ namespace Chummer
                                         catch
                                         {
                                             if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
                                                 objMentor.Dispose();
                                             else
                                                 await objMentor.DisposeAsync().ConfigureAwait(false);
@@ -7796,12 +7798,14 @@ namespace Chummer
                                         {
                                             try
                                             {
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstContacts.Remove(objContact);
                                             }
                                             catch
                                             {
                                                 //swallow this
                                             }
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             objContact.Dispose();
                                             throw;
                                         }
@@ -7865,7 +7869,7 @@ namespace Chummer
                                         if (objXmlQuality["name"] != null)
                                         {
                                             if (!(blnSync
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    // ReSharper disable once MethodHasAsyncOverload
                                                     ? CorrectedUnleveledQuality(objXmlQuality, xmlRootQualitiesNode, token)
                                                     : await CorrectedUnleveledQualityAsync(objXmlQuality, xmlRootQualitiesNode, token).ConfigureAwait(false)))
                                             {
@@ -7875,6 +7879,7 @@ namespace Chummer
                                                     token.ThrowIfCancellationRequested();
                                                     if (blnSync)
                                                     {
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         objQuality.Load(objXmlQuality);
                                                         // ReSharper disable once MethodHasAsyncOverload
                                                         if (_lstQualities.Any(x => x.InternalId == objQuality.InternalId, token))
@@ -7973,6 +7978,7 @@ namespace Chummer
                                                                 bool blnDoFirstLevel;
                                                                 if (blnSync)
                                                                 {
+                                                                    // ReSharper disable once MethodHasAsyncOverload
                                                                     blnDoFirstLevel = !Qualities.Any(objCheckQuality =>
                                                                         objCheckQuality != objQuality &&
                                                                         objCheckQuality.SourceID == objQuality.SourceID &&
@@ -8247,7 +8253,7 @@ namespace Chummer
                                                         }
 
                                                         if (blnSync)
-                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                            // ReSharper disable once MethodHasAsyncOverload
                                                             ImprovementManager.Commit(this, token);
                                                         else
                                                             await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
@@ -8325,7 +8331,7 @@ namespace Chummer
                                                         }
 
                                                         if (blnSync)
-                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                            // ReSharper disable once MethodHasAsyncOverload
                                                             ImprovementManager.Commit(this, token);
                                                         else
                                                             await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
@@ -8496,6 +8502,7 @@ namespace Chummer
                                             || xpathTraditionNavigator.SelectSingleNodeAndCacheExpression("id", token) != null)
                                         {
                                             if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _objTradition.Load(objXmlCharacter["tradition"]);
                                             else
                                                 await _objTradition.LoadAsync(objXmlCharacter["tradition"], token).ConfigureAwait(false);
@@ -8695,6 +8702,7 @@ namespace Chummer
                                 {
                                     Location objLocation = new Location(this, _lstGearLocations);
                                     if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objLocation.Load(objXmlLocation);
                                     else
                                         await objLocation.LoadAsync(objXmlLocation, token).ConfigureAwait(false);
@@ -8705,6 +8713,7 @@ namespace Chummer
                                 {
                                     Location objLocation = new Location(this, _lstGearLocations);
                                     if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objLocation.Load(objXmlLocation);
                                     else
                                         await objLocation.LoadAsync(objXmlLocation, token).ConfigureAwait(false);
@@ -8715,6 +8724,7 @@ namespace Chummer
                                 {
                                     Location objLocation = new Location(this, _lstGearLocations);
                                     if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objLocation.Load(objXmlLocation);
                                     else
                                         await objLocation.LoadAsync(objXmlLocation, token).ConfigureAwait(false);
@@ -8731,6 +8741,7 @@ namespace Chummer
                                 {
                                     Location objLocation = new Location(this, _lstArmorLocations);
                                     if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objLocation.Load(objXmlLocation);
                                     else
                                         await objLocation.LoadAsync(objXmlLocation, token).ConfigureAwait(false);
@@ -8741,6 +8752,7 @@ namespace Chummer
                                 {
                                     Location objLocation = new Location(this, _lstArmorLocations);
                                     if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objLocation.Load(objXmlLocation);
                                     else
                                         await objLocation.LoadAsync(objXmlLocation, token).ConfigureAwait(false);
@@ -8751,6 +8763,7 @@ namespace Chummer
                                 {
                                     Location objLocation = new Location(this, _lstArmorLocations);
                                     if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objLocation.Load(objXmlLocation);
                                     else
                                         await objLocation.LoadAsync(objXmlLocation, token).ConfigureAwait(false);
@@ -8768,6 +8781,7 @@ namespace Chummer
                                 {
                                     Location objLocation = new Location(this, _lstVehicleLocations);
                                     if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objLocation.Load(objXmlLocation);
                                     else
                                         await objLocation.LoadAsync(objXmlLocation, token).ConfigureAwait(false);
@@ -8779,6 +8793,7 @@ namespace Chummer
                                 {
                                     Location objLocation = new Location(this, _lstVehicleLocations);
                                     if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objLocation.Load(objXmlLocation);
                                     else
                                         await objLocation.LoadAsync(objXmlLocation, token).ConfigureAwait(false);
@@ -8796,6 +8811,7 @@ namespace Chummer
                                 {
                                     Location objLocation = new Location(this, _lstWeaponLocations);
                                     if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objLocation.Load(objXmlLocation);
                                     else
                                         await objLocation.LoadAsync(objXmlLocation, token).ConfigureAwait(false);
@@ -8806,6 +8822,7 @@ namespace Chummer
                                 {
                                     Location objLocation = new Location(this, _lstWeaponLocations);
                                     if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objLocation.Load(objXmlLocation);
                                     else
                                         await objLocation.LoadAsync(objXmlLocation, token).ConfigureAwait(false);
@@ -8823,6 +8840,7 @@ namespace Chummer
                                     StackedFocus objStack = new StackedFocus(this);
                                     if (blnSync)
                                     {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objStack.Load(objXmlStack);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstStackedFoci.Add(objStack);
@@ -8862,12 +8880,14 @@ namespace Chummer
                                     {
                                         try
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objArmor.Load(objXmlArmor);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstArmor.Add(objArmor);
                                         }
                                         catch
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objArmor.DeleteArmor();
                                             throw;
                                         }
@@ -8915,12 +8935,14 @@ namespace Chummer
                                     {
                                         try
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objDrug.Load(objXmlDrug);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstDrugs.Add(objDrug);
                                         }
                                         catch
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objDrug.Remove(false);
                                             throw;
                                         }
@@ -9402,6 +9424,7 @@ namespace Chummer
                                     {
                                         if (blnSync)
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objSpell.Load(objXmlSpell);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstSpells.Add(objSpell);
@@ -9415,6 +9438,7 @@ namespace Chummer
                                     catch
                                     {
                                         if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objSpell.Remove(false);
                                         else
                                             await objSpell.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
@@ -9479,6 +9503,7 @@ namespace Chummer
                                                     }
                                                     catch
                                                     {
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         objPower.DeletePower();
                                                         throw;
                                                     }
@@ -9521,6 +9546,7 @@ namespace Chummer
                                                     }
                                                     catch
                                                     {
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         objPower.DeletePower();
                                                         throw;
                                                     }
@@ -9580,12 +9606,14 @@ namespace Chummer
                                         {
                                             try
                                             {
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstSpirits.Remove(objSpirit);
                                             }
                                             catch
                                             {
                                                 //swallow this
                                             }
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             objSpirit.Dispose();
                                             throw;
                                         }
@@ -9671,6 +9699,7 @@ namespace Chummer
                                     {
                                         if (blnSync)
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objComplexForm.Load(objXmlComplexForm);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstComplexForms.Add(objComplexForm);
@@ -9684,6 +9713,7 @@ namespace Chummer
                                     catch
                                     {
                                         if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objComplexForm.Remove(false);
                                         else
                                             await objComplexForm.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
@@ -9716,16 +9746,29 @@ namespace Chummer
                                 foreach (XmlNode objXmlProgram in objXmlNodeList)
                                 {
                                     AIProgram objProgram = new AIProgram(this);
-                                    if (blnSync)
+                                    try
                                     {
-                                        objProgram.Load(objXmlProgram);
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        _lstAIPrograms.Add(objProgram);
+                                        if (blnSync)
+                                        {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            objProgram.Load(objXmlProgram);
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            _lstAIPrograms.Add(objProgram);
+                                        }
+                                        else
+                                        {
+                                            await objProgram.LoadAsync(objXmlProgram, token).ConfigureAwait(false);
+                                            await _lstAIPrograms.AddAsync(objProgram, token).ConfigureAwait(false);
+                                        }
                                     }
-                                    else
+                                    catch
                                     {
-                                        await objProgram.LoadAsync(objXmlProgram, token).ConfigureAwait(false);
-                                        await _lstAIPrograms.AddAsync(objProgram, token).ConfigureAwait(false);
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            objProgram.Remove(false);
+                                        else
+                                            await objProgram.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                                        throw;
                                     }
                                 }
 
@@ -9758,6 +9801,7 @@ namespace Chummer
                                     {
                                         if (blnSync)
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objMartialArt.Load(objXmlArt);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstMartialArts.Add(objMartialArt);
@@ -9771,6 +9815,7 @@ namespace Chummer
                                     catch
                                     {
                                         if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objMartialArt.DeleteMartialArt();
                                         else
                                             await objMartialArt.DeleteMartialArtAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -9804,6 +9849,7 @@ namespace Chummer
                                     LimitModifier objLimitModifier = new LimitModifier(this);
                                     if (blnSync)
                                     {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objLimitModifier.Load(objXmlLimit);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstLimitModifiers.Add(objLimitModifier);
@@ -9843,6 +9889,7 @@ namespace Chummer
                                     {
                                         if (blnSync)
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objLifestyle.Load(objXmlLifestyle);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstLifestyles.Add(objLifestyle);
@@ -9856,6 +9903,7 @@ namespace Chummer
                                     catch
                                     {
                                         if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objLifestyle.Remove(false);
                                         else
                                             await objLifestyle.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
@@ -9891,12 +9939,14 @@ namespace Chummer
                                     {
                                         try
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objGear.Load(objXmlGear);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstGear.Add(objGear);
                                         }
                                         catch
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objGear.DeleteGear();
                                             throw;
                                         }
@@ -9976,6 +10026,7 @@ namespace Chummer
                                             bool blnDoFirstLevel;
                                             if (blnSync)
                                             {
+                                                // ReSharper disable once MethodHasAsyncOverload
                                                 blnDoFirstLevel = !Qualities.Any(objCheckQuality =>
                                                     objCheckQuality != objLivingPersonaQuality &&
                                                     objCheckQuality.SourceID == objLivingPersonaQuality.SourceID &&
@@ -10093,12 +10144,14 @@ namespace Chummer
                                     {
                                         try
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objVehicle.Load(objXmlVehicle);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstVehicles.Add(objVehicle);
                                         }
                                         catch
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objVehicle.DeleteVehicle();
                                             throw;
                                         }
@@ -10146,12 +10199,14 @@ namespace Chummer
                                     {
                                         try
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objWeapon.Load(objXmlWeapon);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstWeapons.Add(objWeapon);
                                         }
                                         catch
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objWeapon.DeleteWeapon();
                                             throw;
                                         }
@@ -10198,6 +10253,7 @@ namespace Chummer
                                     Metamagic objMetamagic = new Metamagic(this);
                                     if (blnSync)
                                     {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objMetamagic.Load(objXmlMetamagic);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstMetamagics.Add(objMetamagic);
@@ -10235,6 +10291,7 @@ namespace Chummer
                                     Art objArt = new Art(this);
                                     if (blnSync)
                                     {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objArt.Load(objXmlArt);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstArts.Add(objArt);
@@ -10273,6 +10330,7 @@ namespace Chummer
                                     Enhancement objEnhancement = new Enhancement(this);
                                     if (blnSync)
                                     {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objEnhancement.Load(objXmlEnhancement);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstEnhancements.Add(objEnhancement);
@@ -10310,6 +10368,7 @@ namespace Chummer
                                     CritterPower objPower = new CritterPower(this);
                                     if (blnSync)
                                     {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objPower.Load(objXmlPower);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstCritterPowers.Add(objPower);
@@ -10425,6 +10484,7 @@ namespace Chummer
                                         ExpenseLogEntry objExpenseLogEntry = new ExpenseLogEntry(this);
                                         if (blnSync)
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objExpenseLogEntry.Load(objXmlExpense);
                                             _lstExpenseLog.AddWithSort(objExpenseLogEntry, token: token);
                                         }
@@ -10550,6 +10610,7 @@ namespace Chummer
                                         token.ThrowIfCancellationRequested();
                                         if (blnSync)
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objWeek.Load(objXmlWeek);
                                             _lstCalendar.AddWithSort(objWeek, (x, y) => y.CompareTo(x), token: token);
                                         }
@@ -10633,6 +10694,7 @@ namespace Chummer
                                         catch
                                         {
                                             if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 objWeapon.DeleteWeapon();
                                             else
                                                 await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -39656,8 +39718,7 @@ namespace Chummer
                     if (IsAI)
                     {
                         Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
-                        return StringExtensions.ConcatFast(LanguageManager.GetString("String_Handling"),
-                                             strSpace, "[",
+                        return LanguageManager.GetString("String_Handling").ConcatFast(strSpace, "[",
                                              (objHomeNodeVehicle?.Handling ?? 0).ToString(GlobalSettings.CultureInfo), "]");
                     }
 
@@ -39703,8 +39764,7 @@ namespace Chummer
                 if (await GetIsAIAsync(token).ConfigureAwait(false))
                 {
                     Vehicle objHomeNodeVehicle = await GetHomeNodeAsync(token).ConfigureAwait(false) as Vehicle;
-                    return StringExtensions.ConcatFast(await LanguageManager.GetStringAsync("String_Handling", token: token).ConfigureAwait(false),
-                        strSpace, "[",
+                    return (await LanguageManager.GetStringAsync("String_Handling", token: token).ConfigureAwait(false)).ConcatFast(strSpace, "[",
                         (objHomeNodeVehicle?.Handling ?? 0).ToString(GlobalSettings.CultureInfo), "]");
                 }
 
@@ -52364,6 +52424,7 @@ namespace Chummer
                                         try
                                         {
                                             if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstContacts.Remove(objContact);
                                             else
                                                 await _lstContacts.RemoveAsync(objContact, CancellationToken.None).ConfigureAwait(false);
@@ -52373,6 +52434,7 @@ namespace Chummer
                                             //swallow this
                                         }
                                         if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             objContact.Dispose();
                                         else
                                             await objContact.DisposeAsync().ConfigureAwait(false);
@@ -52450,6 +52512,7 @@ namespace Chummer
                                                 }
                                                 catch
                                                 {
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     objArmor.DeleteArmor();
                                                     throw;
                                                 }
@@ -52512,6 +52575,7 @@ namespace Chummer
                                                                 }
                                                                 catch
                                                                 {
+                                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                     objArmorMod.DeleteArmorMod();
                                                                     throw;
                                                                 }
@@ -52562,7 +52626,7 @@ namespace Chummer
                                                                                 objArmorMod.GearChildren.Add(objPlugin);
                                                                             }
                                                                             else
-                                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                                 objPlugin.DeleteGear();
                                                                         }
                                                                         else
@@ -52583,6 +52647,7 @@ namespace Chummer
                                                                     catch
                                                                     {
                                                                         if (blnSync)
+                                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                             objPlugin.DeleteGear();
                                                                         else
                                                                             await objPlugin.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -52676,7 +52741,7 @@ namespace Chummer
                                                                         objArmor.GearChildren.Add(objPlugin);
                                                                     }
                                                                     else
-                                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                         objPlugin.DeleteGear();
                                                                 }
                                                                 else if (await objPlugin.ImportHeroLabGearAsync(xmlArmorModToImport,
@@ -52693,6 +52758,7 @@ namespace Chummer
                                                             catch
                                                             {
                                                                 if (blnSync)
+                                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                     objPlugin.DeleteGear();
                                                                 else
                                                                     await objPlugin.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -52763,7 +52829,7 @@ namespace Chummer
                                                                                 objArmorMod.GearChildren.Add(objPlugin);
                                                                             }
                                                                             else
-                                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                                 objPlugin.DeleteGear();
                                                                         }
                                                                         else if (await objPlugin.ImportHeroLabGearAsync(xmlPluginToAdd,
@@ -52781,6 +52847,7 @@ namespace Chummer
                                                                     catch
                                                                     {
                                                                         if (blnSync)
+                                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                             objPlugin.DeleteGear();
                                                                         else
                                                                             await objPlugin.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -52928,7 +52995,7 @@ namespace Chummer
                                                 await _lstWeapons.AddAsync(objWeapon, token).ConfigureAwait(false);
                                         }
                                         else if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objWeapon.DeleteWeapon();
                                         else
                                             await objWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
@@ -52936,6 +53003,7 @@ namespace Chummer
                                     catch
                                     {
                                         if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objWeapon.DeleteWeapon();
                                         else
                                             await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -52988,7 +53056,7 @@ namespace Chummer
                                                 await _lstCyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
                                         }
                                         else if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objCyberware.DeleteCyberware();
                                         else
                                             await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
@@ -53393,6 +53461,7 @@ namespace Chummer
                                             catch
                                             {
                                                 if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     objSpell.Remove(false);
                                                 else
                                                     await objSpell.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
@@ -53520,6 +53589,7 @@ namespace Chummer
                                                 }
                                                 catch
                                                 {
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     objPower.DeletePower();
                                                     throw;
                                                 }
@@ -53670,6 +53740,7 @@ namespace Chummer
                                             catch
                                             {
                                                 if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     objComplexForm.Remove(false);
                                                 else
                                                     await objComplexForm.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
@@ -53771,6 +53842,7 @@ namespace Chummer
                                                     }
                                                     catch
                                                     {
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         objFakeLicense.DeleteGear();
                                                         throw;
                                                     }
@@ -53823,6 +53895,7 @@ namespace Chummer
                                         catch
                                         {
                                             if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 objFakeSIN.DeleteGear();
                                             else
                                                 await objFakeSIN.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -53878,6 +53951,7 @@ namespace Chummer
                                             catch
                                             {
                                                 if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     objLifestyle.Remove(false);
                                                 else
                                                     await objLifestyle.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
@@ -53906,6 +53980,7 @@ namespace Chummer
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstGear.Add(objGear);
                                             else
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 objGear.DeleteGear();
                                         }
                                         else if (await objGear.ImportHeroLabGearAsync(xmlGearToImport, null, lstWeapons, token).ConfigureAwait(false))
@@ -53918,6 +53993,7 @@ namespace Chummer
                                     catch
                                     {
                                         if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objGear.DeleteGear();
                                         else
                                             await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
@@ -54153,6 +54229,7 @@ namespace Chummer
                                         catch
                                         {
                                             if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 objWeapon.DeleteWeapon();
                                             else
                                                 await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);

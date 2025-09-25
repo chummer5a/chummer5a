@@ -267,7 +267,7 @@ namespace Chummer
 
                 if (strLimitString != bool.FalseString)
                 {
-                    int intLimit = 1;
+                    int intLimit;
                     if (strLimitString.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
                         if (strLimitString.HasValuesNeedingReplacementForXPathProcessing())
@@ -303,9 +303,10 @@ namespace Chummer
                                                                                        GlobalSettings.InvariantCultureInfo),
                                                                                token: token).ConfigureAwait(false);
                                     }
-                                   await objCharacter
-                                          .ProcessAttributesInXPathAsync(
-                                              sbdLimitString, strLimitString, token: token).ConfigureAwait(false);
+
+                                    await objCharacter
+                                        .ProcessAttributesInXPathAsync(
+                                            sbdLimitString, strLimitString, token: token).ConfigureAwait(false);
                                 }
                                 strLimitString = sbdLimitString.ToString();
                             }
@@ -313,9 +314,9 @@ namespace Chummer
                         if (blnSync)
                         {
                             (bool blnIsSuccess, object objProcess)
+                                // ReSharper disable once MethodHasAsyncOverload
                                 = CommonFunctions.EvaluateInvariantXPath(strLimitString, token);
                             intLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
-                            // ReSharper restore MethodHasAsyncOverload
                         }
                         else
                         {
@@ -2483,65 +2484,66 @@ namespace Chummer
                 }
                 case "power":
                 {
-                        // Run through all of the Powers the character has and see if the current required item exists.
-                        Power objPower;
-                        XPathNavigator objExactRatingNode = xmlNode.SelectSingleNodeAndCacheExpression("@rating", token);
-                        if (objExactRatingNode != null)
+                    // Run through all of the Powers the character has and see if the current required item exists.
+                    Power objPower;
+                    XPathNavigator objExactRatingNode = xmlNode.SelectSingleNodeAndCacheExpression("@rating", token);
+                    if (objExactRatingNode != null)
+                    {
+                        int intRating = objExactRatingNode.ValueAsInt;
+                        objPower = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? objCharacter.Powers.FirstOrDefault(
+                                x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                         StringComparison.OrdinalIgnoreCase))
+                                     && x.Rating == intRating)
+                            : await (await objCharacter.GetPowersAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
+                                    async x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
+                                                   strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                               && await x.GetRatingAsync(token).ConfigureAwait(false) == intRating,
+                                    token)
+                                .ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        XPathNavigator objMinRatingNode =
+                            xmlNode.SelectSingleNodeAndCacheExpression("@minrating", token);
+                        XPathNavigator objMaxRatingNode =
+                            xmlNode.SelectSingleNodeAndCacheExpression("@maxrating", token);
+                        if (objMinRatingNode != null || objMaxRatingNode != null)
                         {
-                            int intRating = objExactRatingNode.ValueAsInt;
+                            int intMinRating = objMinRatingNode?.ValueAsInt ?? 0;
+                            int intMaxRating = objMaxRatingNode?.ValueAsInt ?? int.MaxValue;
                             objPower = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? objCharacter.Powers.FirstOrDefault(
-                                    x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                             StringComparison.OrdinalIgnoreCase))
-                                         && x.Rating == intRating)
-                                : await (await objCharacter.GetPowersAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
+                                    x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
+                                             strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                         && x.Rating >= intMinRating && x.Rating <= intMaxRating)
+                                : await (await objCharacter.GetPowersAsync(token).ConfigureAwait(false))
+                                    .FirstOrDefaultAsync(
                                         async x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
                                                        strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                                   && await x.GetRatingAsync(token).ConfigureAwait(false) == intRating,
-                                        token)
-                                    .ConfigureAwait(false);
+                                                   && await x.GetRatingAsync(token).ConfigureAwait(false) >=
+                                                   intMinRating &&
+                                                   await x.GetRatingAsync(token).ConfigureAwait(false) <= intMaxRating,
+                                        token).ConfigureAwait(false);
                         }
                         else
                         {
-                            XPathNavigator objMinRatingNode =
-                                xmlNode.SelectSingleNodeAndCacheExpression("@minrating", token);
-                            XPathNavigator objMaxRatingNode =
-                                xmlNode.SelectSingleNodeAndCacheExpression("@maxrating", token);
-                            if (objMinRatingNode != null || objMaxRatingNode != null)
-                            {
-                                int intMinRating = objMinRatingNode?.ValueAsInt ?? 0;
-                                int intMaxRating = objMaxRatingNode?.ValueAsInt ?? int.MaxValue;
-                                objPower = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    ? objCharacter.Powers.FirstOrDefault(
-                                        x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
-                                                 strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                             && x.Rating >= intMinRating && x.Rating <= intMaxRating)
-                                    : await (await objCharacter.GetPowersAsync(token).ConfigureAwait(false))
-                                        .FirstOrDefaultAsync(
-                                            async x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
-                                                           strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                                       && await x.GetRatingAsync(token).ConfigureAwait(false) >=
-                                                       intMinRating &&
-                                                       await x.GetRatingAsync(token).ConfigureAwait(false) <= intMaxRating,
-                                            token).ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                objPower = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    ? objCharacter.Powers.FirstOrDefault(
-                                        x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                            StringComparison.OrdinalIgnoreCase))
-                                    : await (await objCharacter.GetPowersAsync(token).ConfigureAwait(false))
-                                        .FirstOrDefaultAsync(
-                                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
-                                                strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
-                                        .ConfigureAwait(false);
-                            }
+                            objPower = blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? objCharacter.Powers.FirstOrDefault(
+                                    x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
+                                        StringComparison.OrdinalIgnoreCase))
+                                : await (await objCharacter.GetPowersAsync(token).ConfigureAwait(false))
+                                    .FirstOrDefaultAsync(
+                                        x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
+                                            strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
+                                    .ConfigureAwait(false);
                         }
-                        if (objPower != null)
+                    }
+
+                    if (objPower != null)
                     {
                         if (blnShowMessage)
                             strName = blnSync
@@ -2555,10 +2557,12 @@ namespace Chummer
                         XPathNavigator objLoopDoc = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.LoadDataXPath("powers.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("powers.xml", token: token).ConfigureAwait(false);
+                            : await objCharacter.LoadDataXPathAsync("powers.xml", token: token)
+                                .ConfigureAwait(false);
                         string strTranslate
-                            = objLoopDoc.SelectSingleNode("/chummer/powers/power[id = " + strNodeInnerText.CleanXPath()
-                                  + "]/translate")?.Value
+                            = objLoopDoc.SelectSingleNode("/chummer/powers/power[id = " +
+                                                          strNodeInnerText.CleanXPath()
+                                                          + "]/translate")?.Value
                               ?? objLoopDoc
                                   .SelectSingleNode("/chummer/powers/power[name = " + strNodeInnerText.CleanXPath()
                                       + "]/translate")?.Value;

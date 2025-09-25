@@ -1718,6 +1718,7 @@ namespace Chummer.Backend.Skills
                                                                                     else
                                                                                     {
                                                                                         Utils.BreakIfDebug();
+                                                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                                         objSkill?.Remove();
                                                                                     }
                                                                                 }
@@ -1758,6 +1759,7 @@ namespace Chummer.Backend.Skills
                                                                         catch
                                                                         {
                                                                             if (blnSync)
+                                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                                 objSkill?.Remove();
                                                                             else if (objSkill != null)
                                                                                 await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
@@ -1819,6 +1821,7 @@ namespace Chummer.Backend.Skills
                                                     if (objGroup != null)
                                                     {
                                                         if (blnSync)
+                                                            // ReSharper disable once MethodHasAsyncOverload
                                                             objGroup.Load(xmlNode, token);
                                                         else
                                                             await objGroup.LoadAsync(xmlNode, token).ConfigureAwait(false);
@@ -1841,12 +1844,14 @@ namespace Chummer.Backend.Skills
                                                             {
                                                                 try
                                                                 {
+                                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                     _lstSkillGroups.Remove(objGroup);
                                                                 }
                                                                 catch
                                                                 {
                                                                     // swallow this
                                                                 }
+                                                                // ReSharper disable once MethodHasAsyncOverload
                                                                 objGroup.Dispose();
                                                                 throw;
                                                             }
@@ -1922,6 +1927,7 @@ namespace Chummer.Backend.Skills
                                                             {
                                                                 Utils.BreakIfDebug();
                                                                 if (blnNewSkill)
+                                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                     objSkill?.Remove();
                                                             }
                                                         }
@@ -1951,6 +1957,7 @@ namespace Chummer.Backend.Skills
                                                         if (blnNewSkill)
                                                         {
                                                             if (blnSync)
+                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                 objSkill?.Remove();
                                                             else if (objSkill != null)
                                                                 await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
@@ -2056,6 +2063,7 @@ namespace Chummer.Backend.Skills
                                                         }
                                                         catch
                                                         {
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                             objEnglishSkill.Remove();
                                                             throw;
                                                         }
@@ -2117,6 +2125,7 @@ namespace Chummer.Backend.Skills
                                                         }
                                                         catch
                                                         {
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                             objSkill.Remove();
                                                             throw;
                                                         }
@@ -2159,6 +2168,7 @@ namespace Chummer.Backend.Skills
                                             foreach (XmlNode xmlNode in xmlSkillsList)
                                             {
                                                 Skill objSkill = blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     ? Skill.LegacyLoad(_objCharacter, xmlNode)
                                                     : await Skill.LegacyLoadAsync(_objCharacter, xmlNode, token).ConfigureAwait(false);
                                                 if (objSkill != null)
@@ -2261,6 +2271,7 @@ namespace Chummer.Backend.Skills
                                         foreach (Skill objSkill in lstTempSkillList)
                                         {
                                             if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 objSkill.Remove();
                                             else
                                                 await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
@@ -2337,11 +2348,13 @@ namespace Chummer.Backend.Skills
                                                             else
                                                             {
                                                                 Utils.BreakIfDebug();
+                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                 objSkill.Remove();
                                                             }
                                                         }
                                                         catch
                                                         {
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                             objSkill.Remove();
                                                             throw;
                                                         }

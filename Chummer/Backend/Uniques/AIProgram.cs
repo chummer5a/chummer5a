@@ -265,6 +265,7 @@ namespace Chummer
             _objCachedMyXPathNode = null;
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
+                // ReSharper disable once MethodHasAsyncOverload
                 (blnSync ? this.GetNodeXPath(token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
@@ -273,6 +274,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("requiresprogram", ref _strRequiresProgram);
             // Legacy fix for weird, old way of storing this value
             if (_strRequiresProgram == "None"
+                // ReSharper disable once MethodHasAsyncOverload
                 || _strRequiresProgram == (blnSync ? LanguageManager.GetString("String_None", token: token) : await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false)))
                 _strRequiresProgram = string.Empty;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);

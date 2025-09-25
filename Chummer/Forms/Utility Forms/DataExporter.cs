@@ -22,7 +22,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,28 +51,6 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             this.UpdateParentForToolTipControls();
-        }
-
-        private async void cmdOK_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                await this.DoThreadSafeAsync(x =>
-                {
-                    x.DialogResult = DialogResult.OK;
-                    x.Close();
-                }, _objGenericToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-        }
-
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-            Close();
         }
 
         private async void cmdEditCharacterOption_Click(object sender, EventArgs e)

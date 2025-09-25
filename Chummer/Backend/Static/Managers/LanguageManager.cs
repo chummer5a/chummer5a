@@ -1648,7 +1648,7 @@ namespace Chummer
                         strReturn = strExtra;
                         if (strReturn.StartsWith('['))
                         {
-                            int intFileSpecifierIndex = strReturn.IndexOf(".xml]", 2);
+                            int intFileSpecifierIndex = strReturn.IndexOf(".xml]", 2, StringComparison.Ordinal);
                             if (intFileSpecifierIndex >= 0)
                             {
                                 string strSnippet = strReturn.Substring(0, intFileSpecifierIndex + 5);
@@ -1814,7 +1814,7 @@ namespace Chummer
                             {
                                 innerToken.ThrowIfCancellationRequested();
                                 string strInnerReturn = string.Empty;
-                                foreach (IReadOnlyCollection<ValueTuple<string, XPathExpression, Func<XPathNavigator, string>,
+                                foreach (IReadOnlyList<ValueTuple<string, XPathExpression, Func<XPathNavigator, string>,
                                              Func<XPathNavigator, string>>> aobjPaths
                                          in s_LstAXPathsToSearch)
                                 {
@@ -1907,7 +1907,7 @@ namespace Chummer
                                 CancellationToken innerToken = default)
                             {
                                 innerToken.ThrowIfCancellationRequested();
-                                foreach (IReadOnlyCollection<ValueTuple<string, XPathExpression, Func<XPathNavigator, string>,
+                                foreach (IReadOnlyList<ValueTuple<string, XPathExpression, Func<XPathNavigator, string>,
                                              Func<XPathNavigator, string>>> aobjPaths
                                          in s_LstAXPathsToSearch)
                                 {
@@ -2165,7 +2165,7 @@ namespace Chummer
             string strReturn = strExtra;
             if (strReturn.StartsWith('['))
             {
-                int intFileSpecifierIndex = strReturn.IndexOf(".xml]", 2);
+                int intFileSpecifierIndex = strReturn.IndexOf(".xml]", 2, StringComparison.Ordinal);
                 if (intFileSpecifierIndex >= 0)
                 {
                     string strSnippet = strReturn.Substring(0, intFileSpecifierIndex + 5);
@@ -2317,7 +2317,7 @@ namespace Chummer
                 {
                     innerToken.ThrowIfCancellationRequested();
                     string strInnerReturn = string.Empty;
-                    foreach (IReadOnlyCollection<ValueTuple<string, XPathExpression, Func<XPathNavigator, string>,
+                    foreach (IReadOnlyList<ValueTuple<string, XPathExpression, Func<XPathNavigator, string>,
                                      Func<XPathNavigator, string>>>
                                  aobjPaths
                              in s_LstAXPathsToSearch)
@@ -2410,7 +2410,7 @@ namespace Chummer
                                 CancellationToken innerToken = default)
                 {
                     innerToken.ThrowIfCancellationRequested();
-                    foreach (IReadOnlyCollection<ValueTuple<string, XPathExpression, Func<XPathNavigator, string>,
+                    foreach (IReadOnlyList<ValueTuple<string, XPathExpression, Func<XPathNavigator, string>,
                                  Func<XPathNavigator, string>>> aobjPaths
                              in s_LstAXPathsToSearch)
                     {

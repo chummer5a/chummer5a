@@ -1057,7 +1057,7 @@ namespace Chummer
                 await txtDirectoryDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
                 await lblDirectoryVersion.DoThreadSafeAsync(x => x.Text = objSelected.MyVersion.ToString())
                                          .ConfigureAwait(false);
-                string strAuthors = _objSelectedCultureInfo == GlobalSettings.CultureInfo && _strSelectedLanguage == GlobalSettings.Language
+                string strAuthors = ReferenceEquals(_objSelectedCultureInfo, GlobalSettings.CultureInfo) && _strSelectedLanguage == GlobalSettings.Language
                     ? await objSelected.GetCurrentDisplayAuthorsAsync().ConfigureAwait(false)
                     : await objSelected.DisplayAuthorsAsync(_objSelectedCultureInfo, _strSelectedLanguage).ConfigureAwait(false);
                 await lblDirectoryAuthors.DoThreadSafeAsync(x => x.Text = strAuthors).ConfigureAwait(false);

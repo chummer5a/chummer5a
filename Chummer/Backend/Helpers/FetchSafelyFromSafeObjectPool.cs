@@ -23,7 +23,7 @@ using System.Runtime.CompilerServices;
 namespace Chummer
 {
     /// <summary>
-    /// Syntactic Sugar for wrapping <see cref="SafeObjectPool{T}.Get"/> and <see cref="SafeObjectPool{T}.Return(T)"/> into something that hooks into `using`
+    /// Syntactic Sugar for wrapping <see cref="SafeObjectPool{T}.Get"/> and <see cref="SafeObjectPool{T}.Return"/> into something that hooks into `using`
     /// and that guarantees that pooled objects will be returned
     /// </summary>
     public sealed class FetchSafelyFromSafeObjectPool<T> : IDisposable where T : class

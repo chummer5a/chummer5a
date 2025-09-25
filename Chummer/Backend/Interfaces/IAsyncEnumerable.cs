@@ -170,7 +170,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async version of <see cref="Enumerable.ElementAt{TSource}(IEnumerable{TSource}, int)"/> that also supports <see cref="IAsyncReadOnlyList{T}">.
+        /// Async version of <see cref="Enumerable.ElementAt{TSource}(IEnumerable{TSource}, int)"/> that also supports <see cref="IAsyncReadOnlyList{T}"/>.
         /// </summary>
         public static async Task<T> ElementAtBetterAsync<T>(this IAsyncEnumerable<T> source, int index, CancellationToken token = default)
         {
@@ -204,7 +204,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Async version of <see cref="Enumerable.ElementAtOrDefault{TSource}(IEnumerable{TSource}, int)"/> that also supports <see cref="IAsyncReadOnlyList{T}">.
+        /// Async version of <see cref="Enumerable.ElementAtOrDefault{TSource}(IEnumerable{TSource}, int)"/> that also supports <see cref="IAsyncReadOnlyList{T}"/>.
         /// </summary>
         public static async Task<T> ElementAtOrDefaultBetterAsync<T>(this IAsyncEnumerable<T> source, int index, CancellationToken token = default)
         {

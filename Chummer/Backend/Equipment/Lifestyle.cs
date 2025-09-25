@@ -599,6 +599,7 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetStringFieldQuickly("baselifestyle", ref _strBaseLifestyle);
                 objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
                 XPathNavigator xmlLifestyles = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath("lifestyles.xml", token: token)
                     : await _objCharacter.LoadDataXPathAsync("lifestyles.xml", token: token).ConfigureAwait(false);
                 if (xmlLifestyles.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", BaseLifestyle) == null
@@ -620,7 +621,8 @@ namespace Chummer.Backend.Equipment
                             {
                                 string strName = xmlLifestyle.SelectSingleNodeAndCacheExpression("name", token)?.Value
                                                  ?? (blnSync
-                                                    ? LanguageManager.GetString("String_Error", token: token)
+                                                     // ReSharper disable once MethodHasAsyncOverload
+                                                     ? LanguageManager.GetString("String_Error", token: token)
                                                     : await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false));
                                 lstQualities.Add(
                                     new ListItem(
@@ -630,9 +632,11 @@ namespace Chummer.Backend.Equipment
                             }
 
                             string strDescription = string.Format(GlobalSettings.CultureInfo, blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
                                 ? LanguageManager.GetString("String_CannotFindLifestyle", token: token)
                                 : await LanguageManager.GetStringAsync("String_CannotFindLifestyle", token: token).ConfigureAwait(false), _strName);
                             using (ThreadSafeForm<SelectItem> frmSelect = blnSync
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 ? ThreadSafeForm<SelectItem>.Get(
                                        () => new SelectItem
                                        {
@@ -645,8 +649,9 @@ namespace Chummer.Backend.Equipment
                                        }, token).ConfigureAwait(false))
                             {
                                 frmSelect.MyForm.SetGeneralItemsMode(lstQualities);
+                                // ReSharper disable once MethodHasAsyncOverload
                                 if ((blnSync ? frmSelect.ShowDialogSafe(_objCharacter, token) : await frmSelect.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false))
-                                        == DialogResult.Cancel)
+                                    == DialogResult.Cancel)
                                 {
                                     _guiID = Guid.Empty;
                                     return;
@@ -677,6 +682,7 @@ namespace Chummer.Backend.Equipment
                 if (!objNode.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP))
                     (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
                 if (!objNode.TryGetInt32FieldQuickly("bonuslp", ref _intBonusLP) && _strBaseLifestyle == "Traveler")
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     _intBonusLP = blnSync ? Utils.GlobalRandom.NextD6ModuloBiasRemoved() : await Utils.GlobalRandom.NextD6ModuloBiasRemovedAsync(token).ConfigureAwait(false);
 
                 if (!objNode.TryGetInt32FieldQuickly("lp", ref _intLP))
@@ -736,11 +742,14 @@ namespace Chummer.Backend.Equipment
                                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                                 try
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objQuality.Load(xmlQuality, this);
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     LifestyleQualities.Add(objQuality);
                                 }
                                 catch
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objQuality.Remove(false);
                                     throw;
                                 }
@@ -779,12 +788,15 @@ namespace Chummer.Backend.Equipment
                                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                                 try
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objQuality.Load(xmlQuality, this);
                                     objQuality.IsFreeGrid = true;
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     LifestyleQualities.Add(objQuality);
                                 }
                                 catch
                                 {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objQuality.Remove(false);
                                     throw;
                                 }
@@ -833,6 +845,7 @@ namespace Chummer.Backend.Equipment
                     _eIncrement = ConvertToLifestyleIncrement(strTemp);
 
                 if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     LegacyShim(objNode);
                 else
                     await LegacyShimAsync(objNode, token).ConfigureAwait(false);

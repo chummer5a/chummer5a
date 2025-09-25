@@ -286,7 +286,7 @@ namespace Chummer
 #endif
 
         /// <summary>
-        /// Version of <see cref="SemaphoreSlim.Wait()"> that also processes application events if this is called on the UI thread
+        /// Version of <see cref="SemaphoreSlim.Wait()"/> that also processes application events if this is called on the UI thread
         /// </summary>
         public void SafeWait(bool blnForceDoEvents = false)
         {
@@ -315,7 +315,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="SemaphoreSlim.Wait(CancellationToken)"> that also processes application events if this is called on the UI thread
+        /// Version of <see cref="SemaphoreSlim.Wait(CancellationToken)"/> that also processes application events if this is called on the UI thread
         /// </summary>
         public void SafeWait(CancellationToken token, bool blnForceDoEvents = false)
         {
@@ -346,7 +346,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="SemaphoreSlim.Wait(TimeSpan)"> that also processes application events if this is called on the UI thread
+        /// Version of <see cref="SemaphoreSlim.Wait(TimeSpan)"/> that also processes application events if this is called on the UI thread
         /// </summary>
         public bool SafeWait(TimeSpan timeout, bool blnForceDoEvents = false)
         {
@@ -364,7 +364,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="SemaphoreSlim.Wait(TimeSpan, CancellationToken)"> that also processes application events if this is called on the UI thread
+        /// Version of <see cref="SemaphoreSlim.Wait(TimeSpan, CancellationToken)"/> that also processes application events if this is called on the UI thread
         /// </summary>
         public bool SafeWait(TimeSpan timeout, CancellationToken token, bool blnForceDoEvents = false)
         {
@@ -383,7 +383,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="SemaphoreSlim.Wait(int)"> that also processes application events if this is called on the UI thread
+        /// Version of <see cref="SemaphoreSlim.Wait(int)"/> that also processes application events if this is called on the UI thread
         /// </summary>
         public bool SafeWait(int millisecondsTimeout, bool blnForceDoEvents = false)
         {
@@ -401,7 +401,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="SemaphoreSlim.Wait(int, CancellationToken)"> that also processes application events if this is called on the UI thread
+        /// Version of <see cref="SemaphoreSlim.Wait(int, CancellationToken)"/> that also processes application events if this is called on the UI thread
         /// </summary>
         public bool SafeWait(int millisecondsTimeout, CancellationToken token, bool blnForceDoEvents = false)
         {

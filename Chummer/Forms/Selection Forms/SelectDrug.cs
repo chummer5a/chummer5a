@@ -155,7 +155,7 @@ namespace Chummer
                 if (xmlGrade != null)
                 {
                     decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("cost", token)?.Value,
-                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCostMultiplier);
+                            NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCostMultiplier);
                     _intAvailModifier
                         = xmlGrade.SelectSingleNodeAndCacheExpression("avail", token)?.ValueAsInt ?? 0;
 
@@ -227,7 +227,7 @@ namespace Chummer
                     if (xmlRatingNode != null)
                     {
                         string strMinRating = xmlDrug.SelectSingleNodeAndCacheExpression("minrating")?.Value;
-                        int intMinRating = 1;
+                        int intMinRating;
                         // Not a simple integer, so we need to start mucking around with strings
                         if (strMinRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
@@ -243,7 +243,7 @@ namespace Chummer
                         await nudRating.DoThreadSafeAsync(x => x.Minimum = intMinRating).ConfigureAwait(false);
 
                         string strMaxRating = xmlRatingNode.Value;
-                        int intMaxRating = 0;
+                        int intMaxRating;
                         // Not a simple integer, so we need to start mucking around with strings
                         if (strMaxRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                         {

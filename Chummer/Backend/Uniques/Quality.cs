@@ -329,6 +329,7 @@ namespace Chummer
                                 catch
                                 {
                                     if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objGearWeapon.DeleteWeapon();
                                     else
                                         await objGearWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
