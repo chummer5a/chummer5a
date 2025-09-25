@@ -4460,11 +4460,11 @@ namespace Chummer
                                               "Message_ReapplyImprovementsFoundOutdatedItems_Top",
                                               token: token)
                                           .ConfigureAwait(false) +
-                                      sbdOutdatedItems.ToString() +
+                                      sbdOutdatedItems.Append(
                                       await LanguageManager.GetStringAsync(
                                               "Message_ReapplyImprovementsFoundOutdatedItems_Bottom",
                                               token: token)
-                                          .ConfigureAwait(false),
+                                          .ConfigureAwait(false)).ToString(),
                                 await LanguageManager
                                     .GetStringAsync("MessageTitle_ConfirmReapplyImprovements", token: token)
                                     .ConfigureAwait(false),

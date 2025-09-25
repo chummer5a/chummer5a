@@ -4996,7 +4996,7 @@ namespace Chummer
                 {
                     sbdInputColorTable.Replace(kvpReplace.Key, kvpReplace.Value);
                 }
-                return strInputPreColorTable + sbdInputColorTable.ToString() + strInputPostColorTable;
+                return strInputPreColorTable + sbdInputColorTable.Append(strInputPostColorTable).ToString();
             }
         }
 
@@ -5052,7 +5052,7 @@ namespace Chummer
                 {
                     sbdInputColorTable.Replace(kvpReplace.Key, kvpReplace.Value);
                 }
-                return strInputPreColorTable + sbdInputColorTable.ToString() + strInputPostColorTable;
+                return strInputPreColorTable + sbdInputColorTable.Append(strInputPostColorTable).ToString();
             }
         }
 

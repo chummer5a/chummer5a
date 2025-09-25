@@ -1235,7 +1235,7 @@ namespace Chummer
                             }
                         }, token)).ConfigureAwait(false);
 
-                    strMessage = (sbdMissingMessage.ToString() + sbdUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
+                    strMessage = sbdMissingMessage.Append(sbdUnusedMessage).ToString().TrimEndOnce(Environment.NewLine);
                 }
             }
 

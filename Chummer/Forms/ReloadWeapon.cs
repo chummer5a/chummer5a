@@ -95,7 +95,7 @@ namespace Chummer
                             // Remove the trailing comma.
                             sbdPlugins.Length -= 1 + strSpace.Length;
                             // Append the plugin information to the name.
-                            strName += strSpace + "[" + sbdPlugins.ToString() + "]";
+                            strName += strSpace + "[" + sbdPlugins.Append(']').ToString();
                         }
                     }
 

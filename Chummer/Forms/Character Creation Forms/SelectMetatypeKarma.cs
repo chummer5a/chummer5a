@@ -1139,7 +1139,7 @@ namespace Chummer
                                 sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearchText));
 
                             if (sbdFilter.Length > 0)
-                                strFilter = "[" + sbdFilter.ToString() + "]";
+                                strFilter = "[" + sbdFilter.Append(']').ToString();
                         }
 
                         foreach (XPathNavigator xmlMetatype in _xmlBaseMetatypeDataNode.Select(

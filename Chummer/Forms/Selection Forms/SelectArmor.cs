@@ -570,7 +570,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
-                        sbdFilter.Append('(')
+                        sbdFilter.Append("/chummer/armors/armor[(")
                             .Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false))
                             .Append(')');
 
@@ -606,7 +606,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strSearch))
                             sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
 
-                        await BuildArmorList(_objXmlDocument.SelectNodes("/chummer/armors/armor[" + sbdFilter.ToString() + "]"),
+                        await BuildArmorList(_objXmlDocument.SelectNodes(sbdFilter.Append(']').ToString()),
                             token).ConfigureAwait(false);
                     }
                 }

@@ -406,7 +406,7 @@ namespace Chummer
                     sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
 
                 if (sbdFilter.Length > 0)
-                    strFilter = "[" + sbdFilter.ToString() + "]";
+                    strFilter = "[" + sbdFilter.Append(']').ToString();
             }
 
             foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power" + strFilter))

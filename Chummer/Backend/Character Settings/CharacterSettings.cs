@@ -6213,7 +6213,7 @@ namespace Chummer
                 }
 
                 if (sbdPath.Length > 0)
-                    return "(" + sbdPath.ToString() + ")";
+                    return "(" + sbdPath.Append(')').ToString();
             }
 
             // We have only the opening parentheses; return an empty string
@@ -6268,7 +6268,7 @@ namespace Chummer
                 }
 
                 if (sbdPath.Length > 0)
-                    return "(" + sbdPath.ToString() + ")";
+                    return "(" + sbdPath.Append(')').ToString();
             }
 
             // We have only the opening parentheses; return an empty string

@@ -134,7 +134,7 @@ namespace Chummer
                     if (sbdCategoryFilter.Length > 0)
                     {
                         sbdCategoryFilter.Length -= 4;
-                        strFilter += " and (" + sbdCategoryFilter.ToString() + ")";
+                        strFilter += " and (" + sbdCategoryFilter.Append(')').ToString();
                     }
                 }
             }

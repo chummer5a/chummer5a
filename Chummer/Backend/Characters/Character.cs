@@ -16453,7 +16453,7 @@ namespace Chummer
                     if (sbdFilter.Length != 0)
                     {
                         sbdFilter.Length -= 5;
-                        strXPath = "/chummer/grades/grade[(" + sbdFilter.ToString() + ")]";
+                        strXPath = "/chummer/grades/grade[(" + sbdFilter.Append(")]").ToString();
                     }
                     else
                         strXPath = "/chummer/grades/grade";
@@ -16532,7 +16532,7 @@ namespace Chummer
                     if (sbdFilter.Length != 0)
                     {
                         sbdFilter.Length -= 5;
-                        strXPath = "/chummer/grades/grade[(" + sbdFilter.ToString() + ")]";
+                        strXPath = "/chummer/grades/grade[(" + sbdFilter.Append(")]").ToString();
                     }
                     else
                         strXPath = "/chummer/grades/grade";
@@ -16607,7 +16607,7 @@ namespace Chummer
                     if (sbdFilter.Length != 0)
                     {
                         sbdFilter.Length -= 5;
-                        strXPath = "/chummer/grades/grade[(" + sbdFilter.ToString() + ")]";
+                        strXPath = "/chummer/grades/grade[(" + sbdFilter.Append(")]").ToString();
                     }
                     else
                         strXPath = "/chummer/grades/grade";

@@ -157,7 +157,7 @@ namespace Chummer
                         }
 
                         sbdMount.Append(". = \"General\"");
-                        objXmlCategoryList = _xmlBaseGearDataNode.Select("categories/category[" + sbdMount.ToString() + "]");
+                        objXmlCategoryList = _xmlBaseGearDataNode.Select("categories/category[" + sbdMount.Append(']').ToString());
                     }
                 }
                 else
@@ -1178,7 +1178,7 @@ namespace Chummer
                     sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
 
                 if (sbdFilter.Length > 0)
-                    strFilter = "[" + sbdFilter.ToString() + "]";
+                    strFilter = "[" + sbdFilter.Append(']').ToString();
             }
 
             int intOverLimit = 0;

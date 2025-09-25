@@ -209,7 +209,7 @@ namespace Chummer
                         }
 
                         if (sbdFilter.Length > 0)
-                            strFilter = "[" + sbdFilter.ToString() + "]";
+                            strFilter = "[" + sbdFilter.Append(']').ToString();
                     }
 
                     objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill" + strFilter);

@@ -478,7 +478,7 @@ namespace Chummer
                         sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
                     if (sbdFilter.Length > 0)
-                        strFilter = "[" + sbdFilter.ToString() + "]";
+                        strFilter = "[" + sbdFilter.Append(']').ToString();
                 }
 
                 int intOverLimit = 0;

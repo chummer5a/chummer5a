@@ -1057,7 +1057,7 @@ namespace Chummer
                             sbdFilter.Append(" and (").Append(_strWeaponFilter).Append(')');
 
                         if (sbdFilter.Length > 0)
-                            strFilter = "[" + sbdFilter.ToString() + "]";
+                            strFilter = "[" + sbdFilter.Append(']').ToString();
                     }
 
                     XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon" + strFilter);

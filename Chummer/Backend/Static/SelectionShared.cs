@@ -3220,14 +3220,14 @@ namespace Chummer
                                 strName);
                         if (sbdOutput.Length > 0)
                             sbdOutput.Length -= 2;
-                        strName = sbdOutput.ToString() + strSpace + "(" + (blnSync
+                        strName = sbdOutput.Append(strSpace).Append('(').Append(blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? LanguageManager.GetString(
                                 "String_ExpenseSkill",
                                 token: token)
                             : await LanguageManager.GetStringAsync(
                                 "String_ExpenseSkill",
-                                token: token).ConfigureAwait(false)) + ")";
+                                token: token).ConfigureAwait(false)).Append(')').ToString();
                     }
 
                     int intTarget = xmlNode.SelectSingleNodeAndCacheExpression("val", token)
@@ -3299,15 +3299,14 @@ namespace Chummer
                         {
                             if (sbdOutput.Length > 0)
                                 sbdOutput.Length -= 2;
-                            strName = sbdOutput.ToString() + strSpace + "("
-                                      + (blnSync
+                            strName = sbdOutput.Append(strSpace).Append('(').Append(blnSync
                                           // ReSharper disable once MethodHasAsyncOverload
                                           ? LanguageManager.GetString(
                                               "String_ExpenseSkillGroup",
                                               token: token)
                                           : await LanguageManager.GetStringAsync(
                                               "String_ExpenseSkillGroup",
-                                              token: token).ConfigureAwait(false)) + ")";
+                                              token: token).ConfigureAwait(false)).Append(')').ToString();
                         }
                     }
 

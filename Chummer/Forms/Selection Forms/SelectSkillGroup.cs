@@ -67,7 +67,7 @@ namespace Chummer
                                 if (sbdExclude.Length > 0)
                                 {
                                     sbdExclude.Length -= 5;
-                                    strExclude = "(" + sbdExclude.ToString() + ") and ";
+                                    strExclude = "(" + sbdExclude.Append(") and ").ToString();
                                 }
                                 if (_objXmlDocument.SelectSingleNode(
                                         "/chummer/skills/skill[" + strExclude + "skillgroup = "

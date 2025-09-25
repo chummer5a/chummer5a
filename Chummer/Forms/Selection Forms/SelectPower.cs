@@ -226,7 +226,7 @@ namespace Chummer
                     if (sbdFilter.Length > 0)
                     {
                         sbdFilter.Length -= 4;
-                        strFilter += " and (" + sbdFilter.ToString() + ")";
+                        strFilter += " and (" + sbdFilter.Append(')').ToString();
                     }
                 }
             }
