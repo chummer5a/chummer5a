@@ -970,10 +970,10 @@ namespace Chummer
                         await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync(strExpression, "Rating", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         string strSlotsString = (_intWeaponMountSlots + intExtraSlots).ToString(GlobalSettings.InvariantCultureInfo);
-                        sbdValue.Replace("{Slots}", strSlotsString);
-                        sbdValue.Replace("Slots", strSlotsString);
                         sbdValue.Replace("{Parent Slots}", strSlotsString);
                         sbdValue.Replace("Parent Slots", strSlotsString);
+                        sbdValue.Replace("{Slots}", strSlotsString);
+                        sbdValue.Replace("Slots", strSlotsString);
                         sbdValue.Replace("{Parent Cost}", ParentWeaponMountOwnCost.ToString(GlobalSettings.InvariantCultureInfo));
                         sbdValue.Replace("Parent Cost", ParentWeaponMountOwnCost.ToString(GlobalSettings.InvariantCultureInfo));
                         await _objVehicle.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
