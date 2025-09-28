@@ -924,24 +924,24 @@ namespace Chummer
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<string>(token);
-            switch (strCategory)
+            switch (strCategory.ToUpperInvariant())
             {
-                case "Powertrain":
+                case "POWERTRAIN":
                     return _objVehicle.PowertrainModSlotsUsedAsync(intModSlots, token);
 
-                case "Protection":
+                case "PROTECTION":
                     return _objVehicle.ProtectionModSlotsUsedAsync(intModSlots, token);
 
-                case "Weapons":
+                case "WEAPONS":
                     return _objVehicle.WeaponModSlotsUsedAsync(intModSlots, token);
 
-                case "Body":
+                case "BODY":
                     return _objVehicle.BodyModSlotsUsedAsync(intModSlots, token);
 
-                case "Electromagnetic":
+                case "ELECTROMAGNETIC":
                     return _objVehicle.ElectromagneticModSlotsUsedAsync(intModSlots, token);
 
-                case "Cosmetic":
+                case "COSMETIC":
                     return _objVehicle.CosmeticModSlotsUsedAsync(intModSlots, token);
 
                 default:

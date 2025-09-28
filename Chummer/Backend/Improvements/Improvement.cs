@@ -1037,9 +1037,9 @@ namespace Chummer
                 case ImprovementType.Attribute:
                 {
                     string strTargetAttribute = ImprovedName;
-                    if (UniqueName == "enableattribute")
+                    if (string.Equals(UniqueName, "enableattribute", StringComparison.OrdinalIgnoreCase))
                     {
-                        switch (strTargetAttribute)
+                        switch (strTargetAttribute.ToUpperInvariant())
                         {
                             case "MAG":
                                 yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
@@ -1248,41 +1248,41 @@ namespace Chummer
 
                 case ImprovementType.SpecialTab:
                 {
-                    switch (UniqueName)
+                    switch (UniqueName.ToUpperInvariant())
                     {
-                        case "enabletab":
-                            switch (ImprovedName)
+                        case "ENABLETAB":
+                            switch (ImprovedName.ToUpperInvariant())
                             {
-                                case "magician":
+                                case "MAGICIAN":
                                     yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                         _objCharacter, nameof(Character.MagicianEnabled));
                                     break;
-                                case "adept":
+                                case "ADEPT":
                                     yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                         _objCharacter, nameof(Character.AdeptEnabled));
                                     break;
-                                case "technomancer":
+                                case "TECHNOMANCER":
                                     yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                         _objCharacter, nameof(Character.TechnomancerEnabled));
                                     break;
-                                case "advanced programs":
+                                case "ADVANCED PROGRAMS":
                                     yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                         _objCharacter, nameof(Character.AdvancedProgramsEnabled));
                                     break;
-                                case "critter":
+                                case "CRITTER":
                                     yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                         _objCharacter, nameof(Character.CritterEnabled));
                                     break;
                             }
                             break;
-                        case "disabletab":
+                        case "DISABLETAB":
                             switch (ImprovedName)
                             {
-                                case "cyberware":
+                                case "CYBERWARE":
                                     yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                         _objCharacter, nameof(Character.CyberwareDisabled));
                                     break;
-                                case "initiation":
+                                case "INITIATION":
                                     yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                         _objCharacter, nameof(Character.InitiationForceDisabled));
                                     break;
@@ -3655,9 +3655,9 @@ namespace Chummer
                 case ImprovementType.Attribute:
                     {
                         string strTargetAttribute = ImprovedName;
-                        if (UniqueName == "enableattribute")
+                        if (string.Equals(UniqueName, "enableattribute", StringComparison.OrdinalIgnoreCase))
                         {
-                            switch (strTargetAttribute)
+                            switch (strTargetAttribute.ToUpperInvariant())
                             {
                                 case "MAG":
                                     lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
@@ -3868,41 +3868,41 @@ namespace Chummer
 
                 case ImprovementType.SpecialTab:
                     {
-                        switch (UniqueName)
+                        switch (UniqueName.ToUpperInvariant())
                         {
-                            case "enabletab":
-                                switch (ImprovedName)
+                            case "ENABLETAB":
+                                switch (ImprovedName.ToUpperInvariant())
                                 {
-                                    case "magician":
+                                    case "MAGICIAN":
                                         lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                             _objCharacter, nameof(Character.MagicianEnabled)));
                                         break;
-                                    case "adept":
+                                    case "ADEPT":
                                         lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                             _objCharacter, nameof(Character.AdeptEnabled)));
                                         break;
-                                    case "technomancer":
+                                    case "TECHNOMANCER":
                                         lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                             _objCharacter, nameof(Character.TechnomancerEnabled)));
                                         break;
-                                    case "advanced programs":
+                                    case "ADVANCED PROGRAMS":
                                         lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                             _objCharacter, nameof(Character.AdvancedProgramsEnabled)));
                                         break;
-                                    case "critter":
+                                    case "CRITTER":
                                         lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                             _objCharacter, nameof(Character.CritterEnabled)));
                                         break;
                                 }
                                 break;
-                            case "disabletab":
-                                switch (ImprovedName)
+                            case "DISABLETAB":
+                                switch (ImprovedName.ToUpperInvariant())
                                 {
-                                    case "cyberware":
+                                    case "CYBERWARE":
                                         lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                             _objCharacter, nameof(Character.CyberwareDisabled)));
                                         break;
-                                    case "initiation":
+                                    case "INITIATION":
                                         lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                             _objCharacter, nameof(Character.InitiationForceDisabled)));
                                         break;

@@ -3783,13 +3783,13 @@ namespace Chummer.Backend.Attributes
         /// <param name="strAbbrev">Linked attribute abbreviation.</param>
         public static AttributeCategory ConvertToAttributeCategory(string strAbbrev)
         {
-            switch (strAbbrev)
+            switch (strAbbrev.ToUpperInvariant())
             {
                 case "DEP":
                 case "EDG":
                 case "ESS":
                 case "MAG":
-                case "MAGAdept":
+                case "MAGADEPT":
                 case "RES":
                     return AttributeCategory.Special;
 
@@ -3805,9 +3805,9 @@ namespace Chummer.Backend.Attributes
         public static AttributeCategory ConvertToMetatypeAttributeCategory(string strValue)
         {
             //If a value does exist, test whether it belongs to a shapeshifter form.
-            switch (strValue)
+            switch (strValue.ToUpperInvariant())
             {
-                case "Shapeshifter":
+                case "SHAPESHIFTER":
                     return AttributeCategory.Shapeshifter;
 
                 default:

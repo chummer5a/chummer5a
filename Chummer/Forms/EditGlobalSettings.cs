@@ -1660,13 +1660,13 @@ namespace Chummer
                 = await chkAllowEasterEggs.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
             GlobalSettings.PluginsEnabled
                 = await chkEnablePlugins.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
-            switch (await cboMugshotCompression.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
-                                               .ConfigureAwait(false))
+            switch ((await cboMugshotCompression.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
+                                               .ConfigureAwait(false)).ToUpperInvariant())
             {
-                case "jpeg_automatic":
+                case "JPEG_AUTOMATIC":
                     GlobalSettings.SavedImageQuality = -1;
                     break;
-                case "jpeg_manual":
+                case "JPEG_MANUAL":
                     GlobalSettings.SavedImageQuality = await nudMugshotCompressionQuality
                                                              .DoThreadSafeFuncAsync(x => x.ValueAsInt, token)
                                                              .ConfigureAwait(false);

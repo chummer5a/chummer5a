@@ -150,7 +150,7 @@ namespace Chummer
 
                 bool blnOperationChildNodeResult = blnInvert;
                 string strNodeName = xmlOperationChildNode.Name;
-                switch (strNodeName)
+                switch (strNodeName.ToUpperInvariant())
                 {
                     case "OR":
                         blnOperationChildNodeResult =
@@ -250,29 +250,33 @@ namespace Chummer
                                             }
                                             // Note when adding more operation cases: XML does not like the "<" symbol as part of an attribute value
                                             else
-                                                switch (strOperationType)
+                                                switch (strOperationType.ToUpperInvariant())
                                                 {
-                                                    case "doesnotequal":
-                                                    case "notequals":
+                                                    case "DOESNOTEQUAL":
+                                                    case "NOTEQUALS":
                                                     case "!=":
+                                                    case "<>":
                                                         blnInvert = !blnInvert;
                                                         goto default;
-                                                    case "lessthan":
+                                                    case "LESSTHAN":
                                                         blnInvert = !blnInvert;
                                                         goto case ">=";
-                                                    case "lessthanequals":
+                                                    case "LESSTHANEQUALS":
+                                                    case "LESSTHANEQUALTO":
+                                                    case "LESSTHANOREQUALS":
+                                                    case "LESSTHANOREQUALTO":
                                                         blnInvert = !blnInvert;
                                                         goto case ">";
 
-                                                    case "like":
-                                                    case "contains":
+                                                    case "LIKE":
+                                                    case "CONTAINS":
                                                         {
                                                             boolSubNodeResult =
                                                                 strTargetNodeText.Contains(strOperationChildNodeText, StringComparison.OrdinalIgnoreCase)
                                                                 != blnInvert;
                                                             break;
                                                         }
-                                                    case "greaterthan":
+                                                    case "GREATERTHAN":
                                                     case ">":
                                                         {
                                                             boolSubNodeResult =
@@ -282,7 +286,10 @@ namespace Chummer
                                                                 != blnInvert;
                                                             break;
                                                         }
-                                                    case "greaterthanequals":
+                                                    case "GREATERTHANEQUALS":
+                                                    case "GREATERTHANOREQUALS":
+                                                    case "GREATERTHANEQUALTO":
+                                                    case "GREATERTHANOREQUALTO":
                                                     case ">=":
                                                         {
                                                             boolSubNodeResult =

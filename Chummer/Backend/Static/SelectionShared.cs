@@ -332,16 +332,16 @@ namespace Chummer
                     // We could set this to a list immediately, but I'd rather the pointer start at null so that no list ends up getting selected for the "default" case below
                     IEnumerable<IHasName> objListToCheck = null;
                     bool blnCheckCyberwareChildren = false;
-                    switch (xmlNode.Name)
+                    switch (xmlNode.Name.ToUpperInvariant())
                     {
-                        case "characterquality":
-                        case "quality":
+                        case "CHARACTERQUALITY":
+                        case "QUALITY":
                         {
                             objListToCheck = objCharacter.Qualities.Where(objQuality =>
                                 objQuality.Name != strIgnoreQuality && objQuality.SourceIDString != strIgnoreQuality);
                             break;
                         }
-                        case "lifestylequality":
+                        case "LIFESTYLEQUALITY":
                         {
                             objListToCheck = objParent is Lifestyle objLifestyle
                                 ? objLifestyle.LifestyleQualities.Where(
@@ -354,46 +354,46 @@ namespace Chummer
                                         && objQuality.SourceIDString != strIgnoreQuality);
                             break;
                         }
-                        case "echo":
-                        case "metamagic":
+                        case "ECHO":
+                        case "METAMAGIC":
                         {
                             objListToCheck = objCharacter.Metamagics;
                             break;
                         }
-                        case "art":
+                        case "ART":
                         {
                             objListToCheck = objCharacter.Arts;
                             break;
                         }
-                        case "enhancement":
+                        case "ENHANCEMENT":
                         {
                             objListToCheck = objCharacter.Enhancements;
                             break;
                         }
-                        case "power":
+                        case "POWER":
                         {
                             objListToCheck = objCharacter.Powers;
                             break;
                         }
-                        case "critterpower":
+                        case "CRITTERPOWER":
                         {
                             objListToCheck = objCharacter.CritterPowers;
                             break;
                         }
-                        case "martialart":
+                        case "MARTIALART":
                         {
                             objListToCheck = objCharacter.MartialArts;
                             break;
                         }
-                        case "technique":
+                        case "TECHNIQUE":
                         {
                             objListToCheck = objParent is MartialArt objArt
                                 ? objArt.Techniques
                                 : objCharacter.MartialArts.SelectMany(x => x.Children);
                             break;
                         }
-                        case "cyberware":
-                        case "bioware":
+                        case "CYBERWARE":
+                        case "BIOWARE":
                         {
                             blnCheckCyberwareChildren = true;
                             break;

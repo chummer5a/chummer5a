@@ -513,16 +513,14 @@ namespace Chummer
                                 strIncrement = "week";
                             string strIncrementString;
                             int intPermanentAmount;
-                            switch (strIncrement)
+                            switch (strIncrement.ToUpperInvariant())
                             {
-                                case "day":
-                                case "Day":
+                                case "DAY":
                                     strIncrementString = await LanguageManager.GetStringAsync("String_Days").ConfigureAwait(false);
                                     intPermanentAmount = 3044;
                                     break;
 
-                                case "week":
-                                case "Week":
+                                case "WEEK":
                                     strIncrementString = await LanguageManager.GetStringAsync("String_Weeks").ConfigureAwait(false);
                                     intPermanentAmount = 435;
                                     break;

@@ -73,9 +73,9 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strValue))
                 return default;
-            switch (strValue)
+            switch (strValue.ToUpperInvariant())
             {
-                case "Spirit":
+                case "SPIRIT":
                     return SpiritType.Spirit;
 
                 default:
@@ -654,7 +654,7 @@ namespace Chummer
                                               + "]/@translate")?.Value
                                       ?? strEnglishCategory;
 
-                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("type", token: token)?.Value)
+                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("type", token: token)?.Value.ToUpperInvariant())
                         {
                             case "M":
                                 strDisplayType = await LanguageManager
@@ -669,37 +669,37 @@ namespace Chummer
                                 break;
                         }
 
-                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("action", token: token)?.Value)
+                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("action", token: token)?.Value.ToUpperInvariant())
                         {
-                            case "Auto":
+                            case "AUTO":
                                 strDisplayAction = await LanguageManager
                                     .GetStringAsync(
                                         "String_ActionAutomatic", strLanguageToPrint, token: token)
                                     .ConfigureAwait(false);
                                 break;
 
-                            case "Free":
+                            case "FREE":
                                 strDisplayAction = await LanguageManager
                                     .GetStringAsync(
                                         "String_ActionFree", strLanguageToPrint, token: token)
                                     .ConfigureAwait(false);
                                 break;
 
-                            case "Simple":
+                            case "SIMPLE":
                                 strDisplayAction = await LanguageManager
                                     .GetStringAsync(
                                         "String_ActionSimple", strLanguageToPrint, token: token)
                                     .ConfigureAwait(false);
                                 break;
 
-                            case "Complex":
+                            case "COMPLEX":
                                 strDisplayAction = await LanguageManager
                                     .GetStringAsync(
                                         "String_ActionComplex", strLanguageToPrint, token: token)
                                     .ConfigureAwait(false);
                                 break;
 
-                            case "Special":
+                            case "SPECIAL":
                                 strDisplayAction
                                     = await LanguageManager
                                         .GetStringAsync("String_SpellDurationSpecial", strLanguageToPrint,
@@ -707,30 +707,30 @@ namespace Chummer
                                 break;
                         }
 
-                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("duration", token: token)?.Value)
+                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("duration", token: token)?.Value.ToUpperInvariant())
                         {
-                            case "Instant":
+                            case "INSTANT":
                                 strDisplayDuration
                                     = await LanguageManager
                                         .GetStringAsync("String_SpellDurationInstantLong", strLanguageToPrint,
                                             token: token).ConfigureAwait(false);
                                 break;
 
-                            case "Sustained":
+                            case "SUSTAINED":
                                 strDisplayDuration
                                     = await LanguageManager
                                         .GetStringAsync("String_SpellDurationSustained", strLanguageToPrint,
                                             token: token).ConfigureAwait(false);
                                 break;
 
-                            case "Always":
+                            case "ALWAYS":
                                 strDisplayDuration
                                     = await LanguageManager
                                         .GetStringAsync("String_SpellDurationAlways", strLanguageToPrint,
                                             token: token).ConfigureAwait(false);
                                 break;
 
-                            case "Special":
+                            case "SPECIAL":
                                 strDisplayDuration
                                     = await LanguageManager
                                         .GetStringAsync("String_SpellDurationSpecial", strLanguageToPrint,
@@ -746,45 +746,45 @@ namespace Chummer
                                 .CheapReplaceAsync(
                                     "Self",
                                     () => LanguageManager.GetStringAsync(
-                                        "String_SpellRangeSelf", strLanguageToPrint, token: token),
+                                        "String_SpellRangeSelf", strLanguageToPrint, token: token), StringComparison.OrdinalIgnoreCase,
                                     token: token)
                                 .CheapReplaceAsync(
                                     "Special",
                                     () => LanguageManager.GetStringAsync(
                                         "String_SpellDurationSpecial", strLanguageToPrint,
-                                        token: token), token: token)
+                                        token: token), StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "LOS",
                                     () => LanguageManager.GetStringAsync(
                                         "String_SpellRangeLineOfSight", strLanguageToPrint,
-                                        token: token), token: token)
+                                        token: token), StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "LOI",
                                     () => LanguageManager.GetStringAsync(
                                         "String_SpellRangeLineOfInfluence", strLanguageToPrint,
-                                        token: token), token: token)
+                                        token: token), StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "Touch",
                                     () => LanguageManager.GetStringAsync(
                                         "String_SpellRangeTouch",
-                                        strLanguageToPrint, token: token),
+                                        strLanguageToPrint, token: token), StringComparison.OrdinalIgnoreCase,
                                     token: token) // Short form to remain export-friendly
                                 .CheapReplaceAsync(
                                     "T",
                                     () => LanguageManager.GetStringAsync(
-                                        "String_SpellRangeTouch", strLanguageToPrint, token: token),
+                                        "String_SpellRangeTouch", strLanguageToPrint, token: token), StringComparison.OrdinalIgnoreCase,
                                     token: token)
                                 .CheapReplaceAsync(
                                     "(A)",
                                     async () => "(" + await LanguageManager.GetStringAsync(
                                             "String_SpellRangeArea", strLanguageToPrint,
                                             token: token)
-                                        .ConfigureAwait(false) + ")", token: token)
+                                        .ConfigureAwait(false) + ")", StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "MAG",
                                     () => LanguageManager.GetStringAsync(
                                         "String_AttributeMAGShort", strLanguageToPrint,
-                                        token: token), token: token).ConfigureAwait(false);
+                                        token: token), StringComparison.OrdinalIgnoreCase, token: token).ConfigureAwait(false);
                         }
                     }
 

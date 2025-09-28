@@ -443,7 +443,7 @@ namespace Chummer.Backend.Attributes
 
         public static string GetAttributeEnglishName(string strAbbrev)
         {
-            switch (strAbbrev)
+            switch (strAbbrev.ToUpperInvariant())
             {
                 case "BOD":
                     return "Body";
@@ -475,7 +475,7 @@ namespace Chummer.Backend.Attributes
                 case "MAG":
                     return "Magic";
 
-                case "MAGAdept":
+                case "MAGADEPT":
                     return "Magic (Adept)";
 
                 case "RES":
@@ -2318,7 +2318,7 @@ namespace Chummer.Backend.Attributes
 
         private MultiplePropertiesChangedEventHandler RunExtraPropertyChanged(string strAbbrev)
         {
-            switch (strAbbrev)
+            switch (strAbbrev.ToUpperInvariant())
             {
                 case "BOD":
                     return BODVariant;
@@ -2342,7 +2342,7 @@ namespace Chummer.Backend.Attributes
                     return ESSVariant;
                 case "MAG":
                     return MAGVariant;
-                case "MAGAdept":
+                case "MAGADEPT":
                     return MAGAdeptVariant;
                 case "RES":
                     return RESVariant;
@@ -2461,7 +2461,7 @@ namespace Chummer.Backend.Attributes
 
         private MultiplePropertiesChangedAsyncEventHandler RunExtraAsyncPropertyChanged(string strAbbrev)
         {
-            switch (strAbbrev)
+            switch (strAbbrev.ToUpperInvariant())
             {
                 case "BOD":
                     return BODVariant;
@@ -2485,7 +2485,7 @@ namespace Chummer.Backend.Attributes
                     return ESSVariant;
                 case "MAG":
                     return MAGVariant;
-                case "MAGAdept":
+                case "MAGADEPT":
                     return MAGAdeptVariant;
                 case "RES":
                     return RESVariant;
@@ -3565,12 +3565,12 @@ namespace Chummer.Backend.Attributes
 
         public static AttributeCategory ConvertAttributeCategory(string s)
         {
-            switch (s)
+            switch (s.ToUpperInvariant())
             {
-                case "Shapeshifter":
+                case "SHAPESHIFTER":
                     return AttributeCategory.Shapeshifter;
 
-                case "Special":
+                case "SPECIAL":
                     return AttributeCategory.Special;
 
                 default:

@@ -325,7 +325,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            switch (bonusNode["name"]?.InnerTextViaPool(token))
+            switch (bonusNode["name"]?.InnerTextViaPool(token).ToUpperInvariant())
             {
                 case "MAG":
                     await CreateImprovementAsync("MAG", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
@@ -396,34 +396,34 @@ namespace Chummer
                 {
                     foreach (XmlNode xmlEnable in xmlEnableList)
                     {
-                        switch (xmlEnable.InnerTextViaPool(token))
+                        switch (xmlEnable.InnerTextViaPool(token).ToUpperInvariant())
                         {
-                            case "magician":
+                            case "MAGICIAN":
                                 await _objCharacter.SetMagicianEnabledAsync(true, token).ConfigureAwait(false);
                                 await CreateImprovementAsync("Magician", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0, token: token).ConfigureAwait(false);
                                 break;
 
-                            case "adept":
+                            case "ADEPT":
                                 await _objCharacter.SetAdeptEnabledAsync(true, token).ConfigureAwait(false);
                                 await CreateImprovementAsync("Adept", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab",
                                     0, 0, token: token).ConfigureAwait(false);
                                 break;
 
-                            case "technomancer":
+                            case "TECHNOMANCER":
                                 await _objCharacter.SetTechnomancerEnabledAsync(true, token).ConfigureAwait(false);
                                 await CreateImprovementAsync("Technomancer", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0, token: token).ConfigureAwait(false);
                                 break;
 
-                            case "advanced programs":
+                            case "ADVANCED PROGRAMS":
                                 await _objCharacter.SetAdvancedProgramsEnabledAsync(true, token).ConfigureAwait(false);
                                 await CreateImprovementAsync("Advanced Programs", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0, token: token).ConfigureAwait(false);
                                 break;
 
-                            case "critter":
+                            case "CRITTER":
                                 await _objCharacter.SetCritterEnabledAsync(true, token).ConfigureAwait(false);
                                 await CreateImprovementAsync("Critter", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0, token: token).ConfigureAwait(false);
@@ -446,15 +446,15 @@ namespace Chummer
                 {
                     foreach (XmlNode xmlDisable in xmlDisableList)
                     {
-                        switch (xmlDisable.InnerTextViaPool(token))
+                        switch (xmlDisable.InnerTextViaPool(token).ToUpperInvariant())
                         {
-                            case "cyberware":
+                            case "CYBERWARE":
                                 await _objCharacter.SetCyberwareDisabledAsync(true, token).ConfigureAwait(false);
                                 await CreateImprovementAsync("Cyberware", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "disabletab", 0, 0, token: token).ConfigureAwait(false);
                                 break;
 
-                            case "initiation":
+                            case "INITIATION":
                                 await _objCharacter.SetInitiationForceDisabledAsync(true, token).ConfigureAwait(false);
                                 await CreateImprovementAsync("Initiation", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "disabletab", 0, 0, token: token).ConfigureAwait(false);
@@ -1259,19 +1259,19 @@ namespace Chummer
                 // string strBonus = bonusNode["value"].InnerTextViaPool(token);
                 Improvement.ImprovementType eType;
 
-                switch (strLimit)
+                switch (strLimit.ToUpperInvariant())
                 {
-                    case "Mental":
+                    case "MENTAL":
                         {
                             eType = Improvement.ImprovementType.MentalLimit;
                             break;
                         }
-                    case "Social":
+                    case "SOCIAL":
                         {
                             eType = Improvement.ImprovementType.SocialLimit;
                             break;
                         }
-                    case "Physical":
+                    case "PHYSICAL":
                         {
                             eType = Improvement.ImprovementType.PhysicalLimit;
                             break;
@@ -2126,14 +2126,14 @@ namespace Chummer
             string strMode = bonusNode["type"]?.InnerTextViaPool(token) ?? "all";
 
             List<Contact> lstSelectedContacts;
-            switch (strMode)
+            switch (strMode.ToUpperInvariant())
             {
-                case "all":
+                case "ALL":
                     lstSelectedContacts = await (await _objCharacter.GetContactsAsync(token).ConfigureAwait(false)).ToListAsync(token).ConfigureAwait(false);
                     break;
 
-                case "group":
-                case "nongroup":
+                case "GROUP":
+                case "NONGROUP":
                     {
                         bool blnGroup = strMode == "group";
                         //Select any contact where IsGroup equals blnGroup

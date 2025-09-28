@@ -4525,13 +4525,13 @@ namespace Chummer
                         return objReturn;
                     if (strArg.EndsWith(Path.GetFileName(Application.ExecutablePath), StringComparison.OrdinalIgnoreCase))
                         continue;
-                    switch (strArg)
+                    switch (strArg.ToUpperInvariant())
                     {
-                        case "/test":
+                        case "/TEST":
                             blnShowTest = true;
                             break;
 
-                        case "/help":
+                        case "/HELP":
                         case "?":
                         case "/?":
                             string msg = "Commandline parameters are either " +
@@ -4544,7 +4544,7 @@ namespace Chummer
                             Console.WriteLine(msg);
                             break;
                         default:
-                            if (strArg.Contains("/plugin"))
+                            if (strArg.Contains("/plugin", StringComparison.OrdinalIgnoreCase))
                             {
                                 Log.Info(
                                     "Encountered command line argument, that should already have been handled in one of the plugins: " +

@@ -150,7 +150,7 @@ namespace Chummer
 
                     string strType = objXmlPower.SelectSingleNodeAndCacheExpression("type")?.Value
                                      ?? string.Empty;
-                    switch (strType)
+                    switch (strType.ToUpperInvariant())
                     {
                         case "M":
                             strType = await LanguageManager.GetStringAsync("String_SpellTypeMana").ConfigureAwait(false);
@@ -163,25 +163,25 @@ namespace Chummer
                     await lblCritterPowerType.DoThreadSafeAsync(x => x.Text = strType).ConfigureAwait(false);
 
                     string strAction = objXmlPower.SelectSingleNodeAndCacheExpression("action")?.Value ?? string.Empty;
-                    switch (strAction)
+                    switch (strAction.ToUpperInvariant())
                     {
-                        case "Auto":
+                        case "AUTO":
                             strAction = await LanguageManager.GetStringAsync("String_ActionAutomatic").ConfigureAwait(false);
                             break;
 
-                        case "Free":
+                        case "FREE":
                             strAction = await LanguageManager.GetStringAsync("String_ActionFree").ConfigureAwait(false);
                             break;
 
-                        case "Simple":
+                        case "SIMPLE":
                             strAction = await LanguageManager.GetStringAsync("String_ActionSimple").ConfigureAwait(false);
                             break;
 
-                        case "Complex":
+                        case "COMPLEX":
                             strAction = await LanguageManager.GetStringAsync("String_ActionComplex").ConfigureAwait(false);
                             break;
 
-                        case "Special":
+                        case "SPECIAL":
                             strAction = await LanguageManager.GetStringAsync("String_SpellDurationSpecial").ConfigureAwait(false);
                             break;
                     }
@@ -205,21 +205,21 @@ namespace Chummer
                     await lblCritterPowerRange.DoThreadSafeAsync(x => x.Text = strRange).ConfigureAwait(false);
 
                     string strDuration = objXmlPower.SelectSingleNodeAndCacheExpression("duration")?.Value ?? string.Empty;
-                    switch (strDuration)
+                    switch (strDuration.ToUpperInvariant())
                     {
-                        case "Instant":
+                        case "INSTANT":
                             strDuration = await LanguageManager.GetStringAsync("String_SpellDurationInstantLong").ConfigureAwait(false);
                             break;
 
-                        case "Sustained":
+                        case "SUSTAINED":
                             strDuration = await LanguageManager.GetStringAsync("String_SpellDurationSustained").ConfigureAwait(false);
                             break;
 
-                        case "Always":
+                        case "ALWAYS":
                             strDuration = await LanguageManager.GetStringAsync("String_SpellDurationAlways").ConfigureAwait(false);
                             break;
 
-                        case "Special":
+                        case "SPECIAL":
                             strDuration = await LanguageManager.GetStringAsync("String_SpellDurationSpecial").ConfigureAwait(false);
                             break;
                     }

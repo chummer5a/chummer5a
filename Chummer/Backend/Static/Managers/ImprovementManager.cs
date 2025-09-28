@@ -2986,9 +2986,9 @@ namespace Chummer
 
                         case Improvement.ImprovementType.Attribute:
                             // Determine if access to any Special Attributes have been lost.
-                            if (strUniqueName == "enableattribute")
+                            if (string.Equals(strUniqueName, "enableattribute", StringComparison.OrdinalIgnoreCase))
                             {
-                                switch (strImprovedName)
+                                switch (strImprovedName.ToUpperInvariant())
                                 {
                                     case "MAG":
                                         if (blnSync)
@@ -3017,40 +3017,40 @@ namespace Chummer
 
                         case Improvement.ImprovementType.SpecialTab:
                             // Determine if access to any special tabs have been lost.
-                            switch (strUniqueName)
+                            switch (strUniqueName.ToUpperInvariant())
                             {
-                                case "enabletab":
-                                    switch (strImprovedName)
+                                case "ENABLETAB":
+                                    switch (strImprovedName.ToUpperInvariant())
                                     {
-                                        case "Magician":
+                                        case "MAGICIAN":
                                             if (blnSync)
                                                 objCharacter.MagicianEnabled = true;
                                             else
                                                 await objCharacter.SetMagicianEnabledAsync(true, token).ConfigureAwait(false);
                                             break;
 
-                                        case "Adept":
+                                        case "ADEPT":
                                             if (blnSync)
                                                 objCharacter.AdeptEnabled = true;
                                             else
                                                 await objCharacter.SetAdeptEnabledAsync(true, token).ConfigureAwait(false);
                                             break;
 
-                                        case "Technomancer":
+                                        case "TECHNOMANCER":
                                             if (blnSync)
                                                 objCharacter.TechnomancerEnabled = true;
                                             else
                                                 await objCharacter.SetTechnomancerEnabledAsync(true, token).ConfigureAwait(false);
                                             break;
 
-                                        case "Advanced Programs":
+                                        case "ADVANCED PROGRAMS":
                                             if (blnSync)
                                                 objCharacter.AdvancedProgramsEnabled = true;
                                             else
                                                 await objCharacter.SetAdvancedProgramsEnabledAsync(true, token).ConfigureAwait(false);
                                             break;
 
-                                        case "Critter":
+                                        case "CRITTER":
                                             if (blnSync)
                                                 objCharacter.CritterEnabled = true;
                                             else
@@ -3060,17 +3060,17 @@ namespace Chummer
 
                                     break;
                                 // Determine if access to any special tabs has been regained
-                                case "disabletab":
+                                case "DISABLETAB":
                                     switch (strImprovedName)
                                     {
-                                        case "Cyberware":
+                                        case "CYBERWARE":
                                             if (blnSync)
                                                 objCharacter.CyberwareDisabled = true;
                                             else
                                                 await objCharacter.SetCyberwareDisabledAsync(true, token).ConfigureAwait(false);
                                             break;
 
-                                        case "Initiation":
+                                        case "INITIATION":
                                             if (blnSync)
                                                 objCharacter.InitiationForceDisabled = true;
                                             else
@@ -3676,9 +3676,9 @@ namespace Chummer
 
                         case Improvement.ImprovementType.Attribute:
                             // Determine if access to any Special Attributes have been lost.
-                            if (strUniqueName == "enableattribute" && !blnHasDuplicate)
+                            if (string.Equals(strUniqueName, "enableattribute", StringComparison.OrdinalIgnoreCase) && !blnHasDuplicate)
                             {
-                                switch (strImprovedName)
+                                switch (strImprovedName.ToUpperInvariant())
                                 {
                                     case "MAG":
                                         if (blnSync)
@@ -3709,40 +3709,40 @@ namespace Chummer
                             // Determine if access to any special tabs have been lost.
                             if (!blnHasDuplicate)
                             {
-                                switch (strUniqueName)
+                                switch (strUniqueName.ToUpperInvariant())
                                 {
-                                    case "enabletab":
-                                        switch (strImprovedName)
+                                    case "ENABLETAB":
+                                        switch (strImprovedName.ToUpperInvariant())
                                         {
-                                            case "Magician":
+                                            case "MAGICIAN":
                                                 if (blnSync)
                                                     objCharacter.MagicianEnabled = false;
                                                 else
                                                     await objCharacter.SetMagicianEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
-                                            case "Adept":
+                                            case "ADEPT":
                                                 if (blnSync)
                                                     objCharacter.AdeptEnabled = false;
                                                 else
                                                     await objCharacter.SetAdeptEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
-                                            case "Technomancer":
+                                            case "TECHNOMANCER":
                                                 if (blnSync)
                                                     objCharacter.TechnomancerEnabled = false;
                                                 else
                                                     await objCharacter.SetTechnomancerEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
-                                            case "Advanced Programs":
+                                            case "ADVANCED PROGRAMS":
                                                 if (blnSync)
                                                     objCharacter.AdvancedProgramsEnabled = false;
                                                 else
                                                     await objCharacter.SetAdvancedProgramsEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
-                                            case "Critter":
+                                            case "CRITTER":
                                                 if (blnSync)
                                                     objCharacter.CritterEnabled = false;
                                                 else
@@ -3752,17 +3752,17 @@ namespace Chummer
 
                                         break;
                                     // Determine if access to any special tabs has been regained
-                                    case "disabletab":
+                                    case "DISABLETAB":
                                         switch (strImprovedName)
                                         {
-                                            case "Cyberware":
+                                            case "CYBERWARE":
                                                 if (blnSync)
                                                     objCharacter.CyberwareDisabled = false;
                                                 else
                                                     await objCharacter.SetCyberwareDisabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
-                                            case "Initiation":
+                                            case "INITIATION":
                                                 if (blnSync)
                                                     objCharacter.InitiationForceDisabled = false;
                                                 else
@@ -5139,10 +5139,10 @@ namespace Chummer
 
                         case Improvement.ImprovementType.Attribute:
                             // Determine if access to any Special Attributes have been lost.
-                            if (strUniqueName == "enableattribute" && !blnHasDuplicate
+                            if (string.Equals(strUniqueName, "enableattribute", StringComparison.OrdinalIgnoreCase) && !blnHasDuplicate
                                                                    && !blnReapplyImprovements)
                             {
-                                switch (strImprovedName)
+                                switch (strImprovedName.ToUpperInvariant())
                                 {
                                     case "MAG":
                                         await objCharacter.SetMAGEnabledAsync(false, token).ConfigureAwait(false);
@@ -5164,40 +5164,40 @@ namespace Chummer
                             // Determine if access to any special tabs have been lost.
                             if (!blnHasDuplicate && !blnReapplyImprovements)
                             {
-                                switch (strUniqueName)
+                                switch (strUniqueName.ToUpperInvariant())
                                 {
-                                    case "enabletab":
-                                        switch (strImprovedName)
+                                    case "ENABLETAB":
+                                        switch (strImprovedName.ToUpperInvariant())
                                         {
-                                            case "Magician":
+                                            case "MAGICIAN":
                                                 if (blnSync)
                                                     objCharacter.MagicianEnabled = false;
                                                 else
                                                     await objCharacter.SetMagicianEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
-                                            case "Adept":
+                                            case "ADEPT":
                                                 if (blnSync)
                                                     objCharacter.AdeptEnabled = false;
                                                 else
                                                     await objCharacter.SetAdeptEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
-                                            case "Technomancer":
+                                            case "TECHNOMANCER":
                                                 if (blnSync)
                                                     objCharacter.TechnomancerEnabled = false;
                                                 else
                                                     await objCharacter.SetTechnomancerEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
-                                            case "Advanced Programs":
+                                            case "ADVANCED PROGRAMS":
                                                 if (blnSync)
                                                     objCharacter.AdvancedProgramsEnabled = false;
                                                 else
                                                     await objCharacter.SetAdvancedProgramsEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
-                                            case "Critter":
+                                            case "CRITTER":
                                                 if (blnSync)
                                                     objCharacter.CritterEnabled = false;
                                                 else
@@ -5207,17 +5207,17 @@ namespace Chummer
 
                                         break;
                                     // Determine if access to any special tabs has been regained
-                                    case "disabletab":
+                                    case "DISABLETAB":
                                         switch (strImprovedName)
                                         {
-                                            case "Cyberware":
+                                            case "CYBERWARE":
                                                 if (blnSync)
                                                     objCharacter.CyberwareDisabled = false;
                                                 else
                                                     await objCharacter.SetCyberwareDisabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
-                                            case "Initiation":
+                                            case "INITIATION":
                                                 if (blnSync)
                                                     objCharacter.InitiationForceDisabled = false;
                                                 else

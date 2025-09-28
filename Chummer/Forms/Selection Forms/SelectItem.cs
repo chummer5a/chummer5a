@@ -54,9 +54,9 @@ namespace Chummer
         {
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {
-                switch (_strMode)
+                switch (_strMode.ToUpperInvariant())
                 {
-                    case "Gear":
+                    case "GEAR":
                     {
                         string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
                         await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList).ConfigureAwait(false);
@@ -98,7 +98,7 @@ namespace Chummer
 
                         break;
                     }
-                    case "Vehicles":
+                    case "VEHICLES":
                     {
                         await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList).ConfigureAwait(false);
                         // Add each of the items to a new List.
@@ -109,12 +109,12 @@ namespace Chummer
 
                         break;
                     }
-                    case "General":
+                    case "GENERAL":
                         await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList).ConfigureAwait(false);
                         lstItems.AddRange(_lstGeneralItems);
                         break;
 
-                    case "Dropdown":
+                    case "DROPDOWN":
                         await cboAmmo.DoThreadSafeAsync(x =>
                         {
                             x.DropDownStyle = ComboBoxStyle.DropDown;
@@ -123,7 +123,7 @@ namespace Chummer
                         lstItems.AddRange(_lstGeneralItems);
                         break;
 
-                    case "Restricted":
+                    case "RESTRICTED":
                     {
                         await cboAmmo.DoThreadSafeAsync(x =>
                         {

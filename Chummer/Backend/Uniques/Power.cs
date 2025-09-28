@@ -2848,24 +2848,24 @@ namespace Chummer
         /// </summary>
         public string DisplayActionMethod(string strLanguage)
         {
-            switch (Action)
+            switch (Action.ToUpperInvariant())
             {
-                case "Auto":
+                case "AUTO":
                     return LanguageManager.GetString("String_ActionAutomatic", strLanguage);
 
-                case "Free":
+                case "FREE":
                     return LanguageManager.GetString("String_ActionFree", strLanguage);
 
-                case "Simple":
+                case "SIMPLE":
                     return LanguageManager.GetString("String_ActionSimple", strLanguage);
 
-                case "Complex":
+                case "COMPLEX":
                     return LanguageManager.GetString("String_ActionComplex", strLanguage);
 
-                case "Interrupt":
+                case "INTERRUPT":
                     return LanguageManager.GetString("String_ActionInterrupt", strLanguage);
 
-                case "Special":
+                case "SPECIAL":
                     return LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
             }
 
@@ -2877,24 +2877,24 @@ namespace Chummer
         /// </summary>
         public Task<string> DisplayActionMethodAsync(string strLanguage, CancellationToken token = default)
         {
-            switch (Action)
+            switch (Action.ToUpperInvariant())
             {
-                case "Auto":
+                case "AUTO":
                     return LanguageManager.GetStringAsync("String_ActionAutomatic", strLanguage, token: token);
 
-                case "Free":
+                case "FREE":
                     return LanguageManager.GetStringAsync("String_ActionFree", strLanguage, token: token);
 
-                case "Simple":
+                case "SIMPLE":
                     return LanguageManager.GetStringAsync("String_ActionSimple", strLanguage, token: token);
 
-                case "Complex":
+                case "COMPLEX":
                     return LanguageManager.GetStringAsync("String_ActionComplex", strLanguage, token: token);
 
-                case "Interrupt":
+                case "INTERRUPT":
                     return LanguageManager.GetStringAsync("String_ActionInterrupt", strLanguage, token: token);
 
-                case "Special":
+                case "SPECIAL":
                     return LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage, token: token);
             }
 

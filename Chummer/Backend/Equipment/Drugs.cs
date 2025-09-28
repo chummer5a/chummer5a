@@ -1717,17 +1717,17 @@ namespace Chummer.Backend.Equipment
                                                    GlobalSettings.CultureInfo)
                 };
                 await i.SetValueAsync(objLimit.Value, token).ConfigureAwait(false);
-                switch (objLimit.Key)
+                switch (objLimit.Key.ToUpperInvariant())
                 {
-                    case "Physical":
+                    case "PHYSICAL":
                         i.ImproveType = Improvement.ImprovementType.PhysicalLimit;
                         break;
 
-                    case "Mental":
+                    case "MENTAL":
                         i.ImproveType = Improvement.ImprovementType.MentalLimit;
                         break;
 
-                    case "Social":
+                    case "SOCIAL":
                         i.ImproveType = Improvement.ImprovementType.SocialLimit;
                         break;
                 }
@@ -2028,9 +2028,9 @@ namespace Chummer.Backend.Equipment
                         {
                             string strEffectName = string.Empty;
                             objXmlEffect.TryGetStringFieldQuickly("name", ref strEffectName);
-                            switch (objXmlEffect.Name)
+                            switch (objXmlEffect.Name.ToUpperInvariant())
                             {
-                                case "attribute":
+                                case "ATTRIBUTE":
                                     {
                                         int intEffectValue = 0;
                                         if (!string.IsNullOrEmpty(strEffectName) && objXmlEffect.TryGetInt32FieldQuickly("value", ref intEffectValue))
@@ -2038,46 +2038,46 @@ namespace Chummer.Backend.Equipment
                                     }
                                     break;
 
-                                case "limit":
+                                case "LIMIT":
                                     {
                                         int intEffectValue = 0;
                                         if (!string.IsNullOrEmpty(strEffectName) && objXmlEffect.TryGetInt32FieldQuickly("value", ref intEffectValue))
                                             objDrugEffect.Limits[strEffectName] = intEffectValue;
                                         break;
                                     }
-                                case "quality":
+                                case "QUALITY":
                                     objDrugEffect.Qualities.Add(objXmlEffect);
                                     break;
 
-                                case "info":
+                                case "INFO":
                                     objDrugEffect.Infos.Add(objXmlEffect.InnerTextViaPool(token));
                                     break;
 
-                                case "initiative":
+                                case "INITIATIVE":
                                     {
                                         if (int.TryParse(objXmlEffect.InnerTextViaPool(token), out int intInnerText))
                                             objDrugEffect.Initiative = intInnerText;
                                         break;
                                     }
-                                case "initiativedice":
+                                case "INITIATIVEDICE":
                                     {
                                         if (int.TryParse(objXmlEffect.InnerTextViaPool(token), out int intInnerText))
                                             objDrugEffect.InitiativeDice = intInnerText;
                                         break;
                                     }
-                                case "crashdamage":
+                                case "CRASHDAMAGE":
                                     {
                                         if (int.TryParse(objXmlEffect.InnerTextViaPool(token), out int intInnerText))
                                             objDrugEffect.CrashDamage = intInnerText;
                                         break;
                                     }
-                                case "speed":
+                                case "SPEED":
                                     {
                                         if (int.TryParse(objXmlEffect.InnerTextViaPool(token), out int intInnerText))
                                             objDrugEffect.Speed = intInnerText;
                                         break;
                                     }
-                                case "duration":
+                                case "DURATION":
                                     {
                                         if (int.TryParse(objXmlEffect.InnerTextViaPool(token), out int intInnerText))
                                             objDrugEffect.Duration = intInnerText;

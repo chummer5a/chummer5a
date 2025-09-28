@@ -477,14 +477,14 @@ namespace Chummer
             {
                 string useAI = "NotSet";
                 LoadStringFromRegistry(ref useAI, "useloggingApplicationInsights");
-                switch (useAI)
+                switch (useAI.ToUpperInvariant())
                 {
-                    case "False":
+                    case "FALSE":
                         _eUseLoggingApplicationInsights = UseAILogging.NotSet;
                         break;
 
-                    case "True":
-                    case "Yes":
+                    case "TRUE":
+                    case "YES":
                         _eUseLoggingApplicationInsights = UseAILogging.Info;
                         break;
 
@@ -598,25 +598,25 @@ namespace Chummer
             string strLanguage = _strLanguage;
             if (LoadStringFromRegistry(ref strLanguage, "language"))
             {
-                switch (strLanguage)
+                switch (strLanguage.ToUpperInvariant())
                 {
-                    case "en-us2":
+                    case "EN-US2":
                         strLanguage = DefaultLanguage;
                         break;
 
-                    case "de":
+                    case "DE":
                         strLanguage = "de-de";
                         break;
 
-                    case "fr":
+                    case "FR":
                         strLanguage = "fr-fr";
                         break;
 
-                    case "jp":
+                    case "JP":
                         strLanguage = "ja-jp";
                         break;
 
-                    case "zh":
+                    case "ZH":
                         strLanguage = "zh-cn";
                         break;
                 }

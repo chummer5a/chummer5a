@@ -765,30 +765,30 @@ namespace Chummer
                     {
                         foreach (string strDescriptor in HashDescriptors)
                         {
-                            switch (strDescriptor)
+                            switch (strDescriptor.ToUpperInvariant())
                             {
-                                case "Alchemical Preparation":
+                                case "ALCHEMICAL PREPARATION":
                                     sbdReturn.Append(
                                         LanguageManager.GetString("String_DescAlchemicalPreparation", strLanguage));
                                     break;
 
-                                case "Extended Area":
+                                case "EXTENDED AREA":
                                     sbdReturn.Append(LanguageManager.GetString("String_DescExtendedArea", strLanguage));
                                     break;
 
-                                case "Material Link":
+                                case "MATERIAL LINK":
                                     sbdReturn.Append(LanguageManager.GetString("String_DescMaterialLink", strLanguage));
                                     break;
 
-                                case "Multi-Sense":
+                                case "MULTI-SENSE":
                                     sbdReturn.Append(LanguageManager.GetString("String_DescMultiSense", strLanguage));
                                     break;
 
-                                case "Organic Link":
+                                case "ORGANIC LINK":
                                     sbdReturn.Append(LanguageManager.GetString("String_DescOrganicLink", strLanguage));
                                     break;
 
-                                case "Single-Sense":
+                                case "SINGLE-SENSE":
                                     sbdReturn.Append(LanguageManager.GetString("String_DescSingleSense", strLanguage));
                                     break;
 
@@ -836,44 +836,44 @@ namespace Chummer
                     {
                         foreach (string strDescriptor in HashDescriptors)
                         {
-                            switch (strDescriptor)
+                            switch (strDescriptor.ToUpperInvariant())
                             {
-                                case "Alchemical Preparation":
+                                case "ALCHEMICAL PREPARATION":
                                     sbdReturn.Append(
                                         await LanguageManager
                                               .GetStringAsync("String_DescAlchemicalPreparation", strLanguage,
                                                               token: token).ConfigureAwait(false));
                                     break;
 
-                                case "Extended Area":
+                                case "EXTENDED AREA":
                                     sbdReturn.Append(await LanguageManager
                                                            .GetStringAsync(
                                                                "String_DescExtendedArea", strLanguage, token: token)
                                                            .ConfigureAwait(false));
                                     break;
 
-                                case "Material Link":
+                                case "MATERIAL LINK":
                                     sbdReturn.Append(await LanguageManager
                                                            .GetStringAsync(
                                                                "String_DescMaterialLink", strLanguage, token: token)
                                                            .ConfigureAwait(false));
                                     break;
 
-                                case "Multi-Sense":
+                                case "MULTI-SENSE":
                                     sbdReturn.Append(await LanguageManager
                                                            .GetStringAsync(
                                                                "String_DescMultiSense", strLanguage, token: token)
                                                            .ConfigureAwait(false));
                                     break;
 
-                                case "Organic Link":
+                                case "ORGANIC LINK":
                                     sbdReturn.Append(await LanguageManager
                                                            .GetStringAsync(
                                                                "String_DescOrganicLink", strLanguage, token: token)
                                                            .ConfigureAwait(false));
                                     break;
 
-                                case "Single-Sense":
+                                case "SINGLE-SENSE":
                                     sbdReturn.Append(await LanguageManager
                                                            .GetStringAsync(
                                                                "String_DescSingleSense", strLanguage, token: token)
@@ -992,7 +992,7 @@ namespace Chummer
         /// </summary>
         public string DisplayType(string strLanguage)
         {
-            switch (Type)
+            switch (Type.ToUpperInvariant())
             {
                 case "M":
                     return LanguageManager.GetString("String_SpellTypeMana", strLanguage);
@@ -1007,7 +1007,7 @@ namespace Chummer
         /// </summary>
         public Task<string> DisplayTypeAsync(string strLanguage, CancellationToken token = default)
         {
-            switch (Type)
+            switch (Type.ToUpperInvariant())
             {
                 case "M":
                     return LanguageManager.GetStringAsync("String_SpellTypeMana", strLanguage, token: token);
@@ -1347,7 +1347,7 @@ namespace Chummer
                                  i => i.ImproveType == Improvement.ImprovementType.SpellDescriptorDamage
                                       || i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage).Sum(x => x.Value);
                 string strReturn = decBonus.StandardRound().ToString(objCultureInfo);
-                switch (Damage)
+                switch (Damage.ToUpperInvariant())
                 {
                     case "P":
                         strReturn += LanguageManager.GetString("String_DamagePhysical", strLanguage);
@@ -1378,7 +1378,7 @@ namespace Chummer
                                  i => i.ImproveType == Improvement.ImprovementType.SpellDescriptorDamage
                                       || i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage, token: token)).Sum(x => x.Value);
                 string strReturn = decBonus.StandardRound().ToString(objCultureInfo);
-                switch (Damage)
+                switch (Damage.ToUpperInvariant())
                 {
                     case "P":
                         strReturn += await LanguageManager
@@ -1423,7 +1423,7 @@ namespace Chummer
         /// </summary>
         public string DisplayDuration(string strLanguage)
         {
-            switch (Duration)
+            switch (Duration.ToUpperInvariant())
             {
                 case "P":
                     return LanguageManager.GetString("String_SpellDurationPermanent", strLanguage);
@@ -1434,7 +1434,7 @@ namespace Chummer
                 case "I":
                     return LanguageManager.GetString("String_SpellDurationInstant", strLanguage);
 
-                case "Special":
+                case "SPECIAL":
                     return LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
 
                 default:
@@ -1447,7 +1447,7 @@ namespace Chummer
         /// </summary>
         public Task<string> DisplayDurationAsync(string strLanguage, CancellationToken token = default)
         {
-            switch (Duration)
+            switch (Duration.ToUpperInvariant())
             {
                 case "P":
                     return LanguageManager.GetStringAsync("String_SpellDurationPermanent", strLanguage, token: token);
@@ -1458,7 +1458,7 @@ namespace Chummer
                 case "I":
                     return LanguageManager.GetStringAsync("String_SpellDurationInstant", strLanguage, token: token);
 
-                case "Special":
+                case "SPECIAL":
                     return LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage, token: token);
 
                 default:

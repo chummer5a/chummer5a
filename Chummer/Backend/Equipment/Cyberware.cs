@@ -180,16 +180,16 @@ namespace Chummer.Backend.Equipment
         /// <returns>Limb associated with <paramref name="strMount"/>. If there is none, returns an empty string.</returns>
         public static string MountToLimbType(string strMount)
         {
-            switch (strMount)
+            switch (strMount.ToUpperInvariant())
             {
-                case "wrist":
-                case "elbow":
-                case "shoulder":
+                case "WRIST":
+                case "ELBOW":
+                case "SHOULDER":
                     return "arm";
 
-                case "ankle":
-                case "knee":
-                case "hip":
+                case "ANKLE":
+                case "KNEE":
+                case "HIP":
                     return "leg";
             }
 
@@ -1502,13 +1502,13 @@ namespace Chummer.Backend.Equipment
                         if (string.IsNullOrEmpty(objCheckCyberware.BlocksMounts))
                             return;
                         Dictionary<string, int> dicToUse;
-                        switch (objCheckCyberware.Location)
+                        switch (objCheckCyberware.Location.ToUpperInvariant())
                         {
-                            case "Left":
+                            case "LEFT":
                                 dicToUse = dicNumLeftMountBlockers;
                                 break;
 
-                            case "Right":
+                            case "RIGHT":
                                 dicToUse = dicNumRightMountBlockers;
                                 break;
 
@@ -1682,13 +1682,13 @@ namespace Chummer.Backend.Equipment
                         if (string.IsNullOrEmpty(strLoopBlocksMounts))
                             return;
                         Dictionary<string, int> dicToUse;
-                        switch (await objCheckCyberware.GetLocationAsync(token).ConfigureAwait(false))
+                        switch ((await objCheckCyberware.GetLocationAsync(token).ConfigureAwait(false)).ToUpperInvariant())
                         {
-                            case "Left":
+                            case "LEFT":
                                 dicToUse = dicNumLeftMountBlockers;
                                 break;
 
-                            case "Right":
+                            case "RIGHT":
                                 dicToUse = dicNumRightMountBlockers;
                                 break;
 
@@ -1765,12 +1765,12 @@ namespace Chummer.Backend.Equipment
                         }
                         finally
                         {
-                            switch (strSide)
+                            switch (strSide.ToUpperInvariant())
                             {
-                                case "Left":
+                                case "LEFT":
                                     blnAllowLeft = blnAllowSide;
                                     break;
-                                case "Right":
+                                case "RIGHT":
                                     blnAllowRight = blnAllowSide;
                                     break;
                             }
@@ -3619,13 +3619,13 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(Location))
                 {
                     string strSide = string.Empty;
-                    switch (Location)
+                    switch (Location.ToUpperInvariant())
                     {
-                        case "Left":
+                        case "LEFT":
                             strSide = LanguageManager.GetString("String_Improvement_SideLeft", strLanguage);
                             break;
 
-                        case "Right":
+                        case "RIGHT":
                             strSide = LanguageManager.GetString("String_Improvement_SideRight", strLanguage);
                             break;
                     }
@@ -3678,15 +3678,15 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(Location))
                 {
                     string strSide = string.Empty;
-                    switch (Location)
+                    switch (Location.ToUpperInvariant())
                     {
-                        case "Left":
+                        case "LEFT":
                             strSide = await LanguageManager
                                 .GetStringAsync("String_Improvement_SideLeft", strLanguage, token: token)
                                 .ConfigureAwait(false);
                             break;
 
-                        case "Right":
+                        case "RIGHT":
                             strSide = await LanguageManager
                                 .GetStringAsync("String_Improvement_SideRight", strLanguage, token: token)
                                 .ConfigureAwait(false);
@@ -10560,7 +10560,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (Category != "Cyberlimb" && !IsLimb)
                     return 0;
-                switch (strAbbrev)
+                switch (strAbbrev.ToUpperInvariant())
                 {
                     case "STR":
                         return MinStrength;
@@ -10587,7 +10587,7 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 if (Category != "Cyberlimb" && !await GetIsLimbAsync(token).ConfigureAwait(false))
                     return 0;
-                switch (strAbbrev)
+                switch (strAbbrev.ToUpperInvariant())
                 {
                     case "STR":
                         return await GetMinStrengthAsync(token).ConfigureAwait(false);

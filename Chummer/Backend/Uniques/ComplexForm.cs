@@ -570,7 +570,7 @@ namespace Chummer
         /// </summary>
         public string DisplayDuration(string strLanguage)
         {
-            switch (Duration)
+            switch (Duration.ToUpperInvariant())
             {
                 case "P":
                     return LanguageManager.GetString("String_SpellDurationPermanent", strLanguage);
@@ -581,7 +581,7 @@ namespace Chummer
                 case "I":
                     return LanguageManager.GetString("String_SpellDurationInstant", strLanguage);
 
-                case "Special":
+                case "SPECIAL":
                     return LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
 
                 default:
@@ -594,7 +594,7 @@ namespace Chummer
         /// </summary>
         public Task<string> DisplayDurationAsync(string strLanguage, CancellationToken token = default)
         {
-            switch (Duration)
+            switch (Duration.ToUpperInvariant())
             {
                 case "P":
                     return LanguageManager.GetStringAsync("String_SpellDurationPermanent", strLanguage, token: token);
@@ -605,7 +605,7 @@ namespace Chummer
                 case "I":
                     return LanguageManager.GetStringAsync("String_SpellDurationInstant", strLanguage, token: token);
 
-                case "Special":
+                case "SPECIAL":
                     return LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage, token: token);
 
                 default:
@@ -903,33 +903,33 @@ namespace Chummer
         /// </summary>
         public string DisplayTarget(string strLanguage)
         {
-            switch (Target)
+            switch (Target.ToUpperInvariant())
             {
-                case "Persona":
+                case "PERSONA":
                     return LanguageManager.GetString("String_ComplexFormTargetPersona", strLanguage);
 
-                case "Device":
+                case "DEVICE":
                     return LanguageManager.GetString("String_ComplexFormTargetDevice", strLanguage);
 
-                case "File":
+                case "FILE":
                     return LanguageManager.GetString("String_ComplexFormTargetFile", strLanguage);
 
-                case "Self":
+                case "SELF":
                     return LanguageManager.GetString("String_SpellRangeSelf", strLanguage);
 
-                case "Sprite":
+                case "SPRITE":
                     return LanguageManager.GetString("String_ComplexFormTargetSprite", strLanguage);
 
-                case "Host":
+                case "HOST":
                     return LanguageManager.GetString("String_ComplexFormTargetHost", strLanguage);
 
                 case "IC":
                     return LanguageManager.GetString("String_ComplexFormTargetIC", strLanguage);
 
-                case "Icon":
+                case "ICON":
                     return LanguageManager.GetString("String_ComplexFormTargetIcon", strLanguage);
 
-                case "Special":
+                case "SPECIAL":
                     return LanguageManager.GetString("String_Special", strLanguage);
 
                 default:
@@ -942,33 +942,33 @@ namespace Chummer
         /// </summary>
         public Task<string> DisplayTargetAsync(string strLanguage, CancellationToken token = default)
         {
-            switch (Target)
+            switch (Target.ToUpperInvariant())
             {
-                case "Persona":
+                case "PERSONA":
                     return LanguageManager.GetStringAsync("String_ComplexFormTargetPersona", strLanguage, token: token);
 
-                case "Device":
+                case "DEVICE":
                     return LanguageManager.GetStringAsync("String_ComplexFormTargetDevice", strLanguage, token: token);
 
-                case "File":
+                case "FILE":
                     return LanguageManager.GetStringAsync("String_ComplexFormTargetFile", strLanguage, token: token);
 
-                case "Self":
+                case "SELF":
                     return LanguageManager.GetStringAsync("String_SpellRangeSelf", strLanguage, token: token);
 
-                case "Sprite":
+                case "SPRITE":
                     return LanguageManager.GetStringAsync("String_ComplexFormTargetSprite", strLanguage, token: token);
 
-                case "Host":
+                case "HOST":
                     return LanguageManager.GetStringAsync("String_ComplexFormTargetHost", strLanguage, token: token);
 
                 case "IC":
                     return LanguageManager.GetStringAsync("String_ComplexFormTargetIC", strLanguage, token: token);
 
-                case "Icon":
+                case "ICON":
                     return LanguageManager.GetStringAsync("String_ComplexFormTargetIcon", strLanguage, token: token);
 
-                case "Special":
+                case "SPECIAL":
                     return LanguageManager.GetStringAsync("String_Special", strLanguage, token: token);
 
                 default:

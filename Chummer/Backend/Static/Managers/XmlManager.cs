@@ -2218,7 +2218,7 @@ namespace Chummer
                 XmlNode objAmendOperation = objAmendingNodeAttribs.RemoveNamedItem("amendoperation");
                 if (objAmendOperation != null)
                 {
-                    strOperation = objAmendOperation.InnerTextViaPool(token);
+                    strOperation = objAmendOperation.InnerTextViaPool(token).ToUpperInvariant();
                 }
 
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
@@ -2241,7 +2241,7 @@ namespace Chummer
                         else
                         {
                             objAmendingNodeId = xmlAmendingNode["name"];
-                            if (objAmendingNodeId != null && (strOperation == "remove"
+                            if (objAmendingNodeId != null && (strOperation == "REMOVE"
                                                               || xmlAmendingNode.SelectSingleNodeAndCacheExpressionAsNavigator(
                                                                   "child::*[not(self::name)]", token) != null))
                             {
@@ -2299,7 +2299,7 @@ namespace Chummer
 
             // AddNode operation will always add this node in its current state.
             // This is almost the functionality of "custom_*" (exception: if a custom item already exists, it won't be replaced), but with all the extra bells and whistles of the amend system for targeting where to add the custom item
-            if (strOperation == "addnode")
+            if (strOperation == "ADDNODE")
             {
                 using (XmlNodeList xmlParentNodeList = xmlDoc.SelectNodes(strXPath))
                 {
@@ -2328,7 +2328,7 @@ namespace Chummer
             {
                 List<XmlNode> lstElementChildren = null;
                 // Pre-cache list of elements if we don't have an operation specified or have recurse specified
-                if (string.IsNullOrEmpty(strOperation) || strOperation == "recurse")
+                if (string.IsNullOrEmpty(strOperation) || strOperation == "RECURSE")
                 {
                     lstElementChildren = new List<XmlNode>(xmlAmendingNode.ChildNodes.Count);
                     if (xmlAmendingNode.HasChildNodes)
@@ -2349,19 +2349,19 @@ namespace Chummer
                 switch (strOperation)
                 {
                     // These operations are supported
-                    case "remove":
+                    case "REMOVE":
                     // Replace operation without "addifnotfound" offers identical functionality to "override_*", but with all the extra bells and whistles of the amend system for targeting what to override
                     // Replace operation with "addifnotfound" offers identical functionality to "custom_*", but with all the extra bells and whistles of the amend system for targeting where to replace/add the item
-                    case "replace":
-                    case "append":
+                    case "REPLACE":
+                    case "APPEND":
                         break;
 
-                    case "regexreplace":
+                    case "REGEXREPLACE":
                         // Operation only supported if a pattern is actually defined
                         if (string.IsNullOrWhiteSpace(strRegexPattern))
                         {
-                            strOperation = "replace";
-                            goto case "replace";
+                            strOperation = "REPLACE";
+                            goto case "REPLACE";
                         }
 
                         // Test to make sure RegEx pattern is properly formatted before actual amend code starts
@@ -2379,7 +2379,7 @@ namespace Chummer
 
                         break;
 
-                    case "recurse":
+                    case "RECURSE":
                         // Operation only supported if we have children
                         if (lstElementChildren?.Count > 0)
                             break;
@@ -2388,14 +2388,14 @@ namespace Chummer
                     default:
                         // ..."recurse" if we have children...
                         if (lstElementChildren?.Count > 0)
-                            strOperation = "recurse";
+                            strOperation = "RECURSE";
                         // ..."append" if we don't have children and there's no target...
                         else if (objNodesToEdit?.Count == 0)
-                            strOperation = "append";
+                            strOperation = "APPEND";
                         // ..."replace" but adding if not found if we don't have children and there are one or more targets.
                         else
                         {
-                            strOperation = "replace";
+                            strOperation = "REPLACE";
                             if (!blnAddIfNotFoundAttributePresent)
                                 blnAddIfNotFound = true;
                         }
@@ -2406,10 +2406,10 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
 
                 // We found nodes to target with the amend!
-                if (objNodesToEdit?.Count > 0 || (strOperation == "recurse" && !blnAddIfNotFound))
+                if (objNodesToEdit?.Count > 0 || (strOperation == "RECURSE" && !blnAddIfNotFound))
                 {
                     // Recurse is special in that it doesn't directly target nodes, but does so indirectly through strNewXPath...
-                    if (strOperation == "recurse")
+                    if (strOperation == "RECURSE")
                     {
                         if (lstElementChildren?.Count > 0)
                         {
@@ -2448,7 +2448,7 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             XmlNode xmlParentNode = objNodeToEdit.ParentNode;
                             // If the old node exists and the amending node has the attribute 'amendoperation="remove"', then the old node is completely erased.
-                            if (strOperation == "remove")
+                            if (strOperation == "REMOVE")
                             {
                                 xmlParentNode?.RemoveChild(objNodeToEdit);
                             }
@@ -2456,7 +2456,7 @@ namespace Chummer
                             {
                                 switch (strOperation)
                                 {
-                                    case "append":
+                                    case "APPEND":
                                         if (xmlAmendingNode.HasChildNodes)
                                         {
                                             foreach (XmlNode xmlChild in xmlAmendingNode.ChildNodes)
@@ -2542,7 +2542,7 @@ namespace Chummer
 
                                         break;
 
-                                    case "replace":
+                                    case "REPLACE":
                                         StripAmendAttributesRecursively(xmlAmendingNode, token);
                                         if (xmlParentNode != null)
                                         {
@@ -2554,7 +2554,7 @@ namespace Chummer
 
                                         break;
 
-                                    case "regexreplace":
+                                    case "REGEXREPLACE":
                                         if (xmlAmendingNode.HasChildNodes)
                                         {
                                             foreach (XmlNode xmlChild in xmlAmendingNode.ChildNodes)
@@ -2656,8 +2656,8 @@ namespace Chummer
                     }
                 }
                 // If there aren't any old nodes found and the amending node is tagged as needing to be added should this be the case, then append the entire amending node to the XPath.
-                else if (strOperation == "append" ||
-                         (blnAddIfNotFound && (strOperation == "recurse" || strOperation == "replace")))
+                else if (strOperation == "APPEND" ||
+                         (blnAddIfNotFound && (strOperation == "RECURSE" || strOperation == "REPLACE")))
                 {
                     // Indication that we recursed into a set of nodes that don't exist in the base document, so those nodes will need to be recreated
                     if (lstExtraNodesToAddIfNotFound?.Count > 0 && string.IsNullOrEmpty(strFilter)) // Filter of any kind on this node would fail after addition, so skip if there is one

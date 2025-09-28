@@ -92,7 +92,7 @@ namespace Chummer
             try
             {
                 string strDuration;
-                switch (xmlComplexForm.SelectSingleNodeAndCacheExpression("duration")?.Value)
+                switch (xmlComplexForm.SelectSingleNodeAndCacheExpression("duration")?.Value.ToUpperInvariant())
                 {
                     case "P":
                         strDuration = await LanguageManager.GetStringAsync("String_SpellDurationPermanent").ConfigureAwait(false);
@@ -102,7 +102,7 @@ namespace Chummer
                         strDuration = await LanguageManager.GetStringAsync("String_SpellDurationSustained").ConfigureAwait(false);
                         break;
 
-                    case "Special":
+                    case "SPECIAL":
                         strDuration = await LanguageManager.GetStringAsync("String_SpellDurationSpecial").ConfigureAwait(false);
                         break;
 
@@ -114,29 +114,29 @@ namespace Chummer
                 await lblDuration.DoThreadSafeAsync(x => x.Text = strDuration).ConfigureAwait(false);
 
                 string strTarget;
-                switch (xmlComplexForm.SelectSingleNodeAndCacheExpression("target")?.Value)
+                switch (xmlComplexForm.SelectSingleNodeAndCacheExpression("target")?.Value.ToUpperInvariant())
                 {
-                    case "Persona":
+                    case "PERSONA":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetPersona").ConfigureAwait(false);
                         break;
 
-                    case "Device":
+                    case "DEVICE":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetDevice").ConfigureAwait(false);
                         break;
 
-                    case "File":
+                    case "FILE":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetFile").ConfigureAwait(false);
                         break;
 
-                    case "Self":
+                    case "SELF":
                         strTarget = await LanguageManager.GetStringAsync("String_SpellRangeSelf").ConfigureAwait(false);
                         break;
 
-                    case "Sprite":
+                    case "SPRITE":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetSprite").ConfigureAwait(false);
                         break;
 
-                    case "Host":
+                    case "HOST":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetHost").ConfigureAwait(false);
                         break;
 

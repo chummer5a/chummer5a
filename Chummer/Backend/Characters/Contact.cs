@@ -465,12 +465,12 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strValue))
                 return default;
-            switch (strValue)
+            switch (strValue.ToUpperInvariant())
             {
-                case "Contact":
+                case "CONTACT":
                     return ContactType.Contact;
 
-                case "Pet":
+                case "PET":
                     return ContactType.Pet;
 
                 default:

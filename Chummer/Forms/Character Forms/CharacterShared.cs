@@ -1023,9 +1023,9 @@ namespace Chummer
                 if (objNode == null)
                     return;
                 TreeNode objParentNode;
-                switch (objSpell.Category)
+                switch (objSpell.Category.ToUpperInvariant())
                 {
-                    case "Combat":
+                    case "COMBAT":
                         if (objCombatNode == null)
                         {
                             objCombatNode = new TreeNode
@@ -1043,7 +1043,7 @@ namespace Chummer
                         objParentNode = objCombatNode;
                         break;
 
-                    case "Detection":
+                    case "DETECTION":
                         if (objDetectionNode == null)
                         {
                             objDetectionNode = new TreeNode
@@ -1061,7 +1061,7 @@ namespace Chummer
                         objParentNode = objDetectionNode;
                         break;
 
-                    case "Health":
+                    case "HEALTH":
                         if (objHealthNode == null)
                         {
                             objHealthNode = new TreeNode
@@ -1080,7 +1080,7 @@ namespace Chummer
                         objParentNode = objHealthNode;
                         break;
 
-                    case "Illusion":
+                    case "ILLUSION":
                         if (objIllusionNode == null)
                         {
                             objIllusionNode = new TreeNode
@@ -1100,7 +1100,7 @@ namespace Chummer
                         objParentNode = objIllusionNode;
                         break;
 
-                    case "Manipulation":
+                    case "MANIPULATION":
                         if (objManipulationNode == null)
                         {
                             objManipulationNode = new TreeNode
@@ -1121,7 +1121,7 @@ namespace Chummer
                         objParentNode = objManipulationNode;
                         break;
 
-                    case "Rituals":
+                    case "RITUALS":
                         if (objRitualsNode == null)
                         {
                             objRitualsNode = new TreeNode
@@ -1143,7 +1143,7 @@ namespace Chummer
                         objParentNode = objRitualsNode;
                         break;
 
-                    case "Enchantments":
+                    case "ENCHANTMENTS":
                         if (objEnchantmentsNode == null)
                         {
                             objEnchantmentsNode = new TreeNode
@@ -2385,7 +2385,7 @@ namespace Chummer
                 TreeNode objParentNode;
                 switch (objPower.Category)
                 {
-                    case "Weakness":
+                    case "WEAKNESS":
                         if (objWeaknessesNode == null)
                         {
                             objWeaknessesNode = new TreeNode

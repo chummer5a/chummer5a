@@ -299,7 +299,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            switch (bonusNode["name"]?.InnerTextViaPool())
+            switch (bonusNode["name"]?.InnerTextViaPool().ToUpperInvariant())
             {
                 case "MAG":
                     CreateImprovement("MAG", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
@@ -368,34 +368,34 @@ namespace Chummer
                 {
                     foreach (XmlNode xmlEnable in xmlEnableList)
                     {
-                        switch (xmlEnable.InnerTextViaPool())
+                        switch (xmlEnable.InnerTextViaPool().ToUpperInvariant())
                         {
-                            case "magician":
+                            case "MAGICIAN":
                                 _objCharacter.MagicianEnabled = true;
                                 CreateImprovement("Magician", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
                                 break;
 
-                            case "adept":
+                            case "ADEPT":
                                 _objCharacter.AdeptEnabled = true;
                                 CreateImprovement("Adept", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab",
                                     0, 0);
                                 break;
 
-                            case "technomancer":
+                            case "TECHNOMANCER":
                                 _objCharacter.TechnomancerEnabled = true;
                                 CreateImprovement("Technomancer", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
                                 break;
 
-                            case "advanced programs":
+                            case "ADVANCED PROGRAMS":
                                 _objCharacter.AdvancedProgramsEnabled = true;
                                 CreateImprovement("Advanced Programs", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
                                 break;
 
-                            case "critter":
+                            case "CRITTER":
                                 _objCharacter.CritterEnabled = true;
                                 CreateImprovement("Critter", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
@@ -417,15 +417,15 @@ namespace Chummer
                 {
                     foreach (XmlNode xmlDisable in xmlDisableList)
                     {
-                        switch (xmlDisable.InnerTextViaPool())
+                        switch (xmlDisable.InnerTextViaPool().ToUpperInvariant())
                         {
-                            case "cyberware":
+                            case "CYBERWARE":
                                 _objCharacter.CyberwareDisabled = true;
                                 CreateImprovement("Cyberware", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "disabletab", 0, 0);
                                 break;
 
-                            case "initiation":
+                            case "INITIATION":
                                 _objCharacter.InitiationForceDisabled = true;
                                 CreateImprovement("Initiation", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "disabletab", 0, 0);
@@ -1206,19 +1206,19 @@ namespace Chummer
                 // string strBonus = bonusNode["value"].InnerTextViaPool();
                 Improvement.ImprovementType eType;
 
-                switch (strLimit)
+                switch (strLimit.ToUpperInvariant())
                 {
-                    case "Mental":
+                    case "MENTAL":
                         {
                             eType = Improvement.ImprovementType.MentalLimit;
                             break;
                         }
-                    case "Social":
+                    case "SOCIAL":
                         {
                             eType = Improvement.ImprovementType.SocialLimit;
                             break;
                         }
-                    case "Physical":
+                    case "PHYSICAL":
                         {
                             eType = Improvement.ImprovementType.PhysicalLimit;
                             break;
@@ -2053,14 +2053,14 @@ namespace Chummer
             string strMode = bonusNode["type"]?.InnerTextViaPool() ?? "all";
 
             IList<Contact> lstSelectedContacts;
-            switch (strMode)
+            switch (strMode.ToUpperInvariant())
             {
-                case "all":
+                case "ALL":
                     lstSelectedContacts = _objCharacter.Contacts;
                     break;
 
-                case "group":
-                case "nongroup":
+                case "GROUP":
+                case "NONGROUP":
                 {
                     bool blnGroup = strMode == "group";
                     //Select any contact where IsGroup equals blnGroup

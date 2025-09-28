@@ -3941,10 +3941,10 @@ namespace Chummer.Backend.Skills
                     }
 
                     //TODO: This is a temporary workaround until proper support for selectively enabling or disabling skills works, as above.
-                    switch (Attribute)
+                    switch (Attribute.ToUpperInvariant())
                     {
                         case "MAG":
-                        case "MAGAdept":
+                        case "MAGADEPT":
                             intReturn = CharacterObject.MAGEnabled.ToInt32();
                             _intCachedEnabled = intReturn;
                             return intReturn > 0;
@@ -4070,10 +4070,10 @@ namespace Chummer.Backend.Skills
                 }
 
                 //TODO: This is a temporary workaround until proper support for selectively enabling or disabling skills works, as above.
-                switch (await GetAttributeAsync(token).ConfigureAwait(false))
+                switch ((await GetAttributeAsync(token).ConfigureAwait(false)).ToUpperInvariant())
                 {
                     case "MAG":
-                    case "MAGAdept":
+                    case "MAGADEPT":
                         intReturn = (await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false))
                             .ToInt32();
                         _intCachedEnabled = intReturn;
@@ -7722,10 +7722,10 @@ namespace Chummer.Backend.Skills
                         setProperties.Add(nameof(Enabled));
                     else
                     {
-                        switch (await GetAttributeAsync(token).ConfigureAwait(false))
+                        switch ((await GetAttributeAsync(token).ConfigureAwait(false)).ToUpperInvariant())
                         {
                             case "MAG":
-                            case "MAGAdept":
+                            case "MAGADEPT":
                                 if (e.PropertyNames.Contains(nameof(Character.MAGEnabled)))
                                     setProperties.Add(nameof(Enabled));
                                 break;

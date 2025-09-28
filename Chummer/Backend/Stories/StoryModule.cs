@@ -455,14 +455,14 @@ namespace Chummer
                     ? string.Empty
                     : strInput.Substring(intPipeIndex + 1);
 
-                switch (strFunction)
+                switch (strFunction.ToUpperInvariant())
                 {
-                    case "$ReverseTranslateExtra":
+                    case "$REVERSETRANSLATEEXTRA":
                     {
                         return await _objCharacter.ReverseTranslateExtraAsync(strArguments, token: token)
                                                   .ConfigureAwait(false);
                     }
-                    case "$XmlNameFriendly":
+                    case "$XMLNAMEFRIENDLY":
                     {
                         string strReturn = strArguments
                                .FastEscape(s_achrAlwaysTrimForXmlNameFriendly);
@@ -473,47 +473,47 @@ namespace Chummer
                             strReturn = strReturn.FastEscape(strNuyenSymbol.ToCharArray()); // Cannot use Pooled version because the padded values can have characters we don't want escaped
                         return strReturn.ToLower(objCulture);
                     }
-                    case "$CharacterName":
+                    case "$CHARACTERNAME":
                     {
                         return await _objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
                     }
-                    case "$CharacterGrammaticalGender":
+                    case "$CHARACTERGRAMMATICALGENDER":
                     {
                         return await _objCharacter.GetCharacterGrammaticGenderAsync(token).ConfigureAwait(false);
                     }
-                    case "$Metatype":
+                    case "$METATYPE":
                     {
                         return await _objCharacter.GetMetatypeAsync(token).ConfigureAwait(false);
                     }
-                    case "$Metavariant":
+                    case "$METAVARIANT":
                     {
                         return await _objCharacter.GetMetavariantAsync(token).ConfigureAwait(false);
                     }
-                    case "$Eyes":
+                    case "$EYES":
                     {
                         return await _objCharacter.GetEyesAsync(token).ConfigureAwait(false);
                     }
-                    case "$Hair":
+                    case "$HAIR":
                     {
                         return await _objCharacter.GetHairAsync(token).ConfigureAwait(false);
                     }
-                    case "$Skin":
+                    case "$SKIN":
                     {
                         return await _objCharacter.GetSkinAsync(token).ConfigureAwait(false);
                     }
-                    case "$Height":
+                    case "$HEIGHT":
                     {
                         return await _objCharacter.GetHeightAsync(token).ConfigureAwait(false);
                     }
-                    case "$Weight":
+                    case "$WEIGHT":
                     {
                         return await _objCharacter.GetWeightAsync(token).ConfigureAwait(false);
                     }
-                    case "$Gender":
+                    case "$GENDER":
                     {
                         return await _objCharacter.GetGenderAsync(token).ConfigureAwait(false);
                     }
-                    case "$Alias":
+                    case "$ALIAS":
                     {
                         string strAlias = await _objCharacter.GetAliasAsync(token).ConfigureAwait(false);
                         return !string.IsNullOrEmpty(strAlias)
@@ -521,7 +521,7 @@ namespace Chummer
                             : await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
                                                    .ConfigureAwait(false);
                     }
-                    case "$Name":
+                    case "$NAME":
                     {
                         string strName = await _objCharacter.GetNameAsync(token).ConfigureAwait(false);
                         if (!string.IsNullOrWhiteSpace(strName))
@@ -555,7 +555,7 @@ namespace Chummer
                         return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
                                                     .ConfigureAwait(false);
                     }
-                    case "$Year":
+                    case "$YEAR":
                     {
                         string strAge = await _objCharacter.GetAgeAsync(token).ConfigureAwait(false);
                         if (int.TryParse(strAge, out int intCurrentAge))
@@ -573,12 +573,12 @@ namespace Chummer
                         return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
                                                     .ConfigureAwait(false);
                     }
-                    case "$GetString":
+                    case "$GETSTRING":
                     {
                         return await LanguageManager.GetStringAsync(strArguments, strLanguage, token: token)
                                                     .ConfigureAwait(false);
                     }
-                    case "$XPath":
+                    case "$XPATH":
                     {
                         (bool blnSuccess, object objProcess) = await CommonFunctions
                                                                      .EvaluateInvariantXPathAsync(strArguments, token)
@@ -588,7 +588,7 @@ namespace Chummer
                             : await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
                                                    .ConfigureAwait(false);
                     }
-                    case "$Index":
+                    case "$INDEX":
                     {
                         string strReturn = string.Empty;
                         int intIndex = 0;
@@ -613,7 +613,7 @@ namespace Chummer
                         return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
                                                     .ConfigureAwait(false);
                     }
-                    case "$LookupExtra":
+                    case "$LOOKUPEXTRA":
                     {
                         string strExtra = string.Empty;
                         AIProgram objProgram = await _objCharacter.AIPrograms
@@ -727,7 +727,7 @@ namespace Chummer
 
                         return string.Empty;
                     }
-                    case "$Fallback":
+                    case "$FALLBACK":
                     {
                         int intArgumentPipeIndex = strArguments.IndexOf('|');
                         if (intArgumentPipeIndex != -1)

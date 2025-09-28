@@ -136,12 +136,12 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strValue))
                 return default;
-            switch (strValue)
+            switch (strValue.ToUpperInvariant())
             {
-                case "Negative":
+                case "NEGATIVE":
                     return QualityType.Negative;
 
-                case "LifeModule":
+                case "LIFEMODULE":
                     return QualityType.LifeModule;
 
                 default:
@@ -157,27 +157,28 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strValue))
                 return default;
-            switch (strValue)
+            switch (strValue.ToUpperInvariant())
             {
-                case "Metatype":
+                case "METATYPE":
                     return QualitySource.Metatype;
 
-                case "MetatypeRemovable":
+                case "METATYPEREMOVABLE":
                     return QualitySource.MetatypeRemovable;
 
-                case "LifeModule":
+                case "LIFEMODULE":
                     return QualitySource.LifeModule;
 
-                case "Built-In":
+                case "BUILTIN":
+                case "BUILT-IN":
                     return QualitySource.BuiltIn;
 
-                case "Improvement":
+                case "IMPROVEMENT":
                     return QualitySource.Improvement;
 
-                case "MetatypeRemovedAtChargen":
+                case "METATYPEREMOVEDATCHARGEN":
                     return QualitySource.MetatypeRemovedAtChargen;
 
-                case "Heritage":
+                case "HERITAGE":
                     return QualitySource.Heritage;
 
                 default:

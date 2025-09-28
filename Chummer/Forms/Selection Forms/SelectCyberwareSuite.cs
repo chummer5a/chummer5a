@@ -223,43 +223,43 @@ namespace Chummer
         /// <param name="strValue">Grade from the Cyberware Suite.</param>
         private static string CyberwareGradeName(string strValue)
         {
-            switch (strValue)
+            switch (strValue.ToUpperInvariant())
             {
-                case "Alphaware":
+                case "ALPHAWARE":
                     return "Alphaware";
 
-                case "Betaware":
+                case "BETAWARE":
                     return "Betaware";
 
-                case "Deltaware":
+                case "DELTAWARE":
                     return "Deltaware";
 
-                case "Standard (Used)":
-                case "StandardSecondHand":
+                case "STANDARD (USED)":
+                case "STANDARDSECONDHAND":
                     return "Standard (Used)";
 
-                case "Alphaware (Used)":
-                case "AlphawareSecondHand":
+                case "ALPHAWARE (USED)":
+                case "ALPHAWARESECONDHAND":
                     return "Alphaware (Used)";
 
-                case "StandardAdapsin":
+                case "STANDARDADAPSIN":
                     return "Standard (Adapsin)";
 
-                case "AlphawareAdapsin":
+                case "ALPHAWAREADAPSIN":
                     return "Alphaware (Adapsin)";
 
-                case "BetawareAdapsin":
+                case "BETAWAREADAPSIN":
                     return "Betaware (Adapsin)";
 
-                case "DeltawareAdapsin":
+                case "DELTAWAREADAPSIN":
                     return "Deltaware (Adapsin)";
 
-                case "Standard (Used) (Adapsin)":
-                case "StandardSecondHandAdapsin":
+                case "STANDARD (USED) (ADAPSIN)":
+                case "STANDARDSECONDHANDADAPSIN":
                     return "Standard (Used) (Adapsin)";
 
-                case "Alphaware (Used) (Adapsin)":
-                case "AlphawareSecondHandAdapsin":
+                case "ALPHAWARE (USED) (ADAPSIN)":
+                case "ALPHAWARESECONDHANDADAPSIN":
                     return "Alphaware (Used) (Adapsin)";
 
                 default:

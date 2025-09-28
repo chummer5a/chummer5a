@@ -78,15 +78,15 @@ namespace Chummer.Backend.Equipment
         /// <param name="strValue">String value to convert.</param>
         public static QualityType ConvertToLifestyleQualityType(string strValue)
         {
-            switch (strValue)
+            switch (strValue.ToUpperInvariant())
             {
-                case "Negative":
+                case "NEGATIVE":
                     return QualityType.Negative;
 
-                case "Positive":
+                case "POSITIVE":
                     return QualityType.Positive;
 
-                case "Contracts":
+                case "CONTRACTS":
                     return QualityType.Contracts;
 
                 default:
@@ -100,15 +100,15 @@ namespace Chummer.Backend.Equipment
         /// <param name="strValue">String value to convert.</param>
         public static QualitySource ConvertToLifestyleQualitySource(string strValue)
         {
-            switch (strValue)
+            switch (strValue.ToUpperInvariant())
             {
-                case "BuiltIn":
+                case "BUILTIN":
                     return QualitySource.BuiltIn;
 
-                case "Heritage":
+                case "HERITAGE":
                     return QualitySource.Heritage;
 
-                case "Improvement":
+                case "IMPROVEMENT":
                     return QualitySource.Improvement;
 
                 default:

@@ -669,7 +669,7 @@ namespace Chummer
                 // First remove all existing bindings
                 foreach (CharacterAttrib objAttribute in GetAllAttributesForModification(token))
                 {
-                    switch (objAttribute.Abbrev)
+                    switch (objAttribute.Abbrev.ToUpperInvariant())
                     {
                         case "BOD":
                             objAttribute.MultiplePropertiesChangedAsync -= RefreshBODDependentProperties;
@@ -711,7 +711,7 @@ namespace Chummer
                             objAttribute.MultiplePropertiesChangedAsync -= RefreshMAGDependentProperties;
                             break;
 
-                        case "MAGAdept":
+                        case "MAGADEPT":
                             objAttribute.MultiplePropertiesChangedAsync -= RefreshMAGAdeptDependentProperties;
                             break;
 
@@ -734,7 +734,7 @@ namespace Chummer
                     CharacterAttrib objAttribute = GetAttribute(strAbbrev, true, token);
                     if (objAttribute == null)
                         continue;
-                    switch (strAbbrev)
+                    switch (strAbbrev.ToUpperInvariant())
                     {
                         case "BOD":
                             objAttribute.MultiplePropertiesChangedAsync += RefreshBODDependentProperties;
@@ -776,7 +776,7 @@ namespace Chummer
                             objAttribute.MultiplePropertiesChangedAsync += RefreshMAGDependentProperties;
                             break;
 
-                        case "MAGAdept":
+                        case "MAGADEPT":
                             objAttribute.MultiplePropertiesChangedAsync += RefreshMAGAdeptDependentProperties;
                             break;
 
@@ -809,7 +809,7 @@ namespace Chummer
                 foreach (CharacterAttrib objAttribute in await GetAllAttributesForModificationAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
-                    switch (objAttribute.Abbrev)
+                    switch (objAttribute.Abbrev.ToUpperInvariant())
                     {
                         case "BOD":
                             objAttribute.MultiplePropertiesChangedAsync -= RefreshBODDependentProperties;
@@ -841,7 +841,7 @@ namespace Chummer
                         case "MAG":
                             objAttribute.MultiplePropertiesChangedAsync -= RefreshMAGDependentProperties;
                             break;
-                        case "MAGAdept":
+                        case "MAGADEPT":
                             objAttribute.MultiplePropertiesChangedAsync -= RefreshMAGAdeptDependentProperties;
                             break;
                         case "RES":
@@ -862,7 +862,7 @@ namespace Chummer
                         await GetAttributeAsync(strAbbrev, true, token).ConfigureAwait(false);
                     if (objAttribute == null)
                         continue;
-                    switch (strAbbrev)
+                    switch (strAbbrev.ToUpperInvariant())
                     {
                         case "BOD":
                             objAttribute.MultiplePropertiesChangedAsync += RefreshBODDependentProperties;
@@ -904,7 +904,7 @@ namespace Chummer
                             objAttribute.MultiplePropertiesChangedAsync += RefreshMAGDependentProperties;
                             break;
 
-                        case "MAGAdept":
+                        case "MAGADEPT":
                             objAttribute.MultiplePropertiesChangedAsync += RefreshMAGAdeptDependentProperties;
                             break;
 
@@ -7698,8 +7698,8 @@ namespace Chummer
                                                     await SetEdgeUsedAsync((-decOldEdgeUsed).StandardRound(), token).ConfigureAwait(false);
                                             }
                                             continue;
-                                        case "EssenceLoss":
-                                        case "EssenceLossChargen":
+                                        case nameof(Improvement.ImprovementSource.EssenceLoss):
+                                        case nameof(Improvement.ImprovementSource.EssenceLossChargen):
                                             // Do not load essence loss improvements if this character does not have any attributes affected by essence loss
                                             if (_decEssenceAtSpecialStart == decimal.MinValue)
                                                 continue;
@@ -16677,9 +16677,9 @@ namespace Chummer
                 {
                     int intPowerPoints;
 
-                    switch (await GetMetatypeAsync(token).ConfigureAwait(false))
+                    switch ((await GetMetatypeAsync(token).ConfigureAwait(false)).ToUpperInvariant())
                     {
-                        case "Free Spirit":
+                        case "FREE SPIRIT":
                             // Critter Free Spirits have a number of Power Points equal to their EDG plus any Free Spirit Power Points Improvements.
                             intPowerPoints = await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
                                                    .GetTotalValueAsync(token).ConfigureAwait(false)
@@ -16689,7 +16689,7 @@ namespace Chummer
                                                           token: token).ConfigureAwait(false)).StandardRound();
                             break;
 
-                        case "Ally Spirit":
+                        case "ALLY SPIRIT":
                             // Ally Spirits get a number of Power Points equal to their MAG.
                             intPowerPoints = await (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
                                                    .GetTotalValueAsync(token).ConfigureAwait(false);
@@ -28018,10 +28018,10 @@ namespace Chummer
                 IDisposable objLocker = null;
                 if (blnAttributeSpecific)
                 {
-                    switch (strAttribute)
+                    switch (strAttribute.ToUpperInvariant())
                     {
                         case "MAG":
-                        case "MAGAdept":
+                        case "MAGADEPT":
                             decExtraEss = ImprovementManager.ValueOf(
                                           this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100,
                                           token: token)
@@ -28127,10 +28127,10 @@ namespace Chummer
                 IAsyncDisposable objLocker2 = null;
                 if (blnAttributeSpecific)
                 {
-                    switch (strAttribute)
+                    switch (strAttribute.ToUpperInvariant())
                     {
                         case "MAG":
-                        case "MAGAdept":
+                        case "MAGADEPT":
                             decExtraEss = await ImprovementManager.ValueOfAsync(
                                               this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100,
                                               token: token).ConfigureAwait(false)
@@ -41348,13 +41348,13 @@ namespace Chummer
                     return decTmp;
 
                 int intIndexToGet = 0;
-                switch (strType)
+                switch (strType.ToUpperInvariant())
                 {
-                    case "Fly":
+                    case "FLY":
                         intIndexToGet = 2;
                         break;
 
-                    case "Swim":
+                    case "SWIM":
                         intIndexToGet = 1;
                         break;
                 }
@@ -41387,13 +41387,13 @@ namespace Chummer
                     return decTmp;
 
                 int intIndexToGet = 0;
-                switch (strType)
+                switch (strType.ToUpperInvariant())
                 {
-                    case "Fly":
+                    case "FLY":
                         intIndexToGet = 2;
                         break;
 
-                    case "Swim":
+                    case "SWIM":
                         intIndexToGet = 1;
                         break;
                 }
@@ -41429,13 +41429,13 @@ namespace Chummer
                     return decTmp;
 
                 int intIndexToGet = 0;
-                switch (strType)
+                switch (strType.ToUpperInvariant())
                 {
-                    case "Fly":
+                    case "FLY":
                         intIndexToGet = 2;
                         break;
 
-                    case "Swim":
+                    case "SWIM":
                         intIndexToGet = 1;
                         break;
                 }
@@ -41468,13 +41468,13 @@ namespace Chummer
                     return decTmp;
 
                 int intIndexToGet = 0;
-                switch (strType)
+                switch (strType.ToUpperInvariant())
                 {
-                    case "Fly":
+                    case "FLY":
                         intIndexToGet = 2;
                         break;
 
-                    case "Swim":
+                    case "SWIM":
                         intIndexToGet = 1;
                         break;
                 }
@@ -41510,13 +41510,13 @@ namespace Chummer
                     return decTmp;
 
                 int intIndexToGet = 0;
-                switch (strType)
+                switch (strType.ToUpperInvariant())
                 {
-                    case "Fly":
+                    case "FLY":
                         intIndexToGet = 2;
                         break;
 
-                    case "Swim":
+                    case "SWIM":
                         intIndexToGet = 1;
                         break;
                 }
@@ -41549,13 +41549,13 @@ namespace Chummer
                     return decTmp;
 
                 int intIndexToGet = 0;
-                switch (strType)
+                switch (strType.ToUpperInvariant())
                 {
-                    case "Fly":
+                    case "FLY":
                         intIndexToGet = 2;
                         break;
 
-                    case "Swim":
+                    case "SWIM":
                         intIndexToGet = 1;
                         break;
                 }
@@ -46333,7 +46333,7 @@ namespace Chummer
                             {
                                 // Values get subtracted because negative modifier = positive reduction, positive modifier = negative reduction
                                 // Augmented values also get factored in in case the character is switching off the option to treat essence loss as an augmented malus
-                                switch (objImprovement.ImprovedName)
+                                switch (objImprovement.ImprovedName.ToUpperInvariant())
                                 {
                                     case "RES":
                                         intOldRESCareerMinimumReduction -=
@@ -46350,7 +46350,7 @@ namespace Chummer
                                             objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                         break;
 
-                                    case "MAGAdept":
+                                    case "MAGADEPT":
                                         intOldMAGAdeptCareerMinimumReduction -=
                                             objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                         break;
@@ -47167,7 +47167,7 @@ namespace Chummer
                             {
                                 // Values get subtracted because negative modifier = positive reduction, positive modifier = negative reduction
                                 // Augmented values also get factored in in case the character is switching off the option to treat essence loss as an augmented malus
-                                switch (objImprovement.ImprovedName)
+                                switch (objImprovement.ImprovedName.ToUpperInvariant())
                                 {
                                     case "RES":
                                         intOldRESCareerMinimumReduction -=
@@ -47184,7 +47184,7 @@ namespace Chummer
                                             objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                         break;
 
-                                    case "MAGAdept":
+                                    case "MAGADEPT":
                                         intOldMAGAdeptCareerMinimumReduction -=
                                             objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                         break;

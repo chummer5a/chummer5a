@@ -218,26 +218,26 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                switch (macroName)
+                switch (macroName.ToUpperInvariant())
                 {
                     //$DOLLAR is defined elsewhere to prevent recursive calling
-                    case "metatype":
+                    case "METATYPE":
                         string strMetatype = await _objCharacter.GetMetatypeAsync(token).ConfigureAwait(false);
                         return strMetatype.ToLowerInvariant();
 
-                    case "metavariant":
+                    case "METAVARIANT":
                         string strMetavariant = await _objCharacter.GetMetavariantAsync(token).ConfigureAwait(false);
                         return strMetavariant.ToLowerInvariant();
 
-                    case "street":
+                    case "STREET":
                         string strAlias = await _objCharacter.GetAliasAsync(token).ConfigureAwait(false);
                         return !string.IsNullOrEmpty(strAlias) ? strAlias : "Alias ";
 
-                    case "real":
+                    case "REAL":
                         string strName = await _objCharacter.GetNameAsync(token).ConfigureAwait(false);
                         return !string.IsNullOrEmpty(strName) ? strName : "Unnamed John Doe ";
 
-                    case "year":
+                    case "YEAR":
                         string strAge = await _objCharacter.GetAgeAsync(token).ConfigureAwait(false);
                         if (int.TryParse(strAge, out int year))
                         {
@@ -261,9 +261,9 @@ namespace Chummer
                         //Already defined, no need to do anything fancy
                         if (!_dicPersistence.TryGetValue(macroPool, out string strSelectedNodeName))
                         {
-                            switch (xmlUserMacroFirstChild.Name)
+                            switch (xmlUserMacroFirstChild.Name.ToUpperInvariant())
                             {
-                                case "random":
+                                case "RANDOM":
                                 {
                                     XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild
                                         .SelectAndCacheExpression("./*[not(self::default)]", token: token);
@@ -291,7 +291,7 @@ namespace Chummer
 
                                     break;
                                 }
-                                case "persistent":
+                                case "PERSISTENT":
                                 {
                                     //Any node not named
                                     XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild

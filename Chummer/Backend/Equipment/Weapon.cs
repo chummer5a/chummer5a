@@ -11879,18 +11879,18 @@ namespace Chummer.Backend.Equipment
         /// <param name="strValue">String value to convert.</param>
         public static FiringMode ConvertToFiringMode(string strValue)
         {
-            switch (strValue)
+            switch (strValue.ToUpperInvariant())
             {
-                case "DogBrain":
+                case "DOGBRAIN":
                     return FiringMode.DogBrain;
 
-                case "GunneryCommandDevice":
+                case "GUNNERYCOMMANDDEVICE":
                     return FiringMode.GunneryCommandDevice;
 
-                case "RemoteOperated":
+                case "REMOTEOPERATED":
                     return FiringMode.RemoteOperated;
 
-                case "ManualOperation":
+                case "MANUALOPERATION":
                     return FiringMode.ManualOperation;
 
                 default:

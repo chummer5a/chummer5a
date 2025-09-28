@@ -254,10 +254,8 @@ namespace Chummer
         /// <param name="strValue">String value to convert.</param>
         public static ExpenseType ConvertToExpenseType(string strValue)
         {
-            switch (strValue)
+            switch (strValue.ToUpperInvariant())
             {
-                case "nuyen":
-                case "Nuyen":
                 case "NUYEN":
                     return ExpenseType.Nuyen;
 

@@ -452,13 +452,13 @@ namespace Chummer
                             if (xmlValueNode != null)
                             {
                                 int intValue = xmlValueNode.ValueAsInt;
-                                switch (xmlQuality.SelectSingleNodeAndCacheExpression("category", token)?.Value)
+                                switch (xmlQuality.SelectSingleNodeAndCacheExpression("category", token)?.Value.ToUpperInvariant())
                                 {
-                                    case "Positive":
+                                    case "POSITIVE":
                                         intBP += intValue;
                                         break;
 
-                                    case "Negative":
+                                    case "NEGATIVE":
                                         intBP -= intValue;
                                         break;
                                 }
