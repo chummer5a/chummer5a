@@ -626,7 +626,7 @@ namespace Chummer.Backend.Equipment
             Lazy<XmlNode> objMyNode = null;
             Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode> objMyNodeAsync = null;
             if (blnSync)
-                objMyNode = new Lazy<XmlNode>(() => this.GetNode());
+                objMyNode = new Lazy<XmlNode>(() => this.GetNode(token));
             else
                 objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode>(() => this.GetNodeAsync(token), Utils.JoinableTaskFactory);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
@@ -1560,7 +1560,7 @@ namespace Chummer.Backend.Equipment
                             Lazy<decimal> decParentWeight = new Lazy<decimal>(() => objParent.OwnWeight);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Weight}", () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Weapon Weight", () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                            Lazy<decimal> decParentTotalWeight = new Lazy<decimal>(() => objParent.MultipliableWeight(this));
+                            Lazy<decimal> decParentTotalWeight = new Lazy<decimal>(() => objParent.MultipliableWeight(this, token));
                             await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Total Weight}", () => decParentTotalWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Weapon Total Weight", () => decParentTotalWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             await objParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);

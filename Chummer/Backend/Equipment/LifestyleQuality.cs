@@ -500,7 +500,7 @@ namespace Chummer.Backend.Equipment
                 Lazy<XmlNode> objMyNode = null;
                 Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode> objMyNodeAsync = null;
                 if (blnSync)
-                    objMyNode = new Lazy<XmlNode>(() => this.GetNode());
+                    objMyNode = new Lazy<XmlNode>(() => this.GetNode(token));
                 else
                     objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode>(() => this.GetNodeAsync(token), Utils.JoinableTaskFactory);
                 if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))

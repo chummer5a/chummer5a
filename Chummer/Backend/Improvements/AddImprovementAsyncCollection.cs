@@ -5481,7 +5481,7 @@ namespace Chummer
                 {
                     await frmPickItem.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
                     frmPickItem.MyForm.SetGeneralItemsMode(nodeList.OfType<XPathNavigator>().Select(objNode =>
-                        new ListItem(objNode.Value, objNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? objNode.Value)));
+                        new ListItem(objNode.Value, objNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? objNode.Value)));
 
                     if (!string.IsNullOrEmpty(LimitSelection))
                     {

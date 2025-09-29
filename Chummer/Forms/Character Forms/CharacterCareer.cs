@@ -1893,7 +1893,7 @@ namespace Chummer
                                     if (await Program.ShowScrollableMessageBoxAsync(
                                         this, strDescription,
                                         await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError", token: GenericToken).ConfigureAwait(false),
-                                        MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation).ConfigureAwait(false) == DialogResult.Yes)
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, token: GenericToken).ConfigureAwait(false) == DialogResult.Yes)
                                     {
                                         await DoReapplyImprovements(lstInternalIdsNeedingReapplyImprovements,
                                             GenericToken).ConfigureAwait(false);

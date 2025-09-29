@@ -239,7 +239,7 @@ namespace Chummer
             }
 
             // ReSharper disable once MethodSupportsCancellation
-            IAsyncDisposable objInnerLocker = await _objCharacter.LockObject.EnterWriteLockAsync()
+            IAsyncDisposable objInnerLocker = await _objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None)
                                                                  .ConfigureAwait(false);
             try
             {

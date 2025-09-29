@@ -501,12 +501,12 @@ namespace Chummer.UI.Powers
 
         private void InitializeTable()
         {
-            _table = this.DoThreadSafeFunc(() => new TableView<Power>
-            {
-                Dock = DockStyle.Top
-            });
             try
             {
+                _table = this.DoThreadSafeFunc(() => new TableView<Power>
+                {
+                    Dock = DockStyle.Top
+                }, MyToken);
                 // create columns
                 TableColumn<Power> nameColumn = this.DoThreadSafeFunc(
                     () =>
@@ -619,7 +619,7 @@ namespace Chummer.UI.Powers
                                 return default;
                             }
                         }
-                    });
+                    }, MyToken);
                 actionColumn.AddDependency(nameof(Power.DisplayAction));
 
                 TableColumn<Power> ratingColumn = this.DoThreadSafeFunc(() =>
@@ -1228,7 +1228,7 @@ namespace Chummer.UI.Powers
             }
             catch
             {
-                _table.Dispose();
+                _table?.Dispose();
                 throw;
             }
 
