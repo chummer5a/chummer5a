@@ -668,11 +668,22 @@ namespace Chummer
                         }
                     }
                 }
-
-                string strSearch
-                    = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+                string strSearch = _blnXPathMode
+                    ? await txtSearch.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? x.Text, token: token).ConfigureAwait(false)
+                    : await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strSearch))
-                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
+                {
+                    if (_blnXPathMode)
+                    {
+                        // In XPath mode, use the query directly
+                        sbdFilter.Append(" and (").Append(strSearch).Append(')');
+                    }
+                    else
+                    {
+                        // In normal mode, generate search XPath from user text
+                        sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
+                    }
+                }
 
                 if (sbdFilter.Length > 0)
                     strFilter = "[" + sbdFilter.Append(']').ToString();
@@ -790,7 +801,7 @@ namespace Chummer
                     else
                         strDisplayText = strXPath;
 
-                    _lstXPathQueries.Add(new ListItem(strDisplayText, strXPath));
+                    _lstXPathQueries.Add(new ListItem(strXPath, strDisplayText));
                 }
             }
         }
@@ -805,12 +816,7 @@ namespace Chummer
                 if (_blnXPathMode)
                 {
                     // In XPath mode, populate with XPath queries and enable dropdown
-                    x.DataSource = null;
-                    x.Items.Clear();
-                    foreach (ListItem objItem in _lstXPathQueries)
-                    {
-                        x.Items.Add(objItem);
-                    }
+                    x.DataSource = _lstXPathQueries;
                     x.DropDownStyle = ComboBoxStyle.DropDown;
                     x.DisplayMember = "Name";
                     x.ValueMember = "Value";
