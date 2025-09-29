@@ -4399,6 +4399,30 @@ namespace Chummer
             return intReturn;
         }
 
+        public static async Task<int> MaxAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = int.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate(objEnumerator.Current))
+                        intReturn = Math.Max(intReturn, await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return intReturn;
+        }
+
         public static async Task<int> MaxAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -4408,8 +4432,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<long> MaxAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
@@ -4460,6 +4484,30 @@ namespace Chummer
             return lngReturn;
         }
 
+        public static async Task<long> MaxAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            long lngReturn = long.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate(objEnumerator.Current))
+                        lngReturn = Math.Max(lngReturn, await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return lngReturn;
+        }
+
         public static async Task<long> MaxAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -4469,8 +4517,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<float> MaxAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
@@ -4521,6 +4569,30 @@ namespace Chummer
             return fltReturn;
         }
 
+        public static async Task<float> MaxAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            float fltReturn = float.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate(objEnumerator.Current))
+                        fltReturn = Math.Max(fltReturn, await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return fltReturn;
+        }
+
         public static async Task<float> MaxAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -4530,8 +4602,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<double> MaxAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
@@ -4582,6 +4654,30 @@ namespace Chummer
             return dblReturn;
         }
 
+        public static async Task<double> MaxAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            double dblReturn = double.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate(objEnumerator.Current))
+                        dblReturn = Math.Max(dblReturn, await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return dblReturn;
+        }
+
         public static async Task<double> MaxAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -4591,8 +4687,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<decimal> MaxAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
@@ -4643,6 +4739,30 @@ namespace Chummer
             return decReturn;
         }
 
+        public static async Task<decimal> MaxAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decReturn = decimal.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate(objEnumerator.Current))
+                        decReturn = Math.Max(decReturn, await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return decReturn;
+        }
+
         public static async Task<decimal> MaxAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -4652,8 +4772,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<int> MaxParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
@@ -4757,6 +4877,60 @@ namespace Chummer
             return intReturn;
         }
 
+        public static async Task<int> MaxParallelAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<int>> lstTasks = objEnumerable is IReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = int.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<int> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (funcPredicate(objInnerCurrent))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<int> tskLoop in lstTasks)
+                            intReturn = Math.Max(intReturn, await tskLoop.ConfigureAwait(false));
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<int> tskLoop in lstTasks)
+                intReturn = Math.Max(intReturn, await tskLoop.ConfigureAwait(false));
+            return intReturn;
+        }
+
         public static async Task<int> MaxParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxParallelAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -4766,8 +4940,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxParallelAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxParallelAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxParallelAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxParallelAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<long> MaxParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
@@ -4871,6 +5045,60 @@ namespace Chummer
             return lngReturn;
         }
 
+        public static async Task<long> MaxParallelAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<long>> lstTasks = objEnumerable is IReadOnlyCollection<T> objTemp
+                ? new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count))
+                : new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = long.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<long> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (funcPredicate(objInnerCurrent))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<long> tskLoop in lstTasks)
+                            lngReturn = Math.Max(lngReturn, await tskLoop.ConfigureAwait(false));
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<long> tskLoop in lstTasks)
+                lngReturn = Math.Max(lngReturn, await tskLoop.ConfigureAwait(false));
+            return lngReturn;
+        }
+
         public static async Task<long> MaxParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxParallelAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -4880,8 +5108,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxParallelAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxParallelAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxParallelAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxParallelAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<float> MaxParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
@@ -4985,6 +5213,60 @@ namespace Chummer
             return fltReturn;
         }
 
+        public static async Task<float> MaxParallelAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<float>> lstTasks = objEnumerable is IReadOnlyCollection<T> objTemp
+                ? new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count))
+                : new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = float.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<float> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (funcPredicate(objInnerCurrent))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<float> tskLoop in lstTasks)
+                            fltReturn = Math.Max(fltReturn, await tskLoop.ConfigureAwait(false));
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<float> tskLoop in lstTasks)
+                fltReturn = Math.Max(fltReturn, await tskLoop.ConfigureAwait(false));
+            return fltReturn;
+        }
+
         public static async Task<float> MaxParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxParallelAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -4994,8 +5276,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxParallelAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxParallelAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxParallelAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxParallelAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<double> MaxParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
@@ -5099,6 +5381,60 @@ namespace Chummer
             return dblReturn;
         }
 
+        public static async Task<double> MaxParallelAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<double>> lstTasks = objEnumerable is IReadOnlyCollection<T> objTemp
+                ? new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count))
+                : new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = double.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<double> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (funcPredicate(objInnerCurrent))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<double> tskLoop in lstTasks)
+                            dblReturn = Math.Max(dblReturn, await tskLoop.ConfigureAwait(false));
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<double> tskLoop in lstTasks)
+                dblReturn = Math.Max(dblReturn, await tskLoop.ConfigureAwait(false));
+            return dblReturn;
+        }
+
         public static async Task<double> MaxParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxParallelAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -5108,8 +5444,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxParallelAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxParallelAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxParallelAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxParallelAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<decimal> MaxParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
@@ -5213,6 +5549,60 @@ namespace Chummer
             return decReturn;
         }
 
+        public static async Task<decimal> MaxParallelAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<decimal>> lstTasks = objEnumerable is IReadOnlyCollection<T> objTemp
+                ? new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count))
+                : new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = decimal.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<decimal> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (funcPredicate(objInnerCurrent))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<decimal> tskLoop in lstTasks)
+                            decReturn = Math.Max(decReturn, await tskLoop.ConfigureAwait(false));
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<decimal> tskLoop in lstTasks)
+                decReturn = Math.Max(decReturn, await tskLoop.ConfigureAwait(false));
+            return decReturn;
+        }
+
         public static async Task<decimal> MaxParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxParallelAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -5222,8 +5612,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxParallelAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxParallelAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxParallelAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxParallelAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<int> MaxAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
@@ -5274,6 +5664,30 @@ namespace Chummer
             return intReturn;
         }
 
+        public static async Task<int> MaxAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = int.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate(objEnumerator.Current).ConfigureAwait(false))
+                        intReturn = Math.Max(intReturn, await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return intReturn;
+        }
+
         public static async Task<int> MaxAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -5283,8 +5697,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<long> MaxAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
@@ -5335,6 +5749,30 @@ namespace Chummer
             return lngReturn;
         }
 
+        public static async Task<long> MaxAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            long lngReturn = long.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate(objEnumerator.Current).ConfigureAwait(false))
+                        lngReturn = Math.Max(lngReturn, await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return lngReturn;
+        }
+
         public static async Task<long> MaxAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -5344,8 +5782,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<float> MaxAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
@@ -5396,6 +5834,30 @@ namespace Chummer
             return fltReturn;
         }
 
+        public static async Task<float> MaxAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            float fltReturn = float.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate(objEnumerator.Current).ConfigureAwait(false))
+                        fltReturn = Math.Max(fltReturn, await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return fltReturn;
+        }
+
         public static async Task<float> MaxAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -5405,8 +5867,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<double> MaxAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
@@ -5457,6 +5919,30 @@ namespace Chummer
             return dblReturn;
         }
 
+        public static async Task<double> MaxAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            double dblReturn = double.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate(objEnumerator.Current).ConfigureAwait(false))
+                        dblReturn = Math.Max(dblReturn, await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return dblReturn;
+        }
+
         public static async Task<double> MaxAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -5466,8 +5952,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<decimal> MaxAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
@@ -5518,6 +6004,30 @@ namespace Chummer
             return decReturn;
         }
 
+        public static async Task<decimal> MaxAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decReturn = decimal.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate(objEnumerator.Current).ConfigureAwait(false))
+                        decReturn = Math.Max(decReturn, await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return decReturn;
+        }
+
         public static async Task<decimal> MaxAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -5527,8 +6037,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<int> MaxParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
@@ -5639,6 +6149,60 @@ namespace Chummer
             return intReturn;
         }
 
+        public static async Task<int> MaxParallelAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<int>> lstTasks = objEnumerable is IReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = int.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<int> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<int> tskLoop in lstTasks)
+                            intReturn = Math.Max(intReturn, await tskLoop.ConfigureAwait(false));
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<int> tskLoop in lstTasks)
+                intReturn = Math.Max(intReturn, await tskLoop.ConfigureAwait(false));
+            return intReturn;
+        }
+
         public static async Task<int> MaxParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxParallelAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -5648,8 +6212,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxParallelAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxParallelAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxParallelAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxParallelAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<long> MaxParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
@@ -5760,6 +6324,60 @@ namespace Chummer
             return lngReturn;
         }
 
+        public static async Task<long> MaxParallelAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<long>> lstTasks = objEnumerable is IReadOnlyCollection<T> objTemp
+                ? new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count))
+                : new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = long.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<long> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<long> tskLoop in lstTasks)
+                            lngReturn = Math.Max(lngReturn, await tskLoop.ConfigureAwait(false));
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<long> tskLoop in lstTasks)
+                lngReturn = Math.Max(lngReturn, await tskLoop.ConfigureAwait(false));
+            return lngReturn;
+        }
+
         public static async Task<long> MaxParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxParallelAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -5769,8 +6387,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxParallelAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxParallelAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxParallelAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxParallelAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<float> MaxParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
@@ -5881,6 +6499,60 @@ namespace Chummer
             return fltReturn;
         }
 
+        public static async Task<float> MaxParallelAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<float>> lstTasks = objEnumerable is IReadOnlyCollection<T> objTemp
+                ? new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count))
+                : new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = float.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<float> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<float> tskLoop in lstTasks)
+                            fltReturn = Math.Max(fltReturn, await tskLoop.ConfigureAwait(false));
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<float> tskLoop in lstTasks)
+                fltReturn = Math.Max(fltReturn, await tskLoop.ConfigureAwait(false));
+            return fltReturn;
+        }
+
         public static async Task<float> MaxParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxParallelAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -5890,8 +6562,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxParallelAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxParallelAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxParallelAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxParallelAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<double> MaxParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
@@ -6002,6 +6674,60 @@ namespace Chummer
             return dblReturn;
         }
 
+        public static async Task<double> MaxParallelAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<double>> lstTasks = objEnumerable is IReadOnlyCollection<T> objTemp
+                ? new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count))
+                : new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = double.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<double> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<double> tskLoop in lstTasks)
+                            dblReturn = Math.Max(dblReturn, await tskLoop.ConfigureAwait(false));
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<double> tskLoop in lstTasks)
+                dblReturn = Math.Max(dblReturn, await tskLoop.ConfigureAwait(false));
+            return dblReturn;
+        }
+
         public static async Task<double> MaxParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxParallelAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -6011,8 +6737,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxParallelAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxParallelAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxParallelAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxParallelAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<decimal> MaxParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
@@ -6123,6 +6849,60 @@ namespace Chummer
             return decReturn;
         }
 
+        public static async Task<decimal> MaxParallelAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<decimal>> lstTasks = objEnumerable is IReadOnlyCollection<T> objTemp
+                ? new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count))
+                : new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = decimal.MinValue;
+            IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator();
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<decimal> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<decimal> tskLoop in lstTasks)
+                            decReturn = Math.Max(decReturn, await tskLoop.ConfigureAwait(false));
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<decimal> tskLoop in lstTasks)
+                decReturn = Math.Max(decReturn, await tskLoop.ConfigureAwait(false));
+            return decReturn;
+        }
+
         public static async Task<decimal> MaxParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await MaxParallelAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
@@ -6132,8 +6912,8 @@ namespace Chummer
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
-                return await MaxParallelAsync(lstEnumerableCast, funcSelector, token).ConfigureAwait(false);
-            return await MaxParallelAsync(lstEnumerable, funcSelector, token).ConfigureAwait(false);
+                return await MaxParallelAsync(lstEnumerableCast, funcPredicate, funcSelector, token).ConfigureAwait(false);
+            return await MaxParallelAsync(lstEnumerable, funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
         public static async Task<int> MinAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)

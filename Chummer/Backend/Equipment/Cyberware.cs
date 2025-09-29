@@ -377,7 +377,7 @@ namespace Chummer.Backend.Equipment
                                         }
                                     }
 
-                                    if (!blnDoEssenceImprovementsRefresh && (GetParentAsync(token) == null || await GetAddToParentESSAsync(token).ConfigureAwait(false)) &&
+                                    if (!blnDoEssenceImprovementsRefresh && (await GetParentAsync(token).ConfigureAwait(false) == null || await GetAddToParentESSAsync(token).ConfigureAwait(false)) &&
                                         string.IsNullOrEmpty(await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) && await GetParentVehicleAsync(token).ConfigureAwait(false) == null)
                                         blnDoEssenceImprovementsRefresh = true;
                                 }
@@ -439,7 +439,7 @@ namespace Chummer.Backend.Equipment
                                         }
                                     }
 
-                                    if (!blnDoEssenceImprovementsRefresh && (GetParentAsync(token) == null || await GetAddToParentESSAsync(token).ConfigureAwait(false)) &&
+                                    if (!blnDoEssenceImprovementsRefresh && (await GetParentAsync(token).ConfigureAwait(false) == null || await GetAddToParentESSAsync(token).ConfigureAwait(false)) &&
                                         string.IsNullOrEmpty(await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) && await GetParentVehicleAsync(token).ConfigureAwait(false) == null)
                                         blnDoEssenceImprovementsRefresh = true;
                                 }
@@ -505,7 +505,7 @@ namespace Chummer.Backend.Equipment
                                         }
                                     }
 
-                                    if (!blnDoEssenceImprovementsRefresh && (GetParentAsync(token) == null || await GetAddToParentESSAsync(token).ConfigureAwait(false)) &&
+                                    if (!blnDoEssenceImprovementsRefresh && (await GetParentAsync(token).ConfigureAwait(false) == null || await GetAddToParentESSAsync(token).ConfigureAwait(false)) &&
                                         string.IsNullOrEmpty(await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) && await GetParentVehicleAsync(token).ConfigureAwait(false) == null)
                                         blnDoEssenceImprovementsRefresh = true;
                                 }
@@ -554,7 +554,7 @@ namespace Chummer.Backend.Equipment
                                     }
                                 }
 
-                                if (!blnDoEssenceImprovementsRefresh && (GetParentAsync(token) == null || await GetAddToParentESSAsync(token).ConfigureAwait(false)) &&
+                                if (!blnDoEssenceImprovementsRefresh && (await GetParentAsync(token).ConfigureAwait(false) == null || await GetAddToParentESSAsync(token).ConfigureAwait(false)) &&
                                     string.IsNullOrEmpty(await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) && await GetParentVehicleAsync(token).ConfigureAwait(false) == null)
                                     blnDoEssenceImprovementsRefresh = true;
                             }

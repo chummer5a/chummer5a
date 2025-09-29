@@ -836,7 +836,7 @@ namespace Translator
                             return;
                         }
 
-                        if (_workerStringsLoader.CancellationPending)
+                        if (_workerSectionLoader.CancellationPending)
                         {
                             e.Cancel = true;
                             return;
@@ -853,7 +853,7 @@ namespace Translator
                     DataSet dataSet = new DataSet("strings");
                     dataSet.Tables.Add(dataTable);
                     e.Result = dataSet;
-                    if (_workerStringsLoader.CancellationPending)
+                    if (_workerSectionLoader.CancellationPending)
                     {
                         e.Cancel = true;
                     }
