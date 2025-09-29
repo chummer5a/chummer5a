@@ -509,25 +509,39 @@ namespace Translator
             {
                 int intSegmentsToProcess = xmlNodeList.Count;
                 int intSegmentsProcessed = 0;
-                object[][] arrayRowsToDisplay = new object[xmlNodeList.Count][];
+                ValueTuple<string, string, string, bool>[] arrayRowsToDisplay = new ValueTuple<string, string, string, bool>[intSegmentsToProcess];
                 if (_workerStringsLoader.CancellationPending)
                 {
                     e.Cancel = true;
                     return;
                 }
 
+                bool blnOnlyTranslation = chkOnlyTranslation.Checked;
+
                 try
                 {
-                    Parallel.For(0, xmlNodeList.Count, i =>
+                    Parallel.For(0, xmlNodeList.Count, () => default(ValueTuple<string, string, string, bool>), (i, state, tupValue) =>
                     {
+                        if (_workerStringsLoader.CancellationPending)
+                            state.Stop();
+                        if (state.ShouldExitCurrentIteration)
+                            return default;
                         XmlNode xmlNodeEnglish = xmlNodeList[i];
                         string strKey = xmlNodeEnglish["key"]?.InnerText ?? string.Empty;
                         string strEnglish = xmlNodeEnglish["text"]?.InnerText ?? string.Empty;
                         string strTranslated = strEnglish;
                         bool blnTranslated = false;
+                        if (_workerStringsLoader.CancellationPending)
+                            state.Stop();
+                        if (state.ShouldExitCurrentIteration)
+                            return default;
                         XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = " + strKey.CleanXPath() + "]");
                         if (xmlNodeLocal != null)
                         {
+                            if (_workerStringsLoader.CancellationPending)
+                                state.Stop();
+                            if (state.ShouldExitCurrentIteration)
+                                return default;
                             strTranslated = xmlNodeLocal["text"]?.InnerText ?? string.Empty;
                             XmlNode xmlNodeAttributesTranslated = xmlNodeLocal.Attributes?["translated"];
                             blnTranslated = xmlNodeAttributesTranslated != null
@@ -535,14 +549,21 @@ namespace Translator
                                 : strEnglish != strTranslated;
                         }
 
-                        if (!blnTranslated || !chkOnlyTranslation.Checked)
+                        if (!blnTranslated || !blnOnlyTranslation)
                         {
-                            object[] objArray = { strKey, strEnglish, strTranslated, blnTranslated };
-                            Interlocked.Exchange(ref arrayRowsToDisplay[i], objArray);
+                            return new ValueTuple<string, string, string, bool>(strKey, strEnglish, strTranslated, blnTranslated);
                         }
 
-                        Interlocked.Increment(ref intSegmentsProcessed);
-                        _workerStringsLoader.ReportProgress(intSegmentsProcessed * 100 / intSegmentsToProcess);
+                        return default;
+                    }, tupValue =>
+                    {
+                        if (_workerStringsLoader.CancellationPending)
+                            throw new OperationCanceledException();
+                        int i = Interlocked.Increment(ref intSegmentsProcessed);
+                        arrayRowsToDisplay[i - 1] = tupValue;
+                        if (_workerStringsLoader.CancellationPending)
+                            throw new OperationCanceledException();
+                        _workerStringsLoader.ReportProgress(i * 100 / intSegmentsToProcess);
                         if (_workerStringsLoader.CancellationPending)
                             throw new OperationCanceledException();
                     });
@@ -560,10 +581,10 @@ namespace Translator
                 }
 
                 DataRowCollection objDataTableRows = dataTable.Rows;
-                foreach (object[] objArray in arrayRowsToDisplay)
+                foreach (ValueTuple<string, string, string, bool> tupArray in arrayRowsToDisplay)
                 {
-                    if (objArray != null)
-                        objDataTableRows.Add(objArray);
+                    if (tupArray != default)
+                        objDataTableRows.Add(tupArray.Item1, tupArray.Item2, tupArray.Item3, tupArray.Item4);
                 }
 
                 DataSet dataSet = new DataSet("strings");
@@ -654,6 +675,7 @@ namespace Translator
                 e.Cancel = true;
                 return;
             }
+            bool blnOnlyTranslation = chkOnlyTranslation.Checked;
 
             using (XmlNodeList xmlBaseList
                    = _objDataDoc.SelectNodes("/chummer/chummer[@file = " + strFileName.CleanXPath() + "]/"
@@ -683,12 +705,20 @@ namespace Translator
                         object[][] arrayRowsToDisplay = new object[xmlChildNodes.Count][];
                         try
                         {
-                            Parallel.For(0, xmlChildNodes.Count, i =>
+                            Parallel.For(0, xmlChildNodes.Count, Array.Empty<object>, (i, state, objArray) =>
                             {
+                                if (_workerSectionLoader.CancellationPending)
+                                    state.Stop();
+                                if (state.ShouldExitCurrentIteration)
+                                    return null;
                                 XmlNode xmlChildNode = xmlChildNodes[i];
                                 string strId = xmlChildNode["id"]?.InnerText ?? string.Empty;
                                 string strTranslated;
                                 bool blnTranslated;
+                                if (_workerSectionLoader.CancellationPending)
+                                    state.Stop();
+                                if (state.ShouldExitCurrentIteration)
+                                    return null;
                                 switch (strFileName)
                                 {
                                     case "tips.xml":
@@ -698,11 +728,13 @@ namespace Translator
                                         blnTranslated = strText != strTranslated
                                                         || xmlChildNode.Attributes?["translated"]?.InnerText
                                                         == bool.TrueString;
-
-                                        if (!blnTranslated || !chkOnlyTranslation.Checked)
+                                        if (_workerSectionLoader.CancellationPending)
+                                            state.Stop();
+                                        if (state.ShouldExitCurrentIteration)
+                                            return null;
+                                        if (!blnTranslated || !blnOnlyTranslation)
                                         {
-                                            object[] objArray = {strId, strText, strTranslated, blnTranslated};
-                                            Interlocked.Exchange(ref arrayRowsToDisplay[i], objArray);
+                                            return new object[] {strId, strText, strTranslated, blnTranslated};
                                         }
 
                                         break;
@@ -715,10 +747,13 @@ namespace Translator
                                                         || xmlChildNode.Attributes?["translated"]?.InnerText
                                                         == bool.TrueString;
 
-                                        if (!blnTranslated || !chkOnlyTranslation.Checked)
+                                        if (_workerSectionLoader.CancellationPending)
+                                            state.Stop();
+                                        if (state.ShouldExitCurrentIteration)
+                                            return null;
+                                        if (!blnTranslated || !blnOnlyTranslation)
                                         {
-                                            object[] objArray = { strId, strText, strTranslated, blnTranslated };
-                                            Interlocked.Exchange(ref arrayRowsToDisplay[i], objArray);
+                                            return new object[] { strId, strText, strTranslated, blnTranslated };
                                         }
 
                                         break;
@@ -784,49 +819,58 @@ namespace Translator
                                             }
                                         }
 
-                                        if (!blnTranslated || !chkOnlyTranslation.Checked)
+                                        if (_workerSectionLoader.CancellationPending)
+                                            state.Stop();
+                                        if (state.ShouldExitCurrentIteration)
+                                            return null;
+                                        if (!blnTranslated || !blnOnlyTranslation)
                                         {
-                                            object[] objArray;
                                             if (blnHasNameOnPage)
-                                                objArray = new object[]
+                                            {
+                                                return new object[]
                                                 {
                                                     strId, strName, strTranslated, strSource, strPage, blnTranslated,
                                                     strNameOnPage
                                                 };
-                                            else if (blnAdvantage)
+                                            }
+
+                                            if (blnAdvantage)
                                             {
                                                 if (blnHasNameOnPage)
                                                 {
-                                                    objArray = new object[]
+                                                    return new object[]
                                                     {
                                                         strId, strName, strTranslated, strSource, strPage, strAdvantage,
                                                         strAdvantageAlt, strDisadvantage, strDisadvantageAlt, blnTranslated,
                                                         strNameOnPage
                                                     };
                                                 }
-                                                else
-                                                {
-                                                    objArray = new object[]
-                                                    {
-                                                        strId, strName, strTranslated, strSource, strPage, strAdvantage,
-                                                        strAdvantageAlt, strDisadvantage, strDisadvantageAlt, blnTranslated
-                                                    };
-                                                }
-                                            }
-                                            else
-                                                objArray = new object[]
-                                                    {strId, strName, strTranslated, strSource, strPage, blnTranslated};
 
-                                            Interlocked.Exchange(ref arrayRowsToDisplay[i], objArray);
+                                                return new object[]
+                                                {
+                                                    strId, strName, strTranslated, strSource, strPage, strAdvantage,
+                                                    strAdvantageAlt, strDisadvantage, strDisadvantageAlt, blnTranslated
+                                                };
+                                            }
+                                            return new object[]
+                                                {strId, strName, strTranslated, strSource, strPage, blnTranslated};
                                         }
 
                                         break;
                                     }
                                 }
 
-                                Interlocked.Increment(ref intSegmentsProcessed);
-                                _workerSectionLoader.ReportProgress(intSegmentsProcessed * 100 / intSegmentsToProcess);
-                                if (_workerStringsLoader.CancellationPending)
+                                return null;
+                            }, objArray =>
+                            {
+                                if (_workerSectionLoader.CancellationPending)
+                                    throw new OperationCanceledException();
+                                int i = Interlocked.Increment(ref intSegmentsProcessed);
+                                arrayRowsToDisplay[i - 1] = objArray;
+                                if (_workerSectionLoader.CancellationPending)
+                                    throw new OperationCanceledException();
+                                _workerSectionLoader.ReportProgress(i * 100 / intSegmentsToProcess);
+                                if (_workerSectionLoader.CancellationPending)
                                     throw new OperationCanceledException();
                             });
                         }
