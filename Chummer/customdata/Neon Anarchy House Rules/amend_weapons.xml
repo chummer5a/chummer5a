@@ -324,7 +324,7 @@
 			<accuracy>5</accuracy>
 		</weapon>
         
-<!---banned--->
+<!--banned-->
         <weapon>
             <name>Microwave Gun, High Frequency</name>
             <hide />

@@ -1820,7 +1820,7 @@ namespace Chummer
                                     if (await Program.ShowScrollableMessageBoxAsync(
                                         this, strDescription,
                                         await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError", token: GenericToken).ConfigureAwait(false),
-                                        MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation).ConfigureAwait(false) == DialogResult.Yes)
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, token: GenericToken).ConfigureAwait(false) == DialogResult.Yes)
                                     {
                                         await DoReapplyImprovements(lstInternalIdsNeedingReapplyImprovements,
                                             GenericToken).ConfigureAwait(false);
@@ -2046,13 +2046,13 @@ namespace Chummer
                                         return;
                                     throw;
                                 }
-                            }).ConfigureAwait(false);
+                            }, CancellationToken.None).ConfigureAwait(false);
                         }
                     }
                     finally
                     {
                         if (frmSender != null)
-                            await frmSender.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false); // Doesn't matter if we're closed
+                            await frmSender.DoThreadSafeAsync(x => x.Enabled = true, CancellationToken.None).ConfigureAwait(false); // Doesn't matter if we're closed
                     }
                 }
                 finally
@@ -4683,7 +4683,7 @@ namespace Chummer
                                                 .ConfigureAwait(false)) &&
                                             !await objCyberware.GetValidLimbSlotAsync(
                                                 await objCyberware.GetNodeXPathAsync(GlobalSettings.Language, GenericToken)
-                                                    .ConfigureAwait(false)).ConfigureAwait(false))
+                                                    .ConfigureAwait(false), GenericToken).ConfigureAwait(false))
                                         {
                                             await objCyberware.DeleteCyberwareAsync(token: GenericToken)
                                                 .ConfigureAwait(false);
@@ -7592,7 +7592,7 @@ namespace Chummer
                         this, await LanguageManager.GetStringAsync("Message_CannotAddWeapon", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_CannotAddWeapon", token: GenericToken).ConfigureAwait(false),
                         MessageBoxButtons.OK,
-                        MessageBoxIcon.Information).ConfigureAwait(false);
+                        MessageBoxIcon.Information, token: GenericToken).ConfigureAwait(false);
                     return;
                 }
 
@@ -7602,7 +7602,7 @@ namespace Chummer
                         this, await LanguageManager.GetStringAsync("Message_WeaponMountFull", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_CannotAddWeapon", token: GenericToken).ConfigureAwait(false),
                         MessageBoxButtons.OK,
-                        MessageBoxIcon.Information).ConfigureAwait(false);
+                        MessageBoxIcon.Information, token: GenericToken).ConfigureAwait(false);
                     return;
                 }
 
@@ -7836,7 +7836,7 @@ namespace Chummer
                             Weapon objWeapon = new Weapon(CharacterObject);
                             try
                             {
-                                await objWeapon.SetParentAsync(objSelectedWeapon).ConfigureAwait(false);
+                                await objWeapon.SetParentAsync(objSelectedWeapon, GenericToken).ConfigureAwait(false);
                                 await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: GenericToken)
                                     .ConfigureAwait(false);
                                 objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
@@ -9060,7 +9060,7 @@ namespace Chummer
                                         blnBlackMarket: frmPickCyberware.MyForm.BlackMarketDiscount,
                                         blnForVehicle: true,
                                         strExpenseString: "String_ExpensePurchaseVehicleCyberware",
-                                        objParent: objCyberwareParent).ConfigureAwait(false))
+                                        objParent: objCyberwareParent, token: GenericToken).ConfigureAwait(false))
                                     await objCyberware.DeleteCyberwareAsync(token: GenericToken).ConfigureAwait(false);
                             }
                             catch
@@ -10108,13 +10108,12 @@ namespace Chummer
                 await treVehicles
                       .DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
                       .ConfigureAwait(false);
+                await SetDirty(true).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
                 // Swallow this
             }
-
-            await SetDirty(true).ConfigureAwait(false);
         }
 
         private async void tsCreateNaturalWeapon_Click(object sender, EventArgs e)
@@ -11549,7 +11548,7 @@ namespace Chummer
                 {
                     await objCommlink.SetHomeNodeAsync(CharacterObject,
                             await chkGearHomeNode.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                .ConfigureAwait(false))
+                                .ConfigureAwait(false), GenericToken)
                         .ConfigureAwait(false);
                 }
             }
@@ -11570,7 +11569,7 @@ namespace Chummer
                 {
                     await objCommlink.SetHomeNodeAsync(CharacterObject,
                             await chkArmorHomeNode.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                .ConfigureAwait(false))
+                                .ConfigureAwait(false), GenericToken)
                         .ConfigureAwait(false);
                 }
             }
@@ -11591,7 +11590,7 @@ namespace Chummer
                 {
                     await objCommlink.SetHomeNodeAsync(CharacterObject,
                             await chkWeaponHomeNode.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                .ConfigureAwait(false))
+                                .ConfigureAwait(false), GenericToken)
                         .ConfigureAwait(false);
                 }
             }
@@ -11612,7 +11611,7 @@ namespace Chummer
                 {
                     await objCommlink.SetHomeNodeAsync(CharacterObject,
                             await chkCyberwareHomeNode.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                .ConfigureAwait(false))
+                                .ConfigureAwait(false), GenericToken)
                         .ConfigureAwait(false);
                 }
             }
@@ -11633,7 +11632,7 @@ namespace Chummer
                 {
                     await objCommlink.SetHomeNodeAsync(CharacterObject,
                             await chkVehicleHomeNode.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                .ConfigureAwait(false))
+                                .ConfigureAwait(false), GenericToken)
                         .ConfigureAwait(false);
                 }
             }
@@ -11671,7 +11670,7 @@ namespace Chummer
                 {
                     await objSelectedCommlink.SetActiveCommlinkAsync(CharacterObject,
                         await chkGearActiveCommlink.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                            .ConfigureAwait(false)).ConfigureAwait(false);
+                            .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -11694,7 +11693,7 @@ namespace Chummer
                 {
                     await objSelectedCommlink.SetActiveCommlinkAsync(CharacterObject,
                         await chkArmorActiveCommlink.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                            .ConfigureAwait(false)).ConfigureAwait(false);
+                            .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -11740,7 +11739,7 @@ namespace Chummer
                 {
                     await objSelectedCommlink.SetActiveCommlinkAsync(CharacterObject,
                         await chkCyberwareActiveCommlink.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                            .ConfigureAwait(false)).ConfigureAwait(false);
+                            .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -11763,7 +11762,7 @@ namespace Chummer
                 {
                     await objSelectedCommlink.SetActiveCommlinkAsync(CharacterObject,
                         await chkVehicleActiveCommlink.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                            .ConfigureAwait(false)).ConfigureAwait(false);
+                            .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -14923,7 +14922,7 @@ namespace Chummer
                             if (await Program.ShowScrollableMessageBoxAsync(
                                 this, strDescription,
                                 await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError", token: GenericToken).ConfigureAwait(false),
-                                MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation).ConfigureAwait(false) == DialogResult.Yes)
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, token: GenericToken).ConfigureAwait(false) == DialogResult.Yes)
                             {
                                 await DoReapplyImprovements(lstInternalIdsNeedingReapplyImprovements,
                                     GenericToken).ConfigureAwait(false);

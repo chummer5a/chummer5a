@@ -766,7 +766,7 @@ namespace Chummer
         /// </summary>
         public static string ConcatFast(string[] lstStrings, int startIndex, int count)
         {
-            return ConcatFast(Array.AsReadOnly(lstStrings));
+            return ConcatFast(Array.AsReadOnly(lstStrings), startIndex, count);
         }
 
         /// <summary>

@@ -642,7 +642,7 @@ namespace Chummer.UI.Skills
                 try
                 {
                     SkillsSection objSkillsSection = objCharacter.SkillsSection;
-                    using (objSkillsSection.LockObject.EnterWriteLock())
+                    using (objSkillsSection.LockObject.EnterWriteLock(CancellationToken.None))
                     {
                         objSkillsSection.MultiplePropertiesChangedAsync -= SkillsSectionOnPropertyChanged;
                         ThreadSafeBindingList<Skill> lstSkills = objSkillsSection.Skills;

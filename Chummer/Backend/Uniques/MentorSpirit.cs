@@ -591,7 +591,7 @@ namespace Chummer
                 Lazy<XPathNavigator> objMyNode = null;
                 Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator> objMyNodeAsync = null;
                 if (blnSync)
-                    objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+                    objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath(token));
                 else
                     objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator>(() => this.GetNodeXPathAsync(token), Utils.JoinableTaskFactory);
                 if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID)

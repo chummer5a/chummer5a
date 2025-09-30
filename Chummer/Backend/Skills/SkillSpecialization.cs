@@ -687,7 +687,7 @@ namespace Chummer.Backend.Skills
         /// <inheritdoc />
         public void Dispose()
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(CancellationToken.None))
             {
                 CancellationTokenSource objSource
                     = Interlocked.Exchange(ref _objNameLoaderCancellationTokenSource, null);
@@ -706,7 +706,7 @@ namespace Chummer.Backend.Skills
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false);
             try
             {
                 CancellationTokenSource objSource

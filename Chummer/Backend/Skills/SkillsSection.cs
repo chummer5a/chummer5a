@@ -1264,74 +1264,94 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (!_dicSkillBackups.IsEmpty)
+                if (_dicSkillBackups.IsEmpty && Skills.Count == 0 && KnowledgeSkills.Count == 0)
+                    return new List<Skill>();
+                XmlDocument xmlSkillsDocument =
+                    await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
+                using (XmlNodeList xmlSkillList = xmlSkillsDocument
+                           .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
+                                        await _objCharacterSettings.BookXPathAsync(token: token)
+                                            .ConfigureAwait(false)
+                                        + ")"
+                                        + SkillFilter(eFilterOption, strName) + "]"))
                 {
-                    XmlDocument xmlSkillsDocument = await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
-                    using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                               .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
-                                            await _objCharacterSettings.BookXPathAsync(token: token).ConfigureAwait(false)
-                                            + ")"
-                                            + SkillFilter(eFilterOption, strName) + "]"))
+                    if (xmlSkillList?.Count > 0)
                     {
-                        if (xmlSkillList?.Count > 0)
+                        List<Skill> lstReturn = new List<Skill>(xmlSkillList.Count);
+                        foreach (XmlNode xmlSkill in xmlSkillList)
                         {
-                            List<Skill> lstReturn = new List<Skill>(xmlSkillList.Count);
-                            foreach (XmlNode xmlSkill in xmlSkillList)
+                            token.ThrowIfCancellationRequested();
+                            if (xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId))
                             {
-                                token.ThrowIfCancellationRequested();
-                                if (xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId))
+                                if (_dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill) &&
+                                    objSkill != null)
+                                    lstReturn.Add(objSkill);
+                                else
                                 {
-                                    if (_dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill) && objSkill != null)
-                                        lstReturn.Add(objSkill);
-                                    else
+                                    string strCategoryCleaned =
+                                        xmlSkill["category"]?.InnerTextViaPool(token).CleanXPath();
+                                    bool blnIsKnowledgeSkill
+                                        = string.IsNullOrEmpty(strCategoryCleaned) || xmlSkillsDocument
+                                            .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                "/chummer/categories/category[. = "
+                                                + strCategoryCleaned + "]/@type", token)
+                                            ?.Value
+                                        != "active";
+                                    if (blnIsKnowledgeSkill)
                                     {
-                                        string strCategoryCleaned = xmlSkill["category"]?.InnerTextViaPool(token).CleanXPath();
-                                        bool blnIsKnowledgeSkill
-                                            = string.IsNullOrEmpty(strCategoryCleaned) || xmlSkillsDocument
-                                                .SelectSingleNodeAndCacheExpressionAsNavigator(
-                                                    "/chummer/categories/category[. = "
-                                                    + strCategoryCleaned + "]/@type", token)
-                                                ?.Value
-                                            != "active";
-                                        if (blnIsKnowledgeSkill)
-                                        {
-                                            ThreadSafeBindingList<KnowledgeSkill> lstKnowledgeSkills = await GetKnowledgeSkillsAsync(token).ConfigureAwait(false);
-                                            objSkill = await lstKnowledgeSkills.FirstOrDefaultAsync(async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) == guiSkillId, token).ConfigureAwait(false);
-                                            if (objSkill != null)
-                                                lstReturn.Add(objSkill);
-                                            else
-                                            {
-                                                string strBackupName = string.Empty;
-                                                if (xmlSkill.TryGetStringFieldQuickly("name", ref strBackupName))
-                                                {
-                                                    objSkill = await lstKnowledgeSkills.FirstOrDefaultAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == strName, token).ConfigureAwait(false);
-                                                    if (objSkill != null)
-                                                        lstReturn.Add(objSkill);
-                                                }
-                                            }
-                                        }
+                                        ThreadSafeBindingList<KnowledgeSkill> lstKnowledgeSkills =
+                                            await GetKnowledgeSkillsAsync(token).ConfigureAwait(false);
+                                        objSkill = await lstKnowledgeSkills
+                                            .FirstOrDefaultAsync(
+                                                async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) ==
+                                                           guiSkillId, token).ConfigureAwait(false);
+                                        if (objSkill != null)
+                                            lstReturn.Add(objSkill);
                                         else
                                         {
-                                            ThreadSafeBindingList<Skill> lstSkills = await GetSkillsAsync(token).ConfigureAwait(false);
-                                            objSkill = await lstSkills.FirstOrDefaultAsync(async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) == guiSkillId, token).ConfigureAwait(false);
-                                            if (objSkill != null)
-                                                lstReturn.Add(objSkill);
-                                            else
+                                            string strBackupName = string.Empty;
+                                            if (xmlSkill.TryGetStringFieldQuickly("name", ref strBackupName))
                                             {
-                                                string strBackupName = string.Empty;
-                                                if (xmlSkill.TryGetStringFieldQuickly("name", ref strBackupName))
-                                                {
-                                                    objSkill = await lstSkills.FirstOrDefaultAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == strName, token).ConfigureAwait(false);
-                                                    if (objSkill != null)
-                                                        lstReturn.Add(objSkill);
-                                                }
+                                                objSkill = await lstKnowledgeSkills
+                                                    .FirstOrDefaultAsync(
+                                                        async x =>
+                                                            await x.GetNameAsync(token).ConfigureAwait(false) ==
+                                                            strName, token).ConfigureAwait(false);
+                                                if (objSkill != null)
+                                                    lstReturn.Add(objSkill);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        ThreadSafeBindingList<Skill> lstSkills =
+                                            await GetSkillsAsync(token).ConfigureAwait(false);
+                                        objSkill = await lstSkills
+                                            .FirstOrDefaultAsync(
+                                                async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) ==
+                                                           guiSkillId, token).ConfigureAwait(false);
+                                        if (objSkill != null)
+                                            lstReturn.Add(objSkill);
+                                        else
+                                        {
+                                            string strBackupName = string.Empty;
+                                            if (xmlSkill.TryGetStringFieldQuickly("name", ref strBackupName))
+                                            {
+                                                objSkill = await lstSkills
+                                                    .FirstOrDefaultAsync(
+                                                        async x =>
+                                                            await x.GetNameAsync(token).ConfigureAwait(false) ==
+                                                            strName, token).ConfigureAwait(false);
+                                                if (objSkill != null)
+                                                    lstReturn.Add(objSkill);
                                             }
                                         }
                                     }
                                 }
                             }
-                            return lstReturn;
                         }
+
+                        return lstReturn;
                     }
                 }
             }

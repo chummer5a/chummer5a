@@ -1438,7 +1438,7 @@ namespace Chummer.Backend.Equipment
             Lazy<XmlNode> objMyNode = null;
             AsyncLazy<XmlNode> objMyNodeAsync = null;
             if (blnSync)
-                objMyNode = new Lazy<XmlNode>(() => this.GetNode());
+                objMyNode = new Lazy<XmlNode>(() => this.GetNode(token));
             else
                 objMyNodeAsync = new AsyncLazy<XmlNode>(() => this.GetNodeAsync(token), Utils.JoinableTaskFactory);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
@@ -2994,7 +2994,7 @@ namespace Chummer.Backend.Equipment
                         return;
                     // This will update a child's rating if it would become out of bounds due to its parent's rating changing
                     int intCurrentRating = await objChild.GetRatingAsync(token).ConfigureAwait(false);
-                    await objChild.SetRatingAsync(intCurrentRating).ConfigureAwait(false);
+                    await objChild.SetRatingAsync(intCurrentRating, token).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
             }
         }

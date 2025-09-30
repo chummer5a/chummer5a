@@ -178,14 +178,14 @@ namespace Chummer
                 DebuggableSemaphoreSlim objSemaphore = _objFormClosingSemaphore;
                 if (objSemaphore?.IsDisposed != false)
                     return;
-                await objSemaphore.WaitAsync().ConfigureAwait(false);
+                await objSemaphore.WaitAsync(CancellationToken.None).ConfigureAwait(false);
                 try
                 {
                     Form frmSender = sender as Form;
                     if (frmSender != null)
                     {
                         e.Cancel = true; // Always have to cancel because of issues with async FormClosing events
-                        await frmSender.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false); // Disable the form to make sure we can't interract with it anymore
+                        await frmSender.DoThreadSafeAsync(x => x.Enabled = false, CancellationToken.None).ConfigureAwait(false); // Disable the form to make sure we can't interract with it anymore
                     }
                     try
                     {
@@ -199,10 +199,10 @@ namespace Chummer
                             if (_blnDirty)
                             {
                                 DialogResult result = await Program.ShowScrollableMessageBoxAsync(
-                                    await LanguageManager.GetStringAsync("XmlEditor_UnsavedChanges").ConfigureAwait(false),
-                                    await LanguageManager.GetStringAsync("XmlEditor_UnsavedChangesTitle").ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("XmlEditor_UnsavedChanges", token: CancellationToken.None).ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("XmlEditor_UnsavedChangesTitle", token: CancellationToken.None).ConfigureAwait(false),
                                     MessageBoxButtons.YesNoCancel,
-                                    MessageBoxIcon.Question).ConfigureAwait(false);
+                                    MessageBoxIcon.Question, token: CancellationToken.None).ConfigureAwait(false);
 
                                 switch (result)
                                 {
@@ -272,13 +272,13 @@ namespace Chummer
                                         return;
                                     throw;
                                 }
-                            }).ConfigureAwait(false);
+                            }, CancellationToken.None).ConfigureAwait(false);
                         }
                     }
                     finally
                     {
                         if (frmSender != null)
-                            await frmSender.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false); // Doesn't matter if we're closed
+                            await frmSender.DoThreadSafeAsync(x => x.Enabled = true, CancellationToken.None).ConfigureAwait(false); // Doesn't matter if we're closed
                     }
                 }
                 finally
