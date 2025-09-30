@@ -4634,7 +4634,7 @@ namespace Chummer
                             XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/armormod");
                             if (objXmlNode != null)
                             {
-                                ArmorMod objArmorMod = new ArmorMod(CharacterObject);
+                                ArmorMod objArmorMod = new ArmorMod(CharacterObject, selectedArmor);
                                 try
                                 {
                                     await objArmorMod.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
@@ -7366,7 +7366,7 @@ namespace Chummer
                                         = intMaxRating > 1
                                             ? frmPickArmorMod.MyForm.SelectedRating
                                             : 0;
-                                ArmorMod objMod = new ArmorMod(CharacterObject);
+                                ArmorMod objMod = new ArmorMod(CharacterObject, objArmor);
                                 try
                                 {
                                     await objMod.CreateAsync(objXmlArmor, intRating, lstWeapons, token: GenericToken)
@@ -22700,7 +22700,7 @@ namespace Chummer
                                     await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
                                 if (objXmlModNode != null)
                                 {
-                                    ArmorMod objMod = new ArmorMod(CharacterObject);
+                                    ArmorMod objMod = new ArmorMod(CharacterObject, objArmor);
                                     try
                                     {
                                         if (objXmlMod["rating"] != null)

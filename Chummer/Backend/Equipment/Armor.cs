@@ -562,7 +562,7 @@ namespace Chummer.Backend.Equipment
                             XmlNode objXmlMod = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod",
                                 frmPickArmorMod.MyForm.SelectedArmorMod);
 
-                            ArmorMod objMod = new ArmorMod(_objCharacter);
+                            ArmorMod objMod = new ArmorMod(_objCharacter, this);
                             try
                             {
                                 if (objXmlMod != null)
@@ -639,7 +639,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         XmlNode objXmlMod = objXmlArmorDocument.TryGetNodeByNameOrId("/chummer/mods/mod", objXmlArmorMod.InnerTextViaPool(token));
-                        ArmorMod objMod = new ArmorMod(_objCharacter);
+                        ArmorMod objMod = new ArmorMod(_objCharacter, this);
                         try
                         {
                             if (objXmlMod != null)
@@ -1173,7 +1173,7 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (XmlNode nodMod in nodMods)
                             {
-                                ArmorMod objMod = new ArmorMod(_objCharacter);
+                                ArmorMod objMod = new ArmorMod(_objCharacter, this);
                                 try
                                 {
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -1193,7 +1193,7 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (XmlNode nodMod in nodMods)
                             {
-                                ArmorMod objMod = new ArmorMod(_objCharacter);
+                                ArmorMod objMod = new ArmorMod(_objCharacter, this);
                                 try
                                 {
                                     await objMod.LoadAsync(nodMod, blnCopy, token).ConfigureAwait(false);

@@ -76,11 +76,12 @@ namespace Chummer.Backend.Equipment
 
         #region Constructor, Create, Save, Load, and Print Methods
 
-        public ArmorMod(Character objCharacter)
+        public ArmorMod(Character objCharacter, Armor objParent)
         {
             // Create the GUID for the new Armor Mod.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+            Parent = objParent;
             _lstGear = new TaggedObservableCollection<Gear>(objCharacter.LockObject);
             _lstGear.AddTaggedCollectionChanged(this, GearOnCollectionChanged);
         }

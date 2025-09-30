@@ -79,6 +79,11 @@ namespace Chummer
             _lstCategory = Utils.ListItemListPool.Get();
             _objGenericCancellationTokenSource = new CancellationTokenSource();
             _objGenericToken = _objGenericCancellationTokenSource.Token;
+
+            // Prevent Enter key from closing the form when NumericUpDown controls have focus
+            nudMinimumCost.KeyDown += NumericUpDown_KeyDown;
+            nudMaximumCost.KeyDown += NumericUpDown_KeyDown;
+            nudExactCost.KeyDown += NumericUpDown_KeyDown;
         }
 
         private async void SelectArmor_Load(object sender, EventArgs e)
@@ -386,6 +391,82 @@ namespace Chummer
             }
         }
 
+        private async void CostFilter(object sender, EventArgs e)
+        {
+            if (_intLoading > 0)
+                return;
+
+            try
+            {
+                _intLoading = 1;
+                
+                await nudMinimumCost.DoThreadSafeAsync(x =>
+                {
+                    if (string.IsNullOrWhiteSpace(x.Text))
+                    {
+                        x.Value = 0;
+                    }
+                }, _objGenericToken).ConfigureAwait(false);
+                await nudMaximumCost.DoThreadSafeAsync(x =>
+                {
+                    if (string.IsNullOrWhiteSpace(x.Text))
+                    {
+                        x.Value = 0;
+                    }
+                }, _objGenericToken).ConfigureAwait(false);
+                await nudExactCost.DoThreadSafeAsync(x =>
+                {
+                    if (string.IsNullOrWhiteSpace(x.Text))
+                    {
+                        x.Value = 0;
+                    }
+                }, _objGenericToken).ConfigureAwait(false);
+
+                decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false);
+                decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false);
+                decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false);
+                
+                // If exact cost is specified, clear range values
+                if (decExactCost > 0)
+                {
+                    await nudMinimumCost.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+                    await nudMaximumCost.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+                }
+                // If range values are specified, clear exact cost
+                else if (decMinimumCost > 0 || decMaximumCost > 0)
+                {
+                    await nudExactCost.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+                    
+                    // Ensure maximum is not less than minimum
+                    if (decMaximumCost < decMinimumCost)
+                    {
+                        if (sender == nudMaximumCost)
+                            await nudMinimumCost.DoThreadSafeAsync(x => x.Value = decMaximumCost, _objGenericToken).ConfigureAwait(false);
+                        else
+                            await nudMaximumCost.DoThreadSafeAsync(x => x.Value = decMinimumCost, _objGenericToken).ConfigureAwait(false);
+                    }
+                }
+
+                _intLoading = 0;
+
+                await RefreshList(_objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // Form is being closed or operation was cancelled, ignore
+                _intLoading = 0;
+            }
+        }
+
+        private void NumericUpDown_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
+        }
+
         private async void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
@@ -605,6 +686,22 @@ namespace Chummer
                             .ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(strSearch))
                             sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
+
+                        // Apply cost filtering
+                        decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                        decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                        decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                        
+                        if (decExactCost > 0)
+                        {
+                            // Exact cost filtering
+                            sbdFilter.Append(" and (cost = ").Append(decExactCost.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
+                        }
+                        else if (decMinimumCost != 0 || decMaximumCost != 0)
+                        {
+                            // Range cost filtering
+                            sbdFilter.Append(" and (").Append(CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost")).Append(')');
+                        }
 
                         await BuildArmorList(_objXmlDocument.SelectNodes(sbdFilter.Append(']').ToString()),
                             token).ConfigureAwait(false);

@@ -10977,7 +10977,7 @@ namespace Chummer
                             int intRating = intMaxRating > 1
                                     ? frmPickArmorMod.MyForm.SelectedRating
                                     : 0;
-                            ArmorMod objMod = new ArmorMod(CharacterObject);
+                            ArmorMod objMod = new ArmorMod(CharacterObject, objArmor);
                             try
                             {
                                 await objMod.CreateAsync(objXmlArmor, intRating, lstWeapons, token: GenericToken)

@@ -188,7 +188,7 @@ Data Changes:
 - Fixed Cannon Shot gun not loading due to incorrectu nderbarrel. Closes #5212
 - Corrected and/or added the effects of the following The Complete Trog qualities: Community Connection, Nasty Trog, Trog Artisan, Trog Historian, Trog Leader, Trog Networker, Bad Credit. Existing characters with these qualities will need to reapply their improvements to see any changes.
 - Added xpath filter using the new weaponfilter property for the Micro weapon accessory mount to only show Melee weapons that have Reach 0.
-
+- Added nuyen and essence filters in the equipment selection screen to allow filtering by maximum essence cost and by maximum nuyen cost.
 Fixes implemented by BM123499
 
 Armor.xml
@@ -412,6 +412,11 @@ Changed/New Strings:
 - String_SelectQuality_XPathQuery_NegativeOnly
 - Checkbox_SelectQuality_XPathMode
 - Tip_SelectQuality_XPathMode
+- Label_FilterByCost
+- Label_FilterByEssence
+- Label_Exact
+- Label_Minimum
+- Label_Maximum
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage

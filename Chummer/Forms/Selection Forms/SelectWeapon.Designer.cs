@@ -54,7 +54,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -71,10 +70,11 @@ namespace Chummer
             this.lblWeaponConceal = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lblWeaponDamageLabel = new System.Windows.Forms.Label();
-            this.lblSource = new Chummer.LabelWithToolTip();
             this.lblWeaponConcealLabel = new System.Windows.Forms.Label();
             this.lblWeaponDamage = new System.Windows.Forms.Label();
+            this.lblWeaponRC = new Chummer.LabelWithToolTip();
             this.lblWeaponRCLabel = new System.Windows.Forms.Label();
+            this.lblSource = new Chummer.LabelWithToolTip();
             this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
             this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
@@ -87,7 +87,6 @@ namespace Chummer
             this.lblWeaponCostLabel = new System.Windows.Forms.Label();
             this.lblWeaponAmmo = new System.Windows.Forms.Label();
             this.lblWeaponModeLabel = new System.Windows.Forms.Label();
-            this.lblWeaponRC = new Chummer.LabelWithToolTip();
             this.lblWeaponReach = new System.Windows.Forms.Label();
             this.lblTest = new System.Windows.Forms.Label();
             this.lblTestLabel = new System.Windows.Forms.Label();
@@ -102,6 +101,14 @@ namespace Chummer
             this.tlpBottomRight = new System.Windows.Forms.TableLayoutPanel();
             this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox();
             this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox();
+            this.gpbCostFilter = new System.Windows.Forms.GroupBox();
+            this.tlpCostFilter = new System.Windows.Forms.TableLayoutPanel();
+            this.lblMinimumCost = new System.Windows.Forms.Label();
+            this.lblMaximumCost = new System.Windows.Forms.Label();
+            this.lblExactCost = new System.Windows.Forms.Label();
+            this.nudMinimumCost = new Chummer.NumericUpDownEx();
+            this.nudMaximumCost = new Chummer.NumericUpDownEx();
+            this.nudExactCost = new Chummer.NumericUpDownEx();
             this.gpbIncludedAccessories = new System.Windows.Forms.GroupBox();
             this.pnlIncludedAccessories = new System.Windows.Forms.Panel();
             this.lblIncludedAccessories = new System.Windows.Forms.Label();
@@ -137,6 +144,11 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.flpCheckBoxes.SuspendLayout();
             this.tlpBottomRight.SuspendLayout();
+            this.gpbCostFilter.SuspendLayout();
+            this.tlpCostFilter.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMinimumCost)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaximumCost)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudExactCost)).BeginInit();
             this.gpbIncludedAccessories.SuspendLayout();
             this.pnlIncludedAccessories.SuspendLayout();
             this.tabBrowse.SuspendLayout();
@@ -197,7 +209,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(766, 543);
+            this.tlpMain.Size = new System.Drawing.Size(766, 613);
             this.tlpMain.TabIndex = 39;
             // 
             // tabControl
@@ -210,7 +222,7 @@ namespace Chummer
             this.tabControl.Margin = new System.Windows.Forms.Padding(0);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(766, 487);
+            this.tabControl.Size = new System.Drawing.Size(766, 557);
             this.tabControl.TabIndex = 38;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.RefreshCurrentList);
             // 
@@ -221,7 +233,7 @@ namespace Chummer
             this.tabListView.Location = new System.Drawing.Point(4, 22);
             this.tabListView.Name = "tabListView";
             this.tabListView.Padding = new System.Windows.Forms.Padding(3);
-            this.tabListView.Size = new System.Drawing.Size(758, 461);
+            this.tabListView.Size = new System.Drawing.Size(758, 531);
             this.tabListView.TabIndex = 1;
             this.tabListView.Tag = "Title_ListView";
             this.tabListView.Text = "List View";
@@ -242,7 +254,7 @@ namespace Chummer
             this.tlpWeapon.RowCount = 2;
             this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpWeapon.Size = new System.Drawing.Size(752, 455);
+            this.tlpWeapon.Size = new System.Drawing.Size(752, 525);
             this.tlpWeapon.TabIndex = 71;
             // 
             // lstWeapon
@@ -252,7 +264,7 @@ namespace Chummer
             this.lstWeapon.Location = new System.Drawing.Point(3, 3);
             this.lstWeapon.Name = "lstWeapon";
             this.tlpWeapon.SetRowSpan(this.lstWeapon, 2);
-            this.lstWeapon.Size = new System.Drawing.Size(294, 449);
+            this.lstWeapon.Size = new System.Drawing.Size(294, 519);
             this.lstWeapon.TabIndex = 66;
             this.lstWeapon.SelectedIndexChanged += new System.EventHandler(this.lstWeapon_SelectedIndexChanged);
             this.lstWeapon.DoubleClick += new System.EventHandler(this.cmdOK_Click);
@@ -268,11 +280,12 @@ namespace Chummer
             this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpRight.Controls.Add(this.lblWeaponConceal, 1, 3);
             this.tlpRight.Controls.Add(this.lblSourceLabel, 0, 7);
-            this.tlpRight.Controls.Add(this.lblWeaponDamageLabel, 0, 0);
             this.tlpRight.Controls.Add(this.lblSource, 1, 7);
+            this.tlpRight.Controls.Add(this.lblWeaponDamageLabel, 0, 0);
             this.tlpRight.Controls.Add(this.lblWeaponConcealLabel, 0, 3);
             this.tlpRight.Controls.Add(this.lblWeaponDamage, 1, 0);
             this.tlpRight.Controls.Add(this.lblWeaponRCLabel, 2, 0);
+            this.tlpRight.Controls.Add(this.lblWeaponRC, 3, 0);
             this.tlpRight.Controls.Add(this.flpMarkup, 3, 5);
             this.tlpRight.Controls.Add(this.lblMarkupLabel, 2, 5);
             this.tlpRight.Controls.Add(this.flpCheckBoxes, 0, 6);
@@ -281,7 +294,6 @@ namespace Chummer
             this.tlpRight.Controls.Add(this.lblWeaponCostLabel, 0, 5);
             this.tlpRight.Controls.Add(this.lblWeaponAmmo, 3, 1);
             this.tlpRight.Controls.Add(this.lblWeaponModeLabel, 2, 2);
-            this.tlpRight.Controls.Add(this.lblWeaponRC, 3, 0);
             this.tlpRight.Controls.Add(this.lblWeaponReach, 1, 2);
             this.tlpRight.Controls.Add(this.lblTest, 3, 4);
             this.tlpRight.Controls.Add(this.lblTestLabel, 2, 4);
@@ -334,6 +346,18 @@ namespace Chummer
             this.lblSourceLabel.Text = "Source:";
             this.lblSourceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // lblSource
+            // 
+            this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSource.AutoSize = true;
+            this.lblSource.Location = new System.Drawing.Point(59, 182);
+            this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSource.Name = "lblSource";
+            this.lblSource.Size = new System.Drawing.Size(50, 13);
+            this.lblSource.TabIndex = 65;
+            this.lblSource.Text = "[Source]";
+            this.lblSource.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // lblWeaponDamageLabel
             // 
             this.lblWeaponDamageLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -346,21 +370,6 @@ namespace Chummer
             this.lblWeaponDamageLabel.Tag = "Label_Damage";
             this.lblWeaponDamageLabel.Text = "Damage:";
             this.lblWeaponDamageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblSource
-            // 
-            this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblSource.AutoSize = true;
-            this.tlpRight.SetColumnSpan(this.lblSource, 3);
-            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblSource.Location = new System.Drawing.Point(59, 182);
-            this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSource.Name = "lblSource";
-            this.lblSource.Size = new System.Drawing.Size(47, 13);
-            this.lblSource.TabIndex = 65;
-            this.lblSource.Text = "[Source]";
-            this.lblSource.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
             // lblWeaponConcealLabel
             // 
@@ -386,6 +395,18 @@ namespace Chummer
             this.lblWeaponDamage.TabIndex = 41;
             this.lblWeaponDamage.Text = "[Damage]";
             this.lblWeaponDamage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblWeaponRC
+            // 
+            this.lblWeaponRC.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponRC.AutoSize = true;
+            this.lblWeaponRC.Location = new System.Drawing.Point(287, 6);
+            this.lblWeaponRC.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponRC.Name = "lblWeaponRC";
+            this.lblWeaponRC.Size = new System.Drawing.Size(25, 13);
+            this.lblWeaponRC.TabIndex = 43;
+            this.lblWeaponRC.Text = "[RC]";
+            this.lblWeaponRC.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblWeaponRCLabel
             // 
@@ -486,6 +507,7 @@ namespace Chummer
             this.chkFreeItem.TabIndex = 58;
             this.chkFreeItem.Tag = "Checkbox_Free";
             this.chkFreeItem.Text = "Free!";
+            this.chkFreeItem.ToolTipText = "";
             this.chkFreeItem.UseVisualStyleBackColor = true;
             this.chkFreeItem.CheckedChanged += new System.EventHandler(this.chkFreeItem_CheckedChanged);
             // 
@@ -501,6 +523,7 @@ namespace Chummer
             this.chkBlackMarketDiscount.TabIndex = 69;
             this.chkBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
             this.chkBlackMarketDiscount.Text = "Black Market Discount (10%)";
+            this.chkBlackMarketDiscount.ToolTipText = "";
             this.chkBlackMarketDiscount.UseVisualStyleBackColor = true;
             this.chkBlackMarketDiscount.Visible = false;
             this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
@@ -566,18 +589,6 @@ namespace Chummer
             this.lblWeaponModeLabel.Tag = "Label_Mode";
             this.lblWeaponModeLabel.Text = "Mode:";
             this.lblWeaponModeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblWeaponRC
-            // 
-            this.lblWeaponRC.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblWeaponRC.AutoSize = true;
-            this.lblWeaponRC.Location = new System.Drawing.Point(287, 6);
-            this.lblWeaponRC.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponRC.Name = "lblWeaponRC";
-            this.lblWeaponRC.Size = new System.Drawing.Size(28, 13);
-            this.lblWeaponRC.TabIndex = 43;
-            this.lblWeaponRC.Text = "[RC]";
-            this.lblWeaponRC.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblWeaponReach
             // 
@@ -725,16 +736,18 @@ namespace Chummer
             this.tlpBottomRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpBottomRight.Controls.Add(this.chkHideOverAvailLimit, 0, 1);
             this.tlpBottomRight.Controls.Add(this.chkShowOnlyAffordItems, 0, 2);
+            this.tlpBottomRight.Controls.Add(this.gpbCostFilter, 0, 3);
             this.tlpBottomRight.Controls.Add(this.gpbIncludedAccessories, 0, 0);
             this.tlpBottomRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpBottomRight.Location = new System.Drawing.Point(300, 201);
             this.tlpBottomRight.Margin = new System.Windows.Forms.Padding(0);
             this.tlpBottomRight.Name = "tlpBottomRight";
-            this.tlpBottomRight.RowCount = 3;
+            this.tlpBottomRight.RowCount = 4;
             this.tlpBottomRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpBottomRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBottomRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpBottomRight.Size = new System.Drawing.Size(452, 254);
+            this.tlpBottomRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tlpBottomRight.Size = new System.Drawing.Size(452, 324);
             this.tlpBottomRight.TabIndex = 78;
             // 
             // chkHideOverAvailLimit
@@ -742,13 +755,14 @@ namespace Chummer
             this.chkHideOverAvailLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkHideOverAvailLimit.AutoSize = true;
             this.chkHideOverAvailLimit.DefaultColorScheme = true;
-            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(3, 208);
+            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(3, 258);
             this.chkHideOverAvailLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
             this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
             this.chkHideOverAvailLimit.TabIndex = 70;
             this.chkHideOverAvailLimit.Tag = "Checkbox_HideOverAvailLimit";
             this.chkHideOverAvailLimit.Text = "Hide Items Over Avail Limit ({0})";
+            this.chkHideOverAvailLimit.ToolTipText = "";
             this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
             this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.RefreshCurrentList);
             // 
@@ -757,15 +771,145 @@ namespace Chummer
             this.chkShowOnlyAffordItems.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkShowOnlyAffordItems.AutoSize = true;
             this.chkShowOnlyAffordItems.DefaultColorScheme = true;
-            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(3, 233);
+            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(3, 283);
             this.chkShowOnlyAffordItems.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
             this.chkShowOnlyAffordItems.TabIndex = 71;
             this.chkShowOnlyAffordItems.Tag = "Checkbox_ShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Text = "Show Only Items I Can Afford";
+            this.chkShowOnlyAffordItems.ToolTipText = "";
             this.chkShowOnlyAffordItems.UseVisualStyleBackColor = true;
             this.chkShowOnlyAffordItems.CheckedChanged += new System.EventHandler(this.RefreshCurrentList);
+            // 
+            // gpbCostFilter
+            // 
+            this.gpbCostFilter.AutoSize = true;
+            this.gpbCostFilter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbCostFilter.Controls.Add(this.tlpCostFilter);
+            this.gpbCostFilter.Location = new System.Drawing.Point(3, 307);
+            this.gpbCostFilter.Name = "gpbCostFilter";
+            this.gpbCostFilter.Size = new System.Drawing.Size(131, 14);
+            this.gpbCostFilter.TabIndex = 72;
+            this.gpbCostFilter.TabStop = false;
+            this.gpbCostFilter.Tag = "Label_FilterByCost";
+            this.gpbCostFilter.Text = "Filter by Cost (¥)";
+            // 
+            // tlpCostFilter
+            // 
+            this.tlpCostFilter.AutoSize = true;
+            this.tlpCostFilter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpCostFilter.ColumnCount = 2;
+            this.tlpCostFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpCostFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpCostFilter.Controls.Add(this.lblMinimumCost, 0, 0);
+            this.tlpCostFilter.Controls.Add(this.lblMaximumCost, 0, 1);
+            this.tlpCostFilter.Controls.Add(this.lblExactCost, 0, 2);
+            this.tlpCostFilter.Controls.Add(this.nudMinimumCost, 1, 0);
+            this.tlpCostFilter.Controls.Add(this.nudMaximumCost, 1, 1);
+            this.tlpCostFilter.Controls.Add(this.nudExactCost, 1, 2);
+            this.tlpCostFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpCostFilter.Location = new System.Drawing.Point(3, 16);
+            this.tlpCostFilter.Name = "tlpCostFilter";
+            this.tlpCostFilter.RowCount = 3;
+            this.tlpCostFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCostFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCostFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCostFilter.Size = new System.Drawing.Size(125, 0);
+            this.tlpCostFilter.TabIndex = 0;
+            // 
+            // lblMinimumCost
+            // 
+            this.lblMinimumCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMinimumCost.AutoSize = true;
+            this.lblMinimumCost.Location = new System.Drawing.Point(3, 6);
+            this.lblMinimumCost.Name = "lblMinimumCost";
+            this.lblMinimumCost.Size = new System.Drawing.Size(51, 13);
+            this.lblMinimumCost.TabIndex = 0;
+            this.lblMinimumCost.Tag = "Label_Minimum";
+            this.lblMinimumCost.Text = "Minimum:";
+            // 
+            // lblMaximumCost
+            // 
+            this.lblMaximumCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMaximumCost.AutoSize = true;
+            this.lblMaximumCost.Location = new System.Drawing.Point(3, 32);
+            this.lblMaximumCost.Name = "lblMaximumCost";
+            this.lblMaximumCost.Size = new System.Drawing.Size(54, 13);
+            this.lblMaximumCost.TabIndex = 1;
+            this.lblMaximumCost.Tag = "Label_Maximum";
+            this.lblMaximumCost.Text = "Maximum:";
+            // 
+            // lblExactCost
+            // 
+            this.lblExactCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblExactCost.AutoSize = true;
+            this.lblExactCost.Location = new System.Drawing.Point(3, 58);
+            this.lblExactCost.Name = "lblExactCost";
+            this.lblExactCost.Size = new System.Drawing.Size(37, 13);
+            this.lblExactCost.TabIndex = 2;
+            this.lblExactCost.Tag = "Label_Exact";
+            this.lblExactCost.Text = "Exact:";
+            // 
+            // nudMinimumCost
+            // 
+            this.nudMinimumCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMinimumCost.AutoSize = true;
+            this.nudMinimumCost.Location = new System.Drawing.Point(63, 3);
+            this.nudMinimumCost.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.nudMinimumCost.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMinimumCost.Name = "nudMinimumCost";
+            this.nudMinimumCost.Size = new System.Drawing.Size(59, 20);
+            this.nudMinimumCost.TabIndex = 3;
+            this.nudMinimumCost.ValueChanged += new System.EventHandler(this.CostFilter);
+            // 
+            // nudMaximumCost
+            // 
+            this.nudMaximumCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMaximumCost.AutoSize = true;
+            this.nudMaximumCost.Location = new System.Drawing.Point(63, 29);
+            this.nudMaximumCost.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.nudMaximumCost.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaximumCost.Name = "nudMaximumCost";
+            this.nudMaximumCost.Size = new System.Drawing.Size(59, 20);
+            this.nudMaximumCost.TabIndex = 4;
+            this.nudMaximumCost.ValueChanged += new System.EventHandler(this.CostFilter);
+            // 
+            // nudExactCost
+            // 
+            this.nudExactCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudExactCost.AutoSize = true;
+            this.nudExactCost.Location = new System.Drawing.Point(63, 55);
+            this.nudExactCost.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.nudExactCost.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudExactCost.Name = "nudExactCost";
+            this.nudExactCost.Size = new System.Drawing.Size(59, 20);
+            this.nudExactCost.TabIndex = 5;
+            this.nudExactCost.ValueChanged += new System.EventHandler(this.CostFilter);
             // 
             // gpbIncludedAccessories
             // 
@@ -775,7 +919,7 @@ namespace Chummer
             this.gpbIncludedAccessories.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gpbIncludedAccessories.Location = new System.Drawing.Point(3, 3);
             this.gpbIncludedAccessories.Name = "gpbIncludedAccessories";
-            this.gpbIncludedAccessories.Size = new System.Drawing.Size(446, 198);
+            this.gpbIncludedAccessories.Size = new System.Drawing.Size(446, 120);
             this.gpbIncludedAccessories.TabIndex = 74;
             this.gpbIncludedAccessories.TabStop = false;
             this.gpbIncludedAccessories.Tag = "Label_SelectWeapon_IncludedItems";
@@ -790,7 +934,7 @@ namespace Chummer
             this.pnlIncludedAccessories.Location = new System.Drawing.Point(3, 16);
             this.pnlIncludedAccessories.Name = "pnlIncludedAccessories";
             this.pnlIncludedAccessories.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
-            this.pnlIncludedAccessories.Size = new System.Drawing.Size(440, 179);
+            this.pnlIncludedAccessories.Size = new System.Drawing.Size(440, 110);
             this.pnlIncludedAccessories.TabIndex = 0;
             // 
             // lblIncludedAccessories
@@ -1102,7 +1246,7 @@ namespace Chummer
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOKAdd, 1, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 2, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(508, 514);
+            this.tlpButtons.Location = new System.Drawing.Point(508, 584);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -1132,7 +1276,7 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(784, 561);
+            this.ClientSize = new System.Drawing.Size(784, 631);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.MaximizeBox = false;
@@ -1144,7 +1288,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectWeapon";
             this.Text = "Select Weapon";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(SelectWeapon_Closing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SelectWeapon_Closing);
             this.Load += new System.EventHandler(this.SelectWeapon_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
@@ -1162,6 +1306,13 @@ namespace Chummer
             this.flpCheckBoxes.PerformLayout();
             this.tlpBottomRight.ResumeLayout(false);
             this.tlpBottomRight.PerformLayout();
+            this.gpbCostFilter.ResumeLayout(false);
+            this.gpbCostFilter.PerformLayout();
+            this.tlpCostFilter.ResumeLayout(false);
+            this.tlpCostFilter.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMinimumCost)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaximumCost)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudExactCost)).EndInit();
             this.gpbIncludedAccessories.ResumeLayout(false);
             this.pnlIncludedAccessories.ResumeLayout(false);
             this.pnlIncludedAccessories.PerformLayout();
@@ -1243,5 +1394,13 @@ namespace Chummer
         private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.TableLayoutPanel tlpRight;
         private System.Windows.Forms.TableLayoutPanel tlpBottomRight;
+        private System.Windows.Forms.GroupBox gpbCostFilter;
+        private System.Windows.Forms.TableLayoutPanel tlpCostFilter;
+        private System.Windows.Forms.Label lblMinimumCost;
+        private System.Windows.Forms.Label lblMaximumCost;
+        private System.Windows.Forms.Label lblExactCost;
+        private Chummer.NumericUpDownEx nudMinimumCost;
+        private Chummer.NumericUpDownEx nudMaximumCost;
+        private Chummer.NumericUpDownEx nudExactCost;
     }
 }

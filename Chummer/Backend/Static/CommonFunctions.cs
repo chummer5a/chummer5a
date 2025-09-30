@@ -2855,5 +2855,24 @@ namespace Chummer
         }
 
         #endregion Timescale
+
+        #region Equipment Filtering
+
+        /// <summary>
+        /// Generate XPath expression for numeric range filtering.
+        /// </summary>
+        /// <param name="decMaxValue">Maximum value</param>
+        /// <param name="decMinValue">Minimum value</param>
+        /// <param name="strElementName">Name of the element to filter (default: "cost")</param>
+        /// <returns>XPath expression for numeric range filtering</returns>
+        public static string GenerateNumericRangeXPath(decimal decMaxValue, decimal decMinValue, string strElementName = "cost")
+        {
+            string strMax = decMaxValue.ToString(GlobalSettings.InvariantCultureInfo);
+            string strMin = decMinValue.ToString(GlobalSettings.InvariantCultureInfo);
+
+            return $"{strElementName} >= {strMin} and {strElementName} <= {strMax}";
+        }
+
+        #endregion Equipment Filtering
     }
 }

@@ -378,7 +378,7 @@ namespace Chummer
                         List<Weapon> lstWeapons = new List<Weapon>(1);
                         try
                         {
-                            using (ArmorMod objTemp = new ArmorMod(_objCharacter))
+                            using (ArmorMod objTemp = new ArmorMod(_objCharacter, null))
                             {
                                 objTemp.Create(objXmlGear, 1, lstWeapons, true, true);
 

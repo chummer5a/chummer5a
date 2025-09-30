@@ -57,6 +57,11 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             this.UpdateParentForToolTipControls();
+
+            // Prevent Enter key from closing the form when NumericUpDown controls have focus
+            nudMinimumCost.KeyDown += NumericUpDown_KeyDown;
+            nudMaximumCost.KeyDown += NumericUpDown_KeyDown;
+            nudExactCost.KeyDown += NumericUpDown_KeyDown;
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             // Load the Weapon information.
             _xmlBaseChummerNode = _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer");
@@ -121,6 +126,22 @@ namespace Chummer
                     string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strSearch))
                         sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
+
+                    // Apply cost filtering
+                    decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                    decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                    decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+
+                    if (decExactCost > 0)
+                    {
+                        // Exact cost filtering
+                        sbdFilter.Append(" and (cost = ").Append(decExactCost.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
+                    }
+                    else if (decMinimumCost != 0 || decMaximumCost != 0)
+                    {
+                        // Range cost filtering
+                        sbdFilter.Append(" and (").Append(CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost")).Append(')');
+                    }
 
                     if (sbdFilter.Length > 0)
                         strFilter = "[" + sbdFilter.Append(']').ToString();
@@ -247,6 +268,23 @@ namespace Chummer
         private async void RefreshCurrentList(object sender, EventArgs e)
         {
             await RefreshList().ConfigureAwait(false);
+        }
+
+        private async void CostFilter(object sender, EventArgs e)
+        {
+            if (_blnLoading)
+                return;
+
+            await RefreshList().ConfigureAwait(false);
+        }
+
+        private void NumericUpDown_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
         }
 
         #endregion Control Events

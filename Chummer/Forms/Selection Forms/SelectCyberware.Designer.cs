@@ -63,6 +63,23 @@ namespace Chummer
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox();
             this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox();
+            this.tlpFilterPanels = new System.Windows.Forms.TableLayoutPanel();
+            this.gpbEssenceFilter = new System.Windows.Forms.GroupBox();
+            this.tlpEssenceFilter = new System.Windows.Forms.TableLayoutPanel();
+            this.lblMinimumEssence = new System.Windows.Forms.Label();
+            this.lblMaximumEssence = new System.Windows.Forms.Label();
+            this.lblExactEssence = new System.Windows.Forms.Label();
+            this.nudMinimumEssence = new Chummer.NumericUpDownEx();
+            this.nudMaximumEssence = new Chummer.NumericUpDownEx();
+            this.nudExactEssence = new Chummer.NumericUpDownEx();
+            this.gpbCostFilter = new System.Windows.Forms.GroupBox();
+            this.tlpCostFilter = new System.Windows.Forms.TableLayoutPanel();
+            this.lblMinimumCost = new System.Windows.Forms.Label();
+            this.lblMaximumCost = new System.Windows.Forms.Label();
+            this.lblExactCost = new System.Windows.Forms.Label();
+            this.nudMinimumCost = new Chummer.NumericUpDownEx();
+            this.nudMaximumCost = new Chummer.NumericUpDownEx();
+            this.nudExactCost = new Chummer.NumericUpDownEx();
             this.tlpLeft = new System.Windows.Forms.TableLayoutPanel();
             this.cboGrade = new Chummer.ElasticComboBox();
             this.lblCategory = new System.Windows.Forms.Label();
@@ -169,12 +186,12 @@ namespace Chummer
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
             this.tlpMain.Controls.Add(this.chkHideOverAvailLimit, 1, 3);
             this.tlpMain.Controls.Add(this.chkShowOnlyAffordItems, 1, 4);
+            this.tlpMain.Controls.Add(this.tlpFilterPanels, 1, 5);
             this.tlpMain.Controls.Add(this.tlpLeft, 0, 0);
             this.tlpMain.Controls.Add(this.chkHideBannedGrades, 1, 2);
             this.tlpMain.Controls.Add(this.tlpButtons, 1, 6);
             this.tlpMain.Controls.Add(this.tlpRight, 1, 1);
             this.tlpMain.Controls.Add(this.tlpTopRight, 1, 0);
-            this.tlpMain.Controls.Add(this.flpEssenceFilter, 1, 5);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -184,9 +201,8 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.Size = new System.Drawing.Size(766, 543);
             this.tlpMain.TabIndex = 68;
             // 
@@ -221,6 +237,334 @@ namespace Chummer
             this.chkShowOnlyAffordItems.ToolTipText = "";
             this.chkShowOnlyAffordItems.UseVisualStyleBackColor = true;
             this.chkShowOnlyAffordItems.CheckedChanged += new System.EventHandler(this.RefreshCurrentList);
+            // 
+            // tlpFilterPanels
+            // 
+            this.tlpFilterPanels.AutoSize = true;
+            this.tlpFilterPanels.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpFilterPanels.ColumnCount = 2;
+            this.tlpFilterPanels.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpFilterPanels.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpFilterPanels.Controls.Add(this.gpbEssenceFilter, 0, 0);
+            this.tlpFilterPanels.Controls.Add(this.gpbCostFilter, 1, 0);
+            this.tlpFilterPanels.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpFilterPanels.Location = new System.Drawing.Point(309, 492);
+            this.tlpFilterPanels.Name = "tlpFilterPanels";
+            this.tlpFilterPanels.RowCount = 1;
+            this.tlpFilterPanels.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpFilterPanels.Size = new System.Drawing.Size(400, 120);
+            this.tlpFilterPanels.TabIndex = 73;
+            // 
+            // gpbEssenceFilter
+            // 
+            this.gpbEssenceFilter.AutoSize = true;
+            this.gpbEssenceFilter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbEssenceFilter.Controls.Add(this.tlpEssenceFilter);
+            this.gpbEssenceFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbEssenceFilter.Location = new System.Drawing.Point(3, 3);
+            this.gpbEssenceFilter.Name = "gpbEssenceFilter";
+            this.gpbEssenceFilter.Size = new System.Drawing.Size(200, 80);
+            this.gpbEssenceFilter.TabIndex = 73;
+            this.gpbEssenceFilter.TabStop = false;
+            this.gpbEssenceFilter.Tag = "Label_FilterByEssence";
+            this.gpbEssenceFilter.Text = "Filter by Essence";
+            // 
+            // tlpEssenceFilter
+            // 
+            this.tlpEssenceFilter.AutoSize = true;
+            this.tlpEssenceFilter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEssenceFilter.ColumnCount = 2;
+            this.tlpEssenceFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpEssenceFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpEssenceFilter.Controls.Add(this.lblMinimumEssence, 0, 0);
+            this.tlpEssenceFilter.Controls.Add(this.lblMaximumEssence, 0, 1);
+            this.tlpEssenceFilter.Controls.Add(this.lblExactEssence, 0, 2);
+            this.tlpEssenceFilter.Controls.Add(this.nudMinimumEssence, 1, 0);
+            this.tlpEssenceFilter.Controls.Add(this.nudMaximumEssence, 1, 1);
+            this.tlpEssenceFilter.Controls.Add(this.nudExactEssence, 1, 2);
+            this.tlpEssenceFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpEssenceFilter.Location = new System.Drawing.Point(3, 16);
+            this.tlpEssenceFilter.Name = "tlpEssenceFilter";
+            this.tlpEssenceFilter.RowCount = 3;
+            this.tlpEssenceFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpEssenceFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpEssenceFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpEssenceFilter.Size = new System.Drawing.Size(194, 51);
+            this.tlpEssenceFilter.TabIndex = 0;
+            // 
+            // lblMinimumEssence
+            // 
+            this.lblMinimumEssence.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMinimumEssence.AutoSize = true;
+            this.lblMinimumEssence.Location = new System.Drawing.Point(3, 6);
+            this.lblMinimumEssence.Name = "lblMinimumEssence";
+            this.lblMinimumEssence.Size = new System.Drawing.Size(51, 13);
+            this.lblMinimumEssence.TabIndex = 0;
+            this.lblMinimumEssence.Tag = "Label_Minimum";
+            this.lblMinimumEssence.Text = "Minimum:";
+            // 
+            // lblMaximumEssence
+            // 
+            this.lblMaximumEssence.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMaximumEssence.AutoSize = true;
+            this.lblMaximumEssence.Location = new System.Drawing.Point(3, 33);
+            this.lblMaximumEssence.Name = "lblMaximumEssence";
+            this.lblMaximumEssence.Size = new System.Drawing.Size(54, 13);
+            this.lblMaximumEssence.TabIndex = 1;
+            this.lblMaximumEssence.Tag = "Label_Maximum";
+            this.lblMaximumEssence.Text = "Maximum:";
+            // 
+            // nudMinimumEssence
+            // 
+            this.nudMinimumEssence.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMinimumEssence.AutoSize = true;
+            this.nudMinimumEssence.DecimalPlaces = 2;
+            this.nudMinimumEssence.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.nudMinimumEssence.Location = new System.Drawing.Point(60, 3);
+            this.nudMinimumEssence.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudMinimumEssence.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMinimumEssence.Name = "nudMinimumEssence";
+            this.nudMinimumEssence.Size = new System.Drawing.Size(60, 20);
+            this.nudMinimumEssence.TabIndex = 2;
+            this.nudMinimumEssence.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMinimumEssence.ValueChanged += new System.EventHandler(this.EssenceCostFilter);
+            // 
+            // nudMaximumEssence
+            // 
+            this.nudMaximumEssence.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMaximumEssence.AutoSize = true;
+            this.nudMaximumEssence.DecimalPlaces = 2;
+            this.nudMaximumEssence.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.nudMaximumEssence.Location = new System.Drawing.Point(60, 30);
+            this.nudMaximumEssence.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudMaximumEssence.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaximumEssence.Name = "nudMaximumEssence";
+            this.nudMaximumEssence.Size = new System.Drawing.Size(60, 20);
+            this.nudMaximumEssence.TabIndex = 3;
+            this.nudMaximumEssence.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaximumEssence.ValueChanged += new System.EventHandler(this.EssenceCostFilter);
+            // 
+            // lblExactEssence
+            // 
+            this.lblExactEssence.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblExactEssence.AutoSize = true;
+            this.lblExactEssence.Location = new System.Drawing.Point(3, 60);
+            this.lblExactEssence.Name = "lblExactEssence";
+            this.lblExactEssence.Size = new System.Drawing.Size(35, 13);
+            this.lblExactEssence.TabIndex = 2;
+            this.lblExactEssence.Tag = "Label_Exact";
+            this.lblExactEssence.Text = "Exact:";
+            // 
+            // nudExactEssence
+            // 
+            this.nudExactEssence.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudExactEssence.AutoSize = true;
+            this.nudExactEssence.DecimalPlaces = 2;
+            this.nudExactEssence.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.nudExactEssence.Location = new System.Drawing.Point(60, 57);
+            this.nudExactEssence.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudExactEssence.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudExactEssence.Name = "nudExactEssence";
+            this.nudExactEssence.Size = new System.Drawing.Size(60, 20);
+            this.nudExactEssence.TabIndex = 5;
+            this.nudExactEssence.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudExactEssence.ValueChanged += new System.EventHandler(this.EssenceCostFilter);
+            // 
+            // gpbCostFilter
+            // 
+            this.gpbCostFilter.AutoSize = true;
+            this.gpbCostFilter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbCostFilter.Controls.Add(this.tlpCostFilter);
+            this.gpbCostFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbCostFilter.Location = new System.Drawing.Point(203, 3);
+            this.gpbCostFilter.Name = "gpbCostFilter";
+            this.gpbCostFilter.Size = new System.Drawing.Size(200, 120);
+            this.gpbCostFilter.TabIndex = 74;
+            this.gpbCostFilter.TabStop = false;
+            this.gpbCostFilter.Tag = "Label_FilterByCost";
+            this.gpbCostFilter.Text = "Filter by Cost (¥)";
+            // 
+            // tlpCostFilter
+            // 
+            this.tlpCostFilter.AutoSize = true;
+            this.tlpCostFilter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpCostFilter.ColumnCount = 2;
+            this.tlpCostFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpCostFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpCostFilter.Controls.Add(this.lblMinimumCost, 0, 0);
+            this.tlpCostFilter.Controls.Add(this.lblMaximumCost, 0, 1);
+            this.tlpCostFilter.Controls.Add(this.lblExactCost, 0, 2);
+            this.tlpCostFilter.Controls.Add(this.nudMinimumCost, 1, 0);
+            this.tlpCostFilter.Controls.Add(this.nudMaximumCost, 1, 1);
+            this.tlpCostFilter.Controls.Add(this.nudExactCost, 1, 2);
+            this.tlpCostFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpCostFilter.Location = new System.Drawing.Point(3, 16);
+            this.tlpCostFilter.Name = "tlpCostFilter";
+            this.tlpCostFilter.RowCount = 3;
+            this.tlpCostFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCostFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCostFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCostFilter.Size = new System.Drawing.Size(194, 81);
+            this.tlpCostFilter.TabIndex = 0;
+            // 
+            // lblMinimumCost
+            // 
+            this.lblMinimumCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMinimumCost.AutoSize = true;
+            this.lblMinimumCost.Location = new System.Drawing.Point(3, 6);
+            this.lblMinimumCost.Name = "lblMinimumCost";
+            this.lblMinimumCost.Size = new System.Drawing.Size(51, 13);
+            this.lblMinimumCost.TabIndex = 0;
+            this.lblMinimumCost.Tag = "Label_Minimum";
+            this.lblMinimumCost.Text = "Minimum:";
+            // 
+            // lblMaximumCost
+            // 
+            this.lblMaximumCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMaximumCost.AutoSize = true;
+            this.lblMaximumCost.Location = new System.Drawing.Point(3, 33);
+            this.lblMaximumCost.Name = "lblMaximumCost";
+            this.lblMaximumCost.Size = new System.Drawing.Size(54, 13);
+            this.lblMaximumCost.TabIndex = 1;
+            this.lblMaximumCost.Tag = "Label_Maximum";
+            this.lblMaximumCost.Text = "Maximum:";
+            // 
+            // lblExactCost
+            // 
+            this.lblExactCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblExactCost.AutoSize = true;
+            this.lblExactCost.Location = new System.Drawing.Point(3, 60);
+            this.lblExactCost.Name = "lblExactCost";
+            this.lblExactCost.Size = new System.Drawing.Size(35, 13);
+            this.lblExactCost.TabIndex = 2;
+            this.lblExactCost.Tag = "Label_Exact";
+            this.lblExactCost.Text = "Exact:";
+            // 
+            // nudMinimumCost
+            // 
+            this.nudMinimumCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMinimumCost.AutoSize = true;
+            this.nudMinimumCost.DecimalPlaces = 0;
+            this.nudMinimumCost.Location = new System.Drawing.Point(60, 3);
+            this.nudMinimumCost.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.nudMinimumCost.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMinimumCost.Name = "nudMinimumCost";
+            this.nudMinimumCost.Size = new System.Drawing.Size(60, 20);
+            this.nudMinimumCost.TabIndex = 3;
+            this.nudMinimumCost.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMinimumCost.ValueChanged += new System.EventHandler(this.EssenceCostFilter);
+            // 
+            // nudMaximumCost
+            // 
+            this.nudMaximumCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMaximumCost.AutoSize = true;
+            this.nudMaximumCost.DecimalPlaces = 0;
+            this.nudMaximumCost.Location = new System.Drawing.Point(60, 30);
+            this.nudMaximumCost.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.nudMaximumCost.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaximumCost.Name = "nudMaximumCost";
+            this.nudMaximumCost.Size = new System.Drawing.Size(60, 20);
+            this.nudMaximumCost.TabIndex = 4;
+            this.nudMaximumCost.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaximumCost.ValueChanged += new System.EventHandler(this.EssenceCostFilter);
+            // 
+            // nudExactCost
+            // 
+            this.nudExactCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudExactCost.AutoSize = true;
+            this.nudExactCost.DecimalPlaces = 0;
+            this.nudExactCost.Location = new System.Drawing.Point(60, 57);
+            this.nudExactCost.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.nudExactCost.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudExactCost.Name = "nudExactCost";
+            this.nudExactCost.Size = new System.Drawing.Size(60, 20);
+            this.nudExactCost.TabIndex = 5;
+            this.nudExactCost.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudExactCost.ValueChanged += new System.EventHandler(this.EssenceCostFilter);
             // 
             // tlpLeft
             // 
@@ -1082,5 +1426,22 @@ namespace Chummer
         private System.Windows.Forms.TableLayoutPanel tlpLeft;
         private System.Windows.Forms.TableLayoutPanel tlpTopRight;
         private System.Windows.Forms.Panel pnlNotes;
+        private System.Windows.Forms.TableLayoutPanel tlpFilterPanels;
+        private System.Windows.Forms.GroupBox gpbEssenceFilter;
+        private System.Windows.Forms.TableLayoutPanel tlpEssenceFilter;
+        private System.Windows.Forms.Label lblMinimumEssence;
+        private System.Windows.Forms.Label lblMaximumEssence;
+        private System.Windows.Forms.Label lblExactEssence;
+        private Chummer.NumericUpDownEx nudMinimumEssence;
+        private Chummer.NumericUpDownEx nudMaximumEssence;
+        private Chummer.NumericUpDownEx nudExactEssence;
+        private System.Windows.Forms.GroupBox gpbCostFilter;
+        private System.Windows.Forms.TableLayoutPanel tlpCostFilter;
+        private System.Windows.Forms.Label lblMinimumCost;
+        private System.Windows.Forms.Label lblMaximumCost;
+        private System.Windows.Forms.Label lblExactCost;
+        private Chummer.NumericUpDownEx nudMinimumCost;
+        private Chummer.NumericUpDownEx nudMaximumCost;
+        private Chummer.NumericUpDownEx nudExactCost;
     }
 }

@@ -723,6 +723,26 @@
       <text>Cost:</text>
     </string>
     <string>
+      <key>Label_FilterByCost</key>
+      <text>Filter by Cost (¥)</text>
+    </string>
+    <string>
+      <key>Label_FilterByEssence</key>
+      <text>Filter by Essence</text>
+    </string>
+    <string>
+      <key>Label_Exact</key>
+      <text>Exact:</text>
+    </string>
+    <string>
+      <key>Label_Minimum</key>
+      <text>Minimum:</text>
+    </string>
+    <string>
+      <key>Label_Maximum</key>
+      <text>Maximum:</text>
+    </string>
+    <string>
       <key>Label_Accuracy</key>
       <text>Accuracy:</text>
     </string>

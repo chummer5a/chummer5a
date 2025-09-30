@@ -52556,7 +52556,7 @@ namespace Chummer
                                                                 "chummer/mods/mod", strArmorModName);
                                                         if (xmlArmorModData != null)
                                                         {
-                                                            ArmorMod objArmorMod = new ArmorMod(this);
+                                                            ArmorMod objArmorMod = new ArmorMod(this, objArmor);
                                                             if (blnSync)
                                                             {
                                                                 try

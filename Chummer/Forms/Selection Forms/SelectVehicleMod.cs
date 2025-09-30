@@ -58,6 +58,11 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             this.UpdateParentForToolTipControls();
+
+            // Prevent Enter key from closing the form when NumericUpDown controls have focus
+            nudMinimumCost.KeyDown += NumericUpDown_KeyDown;
+            nudMaximumCost.KeyDown += NumericUpDown_KeyDown;
+            nudExactCost.KeyDown += NumericUpDown_KeyDown;
             _lstCategory = Utils.ListItemListPool.Get();
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             // Load the Vehicle information.
@@ -147,6 +152,23 @@ namespace Chummer
         private async void RefreshCurrentList(object sender, EventArgs e)
         {
             await RefreshList().ConfigureAwait(false);
+        }
+
+        private async void CostFilter(object sender, EventArgs e)
+        {
+            if (_blnLoading)
+                return;
+
+            await RefreshList().ConfigureAwait(false);
+        }
+
+        private void NumericUpDown_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
         }
 
         private async void nudRating_ValueChanged(object sender, EventArgs e)
@@ -319,6 +341,22 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
+
+            // Apply cost filtering
+            decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+            decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+            decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+
+            if (decExactCost > 0)
+            {
+                // Exact cost filtering
+                strFilter += " and (cost = " + decExactCost.ToString(GlobalSettings.InvariantCultureInfo) + ")";
+            }
+            else if (decMinimumCost != 0 || decMaximumCost != 0)
+            {
+                // Range cost filtering
+                strFilter += " and (" + CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost") + ")";
+            }
 
             // Retrieve the list of Mods for the selected Category.
             XPathNodeIterator objXmlModList = VehicleMountMods
