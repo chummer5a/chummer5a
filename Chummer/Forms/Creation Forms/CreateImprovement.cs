@@ -506,7 +506,7 @@ namespace Chummer
                         }
 
                         foreach (XPathNavigator xmlSkill in (await _objCharacter.LoadDataXPathAsync("skills.xml").ConfigureAwait(false))
-                                 .Select("/chummer/knowledgeskills/skill"
+                                 .Select("/chummer/knowledgeskills/skill[not(hide)]"
                                          + strFilter))
                         {
                             string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;

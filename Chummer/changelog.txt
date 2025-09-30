@@ -122,6 +122,7 @@ Application Changes:
   * Can Buy with Spell Points (canbuywithspellpoints = 'True')
   * Metagenic Only (metagenic = 'True')
   * Positive/Negative Qualities (category filtering)
+- Added support for using the hide element in skills.xml for the amend system
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://jackpoint.live/index.php?topic=31750.msg544923#msg544923.

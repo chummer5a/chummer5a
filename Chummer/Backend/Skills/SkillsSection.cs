@@ -1373,7 +1373,7 @@ namespace Chummer.Backend.Skills
                 {
                     XPathNodeIterator lstXmlSkills = _objCharacter.LoadDataXPath("skills.xml")
                         .SelectAndCacheExpression(
-                            "/chummer/knowledgeskills/skill");
+                            "/chummer/knowledgeskills/skill[not(hide)]");
                     Dictionary<string, string> dicReturn = new Dictionary<string, string>(lstXmlSkills.Count);
                     foreach (XPathNavigator objXmlSkill in lstXmlSkills)
                     {
@@ -1403,7 +1403,7 @@ namespace Chummer.Backend.Skills
                     {
                         XPathNodeIterator lstXmlSkills = _objCharacter.LoadDataXPath("skills.xml")
                             .SelectAndCacheExpression(
-                                "/chummer/knowledgeskills/skill");
+                                "/chummer/knowledgeskills/skill[not(hide)]");
                         Dictionary<string, string> dicReturn =
                             new Dictionary<string, string>(lstXmlSkills.Count);
                         foreach (XPathNavigator objXmlSkill in lstXmlSkills)
@@ -1432,7 +1432,7 @@ namespace Chummer.Backend.Skills
                 XPathNodeIterator lstXmlSkills =
                     (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
                     .SelectAndCacheExpression(
-                        "/chummer/knowledgeskills/skill", token);
+                        "/chummer/knowledgeskills/skill[not(hide)]", token);
                 Dictionary<string, string> dicReturn = new Dictionary<string, string>(lstXmlSkills.Count);
                 foreach (XPathNavigator objXmlSkill in lstXmlSkills)
                 {
@@ -1479,7 +1479,7 @@ namespace Chummer.Backend.Skills
                         (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token)
                             .ConfigureAwait(false))
                         .SelectAndCacheExpression(
-                            "/chummer/knowledgeskills/skill", token);
+                            "/chummer/knowledgeskills/skill[not(hide)]", token);
                     Dictionary<string, string> dicReturn =
                         new Dictionary<string, string>(lstXmlSkills.Count);
                     foreach (XPathNavigator objXmlSkill in lstXmlSkills)
@@ -4128,7 +4128,7 @@ namespace Chummer.Backend.Skills
                     List<ListItem> lstReturn = new List<ListItem>(byte.MaxValue);
                     XPathNavigator xmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml");
                     foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression(
-                                 "/chummer/knowledgeskills/skill"))
+                                 "/chummer/knowledgeskills/skill[not(hide)]"))
                     {
                         string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
                         lstReturn.Add(
@@ -4157,7 +4157,7 @@ namespace Chummer.Backend.Skills
                         _lstDefaultKnowledgeSkills = new List<ListItem>(byte.MaxValue);
                         XPathNavigator xmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml");
                         foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression(
-                                     "/chummer/knowledgeskills/skill"))
+                                     "/chummer/knowledgeskills/skill[not(hide)]"))
                         {
                             string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value ??
                                              string.Empty;
@@ -4182,7 +4182,7 @@ namespace Chummer.Backend.Skills
                 XPathNavigator xmlSkillsDocument =
                     await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
                 foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression(
-                             "/chummer/knowledgeskills/skill", token))
+                             "/chummer/knowledgeskills/skill[not(hide)]", token))
                 {
                     string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? string.Empty;
                     lstReturn.Add(
@@ -4222,7 +4222,7 @@ namespace Chummer.Backend.Skills
                     XPathNavigator xmlSkillsDocument =
                         await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
                     foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression(
-                                 "/chummer/knowledgeskills/skill", token))
+                                 "/chummer/knowledgeskills/skill[not(hide)]", token))
                     {
                         string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name", token)?.Value ??
                                          string.Empty;
