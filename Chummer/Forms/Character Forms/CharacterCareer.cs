@@ -12060,7 +12060,7 @@ namespace Chummer
                                                                   out StringBuilder sbdCategories))
                     {
                         foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
-                            sbdCategories.Append(objXmlCategory.Value).Append(',');
+                            sbdCategories.Append(objXmlCategory.Value, ',');
                         // Remove the trailing comma.
                         --sbdCategories.Length;
                         strCategories = sbdCategories.ToString();
@@ -14451,7 +14451,7 @@ namespace Chummer
                                             && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
                                                 || setDisallowedMounts.Contains(
                                                     strLoop.Substring(0, strLoop.Length - 4) + "Right")))
-                                            sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
+                                            sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left"), ',');
                                     }
 
                                     // Remove trailing ","
@@ -14464,7 +14464,7 @@ namespace Chummer
                                                                               out StringBuilder sbdHasMounts))
                                 {
                                     foreach (string strLoop in setHasMounts)
-                                        sbdHasMounts.Append(strLoop).Append(',');
+                                        sbdHasMounts.Append(strLoop, ',');
                                     // Remove trailing ","
                                     if (sbdHasMounts.Length > 0)
                                         --sbdHasMounts.Length;
@@ -14527,7 +14527,7 @@ namespace Chummer
                                             && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
                                                 || setDisallowedMounts.Contains(
                                                     strLoop.Substring(0, strLoop.Length - 4) + "Right")))
-                                            sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
+                                            sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left"), ',');
                                     }
 
                                     // Remove trailing ","
@@ -14540,7 +14540,7 @@ namespace Chummer
                                                                               out StringBuilder sbdHasMounts))
                                 {
                                     foreach (string strLoop in setHasMounts)
-                                        sbdHasMounts.Append(strLoop).Append(',');
+                                        sbdHasMounts.Append(strLoop, ',');
                                     // Remove trailing ","
                                     if (sbdHasMounts.Length > 0)
                                         --sbdHasMounts.Length;
@@ -14982,7 +14982,7 @@ namespace Chummer
                                out StringBuilder sbdCategories))
                     {
                         foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
-                            sbdCategories.Append(objXmlCategory.InnerTextViaPool(GenericToken)).Append(',');
+                            sbdCategories.Append(objXmlCategory.InnerTextViaPool(GenericToken), ',');
                         if (sbdCategories.Length > 0)
                         {
                             --sbdCategories.Length;
@@ -15162,7 +15162,7 @@ namespace Chummer
                                out StringBuilder sbdCategories))
                     {
                         foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
-                            sbdCategories.Append(objXmlCategory.InnerTextViaPool(GenericToken)).Append(',');
+                            sbdCategories.Append(objXmlCategory.InnerTextViaPool(GenericToken), ',');
                         if (sbdCategories.Length > 0)
                         {
                             --sbdCategories.Length;
@@ -15346,7 +15346,7 @@ namespace Chummer
                                                                   out StringBuilder sbdCategories))
                     {
                         foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
-                            sbdCategories.Append(objXmlCategory.Value).Append(',');
+                            sbdCategories.Append(objXmlCategory.Value, ',');
                         // Remove the trailing comma.
                         --sbdCategories.Length;
                         strCategories = sbdCategories.ToString();
@@ -15520,7 +15520,7 @@ namespace Chummer
                                                                   out StringBuilder sbdCategories))
                     {
                         foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
-                            sbdCategories.Append(objXmlCategory.Value).Append(',');
+                            sbdCategories.Append(objXmlCategory.Value, ',');
                         // Remove the trailing comma.
                         --sbdCategories.Length;
                         strCategories = sbdCategories.ToString();
@@ -15693,7 +15693,7 @@ namespace Chummer
                                out StringBuilder sbdCategories))
                     {
                         foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
-                            sbdCategories.Append(objXmlCategory.InnerTextViaPool(GenericToken)).Append(',');
+                            sbdCategories.Append(objXmlCategory.InnerTextViaPool(GenericToken), ',');
                         if (sbdCategories.Length > 0)
                         {
                             --sbdCategories.Length;
@@ -15863,7 +15863,7 @@ namespace Chummer
                                                                   out StringBuilder sbdCategories))
                     {
                         foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
-                            sbdCategories.Append(objXmlCategory.Value).Append(',');
+                            sbdCategories.Append(objXmlCategory.Value, ',');
                         // Remove the trailing comma.
                         --sbdCategories.Length;
                         strCategories = sbdCategories.ToString();
@@ -16105,7 +16105,7 @@ namespace Chummer
                                                                   out StringBuilder sbdCategories))
                     {
                         foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
-                            sbdCategories.Append(objXmlCategory.Value).Append(',');
+                            sbdCategories.Append(objXmlCategory.Value, ',');
                         // Remove the trailing comma.
                         --sbdCategories.Length;
                         strCategories = sbdCategories.ToString();
@@ -16282,7 +16282,7 @@ namespace Chummer
                                out StringBuilder sbdCategories))
                     {
                         foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
-                            sbdCategories.Append(objXmlCategory.InnerTextViaPool(GenericToken)).Append(',');
+                            sbdCategories.Append(objXmlCategory.InnerTextViaPool(GenericToken), ',');
                         if (sbdCategories.Length > 0)
                         {
                             --sbdCategories.Length;
@@ -22000,8 +22000,7 @@ namespace Chummer
                                                     {
                                                         sbdPlugins.Append(await objChild
                                                                               .GetCurrentDisplayNameShortAsync(token)
-                                                                              .ConfigureAwait(false)).Append(',')
-                                                                  .Append(strSpace);
+                                                                              .ConfigureAwait(false), ',', strSpace);
                                                     }
 
                                                     strPlugins = sbdPlugins.ToString();
@@ -22166,8 +22165,7 @@ namespace Chummer
                                         sbdSlotsText
                                             .Append(await LanguageManager
                                                           .GetStringAsync("String_Mount" + strMount, token: token)
-                                                          .ConfigureAwait(false))
-                                            .Append('/');
+                                                          .ConfigureAwait(false), '/');
                                     --sbdSlotsText.Length;
                                 }
 
@@ -22181,7 +22179,7 @@ namespace Chummer
                                     {
                                         if (!boolHaveAddedItem)
                                         {
-                                            sbdSlotsText.Append(strSpace).Append('+').Append(strSpace);
+                                            sbdSlotsText.Append(strSpace, '+', strSpace);
                                             boolHaveAddedItem = true;
                                         }
 
@@ -22189,8 +22187,7 @@ namespace Chummer
                                             .Append(await LanguageManager.GetStringAsync(
                                                                              "String_Mount" + strCurrentExtraMount,
                                                                              token: token)
-                                                                         .ConfigureAwait(false))
-                                            .Append('/');
+                                                                         .ConfigureAwait(false), '/');
                                     }
 
                                     // Remove the trailing /
@@ -22200,11 +22197,11 @@ namespace Chummer
 
                                 if (!string.IsNullOrEmpty(objSelectedAccessory.AddMount))
                                 {
-                                    sbdSlotsText.Append(strSpace).Append("(++").Append(strSpace)
+                                    sbdSlotsText.Append(strSpace, "(++", strSpace)
                                             .Append(await LanguageManager.GetStringAsync(
                                                                                 "String_Mount" + objSelectedAccessory.AddMount,
                                                                                 token: token)
-                                                                            .ConfigureAwait(false)).Append(')');
+                                                                            .ConfigureAwait(false), ')');
                                 }
     
                                 token.ThrowIfCancellationRequested();
@@ -22940,10 +22937,8 @@ namespace Chummer
                                             if (!objLoopArmor.Equipped || objLoopArmor.Location != objLocation)
                                                 return;
                                             sbdArmorEquipped.Append(await objLoopArmor.GetCurrentDisplayNameAsync(token)
-                                                                        .ConfigureAwait(false))
-                                                            .Append(strSpace)
-                                                            .Append('(')
-                                                            .Append(await objLoopArmor.GetDisplayArmorValueAsync(token).ConfigureAwait(false))
+                                                                        .ConfigureAwait(false), strSpace)
+                                                            .Append('(', await objLoopArmor.GetDisplayArmorValueAsync(token).ConfigureAwait(false))
                                                             .AppendLine(')');
                                         }, token).ConfigureAwait(false);
 
@@ -22991,11 +22986,8 @@ namespace Chummer
                                                     return;
                                                 sbdArmorEquipped.Append(await objLoopArmor
                                                                               .GetCurrentDisplayNameAsync(token)
-                                                                              .ConfigureAwait(false))
-                                                                .Append(strSpace)
-                                                                .Append('(')
-                                                                .Append(await objLoopArmor.GetDisplayArmorValueAsync(token).ConfigureAwait(false))
-                                                                .AppendLine(')');
+                                                                              .ConfigureAwait(false), strSpace)
+                                                                .Append('(', await objLoopArmor.GetDisplayArmorValueAsync(token).ConfigureAwait(false)).AppendLine(')');
                                             }, token).ConfigureAwait(false);
 
                                             token.ThrowIfCancellationRequested();
@@ -23914,7 +23906,7 @@ namespace Chummer
                                 if (intValue >= await CharacterObject
                                         .LimbCountAsync(Cyberware.MountToLimbType(strKey), token: token)
                                         .ConfigureAwait(false))
-                                    sbdDisallowedMounts.Append(strKey).Append(',');
+                                    sbdDisallowedMounts.Append(strKey, ',');
                             }
 
                             // Remove trailing ","
@@ -23945,7 +23937,7 @@ namespace Chummer
                                 if (intValue >= await CharacterObject
                                         .LimbCountAsync(Cyberware.MountToLimbType(strKey), token: token)
                                         .ConfigureAwait(false))
-                                    sbdHasMounts.Append(strKey).Append(',');
+                                    sbdHasMounts.Append(strKey, ',');
                             }
 
                             // Remove trailing ","
@@ -24058,7 +24050,7 @@ namespace Chummer
                                        Utils.StringBuilderPool, out StringBuilder sbdCategories))
                             {
                                 foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
-                                    sbdCategories.Append(objXmlCategory.Value).Append(',');
+                                    sbdCategories.Append(objXmlCategory.Value, ',');
                                 // Remove the trailing comma.
                                 --sbdCategories.Length;
                                 strCategories = sbdCategories.ToString();
@@ -24368,7 +24360,7 @@ namespace Chummer
                                        out StringBuilder sbdCategories))
                             {
                                 foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
-                                    sbdCategories.Append(objXmlCategory.Value).Append(',');
+                                    sbdCategories.Append(objXmlCategory.Value, ',');
                                 // Remove the trailing comma.
                                 if (sbdCategories.Length > 0)
                                     --sbdCategories.Length;
@@ -24763,13 +24755,12 @@ namespace Chummer
 
                                 sbdQualities.Append(await CharacterObject
                                                           .GetObjectNameAsync(objImprovement, token: token)
-                                                          .ConfigureAwait(false))
-                                            .Append(await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                                         .ConfigureAwait(false)).Append('[')
-                                            .Append(
+                                                          .ConfigureAwait(false),
+                                                          await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                                         .ConfigureAwait(false))
+                                            .Append('[',
                                                 objImprovement.Value.ToString(
-                                                    "+#,0;-#,0;0", GlobalSettings.CultureInfo))
-                                            .Append("%]");
+                                                    "+#,0;-#,0;0", GlobalSettings.CultureInfo), "%]");
                             }
 
                             if (await objLifestyle.GetStyleTypeAsync(token).ConfigureAwait(false) == LifestyleType.Standard)
@@ -24785,13 +24776,11 @@ namespace Chummer
 
                                     sbdQualities.Append(await CharacterObject
                                             .GetObjectNameAsync(objImprovement, token: token)
-                                            .ConfigureAwait(false))
-                                        .Append(await LanguageManager.GetStringAsync("String_Space", token: token)
-                                            .ConfigureAwait(false)).Append('[')
-                                        .Append(
+                                            .ConfigureAwait(false),
+                                            await LanguageManager.GetStringAsync("String_Space", token: token)
+                                            .ConfigureAwait(false)).Append('[',
                                             objImprovement.Value.ToString(
-                                                "+#,0;-#,0;0", GlobalSettings.CultureInfo))
-                                        .Append("%]");
+                                                "+#,0;-#,0;0", GlobalSettings.CultureInfo), "%]");
                                 }
                             }
 
@@ -25764,9 +25753,7 @@ namespace Chummer
                                                     {
                                                         sbdPlugins.Append(await objChild
                                                                               .GetCurrentDisplayNameShortAsync(
-                                                                                  token).ConfigureAwait(false))
-                                                                  .Append(',')
-                                                                  .Append(strSpace);
+                                                                                  token).ConfigureAwait(false), ',', strSpace);
                                                     }
 
                                                     strPlugins = sbdPlugins.ToString();
@@ -25920,8 +25907,7 @@ namespace Chummer
                                     sbdMount.Append(await LanguageManager
                                                           .GetStringAsync(
                                                               "String_Mount" + strCurrentMount, token: token)
-                                                          .ConfigureAwait(false))
-                                            .Append('/');
+                                                          .ConfigureAwait(false), '/');
                                 // Remove the trailing /
                                 if (sbdMount.Length > 0)
                                     --sbdMount.Length;
@@ -25933,7 +25919,7 @@ namespace Chummer
                                     {
                                         if (!boolHaveAddedItem)
                                         {
-                                            sbdMount.Append(strSpace).Append('+').Append(strSpace);
+                                            sbdMount.Append(strSpace, '+', strSpace);
                                             boolHaveAddedItem = true;
                                         }
 
@@ -25941,8 +25927,7 @@ namespace Chummer
                                         sbdMount.Append(await LanguageManager.GetStringAsync(
                                                                                  "String_Mount" + strCurrentExtraMount,
                                                                                  token: token)
-                                                                             .ConfigureAwait(false))
-                                                .Append('/');
+                                                                             .ConfigureAwait(false), '/');
                                     }
 
                                     // Remove the trailing /
@@ -25952,11 +25937,10 @@ namespace Chummer
 
                                 if (!string.IsNullOrEmpty(objAccessory.AddMount))
                                 {
-                                    sbdMount.Append(strSpace).Append("(++").Append(strSpace)
-                                            .Append(await LanguageManager.GetStringAsync(
+                                    sbdMount.Append(strSpace, "(++", strSpace).Append(await LanguageManager.GetStringAsync(
                                                                                 "String_Mount" + objAccessory.AddMount,
                                                                                 token: token)
-                                                                            .ConfigureAwait(false)).Append(')');
+                                                                            .ConfigureAwait(false), ')');
                                 }
 
                                 strMountText = sbdMount.ToString();

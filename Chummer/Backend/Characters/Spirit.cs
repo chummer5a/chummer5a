@@ -637,8 +637,7 @@ namespace Chummer
                             blnExtrasAdded = true;
                             sbdExtra.Append(await CharacterObject
                                     .TranslateExtraAsync(strLoopExtra, strLanguageToPrint, token: token)
-                                    .ConfigureAwait(false)).Append(',')
-                                .Append(strSpace);
+                                    .ConfigureAwait(false), ',', strSpace);
                         }
 
                         if (blnExtrasAdded)

@@ -113,19 +113,19 @@ namespace Chummer
                 string strFilter = string.Empty;
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
-                    sbdFilter.Append('(').Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false))
-                             .Append(
-                                 ") and (mount = \"\"");
+                    sbdFilter.Append('(',
+                        await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false),
+                        ") and (mount = \"\"");
                     foreach (string strAllowedMount in _lstAllowedMounts.Where(
                                  strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
                     {
-                        sbdFilter.Append(" or contains(mount, ").Append(strAllowedMount.CleanXPath()).Append(')');
+                        sbdFilter.Append(" or contains(mount, ", strAllowedMount.CleanXPath(), ')');
                     }
 
                     sbdFilter.Append(')');
                     string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strSearch))
-                        sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
+                        sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
 
                     // Apply cost filtering
                     decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
@@ -135,16 +135,16 @@ namespace Chummer
                     if (decExactCost > 0)
                     {
                         // Exact cost filtering
-                        sbdFilter.Append(" and (cost = ").Append(decExactCost.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
+                        sbdFilter.Append(" and (cost = ", decExactCost.ToString(GlobalSettings.InvariantCultureInfo), ')');
                     }
                     else if (decMinimumCost != 0 || decMaximumCost != 0)
                     {
                         // Range cost filtering
-                        sbdFilter.Append(" and (").Append(CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost")).Append(')');
+                        sbdFilter.Append(" and (", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"), ')');
                     }
 
                     if (sbdFilter.Length > 0)
-                        strFilter = "[" + sbdFilter.Append(']').ToString();
+                        strFilter = sbdFilter.Insert(0, '[').Append(']').ToString();
                 }
 
                 int intOverLimit = 0;

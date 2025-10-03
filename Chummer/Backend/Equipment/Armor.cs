@@ -2911,14 +2911,14 @@ namespace Chummer.Backend.Equipment
                     if (string.IsNullOrEmpty(strCapacity) || strCapacity == "0")
                         sbdReturn.Append("(0)");
                     else
-                        sbdReturn.Append('(').Append(strCapacity).Append(')');
+                        sbdReturn.Append('(', strCapacity, ')');
 
                     foreach (ArmorMod objMod in ArmorMods)
                     {
                         string strArmorModCapacity = objMod.ArmorCapacity;
                         if (!strArmorModCapacity.StartsWith('-') && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
                             continue;
-                        sbdReturn.Append("-(").Append(objMod.GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo).Trim('[', ']')).Append(')');
+                        sbdReturn.Append("-(", objMod.GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo).Trim('[', ']'), ')');
                     }
 
                     strReturn = sbdReturn.ToString();
@@ -2957,14 +2957,14 @@ namespace Chummer.Backend.Equipment
                     if (string.IsNullOrEmpty(strCapacity) || strCapacity == "0")
                         sbdReturn.Append("(0)");
                     else
-                        sbdReturn.Append('(').Append(strCapacity).Append(')');
+                        sbdReturn.Append('(', strCapacity, ')');
 
                     await ArmorMods.ForEachAsync(async objMod =>
                     {
                         string strArmorModCapacity = objMod.ArmorCapacity;
                         if (!strArmorModCapacity.StartsWith('-') && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
                             return;
-                        sbdReturn.Append("-(").Append((await objMod.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)).Trim('[', ']')).Append(')');
+                        sbdReturn.Append("-(", (await objMod.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)).Trim('[', ']'), ')');
                     }, token).ConfigureAwait(false);
 
                     strReturn = sbdReturn.ToString();
@@ -3783,13 +3783,13 @@ namespace Chummer.Backend.Equipment
                 if (intLowestValidRestrictedGearAvail >= 0 && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                 {
                     --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
-                    sbdRestrictedItems.AppendLine().Append("\t\t").Append(CurrentDisplayName);
+                    sbdRestrictedItems.AppendLine().Append("\t\t", await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                 }
                 else
                 {
                     dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
                     ++intRestrictedCount;
-                    sbdAvailItems.AppendLine().Append("\t\t").Append(CurrentDisplayName);
+                    sbdAvailItems.AppendLine().Append("\t\t", await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                 }
             }
 

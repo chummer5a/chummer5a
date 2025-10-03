@@ -247,7 +247,7 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (XmlNode objXmlSubsystem in xmlSubsystemList)
                             {
-                                sbdSubsystems.Append(objXmlSubsystem.InnerTextViaPool(token)).Append(',');
+                                sbdSubsystems.Append(objXmlSubsystem.InnerTextViaPool(token), ',');
                             }
                         }
                     }
@@ -2550,13 +2550,13 @@ namespace Chummer.Backend.Equipment
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
                             --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
-                            sbdRestrictedItems.AppendLine().Append("\t\t").Append(strNameToUse);
+                            sbdRestrictedItems.AppendLine().Append("\t\t", strNameToUse);
                         }
                         else
                         {
                             dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
                             ++intRestrictedCount;
-                            sbdAvailItems.AppendLine().Append("\t\t").Append(strNameToUse);
+                            sbdAvailItems.AppendLine().Append("\t\t", strNameToUse);
                         }
                     }
                 }

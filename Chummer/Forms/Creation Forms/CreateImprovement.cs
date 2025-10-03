@@ -493,7 +493,7 @@ namespace Chummer
                                     sbdFilters.Append("not(");
                                     foreach (string strName in setProcessedSkillNames)
                                     {
-                                        sbdFilters.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
+                                        sbdFilters.Append("name = ", strName.CleanXPath(), " or ");
                                     }
 
                                     sbdFilters.Length -= 4;
@@ -501,7 +501,7 @@ namespace Chummer
                                 }
 
                                 if (sbdFilters.Length > 0)
-                                    strFilter = "[" + sbdFilters.Append(']').ToString();
+                                    strFilter = sbdFilters.Insert(0, '[').Append(']').ToString();
                             }
                         }
 

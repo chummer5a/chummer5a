@@ -62,12 +62,12 @@ namespace Chummer
                                 string strExclude = string.Empty;
                                 foreach (string strCategory in _strExcludeCategory.SplitNoAlloc(
                                              ',', StringSplitOptions.RemoveEmptyEntries))
-                                    sbdExclude.Append("category != ").Append(strCategory.CleanXPath()).Append(" and ");
+                                    sbdExclude.Append("category != ", strCategory.CleanXPath(), " and ");
                                 // Remove the trailing " and ";
                                 if (sbdExclude.Length > 0)
                                 {
                                     sbdExclude.Length -= 5;
-                                    strExclude = "(" + sbdExclude.Append(") and ").ToString();
+                                    strExclude = sbdExclude.Insert(0, '(').Append(") and ").ToString();
                                 }
                                 if (_objXmlDocument.SelectSingleNode(
                                         "/chummer/skills/skill[" + strExclude + "skillgroup = "

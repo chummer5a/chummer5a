@@ -626,7 +626,7 @@ namespace Chummer
                 {
                     blnReturn = true;
                     sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Added", token: token).ConfigureAwait(false), strNodePath).AppendLine();
-                    sbdOutput.AppendLine("  ").Append(await FormatXmlNode(objResultNode, token).ConfigureAwait(false));
+                    sbdOutput.AppendLine("  ", await FormatXmlNode(objResultNode, token).ConfigureAwait(false));
                     return true;
                 }
 
@@ -635,7 +635,7 @@ namespace Chummer
                 {
                     blnReturn = true;
                     sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Removed", token: token).ConfigureAwait(false), strNodePath).AppendLine();
-                    sbdOutput.AppendLine("  ").Append(await FormatXmlNode(objBaseNode, token).ConfigureAwait(false));
+                    sbdOutput.AppendLine("  ", await FormatXmlNode(objBaseNode, token).ConfigureAwait(false));
                     return true;
                 }
 
@@ -749,7 +749,7 @@ namespace Chummer
                             blnReturn = true;
                             string strChildPath = GetNodePath(kvp.Value, strNodePath);
                             sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Added", token: token).ConfigureAwait(false), strChildPath).AppendLine();
-                            sbdOutput.Append("  ").Append(await FormatXmlNode(kvp.Value, token).ConfigureAwait(false));
+                            sbdOutput.AppendLine("  ", await FormatXmlNode(kvp.Value, token).ConfigureAwait(false));
                         }
                         else
                         {
@@ -762,7 +762,7 @@ namespace Chummer
                     {
                         string strChildPath = GetNodePath(kvp.Value, strNodePath);
                         sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Removed", token: token).ConfigureAwait(false), strChildPath).AppendLine();
-                        sbdOutput.AppendLine("  ").Append(await FormatXmlNode(kvp.Value, token).ConfigureAwait(false));
+                        sbdOutput.AppendLine("  ", await FormatXmlNode(kvp.Value, token).ConfigureAwait(false));
                     }
                 }
             }

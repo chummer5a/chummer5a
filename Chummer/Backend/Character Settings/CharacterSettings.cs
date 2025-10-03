@@ -6196,7 +6196,7 @@ namespace Chummer
                     {
                         if (sbdPath.Length != 0)
                             sbdPath.Append(" and ");
-                        sbdPath.Append("(ignoresourcedisabled or ").Append(_strBookXPath).Append(')');
+                        sbdPath.Append("(ignoresourcedisabled or ", _strBookXPath, ')');
                     }
                     else
                     {
@@ -6213,7 +6213,7 @@ namespace Chummer
                 }
 
                 if (sbdPath.Length > 0)
-                    return "(" + sbdPath.Append(')').ToString();
+                    return sbdPath.Insert(0, '(').Append(')').ToString();
             }
 
             // We have only the opening parentheses; return an empty string
@@ -6247,7 +6247,7 @@ namespace Chummer
                     {
                         if (sbdPath.Length != 0)
                             sbdPath.Append(" and ");
-                        sbdPath.Append("(ignoresourcedisabled or ").Append(_strBookXPath).Append(')');
+                        sbdPath.Append("(ignoresourcedisabled or ", _strBookXPath, ')');
                     }
                     else
                     {
@@ -6268,7 +6268,7 @@ namespace Chummer
                 }
 
                 if (sbdPath.Length > 0)
-                    return "(" + sbdPath.Append(')').ToString();
+                    return sbdPath.Insert(0, '(').Append(')').ToString();
             }
 
             // We have only the opening parentheses; return an empty string
@@ -6294,7 +6294,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         if (!string.IsNullOrWhiteSpace(strBook))
                         {
-                            sbdBookXPath.Append("source = ").Append(strBook.CleanXPath()).Append(" or ");
+                            sbdBookXPath.Append("source = ", strBook.CleanXPath(), " or ");
                         }
                     }
 
@@ -6327,7 +6327,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         if (!string.IsNullOrWhiteSpace(strBook))
                         {
-                            sbdBookXPath.Append("source = ").Append(strBook.CleanXPath()).Append(" or ");
+                            sbdBookXPath.Append("source = ", strBook.CleanXPath(), " or ");
                         }
                     }
 

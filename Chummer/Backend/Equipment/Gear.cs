@@ -6126,7 +6126,7 @@ namespace Chummer.Backend.Equipment
                         if (decIllegalQuantity > 0)
                         {
                             ++intRestrictedCount;
-                            sbdAvailItems.AppendLine().Append("\t\t").Append(await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true, decIllegalQuantity, token).ConfigureAwait(false));
+                            sbdAvailItems.AppendLine().Append("\t\t", await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true, decIllegalQuantity, token).ConfigureAwait(false));
                         }
                         if (intRestrictedGearQuantityUsed > 0)
                         {
@@ -6138,7 +6138,7 @@ namespace Chummer.Backend.Equipment
                                                                        intRestrictedGearQuantityUsed, token).ConfigureAwait(false),
                                                 await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
                                                 Parent);
-                            sbdRestrictedItems.AppendLine().Append("\t\t").Append(strNameToUse);
+                            sbdRestrictedItems.AppendLine().Append("\t\t", strNameToUse);
                         }
                     }
                 }

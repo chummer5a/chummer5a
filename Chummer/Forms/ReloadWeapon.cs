@@ -89,13 +89,13 @@ namespace Chummer
                                                                       out StringBuilder sbdPlugins))
                         {
                             await objGear.Children.ForEachAsync(async objChild =>
-                                sbdPlugins.Append(await objChild.GetCurrentDisplayNameShortAsync().ConfigureAwait(false)).Append(',').Append(strSpace))
+                                sbdPlugins.Append(await objChild.GetCurrentDisplayNameShortAsync().ConfigureAwait(false), ',', strSpace))
                                 .ConfigureAwait(false);
 
                             // Remove the trailing comma.
                             sbdPlugins.Length -= 1 + strSpace.Length;
                             // Append the plugin information to the name.
-                            strName += strSpace + "[" + sbdPlugins.Append(']').ToString();
+                            strName = sbdPlugins.Insert(0, strName, strSpace, '[').Append(']').ToString();
                         }
                     }
 

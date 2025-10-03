@@ -214,7 +214,7 @@ namespace Chummer
                 {
                     await sbdTitle
                         .Append(await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token)
-                            .ConfigureAwait(false)).Append(':').Append(strSpace)
+                            .ConfigureAwait(false), ':', strSpace)
                         .AppendJoinAsync(
                             "," + strSpace,
                             _lstCharacters.Select(async x =>

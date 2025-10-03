@@ -328,12 +328,12 @@ namespace Chummer
                     foreach (string strItem in _lstCategory.Select(x => x.Value))
                     {
                         if (!string.IsNullOrEmpty(strItem))
-                            sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
+                            sbdCategoryFilter.Append("category = ", strItem.CleanXPath(), " or ");
                     }
                     if (sbdCategoryFilter.Length > 0)
                     {
                         sbdCategoryFilter.Length -= 4;
-                        strFilter += " and (" + sbdCategoryFilter.Append(')').ToString();
+                        strFilter = sbdCategoryFilter.Insert(0, strFilter, " and (", ')').ToString();
                     }
                 }
             }

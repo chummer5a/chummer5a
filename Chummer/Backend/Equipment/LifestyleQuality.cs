@@ -1609,21 +1609,21 @@ namespace Chummer.Backend.Equipment
                     if (decMultiplier != 0)
                     {
                         if (sbdReturn.Length > 0)
-                            sbdReturn.Append(',').Append(LanguageManager.GetString("String_Space", strLanguage));
+                            sbdReturn.Append(',', LanguageManager.GetString("String_Space", strLanguage));
                         if (decMultiplier > 0)
                             sbdReturn.Append('+');
-                        sbdReturn.Append(decMultiplier.ToString(objCulture)).Append('%');
+                        sbdReturn.Append(decMultiplier.ToString(objCulture), '%');
                     }
 
                     decimal decCost = Cost;
                     if (decCost != 0)
                     {
                         if (sbdReturn.Length > 0)
-                            sbdReturn.Append(',').Append(LanguageManager.GetString("String_Space", strLanguage));
+                            sbdReturn.Append(',', LanguageManager.GetString("String_Space", strLanguage));
                         if (decCost > 0)
                             sbdReturn.Append('+');
-                        sbdReturn.Append(decCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture))
-                            .Append(LanguageManager.GetString("String_NuyenSymbol", strLanguage));
+                        sbdReturn.Append(decCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture),
+                            LanguageManager.GetString("String_NuyenSymbol", strLanguage));
                     }
                     strReturn = sbdReturn.ToString();
                 }
@@ -1657,21 +1657,21 @@ namespace Chummer.Backend.Equipment
                     if (decMultiplier != 0)
                     {
                         if (sbdReturn.Length > 0)
-                            sbdReturn.Append(',').Append(await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false));
+                            sbdReturn.Append(',', await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false));
                         if (decMultiplier > 0)
                             sbdReturn.Append('+');
-                        sbdReturn.Append(decMultiplier.ToString(objCulture)).Append('%');
+                        sbdReturn.Append(decMultiplier.ToString(objCulture), '%');
                     }
 
                     decimal decCost = await GetCostAsync(token).ConfigureAwait(false);
                     if (decCost != 0)
                     {
                         if (sbdReturn.Length > 0)
-                            sbdReturn.Append(',').Append(await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false));
+                            sbdReturn.Append(',', await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false));
                         if (decCost > 0)
                             sbdReturn.Append('+');
-                        sbdReturn.Append(decCost.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token: token).ConfigureAwait(false), objCulture))
-                            .Append(await LanguageManager.GetStringAsync("String_NuyenSymbol", strLanguage, token: token).ConfigureAwait(false));
+                        sbdReturn.Append(decCost.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token: token).ConfigureAwait(false), objCulture),
+                            await LanguageManager.GetStringAsync("String_NuyenSymbol", strLanguage, token: token).ConfigureAwait(false));
                     }
                     strReturn = sbdReturn.ToString();
                 }

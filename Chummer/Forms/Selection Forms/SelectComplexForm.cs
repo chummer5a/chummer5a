@@ -205,11 +205,11 @@ namespace Chummer
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdFv))
                         {
-                            sbdFv.Append('(').Append(strFv).Append(')');
+                            sbdFv.Append('(', strFv, ')');
                             foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                 _objCharacter, Improvement.ImprovementType.FadingValue, strSelectedComplexFormName, true).ConfigureAwait(false))
                             {
-                                sbdFv.Append(" + (").Append(objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
+                                sbdFv.Append("+(", objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo), ')');
                             }
 
                             await _objCharacter.ProcessAttributesInXPathAsync(sbdFv).ConfigureAwait(false);

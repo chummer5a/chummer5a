@@ -693,8 +693,8 @@ namespace Chummer
                                 string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select", token: token)?.Value;
                                 if (!string.IsNullOrEmpty(strSelect))
                                 {
-                                    sbdQualities.Append(strSpace).Append('(')
-                                                .Append(await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false)).Append(')');
+                                    sbdQualities.Append(strSpace, '(')
+                                                .Append(await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false), ')');
                                 }
                             }
                             else
@@ -703,7 +703,7 @@ namespace Chummer
                                 string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select", token: token)?.Value;
                                 if (!string.IsNullOrEmpty(strSelect))
                                 {
-                                    sbdQualities.Append(strSpace).Append('(').Append(strSelect).Append(')');
+                                    sbdQualities.Append(strSpace, '(').Append(strSelect, ')');
                                 }
                             }
 
@@ -843,9 +843,8 @@ namespace Chummer
                                 string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select", token: token)?.Value;
                                 if (!string.IsNullOrEmpty(strSelect))
                                 {
-                                    sbdQualities.Append(strSpace).Append('(')
-                                                .Append(await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false))
-                                                .Append(')');
+                                    sbdQualities.Append(strSpace, '(')
+                                                .Append(await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false), ')');
                                 }
                             }
                             else
@@ -854,7 +853,7 @@ namespace Chummer
                                 string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select", token: token)?.Value;
                                 if (!string.IsNullOrEmpty(strSelect))
                                 {
-                                    sbdQualities.Append(strSpace).Append('(').Append(strSelect).Append(')');
+                                    sbdQualities.Append(strSpace, '(').Append(strSelect, ')');
                                 }
                             }
 
@@ -1129,17 +1128,17 @@ namespace Chummer
                         string strFilter = string.Empty;
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                         {
-                            sbdFilter.Append('(').Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
+                            sbdFilter.Append('(', await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false), ')');
                             if (!string.IsNullOrEmpty(strSelectedCategory) && strSelectedCategory != "Show All"
                                                                            && (GlobalSettings.SearchInCategoryOnly
                                                                                || strSearchText.Length == 0))
-                                sbdFilter.Append(" and category = ").Append(strSelectedCategory.CleanXPath());
+                                sbdFilter.Append(" and category = ", strSelectedCategory.CleanXPath());
 
                             if (!string.IsNullOrEmpty(txtSearch.Text))
-                                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearchText));
+                                sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearchText));
 
                             if (sbdFilter.Length > 0)
-                                strFilter = "[" + sbdFilter.Append(']').ToString();
+                                strFilter = sbdFilter.Insert(0, '[').Append(']').ToString();
                         }
 
                         foreach (XPathNavigator xmlMetatype in _xmlBaseMetatypeDataNode.Select(

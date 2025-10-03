@@ -537,9 +537,7 @@ namespace Chummer
             CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                sbdFilter.Append('(')
-                    .Append(await objSettings.BookXPathAsync(token: token).ConfigureAwait(false))
-                    .Append(')');
+                sbdFilter.Append('(', await objSettings.BookXPathAsync(token: token).ConfigureAwait(false), ')');
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                        && (GlobalSettings.SearchInCategoryOnly
                                                            || await txtSearch
@@ -547,7 +545,7 @@ namespace Chummer
                                                                    x => x.Text.Length, token: token)
                                                                .ConfigureAwait(false) == 0))
                 {
-                    sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
+                    sbdFilter.Append(" and category = ", strCategory.CleanXPath());
                 }
                 else
                 {
@@ -557,13 +555,13 @@ namespace Chummer
                         foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
                         {
                             if (!string.IsNullOrEmpty(strItem))
-                                sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
+                                sbdCategoryFilter.Append("category = ", strItem.CleanXPath(), " or ");
                         }
 
                         if (sbdCategoryFilter.Length > 0)
                         {
                             sbdCategoryFilter.Length -= 4;
-                            sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                            sbdFilter.Append(" and (", sbdCategoryFilter.ToString(), ')');
                         }
                     }
                 }
@@ -588,20 +586,18 @@ namespace Chummer
                         && decValueBP > 0)
                     {
                         string strValueBPHalved = (decValueBP / 2).ToString(GlobalSettings.InvariantCultureInfo);
-                        sbdFilter.Append(" and ((doublecareer = 'False' and (karma = ").Append(strValueBP)
-                            .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBP)
-                            .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBP)
-                            .Append("))) or (not(doublecareer = 'False') and (karma = ").Append(strValueBPHalved)
-                            .Append(" or (not(nolevels) and limit != 'False' and (karma mod ")
-                            .Append(strValueBPHalved)
-                            .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBPHalved)
-                            .Append("))))");
+                        sbdFilter.Append(" and ((doublecareer = 'False' and (karma = ", strValueBP,
+                            " or (not(nolevels) and limit != 'False' and (karma mod ", strValueBP,
+                            ") = 0 and karma * karma * limit <= karma * ", strValueBP,
+                            "))) or (not(doublecareer = 'False') and (karma = ", strValueBPHalved,
+                            " or (not(nolevels) and limit != 'False' and (karma mod ", strValueBPHalved,
+                            ") = 0 and karma * karma * limit <= karma * ", strValueBPHalved, "))))");
                     }
                     else
                     {
-                        sbdFilter.Append(" and (karma = ").Append(strValueBP)
-                            .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBP)
-                            .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBP).Append("))");
+                        sbdFilter.Append(" and (karma = ", strValueBP,
+                            " or (not(nolevels) and limit != 'False' and (karma mod ", strValueBP,
+                            ") = 0 and karma * karma * limit <= karma * ", strValueBP, "))");
                     }
                 }
                 else
@@ -614,16 +610,12 @@ namespace Chummer
                     {
                         if (intMinimumBP < 0 == intMaximumBP < 0)
                         {
-                            sbdFilter.Append(" and (")
-                                .Append(await GetKarmaRangeString(intMaximumBP, intMinimumBP).ConfigureAwait(false))
-                                .Append(')');
+                            sbdFilter.Append(" and (", await GetKarmaRangeString(intMaximumBP, intMinimumBP).ConfigureAwait(false), ')');
                         }
                         else
                         {
-                            sbdFilter.Append("and ((")
-                                .Append(await GetKarmaRangeString(intMaximumBP, 0).ConfigureAwait(false))
-                                .Append(") or (")
-                                .Append(await GetKarmaRangeString(-1, intMinimumBP).ConfigureAwait(false)).Append("))");
+                            sbdFilter.Append("and ((", await GetKarmaRangeString(intMaximumBP, 0).ConfigureAwait(false), ") or (",
+                                await GetKarmaRangeString(-1, intMinimumBP).ConfigureAwait(false), "))");
                         }
 
                         async Task<string> GetKarmaRangeString(int intMax, int intMin)
@@ -676,17 +668,17 @@ namespace Chummer
                     if (_blnXPathMode)
                     {
                         // In XPath mode, use the query directly
-                        sbdFilter.Append(" and (").Append(strSearch).Append(')');
+                        sbdFilter.Append(" and (", strSearch, ')');
                     }
                     else
                     {
                         // In normal mode, generate search XPath from user text
-                        sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
+                        sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
                     }
                 }
 
                 if (sbdFilter.Length > 0)
-                    strFilter = "[" + sbdFilter.Append(']').ToString();
+                    strFilter = sbdFilter.Insert(0, '[').Append(']').ToString();
             }
 
             string strCategoryLower = strCategory == "Show All" ? "*" : strCategory.ToLowerInvariant();

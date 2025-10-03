@@ -798,14 +798,13 @@ namespace Chummer
                                     break;
                             }
 
-                            sbdReturn.Append(',').Append(strSpace);
+                            sbdReturn.Append(',', strSpace);
                         }
                     }
 
                     // If Extended Area was not found and the Extended flag is enabled, add Extended Area to the list of Descriptors.
                     if (Extended && _blnCustomExtended)
-                        sbdReturn.Append(LanguageManager.GetString("String_DescExtendedArea", strLanguage)).Append(',')
-                                 .Append(strSpace);
+                        sbdReturn.Append(LanguageManager.GetString("String_DescExtendedArea", strLanguage), ',', strSpace);
 
                     // Remove the trailing comma.
                     if (sbdReturn.Length >= strSpace.Length + 1)
@@ -887,7 +886,7 @@ namespace Chummer
                                     break;
                             }
 
-                            sbdReturn.Append(',').Append(strSpace);
+                            sbdReturn.Append(',', strSpace);
                         }
                     }
 
@@ -895,8 +894,7 @@ namespace Chummer
                     if (Extended && _blnCustomExtended)
                         sbdReturn.Append(await LanguageManager
                                                .GetStringAsync("String_DescExtendedArea", strLanguage, token: token)
-                                               .ConfigureAwait(false)).Append(',')
-                                 .Append(strSpace);
+                                               .ConfigureAwait(false), ',', strSpace);
 
                     // Remove the trailing comma.
                     if (sbdReturn.Length >= strSpace.Length + 1)
@@ -1148,20 +1146,18 @@ namespace Chummer
                     sbdTip.AppendLine();
                     if (BarehandedAdept)
                         sbdTip.Append('(');
-                    sbdTip.Append(await LanguageManager.GetStringAsync("Tip_SpellDrainBase", token: token).ConfigureAwait(false)).Append(strSpace).Append('(')
-                          .Append(DvBase).Append(')');
+                    sbdTip.Append(await LanguageManager.GetStringAsync("Tip_SpellDrainBase", token: token).ConfigureAwait(false), strSpace)
+                        .Append('(', DvBase, ')');
                     if (Limited)
                     {
-                        sbdTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(await LanguageManager.GetStringAsync("String_SpellLimited", token: token).ConfigureAwait(false)).Append(strSpace)
-                              .Append("(-2)");
+                        sbdTip.Append(strSpace, '+', strSpace)
+                              .Append(await LanguageManager.GetStringAsync("String_SpellLimited", token: token).ConfigureAwait(false), strSpace, "(-2)");
                     }
 
                     if (Extended && _blnCustomExtended)
                     {
-                        sbdTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(await LanguageManager.GetStringAsync("String_SpellExtended", token: token).ConfigureAwait(false)).Append(strSpace)
-                              .Append("(+2)");
+                        sbdTip.Append(strSpace, '+', strSpace)
+                              .Append(await LanguageManager.GetStringAsync("String_SpellExtended", token: token).ConfigureAwait(false), strSpace, "(+2)");
                     }
 
                     foreach (Improvement objLoopImprovement in await RelevantImprovementsAsync(o =>
@@ -1169,9 +1165,9 @@ namespace Chummer
                                  || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
                                  || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, token: token).ConfigureAwait(false))
                     {
-                        sbdTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(await _objCharacter.GetObjectNameAsync(objLoopImprovement, token: token).ConfigureAwait(false)).Append(strSpace)
-                              .Append('(').Append(objLoopImprovement.Value.ToString("#,0.##;-#,0.##;#,0.##", GlobalSettings.CultureInfo)).Append(')');
+                        sbdTip.Append(strSpace, '+', strSpace)
+                              .Append(await _objCharacter.GetObjectNameAsync(objLoopImprovement, token: token).ConfigureAwait(false), strSpace)
+                              .Append('(', objLoopImprovement.Value.ToString("#,0.##;-#,0.##;#,0.##", GlobalSettings.CultureInfo), ')');
                     }
 
                     // Minimum drain of 2
@@ -1189,8 +1185,7 @@ namespace Chummer
                             ? await _objCharacter.GetObjectNameAsync(objBarehandedAdeptImprovement, token: token).ConfigureAwait(false)
                             : await _objCharacter.TranslateExtraAsync("Barehanded Adept", GlobalSettings.Language,
                                                            "qualities.xml", token).ConfigureAwait(false);
-                        sbdTip.Append(')').Append(strSpace).Append('×').Append(strSpace)
-                              .Append(strBarehandedAdeptName).Append(strSpace).Append("(×2)");
+                        sbdTip.Append(')', strSpace, '×').Append(strSpace, strBarehandedAdeptName, strSpace, "(×2)");
                     }
 
                     return sbdTip.ToString();
@@ -1494,13 +1489,13 @@ namespace Chummer
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdReturn))
                         {
-                            sbdReturn.Append('(').Append(strDv).Append(')');
+                            sbdReturn.Append('(', strDv, ')');
                             foreach (Improvement objImprovement in RelevantImprovements(i =>
                                          i.ImproveType == Improvement.ImprovementType.DrainValue
                                          || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
                                          || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
                             {
-                                sbdReturn.Append(" + (").Append(objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
+                                sbdReturn.Append("+(", objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo), ')');
                             }
 
                             if (Limited)
@@ -1515,7 +1510,7 @@ namespace Chummer
 
                             if (BarehandedAdept && !blnForce)
                             {
-                                sbdReturn.Insert(0, "2 * (").Append(')');
+                                sbdReturn.Insert(0, "2*(", ')');
                             }
 
                             _objCharacter.ProcessAttributesInXPath(sbdReturn);
@@ -1600,13 +1595,13 @@ namespace Chummer
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdReturn))
                     {
-                        sbdReturn.Append('(').Append(strDv).Append(')');
+                        sbdReturn.Append('(', strDv, ')');
                         foreach (Improvement objImprovement in await RelevantImprovementsAsync(i =>
                                      i.ImproveType == Improvement.ImprovementType.DrainValue
                                      || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
                                      || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, token: token).ConfigureAwait(false))
                         {
-                            sbdReturn.Append(" + (").Append(objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
+                            sbdReturn.Append("+(", objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo), ')');
                         }
 
                         if (Limited)
@@ -1621,7 +1616,7 @@ namespace Chummer
 
                         if (BarehandedAdept && !blnForce)
                         {
-                            sbdReturn.Insert(0, "2 * (").Append(')');
+                            sbdReturn.Insert(0, "2*(", ')');
                         }
 
                         await _objCharacter.ProcessAttributesInXPathAsync(sbdReturn, token: token).ConfigureAwait(false);
@@ -2360,7 +2355,7 @@ namespace Chummer
                         if (objAttrib != null)
                             intPool -= objAttrib.TotalValue;
                         if (sbdReturn.Length > 0)
-                            sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                            sbdReturn.Append(strSpace, '+', strSpace);
                         sbdReturn.Append(objSkill.FormattedDicePool(intPool, Category));
                     }
 
@@ -2370,7 +2365,7 @@ namespace Chummer
                                       || x.ImproveType == Improvement.ImprovementType.SpellDicePool))
                     {
                         if (sbdReturn.Length > 0)
-                            sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                            sbdReturn.Append(strSpace, '+', strSpace);
                         sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
                                                _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
                     }
@@ -2414,7 +2409,7 @@ namespace Chummer
                         if (objAttrib != null)
                             intPool -= await objAttrib.GetTotalValueAsync(token).ConfigureAwait(false);
                         if (sbdReturn.Length > 0)
-                            sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                            sbdReturn.Append(strSpace, '+', strSpace);
                         sbdReturn.Append(await objSkill.FormattedDicePoolAsync(intPool, Category, token).ConfigureAwait(false));
                     }
 
@@ -2424,7 +2419,7 @@ namespace Chummer
                                       || x.ImproveType == Improvement.ImprovementType.SpellDicePool, token: token).ConfigureAwait(false))
                     {
                         if (sbdReturn.Length > 0)
-                            sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                            sbdReturn.Append(strSpace, '+', strSpace);
                         sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
                             await _objCharacter.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false), objImprovement.Value);
                     }
