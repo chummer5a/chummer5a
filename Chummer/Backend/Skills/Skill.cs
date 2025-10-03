@@ -8062,7 +8062,7 @@ namespace Chummer.Backend.Skills
                 string strDictionaryKey = DictionaryKey;
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
-                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.KnowledgeSkillKarmaCost, strDictionaryKey, true))
+                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, IsKnowledgeSkill ? Improvement.ImprovementType.KnowledgeSkillKarmaCost : Improvement.ImprovementType.ActiveSkillKarmaCost, strDictionaryKey, true))
                 {
                     if (objImprovement.Minimum <= lower)
                         decExtra += objImprovement.Value *
@@ -8072,7 +8072,7 @@ namespace Chummer.Backend.Skills
                                                               : objImprovement.Maximum) - Math.Max(lower,
                                                     objImprovement.Minimum - 1));
                 }
-                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier, strDictionaryKey, true))
+                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, IsKnowledgeSkill ? Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier : Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier, strDictionaryKey, true))
                 {
                     if (objImprovement.Minimum <= lower)
                         decMultiplier *= objImprovement.Value / 100.0m;
@@ -8190,7 +8190,7 @@ namespace Chummer.Backend.Skills
                 string strDictionaryKey = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
-                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.KnowledgeSkillKarmaCost, strDictionaryKey, true, token).ConfigureAwait(false))
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, IsKnowledgeSkill ? Improvement.ImprovementType.KnowledgeSkillKarmaCost : Improvement.ImprovementType.ActiveSkillKarmaCost, strDictionaryKey, true, token).ConfigureAwait(false))
                 {
                     if (objImprovement.Minimum <= lower)
                         decExtra += objImprovement.Value *
@@ -8200,7 +8200,7 @@ namespace Chummer.Backend.Skills
                                                               : objImprovement.Maximum) - Math.Max(lower,
                                                     objImprovement.Minimum - 1));
                 }
-                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier, strDictionaryKey, true, token).ConfigureAwait(false))
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, IsKnowledgeSkill ? Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier : Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier, strDictionaryKey, true, token).ConfigureAwait(false))
                 {
                     if (objImprovement.Minimum <= lower)
                         decMultiplier *= objImprovement.Value / 100.0m;
