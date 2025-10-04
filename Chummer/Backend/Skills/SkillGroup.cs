@@ -3300,62 +3300,20 @@ namespace Chummer.Backend.Skills
                     else
                         intCost *= _objCharacterSettings.KarmaImproveSkillGroup;
 
-                    decimal decMultiplier = 1.0m;
-                    decimal decExtra = 0;
-                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupKarmaCost, Name, true))
+        // Apply skill group improvements
+        intCost = ImprovementManager.ApplyRangeImprovementsWithTypes(_objCharacter,
+            Improvement.ImprovementType.SkillGroupKarmaCost,
+            Improvement.ImprovementType.SkillGroupKarmaCostMultiplier,
+            Name, intCost, intLower, intUpper);
+                    
+                    // Apply category improvements
+                    foreach (string strCategory in GetRelevantSkillCategories)
                     {
-                        if (objImprovement.Minimum <= intLower)
-                            decExtra += objImprovement.Value
-                                                        * (Math.Min(
-                                                               intUpper,
-                                                               objImprovement.Maximum == 0
-                                                                   ? int.MaxValue
-                                                                   : objImprovement.Maximum)
-                                                           - Math.Max(intLower, objImprovement.Minimum - 1));
+                        intCost = ImprovementManager.ApplyRangeImprovementsWithTypes(_objCharacter,
+                            Improvement.ImprovementType.SkillGroupCategoryKarmaCost,
+                            Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier,
+                            strCategory, intCost, intLower, intUpper);
                     }
-                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupKarmaCostMultiplier, Name, true))
-                    {
-                        if (objImprovement.Minimum <= intLower)
-                            decMultiplier *= objImprovement.Value / 100.0m;
-                    }
-                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
-                               out HashSet<string>
-                                   setRelevantCategories))
-                    {
-                        setRelevantCategories.AddRange(GetRelevantSkillCategories);
-                        CharacterObject.Improvements.ForEach(objLoopImprovement =>
-                        {
-                            if (setRelevantCategories.Contains(objLoopImprovement.ImprovedName)
-                                && objLoopImprovement.Minimum <= intLower &&
-                                (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                                 || (objLoopImprovement.Condition == "career") == _objCharacter.Created
-                                 || (objLoopImprovement.Condition == "create") != _objCharacter.Created)
-                                && objLoopImprovement.Enabled)
-                            {
-                                switch (objLoopImprovement.ImproveType)
-                                {
-                                    case Improvement.ImprovementType.SkillGroupCategoryKarmaCost:
-                                        decExtra += objLoopImprovement.Value
-                                                    * (Math.Min(
-                                                           intUpper,
-                                                           objLoopImprovement.Maximum == 0
-                                                               ? int.MaxValue
-                                                               : objLoopImprovement.Maximum)
-                                                       - Math.Max(intLower, objLoopImprovement.Minimum - 1));
-                                        break;
-
-                                    case Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
-                                        decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                        break;
-                                }
-                            }
-                        });
-                    }
-
-                    if (decMultiplier != 1.0m)
-                        intCost = (intCost * decMultiplier + decExtra).StandardRound();
-                    else
-                        intCost += decExtra.StandardRound();
 
                     return Math.Max(intCost, 0);
                 }
@@ -3392,65 +3350,20 @@ namespace Chummer.Backend.Skills
                 else
                     intCost *= await _objCharacterSettings.GetKarmaImproveSkillGroupAsync(token).ConfigureAwait(false);
 
-                decimal decMultiplier = 1.0m;
-                decimal decExtra = 0;
-                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.SkillGroupKarmaCost, Name, true, token).ConfigureAwait(false))
+                // Apply skill group improvements
+                intCost = await ImprovementManager.ApplyRangeImprovementsWithTypesAsync(_objCharacter, 
+                    Improvement.ImprovementType.SkillGroupKarmaCost, 
+                    Improvement.ImprovementType.SkillGroupKarmaCostMultiplier, 
+                    Name, intCost, intLower, intUpper, null, token).ConfigureAwait(false);
+                
+                // Apply category improvements
+                foreach (string strCategory in GetRelevantSkillCategories)
                 {
-                    if (objImprovement.Minimum <= intLower)
-                        decExtra += objImprovement.Value
-                                                    * (Math.Min(
-                                                           intUpper,
-                                                           objImprovement.Maximum == 0
-                                                               ? int.MaxValue
-                                                               : objImprovement.Maximum)
-                                                       - Math.Max(intLower, objImprovement.Minimum - 1));
+                    intCost = await ImprovementManager.ApplyRangeImprovementsWithTypesAsync(_objCharacter, 
+                        Improvement.ImprovementType.SkillGroupCategoryKarmaCost, 
+                        Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier, 
+                        strCategory, intCost, intLower, intUpper, null, token).ConfigureAwait(false);
                 }
-                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.SkillGroupKarmaCostMultiplier, Name, true, token).ConfigureAwait(false))
-                {
-                    if (objImprovement.Minimum <= intLower)
-                        decMultiplier *= objImprovement.Value / 100.0m;
-                }
-                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
-                           out HashSet<string>
-                               setRelevantCategories))
-                {
-                    setRelevantCategories.AddRange(GetRelevantSkillCategories);
-                    ThreadSafeObservableCollection<Improvement> lstImprovements =
-                        await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false);
-                    bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
-                    await lstImprovements.ForEachAsync(objLoopImprovement =>
-                    {
-                        if (setRelevantCategories.Contains(objLoopImprovement.ImprovedName)
-                            && objLoopImprovement.Minimum <= intLower &&
-                            (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             || (objLoopImprovement.Condition == "career") == blnCreated
-                             || (objLoopImprovement.Condition == "create") != blnCreated)
-                            && objLoopImprovement.Enabled)
-                        {
-                            switch (objLoopImprovement.ImproveType)
-                            {
-                                case Improvement.ImprovementType.SkillGroupCategoryKarmaCost:
-                                    decExtra += objLoopImprovement.Value
-                                                * (Math.Min(
-                                                       intUpper,
-                                                       objLoopImprovement.Maximum == 0
-                                                           ? int.MaxValue
-                                                           : objLoopImprovement.Maximum)
-                                                   - Math.Max(intLower, objLoopImprovement.Minimum - 1));
-                                    break;
-
-                                case Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
-                            }
-                        }
-                    }, token: token).ConfigureAwait(false);
-                }
-
-                if (decMultiplier != 1.0m)
-                    intCost = (intCost * decMultiplier + decExtra).StandardRound();
-                else
-                    intCost += decExtra.StandardRound();
 
                 return Math.Max(intCost, 0);
             }
@@ -3494,53 +3407,24 @@ namespace Chummer.Backend.Skills
                         return -1;
                     }
 
-                    decimal decMultiplier = 1.0m;
-                    decimal decExtra = 0;
-                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupKarmaCost, Name, true))
+                    // Apply skill group improvements
+                    intReturn = ImprovementManager.ApplyImprovementsWithTypes(_objCharacter, 
+                        Improvement.ImprovementType.SkillGroupKarmaCost, 
+                        Improvement.ImprovementType.SkillGroupKarmaCostMultiplier, 
+                        Name, intReturn,
+                        objImprovement => (objImprovement.Maximum == 0 || intRating + 1 <= objImprovement.Maximum) &&
+                                        objImprovement.Minimum <= intRating + 1);
+                    
+                    // Apply category improvements
+                    foreach (string strCategory in GetRelevantSkillCategories)
                     {
-                        if ((objImprovement.Maximum == 0 || intRating + 1 <= objImprovement.Maximum)
-                            && objImprovement.Minimum <= intRating + 1)
-                            decExtra += objImprovement.Value;
+                        intReturn = ImprovementManager.ApplyImprovementsWithTypes(_objCharacter, 
+                            Improvement.ImprovementType.SkillGroupCategoryKarmaCost, 
+                            Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier, 
+                            strCategory, intReturn,
+                            objImprovement => (objImprovement.Maximum == 0 || intRating + 1 <= objImprovement.Maximum) &&
+                                            objImprovement.Minimum <= intRating + 1);
                     }
-                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupKarmaCostMultiplier, Name, true))
-                    {
-                        if ((objImprovement.Maximum == 0 || intRating + 1 <= objImprovement.Maximum)
-                            && objImprovement.Minimum <= intRating + 1)
-                            decMultiplier *= objImprovement.Value / 100.0m;
-                    }
-                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
-                               out HashSet<string>
-                                   setRelevantCategories))
-                    {
-                        setRelevantCategories.AddRange(GetRelevantSkillCategories);
-                        CharacterObject.Improvements.ForEach(objLoopImprovement =>
-                        {
-                            if (setRelevantCategories.Contains(objLoopImprovement.ImprovedName)
-                                && (objLoopImprovement.Maximum == 0 || intRating + 1 <= objLoopImprovement.Maximum)
-                                && objLoopImprovement.Minimum <= intRating + 1 &&
-                                (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                                 || (objLoopImprovement.Condition == "career") == _objCharacter.Created
-                                 || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
-                                objLoopImprovement.Enabled)
-                            {
-                                switch (objLoopImprovement.ImproveType)
-                                {
-                                    case Improvement.ImprovementType.SkillGroupCategoryKarmaCost:
-                                        decExtra += objLoopImprovement.Value;
-                                        break;
-
-                                    case Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
-                                        decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                        break;
-                                }
-                            }
-                        });
-                    }
-
-                    if (decMultiplier != 1.0m)
-                        intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
-                    else
-                        intReturn += decExtra.StandardRound();
 
                     return Math.Max(intReturn, Math.Min(1, intOptionsCost));
                 }
@@ -3582,54 +3466,24 @@ namespace Chummer.Backend.Skills
                     return -1;
                 }
 
-                decimal decMultiplier = 1.0m;
-                decimal decExtra = 0;
-                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.SkillGroupKarmaCost, Name, true, token).ConfigureAwait(false))
+                // Apply skill group improvements
+                intReturn = await ImprovementManager.ApplyImprovementsWithTypesAsync(_objCharacter, 
+                    Improvement.ImprovementType.SkillGroupKarmaCost, 
+                    Improvement.ImprovementType.SkillGroupKarmaCostMultiplier, 
+                    Name, intReturn,
+                    objImprovement => (objImprovement.Maximum == 0 || intRating + 1 <= objImprovement.Maximum) &&
+                                    objImprovement.Minimum <= intRating + 1, token).ConfigureAwait(false);
+                
+                // Apply category improvements
+                foreach (string strCategory in GetRelevantSkillCategories)
                 {
-                    if ((objImprovement.Maximum == 0 || intRating + 1 <= objImprovement.Maximum)
-                        && objImprovement.Minimum <= intRating + 1)
-                        decExtra += objImprovement.Value;
+                    intReturn = await ImprovementManager.ApplyImprovementsWithTypesAsync(_objCharacter, 
+                        Improvement.ImprovementType.SkillGroupCategoryKarmaCost, 
+                        Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier, 
+                        strCategory, intReturn,
+                        objImprovement => (objImprovement.Maximum == 0 || intRating + 1 <= objImprovement.Maximum) &&
+                                        objImprovement.Minimum <= intRating + 1, token).ConfigureAwait(false);
                 }
-                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.SkillGroupKarmaCostMultiplier, Name, true, token).ConfigureAwait(false))
-                {
-                    if ((objImprovement.Maximum == 0 || intRating + 1 <= objImprovement.Maximum)
-                        && objImprovement.Minimum <= intRating + 1)
-                        decMultiplier *= objImprovement.Value / 100.0m;
-                }
-                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                out HashSet<string>
-                                                                    setRelevantCategories))
-                {
-                    setRelevantCategories.AddRange(GetRelevantSkillCategories);
-                    bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
-                    await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objLoopImprovement =>
-                    {
-                        if (setRelevantCategories.Contains(objLoopImprovement.ImprovedName)
-                            && (objLoopImprovement.Maximum == 0 || intRating + 1 <= objLoopImprovement.Maximum)
-                            && objLoopImprovement.Minimum <= intRating + 1 &&
-                            (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             || (objLoopImprovement.Condition == "career") == blnCreated
-                             || (objLoopImprovement.Condition == "create") != blnCreated) &&
-                            objLoopImprovement.Enabled)
-                        {
-                            switch (objLoopImprovement.ImproveType)
-                            {
-                                case Improvement.ImprovementType.SkillGroupCategoryKarmaCost:
-                                    decExtra += objLoopImprovement.Value;
-                                    break;
-
-                                case Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
-                            }
-                        }
-                    }, token: token).ConfigureAwait(false);
-                }
-
-                if (decMultiplier != 1.0m)
-                    intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
-                else
-                    intReturn += decExtra.StandardRound();
 
                 return Math.Max(intReturn, Math.Min(1, intOptionsCost));
             }

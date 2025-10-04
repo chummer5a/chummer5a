@@ -6376,5 +6376,278 @@ namespace Chummer
         }
 
         #endregion Improvement System
+
+        #region Generic Improvement Application Methods
+
+        /// <summary>
+        /// Generic method to apply improvements with custom improvement types
+        /// </summary>
+        /// <param name="character">The character to get improvements from</param>
+        /// <param name="additiveType">The additive improvement type</param>
+        /// <param name="multiplierType">The multiplier improvement type</param>
+        /// <param name="improvementName">The name/target of the improvement</param>
+        /// <param name="cost">The base cost to apply improvements to</param>
+        /// <param name="condition">Optional condition function to filter improvements</param>
+        /// <returns>The cost with improvements applied</returns>
+        public static int ApplyImprovementsWithTypes(Character character, Improvement.ImprovementType additiveType, 
+            Improvement.ImprovementType multiplierType, string improvementName, int cost, Func<Improvement, bool> condition = null)
+        {
+            decimal decExtra = 0;
+            decimal decMultiplier = 1.0m;
+            
+            // Apply additive improvements
+            foreach (Improvement objImprovement in GetCachedImprovementListForValueOf(
+                character, additiveType, improvementName, true))
+            {
+                if (condition?.Invoke(objImprovement) ?? true)
+                    decExtra += objImprovement.Value;
+            }
+            
+            // Apply multiplier improvements
+            foreach (Improvement objImprovement in GetCachedImprovementListForValueOf(
+                character, multiplierType, improvementName, true))
+            {
+                if (condition?.Invoke(objImprovement) ?? true)
+                    decMultiplier *= objImprovement.Value / 100.0m;
+            }
+            
+            // Apply the improvements
+            if (decMultiplier != 1.0m)
+                return (cost * decMultiplier + decExtra).StandardRound();
+            else
+                return cost + decExtra.StandardRound();
+        }
+        
+        /// <summary>
+        /// Generic method to apply improvements with custom improvement types (async version)
+        /// </summary>
+        /// <param name="character">The character to get improvements from</param>
+        /// <param name="additiveType">The additive improvement type</param>
+        /// <param name="multiplierType">The multiplier improvement type</param>
+        /// <param name="improvementName">The name/target of the improvement</param>
+        /// <param name="cost">The base cost to apply improvements to</param>
+        /// <param name="condition">Optional condition function to filter improvements</param>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>The cost with improvements applied</returns>
+        public static async Task<int> ApplyImprovementsWithTypesAsync(Character character, Improvement.ImprovementType additiveType, 
+            Improvement.ImprovementType multiplierType, string improvementName, int cost, Func<Improvement, bool> condition = null, CancellationToken token = default)
+        {
+            decimal decExtra = 0;
+            decimal decMultiplier = 1.0m;
+            
+            // Apply additive improvements
+            foreach (Improvement objImprovement in await GetCachedImprovementListForValueOfAsync(
+                character, additiveType, improvementName, true, token).ConfigureAwait(false))
+            {
+                if (condition?.Invoke(objImprovement) ?? true)
+                    decExtra += objImprovement.Value;
+            }
+            
+            // Apply multiplier improvements
+            foreach (Improvement objImprovement in await GetCachedImprovementListForValueOfAsync(
+                character, multiplierType, improvementName, true, token).ConfigureAwait(false))
+            {
+                if (condition?.Invoke(objImprovement) ?? true)
+                    decMultiplier *= objImprovement.Value / 100.0m;
+            }
+            
+            // Apply the improvements
+            if (decMultiplier != 1.0m)
+                return (cost * decMultiplier + decExtra).StandardRound();
+            else
+                return cost + decExtra.StandardRound();
+        }
+        
+        /// <summary>
+        /// Generic method to apply range-based improvements with custom improvement types
+        /// </summary>
+        /// <param name="character">The character to get improvements from</param>
+        /// <param name="additiveType">The additive improvement type</param>
+        /// <param name="multiplierType">The multiplier improvement type</param>
+        /// <param name="improvementName">The name/target of the improvement</param>
+        /// <param name="cost">The base cost to apply improvements to</param>
+        /// <param name="lower">The lower bound of the range</param>
+        /// <param name="upper">The upper bound of the range</param>
+        /// <param name="condition">Optional condition function to filter improvements</param>
+        /// <returns>The cost with improvements applied</returns>
+        public static int ApplyRangeImprovementsWithTypes(Character character, Improvement.ImprovementType additiveType, 
+            Improvement.ImprovementType multiplierType, string improvementName, int cost, int lower, int upper, Func<Improvement, bool> condition = null)
+        {
+            decimal decExtra = 0;
+            decimal decMultiplier = 1.0m;
+            
+            // Apply additive improvements
+            foreach (Improvement objImprovement in GetCachedImprovementListForValueOf(
+                character, additiveType, improvementName, true))
+            {
+                if (condition?.Invoke(objImprovement) ?? true)
+                {
+                    if (objImprovement.Minimum <= lower)
+                        decExtra += objImprovement.Value * 
+                            (Math.Min(upper, objImprovement.Maximum == 0 ? int.MaxValue : objImprovement.Maximum) - 
+                             Math.Max(lower, objImprovement.Minimum - 1));
+                }
+            }
+            
+            // Apply multiplier improvements
+            foreach (Improvement objImprovement in GetCachedImprovementListForValueOf(
+                character, multiplierType, improvementName, true))
+            {
+                if (condition?.Invoke(objImprovement) ?? true)
+                {
+                    if (objImprovement.Minimum <= lower)
+                        decMultiplier *= objImprovement.Value / 100.0m;
+                }
+            }
+            
+            // Apply the improvements
+            if (decMultiplier != 1.0m)
+                return (cost * decMultiplier + decExtra).StandardRound();
+            else
+                return cost + decExtra.StandardRound();
+        }
+        
+        /// <summary>
+        /// Generic method to apply range-based improvements with custom improvement types (async version)
+        /// </summary>
+        /// <param name="character">The character to get improvements from</param>
+        /// <param name="additiveType">The additive improvement type</param>
+        /// <param name="multiplierType">The multiplier improvement type</param>
+        /// <param name="improvementName">The name/target of the improvement</param>
+        /// <param name="cost">The base cost to apply improvements to</param>
+        /// <param name="lower">The lower bound of the range</param>
+        /// <param name="upper">The upper bound of the range</param>
+        /// <param name="condition">Optional condition function to filter improvements</param>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>The cost with improvements applied</returns>
+        public static async Task<int> ApplyRangeImprovementsWithTypesAsync(Character character, Improvement.ImprovementType additiveType, 
+            Improvement.ImprovementType multiplierType, string improvementName, int cost, int lower, int upper, Func<Improvement, bool> condition = null, CancellationToken token = default)
+        {
+            decimal decExtra = 0;
+            decimal decMultiplier = 1.0m;
+            
+            // Apply additive improvements
+            foreach (Improvement objImprovement in await GetCachedImprovementListForValueOfAsync(
+                character, additiveType, improvementName, true, token).ConfigureAwait(false))
+            {
+                if (condition?.Invoke(objImprovement) ?? true)
+                {
+                    if (objImprovement.Minimum <= lower)
+                        decExtra += objImprovement.Value * 
+                            (Math.Min(upper, objImprovement.Maximum == 0 ? int.MaxValue : objImprovement.Maximum) - 
+                             Math.Max(lower, objImprovement.Minimum - 1));
+                }
+            }
+            
+            // Apply multiplier improvements
+            foreach (Improvement objImprovement in await GetCachedImprovementListForValueOfAsync(
+                character, multiplierType, improvementName, true, token).ConfigureAwait(false))
+            {
+                if (condition?.Invoke(objImprovement) ?? true)
+                {
+                    if (objImprovement.Minimum <= lower)
+                        decMultiplier *= objImprovement.Value / 100.0m;
+                }
+            }
+            
+            // Apply the improvements
+            if (decMultiplier != 1.0m)
+                return (cost * decMultiplier + decExtra).StandardRound();
+            else
+                return cost + decExtra.StandardRound();
+        }
+        
+        /// <summary>
+        /// Applies multiple improvement types to a cost value with custom types
+        /// </summary>
+        /// <param name="character">The character to get improvements from</param>
+        /// <param name="improvementTypes">Array of improvement type pairs (additive, multiplier)</param>
+        /// <param name="improvementNames">Array of improvement names corresponding to the types</param>
+        /// <param name="cost">The base cost to apply improvements to</param>
+        /// <param name="condition">Optional condition function to filter improvements</param>
+        /// <returns>The cost with improvements applied</returns>
+        public static int ApplyMultipleImprovementsWithTypes(Character character, 
+            (Improvement.ImprovementType additive, Improvement.ImprovementType multiplier)[] improvementTypes, 
+            string[] improvementNames, int cost, Func<Improvement, bool> condition = null)
+        {
+            decimal decExtra = 0;
+            decimal decMultiplier = 1.0m;
+            
+            for (int i = 0; i < improvementTypes.Length; i++)
+            {
+                var (additiveType, multiplierType) = improvementTypes[i];
+                var improvementName = improvementNames[i];
+                
+                // Apply additive improvements
+                foreach (Improvement objImprovement in GetCachedImprovementListForValueOf(
+                    character, additiveType, improvementName, true))
+                {
+                    if (condition?.Invoke(objImprovement) ?? true)
+                        decExtra += objImprovement.Value;
+                }
+                
+                // Apply multiplier improvements
+                foreach (Improvement objImprovement in GetCachedImprovementListForValueOf(
+                    character, multiplierType, improvementName, true))
+                {
+                    if (condition?.Invoke(objImprovement) ?? true)
+                        decMultiplier *= objImprovement.Value / 100.0m;
+                }
+            }
+            
+            // Apply the improvements
+            if (decMultiplier != 1.0m)
+                return (cost * decMultiplier + decExtra).StandardRound();
+            else
+                return cost + decExtra.StandardRound();
+        }
+        
+        /// <summary>
+        /// Applies multiple improvement types to a cost value with custom types (async version)
+        /// </summary>
+        /// <param name="character">The character to get improvements from</param>
+        /// <param name="improvementTypes">Array of improvement type pairs (additive, multiplier)</param>
+        /// <param name="improvementNames">Array of improvement names corresponding to the types</param>
+        /// <param name="cost">The base cost to apply improvements to</param>
+        /// <param name="condition">Optional condition function to filter improvements</param>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>The cost with improvements applied</returns>
+        public static async Task<int> ApplyMultipleImprovementsWithTypesAsync(Character character, 
+            (Improvement.ImprovementType additive, Improvement.ImprovementType multiplier)[] improvementTypes, 
+            string[] improvementNames, int cost, Func<Improvement, bool> condition = null, CancellationToken token = default)
+        {
+            decimal decExtra = 0;
+            decimal decMultiplier = 1.0m;
+            
+            for (int i = 0; i < improvementTypes.Length; i++)
+            {
+                var (additiveType, multiplierType) = improvementTypes[i];
+                var improvementName = improvementNames[i];
+                
+                // Apply additive improvements
+                foreach (Improvement objImprovement in await GetCachedImprovementListForValueOfAsync(
+                    character, additiveType, improvementName, true, token).ConfigureAwait(false))
+                {
+                    if (condition?.Invoke(objImprovement) ?? true)
+                        decExtra += objImprovement.Value;
+                }
+                
+                // Apply multiplier improvements
+                foreach (Improvement objImprovement in await GetCachedImprovementListForValueOfAsync(
+                    character, multiplierType, improvementName, true, token).ConfigureAwait(false))
+                {
+                    if (condition?.Invoke(objImprovement) ?? true)
+                        decMultiplier *= objImprovement.Value / 100.0m;
+                }
+            }
+            
+            // Apply the improvements
+            if (decMultiplier != 1.0m)
+                return (cost * decMultiplier + decExtra).StandardRound();
+            else
+                return cost + decExtra.StandardRound();
+        }
+
+        #endregion Generic Improvement Application Methods
     }
 }
