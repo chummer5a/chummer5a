@@ -52,7 +52,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
 
             // Load the Metamagic information.
             switch (objWindowMode)

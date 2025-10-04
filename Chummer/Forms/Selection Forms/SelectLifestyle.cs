@@ -55,7 +55,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
             if (_objLifestyle.StyleType == LifestyleType.Standard)
             {
                 lblAreaLabel.Visible = false;

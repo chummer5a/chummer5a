@@ -618,6 +618,8 @@ namespace Chummer
                         OpenCharacters.BeforeClearCollectionChangedAsync -= OpenCharactersOnBeforeClearCollectionChanged;
                         OpenCharacters.CollectionChangedAsync -= OpenCharactersOnCollectionChanged;
 
+                        // Dispose global tooltip to prevent memory leaks
+                        ToolTipFactory.DisposeGlobalToolTip();
                         PluginLoader?.Dispose();
                         Log.Info(ExceptionHeatMap.GenerateInfo());
                         TelemetryClient objTelemetryClient = ChummerTelemetryClient.Value;

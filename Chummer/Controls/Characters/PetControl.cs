@@ -54,7 +54,7 @@ namespace Chummer
 
             this.UpdateLightDarkMode(objMyToken);
             this.TranslateWinForm(token: objMyToken);
-            this.UpdateParentForToolTipControls();
+
             foreach (ToolStripItem tssItem in cmsContact.Items)
             {
                 tssItem.UpdateLightDarkMode(objMyToken);

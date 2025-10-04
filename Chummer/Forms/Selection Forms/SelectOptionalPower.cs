@@ -39,7 +39,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
 
             _lstPowerExtraPairs = lstPowerExtraPairs.ToList();
         }

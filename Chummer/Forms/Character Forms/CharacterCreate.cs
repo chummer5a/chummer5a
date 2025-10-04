@@ -85,7 +85,7 @@ namespace Chummer
             tabPowerUc.CachedCharacter = objCharacter;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
 
             ContextMenuStrip[] lstCMSToTranslate =
             {

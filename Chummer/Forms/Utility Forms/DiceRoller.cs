@@ -38,7 +38,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
             nudDice.Value = _intDice = intDice;
             ProcessGremlins(lstQualities);
 
