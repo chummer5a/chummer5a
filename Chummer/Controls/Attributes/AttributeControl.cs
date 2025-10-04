@@ -961,6 +961,15 @@ namespace Chummer.UI.Attributes
             }
         }
 
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            // Note: because we cannot unsubscribe old parents from events if/when we change parents, we do not want to have this automatically update
+            // based on a subscription to our parent's ParentChanged (which we would need to be able to automatically update our parent form for nested controls)
+            // We therefore need to use the hacky workaround of calling UpdateParentForToolTipControls() for parent forms/controls as appropriate
+            this.UpdateParentForToolTipControls();
+        }
+
         /// <summary>
         /// I'm not super pleased with how this works, but it's functional so w/e.
         /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
