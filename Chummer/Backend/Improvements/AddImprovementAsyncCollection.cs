@@ -1040,7 +1040,7 @@ namespace Chummer
                             continue;
                         if (sdbValue.Length > 0)
                         {
-                            sdbValue.Append(',').Append(strSpace);
+                            sdbValue.Append(',', strSpace);
                         }
 
                         sdbValue.AppendFormat(GlobalSettings.CultureInfo, "{0}{1}({2})", s, strSpace, i);
@@ -7327,11 +7327,11 @@ namespace Chummer
                 {
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdXPath))
                     {
-                        sbdXPath.Append("actions/action[").Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false));
+                        sbdXPath.Append("actions/action[", await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false));
                         string strCategory = bonusNode.Attributes?["category"]?.InnerTextViaPool(token) ?? string.Empty;
                         if (!string.IsNullOrEmpty(strCategory))
                         {
-                            sbdXPath.Append(" and category = ").Append(strCategory.CleanXPath());
+                            sbdXPath.Append(" and category = ", strCategory.CleanXPath());
                         }
                         sbdXPath.Append(']');
                         if (xmlActionsBaseNode != null)

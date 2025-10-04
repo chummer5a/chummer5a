@@ -323,8 +323,7 @@ namespace Chummer.Plugins
                                     Exception innerExcept = except.Demystify();
                                     counter++;
                                     sbdLoaderExceptions
-                                        .AppendLine().Append("LoaderException ").Append(counter).Append(": ")
-                                        .Append(innerExcept.Message);
+                                        .AppendLine().Append("LoaderException ", counter.ToString(GlobalSettings.InvariantCultureInfo), ": ", innerExcept.Message);
                                     objTelemetry.TrackException(innerExcept);
                                 }
 

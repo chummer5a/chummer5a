@@ -3384,11 +3384,11 @@ namespace Chummer.Backend.Skills
                         intSpecCount, intTotalBaseRating);
                     intCost += intSpecCost;
 
-        // Apply ActiveSkillKarmaCost improvements
+        // Apply karma cost improvements
         string strDictionaryKey = DictionaryKey;
         intCost = ImprovementManager.ApplyImprovementsWithTypes(CharacterObject,
-            Improvement.ImprovementType.ActiveSkillKarmaCost,
-            Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier,
+            IsKnowledgeSkill ? Improvement.ImprovementType.KnowledgeSkillKarmaCost : Improvement.ImprovementType.ActiveSkillKarmaCost,
+            IsKnowledgeSkill ? Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier : Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier,
             strDictionaryKey, intCost,
             objImprovement => (objImprovement.Maximum == 0 || intTotalBaseRating <= objImprovement.Maximum) &&
                             objImprovement.Minimum <= intTotalBaseRating);
@@ -3488,14 +3488,14 @@ namespace Chummer.Backend.Skills
                     intSpecCount, intTotalBaseRating, null, token).ConfigureAwait(false);
                 intCost += intSpecCost;
 
-                // Apply ActiveSkillKarmaCost improvements
-                string strDictionaryKey = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
-                intCost = await ImprovementManager.ApplyImprovementsWithTypesAsync(CharacterObject,
-                    Improvement.ImprovementType.ActiveSkillKarmaCost,
-                    Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier,
-                    strDictionaryKey, intCost,
-                    objImprovement => (objImprovement.Maximum == 0 || intTotalBaseRating <= objImprovement.Maximum) &&
-                                    objImprovement.Minimum <= intTotalBaseRating, token).ConfigureAwait(false);
+        // Apply karma cost improvements
+        string strDictionaryKey = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
+        intCost = await ImprovementManager.ApplyImprovementsWithTypesAsync(CharacterObject,
+            IsKnowledgeSkill ? Improvement.ImprovementType.KnowledgeSkillKarmaCost : Improvement.ImprovementType.ActiveSkillKarmaCost,
+            IsKnowledgeSkill ? Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier : Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier,
+            strDictionaryKey, intCost,
+            objImprovement => (objImprovement.Maximum == 0 || intTotalBaseRating <= objImprovement.Maximum) &&
+                            objImprovement.Minimum <= intTotalBaseRating, token).ConfigureAwait(false);
 
                 return Math.Max(0, intCost);
             }
@@ -5242,14 +5242,13 @@ namespace Chummer.Backend.Skills
                     int intCyberwareRating = CyberwareRating;
                     if (intCyberwareRating > TotalBaseRating)
                     {
-                        sbdReturn.Append(strExtraStart).Append(LanguageManager.GetString("Tip_Skill_SkillsoftRating"))
-                            .Append(strSpace).Append('(').Append(intCyberwareRating.ToString(GlobalSettings.CultureInfo))
-                            .Append(')');
+                        sbdReturn.Append(strExtraStart, LanguageManager.GetString("Tip_Skill_SkillsoftRating"), strSpace)
+                            .Append('(', intCyberwareRating.ToString(GlobalSettings.CultureInfo), ')');
                     }
                     else
                     {
-                        sbdReturn.Append(strExtraStart).Append(LanguageManager.GetString("Tip_Skill_SkillRating"))
-                            .Append(strSpace).Append('(').Append(Rating.ToString(GlobalSettings.CultureInfo));
+                        sbdReturn.Append(strExtraStart, LanguageManager.GetString("Tip_Skill_SkillRating"), strSpace)
+                            .Append('(', Rating.ToString(GlobalSettings.CultureInfo));
                         bool first = true;
                         foreach (Improvement objImprovement in lstRelevantImprovements)
                         {
@@ -5258,13 +5257,13 @@ namespace Chummer.Backend.Skills
                             if (first)
                             {
                                 first = false;
-                                sbdReturn.Append(strSpace).Append("(Base").Append(strSpace).Append('(')
-                                    .Append(LearnedRating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                sbdReturn.Append(strSpace, "(Base", strSpace)
+                                    .Append('(', LearnedRating.ToString(GlobalSettings.CultureInfo), ')');
                             }
 
-                            sbdReturn.Append(strSpace).Append('+').Append(strSpace)
-                                .Append(CharacterObject.GetObjectName(objImprovement)).Append(strSpace).Append('(')
-                                .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                            sbdReturn.Append(strSpace, '+', strSpace)
+                                .Append(CharacterObject.GetObjectName(objImprovement), strSpace, '(')
+                                .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo), ')');
                         }
 
                         if (first)
@@ -5275,27 +5274,25 @@ namespace Chummer.Backend.Skills
 
                     if (blnListAllLimbs || !Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev) ||
                         objShowOnlyCyberware == null)
-                        sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(att.CurrentDisplayAbbrev)
-                            .Append(strSpace)
-                            .Append('(')
-                            .Append(att.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                        sbdReturn.Append(strSpace, '+', strSpace)
+                            .Append(att.CurrentDisplayAbbrev, strSpace, '(')
+                            .Append(att.TotalValue.ToString(GlobalSettings.CultureInfo), ')');
                     else
                     {
-                        sbdReturn.Append(strSpace).Append('+').Append(strSpace)
-                            .Append(objShowOnlyCyberware.CurrentDisplayName)
-                            .Append(strSpace).Append(att.CurrentDisplayAbbrev).Append(strSpace).Append('(')
+                        sbdReturn.Append(strSpace, '+', strSpace)
+                            .Append(objShowOnlyCyberware.CurrentDisplayName, strSpace, att.CurrentDisplayAbbrev)
+                            .Append(strSpace, '(')
                             .Append(objShowOnlyCyberware.GetAttributeTotalValue(att.Abbrev)
-                                .ToString(GlobalSettings.CultureInfo)).Append(')');
+                                .ToString(GlobalSettings.CultureInfo), ')');
                         if (!CharacterObject.Ambidextrous
                             && (objShowOnlyCyberware.LimbSlot == "arm"
                                 || objShowOnlyCyberware.Name.ContainsAny(" Arm", " Hand"))
                             && objShowOnlyCyberware.Location != CharacterObject.PrimaryArm
                             && objShowOnlyCyberware.LimbSlotCount <= 1)
                         {
-                            sbdReturn.Append(strSpace).Append('-').Append(strSpace)
-                                .Append(2.ToString(GlobalSettings.CultureInfo))
-                                .Append(strSpace).Append('(').Append(LanguageManager.GetString("Tip_Skill_OffHand"))
-                                .Append(')');
+                            sbdReturn.Append(strSpace, '-', strSpace)
+                                .Append(2.ToString(GlobalSettings.CultureInfo), strSpace, '(')
+                                .Append(LanguageManager.GetString("Tip_Skill_OffHand"), ')');
                         }
                     }
 
@@ -5330,12 +5327,12 @@ namespace Chummer.Backend.Skills
                                   ?? ImprovementManager.GetCachedImprovementListForValueOf(
                                           CharacterObject, Improvement.ImprovementType.ReflexRecorderOptimization)
                                       .FirstOrDefault();
-                            sbdReturn.Append(strSpace).Append(CharacterObject.GetObjectName(objImprovement));
+                            sbdReturn.Append(strSpace, CharacterObject.GetObjectName(objImprovement));
                         }
                         else
-                            sbdReturn.Append(strSpace).Append(intDefaultModifier > 0 ? '+' : '-').Append(strSpace)
-                                .Append(LanguageManager.GetString("Tip_Skill_Defaulting")).Append(strSpace).Append('(')
-                                .Append(Math.Abs(intDefaultModifier).ToString(GlobalSettings.CultureInfo)).Append(')');
+                            sbdReturn.Append(strSpace, intDefaultModifier > 0 ? '+' : '-', strSpace)
+                                .Append(LanguageManager.GetString("Tip_Skill_Defaulting"), strSpace, '(')
+                                .Append(Math.Abs(intDefaultModifier).ToString(GlobalSettings.CultureInfo), ')');
                     }
 
                     List<Improvement> lstConditionalImprovements = new List<Improvement>(lstRelevantImprovements.Count);
@@ -5350,37 +5347,35 @@ namespace Chummer.Backend.Skills
                             lstConditionalImprovements.Add(source);
                             continue;
                         }
-                        sbdReturn.Append(strSpace).Append('+').Append(strSpace)
-                                 .Append(CharacterObject.GetObjectName(source)).Append(strSpace).Append('(')
-                                 .Append(source.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                        sbdReturn.Append(strSpace, '+', strSpace)
+                                 .Append(CharacterObject.GetObjectName(source), strSpace, '(')
+                                 .Append(source.Value.ToString(GlobalSettings.CultureInfo), ')');
                     }
 
                     if (lstConditionalImprovements.Count > 0)
                     {
-                        sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append('(').AppendJoin(
+                        sbdReturn.Append(strSpace, '+').Append(strSpace, '(').AppendJoin(
                             strSpace + LanguageManager.GetString("String_Or") + strSpace,
                             lstConditionalImprovements.Select(
                                 x => CharacterObject.GetObjectName(x) + strSpace + "("
                                      + x.Value.ToString(GlobalSettings.CultureInfo) + "," + strSpace
-                                     + x.Condition + ")")).Append(')');
+                                     + x.Condition + ")"), ')');
                     }
 
                     int wound = CharacterObject.WoundModifier;
                     if (wound != 0)
                     {
-                        sbdReturn.Append(strSpace).Append('-').Append(strSpace)
-                            .Append(LanguageManager.GetString("Tip_Skill_Wounds"))
-                            .Append(strSpace).Append('(').Append(wound.ToString(GlobalSettings.CultureInfo))
-                            .Append(')');
+                        sbdReturn.Append(strSpace, '-', strSpace)
+                            .Append(LanguageManager.GetString("Tip_Skill_Wounds"), strSpace)
+                            .Append('(', wound.ToString(GlobalSettings.CultureInfo), ')');
                     }
 
                     int sustains = CharacterObject.SustainingPenalty;
                     if (sustains != 0)
                     {
-                        sbdReturn.Append(strSpace).Append('-').Append(strSpace)
-                            .Append(LanguageManager.GetString("Tip_Skill_Sustain"))
-                            .Append(strSpace).Append('(').Append(sustains.ToString(GlobalSettings.CultureInfo))
-                            .Append(')');
+                        sbdReturn.Append(strSpace, '-', strSpace)
+                            .Append(LanguageManager.GetString("Tip_Skill_Sustain"), strSpace)
+                            .Append('(', sustains.ToString(GlobalSettings.CultureInfo), ')');
                     }
 
                     if (!string.IsNullOrEmpty(strExtra))
@@ -5404,13 +5399,11 @@ namespace Chummer.Backend.Skills
                                 return;
                             }
 
-                            sb.AppendLine().AppendLine().Append(strExtraStart)
-                                .Append(objCyberware.CurrentDisplayName);
+                            sb.AppendLine().AppendLine().Append(strExtraStart, objCyberware.CurrentDisplayName);
                             Grade objGrade = objCyberware.Grade;
                             if (objGrade.Name != "Standard" && objGrade.Name != "None")
                             {
-                                sb.Append(strSpace).Append('(').Append(objGrade.CurrentDisplayName)
-                                    .Append(')');
+                                sb.Append(strSpace, '(').Append(objGrade.CurrentDisplayName, ')');
                             }
 
                             int pool = PoolOtherAttribute(att.Abbrev, false,
@@ -5443,9 +5436,8 @@ namespace Chummer.Backend.Skills
                         if (objSwapSkillAttribute.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute)
                             continue;
                         string strExclude = objSwapSkillAttribute.Exclude;
-                        sbdReturn.AppendLine().AppendLine().Append(strExtraStart).Append(strExclude).Append(
-                            LanguageManager.GetString("String_Colon")).Append(strSpace).Append(
-                            CharacterObject.GetObjectName(objSwapSkillAttribute)).Append(strSpace);
+                        sbdReturn.AppendLine().AppendLine().Append(strExtraStart, strExclude, LanguageManager.GetString("String_Colon"))
+                            .Append(strSpace, CharacterObject.GetObjectName(objSwapSkillAttribute), strSpace);
                         int intBasePool = PoolOtherAttribute(objSwapSkillAttribute.ImprovedName, false,
                             CharacterObject
                                 .GetAttribute(objSwapSkillAttribute.ImprovedName).Value);
@@ -5497,15 +5489,12 @@ namespace Chummer.Backend.Skills
                                 return;
                             }
 
-                            sbdLoop.AppendLine().AppendLine().Append(strExtraStart).Append(strExclude)
-                                .Append(LanguageManager.GetString("String_Colon")).Append(strSpace)
-                                .Append(CharacterObject.GetObjectName(objSwapSkillAttribute)).Append(strSpace)
-                                .Append(objCyberware.CurrentDisplayName);
+                            sbdLoop.AppendLine().AppendLine().Append(strExtraStart, strExclude, LanguageManager.GetString("String_Colon"))
+                                .Append(strSpace, CharacterObject.GetObjectName(objSwapSkillAttribute), strSpace, objCyberware.CurrentDisplayName);
                             Grade objGrade = objCyberware.Grade;
                             if (objGrade.Name != "Standard" && objGrade.Name != "None")
                             {
-                                sbdLoop.Append(strSpace).Append('(').Append(objGrade.CurrentDisplayName)
-                                    .Append(')');
+                                sbdLoop.Append(strSpace, '(').Append(objGrade.CurrentDisplayName, ')');
                             }
 
                             int intLoopPool =
@@ -5523,7 +5512,7 @@ namespace Chummer.Backend.Skills
                                 || objCyberware.Location == CharacterObject.PrimaryArm
                                 || objCyberware.LimbSlotCount > 1)
                             {
-                                sbdLoop.Append(strSpace).Append(intLoopPool.ToString(GlobalSettings.CultureInfo));
+                                sbdLoop.Append(strSpace, intLoopPool.ToString(GlobalSettings.CultureInfo));
                             }
                             else
                             {
@@ -5597,18 +5586,15 @@ namespace Chummer.Backend.Skills
                     int intCyberwareRating = await GetCyberwareRatingAsync(token).ConfigureAwait(false);
                     if (intCyberwareRating > await GetTotalBaseRatingAsync(token).ConfigureAwait(false))
                     {
-                        sbdReturn.Append(strExtraStart).Append(await LanguageManager
-                                .GetStringAsync("Tip_Skill_SkillsoftRating", token: token).ConfigureAwait(false))
-                            .Append(strSpace).Append('(')
-                            .Append(intCyberwareRating.ToString(GlobalSettings.CultureInfo))
-                            .Append(')');
+                        sbdReturn.Append(strExtraStart, await LanguageManager
+                                .GetStringAsync("Tip_Skill_SkillsoftRating", token: token).ConfigureAwait(false), strSpace)
+                            .Append('(', intCyberwareRating.ToString(GlobalSettings.CultureInfo), ')');
                     }
                     else
                     {
-                        sbdReturn.Append(strExtraStart).Append(await LanguageManager
-                                .GetStringAsync("Tip_Skill_SkillRating", token: token).ConfigureAwait(false))
-                            .Append(strSpace).Append('(')
-                            .Append((await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
+                        sbdReturn.Append(strExtraStart, await LanguageManager
+                                .GetStringAsync("Tip_Skill_SkillRating", token: token).ConfigureAwait(false), strSpace)
+                            .Append('(', (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
                                 .CultureInfo));
                         bool first = true;
                         foreach (Improvement objImprovement in lstRelevantImprovements)
@@ -5618,15 +5604,13 @@ namespace Chummer.Backend.Skills
                             if (first)
                             {
                                 first = false;
-                                sbdReturn.Append(strSpace).Append("(Base").Append(strSpace).Append('(')
-                                    .Append((await GetLearnedRatingAsync(token).ConfigureAwait(false)).ToString(
-                                        GlobalSettings.CultureInfo)).Append(')');
+                                sbdReturn.Append(strSpace, "(Base", strSpace)
+                                    .Append('(', (await GetLearnedRatingAsync(token).ConfigureAwait(false)).ToString(
+                                        GlobalSettings.CultureInfo), ')');
                             }
 
-                            sbdReturn.Append(strSpace).Append('+').Append(strSpace)
-                                .Append(await CharacterObject.GetObjectNameAsync(objImprovement, token: token)
-                                    .ConfigureAwait(false)).Append(strSpace).Append('(')
-                                .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                            sbdReturn.Append(strSpace, '+').Append(strSpace, await CharacterObject.GetObjectNameAsync(objImprovement, token: token)
+                                    .ConfigureAwait(false), strSpace).Append('(', objImprovement.Value.ToString(GlobalSettings.CultureInfo), ')');
                         }
 
                         if (first)
@@ -5639,21 +5623,19 @@ namespace Chummer.Backend.Skills
 
                     if (blnListAllLimbs || !Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev) ||
                         objShowOnlyCyberware == null)
-                        sbdReturn.Append(strSpace).Append('+').Append(strSpace)
+                        sbdReturn.Append(strSpace, '+', strSpace)
                             .Append(await att.GetCurrentDisplayAbbrevAsync(token)
-                                .ConfigureAwait(false)).Append(strSpace)
-                            .Append('(')
-                            .Append(intAttTotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                .ConfigureAwait(false), strSpace)
+                            .Append('(', intAttTotalValue.ToString(GlobalSettings.CultureInfo), ')');
                     else
                     {
-                        sbdReturn.Append(strSpace).Append('+').Append(strSpace)
-                            .Append(await objShowOnlyCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
-                            .Append(strSpace)
-                            .Append(await att.GetCurrentDisplayAbbrevAsync(token)
-                                .ConfigureAwait(false)).Append(strSpace).Append('(')
+                        sbdReturn.Append(strSpace, '+', strSpace)
+                            .Append(await objShowOnlyCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), strSpace, await att.GetCurrentDisplayAbbrevAsync(token)
+                                .ConfigureAwait(false))
+                            .Append(strSpace, '(')
                             .Append((await objShowOnlyCyberware.GetAttributeTotalValueAsync(att.Abbrev, token)
                                     .ConfigureAwait(false))
-                                .ToString(GlobalSettings.CultureInfo)).Append(')');
+                                .ToString(GlobalSettings.CultureInfo), ')');
                         if (!blnAmbidextrous
                             && (await objShowOnlyCyberware.GetLimbSlotAsync(token).ConfigureAwait(false) == "arm"
                                 || objShowOnlyCyberware.Name.ContainsAny(" Arm", " Hand"))
@@ -5661,11 +5643,10 @@ namespace Chummer.Backend.Skills
                             await CharacterObject.GetPrimaryArmAsync(token).ConfigureAwait(false)
                             && await objShowOnlyCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false) <= 1)
                         {
-                            sbdReturn.Append(strSpace).Append('-').Append(strSpace)
-                                .Append(2.ToString(GlobalSettings.CultureInfo))
-                                .Append(strSpace).Append('(').Append(await LanguageManager
-                                    .GetStringAsync("Tip_Skill_OffHand", token: token).ConfigureAwait(false))
-                                .Append(')');
+                            sbdReturn.Append(strSpace, '-', strSpace)
+                                .Append(2.ToString(GlobalSettings.CultureInfo), strSpace, '(')
+                                .Append(await LanguageManager
+                                    .GetStringAsync("Tip_Skill_OffHand", token: token).ConfigureAwait(false), ')');
                         }
                     }
 
@@ -5702,14 +5683,14 @@ namespace Chummer.Backend.Skills
                                   ?? (await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                       CharacterObject, Improvement.ImprovementType.ReflexRecorderOptimization, token: token).ConfigureAwait(false))
                                   .FirstOrDefault();
-                            sbdReturn.Append(strSpace).Append(await CharacterObject
+                            sbdReturn.Append(strSpace, await CharacterObject
                                 .GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false));
                         }
                         else
-                            sbdReturn.Append(strSpace).Append(intDefaultModifier > 0 ? '+' : '-').Append(strSpace)
+                            sbdReturn.Append(strSpace, intDefaultModifier > 0 ? '+' : '-', strSpace)
                                 .Append(await LanguageManager.GetStringAsync("Tip_Skill_Defaulting", token: token)
-                                    .ConfigureAwait(false)).Append(strSpace).Append('(')
-                                .Append(Math.Abs(intDefaultModifier).ToString(GlobalSettings.CultureInfo)).Append(')');
+                                    .ConfigureAwait(false), strSpace, '(')
+                                .Append(Math.Abs(intDefaultModifier).ToString(GlobalSettings.CultureInfo), ')');
                     }
 
                     foreach (Improvement source in lstRelevantImprovements)
@@ -5718,35 +5699,32 @@ namespace Chummer.Backend.Skills
                             || source.ImproveType == Improvement.ImprovementType.SwapSkillAttribute
                             || source.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
                             continue;
-                        sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(
+                        sbdReturn.Append(strSpace, '+', strSpace).Append(
                             await CharacterObject.GetObjectNameAsync(source, token: token).ConfigureAwait(false));
                         if (!string.IsNullOrEmpty(source.Condition))
                         {
-                            sbdReturn.Append(strSpace).Append('(').Append(source.Condition).Append(')');
+                            sbdReturn.Append(strSpace, '(').Append(source.Condition, ')');
                         }
 
-                        sbdReturn.Append(strSpace).Append('(').Append(source.Value.ToString(GlobalSettings.CultureInfo))
-                            .Append(')');
+                        sbdReturn.Append(strSpace, '(').Append(source.Value.ToString(GlobalSettings.CultureInfo), ')');
                     }
 
                     int wound = await CharacterObject.GetWoundModifierAsync(token).ConfigureAwait(false);
                     if (wound != 0)
                     {
-                        sbdReturn.Append(strSpace).Append('-').Append(strSpace)
+                        sbdReturn.Append(strSpace, '-', strSpace)
                             .Append(await LanguageManager.GetStringAsync("Tip_Skill_Wounds", token: token)
-                                .ConfigureAwait(false))
-                            .Append(strSpace).Append('(').Append(wound.ToString(GlobalSettings.CultureInfo))
-                            .Append(')');
+                                .ConfigureAwait(false), strSpace)
+                            .Append('(', wound.ToString(GlobalSettings.CultureInfo), ')');
                     }
 
                     int sustains = await CharacterObject.GetSustainingPenaltyAsync(token).ConfigureAwait(false);
                     if (sustains != 0)
                     {
-                        sbdReturn.Append(strSpace).Append('-').Append(strSpace)
+                        sbdReturn.Append(strSpace, '-', strSpace)
                             .Append(await LanguageManager.GetStringAsync("Tip_Skill_Sustain", token: token)
-                                .ConfigureAwait(false))
-                            .Append(strSpace).Append('(').Append(sustains.ToString(GlobalSettings.CultureInfo))
-                            .Append(')');
+                                .ConfigureAwait(false), strSpace)
+                            .Append('(', sustains.ToString(GlobalSettings.CultureInfo), ')');
                     }
 
                     if (!string.IsNullOrEmpty(strExtra))
@@ -5774,15 +5752,13 @@ namespace Chummer.Backend.Skills
                                 return;
                             }
 
-                            sb.AppendLine().AppendLine().Append(strExtraStart)
-                                .Append(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                            sb.AppendLine().AppendLine().Append(strExtraStart, await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                             Grade objGrade = await objCyberware.GetGradeAsync(token).ConfigureAwait(false);
                             string strGradeName = objGrade.Name;
                             if (strGradeName != "Standard" && strGradeName != "None")
                             {
-                                sb.Append(strSpace).Append('(')
-                                    .Append(await objGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
-                                    .Append(')');
+                                sb.Append(strSpace, '(')
+                                    .Append(await objGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), ')');
                             }
 
                             int intPool = await PoolOtherAttributeAsync(att.Abbrev, false,
@@ -5795,7 +5771,7 @@ namespace Chummer.Backend.Skills
                                                 || await objCyberware.GetLimbSlotCountAsync(token)
                                                     .ConfigureAwait(false) > 1)
                             {
-                                sb.Append(strSpace).Append(intPool.ToString(GlobalSettings.CultureInfo));
+                                sb.Append(strSpace, intPool.ToString(GlobalSettings.CultureInfo));
                             }
                             else
                             {
@@ -5818,12 +5794,12 @@ namespace Chummer.Backend.Skills
                         if (objSwapSkillAttribute.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute)
                             continue;
                         string strExclude = objSwapSkillAttribute.Exclude;
-                        sbdReturn.AppendLine().AppendLine().Append(strExtraStart).Append(strExclude).Append(
+                        sbdReturn.AppendLine().AppendLine().Append(strExtraStart, strExclude,
                                 await LanguageManager.GetStringAsync("String_Colon", token: token)
                                     .ConfigureAwait(false))
-                            .Append(strSpace).Append(
+                            .Append(strSpace,
                                 await CharacterObject.GetObjectNameAsync(objSwapSkillAttribute, token: token)
-                                    .ConfigureAwait(false)).Append(strSpace);
+                                    .ConfigureAwait(false), strSpace);
                         int intBasePool = await PoolOtherAttributeAsync(objSwapSkillAttribute.ImprovedName, false,
                             (await CharacterObject
                                 .GetAttributeAsync(objSwapSkillAttribute.ImprovedName, token: token)
@@ -5888,20 +5864,18 @@ namespace Chummer.Backend.Skills
                                 return;
                             }
 
-                            sb.AppendLine().AppendLine().Append(strExtraStart).Append(await LanguageManager
+                            sb.AppendLine().AppendLine().Append(strExtraStart, await LanguageManager
                                     .GetStringAsync("String_Colon", token: token)
-                                    .ConfigureAwait(false)).Append(strSpace)
+                                    .ConfigureAwait(false), strSpace)
                                 .Append(await CharacterObject
                                     .GetObjectNameAsync(objSwapSkillAttribute, token: token)
-                                    .ConfigureAwait(false)).Append(strSpace)
-                                .Append(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                    .ConfigureAwait(false), strSpace, await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                             Grade objGrade = await objCyberware.GetGradeAsync(token).ConfigureAwait(false);
                             string strGradeName = objGrade.Name;
                             if (strGradeName != "Standard" && strGradeName != "None")
                             {
-                                sb.Append(strSpace).Append('(')
-                                    .Append(await objGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
-                                    .Append(')');
+                                sb.Append(strSpace, '(')
+                                    .Append(await objGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), ')');
                             }
 
                             int intPool =
@@ -5924,7 +5898,7 @@ namespace Chummer.Backend.Skills
                                                 || await objCyberware.GetLimbSlotCountAsync(token)
                                                     .ConfigureAwait(false) > 1)
                             {
-                                sb.Append(strSpace).Append(intPool.ToString(GlobalSettings.CultureInfo));
+                                sb.Append(strSpace, intPool.ToString(GlobalSettings.CultureInfo));
                             }
                             else
                             {
@@ -7993,8 +7967,8 @@ namespace Chummer.Backend.Skills
 
                 string strDictionaryKey = DictionaryKey;
                 cost = ImprovementManager.ApplyRangeImprovementsWithTypes(CharacterObject, 
-                    Improvement.ImprovementType.KnowledgeSkillKarmaCost, 
-                    Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier, 
+                    IsKnowledgeSkill ? Improvement.ImprovementType.KnowledgeSkillKarmaCost : Improvement.ImprovementType.ActiveSkillKarmaCost,
+                    IsKnowledgeSkill ? Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier : Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier,
                     strDictionaryKey, cost, lower, upper);
                 cost = ImprovementManager.ApplyRangeImprovementsWithTypes(CharacterObject, 
                     Improvement.ImprovementType.SkillCategoryKarmaCost, 
@@ -8092,8 +8066,8 @@ namespace Chummer.Backend.Skills
 
                 string strDictionaryKey = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
                 cost = await ImprovementManager.ApplyRangeImprovementsWithTypesAsync(CharacterObject, 
-                    Improvement.ImprovementType.KnowledgeSkillKarmaCost, 
-                    Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier, 
+                    IsKnowledgeSkill ? Improvement.ImprovementType.KnowledgeSkillKarmaCost : Improvement.ImprovementType.ActiveSkillKarmaCost,
+                    IsKnowledgeSkill ? Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier : Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier,
                     strDictionaryKey, cost, lower, upper, null, token).ConfigureAwait(false);
                 cost = await ImprovementManager.ApplyRangeImprovementsWithTypesAsync(CharacterObject, 
                     Improvement.ImprovementType.SkillCategoryKarmaCost, 
@@ -8178,18 +8152,12 @@ namespace Chummer.Backend.Skills
                     string strDictionaryKey = DictionaryKey;
                     decimal decExtra = 0;
                     decimal decMultiplier = 1.0m;
-                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.ActiveSkillKarmaCost, strDictionaryKey, true))
-                    {
-                        if ((objImprovement.Maximum == 0 || intTotalBaseRating + 1 <= objImprovement.Maximum) &&
-                                objImprovement.Minimum <= intTotalBaseRating + 1)
-                            decExtra += objImprovement.Value;
-                    }
-                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier, strDictionaryKey, true))
-                    {
-                        if ((objImprovement.Maximum == 0 || intTotalBaseRating + 1 <= objImprovement.Maximum) &&
-                                objImprovement.Minimum <= intTotalBaseRating + 1)
-                            decMultiplier *= objImprovement.Value / 100.0m;
-                    }
+                    upgrade = ImprovementManager.ApplyImprovementsWithTypes(CharacterObject,
+                        IsKnowledgeSkill ? Improvement.ImprovementType.KnowledgeSkillKarmaCost : Improvement.ImprovementType.ActiveSkillKarmaCost,
+                        IsKnowledgeSkill ? Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier : Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier,
+                        strDictionaryKey, upgrade,
+                        objImprovement => (objImprovement.Maximum == 0 || intTotalBaseRating + 1 <= objImprovement.Maximum) &&
+                                        objImprovement.Minimum <= intTotalBaseRating + 1);
                     foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.SkillCategoryKarmaCost, SkillCategory, true))
                     {
                         if ((objImprovement.Maximum == 0 || intTotalBaseRating + 1 <= objImprovement.Maximum) &&

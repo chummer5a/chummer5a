@@ -1719,16 +1719,15 @@ namespace Chummer.Backend.Equipment
             {
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
-                    sbdReturn.Append(strReturn);
                     string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-                    sbdReturn.Append(strSpace).Append('(');
+                    sbdReturn.Append(strReturn, strSpace, '(');
                     bool blnCloseParantheses = false;
                     foreach (WeaponMountOption objOption in WeaponMountOptions)
                     {
                         if (objOption.Name != "None")
                         {
                             blnCloseParantheses = true;
-                            sbdReturn.Append(objOption.DisplayName(strLanguage)).Append(',').Append(strSpace);
+                            sbdReturn.Append(objOption.DisplayName(strLanguage), ',', strSpace);
                         }
                     }
 
@@ -1736,7 +1735,7 @@ namespace Chummer.Backend.Equipment
                     if (blnCloseParantheses)
                         sbdReturn.Append(')');
                     if (!string.IsNullOrWhiteSpace(Location))
-                        sbdReturn.Append(strSpace).Append('-').Append(strSpace).Append(Location);
+                        sbdReturn.Append(strSpace, '-').Append(strSpace, Location);
                     strReturn = sbdReturn.ToString();
                 }
             }
@@ -1754,16 +1753,15 @@ namespace Chummer.Backend.Equipment
             {
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
-                    sbdReturn.Append(strReturn);
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
-                    sbdReturn.Append(strSpace).Append('(');
+                    sbdReturn.Append(strReturn, strSpace, '(');
                     bool blnCloseParantheses = false;
                     await WeaponMountOptions.ForEachAsync(async objOption =>
                     {
                         if (objOption.Name != "None")
                         {
                             blnCloseParantheses = true;
-                            sbdReturn.Append(await objOption.DisplayNameAsync(strLanguage, token).ConfigureAwait(false)).Append(',').Append(strSpace);
+                            sbdReturn.Append(await objOption.DisplayNameAsync(strLanguage, token).ConfigureAwait(false), ',', strSpace);
                         }
                     }, token).ConfigureAwait(false);
 
@@ -1771,7 +1769,7 @@ namespace Chummer.Backend.Equipment
                     if (blnCloseParantheses)
                         sbdReturn.Append(')');
                     if (!string.IsNullOrWhiteSpace(Location))
-                        sbdReturn.Append(strSpace).Append('-').Append(strSpace).Append(Location);
+                        sbdReturn.Append(strSpace, '-').Append(strSpace, Location);
                     strReturn = sbdReturn.ToString();
                 }
             }
@@ -1935,13 +1933,13 @@ namespace Chummer.Backend.Equipment
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
                             --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
-                            sbdRestrictedItems.AppendLine().Append("\t\t").Append(strNameToUse);
+                            sbdRestrictedItems.AppendLine().Append("\t\t", strNameToUse);
                         }
                         else
                         {
                             dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
                             ++intRestrictedCount;
-                            sbdAvailItems.AppendLine().Append("\t\t").Append(strNameToUse);
+                            sbdAvailItems.AppendLine().Append("\t\t", strNameToUse);
                         }
                     }
                 }
@@ -2956,13 +2954,13 @@ namespace Chummer.Backend.Equipment
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
                             --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
-                            sbdRestrictedItems.AppendLine().Append("\t\t").Append(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                            sbdRestrictedItems.AppendLine().Append("\t\t", await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                         }
                         else
                         {
                             dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
                             ++intRestrictedCount;
-                            sbdAvailItems.AppendLine().Append("\t\t").Append(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                            sbdAvailItems.AppendLine().Append("\t\t", await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                         }
                     }
                 }

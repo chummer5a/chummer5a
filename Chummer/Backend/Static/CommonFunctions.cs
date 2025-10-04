@@ -2543,7 +2543,7 @@ namespace Chummer
                                             token.ThrowIfCancellationRequested();
                                             intTitleExtraLines++;
                                             // add the content plus a space
-                                            sbdCurrentLine.Append(' ').Append(lstStringFromPdf[i + intTitleExtraLines]);
+                                            sbdCurrentLine.Append(' ', lstStringFromPdf[i + intTitleExtraLines]);
                                         }
 
                                         strCurrentLine = sbdCurrentLine.ToString();
@@ -2695,7 +2695,7 @@ namespace Chummer
                                     break;
 
                                 default:
-                                    sbdResultContent.Append(strContentString).Append(' ');
+                                    sbdResultContent.Append(strContentString, ' ');
                                     break;
                             }
                         }

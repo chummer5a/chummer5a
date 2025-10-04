@@ -964,7 +964,7 @@ namespace Chummer.Backend.Equipment
                             foreach (XPathNavigator xmlSubsystem in xmlAllowSubsystems.SelectAndCacheExpression(
                                          "category", token))
                             {
-                                sbdSubsystem.Append(xmlSubsystem.Value).Append(',');
+                                sbdSubsystem.Append(xmlSubsystem.Value, ',');
                             }
 
                             if (sbdSubsystem.Length > 0)
@@ -2960,9 +2960,8 @@ namespace Chummer.Backend.Equipment
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdNameEnglish))
                         {
-                            sbdName.Append(await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false))
-                                .Append(strSpace).Append('(');
-                            sbdNameEnglish.Append(Name).Append(strSpace).Append('(');
+                            sbdName.Append(await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), strSpace, '(');
+                            sbdNameEnglish.Append(Name, strSpace, '(');
                             bool blnFirst = true;
                             foreach (string strAbbrev in CyberlimbAttributeAbbrevs)
                             {
@@ -2970,8 +2969,8 @@ namespace Chummer.Backend.Equipment
                                     .ConfigureAwait(false);
                                 if (!blnFirst)
                                 {
-                                    sbdName.Append(',').Append(strSpace);
-                                    sbdNameEnglish.Append(',').Append(strSpace);
+                                    sbdName.Append(',', strSpace);
+                                    sbdNameEnglish.Append(',', strSpace);
                                 }
                                 else
                                     blnFirst = false;
@@ -8554,7 +8553,7 @@ namespace Chummer.Backend.Equipment
                                     strLoopCapacity = strLoopCapacity.Substring(1, strLoopCapacity.Length - 2);
                                 if (strLoopCapacity == "*")
                                     strLoopCapacity = "0";
-                                sbdSecondHalf.Append("+(").Append(strLoopCapacity).Append(')');
+                                sbdSecondHalf.Append("+(", strLoopCapacity, ')');
                             }
 
                             strSecondHalf += sbdSecondHalf.ToString();
@@ -8627,7 +8626,7 @@ namespace Chummer.Backend.Equipment
                                         strLoopCapacity = strLoopCapacity.Substring(1, strLoopCapacity.Length - 2);
                                     if (strLoopCapacity == "*")
                                         strLoopCapacity = "0";
-                                    sbdCapacity.Append("+(").Append(strLoopCapacity).Append(')');
+                                    sbdCapacity.Append("+(", strLoopCapacity, ')');
                                 }
 
                                 strCapacity += sbdCapacity.ToString();
@@ -8751,7 +8750,7 @@ namespace Chummer.Backend.Equipment
                                     strLoopCapacity = strLoopCapacity.Substring(1, strLoopCapacity.Length - 2);
                                 if (strLoopCapacity == "*")
                                     strLoopCapacity = "0";
-                                sbdSecondHalf.Append("+(").Append(strLoopCapacity).Append(')');
+                                sbdSecondHalf.Append("+(", strLoopCapacity, ')');
                             }, token).ConfigureAwait(false);
                             strSecondHalf += sbdSecondHalf.ToString();
                         }
@@ -8820,8 +8819,9 @@ namespace Chummer.Backend.Equipment
                                             strLoopCapacity.LastIndexOf(']') - intLoopPos - 2);
                                     else if (strLoopCapacity.StartsWith('['))
                                         strLoopCapacity = strLoopCapacity.Substring(1, strLoopCapacity.Length - 2);
-                                    if (strLoopCapacity == "*") strLoopCapacity = "0";
-                                    sbdCapacity.Append("+(").Append(strLoopCapacity).Append(')');
+                                    if (strLoopCapacity == "*")
+                                        strLoopCapacity = "0";
+                                    sbdCapacity.Append("+(", strLoopCapacity, ')');
                                 }, token).ConfigureAwait(false);
 
                                 strCapacity += sbdCapacity.ToString();
@@ -11840,13 +11840,13 @@ namespace Chummer.Backend.Equipment
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
                             --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
-                            sbdRestrictedItems.AppendLine().Append("\t\t").Append(strNameToUse);
+                            sbdRestrictedItems.AppendLine().Append("\t\t", strNameToUse);
                         }
                         else
                         {
                             dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
                             ++intRestrictedCount;
-                            sbdAvailItems.AppendLine().Append("\t\t").Append(strNameToUse);
+                            sbdAvailItems.AppendLine().Append("\t\t", strNameToUse);
                         }
                     }
                 }
@@ -11888,13 +11888,13 @@ namespace Chummer.Backend.Equipment
                     HashSet<string> setBannedWareGrades = _objCharacter.Settings.BannedWareGrades;
                     if (setBannedWareGrades.Contains(objGrade.Name) || objGrade.Name.ContainsAny(setBannedWareGrades))
                     {
-                        sbdBannedItems.AppendLine().Append("\t\t").Append(CurrentDisplayName);
+                        sbdBannedItems.AppendLine().Append("\t\t", CurrentDisplayName);
                     }
                 }
 
                 if (!_objGrade.GetNodeXPath().RequirementsMet(_objCharacter))
                 {
-                    sbdBannedItems.AppendLine().Append("\t\t").Append(CurrentDisplayName);
+                    sbdBannedItems.AppendLine().Append("\t\t", CurrentDisplayName);
                 }
 
                 foreach (Cyberware objChild in Children)
@@ -11916,16 +11916,14 @@ namespace Chummer.Backend.Equipment
                     HashSet<string> setBannedWareGrades = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetBannedWareGradesAsync(token).ConfigureAwait(false);
                     if (setBannedWareGrades.Contains(objGrade.Name) || objGrade.Name.ContainsAny(setBannedWareGrades))
                     {
-                        sbdBannedItems.AppendLine().Append("\t\t")
-                            .Append(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                        sbdBannedItems.AppendLine().Append("\t\t", await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                     }
                 }
 
                 if (!await (await _objGrade.GetNodeXPathAsync(token).ConfigureAwait(false))
                            .RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                 {
-                    sbdBannedItems.AppendLine().Append("\t\t")
-                                  .Append(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                    sbdBannedItems.AppendLine().Append("\t\t", await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                 }
 
                 await (await GetChildrenAsync(token).ConfigureAwait(false)).ForEachAsync(objChild => objChild.CheckBannedGradesAsync(sbdBannedItems, token), token)

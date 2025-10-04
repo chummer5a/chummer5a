@@ -285,12 +285,12 @@ namespace Chummer
 
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                sbdFilter.Append("programs/program[(").Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
+                sbdFilter.Append("programs/program[(", await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false), ')');
                 string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                        && (GlobalSettings.SearchInCategoryOnly
                                                            || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength == 0, token: token).ConfigureAwait(false)))
-                    sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
+                    sbdFilter.Append(" and category = ", strCategory.CleanXPath());
                 else
                 {
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
@@ -299,19 +299,19 @@ namespace Chummer
                         foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
                         {
                             if (!string.IsNullOrEmpty(strItem))
-                                sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
+                                sbdCategoryFilter.Append("category = ", strItem.CleanXPath(), " or ");
                         }
 
                         if (sbdCategoryFilter.Length > 0)
                         {
                             sbdCategoryFilter.Length -= 4;
-                            sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                            sbdFilter.Append(" and (", sbdCategoryFilter.ToString(), ')');
                         }
                     }
                 }
 
                 if (!string.IsNullOrEmpty(txtSearch.Text))
-                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false)));
+                    sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false)));
 
                 // Populate the Program list.
                 await UpdateProgramList(_xmlBaseChummerNode.Select(sbdFilter.Append(']').ToString()), token).ConfigureAwait(false);

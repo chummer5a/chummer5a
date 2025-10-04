@@ -186,11 +186,11 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
                     foreach (string strMetamagic in _lstMetamagicLimits)
-                        sbdFilter.Append("name = ").Append(strMetamagic.CleanXPath()).Append(" or ");
+                        sbdFilter.Append("name = ", strMetamagic.CleanXPath(), " or ");
                     if (sbdFilter.Length > 0)
                     {
                         sbdFilter.Length -= 4;
-                        strFilter += " and (" + sbdFilter.Append(')').ToString();
+                        strFilter = sbdFilter.Insert(0, strFilter, " and (", ')').ToString();
                     }
                 }
             }

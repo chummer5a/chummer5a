@@ -30,16 +30,6 @@ namespace Chummer
     internal static class StringBuilderExtensions
     {
         /// <summary>
-        /// Syntactic sugar for appending a character followed by a new line.
-        /// </summary>
-        /// <param name="sbdInput">Base StringBuilder in which appending is to take place.</param>
-        /// <param name="chrValue">New character to append before the new line is appended.</param>
-        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, char chrValue)
-        {
-            return sbdInput.Append(chrValue).AppendLine();
-        }
-
-        /// <summary>
         /// Syntactic sugar for enumerating through a StringBuilder's characters.
         /// </summary>
         /// <param name="sbdInput">StringBuilder whose contents should enumerated.</param>
@@ -351,6 +341,14 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
             if (intCount > 0)
             {
+                int intExtraLength = 0;
+                for (int j = 0; j < intCount; ++j)
+                {
+                    string s = astrValues[j];
+                    if (!string.IsNullOrEmpty(s))
+                        intExtraLength += s.Length + strSeparator.Length;
+                }
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
                 int i = 1;
                 string strLoop = astrValues[intStartIndex];
                 if (string.IsNullOrEmpty(strLoop))
@@ -392,6 +390,14 @@ namespace Chummer
             int intLength = astrValues.Length;
             if (intLength > 0)
             {
+                int intExtraLength = 0;
+                for (int j = 0; j < intLength; ++j)
+                {
+                    string s = astrValues[j];
+                    if (!string.IsNullOrEmpty(s))
+                        intExtraLength += s.Length + strSeparator.Length;
+                }
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
                 int i = 1;
                 string strLoop = astrValues[0];
                 if (string.IsNullOrEmpty(strLoop))
@@ -566,6 +572,14 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
             if (intCount > 0)
             {
+                int intExtraLength = 0;
+                for (int j = 0; j < intCount; ++j)
+                {
+                    string s = astrValues[j];
+                    if (!string.IsNullOrEmpty(s))
+                        intExtraLength += s.Length + 1;
+                }
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
                 int i = 1;
                 string strLoop = astrValues[intStartIndex];
                 if (string.IsNullOrEmpty(strLoop))
@@ -607,6 +621,14 @@ namespace Chummer
             int intLength = astrValues.Length;
             if (intLength > 0)
             {
+                int intExtraLength = 0;
+                for (int j = 0; j < intLength; ++j)
+                {
+                    string s = astrValues[j];
+                    if (!string.IsNullOrEmpty(s))
+                        intExtraLength += s.Length + 1;
+                }
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
                 int i = 1;
                 string strLoop = astrValues[0];
                 if (string.IsNullOrEmpty(strLoop))
@@ -1468,6 +1490,559 @@ namespace Chummer
             }
 
             return sbdInput.ToString();
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, params string[] astrValues)
+        {
+            int intExtraLength = 0;
+            foreach (string strLoop in astrValues)
+                intExtraLength += strLoop?.Length ?? 0;
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                foreach (string strLoop in astrValues)
+                    sbdInput.Append(strLoop);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, string str2)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Append(str1).Append(str2);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, char chr2)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + 1;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(chr2);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, string str2)
+        {
+            int intExtraLength = 1 + (str2?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(chr1).Append(str2);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(char)"/> that over multiple chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, char chr2)
+        {
+            sbdInput.EnsureCapacity(sbdInput.Length + 2);
+            return sbdInput.Append(chr1).Append(chr2);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Append(str1).Append(str2).Append(str3);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, string str2, char chr3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + 1;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(str2).Append(chr3);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, char chr2, string str3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + 1 + (str3?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(chr2).Append(str3);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, char chr2, char chr3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + 2;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(chr2).Append(chr3);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, string str2, string str3)
+        {
+            int intExtraLength = 1 + (str2?.Length ?? 0) + (str3?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(chr1).Append(str2).Append(str3);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, string str2, char chr3)
+        {
+            int intExtraLength = 2 + (str2?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(chr1).Append(str2).Append(chr3);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, char chr2, string str3)
+        {
+            int intExtraLength = 2 + (str3?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(chr1).Append(chr2).Append(str3);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(char)"/> that over multiple chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, char chr2, char chr3)
+        {
+            sbdInput.EnsureCapacity(sbdInput.Length + 3);
+            return sbdInput.Append(chr1).Append(chr2).Append(chr3);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Append(str1).Append(str2).Append(str3).Append(str4);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4, string str5)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Append(str1).Append(str2).Append(str3).Append(str4).Append(str5);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4, string str5, string str6)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0) + (str6?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Append(str1).Append(str2).Append(str3).Append(str4).Append(str5).Append(str6);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4, string str5, string str6, string str7)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0) + (str6?.Length ?? 0) + (str7?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Append(str1).Append(str2).Append(str3).Append(str4).Append(str5).Append(str6).Append(str7);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(char)"/> that over multiple chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, params char[] achrValues)
+        {
+            int intExtraLength = achrValues.Length;
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                foreach (char chrLoop in achrValues)
+                    sbdInput.Append(chrLoop);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.AppendLine(string)"/> after calling <see cref="StringBuilder.Append(string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, params string[] astrValues)
+        {
+            int intExtraLength = Environment.NewLine.Length;
+            foreach (string strLoop in astrValues)
+                intExtraLength += strLoop?.Length ?? 0;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            foreach (string strLoop in astrValues)
+                sbdInput.Append(strLoop);
+            return sbdInput.AppendLine();
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.AppendLine(string)"/> after calling <see cref="StringBuilder.Append(string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, string str1, string str2)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + Environment.NewLine.Length;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).AppendLine(str2);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.AppendLine(string)"/> after calling <see cref="StringBuilder.Append(string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + Environment.NewLine.Length;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(str2).AppendLine(str3);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.AppendLine(string)"/> after calling <see cref="StringBuilder.Append(string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + Environment.NewLine.Length;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(str2).Append(str3).AppendLine(str4);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.AppendLine(string)"/> after calling <see cref="StringBuilder.Append(string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4, string str5)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0) + Environment.NewLine.Length;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(str2).Append(str3).Append(str4).AppendLine(str5);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.AppendLine(string)"/> after calling <see cref="StringBuilder.Append(string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4, string str5, string str6)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0) + (str6?.Length ?? 0) + Environment.NewLine.Length;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(str2).Append(str3).Append(str4).Append(str5).AppendLine(str6);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.AppendLine(string)"/> after calling <see cref="StringBuilder.Append(string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4, string str5, string str6, string str7)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0) + (str6?.Length ?? 0) + (str7?.Length ?? 0) + Environment.NewLine.Length;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(str2).Append(str3).Append(str4).Append(str5).Append(str6).AppendLine(str7);
+        }
+
+        /// <summary>
+        /// Syntactic sugar <see cref="StringBuilder.AppendLine()"/> after calling <see cref="StringBuilder.Append(char)"/>.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder in which appending is to take place.</param>
+        /// <param name="chrValue">New character to append before the new line is appended.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, char chrValue)
+        {
+            return sbdInput.Append(chrValue).AppendLine();
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.AppendLine()"/> after calling <see cref="StringBuilder.Append(char)"/> over multiple chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, params char[] achrValues)
+        {
+            int intExtraLength = achrValues.Length + Environment.NewLine.Length;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            foreach (char chrLoop in achrValues)
+                sbdInput.Append(chrLoop);
+            return sbdInput.AppendLine();
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, params string[] astrValues)
+        {
+            int intExtraLength = 0;
+            foreach (string strLoop in astrValues)
+                intExtraLength += strLoop?.Length ?? 0;
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                for (int i = astrValues.Length - 1; i > 0; --i)
+                    sbdInput.Insert(index, astrValues[i]);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Insert(index, str2).Insert(index, str1);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, char chr2)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + 1;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Insert(index, chr2).Insert(index, str1);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, string str2)
+        {
+            int intExtraLength = 1 + (str2?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Insert(index, str2).Insert(index, chr1);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, char)"/> over multiple chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, char chr2)
+        {
+            sbdInput.EnsureCapacity(sbdInput.Length + 2);
+            return sbdInput.Insert(index, chr2).Insert(index, chr1);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, string str3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Insert(index, str3).Insert(index, str2).Insert(index, str1);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, char chr3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + 1;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Insert(index, chr3).Insert(index, str2).Insert(index, str1);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, char chr2, string str3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + 1 + (str3?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Insert(index, str3).Insert(index, chr2).Insert(index, str1);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, char chr2, char chr3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + 2;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Insert(index, chr3).Insert(index, chr2).Insert(index, str1);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, string str2, string str3)
+        {
+            int intExtraLength = 1 + (str2?.Length ?? 0) + (str3?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Insert(index, str3).Insert(index, str2).Insert(index, chr1);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, string str2, char chr3)
+        {
+            int intExtraLength = 2 + (str2?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Insert(index, chr3).Insert(index, str2).Insert(index, chr1);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, char chr2, string str3)
+        {
+            int intExtraLength = 2 + (str3?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Insert(index, str3).Insert(index, chr2).Insert(index, chr1);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, char)"/> over multiple chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, char chr2, char chr3)
+        {
+            sbdInput.EnsureCapacity(sbdInput.Length + 3);
+            return sbdInput.Insert(index, chr3).Insert(index, chr2).Insert(index, chr1);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, string str3, string str4)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Insert(index, str4).Insert(index, str3).Insert(index, str2).Insert(index, str1);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, string str3, string str4, string str5)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Insert(index, str5).Insert(index, str4).Insert(index, str3).Insert(index, str2).Insert(index, str1);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, string str3, string str4, string str5, string str6)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0) + (str6?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Insert(index, str6).Insert(index, str5).Insert(index, str4).Insert(index, str3).Insert(index, str2).Insert(index, str1);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, string str3, string str4, string str5, string str6, string str7)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0) + (str6?.Length ?? 0) + (str7?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Insert(index, str7).Insert(index, str6).Insert(index, str5).Insert(index, str4).Insert(index, str3).Insert(index, str2).Insert(index, str1);
+            }
+            return sbdInput;
         }
     }
 }

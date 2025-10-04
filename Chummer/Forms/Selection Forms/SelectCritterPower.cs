@@ -365,10 +365,10 @@ namespace Chummer
             string strFilter = string.Empty;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                sbdFilter.Append('(').Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
+                sbdFilter.Append('(', await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false), ')');
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
                 {
-                    sbdFilter.Append(" and (contains(category,").Append(strCategory.CleanXPath()).Append("))");
+                    sbdFilter.Append(" and (contains(category,", strCategory.CleanXPath(), "))");
                 }
                 else
                 {
@@ -380,11 +380,10 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(strItem))
                             {
-                                sbdCategoryFilter.Append("(contains(category,").Append(strItem.CleanXPath())
-                                                 .Append(")) or ");
+                                sbdCategoryFilter.Append("(contains(category,", strItem.CleanXPath(), ")) or ");
                                 if (strItem == "Toxic Critter Powers")
                                 {
-                                    sbdCategoryFilter.Append("toxic = ").Append(bool.TrueString.CleanXPath()).Append(" or ");
+                                    sbdCategoryFilter.Append("toxic = ", bool.TrueString.CleanXPath(), " or ");
                                     blnHasToxic = true;
                                 }
                             }
@@ -393,20 +392,20 @@ namespace Chummer
                         if (sbdCategoryFilter.Length > 0)
                         {
                             sbdCategoryFilter.Length -= 4;
-                            sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                            sbdFilter.Append(" and (", sbdCategoryFilter.ToString(), ')');
                         }
                     }
 
                     if (!blnHasToxic)
-                        sbdFilter.Append(" and (not(toxic) or toxic != ").Append(bool.TrueString.CleanXPath()).Append(')');
+                        sbdFilter.Append(" and (not(toxic) or toxic != ", bool.TrueString.CleanXPath(), ')');
                 }
 
                 string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strSearch))
-                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
+                    sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
 
                 if (sbdFilter.Length > 0)
-                    strFilter = "[" + sbdFilter.Append(']').ToString();
+                    strFilter = sbdFilter.Insert(0, '[').Append(']').ToString();
             }
 
             foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power" + strFilter))

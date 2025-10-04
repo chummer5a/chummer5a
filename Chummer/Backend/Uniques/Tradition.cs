@@ -1610,11 +1610,9 @@ namespace Chummer.Backend.Uniques
                                     : Improvement.ImprovementType.DrainResistance);
                         foreach (Improvement objLoopImprovement in lstUsedImprovements)
                         {
-                            sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                                      .Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace)
-                                      .Append('(')
-                                      .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
-                                      .Append(')');
+                            sbdToolTip.Append(strSpace, '+', strSpace)
+                                      .Append(_objCharacter.GetObjectName(objLoopImprovement), strSpace)
+                                      .Append('(', objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo), ')');
                         }
 
                         return sbdToolTip.ToString();
@@ -1652,12 +1650,10 @@ namespace Chummer.Backend.Uniques
                                 : Improvement.ImprovementType.DrainResistance, token: token).ConfigureAwait(false);
                     foreach (Improvement objLoopImprovement in lstUsedImprovements)
                     {
-                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                        sbdToolTip.Append(strSpace, '+', strSpace)
                             .Append(await _objCharacter.GetObjectNameAsync(objLoopImprovement, token: token)
-                                .ConfigureAwait(false)).Append(strSpace)
-                            .Append('(')
-                            .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
-                            .Append(')');
+                                .ConfigureAwait(false), strSpace)
+                            .Append('(', objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo), ')');
                     }
 
                     return sbdToolTip.ToString();

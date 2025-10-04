@@ -651,9 +651,9 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
-                        sbdFilter.Append("/chummer/armors/armor[(")
-                            .Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false))
-                            .Append(')');
+                        sbdFilter.Append("/chummer/armors/armor[(",
+                            await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false),
+                            ')');
 
                         string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
@@ -661,7 +661,7 @@ namespace Chummer
                                                                    || await txtSearch
                                                                        .DoThreadSafeFuncAsync(x => x.TextLength == 0,
                                                                            token: token).ConfigureAwait(false)))
-                            sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
+                            sbdFilter.Append(" and category = ", strCategory.CleanXPath());
                         else
                         {
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
@@ -670,14 +670,14 @@ namespace Chummer
                                 foreach (string strItem in _lstCategory.Select(x => x.Value?.ToString()))
                                 {
                                     if (!string.IsNullOrEmpty(strItem))
-                                        sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath())
+                                        sbdCategoryFilter.Append("category = ", strItem.CleanXPath())
                                             .Append(" or ");
                                 }
 
                                 if (sbdCategoryFilter.Length > 0)
                                 {
                                     sbdCategoryFilter.Length -= 4;
-                                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                                    sbdFilter.Append(" and (", sbdCategoryFilter.ToString(), ')');
                                 }
                             }
                         }
@@ -685,7 +685,7 @@ namespace Chummer
                         string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token)
                             .ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(strSearch))
-                            sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
+                            sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
 
                         // Apply cost filtering
                         decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
@@ -695,12 +695,12 @@ namespace Chummer
                         if (decExactCost > 0)
                         {
                             // Exact cost filtering
-                            sbdFilter.Append(" and (cost = ").Append(decExactCost.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
+                            sbdFilter.Append(" and (cost = ", decExactCost.ToString(GlobalSettings.InvariantCultureInfo), ')');
                         }
                         else if (decMinimumCost != 0 || decMaximumCost != 0)
                         {
                             // Range cost filtering
-                            sbdFilter.Append(" and (").Append(CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost")).Append(')');
+                            sbdFilter.Append(" and (", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"), ')');
                         }
 
                         await BuildArmorList(_objXmlDocument.SelectNodes(sbdFilter.Append(']').ToString()),

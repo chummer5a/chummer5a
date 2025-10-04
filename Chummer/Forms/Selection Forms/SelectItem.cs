@@ -71,7 +71,7 @@ namespace Chummer
                                 if (await objGear.Children.GetCountAsync().ConfigureAwait(false) > 0)
                                 {
                                     // Append the plugin information to the name.
-                                    (await sbdAmmoName.Append(strSpace).Append('[')
+                                    (await sbdAmmoName.Append(strSpace, '[')
                                                       .AppendJoinAsync("," + strSpace,
                                                                        objGear.Children.Select(
                                                                            x => x.GetCurrentDisplayNameShortAsync())).ConfigureAwait(false))
@@ -81,17 +81,16 @@ namespace Chummer
                                 int intRating = await objGear.GetRatingAsync().ConfigureAwait(false);
                                 if (intRating > 0)
                                 {
-                                    sbdAmmoName.Append(strSpace).Append('(')
+                                    sbdAmmoName.Append(strSpace, '(')
                                                .AppendFormat(GlobalSettings.CultureInfo,
                                                              await LanguageManager.GetStringAsync("Label_RatingFormat")
                                                                  .ConfigureAwait(false),
                                                              await LanguageManager.GetStringAsync(objGear.RatingLabel)
-                                                                 .ConfigureAwait(false)).Append(strSpace)
-                                               .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                                                 .ConfigureAwait(false))
+                                               .Append(strSpace, intRating.ToString(GlobalSettings.CultureInfo), ')');
                                 }
 
-                                sbdAmmoName.Append(strSpace).Append('×')
-                                           .Append(objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdAmmoName.Append(strSpace, '×', objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
                                 lstItems.Add(new ListItem(objGear.InternalId, sbdAmmoName.ToString()));
                             }
                         }

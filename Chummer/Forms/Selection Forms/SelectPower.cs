@@ -222,11 +222,11 @@ namespace Chummer
                 {
                     foreach (string strPower in _strLimitToPowers.SplitNoAlloc(
                                  ',', StringSplitOptions.RemoveEmptyEntries))
-                        sbdFilter.Append("name = ").Append(strPower.CleanXPath()).Append(" or ");
+                        sbdFilter.Append("name = ", strPower.CleanXPath(), " or ");
                     if (sbdFilter.Length > 0)
                     {
                         sbdFilter.Length -= 4;
-                        strFilter += " and (" + sbdFilter.Append(')').ToString();
+                        strFilter = sbdFilter.Insert(0, strFilter, " and (", ')').ToString();
                     }
                 }
             }

@@ -89,12 +89,11 @@ namespace Chummer
                     string strXPathFilter;
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
-                        sbdFilter.Append("category = ").Append(strSkillName.CleanXPath());
+                        sbdFilter.Append("category = ", strSkillName.CleanXPath());
                         foreach (ListItem objSpec in lstItems)
                         {
                             string strLoopValue = objSpec.Value.ToString().CleanXPath();
-                            sbdFilter.Append(" or spec = ").Append(strLoopValue)
-                                     .Append(" or spec2 = ").Append(strLoopValue);
+                            sbdFilter.Append(" or spec = ", strLoopValue, " or spec2 = ", strLoopValue);
                         }
                         strXPathFilter = sbdFilter.ToString();
                     }

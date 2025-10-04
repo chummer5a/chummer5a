@@ -975,7 +975,7 @@ namespace Chummer
                         {
                             string strLoopFileName = objOpenCharacterForm.CharacterObject?.FileName ?? string.Empty;
                             if (!string.IsNullOrEmpty(strLoopFileName))
-                                sbdArguments.Append('\"').Append(strLoopFileName).Append("\" ");
+                                sbdArguments.Append('\"', strLoopFileName, "\" ");
                         }
 
                         if (sbdArguments.Length > 0)

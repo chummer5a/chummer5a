@@ -1087,13 +1087,13 @@ namespace Chummer
                     string strFilter = string.Empty;
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
-                        sbdFilter.Append('(')
-                            .Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false))
-                            .Append(')');
+                        sbdFilter.Append('(',
+                            await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false),
+                            ')');
                         if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                                && (GlobalSettings.SearchInCategoryOnly
                                                                    || txtSearch.TextLength == 0))
-                            sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
+                            sbdFilter.Append(" and category = ", strCategory.CleanXPath());
                         else
                         {
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
@@ -1103,8 +1103,7 @@ namespace Chummer
                                 {
                                     foreach (string strLoopCategory in _setLimitToCategories)
                                     {
-                                        sbdCategoryFilter.Append("category = ").Append(strLoopCategory.CleanXPath())
-                                            .Append(" or ");
+                                        sbdCategoryFilter.Append("category = ", strLoopCategory.CleanXPath(), " or ");
                                     }
 
                                     sbdCategoryFilter.Length -= 4;
@@ -1116,13 +1115,13 @@ namespace Chummer
 
                                 if (sbdCategoryFilter.Length > 0)
                                 {
-                                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                                    sbdFilter.Append(" and (", sbdCategoryFilter.ToString(), ')');
                                 }
                             }
                         }
 
                         if (!string.IsNullOrEmpty(txtSearch.Text))
-                            sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                            sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
                         // Apply cost filtering
                         decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
@@ -1132,20 +1131,20 @@ namespace Chummer
                         if (decExactCost > 0)
                         {
                             // Exact cost filtering
-                            sbdFilter.Append(" and (cost = ").Append(decExactCost.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
+                            sbdFilter.Append(" and (cost = ", decExactCost.ToString(GlobalSettings.InvariantCultureInfo), ')');
                         }
                         else if (decMinimumCost != 0 || decMaximumCost != 0)
                         {
                             // Range cost filtering
-                            sbdFilter.Append(" and (").Append(CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost")).Append(')');
+                            sbdFilter.Append(" and (", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"), ')');
                         }
 
                         // Apply additional weapon filter if specified
                         if (!string.IsNullOrEmpty(_strWeaponFilter))
-                            sbdFilter.Append(" and (").Append(_strWeaponFilter).Append(')');
+                            sbdFilter.Append(" and (", _strWeaponFilter, ')');
 
                         if (sbdFilter.Length > 0)
-                            strFilter = "[" + sbdFilter.Append(']').ToString();
+                            strFilter = sbdFilter.Insert(0, '[').Append(']').ToString();
                     }
 
                     XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon" + strFilter);

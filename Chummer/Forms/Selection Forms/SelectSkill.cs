@@ -108,17 +108,14 @@ namespace Chummer
                         // If we don't have a minimum rating, include exotic skills as normal because they'll just make the second dropdown appear when selected
                         if (_intMinimumRating > 0)
                             sbdFilter.Append("not(exotic = 'True') and ");
-                        sbdFilter.Append('(')
-                                 .Append(await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false))
-                                 .Append(')');
+                        sbdFilter.Append('(', await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false), ')');
                         if (!string.IsNullOrEmpty(_strIncludeCategory))
                         {
                             sbdFilter.Append(" and (");
                             foreach (string strSkillCategory in _strIncludeCategory.SplitNoAlloc(
                                          ',', StringSplitOptions.RemoveEmptyEntries))
                             {
-                                sbdFilter.Append("category = ").Append(strSkillCategory.Trim().CleanXPath())
-                                         .Append(" or ");
+                                sbdFilter.Append("category = ", strSkillCategory.Trim().CleanXPath(), " or ");
                             }
 
                             // Remove the trailing " or ".
@@ -132,8 +129,7 @@ namespace Chummer
                             foreach (string strSkillCategory in _strExcludeCategory.SplitNoAlloc(
                                          ',', StringSplitOptions.RemoveEmptyEntries))
                             {
-                                sbdFilter.Append("category != ").Append(strSkillCategory.Trim().CleanXPath())
-                                         .Append(" and ");
+                                sbdFilter.Append("category != ", strSkillCategory.Trim().CleanXPath(), " and ");
                             }
 
                             // Remove the trailing " and ".
@@ -147,8 +143,7 @@ namespace Chummer
                             foreach (string strSkillGroup in _strIncludeSkillGroup.SplitNoAlloc(
                                          ',', StringSplitOptions.RemoveEmptyEntries))
                             {
-                                sbdFilter.Append("skillgroup = ").Append(strSkillGroup.Trim().CleanXPath())
-                                         .Append(" or ");
+                                sbdFilter.Append("skillgroup = ", strSkillGroup.Trim().CleanXPath(), " or ");
                             }
 
                             // Remove the trailing " or ".
@@ -162,8 +157,7 @@ namespace Chummer
                             foreach (string strSkillGroup in _strExcludeSkillGroup.SplitNoAlloc(
                                          ',', StringSplitOptions.RemoveEmptyEntries))
                             {
-                                sbdFilter.Append("skillgroup != ").Append(strSkillGroup.Trim().CleanXPath())
-                                         .Append(" and ");
+                                sbdFilter.Append("skillgroup != ", strSkillGroup.Trim().CleanXPath(), " and ");
                             }
 
                             // Remove the trailing " and ".
@@ -177,8 +171,7 @@ namespace Chummer
                             foreach (string strAttribute in LinkedAttribute.SplitNoAlloc(
                                          ',', StringSplitOptions.RemoveEmptyEntries))
                             {
-                                sbdFilter.Append("attribute = ").Append(strAttribute.Trim().CleanXPath())
-                                         .Append(" or ");
+                                sbdFilter.Append("attribute = ", strAttribute.Trim().CleanXPath(), " or ");
                             }
 
                             // Remove the trailing " or ".
@@ -191,7 +184,7 @@ namespace Chummer
                             sbdFilter.Append(" and (");
                             foreach (string strSkill in _strLimitToSkill.SplitNoAlloc(
                                          ',', StringSplitOptions.RemoveEmptyEntries))
-                                sbdFilter.Append("name = ").Append(strSkill.Trim().CleanXPath()).Append(" or ");
+                                sbdFilter.Append("name = ", strSkill.Trim().CleanXPath(), " or ");
                             // Remove the trailing " or ".
                             sbdFilter.Length -= 4;
                             sbdFilter.Append(')');
@@ -202,14 +195,14 @@ namespace Chummer
                             sbdFilter.Append(" and (");
                             foreach (string strSkill in _strExcludeSkill.SplitNoAlloc(
                                          ',', StringSplitOptions.RemoveEmptyEntries))
-                                sbdFilter.Append("name != ").Append(strSkill.Trim().CleanXPath()).Append(" and ");
+                                sbdFilter.Append("name != ", strSkill.Trim().CleanXPath(), " and ");
                             // Remove the trailing " and ".
                             sbdFilter.Length -= 5;
                             sbdFilter.Append(')');
                         }
 
                         if (sbdFilter.Length > 0)
-                            strFilter = "[" + sbdFilter.Append(']').ToString();
+                            strFilter = sbdFilter.Insert(0, '[').Append(']').ToString();
                     }
 
                     objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill" + strFilter);
@@ -450,8 +443,7 @@ namespace Chummer
                     {
                         foreach (XmlNode objNode in xmlCategoryList)
                         {
-                            sbdLimitToCategories.Append("category = ").Append(objNode.InnerTextViaPool().CleanXPath())
-                                                .Append(" or ");
+                            sbdLimitToCategories.Append("category = ", objNode.InnerTextViaPool().CleanXPath(), " or ");
                         }
 
                         // Remove the last " or "

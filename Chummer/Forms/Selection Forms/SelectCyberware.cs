@@ -1561,17 +1561,16 @@ namespace Chummer
             string strFilter = string.Empty;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                sbdFilter.Append('(')
-                         .Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false))
-                         .Append(')');
+                sbdFilter.Append('(',
+                    await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false),
+                    ')');
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdCategoryFilter))
                 {
                     if (strCategory != "Show All" && !Upgrading
                                                   && (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0))
                     {
-                        sbdCategoryFilter.Append("category = ").Append(strCategory.CleanXPath())
-                                         .Append(" or category = \"None\"");
+                        sbdCategoryFilter.Append("category = ", strCategory.CleanXPath(), " or category = \"None\"");
                     }
                     else
                     {
@@ -1579,7 +1578,7 @@ namespace Chummer
                         {
                             string strItem = objItem.Value.ToString();
                             if (!string.IsNullOrEmpty(strItem))
-                                sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
+                                sbdCategoryFilter.Append("category = ", strItem.CleanXPath(), " or ");
                         }
 
                         if (sbdCategoryFilter.Length > 0)
@@ -1589,7 +1588,7 @@ namespace Chummer
                     }
 
                     if (sbdCategoryFilter.Length > 0)
-                        sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                        sbdFilter.Append(" and (", sbdCategoryFilter.ToString(), ')');
                 }
 
                 if (_objParentNode != null)
@@ -1597,24 +1596,20 @@ namespace Chummer
                 else if (ParentVehicle == null && ((!await _objCharacter.GetAddCyberwareEnabledAsync(token).ConfigureAwait(false) && WindowMode == Mode.Cyberware)
                                                    || (!await _objCharacter.GetAddBiowareEnabledAsync(token).ConfigureAwait(false) && WindowMode == Mode.Bioware)))
                 {
-                    sbdFilter.Append(" and (id = ").Append(Cyberware.EssenceHoleGuidString.CleanXPath())
-                             .Append(" or id = ").Append(Cyberware.EssenceAntiHoleGuidString.CleanXPath())
-                             .Append(" or mountsto)");
+                    sbdFilter.Append(" and (id = ", Cyberware.EssenceHoleGuidString.CleanXPath(), " or id = ", Cyberware.EssenceAntiHoleGuidString.CleanXPath(), " or mountsto)");
                 }
                 else
                     sbdFilter.Append(" and not(requireparent)");
                 if (objCurrentGrade != null)
                 {
                     string strGradeNameCleaned = objCurrentGrade.Name.CleanXPath();
-                    sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = ")
-                             .Append(strGradeNameCleaned).Append(") and (not(bannedgrades[grade = ")
-                             .Append(strGradeNameCleaned).Append("]))");
+                    sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = ", strGradeNameCleaned, ") and (not(bannedgrades[grade = ", strGradeNameCleaned, "]))");
                 }
 
                 string strSearch
                     = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strSearch))
-                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
+                    sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
 
                 // Note: Essence filtering is handled in post-processing due to dynamic expressions like Rating * 0.1 and FixedValues()
 
@@ -1626,16 +1621,16 @@ namespace Chummer
                 if (decExactCost > 0)
                 {
                     // Exact cost filtering
-                    sbdFilter.Append(" and (cost = ").Append(decExactCost.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
+                    sbdFilter.Append(" and (cost = ", decExactCost.ToString(GlobalSettings.InvariantCultureInfo), ')');
                 }
                 else if (decMinimumCost != 0 || decMaximumCost != 0)
                 {
                     // Range cost filtering
-                    sbdFilter.Append(" and (").Append(CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost")).Append(')');
+                    sbdFilter.Append(" and (", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"), ')');
                 }
 
                 if (sbdFilter.Length > 0)
-                    strFilter = "[" + sbdFilter.Append(']').ToString();
+                    strFilter = sbdFilter.Insert(0, '[').Append(']').ToString();
             }
 
             XPathNodeIterator xmlIterator;

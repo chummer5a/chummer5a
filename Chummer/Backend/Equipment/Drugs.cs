@@ -1376,13 +1376,11 @@ namespace Chummer.Backend.Equipment
                         {
                             if (blnNewLineFlag)
                             {
-                                sbdDescription.Append(',').Append(strSpace);
+                                sbdDescription.Append(',', strSpace);
                             }
 
-                            sbdDescription
-                                .Append(LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short",
-                                                                  strLanguage)).Append(strSpace)
-                                .Append(objAttribute.Value.ToString("+#.#;-#.#", GlobalSettings.CultureInfo));
+                            sbdDescription.Append(LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short", strLanguage),
+                                strSpace, objAttribute.Value.ToString("+#.#;-#.#", GlobalSettings.CultureInfo));
                             blnNewLineFlag = true;
                         }
                     }
@@ -1399,14 +1397,12 @@ namespace Chummer.Backend.Equipment
                         {
                             if (blnNewLineFlag)
                             {
-                                sbdDescription.Append(',').Append(strSpace);
+                                sbdDescription.Append(',', strSpace);
                             }
 
-                            sbdDescription.Append(LanguageManager.GetString("Node_" + objLimit.Key, strLanguage))
-                                          .Append(strSpace)
-                                          .Append(LanguageManager.GetString("String_Limit", strLanguage))
-                                          .Append(strSpace)
-                                          .Append(objLimit.Value.ToString(" +#;-#", GlobalSettings.CultureInfo));
+                            sbdDescription.Append(LanguageManager.GetString("Node_" + objLimit.Key, strLanguage),
+                                strSpace, LanguageManager.GetString("String_Limit", strLanguage),
+                                strSpace, objLimit.Value.ToString(" +#;-#", GlobalSettings.CultureInfo));
                             blnNewLineFlag = true;
                         }
                     }
@@ -1532,13 +1528,11 @@ namespace Chummer.Backend.Equipment
                         {
                             if (blnNewLineFlag)
                             {
-                                sbdDescription.Append(',').Append(strSpace);
+                                sbdDescription.Append(',', strSpace);
                             }
 
-                            sbdDescription
-                                .Append(await LanguageManager.GetStringAsync("String_Attribute" + objAttribute.Key + "Short",
-                                                                             strLanguage, token: token).ConfigureAwait(false)).Append(strSpace)
-                                .Append(objAttribute.Value.ToString("+#.#;-#.#", GlobalSettings.CultureInfo));
+                            sbdDescription.Append(await LanguageManager.GetStringAsync("String_Attribute" + objAttribute.Key + "Short", strLanguage, token: token).ConfigureAwait(false),
+                                strSpace, objAttribute.Value.ToString("+#.#;-#.#", GlobalSettings.CultureInfo));
                             blnNewLineFlag = true;
                         }
                     }
@@ -1555,14 +1549,12 @@ namespace Chummer.Backend.Equipment
                         {
                             if (blnNewLineFlag)
                             {
-                                sbdDescription.Append(',').Append(strSpace);
+                                sbdDescription.Append(',', strSpace);
                             }
 
-                            sbdDescription.Append(await LanguageManager.GetStringAsync("Node_" + objLimit.Key, strLanguage, token: token).ConfigureAwait(false))
-                                          .Append(strSpace)
-                                          .Append(await LanguageManager.GetStringAsync("String_Limit", strLanguage, token: token).ConfigureAwait(false))
-                                          .Append(strSpace)
-                                          .Append(objLimit.Value.ToString(" +#;-#", GlobalSettings.CultureInfo));
+                            sbdDescription.Append(await LanguageManager.GetStringAsync("Node_" + objLimit.Key, strLanguage, token: token).ConfigureAwait(false),
+                                strSpace, await LanguageManager.GetStringAsync("String_Limit", strLanguage, token: token).ConfigureAwait(false),
+                                strSpace, objLimit.Value.ToString(" +#;-#", GlobalSettings.CultureInfo));
                             blnNewLineFlag = true;
                         }
                     }
@@ -2548,13 +2540,11 @@ namespace Chummer.Backend.Equipment
                         {
                             if (blnNewLineFlag)
                             {
-                                sbdDescription.Append(',').Append(strSpace);
+                                sbdDescription.Append(',', strSpace);
                             }
 
-                            sbdDescription
-                                .Append(LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short"))
-                                .Append(strSpace)
-                                .Append(objAttribute.Value.ToString("+#;-#", GlobalSettings.CultureInfo));
+                            sbdDescription.Append(LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short"),
+                                strSpace, objAttribute.Value.ToString("+#;-#", GlobalSettings.CultureInfo));
                             blnNewLineFlag = true;
                         }
                     }
@@ -2571,12 +2561,12 @@ namespace Chummer.Backend.Equipment
                         {
                             if (blnNewLineFlag)
                             {
-                                sbdDescription.Append(',').Append(strSpace);
+                                sbdDescription.Append(',', strSpace);
                             }
 
-                            sbdDescription.Append(LanguageManager.GetString("Node_" + objLimit.Key)).Append(strSpace)
-                                          .Append(LanguageManager.GetString("String_Limit")).Append(strSpace)
-                                          .Append(objLimit.Value.ToString("+#;-#", GlobalSettings.CultureInfo));
+                            sbdDescription.Append(LanguageManager.GetString("Node_" + objLimit.Key),
+                                strSpace, LanguageManager.GetString("String_Limit"),
+                                strSpace, objLimit.Value.ToString("+#;-#", GlobalSettings.CultureInfo));
                             blnNewLineFlag = true;
                         }
                     }
@@ -2697,13 +2687,11 @@ namespace Chummer.Backend.Equipment
                         {
                             if (blnNewLineFlag)
                             {
-                                sbdDescription.Append(',').Append(strSpace);
+                                sbdDescription.Append(',', strSpace);
                             }
 
-                            sbdDescription
-                                .Append(await LanguageManager.GetStringAsync("String_Attribute" + objAttribute.Key + "Short", token: token).ConfigureAwait(false))
-                                .Append(strSpace)
-                                .Append(objAttribute.Value.ToString("+#;-#", GlobalSettings.CultureInfo));
+                            sbdDescription.Append(await LanguageManager.GetStringAsync("String_Attribute" + objAttribute.Key + "Short", token: token).ConfigureAwait(false),
+                                strSpace, objAttribute.Value.ToString("+#;-#", GlobalSettings.CultureInfo));
                             blnNewLineFlag = true;
                         }
                     }
@@ -2720,12 +2708,12 @@ namespace Chummer.Backend.Equipment
                         {
                             if (blnNewLineFlag)
                             {
-                                sbdDescription.Append(',').Append(strSpace);
+                                sbdDescription.Append(',', strSpace);
                             }
 
-                            sbdDescription.Append(await LanguageManager.GetStringAsync("Node_" + objLimit.Key, token: token).ConfigureAwait(false)).Append(strSpace)
-                                          .Append(await LanguageManager.GetStringAsync("String_Limit", token: token).ConfigureAwait(false)).Append(strSpace)
-                                          .Append(objLimit.Value.ToString("+#;-#", GlobalSettings.CultureInfo));
+                            sbdDescription.Append(await LanguageManager.GetStringAsync("Node_" + objLimit.Key, token: token).ConfigureAwait(false),
+                                strSpace, await LanguageManager.GetStringAsync("String_Limit", token: token).ConfigureAwait(false),
+                                strSpace, objLimit.Value.ToString("+#;-#", GlobalSettings.CultureInfo));
                             blnNewLineFlag = true;
                         }
                     }

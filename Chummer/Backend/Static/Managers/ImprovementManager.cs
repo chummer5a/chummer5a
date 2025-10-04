@@ -1762,9 +1762,7 @@ namespace Chummer
                                                         sbdFilter.Append('(');
                                                         foreach (string strCategory in setAllowedCategories)
                                                         {
-                                                            sbdFilter.Append("category = ")
-                                                                .Append(strCategory.CleanXPath())
-                                                                .Append(" or ");
+                                                            sbdFilter.Append("category = ", strCategory.CleanXPath(), " or ");
                                                         }
 
                                                         sbdFilter.Length -= 4;
@@ -1776,9 +1774,7 @@ namespace Chummer
                                                         sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
                                                         foreach (string strCategory in setForbiddenCategories)
                                                         {
-                                                            sbdFilter.Append("category = ")
-                                                                .Append(strCategory.CleanXPath())
-                                                                .Append(" or ");
+                                                            sbdFilter.Append("category = ", strCategory.CleanXPath(), " or ");
                                                         }
 
                                                         sbdFilter.Length -= 4;
@@ -1790,8 +1786,7 @@ namespace Chummer
                                                         sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
                                                         foreach (string strName in setAllowedNames)
                                                         {
-                                                            sbdFilter.Append("name = ").Append(strName.CleanXPath())
-                                                                .Append(" or ");
+                                                            sbdFilter.Append("name = ", strName.CleanXPath(), " or ");
                                                         }
 
                                                         sbdFilter.Length -= 4;
@@ -1803,8 +1798,7 @@ namespace Chummer
                                                         sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
                                                         foreach (string strName in setProcessedSkillNames)
                                                         {
-                                                            sbdFilter.Append("name = ").Append(strName.CleanXPath())
-                                                                .Append(" or ");
+                                                            sbdFilter.Append("name = ", strName.CleanXPath(), " or ");
                                                         }
 
                                                         sbdFilter.Length -= 4;
@@ -1816,9 +1810,7 @@ namespace Chummer
                                                         sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
                                                         foreach (string strAttribute in setAllowedLinkedAttributes)
                                                         {
-                                                            sbdFilter.Append("attribute = ")
-                                                                .Append(strAttribute.CleanXPath())
-                                                                .Append(" or ");
+                                                            sbdFilter.Append("attribute = ", strAttribute.CleanXPath(), " or ");
                                                         }
 
                                                         sbdFilter.Length -= 4;
@@ -1826,7 +1818,7 @@ namespace Chummer
                                                     }
 
                                                     string strFilter = sbdFilter.Length > 0
-                                                        ? ") and (" + sbdFilter.ToString()
+                                                        ? sbdFilter.Insert(0, ") and (").ToString()
                                                         : string.Empty;
                                                     foreach (XPathNavigator xmlSkill in (blnSync
                                                                  ? objCharacter

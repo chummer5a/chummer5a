@@ -1632,9 +1632,7 @@ namespace Chummer
                                                     token.ThrowIfCancellationRequested();
                                                     if (sbdFilter.Length > 0)
                                                         sbdFilter.Append(" and ");
-                                                    sbdFilter.Append(objExtraId.Name).Append(" = ")
-                                                             .Append(
-                                                                 objExtraId.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath());
+                                                    sbdFilter.Append(objExtraId.Name, " = ", objExtraId.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath());
                                                 }
                                             }
                                         }
@@ -1727,9 +1725,8 @@ namespace Chummer
                                                 {
                                                     token.ThrowIfCancellationRequested();
                                                     sbdParentNodeFilter
-                                                        .Append('@').Append(objLoopAttribute.Name).Append(" = ")
-                                                        .Append(objLoopAttribute.Value.Replace("&amp;", "&")
-                                                                                .CleanXPath()).Append(" and ");
+                                                        .Append('@').Append(objLoopAttribute.Name, " = ", objLoopAttribute.Value.Replace("&amp;", "&")
+                                                                                .CleanXPath(), " and ");
                                                 }
 
                                                 if (sbdParentNodeFilter.Length > 0)
@@ -1946,9 +1943,9 @@ namespace Chummer
                                                     token.ThrowIfCancellationRequested();
                                                     if (sbdFilter.Length > 0)
                                                         sbdFilter.Append(" and ");
-                                                    sbdFilter.Append(objExtraId.Name).Append(" = ")
-                                                             .Append(
-                                                                 objExtraId.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath());
+                                                    sbdFilter.Append(objExtraId.Name, " = ",
+                                                        objExtraId.InnerTextViaPool(token).Replace("&amp;", "&")
+                                                            .CleanXPath());
                                                 }
                                             }
                                         }
@@ -2042,9 +2039,9 @@ namespace Chummer
                                                 {
                                                     token.ThrowIfCancellationRequested();
                                                     sbdParentNodeFilter
-                                                        .Append('@').Append(objLoopAttribute.Name).Append(" = ")
-                                                        .Append(objLoopAttribute.Value.Replace("&amp;", "&")
-                                                                                .CleanXPath()).Append(" and ");
+                                                        .Append('@').Append(objLoopAttribute.Name, " = ",
+                                                            objLoopAttribute.Value.Replace("&amp;", "&")
+                                                                .CleanXPath(), " and ");
                                                 }
 
                                                 if (sbdParentNodeFilter.Length > 0)
@@ -2264,15 +2261,15 @@ namespace Chummer
                                     token.ThrowIfCancellationRequested();
                                     if (sbdFilter.Length > 0)
                                         sbdFilter.Append(" and ");
-                                    sbdFilter.Append(objExtraId.Name).Append(" = ")
-                                             .Append(objExtraId.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath());
+                                    sbdFilter.Append(objExtraId.Name, " = ",
+                                        objExtraId.InnerTextViaPool(token).Replace("&amp;", "&").CleanXPath());
                                 }
                             }
                         }
                     }
 
                     if (sbdFilter.Length > 0)
-                        strFilter = "[" + sbdFilter.Append(']').ToString();
+                        strFilter = sbdFilter.Insert(0, '[').Append(']').ToString();
                 }
 
                 token.ThrowIfCancellationRequested();

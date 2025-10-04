@@ -233,10 +233,10 @@ namespace Chummer
                                 num4 += 4;
                             }
 
-                            sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2])
-                                .Append(ptr[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
-                                .Append(ptr[((achrBuffer[1] & 0xF) << 2) | ((achrBuffer[2] & 0xC0) >> 6)])
-                                .Append(ptr[achrBuffer[2] & 0x3F]);
+                            sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2],
+                                ptr[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)],
+                                ptr[((achrBuffer[1] & 0xF) << 2) | ((achrBuffer[2] & 0xC0) >> 6)],
+                                ptr[achrBuffer[2] & 0x3F]);
                             num3 += 4;
                         }
 
@@ -253,20 +253,20 @@ namespace Chummer
                             case 2:
                             {
                                 _ = inData.Read(achrBuffer, 0, 2);
-                                sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2])
-                                    .Append(ptr[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
-                                    .Append(ptr[(achrBuffer[1] & 0xF) << 2])
-                                    .Append(ptr[64]);
+                                sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2],
+                                    ptr[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)],
+                                    ptr[(achrBuffer[1] & 0xF) << 2],
+                                    ptr[64]);
                                 num3 += 4;
                                 break;
                             }
                             case 1:
                             {
                                 _ = inData.Read(achrBuffer, 0, 1);
-                                sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2])
-                                    .Append(ptr[(achrBuffer[0] & 3) << 4])
-                                    .Append(ptr[64])
-                                    .Append(ptr[64]);
+                                sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2],
+                                    ptr[(achrBuffer[0] & 3) << 4],
+                                    ptr[64],
+                                    ptr[64]);
                                 num3 += 4;
                                 break;
                             }
@@ -371,10 +371,10 @@ namespace Chummer
                             num4 += 4;
                         }
 
-                        sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2])
-                            .Append(s_Base64Table[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
-                            .Append(s_Base64Table[((achrBuffer[1] & 0xF) << 2) | ((achrBuffer[2] & 0xC0) >> 6)])
-                            .Append(s_Base64Table[achrBuffer[2] & 0x3F]);
+                        sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2],
+                            s_Base64Table[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)],
+                            s_Base64Table[((achrBuffer[1] & 0xF) << 2) | ((achrBuffer[2] & 0xC0) >> 6)],
+                            s_Base64Table[achrBuffer[2] & 0x3F]);
                         num3 += 4;
                     }
 
@@ -391,20 +391,20 @@ namespace Chummer
                         case 2:
                         {
                             _ = await inData.ReadAsync(achrBuffer, 0, 2, token).ConfigureAwait(false);
-                            sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2])
-                                .Append(s_Base64Table[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
-                                .Append(s_Base64Table[(achrBuffer[1] & 0xF) << 2])
-                                .Append(s_Base64Table[64]);
+                            sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2],
+                                s_Base64Table[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)],
+                                s_Base64Table[(achrBuffer[1] & 0xF) << 2],
+                                s_Base64Table[64]);
                             num3 += 4;
                             break;
                         }
                         case 1:
                         {
                             _ = await inData.ReadAsync(achrBuffer, 0, 1, token).ConfigureAwait(false);
-                            sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2])
-                                .Append(s_Base64Table[(achrBuffer[0] & 3) << 4])
-                                .Append(s_Base64Table[64])
-                                .Append(s_Base64Table[64]);
+                            sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2],
+                                s_Base64Table[(achrBuffer[0] & 3) << 4],
+                                s_Base64Table[64],
+                                s_Base64Table[64]);
                             num3 += 4;
                             break;
                         }

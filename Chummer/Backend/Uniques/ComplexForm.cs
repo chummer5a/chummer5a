@@ -710,11 +710,9 @@ namespace Chummer
                         {
                             // Fading is always minimum 2
                             int intFv = Math.Max(((double)xprResult).StandardRound(), 2);
-                            sbdTip.AppendLine().Append(await LanguageManager.GetStringAsync("String_Level", token: token).ConfigureAwait(false)).Append(strSpace)
-                                    .Append(
-                                        i.ToString(GlobalSettings.CultureInfo))
-                                    .Append(await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false))
-                                    .Append(strSpace).Append(intFv.ToString(GlobalSettings.CultureInfo));
+                            sbdTip.AppendLine()
+                                .Append(await LanguageManager.GetStringAsync("String_Level", token: token).ConfigureAwait(false), strSpace, i.ToString(GlobalSettings.CultureInfo))
+                                .Append(await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false), strSpace, intFv.ToString(GlobalSettings.CultureInfo));
                         }
                         else
                         {
@@ -724,12 +722,13 @@ namespace Chummer
                         }
                     }
 
-                    sbdTip.AppendLine().Append(await LanguageManager.GetStringAsync("Tip_ComplexFormFadingBase", token: token).ConfigureAwait(false)).Append(strSpace).Append('(').Append(FvBase).Append(')');
+                    sbdTip.AppendLine().Append(await LanguageManager.GetStringAsync("Tip_ComplexFormFadingBase", token: token).ConfigureAwait(false), strSpace).Append('(', FvBase, ')');
                     foreach (Improvement objLoopImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     _objCharacter, Improvement.ImprovementType.FadingValue, Name, true, token))
                     {
-                        sbdTip.Append(strSpace).Append('+').Append(strSpace).Append(await _objCharacter.GetObjectNameAsync(objLoopImprovement, token: token).ConfigureAwait(false)).Append(strSpace)
-                                .Append('(').Append(objLoopImprovement.Value.ToString("#,0.##;-#,0.##;#,0.##", GlobalSettings.CultureInfo)).Append(')');
+                        sbdTip.Append(strSpace, '+', strSpace)
+                            .Append(await _objCharacter.GetObjectNameAsync(objLoopImprovement, token: token).ConfigureAwait(false), strSpace)
+                                .Append('(', objLoopImprovement.Value.ToString("#,0.##;-#,0.##;#,0.##", GlobalSettings.CultureInfo), ')');
                     }
                     // Minimum Fading of 2
                     sbdTip.AppendLine().AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_MinimumAttribute", token: token), 2);
@@ -771,10 +770,10 @@ namespace Chummer
                                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdReturn))
                                 {
-                                    sbdReturn.Append('(').Append(strFv).Append(')');
+                                    sbdReturn.Append('(', strFv, ')');
                                     foreach (Improvement objImprovement in lstImprovements)
                                     {
-                                        sbdReturn.Append(" + (").Append(objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
+                                        sbdReturn.Append("+(", objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo), ')');
                                     }
                                     _objCharacter.ProcessAttributesInXPath(sbdReturn);
                                     strFv = sbdReturn.ToString();
@@ -841,10 +840,10 @@ namespace Chummer
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdReturn))
                             {
-                                sbdReturn.Append('(').Append(strFv).Append(')');
+                                sbdReturn.Append('(', strFv, ')');
                                 foreach (Improvement objImprovement in lstImprovements)
                                 {
-                                    sbdReturn.Append(" + (").Append(objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
+                                    sbdReturn.Append("+(", objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo), ')');
                                 }
                                 await _objCharacter.ProcessAttributesInXPathAsync(sbdReturn, token: token).ConfigureAwait(false);
                                 strFv = sbdReturn.ToString();
@@ -1331,7 +1330,7 @@ namespace Chummer
                         if (objSkill != null)
                         {
                             if (sbdReturn.Length > 0)
-                                sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                                sbdReturn.Append(strSpace, '+', strSpace);
                             sbdReturn.Append(objSkill.FormattedDicePool(objSkill.PoolOtherAttribute("RES") -
                                                                         (objResonanceAttrib?.TotalValue ?? 0),
                                                                         CurrentDisplayName));
@@ -1342,7 +1341,7 @@ namespace Chummer
                                      _objCharacter, Improvement.ImprovementType.ActionDicePool, "Threading"))
                         {
                             if (sbdReturn.Length > 0)
-                                sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                                sbdReturn.Append(strSpace, '+', strSpace);
                             sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
                                                    _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
                         }
@@ -1380,7 +1379,7 @@ namespace Chummer
                     if (objSkill != null)
                     {
                         if (sbdReturn.Length > 0)
-                            sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                            sbdReturn.Append(strSpace, '+', strSpace);
                         sbdReturn.Append(await objSkill.FormattedDicePoolAsync(
                             await objSkill.PoolOtherAttributeAsync("RES", token: token).ConfigureAwait(false)
                             - (objResonanceAttrib != null ? await objResonanceAttrib.GetTotalValueAsync(token).ConfigureAwait(false) : 0),
@@ -1392,7 +1391,7 @@ namespace Chummer
                                  _objCharacter, Improvement.ImprovementType.ActionDicePool, "Threading", token: token).ConfigureAwait(false))
                     {
                         if (sbdReturn.Length > 0)
-                            sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                            sbdReturn.Append(strSpace, '+', strSpace);
                         sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
                                                await _objCharacter.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false), objImprovement.Value);
                     }
