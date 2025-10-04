@@ -52,7 +52,7 @@ namespace Chummer
 
             this.UpdateLightDarkMode(objMyToken);
             this.TranslateWinForm(token: objMyToken);
-            this.UpdateParentForToolTipControls();
+
             foreach (ToolStripItem tssItem in cmsSpirit.Items)
             {
                 tssItem.UpdateLightDarkMode(objMyToken);

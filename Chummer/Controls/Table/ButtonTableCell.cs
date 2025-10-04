@@ -42,7 +42,7 @@ namespace Chummer.UI.Table
                 Controls.Add(button);
                 this.UpdateLightDarkMode(objMyToken);
                 this.TranslateWinForm(token: objMyToken);
-                this.UpdateParentForToolTipControls();
+
                 button.PerformLayout();
             }
             finally

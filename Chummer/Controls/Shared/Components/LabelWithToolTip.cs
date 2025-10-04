@@ -30,6 +30,8 @@ namespace Chummer
 
         private ToolTip _objToolTip;
 
+        // ReSharper disable once MemberCanBePrivate.Global
+        // Used by databinding
         public ToolTip ToolTipObject => _objToolTip;
 
         private string _strToolTipText = string.Empty;
@@ -53,38 +55,32 @@ namespace Chummer
             if (token.IsCancellationRequested)
                 return Task.FromCanceled(token);
             value = _intToolTipWrap > 0 ? value.WordWrap(_intToolTipWrap) : value.WordWrap();
-            return Interlocked.Exchange(ref _strToolTipText, value) != value
-                ? this.DoThreadSafeAsync(x => _objToolTip?.SetToolTip(x, value.CleanForHtml()), token: token)
-                : Task.CompletedTask;
+            if (Interlocked.Exchange(ref _strToolTipText, value) == value)
+                return Task.CompletedTask;
+            _objToolTip?.SetToolTip(this, value.CleanForHtml());
+            return Task.CompletedTask;
+        }
+
+        // Parameterless constructor for designer support
+        public LabelWithToolTip() : this(-1)
+        {
         }
 
         // ReSharper disable once MemberCanBePrivate.Global
         public LabelWithToolTip(int intToolTipWrap = -1) : base()
         {
             _intToolTipWrap = intToolTipWrap;
-            _frmParent = FindForm();
-            _objToolTip = ToolTipFactory.GetToolTipForForm(_frmParent);
+            _objToolTip = ToolTipFactory.ToolTip;
         }
 
-        private Form _frmParent;
-
-        public void UpdateToolTipParent()
+        protected override void Dispose(bool disposing)
         {
-            if (Interlocked.Exchange(ref _frmParent, FindForm()) != _frmParent)
+            if (disposing)
             {
-                ToolTip objOldToolTip = Interlocked.Exchange(ref _objToolTip, ToolTipFactory.GetToolTipForForm(_frmParent));
-                if (objOldToolTip != null || !string.IsNullOrEmpty(_strToolTipText))
-                    _objToolTip?.SetToolTip(this, _strToolTipText.CleanForHtml());
+                // Explicitly remove this control from the global tooltip to prevent memory leaks
+                ToolTipFactory.ToolTip.SetToolTip(this, string.Empty);
             }
-        }
-
-        protected override void OnParentChanged(EventArgs e)
-        {
-            base.OnParentChanged(e);
-            // Note: because we cannot unsubscribe old parents from events if/when we change parents, we do not want to have this automatically update
-            // based on a subscription to our parent's ParentChanged (which we would need to be able to automatically update our parent form for nested controls)
-            // We therefore need to use the hacky workaround of calling UpdateParentForToolTipControls() for parent forms/controls as appropriate
-            UpdateToolTipParent();
+            base.Dispose(disposing);
         }
     }
 }

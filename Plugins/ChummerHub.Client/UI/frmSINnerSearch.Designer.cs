@@ -1,4 +1,4 @@
-﻿namespace ChummerHub.Client.UI
+namespace ChummerHub.Client.UI
 {
     partial class frmSINnerSearch
     {

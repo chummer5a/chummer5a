@@ -43,7 +43,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
         }
 
         private async void SelectLimitModifier_Load(object sender, EventArgs e)

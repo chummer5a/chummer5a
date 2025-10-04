@@ -59,7 +59,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
             _objXmlDocument = _objCharacter.LoadDataXPath("skills.xml");
         }
 

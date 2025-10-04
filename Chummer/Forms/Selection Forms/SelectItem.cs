@@ -46,7 +46,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
             _lstGeneralItems = Utils.ListItemListPool.Get();
         }
 

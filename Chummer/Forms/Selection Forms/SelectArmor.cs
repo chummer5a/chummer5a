@@ -68,7 +68,7 @@ namespace Chummer
             tabControl.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
             // Load the Armor information.
             _objXmlDocument = objCharacter.LoadData("armor.xml");
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();

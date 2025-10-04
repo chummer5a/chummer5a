@@ -66,7 +66,7 @@ namespace Chummer
             tabOptions.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
             _objReferenceCharacterSettings = objExistingSettings;
             if (_objReferenceCharacterSettings == null)
             {

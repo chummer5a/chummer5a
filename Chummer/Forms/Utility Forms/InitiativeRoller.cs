@@ -31,7 +31,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
         }
 
         private async void InitiativeRoller_Load(object sender, EventArgs e)

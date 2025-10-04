@@ -274,7 +274,7 @@ namespace Chummer
             if (source is IControlWithToolTip objSourceWithToolTip)
                 objSourceWithToolTip.ToolTipText = strToolTip;
             else
-                source.SetToolTip(frmParent, strToolTip);
+                source.SetToolTip(strToolTip);
         }
 
         /// <summary>
@@ -302,7 +302,7 @@ namespace Chummer
             if (source is IControlWithToolTip objSourceWithToolTip)
                 await objSourceWithToolTip.SetToolTipTextAsync(strToolTip, token).ConfigureAwait(false);
             else
-                await source.SetToolTipAsync(frmParent, strToolTip, token).ConfigureAwait(false);
+                await source.SetToolTipAsync(strToolTip, token).ConfigureAwait(false);
         }
 
         public bool Equals(SourceString other)

@@ -36,7 +36,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
 
             _strCachedDateSpanFormat = LanguageManager.GetString("String_DateSpan");
             nudYear.Value = _intSelectedYear;
@@ -54,7 +54,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
 
             _strCachedDateSpanFormat = LanguageManager.GetString("String_DateSpan");
             nudYear.Value = objWeek.Year;

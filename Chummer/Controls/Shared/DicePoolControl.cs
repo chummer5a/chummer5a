@@ -24,7 +24,7 @@ using System.Windows.Forms;
 
 namespace Chummer.UI.Shared.Components
 {
-    public partial class DicePoolControl : UserControl, IControlWithToolTip
+    public partial class DicePoolControl : UserControl
     {
         private readonly AsyncFriendlyReaderWriterLock _objDicePoolLockObject = new AsyncFriendlyReaderWriterLock();
         private decimal _decDicePool;
@@ -36,7 +36,6 @@ namespace Chummer.UI.Shared.Components
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
             CanEverBeRolled = CanEverBeRolled || GlobalSettings.AllowSkillDiceRolling;
             cmdRoll.Visible = CanBeRolled && CanEverBeRolled;
         }
@@ -183,12 +182,6 @@ namespace Chummer.UI.Shared.Components
 
         public Task SetToolTipTextAsync(string value, CancellationToken token = default) =>
             lblDicePool.SetToolTipTextAsync(value, token);
-
-        public void UpdateToolTipParent()
-        {
-            lblDicePool.UpdateToolTipParent();
-            cmdRoll.UpdateToolTipParent();
-        }
 
         public ToolTip ToolTipObject => lblDicePool.ToolTipObject;
     }

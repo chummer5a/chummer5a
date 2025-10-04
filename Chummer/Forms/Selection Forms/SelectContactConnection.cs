@@ -41,7 +41,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
         }
 
         private void cboMembership_SelectedIndexChanged(object sender, EventArgs e)
