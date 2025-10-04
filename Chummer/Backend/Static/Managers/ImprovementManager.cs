@@ -6381,7 +6381,7 @@ namespace Chummer
         /// <param name="cost">The base cost to apply improvements to</param>
         /// <param name="condition">Optional condition function to filter improvements</param>
         /// <returns>The cost with improvements applied</returns>
-        public static int ApplyImprovementsWithTypes(Character character, Improvement.ImprovementType additiveType, 
+        public static int ApplyCostImprovements(Character character, Improvement.ImprovementType additiveType, 
             Improvement.ImprovementType multiplierType, string improvementName, int cost, Func<Improvement, bool> condition = null)
         {
             decimal decExtra = 0;
@@ -6421,7 +6421,7 @@ namespace Chummer
         /// <param name="condition">Optional condition function to filter improvements</param>
         /// <param name="token">Cancellation token</param>
         /// <returns>The cost with improvements applied</returns>
-        public static async Task<int> ApplyImprovementsWithTypesAsync(Character character, Improvement.ImprovementType additiveType, 
+        public static async Task<int> ApplyCostImprovementsAsync(Character character, Improvement.ImprovementType additiveType, 
             Improvement.ImprovementType multiplierType, string improvementName, int cost, Func<Improvement, bool> condition = null, CancellationToken token = default)
         {
             decimal decExtra = 0;
@@ -6638,6 +6638,88 @@ namespace Chummer
                 return (cost * decMultiplier + decExtra).StandardRound();
             else
                 return cost + decExtra.StandardRound();
+        }
+
+        /// <summary>
+        /// Find the maximum value from improvements of a specific type
+        /// </summary>
+        /// <param name="character">The character to get improvements from</param>
+        /// <param name="improvementType">The type of improvement to find maximum value for</param>
+        /// <param name="improvementName">The name/key for the improvement</param>
+        /// <param name="condition">Optional condition to filter improvements</param>
+        /// <returns>The maximum value found, or int.MinValue if no improvements found</returns>
+        public static int GetMaximumImprovementValue(Character character, Improvement.ImprovementType improvementType, 
+            string improvementName, Func<Improvement, bool> condition = null)
+        {
+            int intMaxValue = int.MinValue;
+            foreach (Improvement objImprovement in GetCachedImprovementListForValueOf(character, improvementType, improvementName, true))
+            {
+                if (condition == null || condition(objImprovement))
+                    intMaxValue = Math.Max(intMaxValue, objImprovement.Value.StandardRound());
+            }
+            return intMaxValue;
+        }
+
+        /// <summary>
+        /// Find the maximum value from improvements of a specific type (async version)
+        /// </summary>
+        /// <param name="character">The character to get improvements from</param>
+        /// <param name="improvementType">The type of improvement to find maximum value for</param>
+        /// <param name="improvementName">The name/key for the improvement</param>
+        /// <param name="condition">Optional condition to filter improvements</param>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>The maximum value found, or int.MinValue if no improvements found</returns>
+        public static async Task<int> GetMaximumImprovementValueAsync(Character character, Improvement.ImprovementType improvementType, 
+            string improvementName, Func<Improvement, bool> condition = null, CancellationToken token = default)
+        {
+            int intMaxValue = int.MinValue;
+            foreach (Improvement objImprovement in await GetCachedImprovementListForValueOfAsync(character, improvementType, improvementName, true, token).ConfigureAwait(false))
+            {
+                if (condition == null || condition(objImprovement))
+                    intMaxValue = Math.Max(intMaxValue, objImprovement.Value.StandardRound());
+            }
+            return intMaxValue;
+        }
+
+        /// <summary>
+        /// Find the minimum value from improvements of a specific type
+        /// </summary>
+        /// <param name="character">The character to get improvements from</param>
+        /// <param name="improvementType">The type of improvement to find minimum value for</param>
+        /// <param name="improvementName">The name/key for the improvement</param>
+        /// <param name="condition">Optional condition to filter improvements</param>
+        /// <returns>The minimum value found, or int.MaxValue if no improvements found</returns>
+        public static int GetMinimumImprovementValue(Character character, Improvement.ImprovementType improvementType, 
+            string improvementName, Func<Improvement, bool> condition = null)
+        {
+            int intMinValue = int.MaxValue;
+            foreach (Improvement objImprovement in GetCachedImprovementListForValueOf(character, improvementType, improvementName, true))
+            {
+                if (condition == null || condition(objImprovement))
+                    intMinValue = Math.Min(intMinValue, objImprovement.Value.StandardRound());
+            }
+            return intMinValue;
+        }
+
+        /// <summary>
+        /// Find the minimum value from improvements of a specific type (async version)
+        /// </summary>
+        /// <param name="character">The character to get improvements from</param>
+        /// <param name="improvementType">The type of improvement to find minimum value for</param>
+        /// <param name="improvementName">The name/key for the improvement</param>
+        /// <param name="condition">Optional condition to filter improvements</param>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>The minimum value found, or int.MaxValue if no improvements found</returns>
+        public static async Task<int> GetMinimumImprovementValueAsync(Character character, Improvement.ImprovementType improvementType, 
+            string improvementName, Func<Improvement, bool> condition = null, CancellationToken token = default)
+        {
+            int intMinValue = int.MaxValue;
+            foreach (Improvement objImprovement in await GetCachedImprovementListForValueOfAsync(character, improvementType, improvementName, true, token).ConfigureAwait(false))
+            {
+                if (condition == null || condition(objImprovement))
+                    intMinValue = Math.Min(intMinValue, objImprovement.Value.StandardRound());
+            }
+            return intMinValue;
         }
 
         #endregion Generic Improvement Application Methods

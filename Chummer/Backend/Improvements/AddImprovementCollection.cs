@@ -6528,6 +6528,16 @@ namespace Chummer
                 0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool() ?? string.Empty);
         }
 
+        public void activeskillkarmacostmin(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ActiveSkillKarmaCostMinimum, _strUnique,
+                ImprovementManager.ValueToDec(_objCharacter, bonusNode["val"]?.InnerTextViaPool(), _intRating),
+                1, ImprovementManager.ValueToInt(_objCharacter, bonusNode["min"]?.InnerTextViaPool(), _intRating), ImprovementManager.ValueToInt(_objCharacter, bonusNode["max"]?.InnerTextViaPool(), _intRating),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool() ?? string.Empty);
+        }
+
         public void skillgroupkarmacostmultiplier(XmlNode bonusNode)
         {
             if (bonusNode == null)

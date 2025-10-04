@@ -290,6 +290,7 @@ namespace Chummer
             StreetCred,
             AttributeKarmaCostMultiplier,
             AttributeKarmaCost,
+            ActiveSkillKarmaCostMinimum,
             ActiveSkillKarmaCostMultiplier,
             SkillGroupKarmaCostMultiplier,
             KnowledgeSkillKarmaCostMultiplier,

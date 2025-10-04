@@ -3408,7 +3408,7 @@ namespace Chummer.Backend.Skills
                     }
 
                     // Apply skill group improvements
-                    intReturn = ImprovementManager.ApplyImprovementsWithTypes(_objCharacter, 
+                    intReturn = ImprovementManager.ApplyCostImprovements(_objCharacter, 
                         Improvement.ImprovementType.SkillGroupKarmaCost, 
                         Improvement.ImprovementType.SkillGroupKarmaCostMultiplier, 
                         Name, intReturn,
@@ -3418,7 +3418,7 @@ namespace Chummer.Backend.Skills
                     // Apply category improvements
                     foreach (string strCategory in GetRelevantSkillCategories)
                     {
-                        intReturn = ImprovementManager.ApplyImprovementsWithTypes(_objCharacter, 
+                        intReturn = ImprovementManager.ApplyCostImprovements(_objCharacter, 
                             Improvement.ImprovementType.SkillGroupCategoryKarmaCost, 
                             Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier, 
                             strCategory, intReturn,
@@ -3467,7 +3467,7 @@ namespace Chummer.Backend.Skills
                 }
 
                 // Apply skill group improvements
-                intReturn = await ImprovementManager.ApplyImprovementsWithTypesAsync(_objCharacter, 
+                intReturn = await ImprovementManager.ApplyCostImprovementsAsync(_objCharacter, 
                     Improvement.ImprovementType.SkillGroupKarmaCost, 
                     Improvement.ImprovementType.SkillGroupKarmaCostMultiplier, 
                     Name, intReturn,
@@ -3477,7 +3477,7 @@ namespace Chummer.Backend.Skills
                 // Apply category improvements
                 foreach (string strCategory in GetRelevantSkillCategories)
                 {
-                    intReturn = await ImprovementManager.ApplyImprovementsWithTypesAsync(_objCharacter, 
+                    intReturn = await ImprovementManager.ApplyCostImprovementsAsync(_objCharacter, 
                         Improvement.ImprovementType.SkillGroupCategoryKarmaCost, 
                         Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier, 
                         strCategory, intReturn,

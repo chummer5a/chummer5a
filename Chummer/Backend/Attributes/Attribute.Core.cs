@@ -3031,7 +3031,7 @@ namespace Chummer.Backend.Attributes
                         !s_SetAlternateMetatypeAttributeKarmaExceptions.Contains(Abbrev))
                         intUpgradeCost -= (MetatypeMinimum - 1) * intOptionsCost;
 
-                    intUpgradeCost = ImprovementManager.ApplyImprovementsWithTypes(_objCharacter,
+                    intUpgradeCost = ImprovementManager.ApplyCostImprovements(_objCharacter,
                         Improvement.ImprovementType.AttributeKarmaCost,
                         Improvement.ImprovementType.AttributeKarmaCostMultiplier,
                         Abbrev, intUpgradeCost,
@@ -3081,7 +3081,7 @@ namespace Chummer.Backend.Attributes
                     intUpgradeCost -= (await GetMetatypeMinimumAsync(token).ConfigureAwait(false) - 1) *
                                       intOptionsCost;
 
-                intUpgradeCost = await ImprovementManager.ApplyImprovementsWithTypesAsync(_objCharacter,
+                intUpgradeCost = await ImprovementManager.ApplyCostImprovementsAsync(_objCharacter,
                     Improvement.ImprovementType.AttributeKarmaCost,
                     Improvement.ImprovementType.AttributeKarmaCostMultiplier,
                     Abbrev, intUpgradeCost,
