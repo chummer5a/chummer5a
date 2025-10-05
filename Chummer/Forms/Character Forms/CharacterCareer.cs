@@ -757,6 +757,17 @@ namespace Chummer
                                                 GenericToken).ConfigureAwait(false);
                                         }
 
+                                        decimal decDicePool = await objTradition.GetDrainValueAsync(GenericToken).ConfigureAwait(false);
+                                        switch (await objTradition.GetTypeAsync(GenericToken).ConfigureAwait(false))
+                                        {
+                                            case TraditionType.MAG:
+                                                await dpcDrainAttributes.SetDicePoolAsync(decDicePool, GenericToken).ConfigureAwait(false);
+                                                break;
+                                            case TraditionType.RES:
+                                                await dpcFadingAttributes.SetDicePoolAsync(decDicePool, GenericToken).ConfigureAwait(false);
+                                                break;
+                                        }
+
                                         await lblDrainAttributes.RegisterOneWayAsyncDataBindingAsync(
                                                 (x, y) => x.Text = y,
                                                 objTradition,

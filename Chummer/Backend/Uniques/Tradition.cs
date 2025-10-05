@@ -1594,13 +1594,14 @@ namespace Chummer.Backend.Uniques
                 {
                     if (Type == TraditionType.None)
                         return string.Empty;
+                    string strDrainExpression = DrainExpression;
                     string strSpace = LanguageManager.GetString("String_Space");
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
                     {
-                        sbdToolTip.Append(DrainExpression);
+                        sbdToolTip.Append(strDrainExpression);
                         // Update the Fading CharacterAttribute Value.
-                        _objCharacter.ProcessAttributesInXPathForTooltip(sbdToolTip, DrainExpression);
+                        _objCharacter.ProcessAttributesInXPathForTooltip(sbdToolTip, strDrainExpression);
 
                         List<Improvement> lstUsedImprovements
                             = ImprovementManager.GetCachedImprovementListForValueOf(
@@ -1631,15 +1632,16 @@ namespace Chummer.Backend.Uniques
                 TraditionType eType = await GetTypeAsync(token).ConfigureAwait(false);
                 if (eType == TraditionType.None)
                     return string.Empty;
+                string strDrainExpression = await GetDrainExpressionAsync(token).ConfigureAwait(false);
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                     .ConfigureAwait(false);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdToolTip))
                 {
-                    sbdToolTip.Append(DrainExpression);
+                    sbdToolTip.Append(strDrainExpression);
                     // Update the Fading CharacterAttribute Value.
                     await _objCharacter
-                        .ProcessAttributesInXPathForTooltipAsync(sbdToolTip, DrainExpression, token: token)
+                        .ProcessAttributesInXPathForTooltipAsync(sbdToolTip, strDrainExpression, token: token)
                         .ConfigureAwait(false);
 
                     List<Improvement> lstUsedImprovements
