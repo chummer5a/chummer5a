@@ -70,6 +70,8 @@ namespace Chummer
             this.txtNuyenExpression = new System.Windows.Forms.TextBox();
             this.lblContactPoints = new Chummer.LabelWithToolTip();
             this.txtContactPoints = new System.Windows.Forms.TextBox();
+            this.lblGameplayOptionName = new Chummer.LabelWithToolTip();
+            this.txtGameplayOptionName = new System.Windows.Forms.TextBox();
             this.lblMaxNumberMaxAttributes = new Chummer.LabelWithToolTip();
             this.nudMaxNumberMaxAttributes = new Chummer.NumericUpDownEx();
             this.lblMaxSkillRatingCreate = new Chummer.LabelWithToolTip();
@@ -702,6 +704,8 @@ namespace Chummer
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.txtNuyenExpression, 1, 5);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblContactPoints, 0, 7);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.txtContactPoints, 1, 7);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblGameplayOptionName, 0, 4);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.txtGameplayOptionName, 1, 4);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblMaxNumberMaxAttributes, 0, 6);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudMaxNumberMaxAttributes, 1, 6);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblMaxSkillRatingCreate, 2, 6);
@@ -710,8 +714,8 @@ namespace Chummer
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudMaxKnowledgeSkillRatingCreate, 5, 6);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudKarmaCarryover, 5, 4);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblKarmaCarryover, 4, 4);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblNuyenCarryover, 0, 4);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudNuyenCarryover, 1, 4);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblNuyenCarryover, 0, 9);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudNuyenCarryover, 1, 9);
             this.tlpBasicOptionsCreateSettings.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpBasicOptionsCreateSettings.Location = new System.Drawing.Point(3, 16);
             this.tlpBasicOptionsCreateSettings.Name = "tlpBasicOptionsCreateSettings";
@@ -1069,6 +1073,30 @@ namespace Chummer
             this.txtContactPoints.TabIndex = 2;
             this.txtContactPoints.Text = "{CHAUnaug} * 3";
             this.txtContactPoints.TextChanged += new System.EventHandler(this.txtContactPoints_TextChanged);
+            // 
+            // lblGameplayOptionName
+            // 
+            this.lblGameplayOptionName.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblGameplayOptionName.AutoSize = true;
+            this.lblGameplayOptionName.Location = new System.Drawing.Point(3, 123);
+            this.lblGameplayOptionName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblGameplayOptionName.Name = "lblGameplayOptionName";
+            this.lblGameplayOptionName.Size = new System.Drawing.Size(161, 13);
+            this.lblGameplayOptionName.TabIndex = 0;
+            this.lblGameplayOptionName.Tag = "Label_GameplayOptionName";
+            this.lblGameplayOptionName.Text = "Gameplay Option Name:";
+            this.lblGameplayOptionName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblGameplayOptionName.ToolTipText = LanguageManager.GetString("Tip_GameplayOptionName");
+            // 
+            // txtGameplayOptionName
+            // 
+            this.txtGameplayOptionName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpBasicOptionsCreateSettings.SetColumnSpan(this.txtGameplayOptionName, 3);
+            this.txtGameplayOptionName.Location = new System.Drawing.Point(170, 120);
+            this.txtGameplayOptionName.Name = "txtGameplayOptionName";
+            this.txtGameplayOptionName.Size = new System.Drawing.Size(180, 20);
+            this.txtGameplayOptionName.TabIndex = 2;
+            this.txtGameplayOptionName.TextChanged += new System.EventHandler(this.txtGameplayOptionName_TextChanged);
             // 
             // lblMaxNumberMaxAttributes
             // 
@@ -6544,6 +6572,8 @@ namespace Chummer
         private LabelWithToolTip lblKnowledgePoints;
         private System.Windows.Forms.TextBox txtContactPoints;
         private System.Windows.Forms.TextBox txtKnowledgePoints;
+        private LabelWithToolTip lblGameplayOptionName;
+        private System.Windows.Forms.TextBox txtGameplayOptionName;
         private System.Windows.Forms.FlowLayoutPanel flpDroneArmorMultiplier;
         private System.Windows.Forms.GroupBox gpbBasicOptionsCreateSettings;
         private System.Windows.Forms.TableLayoutPanel tlpBasicOptionsCreateSettings;

@@ -123,6 +123,7 @@ Application Changes:
   * Metagenic Only (metagenic = 'True')
   * Positive/Negative Qualities (category filtering)
 - Added support for using the hide element in skills.xml for the amend system
+- Added support for using <gameplayoption> as a requirement, based on the Character Settings used. This allows for items, qualities, powers, etc. to be made available or unavailable based on the selected gameplay option string. As an example, this restores the ability to make the Insect Free Spirit quality only available when the Prime Runner gameplay option is selected.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://jackpoint.live/index.php?topic=31750.msg544923#msg544923.
@@ -418,6 +419,8 @@ Changed/New Strings:
 - Label_Exact
 - Label_Minimum
 - Label_Maximum
+- Label_GameplayOptionName
+- Tip_GameplayOptionName
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage

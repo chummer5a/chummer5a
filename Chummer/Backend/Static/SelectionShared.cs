@@ -1751,7 +1751,15 @@ namespace Chummer
                                           "String_GameplayOption",
                                           token: token).ConfigureAwait(false))
                                   + strSpace + "=" + strSpace + strNodeInnerText;
-                    return new ValueTuple<bool, string>(objCharacter.SettingsKey == strNodeInnerText, strName);
+                    // Check gameplay option name
+                    CharacterSettings objSettings = blnSync
+                        ? objCharacter.Settings
+                        : await objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
+                    string strGameplayOptionName = blnSync
+                        ? objSettings.GameplayOptionName
+                        : await objSettings.GetGameplayOptionNameAsync(token).ConfigureAwait(false);
+                    bool blnResult = strGameplayOptionName == strNodeInnerText;
+                    return new ValueTuple<bool, string>(blnResult, strName);
                 }
                 case "gear":
                 {

@@ -92,6 +92,7 @@ namespace Chummer
         private bool _blnMaximumArmorModifications;
         private bool _blnMetatypeCostsKarma = true;
         private bool _blnMoreLethalGameplay;
+        private string _strGameplayOptionName = string.Empty;
         private bool _blnMultiplyForbiddenCost;
         private bool _blnMultiplyRestrictedCost;
         private bool _blnNoSingleArmorEncumbrance;
@@ -1714,6 +1715,8 @@ namespace Chummer
                         blnClearSourceGuid ? Utils.GuidEmptyString : _guiSourceId.ToString("D", GlobalSettings.InvariantCultureInfo));
                     // <name />
                     objWriter.WriteElementString("name", _strName);
+                    // <gameplayoptionname />
+                    objWriter.WriteElementString("gameplayoptionname", _strGameplayOptionName);
 
                     // <licenserestricted />
                     objWriter.WriteElementString("licenserestricted",
@@ -2469,6 +2472,8 @@ namespace Chummer
                         blnClearSourceGuid ? Utils.GuidEmptyString : _guiSourceId.ToString("D", GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     // <name />
                     await objWriter.WriteElementStringAsync("name", _strName, token: token).ConfigureAwait(false);
+                    // <gameplayoptionname />
+                    await objWriter.WriteElementStringAsync("gameplayoptionname", _strGameplayOptionName, token: token).ConfigureAwait(false);
 
                     // <licenserestricted />
                     await objWriter.WriteElementStringAsync("licenserestricted",
@@ -3414,6 +3419,8 @@ namespace Chummer
                     _guiSourceId = guidTemp;
                 // Setting name.
                 objXmlNode.TryGetStringFieldQuickly("name", ref _strName);
+                // Gameplay option name (user-editable field).
+                objXmlNode.TryGetStringFieldQuickly("gameplayoptionname", ref _strGameplayOptionName);
                 // License Restricted items.
                 objXmlNode.TryGetBoolFieldQuickly("licenserestricted", ref _blnLicenseRestrictedItems);
                 // More Lethal Gameplay.
@@ -4184,6 +4191,8 @@ namespace Chummer
                     _guiSourceId = guidTemp;
                 // Setting name.
                 objXmlNode.TryGetStringFieldQuickly("name", ref _strName);
+                // Gameplay option name (user-editable field).
+                objXmlNode.TryGetStringFieldQuickly("gameplayoptionname", ref _strGameplayOptionName);
                 // License Restricted items.
                 objXmlNode.TryGetBoolFieldQuickly("licenserestricted", ref _blnLicenseRestrictedItems);
                 // More Lethal Gameplay.
@@ -6874,6 +6883,31 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The name of the gameplay option (e.g., "Prime Runner", "Street Scum", "High Life").
+        /// </summary>
+        public string GameplayOptionName
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _strGameplayOptionName;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (_strGameplayOptionName == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strGameplayOptionName = value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Whether the More Lethal Gameplay optional rule is enabled.
         /// </summary>
         public async Task<bool> GetMoreLethalGameplayAsync(CancellationToken token = default)
@@ -6921,6 +6955,66 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     _blnMoreLethalGameplay = value;
                     await OnPropertyChangedAsync(nameof(MoreLethalGameplay), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// The name of the gameplay option (e.g., "Prime Runner", "Street Scum", "High Life").
+        /// </summary>
+        public async Task<string> GetGameplayOptionNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strGameplayOptionName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// The name of the gameplay option (e.g., "Prime Runner", "Street Scum", "High Life").
+        /// </summary>
+        public async Task SetGameplayOptionNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strGameplayOptionName == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            token.ThrowIfCancellationRequested();
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strGameplayOptionName == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _strGameplayOptionName = value;
+                    await OnPropertyChangedAsync(nameof(GameplayOptionName), token).ConfigureAwait(false);
                 }
                 finally
                 {

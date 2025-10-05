@@ -1000,6 +1000,13 @@ namespace Chummer
             await txtContactPoints.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
         }
 
+        private void txtGameplayOptionName_TextChanged(object sender, EventArgs e)
+        {
+            if (_intLoading > 0)
+                return;
+            _objCharacterSettings.GameplayOptionName = txtGameplayOptionName.Text;
+        }
+
         private async void txtKnowledgePoints_TextChanged(object sender, EventArgs e)
         {
             Color objColor
@@ -1944,6 +1951,16 @@ namespace Chummer
                 (x, y) => x.TextChanged += y,
                 x => x.GetContactPointsExpressionAsync(token),
                 (x, y) => x.SetContactPointsExpressionAsync(y, token),
+                1000,
+                token,
+                token).ConfigureAwait(false);
+            await txtGameplayOptionName.RegisterAsyncDataBindingWithDelayAsync(
+                x => x.Text,
+                (x, y) => x.Text = y, _objCharacterSettings,
+                nameof(CharacterSettings.GameplayOptionName),
+                (x, y) => x.TextChanged += y,
+                x => x.GetGameplayOptionNameAsync(token),
+                (x, y) => x.SetGameplayOptionNameAsync(y, token),
                 1000,
                 token,
                 token).ConfigureAwait(false);

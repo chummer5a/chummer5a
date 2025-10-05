@@ -10977,6 +10977,14 @@
       <key>String_GameplayOption</key>
       <text>Missing Gameplay Option</text>
     </string>
+    <string>
+      <key>Label_GameplayOptionName</key>
+      <text>Gameplay Option Name:</text>
+    </string>
+    <string>
+      <key>Tip_GameplayOptionName</key>
+      <text>Enter the name of the gameplay option (e.g., 'Prime Runner', 'Street Scum', 'High Life') that this character setting represents. This is used by qualities and other elements as part of the Requirements system.</text>
+    </string>
     <!-- XML Editor Strings -->
     <string>
       <key>Title_XmlAmendmentEditor</key>
