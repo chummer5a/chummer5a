@@ -893,26 +893,7 @@ namespace Chummer
             bool blnForce = strDv.StartsWith('F');
             strDv = blnForce ? strDv.TrimStartOnce("F", true) : strDv;
             //Navigator can't do math on a single value, so inject a mathable value.
-            if (string.IsNullOrEmpty(strDv))
-            {
-                strDv = "0";
-            }
-            else
-            {
-                int intPos = strDv.IndexOf('-');
-                if (intPos != -1)
-                {
-                    strDv = strDv.Substring(intPos);
-                }
-                else
-                {
-                    intPos = strDv.IndexOf('+');
-                    if (intPos != -1)
-                    {
-                        strDv = strDv.Substring(intPos);
-                    }
-                }
-            }
+            strDv = string.IsNullOrEmpty(strDv) ? "0" : strDv.TrimStart('+');
 
             string strToAppend = string.Empty;
             int intDrainDv = 0;
