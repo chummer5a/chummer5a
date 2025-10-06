@@ -72,21 +72,6 @@ For each attribute (Body, Agility, Reaction, Strength, Charisma, Intuition, Logi
 - **source**: Source book abbreviation (e.g., "SR5", "CF", "RF")
 - **page**: Page number in the source book
 
-## Optional Fields
-
-### Physical Characteristics
-- **height**: Average height range
-- **weight**: Average weight range
-- **lifespan**: Average lifespan
-
-### Special Abilities
-- **special**: Special abilities or traits
-- **notes**: Additional notes or restrictions
-
-### Availability
-- **avail**: Availability rating
-- **cost**: Cost in nuyen (if applicable)
-
 ## Example
 
 Here's a valid example of a custom metatype:
@@ -143,17 +128,12 @@ Here's a valid example of a custom metatype:
 - Never reuse existing GUIDs
 
 ### 3. Add to XML File
-- Open `Chummer/data/metatypes.xml`
+- Create a custom data file, ie `custom_metatypes.xml`
 - Add your new metatype entry
 - Follow the existing structure and formatting
 - Validate the XML syntax
 
-### 4. Update Project File
-- Open `Chummer.sln` in Visual Studio
-- Ensure the metatypes.xml file is included
-- Set "Copy to Output Directory" to "Copy if newer"
-
-### 5. Test Your Metatype
+### 4. Test Your Metatype
 - Build and run Chummer5a
 - Create a new character
 - Verify your metatype appears in the list
@@ -209,30 +189,24 @@ Here's a valid example of a custom metatype:
 ## Advanced Features
 
 ### Special Abilities
-You can add special abilities to metatypes:
+You can add special abilities to metatypes using the bonus system:
 
 ```xml
-<special>Natural armor +1, Low-light vision</special>
-```
-
-### Restrictions
-You can add restrictions or requirements:
-
-```xml
-<notes>Requires GM approval, not suitable for all campaigns</notes>
+<bonus>
+ <armor>2</armor>
+</bonus>
 ```
 
 ### Source Integration
-Ensure proper source attribution:
+Ensure proper source attribution. All content in Chummer5a requires a source to be defined. If you don't want to create a custom book, it is recommended to use juse the SR5 source:
 
 ```xml
-<source>Custom Campaign</source>
-<page>Homebrew Rules</page>
+<source>SR5</source>
+<page>0</page>
 ```
 
 ## Resources
 
 - [GUID Generator](https://guidgenerator.com/)
 - [XML Schema Documentation](https://www.w3.org/XML/Schema)
-- [Chummer5a Data Structure Guide](../wiki/README.md)
 - [Shadowrun 5th Edition Core Rulebook](https://www.shadowruntabletop.com/)
