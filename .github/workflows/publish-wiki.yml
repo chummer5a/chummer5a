@@ -1,0 +1,31 @@
+name: Publish Wiki Documentation
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'Chummer/docs/wiki/**'
+      - '.github/workflows/publish-wiki.yml'
+  workflow_dispatch: # Allow manual triggering
+
+concurrency:
+  group: publish-wiki
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  publish-wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Publish to GitHub Wiki
+        uses: Andrew-Chen-Wang/github-wiki-action@v5
+        with:
+          path: Chummer/docs/wiki
+          commit-message: "Update wiki from Chummer/docs/wiki - ${{ github.sha }}"
+          preprocess: true
+          disable-empty-commits: true
