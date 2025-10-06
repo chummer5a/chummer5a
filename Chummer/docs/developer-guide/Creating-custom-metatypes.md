@@ -20,15 +20,35 @@ Here's the basic structure for a metatype entry:
 <metatype>
   <id>unique-guid-here</id>
   <name>Metatype Name</name>
-  <body>3</body>
-  <agility>3</agility>
-  <reaction>3</reaction>
-  <strength>3</strength>
-  <willpower>3</willpower>
-  <logic>3</logic>
-  <intuition>3</intuition>
-  <charisma>3</charisma>
-  <edge>3</edge>
+  <karma>0</karma>
+  <category>Metahuman</category>
+  <bodmin>1</bodmin>
+  <bodmax>6</bodmax>
+  <bodaug>10</bodaug>
+  <agimin>1</agimin>
+  <agimax>6</agimax>
+  <agiaug>10</agiaug>
+  <reamin>1</reamin>
+  <reamax>6</reamax>
+  <reaaug>10</reaaug>
+  <strmin>1</strmin>
+  <strmax>6</strmax>
+  <straug>10</straug>
+  <chamin>1</chamin>
+  <chamax>6</chamax>
+  <chaaug>10</chaaug>
+  <intmin>1</intmin>
+  <intmax>6</intmax>
+  <intaug>10</intaug>
+  <logmin>1</logmin>
+  <logmax>6</logmax>
+  <logaug>10</logaug>
+  <wilmin>1</wilmin>
+  <wilmax>6</wilmax>
+  <wilaug>10</wilaug>
+  <edgmin>1</edgmin>
+  <edgmax>6</edgmax>
+  <edgaug>10</edgaug>
   <source>SR5</source>
   <page>123</page>
 </metatype>
@@ -39,15 +59,14 @@ Here's the basic structure for a metatype entry:
 ### Core Attributes
 - **id**: Unique GUID for the metatype
 - **name**: Display name of the metatype
-- **body**: Base Body attribute
-- **agility**: Base Agility attribute
-- **reaction**: Base Reaction attribute
-- **strength**: Base Strength attribute
-- **willpower**: Base Willpower attribute
-- **logic**: Base Logic attribute
-- **intuition**: Base Intuition attribute
-- **charisma**: Base Charisma attribute
-- **edge**: Base Edge attribute
+- **karma**: Karma cost for the metatype (0 for free)
+- **category**: Category (Metahuman, Metavariant, Metasapient, Shapeshifter)
+
+### Attribute Limits
+For each attribute (Body, Agility, Reaction, Strength, Charisma, Intuition, Logic, Willpower, Edge):
+- **[attr]min**: Minimum attribute value
+- **[attr]max**: Maximum attribute value  
+- **[attr]aug**: Maximum augmented attribute value
 
 ### Source Information
 - **source**: Source book abbreviation (e.g., "SR5", "CF", "RF")
@@ -70,23 +89,43 @@ Here's the basic structure for a metatype entry:
 
 ## Example
 
+Here's a valid example of a custom metatype:
+
 ```xml
 <metatype>
   <id>12345678-1234-1234-1234-123456789abc</id>
   <name>Custom Metatype</name>
-  <body>4</body>
-  <agility>3</agility>
-  <reaction>3</reaction>
-  <strength>4</strength>
-  <willpower>3</willpower>
-  <logic>2</logic>
-  <intuition>3</intuition>
-  <charisma>2</charisma>
-  <edge>3</edge>
+  <karma>0</karma>
+  <category>Metahuman</category>
+  <bodmin>2</bodmin>
+  <bodmax>7</bodmax>
+  <bodaug>10</bodaug>
+  <agimin>1</agimin>
+  <agimax>6</agimax>
+  <agiaug>10</agiaug>
+  <reamin>1</reamin>
+  <reamax>6</reamax>
+  <reaaug>10</reaaug>
+  <strmin>2</strmin>
+  <strmax>7</strmax>
+  <straug>10</straug>
+  <chamin>1</chamin>
+  <chamax>5</chamax>
+  <chaaug>10</chaaug>
+  <intmin>1</intmin>
+  <intmax>6</intmax>
+  <intaug>10</intaug>
+  <logmin>1</logmin>
+  <logmax>6</logmax>
+  <logaug>10</logaug>
+  <wilmin>1</wilmin>
+  <wilmax>6</wilmax>
+  <wilaug>10</wilaug>
+  <edgmin>1</edgmin>
+  <edgmax>6</edgmax>
+  <edgaug>10</edgaug>
   <source>Custom</source>
   <page>1</page>
-  <special>Natural armor +1</special>
-  <notes>This is a custom metatype for homebrew campaigns</notes>
 </metatype>
 ```
 
