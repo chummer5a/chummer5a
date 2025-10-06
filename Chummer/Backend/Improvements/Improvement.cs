@@ -247,6 +247,7 @@ namespace Chummer
             RadiationResist,
             SonicResist,
             ToxinContactResist,
+            QualityLevel,
             ToxinIngestionResist,
             ToxinInhalationResist,
             ToxinInjectionResist,
@@ -3637,6 +3638,12 @@ namespace Chummer
                         nameof(Character.SustainingPenalty));
                     break;
                 }
+                case ImprovementType.QualityLevel:
+                {
+                    yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                        nameof(Character.QualityLevelsProcessed));
+                    break;
+                }
             }
         }
 
@@ -6347,6 +6354,12 @@ namespace Chummer
                     {
                         lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
                             nameof(Character.SustainingPenalty)));
+                        break;
+                    }
+                case ImprovementType.QualityLevel:
+                    {
+                        lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
+                            nameof(Character.QualityLevelsProcessed)));
                         break;
                     }
             }

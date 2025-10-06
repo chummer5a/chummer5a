@@ -127,34 +127,22 @@ namespace Chummer
 
 #pragma warning disable IDE1006 // Naming Styles
 
-        public static Task qualitylevel(XmlNode bonusNode, CancellationToken token = default)
+public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = default)
         {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
+            token.ThrowIfCancellationRequested();
             if (bonusNode == null)
-                return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
-            /*
-            //List of qualities to work with
-            Guid[] all =
-            {
-                new Guid("9ac85feb-ae1e-4996-8514-3570d411e1d5"), //national
-                new Guid("d9479e5c-d44a-45b9-8fb4-d1e08a9487b2"), //dirty criminal
-                new Guid("318d2edd-833b-48c5-a3e1-343bf03848a5"), //Limited
-                new Guid("e00623e1-54b0-4a91-b234-3c7e141deef4") //Corp
-            };
-            */
+                throw new ArgumentNullException(nameof(bonusNode));
 
-            //Add to list
-            //retrieve list
-            //sort list
-            //find active instance
-            //if active = list[top]
-            //    return
-            //else
-            //    remove active
-            //  add list[top]
-            //    set list[top] active
-            return Task.CompletedTask;
+            // Get the level value from the bonus node
+            int intLevel = await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
+
+            // Get the quality group from the group attribute (e.g., "SINner", "TrustFund")
+            string strGroup = bonusNode.Attributes?["group"]?.InnerTextViaPool(token) ?? string.Empty;
+
+            // Create an improvement that tracks this quality level
+            await CreateImprovementAsync(strGroup, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.QualityLevel, _strUnique,
+                intLevel, 1, 0, 0, 0, 0, token: token).ConfigureAwait(false);
         }
 
         // Dummy Method for SelectText
@@ -2417,6 +2405,21 @@ namespace Chummer
             if (!string.IsNullOrWhiteSpace(strPush))
             {
                 (await _objCharacter.GetPushTextAsync(token).ConfigureAwait(false)).Push(strPush);
+            }
+        }
+
+        public async Task pushtextforqualitygroup(XmlNode bonusNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            
+            string strPush = bonusNode.InnerTextViaPool(token);
+            string strQualityGroup = bonusNode.Attributes?["group"]?.InnerTextViaPool(token) ?? string.Empty;
+            
+            if (!string.IsNullOrWhiteSpace(strPush) && !string.IsNullOrEmpty(strQualityGroup))
+            {
+                _objCharacter.PushTextForQualityGroup(strQualityGroup, strPush);
             }
         }
 

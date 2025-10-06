@@ -671,7 +671,7 @@ namespace Chummer
                 case "REPLACESKILLSPELL":
                     return objImprovementAdder.replaceskillspell;
                 case "QUALITYLEVEL":
-                    return AddImprovementCollection.qualitylevel;
+                    return objImprovementAdder.qualitylevel;
                 case "SELECTTEXT":
                     return AddImprovementCollection.selecttext;
                 // No method matches, return a null pointer
@@ -1320,7 +1320,7 @@ namespace Chummer
                 case "REPLACESKILLSPELL":
                     return objImprovementAsyncAdder.replaceskillspell;
                 case "QUALITYLEVEL":
-                    return AddImprovementAsyncCollection.qualitylevel;
+                    return objImprovementAsyncAdder.qualitylevel;
                 case "SELECTTEXT":
                     return AddImprovementAsyncCollection.selecttext;
                 // No method matches, return a null pointer

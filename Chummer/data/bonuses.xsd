@@ -155,6 +155,24 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+    <xs:element name="qualitylevel" minOccurs="0" maxOccurs="1">
+      <xs:complexType>
+        <xs:simpleContent>
+          <xs:extension base="xs:integer">
+            <xs:attribute name="group" type="xs:string" use="required" />
+          </xs:extension>
+        </xs:simpleContent>
+      </xs:complexType>
+    </xs:element>
+    <xs:element name="pushtextforqualitygroup" minOccurs="0" maxOccurs="1">
+      <xs:complexType>
+        <xs:simpleContent>
+          <xs:extension base="xs:string">
+            <xs:attribute name="group" type="xs:string" use="required" />
+          </xs:extension>
+        </xs:simpleContent>
+      </xs:complexType>
+    </xs:element>
       <xs:element name="addspell" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:simpleContent>

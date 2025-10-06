@@ -69,9 +69,7 @@
             </knowledgeskilllevel>
             <pushtext>United Canadian American States</pushtext>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -93,9 +91,7 @@
             </skilllevel>
             <pushtext>United Canadian American States</pushtext>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -118,9 +114,7 @@
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>United Canadian American States</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -144,9 +138,7 @@
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>United Canadian American States</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -219,9 +211,7 @@
             </skilllevel>
             <pushtext>Confederation of American States</pushtext>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -244,9 +234,7 @@
             </knowledgeskilllevel>
             <pushtext>Confederation of American States</pushtext>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -380,9 +368,7 @@
         </skilllevel>
         <pushtext>Tír Tairngire</pushtext>
         <freenegativequalities>-5</freenegativequalities>
-        <addqualities>
-          <addquality>SINner (National)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">1</qualitylevel>
       </bonus>
       <story>$real was born in Tir Tairngire, $TIRDESC .</story>
       <source>RF</source>
@@ -437,9 +423,7 @@
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Algonkian-Manitou Council</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -471,9 +455,7 @@
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Athabaskan Council</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -510,9 +492,7 @@
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Pueblo Corporate Council</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -546,9 +526,7 @@
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Salish-Shidhe Council</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -589,9 +567,7 @@
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Sioux Nation</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -622,9 +598,7 @@
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Trans-Polar Aleut Nation</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -685,9 +659,7 @@
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Denver</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -712,9 +684,7 @@
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Las Vegas</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -752,9 +722,7 @@
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Salt Lake City</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
       </versions>
@@ -810,9 +778,7 @@
           <name>[Corporation]</name>
         </knowledgeskilllevel>
         <freenegativequalities>-15</freenegativequalities>
-        <addqualities>
-          <addquality>SINner (Corporate Limited)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
       </bonus>
       <story>$real was  $LUCK  enough to grow up in an Arcology: a corporate fortress city that $ARCOLOGY.</story>
       <source>RF</source>
@@ -921,7 +887,7 @@
         <addqualities>
           <addquality>Paranoia</addquality>
           <addquality>Bad Rep</addquality>
-          <addquality>SINner (Criminal)</addquality>
+          <qualitylevel group="SINner">2</qualitylevel>
         </addqualities>
       </bonus>
       <story>$real spent their formative years with their parents as they ran away from $FLEE.</story>
@@ -1313,7 +1279,7 @@
           <addquality>Black Market Pipeline</addquality>
           <addquality>Paranoia</addquality>
           <addquality>Uneducated</addquality>
-          <addquality>SINner (Criminal)</addquality>
+          <qualitylevel group="SINner">2</qualitylevel>
         </addqualities>
       </bonus>
       <story>$real spent their teenage years shooting at other teenagers just to gain control over a few city blocks. Just to be clear, $real was in a gang, not the Battle of Stalingrad.</story>
@@ -1525,9 +1491,7 @@
           <val>2</val>
         </skilllevel>
         <freenegativequalities>-15</freenegativequalities>
-        <addqualities>
-          <addquality>SINner (Corporate Limited)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
       </bonus>
       <required>
         <oneof>
@@ -1583,9 +1547,7 @@
           <val>2</val>
         </skilllevel>
         <freenegativequalities>-15</freenegativequalities>
-        <addqualities>
-          <addquality>SINner (Corporate Limited)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
       </bonus>
       <required>
         <oneof>
@@ -1641,9 +1603,7 @@
           <val>2</val>
         </skilllevel>
         <freenegativequalities>-15</freenegativequalities>
-        <addqualities>
-          <addquality>SINner (Corporate Limited)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
       </bonus>
       <required>
         <oneof>
@@ -1699,9 +1659,7 @@
           <val>2</val>
         </skilllevel>
         <freenegativequalities>-15</freenegativequalities>
-        <addqualities>
-          <addquality>SINner (Corporate Limited)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
       </bonus>
       <required>
         <oneof>
@@ -3753,9 +3711,7 @@
           <group>Professional</group>
           <val>3</val>
         </knowledgeskilllevel>
-        <addqualities>
-          <addquality>SINner (Corporate Limited)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
       </bonus>
       <versions>
         <version>
@@ -4165,7 +4121,7 @@
           <name>Running</name>
         </skilllevel>
         <addqualities>
-          <addquality>SINner (Criminal)</addquality>
+          <qualitylevel group="SINner">2</qualitylevel>
         </addqualities>
       </bonus>
       <story>$real became a criminal, their main income coming from selling other people's cyber-VCRs, and occasionally mugging people and stealing the money they got by selling cyber-VCRs.</story>
@@ -4224,9 +4180,7 @@
           <group>Professional</group>
           <val>4</val>
         </knowledgeskilllevel>
-        <addqualities>
-          <addquality>SINner (National)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">1</qualitylevel>
       </bonus>
       <story>$real somehow managed to get a job with one of the few government organizations that hasn't yet been privatized. Be it with the FBI, MI5, NSA, TAO, Unit 61398, or some other organization, they get to be paid less than normal people in return for working longer hours and being hated by everyone.</story>
       <source>RF</source>
@@ -4477,7 +4431,7 @@
         </knowledgeskilllevel>
         <addqualities>
           <addquality>Made Man</addquality>
-          <addquality>SINner (Criminal)</addquality>
+          <qualitylevel group="SINner">2</qualitylevel>
         </addqualities>
       </bonus>
       <story>$real decided the best way to wealth and power was also the most brutal: organized crime. Specializing in $GANGDESC , $real became well known in the $GANGTYPE</story>
@@ -4553,7 +4507,7 @@
           <val>4</val>
         </knowledgeskilllevel>
         <addqualities>
-          <addquality>SINner (Criminal)</addquality>
+          <qualitylevel group="SINner">2</qualitylevel>
         </addqualities>
       </bonus>
       <story>$real was one of the most dangerous things in the world: an idealist. Working for a small policlub or interest group, they got arrested multiple times in their quest to make the world a better place.</story>
@@ -5308,7 +5262,7 @@
           <val>2</val>
         </knowledgeskilllevel>
         <addqualities>
-          <addquality>SINner (Criminal)</addquality>
+          <qualitylevel group="SINner">2</qualitylevel>
         </addqualities>
       </bonus>
       <story>$real decided activism is for fools. The only way to get your voice heard is force. Blowing up pubs, executing civilians, assassinations, $real has done it all.</story>
@@ -5617,9 +5571,7 @@
           <group>Professional</group>
           <val>3</val>
         </knowledgeskilllevel>
-        <addqualities>
-          <addquality>SINner (National)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">1</qualitylevel>
       </bonus>
       <versions>
         <version>
@@ -5840,9 +5792,7 @@
           <group>Professional</group>
           <val>4</val>
         </knowledgeskilllevel>
-        <addqualities>
-          <addquality>SINner (National)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">1</qualitylevel>
       </bonus>
       <versions>
         <version>
@@ -6155,9 +6105,7 @@
           <group>Professional</group>
           <val>4</val>
         </knowledgeskilllevel>
-        <addqualities>
-          <addquality>SINner (National)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">1</qualitylevel>
       </bonus>
       <versions>
         <version>
@@ -7169,9 +7117,9 @@
         </knowledgeskilllevel>
         <addqualities>
           <addquality>Natural Athlete</addquality>
-          <addquality>SINner (National)</addquality>
           <addquality>Fame: Local</addquality>
         </addqualities>
+        <qualitylevel group="SINner">1</qualitylevel>
       </bonus>
       <story>$real fought in Urban Brawl, which, despite all appearances, is somehow not a blood sport. It did, however, teach them quite a lot of things about $URBANBRAWL .</story>
       <source>CF</source>
@@ -7257,9 +7205,7 @@
             </skillgrouplevel>
             <pushtext>Caribbean League</pushtext>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -7281,9 +7227,7 @@
             </skilllevel>
             <pushtext>Caribbean League</pushtext>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -7305,9 +7249,7 @@
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Caribbean League</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -7329,9 +7271,7 @@
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Caribbean League</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -8489,9 +8429,7 @@
               <name>Swimming</name>
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -8515,9 +8453,7 @@
               <name>Computer</name>
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -8537,9 +8473,7 @@
               <name>Negotiation</name>
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -9695,9 +9629,7 @@
         </oneof>
       </required>
       <bonus>
-        <addqualities>
-          <addquality>SINner (Corporate Limited)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
         <attributelevel>
           <name>LOG</name>
         </attributelevel>
@@ -9914,8 +9846,8 @@
         </attributelevel>
         <addqualities>
           <addquality>Fame: National</addquality>
-          <addquality>SINner (Corporate Limited)</addquality>
         </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
         <knowledgeskilllevel>
           <name>[Any]</name>
           <group>Language</group>
@@ -10609,7 +10541,7 @@
           <name>INT</name>
         </attributelevel>
         <addqualities>
-          <addquality>SINner (Criminal)</addquality>
+          <qualitylevel group="SINner">2</qualitylevel>
         </addqualities>
         <skilllevel>
           <name>Disguise</name>
@@ -10789,9 +10721,9 @@
         </attributelevel>
         <addqualities>
           <addquality>Common Sense</addquality>
-          <addquality>SINner (Corporate Limited)</addquality>
           <addquality>Perceptive</addquality>
         </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
         <skilllevel>
           <name>Con</name>
         </skilllevel>
@@ -10839,7 +10771,7 @@
         <addqualities>
           <addquality>Born Rich</addquality>
           <addquality>Privileged Family Name</addquality>
-          <addquality>SINner (Corporate Limited)</addquality>
+          <qualitylevel group="SINner">3</qualitylevel>
         </addqualities>
         <skilllevel>
           <name>Etiquette</name>
@@ -10892,7 +10824,7 @@
           <!-- todo: should have 3 levels of records on file -->
           <addquality>Daredevil</addquality>
           <addquality>Records on File</addquality>
-          <addquality>SINner (Corporate Limited)</addquality>
+          <qualitylevel group="SINner">3</qualitylevel>
         </addqualities>
         <skilllevel>
           <name>Intimidation</name>
@@ -11202,7 +11134,7 @@
           <addquality>Records on File</addquality>
           <addquality>Solid Rep</addquality>
           <addquality>Observant</addquality>
-          <addquality>SINner (Corporate Limited)</addquality>
+          <qualitylevel group="SINner">3</qualitylevel>
         </addqualities>
         <skilllevel>
           <name>Automatics</name>
@@ -11567,7 +11499,7 @@
         </attributelevel>
         <addqualities>
           <addquality>Battle Hardened</addquality>
-          <addquality>SINner (Criminal)</addquality>
+          <qualitylevel group="SINner">2</qualitylevel>
           <addquality>Paranoia</addquality>
           <addquality>Wanted</addquality>
         </addqualities>
@@ -12191,8 +12123,8 @@
         <freenegativequalities>-5</freenegativequalities>
         <addqualities>
           <addquality>Perceptive</addquality>
-          <addquality select="Morocco">SINner (National)</addquality>
         </addqualities>
+        <qualitylevel group="SINner">1</qualitylevel>
         <selectquality>
           <quality>College Education</quality>
           <quality>Technical School Education</quality>
@@ -12430,9 +12362,7 @@
               <name>Etiquette</name>
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
             <knowledgeskilllevel>
               <name>Area Knowledge: Casablanca-Rabat</name>
               <group>Street</group>

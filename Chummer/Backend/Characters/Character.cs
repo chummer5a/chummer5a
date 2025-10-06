@@ -45370,6 +45370,14 @@ namespace Chummer
 
         //Can't be at improvementmanager due reasons
         private readonly Lazy<ConcurrentStack<string>> _stkPushText = new Lazy<ConcurrentStack<string>>();
+        
+        // Enhanced PushText system for quality group filtering
+        private readonly Lazy<ConcurrentDictionary<string, ConcurrentStack<string>>> _dicQualityGroupPushText = 
+            new Lazy<ConcurrentDictionary<string, ConcurrentStack<string>>>();
+        
+        // Store multiple instances of qualities for the same level
+        private readonly Lazy<ConcurrentDictionary<string, ConcurrentDictionary<int, List<string>>>> _dicQualityGroupInstances = 
+            new Lazy<ConcurrentDictionary<string, ConcurrentDictionary<int, List<string>>>>();
 
         /// <summary>
         /// Push a value that will be used instead of dialog instead in next <selecttext />
@@ -45398,6 +45406,119 @@ namespace Chummer
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Push a value for a specific quality group that will be used instead of dialog in next <selecttext />
+        /// </summary>
+        public void PushTextForQualityGroup(string strQualityGroup, string strText)
+        {
+            if (string.IsNullOrEmpty(strQualityGroup) || string.IsNullOrEmpty(strText))
+                return;
+                
+            using (LockObject.EnterReadLock())
+            {
+                ConcurrentStack<string> stkPushText = _dicQualityGroupPushText.Value.GetOrAdd(strQualityGroup, 
+                    _ => new ConcurrentStack<string>());
+                stkPushText.Push(strText);
+            }
+        }
+
+        /// <summary>
+        /// Get the push text stack for a specific quality group
+        /// </summary>
+        public async Task<ConcurrentStack<string>> GetPushTextForQualityGroupAsync(string strQualityGroup, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _dicQualityGroupPushText.Value.GetOrAdd(strQualityGroup, 
+                    _ => new ConcurrentStack<string>());
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Try to pop text for a specific quality group
+        /// </summary>
+        public bool TryPopTextForQualityGroup(string strQualityGroup, out string strText)
+        {
+            strText = null;
+            if (string.IsNullOrEmpty(strQualityGroup))
+                return false;
+                
+            using (LockObject.EnterReadLock())
+            {
+                if (_dicQualityGroupPushText.Value.TryGetValue(strQualityGroup, out ConcurrentStack<string> stkPushText))
+                {
+                    return stkPushText.TryPop(out strText);
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Store an instance of a quality for a specific group and level
+        /// </summary>
+        public void StoreQualityInstance(string strQualityGroup, int intLevel, string strInstanceText)
+        {
+            if (string.IsNullOrEmpty(strQualityGroup) || string.IsNullOrEmpty(strInstanceText))
+                return;
+                
+            using (LockObject.EnterReadLock())
+            {
+                ConcurrentDictionary<int, List<string>> dicLevels = _dicQualityGroupInstances.Value.GetOrAdd(strQualityGroup, 
+                    _ => new ConcurrentDictionary<int, List<string>>());
+                List<string> lstInstances = dicLevels.GetOrAdd(intLevel, _ => new List<string>());
+                
+                if (!lstInstances.Contains(strInstanceText))
+                {
+                    lstInstances.Add(strInstanceText);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get all instances for a specific quality group and level
+        /// </summary>
+        public List<string> GetQualityInstances(string strQualityGroup, int intLevel)
+        {
+            if (string.IsNullOrEmpty(strQualityGroup))
+                return new List<string>();
+                
+            using (LockObject.EnterReadLock())
+            {
+                if (_dicQualityGroupInstances.Value.TryGetValue(strQualityGroup, out ConcurrentDictionary<int, List<string>> dicLevels))
+                {
+                    if (dicLevels.TryGetValue(intLevel, out List<string> lstInstances))
+                    {
+                        return new List<string>(lstInstances);
+                    }
+                }
+            }
+            return new List<string>();
+        }
+
+        /// <summary>
+        /// Clear all instances for a specific quality group and level
+        /// </summary>
+        public void ClearQualityInstances(string strQualityGroup, int intLevel)
+        {
+            if (string.IsNullOrEmpty(strQualityGroup))
+                return;
+                
+            using (LockObject.EnterReadLock())
+            {
+                if (_dicQualityGroupInstances.Value.TryGetValue(strQualityGroup, out ConcurrentDictionary<int, List<string>> dicLevels))
+                {
+                    dicLevels.TryRemove(intLevel, out _);
+                }
             }
         }
 
@@ -50334,6 +50455,8 @@ namespace Chummer
                                 _intCachedInitiationEnabled = int.MinValue;
                             if (setNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
                                 _intCachedRedlinerBonus = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(QualityLevelsProcessed)))
+                                _intCachedQualityLevelsProcessed = int.MinValue;
                             if (setNamesOfChangedProperties.Contains(nameof(EnemyKarma)))
                                 _intCachedEnemyKarma = int.MinValue;
                             if (setNamesOfChangedProperties.Contains(nameof(Qualities)))
@@ -50359,6 +50482,8 @@ namespace Chummer
                         RefreshBlackMarketDiscounts();
                     if (setNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
                         RefreshRedlinerImprovements();
+                    if (setNamesOfChangedProperties.Contains(nameof(QualityLevelsProcessed)))
+                        ProcessQualityLevels();
                     if (setNamesOfChangedProperties.Contains(nameof(Essence)) ||
                         setNamesOfChangedProperties.Contains(nameof(EssenceAtSpecialStart)))
                     {
@@ -50599,6 +50724,8 @@ namespace Chummer
                                 _intCachedInitiationEnabled = int.MinValue;
                             if (setNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
                                 _intCachedRedlinerBonus = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(QualityLevelsProcessed)))
+                                _intCachedQualityLevelsProcessed = int.MinValue;
                             if (setNamesOfChangedProperties.Contains(nameof(EnemyKarma)))
                                 _intCachedEnemyKarma = int.MinValue;
                             if (setNamesOfChangedProperties.Contains(nameof(Qualities)))
@@ -50628,6 +50755,8 @@ namespace Chummer
                         await RefreshBlackMarketDiscountsAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
                         await RefreshRedlinerImprovementsAsync(token).ConfigureAwait(false);
+                    if (setNamesOfChangedProperties.Contains(nameof(QualityLevelsProcessed)))
+                        await ProcessQualityLevelsAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(Essence)) ||
                         setNamesOfChangedProperties.Contains(nameof(EssenceAtSpecialStart)))
                     {
@@ -55524,5 +55653,274 @@ namespace Chummer
         }
 
         #endregion Special Methods
+
+        #region Quality Level Processing
+
+        /// <summary>
+        /// Stores the text used for each quality group to avoid re-prompting when qualities are replaced.
+        /// Key: Quality group name (e.g., "SINner"), Value: Text that was used
+        /// </summary>
+        private readonly Dictionary<string, string> _dicQualityGroupText = new Dictionary<string, string>();
+
+        /// <summary>
+        /// Property that triggers quality level processing when accessed.
+        /// This follows the same pattern as RedlinerBonus.
+        /// </summary>
+        public int QualityLevelsProcessed
+        {
+            get
+            {
+                using (LockObject.EnterWriteLock())
+                {
+                    if (_intCachedQualityLevelsProcessed == int.MinValue)
+                    {
+                        // Process quality levels when this property is accessed
+                        ProcessQualityLevels();
+                        return _intCachedQualityLevelsProcessed = 1;
+                    }
+                    return _intCachedQualityLevelsProcessed;
+                }
+            }
+        }
+
+        private int _intCachedQualityLevelsProcessed = int.MinValue;
+
+        /// <summary>
+        /// Process quality levels from Life Modules and add the highest level quality for each group.
+        /// This method should be called when the character is finalized.
+        /// </summary>
+        public void ProcessQualityLevels(CancellationToken token = default)
+        {
+            Utils.SafelyRunSynchronously(() => ProcessQualityLevelsAsync(token), token);
+        }
+
+        /// <summary>
+        /// Process quality levels from Life Modules and add the highest level quality for each group.
+        /// This method should be called when the character is finalized.
+        /// </summary>
+        public async Task ProcessQualityLevelsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            
+            // Get all quality level improvements
+            List<Improvement> lstQualityLevelImprovements = await Improvements.ToListAsync(
+                x => x.ImproveType == Improvement.ImprovementType.QualityLevel && x.Enabled, token).ConfigureAwait(false);
+            
+            if (lstQualityLevelImprovements.Count == 0)
+                return;
+
+
+            // Load quality level configuration
+            XmlDocument objXmlQualityLevels = await LoadDataAsync("qualitylevels.xml", token: token).ConfigureAwait(false);
+            if (objXmlQualityLevels == null)
+                return;
+
+            // Group improvements by quality group
+            var dicQualityGroups = lstQualityLevelImprovements
+                .GroupBy(x => x.ImprovedName)
+                .ToDictionary(x => x.Key, x => x.ToList());
+            
+            // Get all quality groups that currently have qualities but no longer have improvements
+            List<Quality> lstGroupsToCheck = await Qualities.ToListAsync(x => 
+                x.Name.Contains(" ("), token).ConfigureAwait(false);
+            
+            // Extract group names from existing qualities
+            var lstExistingGroups = new HashSet<string>();
+            foreach (Quality objQuality in lstGroupsToCheck)
+            {
+                if (objQuality.Name.Contains(" ("))
+                {
+                    string strGroup = objQuality.Name.Substring(0, objQuality.Name.IndexOf(" ("));
+                    lstExistingGroups.Add(strGroup);
+                }
+            }
+            
+            // Remove qualities for groups that no longer have improvements
+            foreach (string strGroup in lstExistingGroups)
+            {
+                if (!dicQualityGroups.ContainsKey(strGroup))
+                {
+                    // This group no longer has any quality level improvements, remove its qualities
+                    List<Quality> lstQualitiesToRemove = await Qualities.ToListAsync(x => 
+                        x.Name.StartsWith(strGroup + " ("), token).ConfigureAwait(false);
+                    
+                    foreach (Quality objQualityToRemove in lstQualitiesToRemove)
+                    {
+                        await objQualityToRemove.DeleteQualityAsync(token: token).ConfigureAwait(false);
+                    }
+                    
+                    // Clear stored text for this group
+                    _dicQualityGroupText.Remove(strGroup);
+                }
+            }
+            
+            foreach (var kvp in dicQualityGroups)
+            {
+                string strGroup = kvp.Key;
+                List<Improvement> lstGroupImprovements = kvp.Value;
+                
+                // Find the highest level for this group
+                int intHighestLevel = lstGroupImprovements.Max(x => (int)x.Value);
+                
+                // Get the quality name for this level from the configuration
+                XmlNode objXmlGroupNode = objXmlQualityLevels.SelectSingleNode(
+                    $"/chummer/qualitygroups/qualitygroup[name = \"{strGroup}\"]");
+                
+                if (objXmlGroupNode == null)
+                    continue;
+                
+                XmlNode objXmlLevelNode = objXmlGroupNode.SelectSingleNode(
+                    $"levels/level[@value = \"{intHighestLevel}\"]");
+                
+                if (objXmlLevelNode == null)
+                    continue;
+                
+                string strQualityName = objXmlLevelNode.InnerText;
+                
+                // Get all existing qualities for this group
+                List<Quality> lstExistingQualities = await Qualities.ToListAsync(x => 
+                    x.Name.StartsWith(strGroup + " ("), token).ConfigureAwait(false);
+                
+                // Determine what level the existing qualities are at
+                int intExistingLevel = -1;
+                if (lstExistingQualities.Count > 0)
+                {
+                    // Find the level of existing qualities by checking against the configuration
+                    foreach (Quality objExistingQuality in lstExistingQualities)
+                    {
+                        for (int i = 1; i <= 10; i++) // Check levels 1-10
+                        {
+                            XmlNode objXmlExistingLevelNode = objXmlGroupNode.SelectSingleNode(
+                                $"levels/level[@value = \"{i}\"]");
+                            if (objXmlExistingLevelNode != null && objXmlExistingLevelNode.InnerText == objExistingQuality.Name)
+                            {
+                                intExistingLevel = Math.Max(intExistingLevel, i);
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                // Check if we need to change anything
+                bool blnNeedsChange = false;
+                if (intExistingLevel != intHighestLevel)
+                {
+                    blnNeedsChange = true;
+                }
+                else if (intExistingLevel == intHighestLevel && lstExistingQualities.Count > 1)
+                {
+                    // Same level but multiple instances - need to resolve conflicts
+                    blnNeedsChange = true;
+                }
+                
+                if (!blnNeedsChange)
+                    continue;
+                
+                // Handle the change
+                if (intExistingLevel != intHighestLevel)
+                {
+                    // Level change - remove all existing qualities and add the new one
+                    foreach (Quality objQualityToRemove in lstExistingQualities)
+                    {
+                        // Store the instance text before removing
+                        if (!string.IsNullOrEmpty(objQualityToRemove.Extra))
+                        {
+                            StoreQualityInstance(strGroup, intExistingLevel, objQualityToRemove.Extra);
+                        }
+                        await objQualityToRemove.DeleteQualityAsync(token: token).ConfigureAwait(false);
+                    }
+                    
+                    // Clear stored text for this group since we're changing levels
+                    _dicQualityGroupText.Remove(strGroup);
+                }
+                else if (lstExistingQualities.Count > 1)
+                {
+                    // Same level but multiple instances - need to resolve conflicts
+                    // Store all existing instances
+                    foreach (Quality objExistingQuality in lstExistingQualities)
+                    {
+                        if (!string.IsNullOrEmpty(objExistingQuality.Extra))
+                        {
+                            StoreQualityInstance(strGroup, intExistingLevel, objExistingQuality.Extra);
+                        }
+                    }
+                    
+                    // Remove all existing qualities
+                    foreach (Quality objQualityToRemove in lstExistingQualities)
+                    {
+                        await objQualityToRemove.DeleteQualityAsync(token: token).ConfigureAwait(false);
+                    }
+                }
+                
+                // Add the new quality
+                XmlDocument objXmlDocument = await LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false);
+                XmlNode objXmlQuality = objXmlDocument.SelectSingleNode(
+                    $"/chummer/qualities/quality[name = \"{strQualityName}\"]");
+                
+                if (objXmlQuality != null)
+                {
+                    // Check if we have multiple instances for this level
+                    List<string> lstInstances = GetQualityInstances(strGroup, intHighestLevel);
+                    
+                    if (lstInstances.Count > 1)
+                    {
+                        // Multiple instances available - prompt user to choose
+                        using (ThreadSafeForm<SelectItem> frmSelectItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
+                        {
+                            frmSelectItem.MyForm.SetGeneralItemsMode(lstInstances.Select(x => new ListItem(x, x)));
+                            if (await frmSelectItem.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.OK)
+                            {
+                                string strSelectedText = frmSelectItem.MyForm.SelectedItem;
+                                if (!string.IsNullOrEmpty(strSelectedText))
+                                {
+                                    PushText.Push(strSelectedText);
+                                }
+                            }
+                        }
+                    }
+                    else if (lstInstances.Count == 1)
+                    {
+                        // Single instance available - use it automatically
+                        PushText.Push(lstInstances[0]);
+                    }
+                    else
+                    {
+                        // No instances available - try quality group-specific text
+                        if (!TryPopTextForQualityGroup(strGroup, out string strGroupText))
+                        {
+                            // Fall back to stored text for this quality group if available
+                            if (_dicQualityGroupText.TryGetValue(strGroup, out string strStoredText) && !string.IsNullOrEmpty(strStoredText))
+                            {
+                                PushText.Push(strStoredText);
+                            }
+                        }
+                        else
+                        {
+                            // Use the text from the quality group stack
+                            PushText.Push(strGroupText);
+                        }
+                    }
+                    
+                    Quality objQuality = new Quality(this);
+                    List<Weapon> lstWeapons = new List<Weapon>();
+                    await objQuality.CreateAsync(objXmlQuality, QualitySource.LifeModule, lstWeapons, token: token).ConfigureAwait(false);
+                    await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                    
+                    // Store the text that was used for this quality group
+                    if (objQuality.Extra != null && !string.IsNullOrEmpty(objQuality.Extra))
+                    {
+                        _dicQualityGroupText[strGroup] = objQuality.Extra;
+                    }
+                    
+                    // Add any weapons that were created
+                    foreach (Weapon objWeapon in lstWeapons)
+                    {
+                        await Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                    }
+                }
+            }
+        }
+
+        #endregion Quality Level Processing
     }
 }
