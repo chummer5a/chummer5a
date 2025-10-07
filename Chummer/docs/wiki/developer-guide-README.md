@@ -4,7 +4,7 @@ This section contains technical documentation for developers contributing to Chu
 
 ## 📖 Available Documentation
 
-- **[Contributing](Contributing.md)** - Complete guide to contributing to the project
+- **[Contributing](Contributing)** - Complete guide to contributing to the project
   - Bug reporting guidelines
   - Git workflow and pull requests
   - Code standards and EditorConfig
@@ -13,8 +13,8 @@ This section contains technical documentation for developers contributing to Chu
   - Graphics and translations
   - C# code contributions
 
-- **[Custom Data Files](Custom-Data-Files.md)** - Working with custom data files
-- **[Creating Custom Metatypes](Creating-custom-metatypes.md)** - Creating custom metatypes
+- **[Custom Data Files](Custom-Data-Files)** - Working with custom data files
+- **[Creating Custom Metatypes](Creating-custom-metatypes)** - Creating custom metatypes
 
 ## 🛠️ Development Setup
 
@@ -22,7 +22,7 @@ This section contains technical documentation for developers contributing to Chu
 2. **Install Visual Studio** - Community edition is free
 3. **Open the solution** - `Chummer.sln`
 4. **Build the project** - Follow the build instructions
-5. **Read the contributing guide** - [Contributing.md](Contributing.md)
+5. **Read the contributing guide** - [Contributing](Contributing)
 
 ## 🔧 Development Tools
 

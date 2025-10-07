@@ -5,25 +5,25 @@ This section contains documentation about Shadowrun game content and how it's im
 ## 📖 Available Documentation
 
 ### Core Game Elements
-- **[Armor](Armor.md)** - Armor types and mechanics
-- **[Bioware](Bioware.md)** - Bioware implants and modifications
-- **[Cyberware](Cyberware.md)** - Cybernetic implants and modifications
-- **[Gear](Gear.md)** - Equipment, weapons, and general gear
-- **[Spells](Spells.md)** - Magic spells and traditions
-- **[Metatypes](Metatypes.md)** - Character races and metatypes
+- **[Armor](Armor)** - Armor types and mechanics
+- **[Bioware](Bioware)** - Bioware implants and modifications
+- **[Cyberware](Cyberware)** - Cybernetic implants and modifications
+- **[Gear](Gear)** - Equipment, weapons, and general gear
+- **[Spells](Spells)** - Magic spells and traditions
+- **[Metatypes](Metatypes)** - Character races and metatypes
 
 ### Advanced Content
-- **[Books](Books.md)** - Source books and references
-- **[Conditions](Conditions.md)** - Game conditions and effects
-- **[Critter Powers](Critter-Powers.md)** - Critter abilities and powers
-- **[Echoes](Echoes.md)** - Echoes and resonance effects
-- **[Errata](Errata.md)** - Official errata and corrections
-- **[Improvement Manager](Improvement-Manager.md)** - Character improvements
-- **[Lifestyles](Lifestyles.md)** - Character lifestyles and living conditions
-- **[Martial Arts](Martial-Arts.md)** - Martial arts and combat techniques
-- **[Mentor Spirits](Mentor-Spirits.md)** - Mentor spirits and their benefits
-- **[Quality Levels](Quality-Levels.md)** - Character qualities and levels
-- **[Traditions and Streams](Traditions-and-Streams.md)** - Magic traditions and streams
+- **[Books](Books)** - Source books and references
+- **[Conditions](Conditions)** - Game conditions and effects
+- **[Critter Powers](Critter-Powers)** - Critter abilities and powers
+- **[Echoes](Echoes)** - Echoes and resonance effects
+- **[Errata](Errata)** - Official errata and corrections
+- **[Improvement Manager](Improvement-Manager)** - Character improvements
+- **[Lifestyles](Lifestyles)** - Character lifestyles and living conditions
+- **[Martial Arts](Martial-Arts)** - Martial arts and combat techniques
+- **[Mentor Spirits](Mentor-Spirits)** - Mentor spirits and their benefits
+- **[Quality Levels](Quality-Levels)** - Character qualities and levels
+- **[Traditions and Streams](Traditions-and-Streams)** - Magic traditions and streams
 
 ## 🎮 Using This Documentation
 
