@@ -142,4 +142,4 @@ If you still want to try:
 
 - Check our [GitHub Issues](https://github.com/chummer5a/chummer5a/issues)
 - Read the [Contributing Guide](Contributing.md) for development help
-- Browse the [Game Content Documentation](game-content/README.md) for game-specific information
+- Browse the [Game Content Documentation](game-content-README.md) for game-specific information

@@ -37,9 +37,9 @@ spells.xml (and custom_spells.xml, see [Custom Data Files](Custom%20Data%20Files
 
 **page** (required): the page number this item can be found on in the Sourcebook.
 
-**source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](https://github.com/chummer5a/chummer5a/wiki/Books).
+**source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](Books).
 
-**category** (required): the Category that this Spell belongs to. This must match one of the Categories defined in the [categories Node](https://github.com/chummer5a/chummer5a/wiki/Spells#categories).
+**category** (required): the Category that this Spell belongs to. This must match one of the Categories defined in the [categories Node](Spells#categories).
 
 **damage** (required): String. Whether the spell deals Physical (P), Stun (S) or other damage
 

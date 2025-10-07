@@ -18,16 +18,16 @@ Welcome to the Chummer5a wiki! This wiki contains comprehensive documentation fo
 
 ### User Documentation
 - **[Installation](Installation.md)** - Installation instructions for all platforms
-- **[User Guide](user-guide/README.md)** - Complete user documentation
+- **[User Guide](user-guide-README.md)** - Complete user documentation
 
 ### Developer Documentation
 - **[Contributing](Contributing.md)** - How to contribute to the project
 - **[Custom Data Files](Custom-Data-Files.md)** - Working with custom data files
 - **[Creating Custom Metatypes](Creating-custom-metatypes.md)** - Creating custom metatypes
-- **[Developer Guide](developer-guide/README.md)** - Complete developer documentation
+- **[Developer Guide](developer-guide-README)** - Complete developer documentation
 
 ### Game Content Documentation
-- **[Game Content Index](game-content/README.md)** - All game-related documentation
+- **[Game Content Index](game-content-README.md)** - All game-related documentation
 - **[Armor](Armor.md)** - Armor types and mechanics
 - **[Bioware](Bioware.md)** - Bioware implants and modifications
 - **[Cyberware](Cyberware.md)** - Cybernetic implants and modifications

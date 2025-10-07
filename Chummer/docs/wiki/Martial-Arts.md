@@ -53,13 +53,13 @@ Structure
 
 **notes** (optional): Descriptive text that will be added to the Martial Art.
 
-**source** (required): the code for the Sourcebook that this entry comes from. See [Books](https://github.com/chummer5a/chummer5a/wiki/Books).
+**source** (required): the code for the Sourcebook that this entry comes from. See [Books](Books).
 
 **page** (required): the page number this item can be found on in the Sourcebook.
 
-**forbidden** (optional): XML node containing a list of conditions that will prevent this Martial Art from being available to the character if they are met. See [Conditionals](https://github.com/chummer5a/chummer5a/wiki/Conditionals) for more detail.
+**forbidden** (optional): XML node containing a list of conditions that will prevent this Martial Art from being available to the character if they are met. See [Conditionals](Conditionals) for more detail.
 
-**required** (optional): XML node containing a list of conditions that will prevent this Martial Art from being available to the character if they are NOT met. See [Conditionals](https://github.com/chummer5a/chummer5a/wiki/Conditionals) for more detail.
+**required** (optional): XML node containing a list of conditions that will prevent this Martial Art from being available to the character if they are NOT met. See [Conditionals](Conditionals) for more detail.
 
 **notes** (optional): Descriptive text that will be added to the Martial Art.
 
@@ -97,7 +97,7 @@ Structure
 
 **notes** (optional): Descriptive text that will be added to the Martial Art.
 
-**source** (required): the code for the Sourcebook that this entry comes from. See [Books](https://github.com/chummer5a/chummer5a/wiki/Books)
+**source** (required): the code for the Sourcebook that this entry comes from. See [Books](Books)
 
 **page** (required): the page number this item can be found on in the Sourcebook.
 
