@@ -6,7 +6,6 @@ on:
     paths:
       - 'Chummer/docs/wiki/**'
       - '.github/workflows/publish-wiki.yml'
-      - 'Chummer/docs/wiki/user-guide/*'
   workflow_dispatch: # Allow manual triggering
 
 concurrency:
