@@ -44,7 +44,7 @@ If you're working on the codebase:
 
 ## 📚 Related Documentation
 
-- [User Guide](user-guide-README) - End-user documentation
+- [User Guide](user-guide) - End-user documentation
 - [Developer Guide](developer-guide) - Technical documentation
 - [Installation Guide](User-Installation-Guide) - Setup instructions
 

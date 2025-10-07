@@ -18,7 +18,7 @@ Welcome to the Chummer5a wiki! This wiki contains comprehensive documentation fo
 
 ### User Documentation
 - **[Installation](Installation)** - Installation instructions for all platforms
-- **[User Guide](user-guide-README)** - Complete user documentation
+- **[User Guide](user-guide)** - Complete user documentation
 
 ### Developer Documentation
 - **[Contributing](Contributing)** - How to contribute to the project

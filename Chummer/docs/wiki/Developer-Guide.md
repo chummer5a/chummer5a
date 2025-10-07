@@ -52,5 +52,5 @@ This section contains technical documentation for developers contributing to Chu
 ## 📚 Additional Resources
 
 - [Game Content Documentation](Game-Content-Documentation) - Game-specific information
-- [User Guide](user-guide-README) - End-user documentation
+- [User Guide](user-guide) - End-user documentation
 - [GitHub Issues](https://github.com/chummer5a/chummer5a/issues) - Bug reports and feature requests
