@@ -46,5 +46,5 @@ If you're working on the codebase:
 
 - [User Guide](user-guide-README) - End-user documentation
 - [Developer Guide](developer-guide-README) - Technical documentation
-- [Installation Guide](user-guide-Installation) - Setup instructions
+- [Installation Guide](User-Installation-Guide) - Setup instructions
 
