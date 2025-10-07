@@ -74,7 +74,7 @@ The most basic module looks like this
     <page>A page</page>
 </module>
 ```
-The `id` is an [GUID](https://en.wikipedia.org/wiki/Globally_unique_identifier)(Global Unique IDentifier), 
+The `id` is an [GUID][https://en.wikipedia.org/wiki/Globally_unique_identifier](Global Unique IDentifier), 
 this value is used by Chummer5a internaly to recgonise different modules. 
 If this field is not present, Chummer5a will be unable to load the life module.  
 You can leave this field out and once you are finished use the tool ChummerTools.exe to generate all missing `id`s or 
@@ -91,7 +91,7 @@ The `karma` field is the price of the Life Module. If this value fails to evalua
 (or it evaluates to a number bigger than 2^31 -1) the Life Module will be free. 
 Negative values are possible for Life Modules that give karma for having them.
 
-The `source` field is the book this Life Module came from. In most cases this will be RF but it can be DT or CF too. For all possible books, see [books.xml](https://github.com/chummer5a/chummer5a/blob/master/Chummer/data/books.xml).
+The `source` field is the book this Life Module came from. In most cases this will be RF but it can be DT or CF too. For all possible books, see [books.xml](https://github.com/chummer5a/chummer5a/blob/master/Chummer/data/books.xml "books.xml").
 Leaving out this field will make the Life Module not show up.
 
 The `page` field is the page this Life Module is on. Chummer5a have a feature to open your PDF reader onto that page, but said feature is currently broken.

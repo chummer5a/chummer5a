@@ -2,7 +2,7 @@ Chummer uses a common Requirements system for almost all objects stored in the d
 
 When designing custom data files it is critical to note that items that are exclusive of each other MUST have a required/forbidden node referencing each other. If this is not done and one object forbids another, if that object is later added no error will be generated. For example, the Astral Beacon and Astral Chameleon qualities each have a forbidden node that references each other; if one of these were not present it would be possible to purchase the quality with the forbidden entry, then the quality that does not.
 
-## <a id="forbidden"></a>forbidden Node
+## <a id="forbidden"></a>Forbidden Node
     <forbidden>
        <allof />
        <oneof />
@@ -11,19 +11,19 @@ When designing custom data files it is critical to note that items that are excl
        <weapondetails />
        <weaponmountdetails />
     </forbidden>
-**allof** (optional): all of the requirements listed in this node must be met in order for the object to NOT be available for selection. If at least one condition is not met, the object will be made available. See [**allof** Node](#requiredspecific "allof Node") for more information.
+**allof** (optional): all of the requirements listed in this node must be met in order for the object to NOT be available for selection. If at least one condition is not met, the object will be made available. See [**Allof** Node](#requiredspecific "Allof Node") for more information.
 
-**oneof** (optional): If at least one of the requirements listed in this node is met the object will NOT be available for selection. See [**conditions** Node](#conditions "conditions Node") for more information.
+**oneof** (optional): If at least one of the requirements listed in this node is met the object will NOT be available for selection. See [**Conditions** Node](#conditions "Conditions Node") for more information.
 
-**geardetails** (optional): If at least one of the requirements listed in this node is met the object will NOT be available for selection. See [**geardetails** Node](#geardetails "geardetails Node") for more information.
+**geardetails** (optional): If at least one of the requirements listed in this node is met the object will NOT be available for selection. See [**Geardetails** Node](#geardetails "Geardetails Node") for more information.
 
-**vehicledetails** (optional): If at least one of the requirements listed in this node is met the object will NOT be available for selection. See [**vehicledetails** Node](#vehicledetails "vehicledetails Node") for more information.
+**vehicledetails** (optional): If at least one of the requirements listed in this node is met the object will NOT be available for selection. See [**Vehicledetails** Node](#vehicledetails "Vehicledetails Node") for more information.
 
-**weapondetails** (optional): If at least one of the requirements listed in this node is met the object will NOT be available for selection. See [**weapondetails** Node](#weapondetails "weapondetails Node") for more information.
+**weapondetails** (optional): If at least one of the requirements listed in this node is met the object will NOT be available for selection. See [**Weapondetails** Node](#weapondetails "Weapondetails Node") for more information.
 
-**weaponmountdetails** (optional): If at least one of the requirements listed in this node is met the object will NOT be available for selection. See [**weaponmountdetails** Node](#weaponmountdetails "weaponmountdetails Node") for more information.
+**weaponmountdetails** (optional): If at least one of the requirements listed in this node is met the object will NOT be available for selection. See [**Weaponmountdetails** Node](#weaponmountdetails "Weaponmountdetails Node") for more information.
 
-## <a id="required"></a>required Node
+## <a id="required"></a>Required Node
     <required>
        <allof />
        <oneof />
@@ -32,19 +32,19 @@ When designing custom data files it is critical to note that items that are excl
        <weapondetails />
        <weaponmountdetails />
     </required>
-**allof** (optional): all of the requirements listed in this node must be met in order for the object to be available for selection. See [**conditions** Node](#conditions "conditions Node") for more information.
+**allof** (optional): all of the requirements listed in this node must be met in order for the object to be available for selection. See [**Conditions** Node](#conditions "Conditions Node") for more information.
 
-**oneof** (optional): at least one of the requirements listed in this node must be met in order for the object to be available for selection. See [**conditions** Node](#conditions "conditions Node") for more information.
+**oneof** (optional): at least one of the requirements listed in this node must be met in order for the object to be available for selection. See [**Conditions** Node](#conditions "Conditions Node") for more information.
 
-**geardetails** (optional): at least one of the requirements listed in this node must be met in order for the object to be available for selection. See [**geardetails** Node](#geardetails "geardetails Node") for more information.
+**geardetails** (optional): at least one of the requirements listed in this node must be met in order for the object to be available for selection. See [**Geardetails** Node](#geardetails "Geardetails Node") for more information.
 
-**vehicledetails** (optional): at least one of the requirements listed in this node must be met in order for the object to be available for selection. See [**vehicledetails** Node](#vehicledetails "vehicledetails Node") for more information.
+**vehicledetails** (optional): at least one of the requirements listed in this node must be met in order for the object to be available for selection. See [**vVhicledetails** Node](#vehicledetails "Vehicledetails Node") for more information.
 
-**weapondetails** (optional): at least one of the requirements listed in this node must be met in order for the object to be available for selection. See [**weapondetails** Node](#weapondetails "weapondetails Node") for more information.
+**weapondetails** (optional): at least one of the requirements listed in this node must be met in order for the object to be available for selection. See [**Weapondetails** Node](#weapondetails "Weapondetails Node") for more information.
 
-**weaponmountdetails** (optional): at least one of the requirements listed in this node must be met in order for the object to be available for selection. See [**weaponmountdetails** Node](#weaponmountdetails "weaponmountdetails Node") for more information.
+**weaponmountdetails** (optional): at least one of the requirements listed in this node must be met in order for the object to be available for selection. See [**Weaponmountdetails** Node](#weaponmountdetails "Weaponmountdetails Node") for more information.
 
-## <a id="conditions"></a> conditions Nodes
+## <a id="conditions"></a> Conditions Nodes
 ### accessory
 
 Checks for the presence of an accessory on the intended parent.
@@ -995,10 +995,10 @@ None.
 <weapon>Crossbow</weapon>
 ```
 
-## <a id="geardetails"></a>geardetails Node
+## <a id="geardetails"></a>Geardetails Node
 
-## <a id="vehicledetails"></a>vehicledetails Node
+## <a id="vehicledetails"></a>Vehicledetails Node
 
-## <a id="weapondetails"></a>weapondetails Node
+## <a id="weapondetails"></a>Weapondetails Node
 
-## <a id="weaponmountdetails"></a>weaponmountdetails Node
+## <a id="weaponmountdetails"></a>Weaponmountdetails Node

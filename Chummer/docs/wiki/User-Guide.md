@@ -21,5 +21,5 @@ This section contains documentation for end users of Chummer5a.
 
 - Check the [Installation Guide](Installation) for setup issues
 - Browse the [Game Content Documentation](Game-Content-Documentation) for game-specific information
-- Visit the [Developer Guide](developer-guide) if you want to contribute
+- Visit the [Developer Guide](Developer-Guide) if you want to contribute
 - Report issues on the [GitHub Issues page](https://github.com/chummer5a/chummer5a/issues)

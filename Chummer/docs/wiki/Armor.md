@@ -50,7 +50,7 @@ armor.xml (and custom_armor.xml, see [Custom Data Files](Custom-Data-Files)) con
 
 **name** (required): the name of the piece of Armor.
 
-**category** (required): the Category that this Armor belongs to. This must match one of the Categories defined in the [**categories** Node](#categories).
+**category** (required): the Category that this Armor belongs to. This must match one of the Categories defined in the [**Categories** Node](#categories).
 
 **addoncategory** (optional): additional Gear categories that can be added to the Armor as plugins. This must match one of the Categories defined in [Gear](Gear).
 
@@ -64,13 +64,13 @@ armor.xml (and custom_armor.xml, see [Custom Data Files](Custom-Data-Files)) con
 
 **bonus** (optional): a bonus node that describes any bonuses this entry grants. Values may contain the `Rating` keyword if Ratings are enabled. See [Improvement Manager](Improvement-Manager) for more information.
 
-**addmodcategory** (optional): when present, Armor Modifications in this special comma-separated Category will be added to the list of available Armor Modifications. This is used when certain Armor Modifications is specific to certain pieces of Armor. See [**mods** Node](#mods) for more information.
+**addmodcategory** (optional): when present, Armor Modifications in this special comma-separated Category will be added to the list of available Armor Modifications. This is used when certain Armor Modifications is specific to certain pieces of Armor. See [**Mods** Node](#mods) for more information.
 
-**forcemodcategory** (optional): when present, Armor Modifications in this special Category will be added to the list of available Armor Modifications. This is used when certain certain pieces of Armor can only take specific Armor Modifications. Incompatible with **addmodcategory**. See [**mods** Node](#mods) for more information.
+**forcemodcategory** (optional): when present, Armor Modifications in this special Category will be added to the list of available Armor Modifications. This is used when certain certain pieces of Armor can only take specific Armor Modifications. Incompatible with **addmodcategory**. See [**Mods** Node](#mods) for more information.
 
-**mods** (optional): lists the Armor Modifications that come pre-installed with the Armor. See [**mods** Node](#mods) for more information.
+**mods** (optional): lists the Armor Modifications that come pre-installed with the Armor. See [**Mods** Node](#mods) for more information.
 
-**gears** (optional): used to define Gear that comes pre-installed with the Armor. See [**gears** Node](#gears) for more information.
+**gears** (optional): used to define Gear that comes pre-installed with the Armor. See [**Gears** Node](#gears) for more information.
 
 **source** (required): the code for the Sourcebook that this entry comes from. See [Books](Books).
 
@@ -81,7 +81,7 @@ armor.xml (and custom_armor.xml, see [Custom Data Files](Custom-Data-Files)) con
       <name />
     </mods>
 
-**name** (required): specifies an Armor Modification that comes pre-installed with the Armor. This node may appear multiple times. The value entered here must match the name of an Armor Modification. See [**mod** Node](#mod) for more information. This node may also have the ''rating'' attribute which specifies the Rating of the Armor Modification installed. (`<name rating="4">My Armor Mod</name>`)
+**name** (required): specifies an Armor Modification that comes pre-installed with the Armor. This node may appear multiple times. The value entered here must match the name of an Armor Modification. See [**Mod** Node](#mod) for more information. This node may also have the ''rating'' attribute which specifies the Rating of the Armor Modification installed. (`<name rating="4">My Armor Mod</name>`)
 
 ## gears
     <gears>
@@ -107,7 +107,7 @@ armor.xml (and custom_armor.xml, see [Custom Data Files](Custom-Data-Files)) con
 
 **name** (required): the name of the Armor Modification.
 
-**category** (required): the Category that this Armor Modification belongs to. This should be set to ''General'' if the Armor Modification can be added to any piece of Armor. If this Armor Modification is exclusive one or more particular pieces of Armor, category can be set to a value of your choosing, such as ''Bunker Gear Helmet''. This category can then be used by addmocategory in the [**armor** Node](#armor).
+**category** (required): the Category that this Armor Modification belongs to. This should be set to ''General'' if the Armor Modification can be added to any piece of Armor. If this Armor Modification is exclusive one or more particular pieces of Armor, category can be set to a value of your choosing, such as ''Bunker Gear Helmet''. This category can then be used by addmocategory in the [**Armor** Node](#armor).
 
 **armorvalue** (required): the Armor Modification's Armor Rating. This value is added to the base Armor's Rating.
 
@@ -117,11 +117,11 @@ armor.xml (and custom_armor.xml, see [Custom Data Files](Custom-Data-Files)) con
 
 **avail** (required): the Armor Modification's Availability. avail can start with ''+'' to indicate that it increases the base Armor's Availability instead. avail starting with ''+'' can also include R or F to change its Availability. For example {{+3R}} would add 3 to the parent item's Availability and make it Restricted if it was not already. This will not downgrade an item from Forbidden to Restricted - this highest restriction is always kept.
 
-**addweapon** (optional): when this piece of Cyberware is added, Chummer looks for a Weapon in [Weapons.xml](Weapons) and adds it to the character. The value must match the name of a Weapon exactly. This is used to add Cyberweapons to a character through an Armor Modification.
+**addweapon** (optional): when this piece of Cyberware is added, Chummer looks for a Weapon in [weapons.xml](Weapons "weapons.xml") and adds it to the character. The value must match the name of a Weapon exactly. This is used to add Cyberweapons to a character through an Armor Modification.
 
 **cost** (required): the Armor Modification's Cost in Nuyen. This value is added to the base Armor's Cost. May contain the {{Rating}} keyword.
 
-**bonus** (optional): a bonus node that describes any bonuses this entry grants. Values may contain the {{Rating}} keyword if Ratings are enabled. See [Improvement-System](Improvement Manager) for more information.
+**bonus** (optional): a bonus node that describes any bonuses this entry grants. Values may contain the {{Rating}} keyword if Ratings are enabled. See [Improvement-System](Improvement-Manager) for more information.
 
 **source** (required): the code for the Sourcebook that this entry comes from. See [Books](Books).
 

@@ -14,7 +14,7 @@ This section contains technical documentation for developers contributing to Chu
   - C# code contributions
 
 - **[Custom Data Files](Custom-Data-Files)** - Working with custom data files
-- **[Creating Custom Metatypes](Creating-custom-metatypes)** - Creating custom metatypes
+- **[Creating Custom Metatypes](Creating-Custom-Metatypes)** - Creating custom metatypes
 
 ## 🛠️ Development Setup
 
@@ -52,5 +52,5 @@ This section contains technical documentation for developers contributing to Chu
 ## 📚 Additional Resources
 
 - [Game Content Documentation](Game-Content-Documentation) - Game-specific information
-- [User Guide](user-guide) - End-user documentation
+- [User Guide](User-Guide) - End-user documentation
 - [GitHub Issues](https://github.com/chummer5a/chummer5a/issues) - Bug reports and feature requests

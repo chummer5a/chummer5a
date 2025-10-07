@@ -14,7 +14,7 @@ Structure
 
 [technique](#technique) nodes describes the different Techniques available to be taken by Martial Arts.
 
-## martialart Node
+## Martialart Node
 ```xml
 <martialart>
    <id />
@@ -45,7 +45,7 @@ Structure
 
 **ignoresourcedisabled** (optional): Whether the art should be available for the user to take separate from its parent sourcebook being enabled.
 
-**bonus** (optional): a bonus node that describes any bonuses this entry grants. See [Improvement Manager](Improvement-Manager "Improvement Manager") for more information.
+**bonus** (optional): a bonus node that describes any bonuses this entry grants. See [Improvement Manager](Improvement-Manager) for more information.
 
 **alltechniques** (optional): Whether the art should have all techniques available to it. 
 
@@ -63,7 +63,7 @@ Structure
 
 **notes** (optional): Descriptive text that will be added to the Martial Art.
 
-## techniques Node
+## Techniques Node
 ```xml
 <technique>
    <name />
@@ -72,7 +72,7 @@ Structure
 
 **name** (required): the name of the Martial Art Technique that will be available to add to the character.
 
-## technique Node
+## Technique Node
 ```xml
 <technique>
    <id />
@@ -93,7 +93,7 @@ Structure
 
 **ignoresourcedisabled** (optional): Whether the item should be available for the user to take separate from its parent sourcebook being enabled.
 
-**bonus** (optional): a bonus node that describes any bonuses this entry grants. See [Improvement Manager](Improvement-Manager "Improvement Manager") for more information.
+**bonus** (optional): a bonus node that describes any bonuses this entry grants. See [Improvement Manager](Improvement-Manager) for more information.
 
 **notes** (optional): Descriptive text that will be added to the Martial Art.
 

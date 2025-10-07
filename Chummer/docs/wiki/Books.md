@@ -1,4 +1,4 @@
-books.xml (and custom_books.xml, see [Custom Data Files](Custom Data Files)) contains all of the sourcebook information. This information is used by Chummer to determine which items should be shown to the user. Users can choose to allow content from different sourcebooks through the [Options](Options) window.
+books.xml (and custom_books.xml, see [Custom Data Files](Custom-Data-Files)) contains all of the sourcebook information. This information is used by Chummer to determine which items should be shown to the user. Users can choose to allow content from different sourcebooks through the [Options](Options) window.
 
 # Structure
     <chummer>
@@ -8,7 +8,7 @@ books.xml (and custom_books.xml, see [Custom Data Files](Custom Data Files)) con
     </chummer>
 [**book**](#book "book") nodes describe individual sourcebooks.
 
-## <a id="book"></a>book Node
+## <a id="book"></a>Book Node
     <book>
        <id />
        <name />
@@ -18,4 +18,4 @@ books.xml (and custom_books.xml, see [Custom Data Files](Custom Data Files)) con
 
 **name** (required): the full name of the sourcebook. This is the name that will be displayed in the Options window.
 
-**code** (required): the shortened code used to identify the book in the other [Data Files](Data File Overview). This must be a unique code.
+**code** (required): the shortened code used to identify the book in the other [Data Files](Custom-Data-Files). This must be a unique code.

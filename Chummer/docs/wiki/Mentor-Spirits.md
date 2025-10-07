@@ -1,4 +1,4 @@
-mentors.xml (and custom_mentors.xml, see [Custom Data Files](Custom%20Data%20Files.ashx "Custom Data Files")) contains all of the information on creating Mentor Spirits, for use with the Mentor Spirit quality.
+mentors.xml (and custom_mentors.xml, see [Custom Data Files](Custom-Data-Files)) contains all of the information on creating Mentor Spirits, for use with the Mentor Spirit quality.
 
 # Structure
     <chummer>
@@ -8,7 +8,7 @@ mentors.xml (and custom_mentors.xml, see [Custom Data Files](Custom%20Data%20Fil
     </chummer>
 [**mentor**](#mentor "mentor") nodes describe individual Mentor Spirits.
 
-## <a id="mentor"></a>mentor Node
+## <a id="mentor"></a>Mentor Node
     <mentor>
        <id />
        <name />
@@ -23,21 +23,21 @@ mentors.xml (and custom_mentors.xml, see [Custom Data Files](Custom%20Data%20Fil
 
 **name** (required): the name of the Mentor Spirit.
 
-**bonus** (optional): a bonus node that describes any bonuses this entry grants. See [Improvement Manager](Improvement-System.ashx "Improvement Manager") for more information. Note that this bonus is granted in addition to any choice node bonuses. 
+**bonus** (optional): a bonus node that describes any bonuses this entry grants. See [Improvement Manager](Improvement-Manager) for more information. Note that this bonus is granted in addition to any choice node bonuses. 
 
 **choices** (required): describes a list of choices for options. Generally used for mystic adepts when choosing the Magician or Adept path of a mentor spirit. 
 
-**source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](books-xml.ashx "books.xml").
+**source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](Books "books.xml").
 
 **page** (required): the page number this item can be found on in the Sourcebook.
 
-## <a id="choice"></a>choice Node
+## <a id="choice"></a>Choice Node
     <choice>
        <name />
        <bonus />
     </required>
 **name** (required): Name of the choice. This also acts as the description of the choice, listing any powers or benefits the character receives. 
 
-**bonus** (optional): a bonus node that describes any bonuses this entry grants. See [Improvement Manager](Improvement-System.ashx "Improvement Manager") for more information. 
+**bonus** (optional): a bonus node that describes any bonuses this entry grants. See [Improvement Manager](Improvement-Manager) for more information. 
 Attributes
 **set** (optional): Chummer is written to allow up to two different sets of bonus choices. Set 1 is the default value. To provide for a second set, use set="2".
