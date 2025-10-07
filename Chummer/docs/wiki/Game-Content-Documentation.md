@@ -39,12 +39,12 @@ This documentation is designed to help you understand:
 If you're working on the codebase:
 
 - **Data Files** - Most content is stored in XML files in `Chummer/data/`
-- **Custom Content** - See the [Developer Guide](developer-guide-README) for adding custom content
+- **Custom Content** - See the [Developer Guide](developer-guide) for adding custom content
 - **Data Structure** - Each content type has its own XML schema and structure
 
 ## 📚 Related Documentation
 
 - [User Guide](user-guide-README) - End-user documentation
-- [Developer Guide](developer-guide-README) - Technical documentation
+- [Developer Guide](developer-guide) - Technical documentation
 - [Installation Guide](User-Installation-Guide) - Setup instructions
 

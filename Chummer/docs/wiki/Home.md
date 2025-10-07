@@ -24,7 +24,7 @@ Welcome to the Chummer5a wiki! This wiki contains comprehensive documentation fo
 - **[Contributing](Contributing)** - How to contribute to the project
 - **[Custom Data Files](Custom-Data-Files)** - Working with custom data files
 - **[Creating Custom Metatypes](Creating-custom-metatypes)** - Creating custom metatypes
-- **[Developer Guide](developer-guide-README)** - Complete developer documentation
+- **[Developer Guide](developer-guide)** - Complete developer documentation
 
 ### Game Content Documentation
 - **[Game Content Index](game-content-README)** - All game-related documentation
