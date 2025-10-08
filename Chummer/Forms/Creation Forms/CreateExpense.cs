@@ -44,7 +44,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
 
             // Determine the DateTime format and use that to display the date field (removing seconds since they're not important).
 

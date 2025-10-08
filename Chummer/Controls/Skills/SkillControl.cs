@@ -256,7 +256,7 @@ namespace Chummer.UI.Skills
 
                 this.UpdateLightDarkMode(token: objMyToken);
                 this.TranslateWinForm(blnDoResumeLayout: false, token: objMyToken);
-                this.UpdateParentForToolTipControls();
+
 
                 foreach (ToolStripItem tssItem in cmsSkillLabel.Items)
                 {

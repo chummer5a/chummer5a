@@ -37,7 +37,7 @@ namespace Chummer.UI.Table
             _checkBox.Tag = tag;
             this.UpdateLightDarkMode(objMyToken);
             this.TranslateWinForm(token: objMyToken);
-            this.UpdateParentForToolTipControls();
+
             Size = _checkBox.Size;
         }
 

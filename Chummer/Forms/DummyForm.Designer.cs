@@ -1,4 +1,4 @@
-﻿namespace Chummer.Forms
+namespace Chummer.Forms
 {
     partial class DummyForm
     {

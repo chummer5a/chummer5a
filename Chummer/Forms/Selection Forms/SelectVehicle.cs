@@ -67,7 +67,7 @@ namespace Chummer
             tabViews.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
 
             // Prevent Enter key from closing the form when NumericUpDown controls have focus
             nudMinimumCost.KeyDown += NumericUpDown_KeyDown;

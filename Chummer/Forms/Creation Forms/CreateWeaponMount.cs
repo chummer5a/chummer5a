@@ -72,7 +72,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
         }
 
         private async void CreateWeaponMount_Load(object sender, EventArgs e)

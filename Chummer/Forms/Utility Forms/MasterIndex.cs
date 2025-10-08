@@ -92,7 +92,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
             _lstFileNamesWithItems = Utils.ListItemListPool.Get();
             _lstItems = Utils.ListItemListPool.Get();
             _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();

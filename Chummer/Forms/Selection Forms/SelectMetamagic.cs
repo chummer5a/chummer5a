@@ -52,7 +52,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            this.UpdateParentForToolTipControls();
+
             _blnTechnomancer = objGrade.Technomancer;
             _intMyGrade = objGrade.Grade;
             _strRootXPath = _blnTechnomancer
