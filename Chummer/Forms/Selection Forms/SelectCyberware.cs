@@ -202,22 +202,6 @@ namespace Chummer
                         await chkPrototypeTranshuman.DoThreadSafeAsync(x => x.Visible = false, token: _objGenericToken).ConfigureAwait(false);
                 }
 
-                await nudMaxEssence.RegisterOneWayAsyncDataBindingAsync(
-                    (x, y) => x.Maximum = y, await _objCharacter.GetAttributeAsync("ESS", token: _objGenericToken).ConfigureAwait(false),
-                    nameof(CharacterAttrib.MetatypeMaximum),
-                    x => x.GetMetatypeMaximumAsync(_objGenericToken), _objGenericToken).ConfigureAwait(false);
-                await nudMaxEssence.RegisterOneWayAsyncDataBindingAsync(
-                    (x, y) =>
-                    {
-                        x.DecimalPlaces = y;
-                        x.Increment = 10.0m.Pow(-y);
-                    }, await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false),
-                    nameof(CharacterSettings.EssenceDecimals),
-                    x => x.GetEssenceDecimalsAsync(_objGenericToken), _objGenericToken).ConfigureAwait(false);
-                // We set current value here instead of in constructor so that it remains compatible with character settings on essence decimal places.
-                decimal decCurrentEssence = await _objCharacter.EssenceAsync(token: _objGenericToken).ConfigureAwait(false);
-                await nudMaxEssence.DoThreadSafeAsync(x => x.Value = decCurrentEssence, _objGenericToken).ConfigureAwait(false);
-
                 if (!string.IsNullOrEmpty(DefaultSearchText))
                 {
                     await txtSearch.DoThreadSafeAsync(x =>
@@ -582,18 +566,6 @@ namespace Chummer
                                     --intMaxRating;
                                 }
                             }
-                            if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
-                            {
-                                decimal decCostMultiplier = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
-                                decCostMultiplier *= _decCostMultiplier;
-                                if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
-                                    decCostMultiplier *= 0.9m;
-                                decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
-                                while (intMaxRating > intMinRating && !await xmlCyberware.CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, intMaxRating, token).ConfigureAwait(false))
-                                {
-                                    --intMaxRating;
-                                }
-                            }
                             await nudRating.DoThreadSafeAsync(x =>
                             {
                                 x.Maximum = intMaxRating;
@@ -823,29 +795,6 @@ namespace Chummer
             }
         }
 
-        private async void chkHideOverEssenceLimit_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_intLoading > 0)
-                return;
-            try
-            {
-                if (await chkHideOverEssenceLimit.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false))
-                {
-                    await lblMaxEssenceLabel.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
-                    await nudMaxEssence.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
-                }
-                else
-                {
-                    await lblMaxEssenceLabel.DoThreadSafeAsync(x => x.Enabled = false, _objGenericToken).ConfigureAwait(false);
-                    await nudMaxEssence.DoThreadSafeAsync(x => x.Enabled = false, _objGenericToken).ConfigureAwait(false);
-                }
-                await RefreshList(_strSelectedCategory, _objGenericToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-        }
 
         private async void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
@@ -853,11 +802,6 @@ namespace Chummer
                 return;
             try
             {
-                if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: _objGenericToken).ConfigureAwait(false)
-                    && !await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token: _objGenericToken).ConfigureAwait(false))
-                {
-                    await RefreshList(_strSelectedCategory, _objGenericToken).ConfigureAwait(false);
-                }
 
                 await UpdateCyberwareInfo(_objGenericToken).ConfigureAwait(false);
             }
@@ -941,10 +885,6 @@ namespace Chummer
                 return;
             try
             {
-                if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: _objGenericToken).ConfigureAwait(false))
-                {
-                    await RefreshList(_strSelectedCategory, _objGenericToken).ConfigureAwait(false);
-                }
 
                 await UpdateCyberwareInfo(_objGenericToken).ConfigureAwait(false);
             }
@@ -991,6 +931,60 @@ namespace Chummer
         {
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.TextLength, 0);
+        }
+
+        private async void chkUseCurrentEssence_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_intLoading > 0)
+                return;
+            try
+            {
+                if (await chkUseCurrentEssence.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false))
+                {
+                    decimal decCurrentEssence = await _objCharacter.EssenceAsync(token: _objGenericToken).ConfigureAwait(false);
+                    await nudMaximumEssence.DoThreadSafeAsync(x => 
+                    {
+                        x.Value = decCurrentEssence;
+                        x.Enabled = false;
+                    }, _objGenericToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    await nudMaximumEssence.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
+                }
+                await RefreshList(_strSelectedCategory, _objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void chkUseCurrentNuyen_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_intLoading > 0)
+                return;
+            try
+            {
+                if (await chkUseCurrentNuyen.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false))
+                {
+                    decimal decCurrentNuyen = await _objCharacter.GetAvailableNuyenAsync(token: _objGenericToken).ConfigureAwait(false);
+                    await nudMaximumCost.DoThreadSafeAsync(x => 
+                    {
+                        x.Value = decCurrentNuyen;
+                        x.Enabled = false;
+                    }, _objGenericToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    await nudMaximumCost.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
+                }
+                await RefreshList(_strSelectedCategory, _objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
         #endregion Control Events
 
@@ -1655,14 +1649,11 @@ namespace Chummer
                     bool blnHideOverAvailLimit = await chkHideOverAvailLimit
                                                        .DoThreadSafeFuncAsync(x => x.Checked, token: token)
                                                        .ConfigureAwait(false);
-                    bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems
-                                                        .DoThreadSafeFuncAsync(x => x.Checked, token: token)
-                                                        .ConfigureAwait(false);
                     bool blnFree = await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token: token)
                                                 .ConfigureAwait(false);
                     decimal decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
                                                        .ConfigureAwait(false);
-                    decimal decNuyen = blnFree || !blnShowOnlyAffordItems ? decimal.MaxValue : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
+                    decimal decNuyen = blnFree ? decimal.MaxValue : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                     foreach (XPathNavigator xmlCyberware in xmlIterator)
                     {
                         bool blnIsForceGrade
@@ -1833,55 +1824,7 @@ namespace Chummer
                             continue;
                         }
 
-                        if (blnShowOnlyAffordItems && !blnFree)
-                        {
-                            decimal decCostMultiplier = 1 + decMarkup / 100.0m;
-                            if (_setBlackMarketMaps.Contains(
-                                    xmlCyberware
-                                        .SelectSingleNodeAndCacheExpression("category", token: token)?.Value))
-                                decCostMultiplier *= 0.9m;
-                            if (!await xmlCyberware
-                                       .CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, token: token)
-                                       .ConfigureAwait(false))
-                            {
-                                ++intOverLimit;
-                                continue;
-                            }
-                        }
 
-                        // Essence filtering
-                        bool blnHideOverEssenceLimit = await chkHideOverEssenceLimit
-                                                           .DoThreadSafeFuncAsync(x => x.Checked, token: token)
-                                                           .ConfigureAwait(false);
-                        if (blnHideOverEssenceLimit)
-                        {
-                            decimal decMaxEssence = await nudMaxEssence
-                                                       .DoThreadSafeFuncAsync(x => x.Value, token: token)
-                                                       .ConfigureAwait(false);
-                            
-                            // Calculate the essence cost of this cyberware
-                            string strEssenceExpr = xmlCyberware.SelectSingleNodeAndCacheExpression("ess", token: token)?.Value ?? "0";
-                            strEssenceExpr = strEssenceExpr.ProcessFixedValuesString(intMinRating);
-                            
-                            decimal decEssenceCost = 0;
-                            if (!string.IsNullOrEmpty(strEssenceExpr) && !decimal.TryParse(strEssenceExpr, out decEssenceCost))
-                            {
-                                (decimal decValue, bool blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strEssenceExpr, intMinRating, intMinRating, token).ConfigureAwait(false);
-                                decEssenceCost = blnIsSuccess ? decValue : 0;
-                            }
-                            
-                            // Apply essence discount if applicable
-                            if (decEssenceCost > 0 && _decESSMultiplier != 1.0m)
-                            {
-                                decEssenceCost *= _decESSMultiplier;
-                            }
-                            
-                            if (decEssenceCost > decMaxEssence)
-                            {
-                                ++intOverLimit;
-                                continue;
-                            }
-                        }
 
                         // Apply essence filtering
                         decimal decMinimumEssence = await nudMinimumEssence.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);

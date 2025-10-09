@@ -731,6 +731,14 @@
       <text>Filter by Essence</text>
     </string>
     <string>
+      <key>Checkbox_UseCurrentEssence</key>
+      <text>Current ESS</text>
+    </string>
+    <string>
+      <key>Checkbox_UseCurrentNuyen</key>
+      <text>Current ¥</text>
+    </string>
+    <string>
       <key>Label_Exact</key>
       <text>Exact:</text>
     </string>

@@ -2570,6 +2570,19 @@ namespace Chummer.Backend.Skills
                 finally
                 {
                     Interlocked.Decrement(ref _intLoading);
+
+                    // Settings file is loaded after the character, so we need to hook into the settings changed event here.
+                    CharacterSettings objCurrentSettings = CharacterObject.Settings;
+                    if (!ReferenceEquals(_objCharacterSettings, objCurrentSettings))
+                    {
+                        CharacterSettings objOldSettings = Interlocked.Exchange(ref _objCharacterSettings, objCurrentSettings);
+                        if (objOldSettings?.IsDisposed == false)
+                            objOldSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        if (objCurrentSettings?.IsDisposed == false)
+                        {
+                            objCurrentSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+                        }
+                    }
                 }
             }
             finally
@@ -2853,6 +2866,19 @@ namespace Chummer.Backend.Skills
                 finally
                 {
                     Interlocked.Decrement(ref _intLoading);
+
+                    // Settings file is loaded after the character, so we need to hook into the settings changed event here.
+                    CharacterSettings objCurrentSettings = CharacterObject.Settings;
+                    if (!ReferenceEquals(_objCharacterSettings, objCurrentSettings))
+                    {
+                        CharacterSettings objOldSettings = Interlocked.Exchange(ref _objCharacterSettings, objCurrentSettings);
+                        if (objOldSettings?.IsDisposed == false)
+                            objOldSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        if (objCurrentSettings?.IsDisposed == false)
+                        {
+                            objCurrentSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+                        }
+                    }
                 }
             }
         }

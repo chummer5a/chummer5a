@@ -424,6 +424,8 @@ Changed/New Strings:
 - Label_Maximum
 - Label_GameplayOptionName
 - Tip_GameplayOptionName
+- Checkbox_UseCurrentEssence
+- Checkbox_UseCurrentNuyen
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage
