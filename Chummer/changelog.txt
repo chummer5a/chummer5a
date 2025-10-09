@@ -125,6 +125,7 @@ Application Changes:
 - Added support for using the hide element in skills.xml for the amend system
 - Added support for using <gameplayoption> as a requirement, based on the Character Settings used. This allows for items, qualities, powers, etc. to be made available or unavailable based on the selected gameplay option string. As an example, this restores the ability to make the Insect Free Spirit quality only available when the Prime Runner gameplay option is selected.
 - Implemented qualitylevel improvement to handle Life Modules and only taking the highest level of SIN. This maps an improvement to gaining a quality at a specific level of the value of the improvement, read in from qualitylevels.xml. This improvement type will add the quality if the character does not have it, or replace the quality with the highest version if the character already has it.
+- When searching in the Select Weapon Accessory window, an indicator will be shown for accessories that are not compatible with the currently selected weapon's mounts.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://jackpoint.live/index.php?topic=31750.msg544923#msg544923.
@@ -426,6 +427,7 @@ Changed/New Strings:
 - Tip_GameplayOptionName
 - Checkbox_UseCurrentEssence
 - Checkbox_UseCurrentNuyen
+- String_RestrictedItemsHiddenMount
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage

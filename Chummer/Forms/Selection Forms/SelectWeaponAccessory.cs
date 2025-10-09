@@ -111,19 +111,12 @@ namespace Chummer
             {
                 // Populate the Accessory list.
                 string strFilter = string.Empty;
+                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
                     sbdFilter.Append('(',
                         await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false),
-                        ") and (mount = \"\"");
-                    foreach (string strAllowedMount in _lstAllowedMounts.Where(
-                                 strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
-                    {
-                        sbdFilter.Append(" or contains(mount, ", strAllowedMount.CleanXPath(), ')');
-                    }
-
-                    sbdFilter.Append(')');
-                    string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+                        ')');
                     if (!string.IsNullOrEmpty(strSearch))
                         sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
 
@@ -148,6 +141,7 @@ namespace Chummer
                 }
 
                 int intOverLimit = 0;
+                int intMountRestricted = 0;
                 bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
@@ -159,8 +153,14 @@ namespace Chummer
                     string strId = objXmlAccessory.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
-                    if (!await _objParentWeapon.CheckAccessoryRequirementsAsync(objXmlAccessory, token).ConfigureAwait(false))
+
+                    // Check mount requirements first
+                    bool blnMeetsMountRequirements = await _objParentWeapon.CheckAccessoryRequirementsAsync(objXmlAccessory, token).ConfigureAwait(false);
+                    if (!blnMeetsMountRequirements)
+                    {
+                        ++intMountRestricted;
                         continue;
+                    }
 
                     decimal decCostMultiplier = decBaseCostMultiplier;
                     if (_blnIsParentWeaponBlackMarketAllowed)
@@ -188,6 +188,14 @@ namespace Chummer
                                                         GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync("String_RestrictedItemsHidden", token: token).ConfigureAwait(false),
                                                         intOverLimit)));
+                }
+                if (intMountRestricted > 0 && !string.IsNullOrEmpty(strSearch))
+                {
+                    // Add after sort so that it's always at the end
+                    lstAccessories.Add(new ListItem(string.Empty, string.Format(
+                                                        GlobalSettings.CultureInfo,
+                                                        await LanguageManager.GetStringAsync("String_RestrictedItemsHiddenMount", token: token).ConfigureAwait(false),
+                                                        intMountRestricted)));
                 }
 
                 string strOldSelected = await lstAccessory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
