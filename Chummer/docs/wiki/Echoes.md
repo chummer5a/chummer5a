@@ -1,4 +1,4 @@
-echoes.xml (and custom_echoes.xml, see [Custom Data Files](Custom%20Data%20Files.ashx "Custom Data Files")) contains all of the information on Echoes.
+echoes.xml (and custom_echoes.xml, see [Custom Data Files](Custom-Data-Files)) contains all of the information on Echoes.
 
 # Structure
     <chummer>
@@ -6,9 +6,9 @@ echoes.xml (and custom_echoes.xml, see [Custom Data Files](Custom%20Data%20Files
           <echo />
        </echoes>
     </chummer>
-[**echo**](#echo "echo") nodes describe individual Echoes.
+[**echo**](#echo) nodes describe individual Echoes.
 
-## <a id="echo"></a>echo Node
+## <a id="echo"></a>Echo Node
     <echo>
        <id />
        <name />
@@ -24,10 +24,10 @@ echoes.xml (and custom_echoes.xml, see [Custom Data Files](Custom%20Data%20Files
 
 **limit** (optional): when set to _no_, this Echo can be selected multiple times.
 
-**bonus** (optional): a bonus node that describes any bonuses this entry grants. See [Improvement Manager](Improvement-System.ashx "Improvement Manager") for more information.
+**bonus** (optional): a bonus node that describes any bonuses this entry grants. See [Improvement Manager](Improvement-Manager) for more information.
 
-**required** (optional): the Echo has certain requirements that the character must meet before it can be selected. See [**required** Node](#required "required Node") for more information.
+**required** (optional): the Echo has certain requirements that the character must meet before it can be selected. See [**Required** Node](#required "Required Node") for more information.
 
-**source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](books-xml.ashx "books.xml").
+**source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](Books "books.xml").
 
 **page** (required): the page number this item can be found on in the Sourcebook.

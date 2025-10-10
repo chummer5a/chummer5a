@@ -1,6 +1,6 @@
 # critterpowers.xml
 
-critterpowers.xml (and custom_critterpowers.xml, see [Custom Data Files](Custom Data Files)) contains all of the information for Critter Powers.
+critterpowers.xml (and custom_critterpowers.xml, see [Custom Data Files](Custom-Data-Files)) contains all of the information for Critter Powers.
 
 # Structure
     <chummer>
@@ -11,17 +11,17 @@ critterpowers.xml (and custom_critterpowers.xml, see [Custom Data Files](Custom 
           <power />
        </powers>
     </chummer>
-[**categories**](#categories "categories") describes the different Categories of Critter Powers.
+[**categories**](#categories) describes the different Categories of Critter Powers.
 
-[**power**](#power "power") nodes describe individual Critter Powers.
+[**power**](#power) nodes describe individual Critter Powers.
 
-## <a id="categories"></a>categories Node
+## <a id="categories"></a>Categories Node
     <categories>
        <category />
     </categories>
 **category** (required): the name of the Critter Power Category. This list populates the Category list found in the Select Critter Power window. Categories are used to group Critter Powers into groups such as _Emergent_, _Free Spirit_, and _Paranormal_.
 
-## <a id="power"></a>power Node
+## <a id="power"></a>Power Node
     <power>
        <id />
        <name />
@@ -55,8 +55,8 @@ critterpowers.xml (and custom_critterpowers.xml, see [Custom Data Files](Custom 
 
 **duration** (required): the Critter Power's duration.
 
-**bonus** (optional): a bonus node that describes any bonuses this entry grants. Values may contain the `Rating` keyword. See [Improvement Manager](Improvement Manager) for more information.
+**bonus** (optional): a bonus node that describes any bonuses this entry grants. Values may contain the `Rating` keyword. See [Improvement Manager](Improvement-Manager) for more information.
 
-**source** (required): the code for the Sourcebook that this entry comes from. See [Books](Books "books.xml").
+**source** (required): the code for the Sourcebook that this entry comes from. See [Books](Books).
 
 **page** (required): the page number this item can be found on in the Sourcebook.

@@ -1,4 +1,4 @@
-spells.xml (and custom_spells.xml, see [Custom Data Files](Custom%20Data%20Files.ashx "Custom Data Files")) contains all of the information on spells.
+spells.xml (and custom_spells.xml, see [Custom Data Files](Custom-Data-Files)) contains all of the information on spells.
 
 # Structure
     <chummer>
@@ -6,9 +6,9 @@ spells.xml (and custom_spells.xml, see [Custom Data Files](Custom%20Data%20Files
           <spell />
        </spells>
     </chummer>
-[**spell**](#spell "spell") nodes describe individual spells.
+[**spell**](#spell) nodes describe individual spells.
 
-## <a id="spell"></a>spell Node
+## <a id="spell"></a>Spell Node
     <spell>
        <id />
        <hide />
@@ -37,12 +37,12 @@ spells.xml (and custom_spells.xml, see [Custom Data Files](Custom%20Data%20Files
 
 **page** (required): the page number this item can be found on in the Sourcebook.
 
-**source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](https://github.com/chummer5a/chummer5a/wiki/Books).
+**source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](Books "books.xml").
 
-**category** (required): the Category that this Spell belongs to. This must match one of the Categories defined in the [categories Node](https://github.com/chummer5a/chummer5a/wiki/Spells#categories).
+**category** (required): the Category that this Spell belongs to. This must match one of the Categories defined in the [Categories Node](Spells#categories).
 
 **damage** (required): String. Whether the spell deals Physical (P), Stun (S) or other damage
 
-**bonus** (optional): a bonus node that describes any bonuses this entry grants. See [Improvement Manager](Improvement-System.ashx "Improvement Manager") for more information.
+**bonus** (optional): a bonus node that describes any bonuses this entry grants. See [Improvement Manager](Improvement-Manager) for more information.
 
-**required** (optional): the spell has certain requirements that the character must meet before it can be selected. See [**required** Node](#required "required Node") for more information.
+**required** (optional): the spell has certain requirements that the character must meet before it can be selected. See [**Required** Node](#required "Required Node") for more information.

@@ -99,4 +99,3 @@ In most cases, this order of precedence means that non-English content is not tr
 # Additional Resources
 
 * [General GitHub documentation](http://help.github.com/)
-0

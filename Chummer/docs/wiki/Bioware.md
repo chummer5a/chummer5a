@@ -1,4 +1,4 @@
-bioware.xml (and custom_bioware.xml, see [Custom Data Files](Custom%20Data%20Files "Custom Data Files")) contains all of the information for Bioware.
+bioware.xml (and custom_bioware.xml, see [Custom Data Files](Custom-Data-Files)) contains all of the information for Bioware.
 
 # Structure
     <chummer>
@@ -13,13 +13,13 @@ bioware.xml (and custom_bioware.xml, see [Custom Data Files](Custom%20Data%20Fil
        </biowares>
     </chummer>
 
-[**grade**](#grade "grade") nodes describe different Grades of Bioware.
+[**grade**](#grade "Grade Node") nodes describe different Grades of Bioware.
 
-[**categories**](#categories "categories") describes the different Categories of Bioware.
+[**categories**](#categories "Categories Node") describes the different Categories of Bioware.
 
-[**bioware**](#bioware "bioware") nodes describe the individual pieces of Bioware.
+[**bioware**](#bioware "Bioware Node") nodes describe the individual pieces of Bioware.
 
-## <a id="grade"></a>grade Node
+## <a id="grade"></a>Grade Node
     <grade>
        <name />
        <ess />
@@ -37,13 +37,13 @@ bioware.xml (and custom_bioware.xml, see [Custom Data Files](Custom%20Data%20Fil
 
 **source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](Books "books.xml").
 
-## <a id="categories"></a>categories Node
+## <a id="categories"></a>Categories Node
     <categories>
        <category />
     </categories>
 **category** (required): the name of the Bioware Category. This list populates the Category list found in the Select Bioware window. Categories are used to group Bioware into groups such as _Basic_, _Cosmetic_, and _Cultured_.
 
-## <a id="bioware"></a>bioware Node
+## <a id="bioware"></a>Bioware Node
     <bioware>
        <id />
        <name />
@@ -63,7 +63,7 @@ bioware.xml (and custom_bioware.xml, see [Custom Data Files](Custom%20Data%20Fil
 
 **name** (required): the name of the Bioware.
 
-**category** (required): the Category that this piece of Bioware belongs to. This must match one of the Categories defined in the [**categories** Node](#categories "categories Node").
+**category** (required): the Category that this piece of Bioware belongs to. This must match one of the Categories defined in the [**Categories** Node](#categories "Categories Node").
 
 **rating** (optional): when present, Ratings for this piece of Bioware are enabled. The maximum Rating is equal to the value specified here.
 
@@ -77,11 +77,11 @@ bioware.xml (and custom_bioware.xml, see [Custom Data Files](Custom%20Data%20Fil
 
 **cost**: the Cost for this piece of Bioware. May contain the `Rating` keyword if Ratings are enabled. May contain mathematical formula such as `Rating * 3000`. May contain a variable value such as `Variable(20-100)` or `Variable(10000+)` to give the item a variable cost if it does not use Ratings. May used `FixedValues` if necessary. See [Using Fixed Values](#fixedvalues "Using Fixed Values") for more information.
 
-**bonus** (optional): a bonus node that describes any bonuses this entry grants. Values may contain the `Rating` keyword if Ratings are enabled. See [Improvement Manager](Improvement-Manager "Improvement Manager") for more information.
+**bonus** (optional): a bonus node that describes any bonuses this entry grants. Values may contain the `Rating` keyword if Ratings are enabled. See [Improvement Manager](Improvement-Manager) for more information.
 
-**forcegrade** (optional): forces the Bioware to be added using the Grade specified. This must match one of the Grades specified in the [**grades** Node](#grade "grades Node").
+**forcegrade** (optional): forces the Bioware to be added using the Grade specified. This must match one of the Grades specified in the [**Grades** Node](#grade "Grades Node").
 
-**source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](Books "books.xml").
+**source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](Books).
 
 **page** (required): the page number this item can be found on in the Sourcebook.
 
