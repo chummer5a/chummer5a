@@ -10753,6 +10753,8 @@ namespace Chummer.Backend.Equipment
                 if (ParentVehicle == null)
                 {
                     intBonus += _objCharacter.RedlinerBonus;
+                    // Add CyberlimbAttributeBonus improvements
+                    intBonus += (int)ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberlimbAttributeBonus, strImprovedName: strAbbrev);
                 }
 
                 intBonus = Math.Min(intBonus, _objCharacter.Settings.CyberlimbAttributeBonusCap);
@@ -10822,6 +10824,8 @@ namespace Chummer.Backend.Equipment
                 if (ParentVehicle == null)
                 {
                     intBonus += await _objCharacter.GetRedlinerBonusAsync(token).ConfigureAwait(false);
+                    // Add CyberlimbAttributeBonus improvements
+                    intBonus += (int)await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.CyberlimbAttributeBonus, strImprovedName: strAbbrev, token: token).ConfigureAwait(false);
                 }
 
                 intBonus = Math.Min(intBonus, await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetCyberlimbAttributeBonusCapAsync(token).ConfigureAwait(false));

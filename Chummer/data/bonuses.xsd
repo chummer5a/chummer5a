@@ -385,6 +385,14 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="cyberseeker" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="cyberlimbattributebonus" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="val" type="xs:string" minOccurs="1" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="cyberwareessmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
       <xs:element name="cyberwaretotalessmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
       <xs:element name="cyberwareessmultipliernonretroactive" type="xs:integer" minOccurs="0" maxOccurs="1" />

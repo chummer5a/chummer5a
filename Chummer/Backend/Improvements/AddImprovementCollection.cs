@@ -535,6 +535,17 @@ namespace Chummer
             }
         }
 
+        public void cyberlimbattributebonus(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            
+            string strAttribute = bonusNode["name"]?.InnerTextViaPool() ?? string.Empty;
+            decimal decValue = ImprovementManager.ValueToDec(_objCharacter, bonusNode["val"]?.InnerTextViaPool(), _intRating);
+
+            CreateImprovement(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberlimbAttributeBonus, _strUnique, decValue, 0);
+        }
+
         public void blockskillcategorydefaulting(XmlNode bonusNode)
         {
             if (bonusNode == null)

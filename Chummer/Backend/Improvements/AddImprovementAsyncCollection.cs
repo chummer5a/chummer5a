@@ -566,6 +566,18 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             }
         }
 
+        public async Task cyberlimbattributebonus(XmlNode bonusNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            
+            string strAttribute = bonusNode["name"]?.InnerTextViaPool(token) ?? string.Empty;
+            decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
+
+            await CreateImprovementAsync(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberlimbAttributeBonus, _strUnique, decValue, 0, token: token).ConfigureAwait(false);
+        }
+
         public Task blockskillcategorydefaulting(XmlNode bonusNode, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)

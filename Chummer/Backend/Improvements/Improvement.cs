@@ -366,6 +366,7 @@ namespace Chummer
             ReplaceSkillSpell,
             Availability,
             SkillEnableMovement, // Enables skills that require fly/swim movement even without that movement type
+            CyberlimbAttributeBonus, // Cyberlimb attribute bonus for strength or agility (similar to redliner but without cyberlimb dependency)
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 

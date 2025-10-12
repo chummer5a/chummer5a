@@ -92,6 +92,8 @@ namespace Chummer
                     return objImprovementAdder.selecttradition;
                 case "CYBERSEEKER":
                     return objImprovementAdder.cyberseeker;
+                case "CYBERLIMBATTRIBUTEBONUS":
+                    return objImprovementAdder.cyberlimbattributebonus;
                 case "BLOCKSKILLCATEGORYDEFAULTING":
                     return objImprovementAdder.blockskillcategorydefaulting;
                 case "BLOCKSKILLGROUPDEFAULTING":
@@ -741,6 +743,8 @@ namespace Chummer
                     return objImprovementAsyncAdder.selecttradition;
                 case "CYBERSEEKER":
                     return objImprovementAsyncAdder.cyberseeker;
+                case "CYBERLIMBATTRIBUTEBONUS":
+                    return objImprovementAsyncAdder.cyberlimbattributebonus;
                 case "BLOCKSKILLCATEGORYDEFAULTING":
                     return objImprovementAsyncAdder.blockskillcategorydefaulting;
                 case "BLOCKSKILLGROUPDEFAULTING":
