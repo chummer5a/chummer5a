@@ -17,7 +17,7 @@
 
 The `qualitylevels.xml` file defines hierarchical quality groups where multiple levels of the same quality type can exist, but only the highest level should be applied to a character. This is particularly useful for Life Modules that can grant different levels of the same quality type that are mutually exclusive such as the SINner qualities.
 
-## qualitygroup Node
+## Qualitygroup Node
 
 ```xml
 <qualitygroup>
@@ -32,7 +32,7 @@ The `qualitylevels.xml` file defines hierarchical quality groups where multiple 
 
 **levels** (required): Contains the list of levels for this quality group, ordered from lowest to highest level.
 
-## level Node
+## Level Node
 
 ```xml
 <level value="">Quality Name</level>

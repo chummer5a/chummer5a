@@ -141,5 +141,5 @@ If you still want to try:
 ### Getting Help
 
 - Check our [GitHub Issues](https://github.com/chummer5a/chummer5a/issues)
-- Read the [Contributing Guide](../developer-guide/Contributing.md) for development help
-- Browse the [Game Content Documentation](../wiki/) for game-specific information
+- Read the [Contributing Guide](developer-guide/Contributing.md) for development help
+- Browse the [Game Content Documentation](Game-Content-Documentation) for game-specific information

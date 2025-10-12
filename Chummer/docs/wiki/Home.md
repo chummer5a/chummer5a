@@ -5,7 +5,7 @@ Welcome to the Chummer5a wiki! This wiki contains comprehensive documentation fo
 ## 🚀 Quick Start
 
 ### Installation
-- **[Installation Guide](Installation.md)** - Complete installation instructions for Windows, Linux, and macOS
+- **[Installation Guide](Installation)** - Complete installation instructions for Windows, Linux, and macOS
 - Download the latest release from our [releases page](https://github.com/chummer5a/chummer5a/releases)
 
 ### Getting Started
@@ -17,34 +17,34 @@ Welcome to the Chummer5a wiki! This wiki contains comprehensive documentation fo
 ## 📚 Documentation Sections
 
 ### User Documentation
-- **[Installation](Installation.md)** - Installation instructions for all platforms
-- **[User Guide](user-guide/README.md)** - Complete user documentation
+- **[Installation](Installation)** - Installation instructions for all platforms
+- **[User Guide](User-Guide)** - Complete user documentation
 
 ### Developer Documentation
-- **[Contributing](Contributing.md)** - How to contribute to the project
-- **[Custom Data Files](Custom-Data-Files.md)** - Working with custom data files
-- **[Creating Custom Metatypes](Creating-custom-metatypes.md)** - Creating custom metatypes
-- **[Developer Guide](developer-guide/README.md)** - Complete developer documentation
+- **[Contributing](Contributing)** - How to contribute to the project
+- **[Custom Data Files](Custom-Data-Files)** - Working with custom data files
+- **[Creating Custom Metatypes](Creating-Custom-Metatypes)** - Creating custom metatypes
+- **[Developer Guide](Developer-Guide)** - Complete developer documentation
 
 ### Game Content Documentation
-- **[Game Content Index](game-content/README.md)** - All game-related documentation
-- **[Armor](Armor.md)** - Armor types and mechanics
-- **[Bioware](Bioware.md)** - Bioware implants and modifications
-- **[Cyberware](Cyberware.md)** - Cybernetic implants and modifications
-- **[Gear](Gear.md)** - Equipment, weapons, and general gear
-- **[Spells](Spells.md)** - Magic spells and traditions
-- **[Metatypes](Metatypes.md)** - Character races and metatypes
-- **[Books](Books.md)** - Source books and references
-- **[Conditions](Conditions.md)** - Game conditions and effects
-- **[Critter Powers](Critter-Powers.md)** - Critter abilities and powers
-- **[Echoes](Echoes.md)** - Echoes and resonance effects
-- **[Errata](Errata.md)** - Official errata and corrections
-- **[Improvement Manager](Improvement-Manager.md)** - Character improvements
-- **[Lifestyles](Lifestyles.md)** - Character lifestyles and living conditions
-- **[Martial Arts](Martial-Arts.md)** - Martial arts and combat techniques
-- **[Mentor Spirits](Mentor-Spirits.md)** - Mentor spirits and their benefits
-- **[Quality Levels](Quality-Levels.md)** - Character qualities and levels
-- **[Traditions and Streams](Traditions-and-Streams.md)** - Magic traditions and streams
+- **[Game Content Index](Game-Content-Documentation)** - All game-related documentation
+- **[Armor](Armor)** - Armor types and mechanics
+- **[Bioware](Bioware)** - Bioware implants and modifications
+- **[Cyberware](Cyberware)** - Cybernetic implants and modifications
+- **[Gear](Gear)** - Equipment, weapons, and general gear
+- **[Spells](Spells)** - Magic spells and traditions
+- **[Metatypes](Metatypes)** - Character races and metatypes
+- **[Books](Books)** - Source books and references
+- **[Conditions](Conditions)** - Game conditions and effects
+- **[Critter Powers](Critter-Powers)** - Critter abilities and powers
+- **[Echoes](Echoes)** - Echoes and resonance effects
+- **[Errata](Errata)** - Official errata and corrections
+- **[Improvement Manager](Improvement-Manager)** - Character improvements
+- **[Lifestyles](Lifestyles)** - Character lifestyles and living conditions
+- **[Martial Arts](Martial-Arts)** - Martial arts and combat techniques
+- **[Mentor Spirits](Mentor-Spirits)** - Mentor spirits and their benefits
+- **[Quality Levels](Quality-Levels)** - Character qualities and levels
+- **[Traditions and Streams](Traditions-and-Streams)** - Magic traditions and streams
 
 ## 🛠️ For Contributors
 
@@ -60,7 +60,7 @@ This wiki is automatically synchronized with the main repository. To update docu
 - **[GitHub Repository](https://github.com/chummer5a/chummer5a)** - Main project repository
 - **[Issues](https://github.com/chummer5a/chummer5a/issues)** - Bug reports and feature requests
 - **[Releases](https://github.com/chummer5a/chummer5a/releases)** - Download latest version
-- **[Contributing Guide](Contributing.md)** - How to contribute to the project
+- **[Contributing Guide](Contributing)** - How to contribute to the project
 
 ## 📝 About This Wiki
 

@@ -122,4 +122,4 @@ Each data type has its own XML file with a corresponding XSD schema file. The sc
 - [XML Schema Documentation](https://www.w3.org/XML/Schema)
 - [GUID Generator](https://guidgenerator.com/)
 - [XML Validation Tools](https://www.xmlvalidation.com/)
-- [Chummer5a Data Structure Guide](../wiki/README.md)
+- [Chummer5a Data Structure Guide](Game-Content-Documentation)

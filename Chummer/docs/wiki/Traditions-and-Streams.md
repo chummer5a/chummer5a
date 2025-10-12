@@ -1,4 +1,4 @@
-traditions.xml (and custom_traditions.xml, see [Custom Data Files](Custom Data Files))) contains all of the information on Magic Traditions. streams.xml (and custom_streams.xml) contains all of the information for Technomancer Streams. Despite the file name difference, the structure of the two files are identical.
+traditions.xml (and custom_traditions.xml, see [Custom Data Files](Custom-Data-Files)) contains all of the information on Magic Traditions. streams.xml (and custom_streams.xml) contains all of the information for Technomancer Streams. Despite the file name difference, the structure of the two files are identical.
 
 ## Structure
     <chummer>
@@ -7,9 +7,9 @@ traditions.xml (and custom_traditions.xml, see [Custom Data Files](Custom Data F
        </traditions>
     </chummer>
 
-[**tradition**](#tradition "tradition") nodes describe individual Tradition/Stream.
+[**Tradition**](#tradition "Tradition Node") Nodes describe individual Tradition/Stream.
 
-## <a id="tradition"></a>tradition Node
+## <a id="tradition"></a>Tradition Node
 
     <tradition>
        <id />
@@ -26,13 +26,13 @@ traditions.xml (and custom_traditions.xml, see [Custom Data Files](Custom Data F
 
 **drain** (required): the Attributes that a character uses to resist Drain/Fading with this Tradition/Stream.
 
-**spirits** (required): the list of Spirits/Sprites that a character following this Tradition/Stream can summon. See [**spirits** Node](#spirits "spirits Node") for more information.
+**spirits** (required): the list of Spirits/Sprites that a character following this Tradition/Stream can summon. See [**Spirits** Node](#spirits "Spirits Node") for more information.
 
 **source** (required): the code for the Sourcebook that this entry comes from. See books.xml.
 
 **page** (required): the page number this item can be found on in the Sourcebook.
 
-## <a id="spirits"></a>spirits Node
+## <a id="spirits"></a>Spirits Node
 
     <spirits>
        <spirit />
@@ -40,7 +40,7 @@ traditions.xml (and custom_traditions.xml, see [Custom Data Files](Custom Data F
 
 **spirit** (required): the name of a Spirit/Sprite that can be summoned by followers of the Tradition/Stream. This node may appear multiple times.
 
-## <a id="spirit"></a>spirit Node
+## <a id="spirit"></a>Spirit Node
 
     <spirit>
        <id></id>
@@ -84,19 +84,19 @@ traditions.xml (and custom_traditions.xml, see [Custom Data Files](Custom Data F
 
 **ini** (required): the INI value of the Spirit. If the value is based on the Force of the spirit, use formulas such as (F*2)+4.
 
-**skills** (optional): the list of Active Skills, Skill Groups, and Knowledge Skills that the Spirit automatically has Ratings in. See [**skills** Node](#skills "skills Node") for more information.
+**skills** (optional): the list of Active Skills, Skill Groups, and Knowledge Skills that the Spirit automatically has Ratings in. See [**Skills** Node](#skills "Skills Node") for more information.
 
-**powers** (optional): the list of Critter Powers that this Spirit receives for free. See [**powers and optionalpowers** Nodes](#powers "powers and optionalpowers Nodes") for more information.
+**powers** (optional): the list of Critter Powers that this Spirit receives for free. See [**Powers and Optionalpowers** Nodes](#powers "Powers and Optionalpowers Nodes") for more information.
 
-**optionalpowers** (optional): the list of additional Critter Powers that this Spirit can choose to gain. See [**powers and optionalpowers** Nodes](#powers "powers and optionalpowers Nodes") for more information.
+**optionalpowers** (optional): the list of additional Critter Powers that this Spirit can choose to gain. See [**Powers and Optionalpowers** Nodes](#powers "Powers and Optionalpowers Nodes") for more information.
 
-**weaknesses** (optional): the list of additional Critter Weaknesses that this Spirit receives automatically. See [**weaknesses** Node](#weaknesses "weaknesses Nodes") for more information.
+**weaknesses** (optional): the list of additional Critter Weaknesses that this Spirit receives automatically. See [**Weaknesses** Node](#Weaknesses "Weaknesses Nodes") for more information.
 
-**source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](books-xml.ashx "books.xml").
+**source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](Books "books.xml").
 
 **page** (required): the page number this item can be found on in the Sourcebook.
 
-## <a id="skills"></a>skills Node
+## <a id="skills"></a>Skills Node
     <skills>
        <skill />
        <group />
@@ -108,13 +108,13 @@ traditions.xml (and custom_traditions.xml, see [Custom Data Files](Custom Data F
 
 **knowledge** (optional): the name of a Knowledge Skill that the Metatype will be given. May contain the _rating_ attribute which sets the Rating for the Knowledge Skill. May contain the _category_ attribute which sets the Category the Knowledge Skill, such as _Academic_ or _Professional_.
 
-## <a id="powers"></a>powers and optionalpowers Nodes
+## <a id="powers"></a>Powers and Optionalpowers Nodes
     <powers> or <optionalpowers>
        <power />
     </powers> or </optionalpowers>
 **power** (required): the name of a Critter Power that the Metatype receives for free or may choose as an optional Critter Power. May contain the _select_ attribute which forces a particular value to be selected for the Critter Power. May contain the _rating_ attribute which sets a Rating for the Critter Powers. Optional Powers may also contain the _cost_ attribute which specifies the number of Power Points the Critter must spend to purchase the Critter Power which typically applies to Free Spirits.
 
-## <a id="weaknesses"></a>weaknesses Node
+## <a id="weaknesses"></a>Weaknesses Node
     <weaknesses>
        <weakness />
     </weaknesses>

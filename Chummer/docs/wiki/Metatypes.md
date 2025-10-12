@@ -1,6 +1,6 @@
 # metatypes.xml, critters.xml, and vessels.xml
 
-metatypes.xml (and custom_metatypes.xml, see [Custom Data Files](Custom Data Files)) contains all of the information for Metatypes and Metavariants. critters.xml (and custom_critters.xml) contains all of the information for Critters. Despite the file name difference, the structure of the two files are identical. vessels.xml (and custom_vessels.xml) contains all of the information for Inanimate Vessels. It structure is identical to that of metatypes.xml with a few exceptions as described below.
+metatypes.xml (and custom_metatypes.xml, see [Custom Data Files](Custom-Data-Files)) contains all of the information for Metatypes and Metavariants. critters.xml (and custom_critters.xml) contains all of the information for Critters. Despite the file name difference, the structure of the two files are identical. vessels.xml (and custom_vessels.xml) contains all of the information for Inanimate Vessels. It structure is identical to that of metatypes.xml with a few exceptions as described below.
 
 # Structure
     <chummer>
@@ -11,17 +11,17 @@ metatypes.xml (and custom_metatypes.xml, see [Custom Data Files](Custom Data Fil
           <metatype />
        </metatypes>
     </chummer>
-[**categories**](#categories "categories") describes the different Categories of Metatypes.
+[**Categories**](#categories "Categories Node") describes the different Categories of Metatypes.
 
-[**metatype**](#metatype "metatype") nodes describe the individual Metatypes.
+[**Metatype**](#metatype "Metatype Node") nodes describe the individual Metatypes.
 
-## <a id="categories"></a>categories Node
+## <a id="categories"></a>Categories Node
     <categories>
        <category />
     </categories>
 **category** (required): the name of the Metatype Category. This list populates the Category list found in the Select Metatype window. Categories are used to group Metatypes into groups such as _Metahuman_, _Shapeshifter_, and _Paranormal_.
 
-## <a id="metatype"></a>metatype Node
+## <a id="metatype"></a>Metatype Node
     <metatype>
        <id />
        <name />
@@ -90,7 +90,7 @@ metatypes.xml (and custom_metatypes.xml, see [Custom Data Files](Custom Data Fil
 
 **name** (required): the name of the Metatype.
 
-**category** (required): the Category that this Metatype belongs to. This should match one of the Categories defined in the [**categories** Node](#categories "categories Node").
+**category** (required): the Category that this Metatype belongs to. This should match one of the Categories defined in the [**Categories** Node](#categories "Categories Node").
 
 **forcecreature** (optional): when present, indicates that the Metatype uses Force as an Attribute and will require an initial value to be selected in the Select Metatype window.
 
@@ -186,31 +186,31 @@ metatypes.xml (and custom_metatypes.xml, see [Custom Data Files](Custom Data Fil
 
 **sprint** (required): the Sprint values for the Metatype. Must be entered as `x/y/z` where `x` is the additional metres gained per hit on a Sprint test for ground, while `y` and `z` are for Swimming and Flight, respectively.
 
-**qualityrestriction** (optional): restricts the Metatype to selecting only the Qualities listed. See [**qualities and qualityrestriction** Nodes](#qualities "qualities and qualityrestriction Nodes") for more information. Not supported by vessels.xml.
+**qualityrestriction** (optional): restricts the Metatype to selecting only the Qualities listed. See [**Qualities and Qualityrestriction** Node](#qualities "Qualities and Qualityrestriction Node") for more information. Not supported by vessels.xml.
 
-**qualities** (optional): the list of Qualities that this Metatype receives for free. See [**qualities and qualityrestriction** Nodes](#qualities "qualities and qualityrestriction Nodes") for more information.
+**qualities** (optional): the list of Qualities that this Metatype receives for free. See [**Qualities and Qualityrestriction** Node](#qualities "Qualities and Qualityrestriction Node") for more information.
 
-**bonus** (optional): a bonus node that describes any bonuses this Metatype grants. See [Improvement Manager](Improvement Manager) for more information.
+**bonus** (optional): a bonus node that describes any bonuses this Metatype grants. See [Improvement Manager](Improvement-Manager) for more information.
 
-**powers** (optional): the list of Critter Powers that this Metatype receives for free. See [**powers and optionalpowers** Nodes](#powers "powers and optionalpowers Nodes") for more information.
+**powers** (optional): the list of Critter Powers that this Metatype receives for free. See [**Powers and Optionalpowers** Node](#powers "Powers and Optionalpowers Node") for more information.
 
-**optionalpowers** (optional): the list of additional Critter Powers that this Metatype can choose to gain. See [**powers and optionalpowers** Nodes](#powers "powers and optionalpowers Nodes") for more information. Not supported by vessels.xml.
+**optionalpowers** (optional): the list of additional Critter Powers that this Metatype can choose to gain. See [**Powers and Optionalpowers** Node](#powers "Powers and Optionalpowers Node") for more information. Not supported by vessels.xml.
 
-**skills** (optional): the list of Active Skills, Skill Groups, and Knowledge Skills that the Metatype automatically has Ratings in. See [**skills** Node](#skills "skills Node") for more information. Not supported by vessels.xml.
+**skills** (optional): the list of Active Skills, Skill Groups, and Knowledge Skills that the Metatype automatically has Ratings in. See [**Skills** Node](#skills "Skills Node") for more information. Not supported by vessels.xml.
 
-**complexforms** (optional): the list of Complex Forms that this Metatype receives for free. See [**complexforms and optionalcomplexforms** Nodes](#complexforms "complexforms and optionalcomplexforms Nodes") for more information. Not supported by vessels.xml.
+**complexforms** (optional): the list of Complex Forms that this Metatype receives for free. See [**Complexforms and Optionalcomplexforms** Node](#complexforms "Complexforms and Optionalcomplexforms Node") for more information. Not supported by vessels.xml.
 
-**optionalcomplexforms** (optional): the list of additional Complex Forms that this Metatype can choose to gain. See [**complexforms and optionalcomplexforms** Nodes](#complexforms "complexforms and optionalcomplexforms Nodes") for more information. Not supported by vessels.xml.
+**optionalcomplexforms** (optional): the list of additional Complex Forms that this Metatype can choose to gain. See [**Complexforms and Optionalcomplexforms** Node](#complexforms "Complexforms and Optionalcomplexforms Node") for more information. Not supported by vessels.xml.
 
-**gears** (optional): the list of Gear that this Metatype receives for free. See [**gears** Node](#gears "gears Node") for more information. Not supported by vessels.xml.
+**gears** (optional): the list of Gear that this Metatype receives for free. See [**Gears** Node](#gears "Gears Node") for more information. Not supported by vessels.xml.
 
-**source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](books-xml.ashx "books.xml").
+**source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](Books "books.xml").
 
 **page** (required): the page number this item can be found on in the Sourcebook.
 
-**metavariants** (optional): Metavariants that stem from this Metatype. See [**metavariant** Node](#metavariant "metavariant Node") for more information. Not supported by vessels.xml.
+**metavariants** (optional): Metavariants that stem from this Metatype. See [**Metavariant** Node](#metavariant "Metavariant Node") for more information. Not supported by vessels.xml.
 
-## <a id="metavariant"></a>metavariant Node
+## <a id="metavariant"></a>Metavariant Node
     <metavariants>
        <metavariant>
           <id />
@@ -229,9 +229,9 @@ metatypes.xml (and custom_metatypes.xml, see [Custom Data Files](Custom Data Fil
 
 **karma** (required): the additional Build Point cost for selecting this Metavariant.
 
-**powers** (optional): the list of Critter Powers that this Metavariant receives for free. See [**powers and optionalpowers** Nodes](#powers "powers and optionalpowers Nodes") for more information.
+**powers** (optional): the list of Critter Powers that this Metavariant receives for free. See [**Powers and Optionalpowers** Node](#powers "Powers and Optionalpowers Node") for more information.
 
-**qualities** (optional): the list of Qualities that this Metavariant receives for free. See [**qualities** Node](#qualities "qualities Node") for more information.
+**qualities** (optional): the list of Qualities that this Metavariant receives for free. See [**Qualities and Qualityrestriction** Node](#qualities "Qualities and Qualityrestriction Node") for more information.
 
 **bonus** (optional): a bonus node that describes any bonuses this Metavariant grants. These bonuses replace those granted by the Metatype. See [Improvement Manager](Improvement Manager) for more information.
 
@@ -239,28 +239,28 @@ metatypes.xml (and custom_metatypes.xml, see [Custom Data Files](Custom Data Fil
 
 **page** (required): the page number this item can be found on in the Sourcebook.
 
-## <a id="qualities"></a>qualities and qualityrestriction Nodes
+## <a id="qualities"></a>Qualities and Qualityrestriction Node
     <qualities> or <qualityrestriction>
        <positive />
        <negative />
     </qualities> or </qualityrestriction>
-**positive** (optional): the list of Positive Qualities this Metavariant receives. See [**positive and negative** Nodes](#qualitiesspecific "positive and negative Nodes") for more information.
+**positive** (optional): the list of Positive Qualities this Metavariant receives. See [**Positive and Negative** Node](#qualitiesspecific "Positive and Negative Node") for more information.
 
-**negative** (optional): the list of Negative Qualities this Metavariant receives. See [**positive and negative** Nodes](#qualitiesspecific "positive and negative Nodes") for more information.
+**negative** (optional): the list of Negative Qualities this Metavariant receives. See [**Positive and Negative** Node](#qualitiesspecific "Positive and Negative Node") for more information.
 
-## <a id="qualitiesspecific"></a>positive and negative Nodes
+## <a id="qualitiesspecific"></a>Positive and Negative Node
     <positive> or <negative>
        <quality />
     </positive> or </negative>
-**quality** (required): the name of a Quality that this Metavariant receives. This node may appear multiple times to build a list of Qualities the Metavariant receives. This node may include the `select` attribute to specify a value for a Quality that typically requires the user to pick one. For example, `<quality select="Sunlight">Allergy (Common, Mild)</quality>` would automatically select Sunlight as the chosen Allergy, and `<quality select="STR">Metagenetic Improvement</quality>` would automatically select the STR as the chosen Attribute for Metagenetic Improvement. See [qualities.xml](qualities-xml.ashx "qualities.xml") for more information.
+**quality** (required): the name of a Quality that this Metavariant receives. This node may appear multiple times to build a list of Qualities the Metavariant receives. This node may include the `select` attribute to specify a value for a Quality that typically requires the user to pick one. For example, `<quality select="Sunlight">Allergy (Common, Mild)</quality>` would automatically select Sunlight as the chosen Allergy, and `<quality select="STR">Metagenetic Improvement</quality>` would automatically select the STR as the chosen Attribute for Metagenetic Improvement. See [qualities.xml](Quality-Levels "qualities.xml") for more information.
 
-## <a id="powers"></a>powers and optionalpowers Nodes
+## <a id="powers"></a>Powers and Optionalpowers Node
     <powers> or <optionalpowers>
        <power />
     </powers> or </optionalpowers>
 **power** (required): the name of a Critter Power that the Metatype receives for free or may choose as an optional Critter Power. May contain the _select_ attribute which forces a particular value to be selected for the Critter Power. May contain the _rating_ attribute which sets a Rating for the Critter Powers. Optional Powers may also contain the _cost_ attribute which specifies the number of Power Points the Critter must spend to purchase the Critter Power which typically applies to Free Spirits.
 
-## <a id="skills"></a>skills Nodes
+## <a id="skills"></a>Skills Node
     <skills>
        <skill />
        <group />
@@ -272,13 +272,13 @@ metatypes.xml (and custom_metatypes.xml, see [Custom Data Files](Custom Data Fil
 
 **knowledge** (optional): the name of a Knowledge Skill that the Metatype will be given. May contain the _rating_ attribute which sets the Rating for the Knowledge Skill. May contain the _category_ attribute which sets the Category the Knowledge Skill, such as _Academic_ or _Professional_.
 
-## <a id="complexforms"></a>complexforms and optionalcomplexforms Nodes
+## <a id="complexforms"></a>Complexforms and Optionalcomplexforms Node
 
 **complexform** (required): the name of a Complex Form that the Metatype receives for free or may choose as an optional Complex Form. May contain the _rating_ attribute which sets a Rating for the Complex Form.
     <complexforms> or <optionalcomplexforms>
        <complexform />
     </complexforms> or </optionalcomplexforms>
-## <a id="gears"></a>gears Node
+## <a id="gears"></a>Gears Node
     <gears>
        <gear />
     </gears>
