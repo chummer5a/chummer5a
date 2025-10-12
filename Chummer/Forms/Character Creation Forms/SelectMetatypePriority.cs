@@ -1547,6 +1547,20 @@ namespace Chummer
                     string strOldSpecialPriority = await _objCharacter.GetSpecialPriorityAsync(token).ConfigureAwait(false);
                     string strOldTalentPriority = await _objCharacter.GetTalentPriorityAsync(token).ConfigureAwait(false);
 
+                    // Check if skill choices have changed by comparing with current priority bonus skill list BEFORE clearing it
+                    List<string> lstCurrentPrioritySkills = new List<string>();
+                    await _objCharacter.PriorityBonusSkillList.ForEachAsync(x => lstCurrentPrioritySkills.Add(x), token).ConfigureAwait(false);
+                    List<string> lstNewPrioritySkills = new List<string>();
+                    if (!string.IsNullOrEmpty(strSkill1))
+                        lstNewPrioritySkills.Add(strSkill1);
+                    if (!string.IsNullOrEmpty(strSkill2))
+                        lstNewPrioritySkills.Add(strSkill2);
+                    if (!string.IsNullOrEmpty(strSkill3))
+                        lstNewPrioritySkills.Add(strSkill3);
+                    
+                    bool blnSkillChoicesChanged = lstCurrentPrioritySkills.Count != lstNewPrioritySkills.Count ||
+                        !lstCurrentPrioritySkills.SequenceEqual(lstNewPrioritySkills);
+
                     // begin priority based character settings
                     // Load the Priority information.
 
@@ -1614,7 +1628,8 @@ namespace Chummer
                     int intSpecialAttribPoints = 0;
                     bool boolHalveAttributePriorityPoints = charNode.NodeExists("halveattributepoints");
                     if (strOldSpecialPriority != _objCharacter.SpecialPriority
-                        || strOldTalentPriority != _objCharacter.TalentPriority)
+                        || strOldTalentPriority != _objCharacter.TalentPriority
+                        || blnSkillChoicesChanged)
                     {
                         List<Quality> lstOldPriorityQualities
                             = await (await _objCharacter.GetQualitiesAsync(token).ConfigureAwait(false))
@@ -1865,6 +1880,68 @@ namespace Chummer
                                                  || x.ImproveType == Improvement.ImprovementType.SkillGroupBase),
                                         token).ConfigureAwait(false),
                                 token: token).ConfigureAwait(false);
+                        
+                        // Handle skill choice changes even when talent priority doesn't change
+                        if (blnSkillChoicesChanged && !blnRemoveFreeSkills)
+                        {
+                            // Get the talent priority node to determine skill values
+                            XPathNodeIterator xmlBaseTalentPriorityListForSkills = _xmlBasePriorityDataNode.Select(
+                                "priorities/priority[category = \"Talent\" and value = "
+                                + (await _objCharacter.GetSpecialPriorityAsync(token).ConfigureAwait(false)).CleanXPath() +
+                                " and (not(prioritytable) or prioritytable = "
+                                + strPriorityTable + ")]");
+                            
+                            foreach (XPathNavigator xmlBaseTalentPriorityForSkills in xmlBaseTalentPriorityListForSkills)
+                            {
+                                if (xmlBaseTalentPriorityListForSkills.Count == 1
+                                    || xmlBaseTalentPriorityForSkills.SelectSingleNodeAndCacheExpression("gameplayoption", token) != null)
+                                {
+                                    XPathNavigator xmlTalentPriorityNodeForSkills
+                                        = xmlBaseTalentPriorityForSkills.SelectSingleNode(
+                                            "talents/talent[value = " + _objCharacter.TalentPriority.CleanXPath()
+                                                                      + "]");
+
+                                    if (xmlTalentPriorityNodeForSkills != null)
+                                    {
+                                        // Get skill values from talent priority
+                                        int intFreeLevels = 0;
+                                        Improvement.ImprovementType eType = Improvement.ImprovementType.SkillBase;
+                                        XPathNavigator objTalentSkillValNode
+                                            = xmlTalentPriorityNodeForSkills.SelectSingleNodeAndCacheExpression("skillval", token);
+                                        if (objTalentSkillValNode == null
+                                            || !int.TryParse(objTalentSkillValNode.Value, out intFreeLevels))
+                                        {
+                                            objTalentSkillValNode
+                                                = xmlTalentPriorityNodeForSkills.SelectSingleNodeAndCacheExpression("skillgroupval", token);
+                                            if (objTalentSkillValNode != null
+                                                && int.TryParse(objTalentSkillValNode.Value, out intFreeLevels))
+                                            {
+                                                eType = Improvement.ImprovementType.SkillGroupBase;
+                                            }
+                                        }
+
+                                        if (intFreeLevels > 0)
+                                        {
+                                            // Remove old skill improvements
+                                            await ImprovementManager.RemoveImprovementsAsync(
+                                                _objCharacter,
+                                                await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false))
+                                                    .ToListAsync(
+                                                        x => x.ImproveSource == Improvement.ImprovementSource.Heritage
+                                                             && (x.ImproveType == Improvement.ImprovementType.SkillBase
+                                                                 || x.ImproveType == Improvement.ImprovementType.SkillGroupBase),
+                                                        token).ConfigureAwait(false),
+                                                token: token).ConfigureAwait(false);
+                                            
+                                            // Add new skill improvements
+                                            await AddFreeSkills(intFreeLevels, eType, strSkill1, strSkill2, strSkill3,
+                                                token).ConfigureAwait(false);
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
                         // Add any created Weapons to the character.
                         foreach (Weapon objWeapon in lstWeapons)
                             await _objCharacter.Weapons.AddAsync(objWeapon, token: token).ConfigureAwait(false);
