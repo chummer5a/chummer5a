@@ -8104,7 +8104,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        _blnMysAdeptAllowPpCareer = true;
+                        _blnMysAdeptAllowPpCareer = false;
                         await OnPropertyChangedAsync(nameof(MysAdeptAllowPpCareer), token)
                             .ConfigureAwait(false);
                     }
@@ -8248,7 +8248,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        _blnMysAdeptSecondMAGAttribute = true;
+                        _blnMysAdeptSecondMAGAttribute = false;
                         await OnPropertyChangedAsync(nameof(MysAdeptSecondMAGAttribute), token)
                             .ConfigureAwait(false);
                     }
@@ -14334,7 +14334,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        _blnPrioritySpellsAsAdeptPowers = true;
+                        _blnPrioritySpellsAsAdeptPowers = false;
                         await OnPropertyChangedAsync(nameof(PrioritySpellsAsAdeptPowers), token)
                             .ConfigureAwait(false);
                     }

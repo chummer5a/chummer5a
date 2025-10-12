@@ -127,6 +127,7 @@ Application Changes:
 - Implemented qualitylevel improvement to handle Life Modules and only taking the highest level of SIN. This maps an improvement to gaining a quality at a specific level of the value of the improvement, read in from qualitylevels.xml. This improvement type will add the quality if the character does not have it, or replace the quality with the highest version if the character already has it.
 - When searching in the Select Weapon Accessory window, an indicator will be shown for accessories that are not compatible with the currently selected weapon's mounts.
 - Implemented a bonus type (cyberlimbattributebonus) to provide AGI or STR bonuses to cyberware attribute bonuses. Example behaviour:
+- Fixed MysAdeptAllowPpCareer, MysAdeptSecondMAGAttribute and PrioritySpellsAsAdeptPowers not saving values correctly when being disabled.
 
 <!-- Simple values -->
 <cyberlimbattributebonus>
