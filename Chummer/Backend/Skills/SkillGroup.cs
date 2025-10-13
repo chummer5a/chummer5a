@@ -2231,6 +2231,20 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async Task<string> GetNameAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strGroupName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
         public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
@@ -2240,12 +2254,13 @@ namespace Chummer.Backend.Skills
         {
             using (LockObject.EnterReadLock())
             {
+                string strName = Name;
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                    return Name;
+                    return strName;
                 return _objCharacter.LoadDataXPath("skills.xml", strLanguage)
-                           .SelectSingleNodeAndCacheExpression("/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate")
+                           .SelectSingleNodeAndCacheExpression("/chummer/skillgroups/name[. = " + strName.CleanXPath() + "]/@translate")
                            ?.Value ??
-                       Name;
+                       strName;
             }
         }
 
@@ -2255,13 +2270,14 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
+                string strName = await GetNameAsync(token).ConfigureAwait(false);
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                    return Name;
+                    return strName;
                 return (await _objCharacter.LoadDataXPathAsync("skills.xml", strLanguage, token: token)
                            .ConfigureAwait(false))
                        .SelectSingleNodeAndCacheExpression(
-                           "/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate", token: token)?.Value
-                       ?? Name;
+                           "/chummer/skillgroups/name[. = " + strName.CleanXPath() + "]/@translate", token: token)?.Value
+                       ?? strName;
             }
             finally
             {

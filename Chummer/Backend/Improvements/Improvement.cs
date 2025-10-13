@@ -1728,7 +1728,6 @@ namespace Chummer
 
                 case ImprovementType.PrototypeTranshuman:
                     break;
-                    break;
 
                 case ImprovementType.DealerConnection:
                 {
@@ -3465,7 +3464,8 @@ namespace Chummer
 
                 case ImprovementType.Skillwire:
                 {
-                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objSkill =>
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                    await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objSkill =>
                     {
                         lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
                             nameof(Skill.CyberwareRating)));
@@ -3523,9 +3523,9 @@ namespace Chummer
                 case ImprovementType.SwapSkillAttribute:
                 case ImprovementType.SwapSkillSpecAttribute:
                 {
-
-                    await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.DefaultAttribute), lstReturn, token).ConfigureAwait(false);
-                    await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.DefaultAttribute), lstReturn, token).ConfigureAwait(false);
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                    await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.DefaultAttribute), lstReturn, token).ConfigureAwait(false);
+                    await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.DefaultAttribute), lstReturn, token).ConfigureAwait(false);
                 }
                     break;
 
@@ -3571,14 +3571,15 @@ namespace Chummer
 
                 case ImprovementType.SkillsoftAccess:
                     {
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         // Keeping two enumerations separate helps avoid extra heap allocations
-                        await _objCharacter.SkillsSection.Skills.ForEachAsync(objSkill =>
+                        await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objSkill =>
                         {
                             lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
                                 nameof(Skill.CyberwareRating)));
                         }, token).ConfigureAwait(false);
 
-                        await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objSkill =>
+                        await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objSkill =>
                         {
                             lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
                                 nameof(Skill.CyberwareRating)));
@@ -3777,8 +3778,9 @@ namespace Chummer
 
                 case ImprovementType.Hardwire:
                     {
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CyberwareRating), lstReturn, token).ConfigureAwait(false);
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CyberwareRating), lstReturn, token).ConfigureAwait(false);
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CyberwareRating), lstReturn, token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CyberwareRating), lstReturn, token).ConfigureAwait(false);
                     }
                     break;
 
@@ -3792,16 +3794,17 @@ namespace Chummer
                 case ImprovementType.BlockSkillDefault:
                 case ImprovementType.AllowSkillDefault:
                     {
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         if (string.IsNullOrEmpty(ImprovedName))
                         {
                             // Kludgiest of kludges, but it fits spec and Sapience isn't exactly getting turned off and on constantly.
-                            await _objCharacter.SkillsSection.Skills.ForEachAsync(objSkill =>
+                            await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objSkill =>
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
                                     nameof(Skill.Default)));
                             }, token).ConfigureAwait(false);
 
-                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objSkill =>
+                            await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objSkill =>
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
                                     nameof(Skill.Default)));
@@ -3809,78 +3812,84 @@ namespace Chummer
                         }
                         else
                         {
-                            await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Default), lstReturn, token).ConfigureAwait(false);
-                            await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Default), lstReturn, token).ConfigureAwait(false);
+                            await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Default), lstReturn, token).ConfigureAwait(false);
+                            await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Default), lstReturn, token).ConfigureAwait(false);
                         }
                     }
                     break;
 
                 case ImprovementType.Skill:
                     {
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.RelevantImprovements), lstReturn, token).ConfigureAwait(false);
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.RelevantImprovements), lstReturn, token).ConfigureAwait(false);
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.RelevantImprovements), lstReturn, token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.RelevantImprovements), lstReturn, token).ConfigureAwait(false);
                     }
                     break;
 
                 case ImprovementType.SkillGroup:
                 {
-                    await ProcessSkillsByPropertyComprehensiveAsync(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, 
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                    await ProcessSkillsByPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, 
                         nameof(Skill.PoolModifiers), skill => skill.SkillGroup, lstReturn, token).ConfigureAwait(false);
                 }
                     break;
 
                 case ImprovementType.BlockSkillGroupDefault:
                 {
-                    await ProcessSkillsByPropertyComprehensiveAsync(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, 
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                    await ProcessSkillsByPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, 
                         nameof(Skill.Default), skill => skill.SkillGroup, lstReturn, token).ConfigureAwait(false);
                 }
                     break;
 
                 case ImprovementType.SkillCategory:
                     {
-    
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         // Keeping two enumerations separate helps avoid extra heap allocations
-                        await ProcessSkillsByPropertyComprehensiveAsync(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, 
+                        await ProcessSkillsByPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, 
                             nameof(Skill.PoolModifiers), skill => skill.SkillCategory, lstReturn, token).ConfigureAwait(false);
-                        await ProcessSkillsByPropertyComprehensiveAsync(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, 
+                        await ProcessSkillsByPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, 
                             nameof(Skill.PoolModifiers), skill => skill.SkillCategory, lstReturn, token).ConfigureAwait(false);
                     }
                     break;
 
                 case ImprovementType.BlockSkillCategoryDefault:
                 {
-                    await ProcessSkillsByPropertyComprehensiveAsync(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, 
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                    await ProcessSkillsByPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, 
                         nameof(Skill.Default), skill => skill.SkillCategory, lstReturn, token).ConfigureAwait(false);
                 }
                     break;
 
                 case ImprovementType.SkillLinkedAttribute:
                     {
-    
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         // Keeping two enumerations separate helps avoid extra heap allocations
-                        await ProcessSkillsByPropertyComprehensiveAsync(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, 
-                            nameof(Skill.PoolModifiers), skill => skill.Attribute, lstReturn, token).ConfigureAwait(false);
-                        await ProcessSkillsByPropertyComprehensiveAsync(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, 
-                            nameof(Skill.PoolModifiers), skill => skill.Attribute, lstReturn, token).ConfigureAwait(false);
+                        await ProcessSkillsByPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, 
+                            nameof(Skill.PoolModifiers), skill => skill.GetAttributeAsync(token), lstReturn, token).ConfigureAwait(false);
+                        await ProcessSkillsByPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, 
+                            nameof(Skill.PoolModifiers), skill => skill.GetAttributeAsync(token), lstReturn, token).ConfigureAwait(false);
                     }
                     break;
 
                 case ImprovementType.SkillLevel:
                     {
-    
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.FreeKarma), lstReturn, token).ConfigureAwait(false);
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.FreeKarma), lstReturn, token).ConfigureAwait(false);
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.FreeKarma), lstReturn, token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.FreeKarma), lstReturn, token).ConfigureAwait(false);
                     }
                     break;
 
                 case ImprovementType.SkillGroupLevel:
                     {
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         if (lstExtraImprovedName?.Count > 0)
                         {
-                            await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                            await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async objTargetGroup =>
                             {
-                                if (objTargetGroup.Name == ImprovedName ||
-                                    lstExtraImprovedName.Contains(objTargetGroup.Name))
+                                string strName = await objTargetGroup.GetNameAsync(token).ConfigureAwait(false);
+                                if (strName == ImprovedName ||
+                                    lstExtraImprovedName.Contains(strName))
                                 {
                                     lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
                                         nameof(SkillGroup.FreeLevels)));
@@ -3890,7 +3899,7 @@ namespace Chummer
                         else
                         {
                             SkillGroup objTargetGroup =
-                                await _objCharacter.SkillsSection.SkillGroups.FirstOrDefaultAsync(x => x.Name == ImprovedName, token).ConfigureAwait(false);
+                                await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
                             if (objTargetGroup != null)
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
@@ -3902,21 +3911,22 @@ namespace Chummer
 
                 case ImprovementType.SkillBase:
                     {
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(ImprovedName))
                         {
-                            await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.FreeBase), lstReturn, token).ConfigureAwait(false);
-                            await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.FreeBase), lstReturn, token).ConfigureAwait(false);
+                            await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.FreeBase), lstReturn, token).ConfigureAwait(false);
+                            await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.FreeBase), lstReturn, token).ConfigureAwait(false);
                         }
                         else
                         {
                             // When no specific target, process all skills
-                            await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                            await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.FreeBase)));
                             }, token).ConfigureAwait(false);
                             
-                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                            await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.FreeBase)));
@@ -3927,14 +3937,15 @@ namespace Chummer
 
                 case ImprovementType.SkillGroupBase:
                     {
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(ImprovedName))
                         {
-                            await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.SkillGroups, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(SkillGroup.FreeBase), lstReturn, token).ConfigureAwait(false);
+                            await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(SkillGroup.FreeBase), lstReturn, token).ConfigureAwait(false);
                         }
                         else
                         {
                             // When no specific target, process all skill groups
-                            await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                            await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetGroup =>
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
                                     nameof(SkillGroup.FreeBase)));
@@ -3945,14 +3956,15 @@ namespace Chummer
 
                 case ImprovementType.Skillsoft:
                     {
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CyberwareRating), lstReturn, token).ConfigureAwait(false);
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CyberwareRating), lstReturn, token).ConfigureAwait(false);
                     }
                     break;
 
                 case ImprovementType.Activesoft:
                 {
-
-                    await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CyberwareRating), lstReturn, token).ConfigureAwait(false);
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                    await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CyberwareRating), lstReturn, token).ConfigureAwait(false);
                 }
                     break;
 
@@ -3982,7 +3994,8 @@ namespace Chummer
 
                 case ImprovementType.SkillAttribute:
                 {
-                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objSkill =>
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                    await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objSkill =>
                     {
                         lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
                             nameof(Skill.PoolModifiers)));
@@ -3991,7 +4004,8 @@ namespace Chummer
                     break;
                 case ImprovementType.RemoveSkillCategoryDefaultPenalty:
                 {
-                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                    await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                     {
                         if (objTargetSkill.SkillCategory == ImprovedName ||
                             lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
@@ -4002,7 +4016,8 @@ namespace Chummer
                     break;
                 case ImprovementType.RemoveSkillGroupDefaultPenalty:
                 {
-                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                    await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                     {
                         if (objTargetSkill.SkillGroup == ImprovedName ||
                             lstExtraImprovedName?.Contains(objTargetSkill.SkillGroup) == true)
@@ -4013,12 +4028,14 @@ namespace Chummer
                     break;
                 case ImprovementType.RemoveSkillDefaultPenalty:
                 {
-                    await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.DefaultModifier), lstReturn, token).ConfigureAwait(false);
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                    await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.DefaultModifier), lstReturn, token).ConfigureAwait(false);
                 }
                     break;
                 case ImprovementType.ReflexRecorderOptimization:
                 {
-                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objSkill =>
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                    await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objSkill =>
                     {
                         lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
                             nameof(Skill.DefaultModifier)));
@@ -4039,17 +4056,17 @@ namespace Chummer
                 case ImprovementType.SkillExpertise:
                 case ImprovementType.SkillSpecialization:
                     {
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Specializations), lstReturn, token).ConfigureAwait(false);
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Specializations), lstReturn, token).ConfigureAwait(false);
-
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Specializations), lstReturn, token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Specializations), lstReturn, token).ConfigureAwait(false);
                         break;
                     }
 
                 case ImprovementType.SkillSpecializationOption:
                     {
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CGLSpecializations), lstReturn, token).ConfigureAwait(false);
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CGLSpecializations), lstReturn, token).ConfigureAwait(false);
-
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CGLSpecializations), lstReturn, token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CGLSpecializations), lstReturn, token).ConfigureAwait(false);
                         break;
                     }
                 case ImprovementType.NativeLanguageLimit:
@@ -4234,8 +4251,9 @@ namespace Chummer
 
                 case ImprovementType.DisableSpecializationEffects:
                     {
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.GetSpecializationBonus), lstReturn, token).ConfigureAwait(false);
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.GetSpecializationBonus), lstReturn, token).ConfigureAwait(false);
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.GetSpecializationBonus), lstReturn, token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.GetSpecializationBonus), lstReturn, token).ConfigureAwait(false);
                     }
                     break;
 
@@ -4426,14 +4444,15 @@ namespace Chummer
                 case ImprovementType.ActiveSkillKarmaCost:
                 case ImprovementType.ActiveSkillKarmaCostMultiplier:
                 {
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(ImprovedName))
                     {
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.UpgradeKarmaCost), lstReturn, token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.UpgradeKarmaCost), lstReturn, token).ConfigureAwait(false);
                     }
                     else
                     {
                         // When no specific target, process all skills
-                        await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                        await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                         {
                             lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.UpgradeKarmaCost)));
@@ -4446,14 +4465,15 @@ namespace Chummer
                 case ImprovementType.KnowledgeSkillKarmaCostMinimum:
                 case ImprovementType.KnowledgeSkillKarmaCostMultiplier:
                     {
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(ImprovedName))
                         {
-                            await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.UpgradeKarmaCost), lstReturn, token).ConfigureAwait(false);
+                            await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.UpgradeKarmaCost), lstReturn, token).ConfigureAwait(false);
                         }
                         else
                         {
                             // When no specific target, process all knowledge skills
-                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                            await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.UpgradeKarmaCost)));
@@ -4465,14 +4485,16 @@ namespace Chummer
                 case ImprovementType.SkillGroupKarmaCost:
                 case ImprovementType.SkillGroupKarmaCostMultiplier:
                     {
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(ImprovedName))
                         {
                             if (lstExtraImprovedName?.Count > 0)
                             {
-                                await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                                await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async objTargetGroup =>
                                 {
-                                    if (objTargetGroup.Name == ImprovedName ||
-                                        lstExtraImprovedName.Contains(objTargetGroup.Name))
+                                    string strName = await objTargetGroup.GetNameAsync(token).ConfigureAwait(false);
+                                    if (strName == ImprovedName ||
+                                        lstExtraImprovedName.Contains(strName))
                                     {
                                         lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                             objTargetGroup,
@@ -4483,7 +4505,7 @@ namespace Chummer
                             else
                             {
                                 SkillGroup objTargetGroup =
-                                    await _objCharacter.SkillsSection.SkillGroups.FirstOrDefaultAsync(x => x.Name == ImprovedName, token).ConfigureAwait(false);
+                                    await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
                                 if (objTargetGroup != null)
                                 {
                                     lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
@@ -4493,7 +4515,7 @@ namespace Chummer
                         }
                         else
                         {
-                            await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                            await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetGroup =>
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
                                     nameof(SkillGroup.UpgradeKarmaCost)));
@@ -4504,12 +4526,14 @@ namespace Chummer
 
                 case ImprovementType.SkillGroupDisable:
                     {
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         if (lstExtraImprovedName?.Count > 0)
                         {
-                            await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                            await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async objTargetGroup =>
                             {
-                                if (objTargetGroup.Name == ImprovedName ||
-                                    lstExtraImprovedName.Contains(objTargetGroup.Name))
+                                string strName = await objTargetGroup.GetNameAsync(token).ConfigureAwait(false);
+                                if (strName == ImprovedName ||
+                                    lstExtraImprovedName.Contains(strName))
                                 {
                                     lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
                                         nameof(SkillGroup.IsDisabled)));
@@ -4519,7 +4543,7 @@ namespace Chummer
                         else
                         {
                             SkillGroup objTargetGroup =
-                                await _objCharacter.SkillsSection.SkillGroups.FirstOrDefaultAsync(x => x.Name == ImprovedName, token).ConfigureAwait(false);
+                                await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
                             if (objTargetGroup != null)
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
@@ -4531,23 +4555,26 @@ namespace Chummer
                     }
                 case ImprovementType.SkillDisable:
                     {
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Enabled), lstReturn, token).ConfigureAwait(false);
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Enabled), lstReturn, token).ConfigureAwait(false);
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Enabled), lstReturn, token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Enabled), lstReturn, token).ConfigureAwait(false);
                     }
                     break;
 
                 case ImprovementType.SkillEnableMovement:
                     {
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Enabled), lstReturn, token).ConfigureAwait(false);
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Enabled), lstReturn, token).ConfigureAwait(false);
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Enabled), lstReturn, token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Enabled), lstReturn, token).ConfigureAwait(false);
                     }
                     break;
 
                 case ImprovementType.SkillCategorySpecializationKarmaCost:
                 case ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
                     {
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         // Keeping two enumerations separate helps avoid extra heap allocations
-                        await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                        await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                         {
                             if (objTargetSkill.SkillCategory == ImprovedName ||
                                 lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
@@ -4555,7 +4582,7 @@ namespace Chummer
                                     nameof(Skill.CanAffordSpecialization)));
                         }, token).ConfigureAwait(false);
 
-                        await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                        await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                         {
                             if (objTargetSkill.SkillCategory == ImprovedName ||
                                 lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
@@ -4568,8 +4595,9 @@ namespace Chummer
                 case ImprovementType.SkillCategoryKarmaCost:
                 case ImprovementType.SkillCategoryKarmaCostMultiplier:
                     {
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         // Keeping two enumerations separate helps avoid extra heap allocations
-                        await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                        await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                         {
                             if (objTargetSkill.SkillCategory == ImprovedName ||
                                 lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
@@ -4577,7 +4605,7 @@ namespace Chummer
                                     nameof(Skill.UpgradeKarmaCost)));
                         }, token).ConfigureAwait(false);
 
-                        await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                        await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                         {
                             if (objTargetSkill.SkillCategory == ImprovedName ||
                                 lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
@@ -4589,7 +4617,8 @@ namespace Chummer
 
                 case ImprovementType.SkillGroupCategoryDisable:
                 {
-                    await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                    await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetGroup =>
                     {
                         if (objTargetGroup.GetRelevantSkillCategories.Contains(ImprovedName)
                             || (lstExtraImprovedName != null
@@ -4606,7 +4635,8 @@ namespace Chummer
                 case ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
                 case ImprovementType.SkillGroupCategoryKarmaCost:
                 {
-                    await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                    await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetGroup =>
                     {
                         if (objTargetGroup.GetRelevantSkillCategories.Contains(ImprovedName)
                             || (lstExtraImprovedName != null
@@ -4637,14 +4667,15 @@ namespace Chummer
                 case ImprovementType.ActiveSkillPointCost:
                 case ImprovementType.ActiveSkillPointCostMultiplier:
                 {
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(ImprovedName))
                     {
-                        await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CurrentSpCost), lstReturn, token).ConfigureAwait(false);
+                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CurrentSpCost), lstReturn, token).ConfigureAwait(false);
                     }
                     else
                     {
                         // When no specific target, process all skills
-                        await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                        await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                         {
                             lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.CurrentSpCost)));
@@ -4656,14 +4687,16 @@ namespace Chummer
                 case ImprovementType.SkillGroupPointCost:
                 case ImprovementType.SkillGroupPointCostMultiplier:
                 {
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(ImprovedName))
                     {
                         if (lstExtraImprovedName?.Count > 0)
                         {
-                            await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                            await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async objTargetGroup =>
                             {
-                                if (objTargetGroup.Name == ImprovedName ||
-                                    lstExtraImprovedName.Contains(objTargetGroup.Name))
+                                string strName = await objTargetGroup.GetNameAsync(token).ConfigureAwait(false);
+                                if (strName == ImprovedName ||
+                                    lstExtraImprovedName.Contains(strName))
                                 {
                                     lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                         objTargetGroup,
@@ -4674,7 +4707,7 @@ namespace Chummer
                         else
                         {
                             SkillGroup objTargetGroup =
-                                await _objCharacter.SkillsSection.SkillGroups.FirstOrDefaultAsync(x => x.Name == ImprovedName, token).ConfigureAwait(false);
+                                await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
                             if (objTargetGroup != null)
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
@@ -4684,7 +4717,7 @@ namespace Chummer
                     }
                     else
                     {
-                        await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                        await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetGroup =>
                         {
                             lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
                                 nameof(SkillGroup.CurrentSpCost)));
@@ -4696,14 +4729,15 @@ namespace Chummer
                 case ImprovementType.KnowledgeSkillPointCost:
                 case ImprovementType.KnowledgeSkillPointCostMultiplier:
                     {
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(ImprovedName))
                         {
-                            await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(KnowledgeSkill.CurrentSpCost), lstReturn, token).ConfigureAwait(false);
+                            await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(KnowledgeSkill.CurrentSpCost), lstReturn, token).ConfigureAwait(false);
                         }
                         else
                         {
                             // When no specific target, process all knowledge skills
-                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                            await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(KnowledgeSkill.CurrentSpCost)));
@@ -4715,8 +4749,9 @@ namespace Chummer
                 case ImprovementType.SkillCategoryPointCost:
                 case ImprovementType.SkillCategoryPointCostMultiplier:
                 {
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                     // Keeping two enumerations separate helps avoid extra heap allocations
-                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                    await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                     {
                         if (objTargetSkill.SkillCategory == ImprovedName ||
                             lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
@@ -4724,7 +4759,7 @@ namespace Chummer
                                 nameof(Skill.CurrentSpCost)));
                     }, token).ConfigureAwait(false);
 
-                    await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                    await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                     {
                         if (objTargetSkill.SkillCategory == ImprovedName ||
                             lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
@@ -4737,7 +4772,8 @@ namespace Chummer
                 case ImprovementType.SkillGroupCategoryPointCost:
                 case ImprovementType.SkillGroupCategoryPointCostMultiplier:
                 {
-                    await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                    SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                    await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetGroup =>
                     {
                         if (objTargetGroup.GetRelevantSkillCategories.Contains(ImprovedName)
                             || (lstExtraImprovedName != null
@@ -4785,15 +4821,16 @@ namespace Chummer
 
                 case ImprovementType.BlockSkillSpecializations:
                     {
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(ImprovedName))
                         {
-                            await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CanHaveSpecs), lstReturn, token).ConfigureAwait(false);
-                            await ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CanHaveSpecs), lstReturn, token).ConfigureAwait(false);
+                            await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CanHaveSpecs), lstReturn, token).ConfigureAwait(false);
+                            await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.CanHaveSpecs), lstReturn, token).ConfigureAwait(false);
                         }
                         else
                         {
                             // When no specific target, process all skills
-                            await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                            await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.CanHaveSpecs)));
@@ -4804,8 +4841,9 @@ namespace Chummer
 
                 case ImprovementType.BlockSkillCategorySpecializations:
                     {
+                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         // Keeping two enumerations separate helps avoid extra heap allocations
-                        await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                        await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                         {
                             if (objTargetSkill.SkillCategory == ImprovedName ||
                                 lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
@@ -4813,7 +4851,7 @@ namespace Chummer
                                     nameof(Skill.CanHaveSpecs)));
                         }, token).ConfigureAwait(false);
 
-                        await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                        await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(objTargetSkill =>
                         {
                             if (objTargetSkill.SkillCategory == ImprovedName ||
                                 lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
@@ -5126,18 +5164,20 @@ namespace Chummer
                 }
 
                 // Check against lstExtraImprovedName
-                if (lstExtraImprovedName?.Contains(strKey) == true ||
-                    lstExtraImprovedName?.Contains(objSkill.InternalId) == true ||
-                    lstExtraImprovedName?.Contains(strDisplayName) == true)
+                if (lstExtraImprovedName != null
+                    && (lstExtraImprovedName.Contains(strKey)
+                        || lstExtraImprovedName.Contains(objSkill.InternalId)
+                        || lstExtraImprovedName.Contains(strDisplayName)))
                 {
                     yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill, strPropertyName);
                     continue;
                 }
 
                 // Check against lstExtraTarget
-                if (lstExtraTarget?.Contains(strKey) == true ||
-                    lstExtraTarget?.Contains(objSkill.InternalId) == true ||
-                    lstExtraTarget?.Contains(strDisplayName) == true)
+                if (lstExtraTarget != null
+                    && (lstExtraTarget.Contains(strKey)
+                        || lstExtraTarget.Contains(objSkill.InternalId)
+                        || lstExtraTarget.Contains(strDisplayName)))
                 {
                     yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill, strPropertyName);
                 }
@@ -5202,11 +5242,10 @@ namespace Chummer
         /// <summary>
         /// Helper method to process skills with comprehensive target checking (async overload)
         /// </summary>
-        private static async Task ProcessSkillsWithPropertyComprehensive<T>(IAsyncEnumerable<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, string strPropertyName, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default) where T : Skill
+        private static Task ProcessSkillsWithPropertyComprehensiveAsync<T>(IAsyncEnumerable<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, string strPropertyName, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default) where T : Skill
         {
-            await skills.ForEachAsync(async objTargetSkill =>
+            return skills.ForEachAsync(async objTargetSkill =>
             {
-                token.ThrowIfCancellationRequested();
                 string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
                 string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                 
@@ -5225,33 +5264,34 @@ namespace Chummer
                 }
                 
                 // Check against lstExtraImprovedName
-                if (lstExtraImprovedName?.Contains(strKey) == true || 
-                    lstExtraImprovedName?.Contains(objTargetSkill.InternalId) == true || 
-                    lstExtraImprovedName?.Contains(strDisplayName) == true)
+                if (lstExtraImprovedName != null
+                    && (lstExtraImprovedName.Contains(strKey)
+                        || lstExtraImprovedName.Contains(objTargetSkill.InternalId)
+                        || lstExtraImprovedName.Contains(strDisplayName)))
                 {
                     lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
                     return;
                 }
-                
+
                 // Check against lstExtraTarget
-                if (lstExtraTarget?.Contains(strKey) == true || 
-                    lstExtraTarget?.Contains(objTargetSkill.InternalId) == true || 
-                    lstExtraTarget?.Contains(strDisplayName) == true)
+                if (lstExtraTarget != null
+                    && (lstExtraTarget.Contains(strKey)
+                        || lstExtraTarget.Contains(objTargetSkill.InternalId)
+                        || lstExtraTarget.Contains(strDisplayName)))
                 {
                     lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
                 }
-            }, token).ConfigureAwait(false);
+            }, token);
         }
 
         /// <summary>
         /// Helper method to process skills by group/category/attribute with comprehensive target checking (async version)
         /// </summary>
-        private static async Task ProcessSkillsByPropertyComprehensiveAsync<T>(IAsyncEnumerable<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, 
+        private static Task ProcessSkillsByPropertyComprehensiveAsync<T>(IAsyncEnumerable<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, 
             string strPropertyName, Func<T, string> propertySelector, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default) where T : Skill
         {
-            await skills.ForEachAsync(objTargetSkill =>
+            return skills.ForEachAsync(objTargetSkill =>
             {
-                token.ThrowIfCancellationRequested();
                 string strPropertyValue = propertySelector(objTargetSkill);
                 
                 // Check against ImprovedName
@@ -5280,9 +5320,47 @@ namespace Chummer
                 {
                     lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
                 }
-            }, token).ConfigureAwait(false);
+            }, token);
         }
 
+        /// <summary>
+        /// Helper method to process skills by group/category/attribute with comprehensive target checking (async version)
+        /// </summary>
+        private static Task ProcessSkillsByPropertyComprehensiveAsync<T>(IAsyncEnumerable<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget,
+            string strPropertyName, Func<T, Task<string>> propertySelector, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default) where T : Skill
+        {
+            return skills.ForEachAsync(async objTargetSkill =>
+            {
+                string strPropertyValue = await propertySelector(objTargetSkill).ConfigureAwait(false);
+
+                // Check against ImprovedName
+                if (strPropertyValue == strImprovedName)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against Target
+                if (strPropertyValue == strTarget)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against lstExtraImprovedName
+                if (lstExtraImprovedName?.Contains(strPropertyValue) == true)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against lstExtraTarget
+                if (lstExtraTarget?.Contains(strPropertyValue) == true)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                }
+            }, token);
+        }
 
         /// <summary>
         /// Helper method to process skill groups with comprehensive target checking (sync overload)
@@ -5326,14 +5404,13 @@ namespace Chummer
         /// <summary>
         /// Helper method to process skill groups with comprehensive target checking (async overload)
         /// </summary>
-        private static async Task ProcessSkillsWithPropertyComprehensive(
+        private static Task ProcessSkillsWithPropertyComprehensiveAsync(
             IAsyncEnumerable<SkillGroup> skillGroups, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, 
             string strPropertyName, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default)
         {
-            await skillGroups.ForEachAsync(objTargetGroup =>
+            return skillGroups.ForEachAsync(async objTargetGroup =>
             {
-                token.ThrowIfCancellationRequested();
-                string strName = objTargetGroup.Name;
+                string strName = await objTargetGroup.GetNameAsync(token).ConfigureAwait(false);
 
                 // Check against ImprovedName
                 if (strName == strImprovedName)
@@ -5361,8 +5438,7 @@ namespace Chummer
                 {
                     lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup, strPropertyName));
                 }
-            }, token).ConfigureAwait(false);
+            }, token);
         }
-
     }
 }
