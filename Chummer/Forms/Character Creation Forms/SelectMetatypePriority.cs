@@ -223,39 +223,54 @@ namespace Chummer
                         }
 
                         // Set Priority defaults.
-                        if (!string.IsNullOrEmpty(_objCharacter.TalentPriority))
+                        string strAttributesPriority = await _objCharacter.GetAttributesPriorityAsync(_objGenericToken).ConfigureAwait(false);
+                        string strMetatypePriority = await _objCharacter.GetMetatypePriorityAsync(_objGenericToken).ConfigureAwait(false);
+                        string strResourcesPriority = await _objCharacter.GetResourcesPriorityAsync(_objGenericToken).ConfigureAwait(false);
+                        string strSkillsPriority = await _objCharacter.GetSkillsPriorityAsync(_objGenericToken).ConfigureAwait(false);
+                        string strSpecialPriority = await _objCharacter.GetSpecialPriorityAsync(_objGenericToken).ConfigureAwait(false);
+                        string strTalentPriority = await _objCharacter.GetTalentPriorityAsync(_objGenericToken).ConfigureAwait(false);
+                        if (!string.IsNullOrEmpty(strAttributesPriority)
+                            || !string.IsNullOrEmpty(strMetatypePriority)
+                            || !string.IsNullOrEmpty(strResourcesPriority)
+                            || !string.IsNullOrEmpty(strSkillsPriority)
+                            || !string.IsNullOrEmpty(strSpecialPriority)
+                            || !string.IsNullOrEmpty(strTalentPriority))
                         {
                             //Attributes
-                            await cboAttributes.DoThreadSafeAsync(x => x.SelectedIndex
-                                                                      = x.FindString(_objCharacter.AttributesPriority[0]
-                                                                          .ToString(GlobalSettings
-                                                                              .InvariantCultureInfo)), _objGenericToken)
-                                               .ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(strAttributesPriority))
+                                await cboAttributes.DoThreadSafeAsync(x => x.SelectedIndex =
+                                    x.FindString(strAttributesPriority[0].ToString(GlobalSettings.InvariantCultureInfo)), _objGenericToken)
+                                                       .ConfigureAwait(false);
+                            else
+                                await cboAttributes.DoThreadSafeAsync(x => x.SelectedIndex = 0, token: _objGenericToken).ConfigureAwait(false);
                             //Heritage (Metatype)
-                            await cboHeritage.DoThreadSafeAsync(x => x.SelectedIndex
-                                                                    = x.FindString(_objCharacter.MetatypePriority[0]
-                                                                                       .ToString(GlobalSettings
-                                                                                           .InvariantCultureInfo)), _objGenericToken)
-                                             .ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(strMetatypePriority))
+                                await cboHeritage.DoThreadSafeAsync(x => x.SelectedIndex =
+                                    x.FindString(strMetatypePriority[0].ToString(GlobalSettings.InvariantCultureInfo)), _objGenericToken)
+                                                       .ConfigureAwait(false);
+                            else
+                                await cboHeritage.DoThreadSafeAsync(x => x.SelectedIndex = 0, token: _objGenericToken).ConfigureAwait(false);
                             //Resources
-                            await cboResources.DoThreadSafeAsync(x => x.SelectedIndex
-                                                                     = x.FindString(_objCharacter.ResourcesPriority[0]
-                                                                         .ToString(GlobalSettings
-                                                                                       .InvariantCultureInfo)), _objGenericToken)
-                                              .ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(strResourcesPriority))
+                                await cboResources.DoThreadSafeAsync(x => x.SelectedIndex =
+                                    x.FindString(strResourcesPriority[0].ToString(GlobalSettings.InvariantCultureInfo)), _objGenericToken)
+                                                       .ConfigureAwait(false);
+                            else
+                                await cboResources.DoThreadSafeAsync(x => x.SelectedIndex = 0, token: _objGenericToken).ConfigureAwait(false);
                             //Skills
-                            await cboSkills.DoThreadSafeAsync(x => x.SelectedIndex
-                                                                  = x.FindString(_objCharacter.SkillsPriority[0]
-                                                                                     .ToString(GlobalSettings
-                                                                                         .InvariantCultureInfo)), _objGenericToken)
-                                           .ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(strSkillsPriority))
+                                await cboSkills.DoThreadSafeAsync(x => x.SelectedIndex =
+                                    x.FindString(strSkillsPriority[0].ToString(GlobalSettings.InvariantCultureInfo)), _objGenericToken)
+                                                       .ConfigureAwait(false);
+                            else
+                                await cboSkills.DoThreadSafeAsync(x => x.SelectedIndex = 0, token: _objGenericToken).ConfigureAwait(false);
                             //Magical/Resonance Talent
-                            await cboTalent.DoThreadSafeAsync(x => x.SelectedIndex
-                                                                  = x.FindString(_objCharacter.SpecialPriority[0]
-                                                                                     .ToString(
-                                                                                         GlobalSettings
-                                                                                             .InvariantCultureInfo)), _objGenericToken)
-                                           .ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(strSpecialPriority))
+                                await cboTalent.DoThreadSafeAsync(x => x.SelectedIndex =
+                                    x.FindString(strSpecialPriority[0].ToString(GlobalSettings.InvariantCultureInfo)), _objGenericToken)
+                                                       .ConfigureAwait(false);
+                            else
+                                await cboTalent.DoThreadSafeAsync(x => x.SelectedIndex = 0, token: _objGenericToken).ConfigureAwait(false);
 
                             await LoadMetatypes(_objGenericToken).ConfigureAwait(false);
                             await PopulateMetatypes(_objGenericToken).ConfigureAwait(false);
@@ -264,13 +279,23 @@ namespace Chummer
                             await RefreshSelectedMetatype(_objGenericToken).ConfigureAwait(false);
 
                             //Magical/Resonance Type
-                            string strTalentPriority = await _objCharacter.GetTalentPriorityAsync(_objGenericToken).ConfigureAwait(false);
-                            await cboTalents.DoThreadSafeAsync(x =>
+                            if (!string.IsNullOrEmpty(strTalentPriority))
                             {
-                                x.SelectedValue = strTalentPriority;
-                                if (x.SelectedIndex == -1 && x.Items.Count > 1)
-                                    x.SelectedIndex = 0;
-                            }, _objGenericToken).ConfigureAwait(false);
+                                await cboTalents.DoThreadSafeAsync(x =>
+                                {
+                                    x.SelectedValue = strTalentPriority;
+                                    if (x.SelectedIndex == -1 && x.Items.Count > 1)
+                                        x.SelectedIndex = 0;
+                                }, _objGenericToken).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                await cboTalents.DoThreadSafeAsync(x =>
+                                {
+                                    if (x.Items.Count > 1)
+                                        x.SelectedIndex = 0;
+                                }, _objGenericToken).ConfigureAwait(false);
+                            }
                             //Selected Magical Bonus Skill
                             string strSkill = _lstPrioritySkills.ElementAtOrDefaultBetter(0);
                             if (!string.IsNullOrEmpty(strSkill))
@@ -1628,8 +1653,10 @@ namespace Chummer
 
                     int intSpecialAttribPoints = 0;
                     bool boolHalveAttributePriorityPoints = charNode.NodeExists("halveattributepoints");
-                    if (strOldSpecialPriority != _objCharacter.SpecialPriority
-                        || strOldTalentPriority != _objCharacter.TalentPriority
+                    string strNewSpecialPriority = await _objCharacter.GetSpecialPriorityAsync(token).ConfigureAwait(false);
+                    string strNewTalentPriority = await _objCharacter.GetTalentPriorityAsync(token).ConfigureAwait(false);
+                    if (strOldSpecialPriority != strNewSpecialPriority
+                        || strOldTalentPriority != strNewTalentPriority
                         || blnSkillChoicesChanged)
                     {
                         List<Quality> lstOldPriorityQualities
@@ -1641,7 +1668,7 @@ namespace Chummer
                         bool blnRemoveFreeSkills = true;
                         XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select(
                             "priorities/priority[category = \"Talent\" and value = "
-                            + (await _objCharacter.GetSpecialPriorityAsync(token).ConfigureAwait(false)).CleanXPath() +
+                            + strNewSpecialPriority.CleanXPath() +
                             " and (not(prioritytable) or prioritytable = "
                             + strPriorityTable + ")]");
                         string strSkill1XPath = strSkill1.CleanXPath();
@@ -1654,7 +1681,7 @@ namespace Chummer
                             {
                                 XPathNavigator xmlTalentPriorityNode
                                     = xmlBaseTalentPriority.SelectSingleNode(
-                                        "talents/talent[value = " + _objCharacter.TalentPriority.CleanXPath()
+                                        "talents/talent[value = " + strNewTalentPriority.CleanXPath()
                                                                   + "]");
 
                                 if (xmlTalentPriorityNode != null)
@@ -1888,7 +1915,7 @@ namespace Chummer
                             // Get the talent priority node to determine skill values
                             XPathNodeIterator xmlBaseTalentPriorityListForSkills = _xmlBasePriorityDataNode.Select(
                                 "priorities/priority[category = \"Talent\" and value = "
-                                + (await _objCharacter.GetSpecialPriorityAsync(token).ConfigureAwait(false)).CleanXPath() +
+                                + strNewSpecialPriority.CleanXPath() +
                                 " and (not(prioritytable) or prioritytable = "
                                 + strPriorityTable + ")]");
                             
@@ -1899,7 +1926,7 @@ namespace Chummer
                                 {
                                     XPathNavigator xmlTalentPriorityNodeForSkills
                                         = xmlBaseTalentPriorityForSkills.SelectSingleNode(
-                                            "talents/talent[value = " + _objCharacter.TalentPriority.CleanXPath()
+                                            "talents/talent[value = " + strNewTalentPriority.CleanXPath()
                                                                       + "]");
 
                                     if (xmlTalentPriorityNodeForSkills != null)
