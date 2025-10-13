@@ -56,10 +56,10 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(_strExcludeCategory))
                         {
+                            string strExclude = string.Empty;
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdExclude))
                             {
-                                string strExclude = string.Empty;
                                 foreach (string strCategory in _strExcludeCategory.SplitNoAlloc(
                                              ',', StringSplitOptions.RemoveEmptyEntries))
                                     sbdExclude.Append("category != ", strCategory.CleanXPath(), " and ");
@@ -69,11 +69,11 @@ namespace Chummer
                                     sbdExclude.Length -= 5;
                                     strExclude = sbdExclude.Insert(0, '(').Append(") and ").ToString();
                                 }
-                                if (_objXmlDocument.SelectSingleNode(
+                            }
+                            if (_objXmlDocument.SelectSingleNode(
                                         "/chummer/skills/skill[" + strExclude + "skillgroup = "
                                         + objXmlSkill.Value.CleanXPath() + "]") == null)
-                                    continue;
-                            }
+                                continue;
                         }
 
                         string strInnerText = objXmlSkill.Value;

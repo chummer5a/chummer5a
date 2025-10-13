@@ -88,6 +88,7 @@ namespace Chummer
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdPlugins))
                         {
+                            sbdPlugins.Append(strName).Append(strSpace).Append('[');
                             await objGear.Children.ForEachAsync(async objChild =>
                                 sbdPlugins.Append(await objChild.GetCurrentDisplayNameShortAsync().ConfigureAwait(false), ',', strSpace))
                                 .ConfigureAwait(false);
@@ -95,7 +96,7 @@ namespace Chummer
                             // Remove the trailing comma.
                             sbdPlugins.Length -= 1 + strSpace.Length;
                             // Append the plugin information to the name.
-                            strName = sbdPlugins.Insert(0, strName, strSpace, '[').Append(']').ToString();
+                            strName = sbdPlugins.Append(']').ToString();
                         }
                     }
 

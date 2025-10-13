@@ -88,7 +88,8 @@ namespace Chummer
             foreach (XPathNavigator objXmlCategory in _xmlBaseChummerNode.SelectAndCacheExpression("categories/category[not(hide)]"))
             {
                 string strInnerText = objXmlCategory.Value;
-                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
+                if (!string.IsNullOrEmpty(strInnerText))
+                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
 
@@ -121,10 +122,11 @@ namespace Chummer
             string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
                 strFilter += " and category = " + strCategory.CleanXPath();
-            else
+            else if (_lstCategory.Any(x => !string.IsNullOrEmpty(x.Value.ToString())))
             {
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategoryFilter))
                 {
+                    sbdCategoryFilter.Append(strFilter).Append(" and (");
                     foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
                     {
                         if (!string.IsNullOrEmpty(strItem))
@@ -132,10 +134,8 @@ namespace Chummer
                     }
 
                     if (sbdCategoryFilter.Length > 0)
-                    {
                         sbdCategoryFilter.Length -= 4;
-                        strFilter = sbdCategoryFilter.Insert(0, strFilter, " and (").Append(')').ToString();
-                    }
+                    strFilter = sbdCategoryFilter.Append(')').ToString();
                 }
             }
 

@@ -156,14 +156,15 @@ namespace Chummer
                 {
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMount))
                     {
+                        sbdMount.Append("categories/category[");
                         foreach (string strAllowedMount in _setAllowedCategories)
                         {
                             if (!string.IsNullOrEmpty(strAllowedMount))
                                 sbdMount.Append(". = ", strAllowedMount.CleanXPath(), " or ");
                         }
 
-                        sbdMount.Append(". = \"General\"");
-                        objXmlCategoryList = _xmlBaseGearDataNode.Select(sbdMount.Insert(0, "categories/category[").Append(']').ToString());
+                        sbdMount.Append(". = \"General\"]");
+                        objXmlCategoryList = _xmlBaseGearDataNode.Select(sbdMount.ToString());
                     }
                 }
                 else

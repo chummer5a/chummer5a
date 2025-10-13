@@ -31,7 +31,7 @@ namespace Chummer
     public partial class SelectPower : Form
     {
         private bool _blnLoading = true;
-        private string _strLimitToPowers;
+        private readonly List<string> _lstLimitToPowers = new List<string>();
         private decimal _decLimitToRating;
 
         private readonly Character _objCharacter;
@@ -190,7 +190,16 @@ namespace Chummer
         /// </summary>
         public string LimitToPowers
         {
-            set => _strLimitToPowers = value;
+            set
+            {
+                _lstLimitToPowers.Clear();
+                foreach (string strPower in value.SplitNoAlloc(
+                                 ',', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (!string.IsNullOrEmpty(strPower))
+                        _lstLimitToPowers.Add(strPower);
+                }
+            }
         }
 
         /// <summary>
@@ -216,18 +225,16 @@ namespace Chummer
                 return;
 
             string strFilter = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(_strLimitToPowers))
+            if (_lstLimitToPowers.Count > 0)
             {
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
-                    foreach (string strPower in _strLimitToPowers.SplitNoAlloc(
-                                 ',', StringSplitOptions.RemoveEmptyEntries))
+                    sbdFilter.Append(strFilter).Append(" and (");
+                    foreach (string strPower in _lstLimitToPowers)
                         sbdFilter.Append("name = ", strPower.CleanXPath(), " or ");
                     if (sbdFilter.Length > 0)
-                    {
                         sbdFilter.Length -= 4;
-                        strFilter = sbdFilter.Insert(0, strFilter, " and (").Append(')').ToString();
-                    }
+                    strFilter = sbdFilter.Append(')').ToString();
                 }
             }
 

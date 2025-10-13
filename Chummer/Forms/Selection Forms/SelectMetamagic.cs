@@ -78,7 +78,11 @@ namespace Chummer
                                             _objCharacter, Improvement.ImprovementType.MetamagicLimit).ConfigureAwait(false))
             {
                 if (imp.Rating == _intMyGrade)
-                    _lstMetamagicLimits.Add(imp.ImprovedName);
+                {
+                    string strName = imp.ImprovedName;
+                    if (!string.IsNullOrEmpty(strName))
+                        _lstMetamagicLimits.Add(strName);
+                }
             }
             string strText = string.Format(GlobalSettings.CultureInfo,
                                            await LanguageManager.GetStringAsync("Title_SelectGeneric").ConfigureAwait(false), _strType);
@@ -185,13 +189,12 @@ namespace Chummer
             {
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
+                    sbdFilter.Append(strFilter).Append(" and (");
                     foreach (string strMetamagic in _lstMetamagicLimits)
                         sbdFilter.Append("name = ", strMetamagic.CleanXPath(), " or ");
                     if (sbdFilter.Length > 0)
-                    {
                         sbdFilter.Length -= 4;
-                        strFilter = sbdFilter.Insert(0, strFilter, " and (").Append(')').ToString();
-                    }
+                    strFilter = sbdFilter.Append(')').ToString();
                 }
             }
 

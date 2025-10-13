@@ -486,22 +486,22 @@ namespace Chummer
                             }).ConfigureAwait(false);
 
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                       out StringBuilder sbdFilters))
+                                       out StringBuilder sbdFilter))
                             {
                                 if (setProcessedSkillNames.Count > 0)
                                 {
-                                    sbdFilters.Append("not(");
+                                    sbdFilter.Append("not(");
                                     foreach (string strName in setProcessedSkillNames)
                                     {
-                                        sbdFilters.Append("name = ", strName.CleanXPath(), " or ");
+                                        sbdFilter.Append("name = ", strName.CleanXPath(), " or ");
                                     }
 
-                                    sbdFilters.Length -= 4;
-                                    sbdFilters.Append(')');
+                                    sbdFilter.Length -= 4;
+                                    sbdFilter.Append(')');
                                 }
 
-                                if (sbdFilters.Length > 0)
-                                    strFilter = sbdFilters.Insert(0, '[').Append(']').ToString();
+                                if (sbdFilter.Length > 0)
+                                    strFilter = sbdFilter.Insert(0, '[').Append(']').ToString();
                             }
                         }
 
