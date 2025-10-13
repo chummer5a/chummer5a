@@ -60,7 +60,8 @@ namespace Chummer
         LifeModule = 4,
         Improvement = 5,
         MetatypeRemovedAtChargen = 6,
-        Heritage = 7
+        Heritage = 7,
+        QualityLevelImprovement = 8
     }
 
     /// <summary>
@@ -180,6 +181,9 @@ namespace Chummer
 
                 case "HERITAGE":
                     return QualitySource.Heritage;
+
+                case "QUALITYLEVELIMPROVEMENT":
+                    return QualitySource.QualityLevelImprovement;
 
                 default:
                     return QualitySource.Selected;
@@ -2416,6 +2420,7 @@ namespace Chummer
                 QualitySource eOriginSource = await GetOriginSourceAsync(token).ConfigureAwait(false);
                 if ((eOriginSource == QualitySource.BuiltIn ||
                      eOriginSource == QualitySource.Improvement ||
+                     eOriginSource == QualitySource.QualityLevelImprovement ||
                      eOriginSource == QualitySource.LifeModule ||
                      eOriginSource == QualitySource.Metatype ||
                      eOriginSource == QualitySource.MetatypeRemovable ||
@@ -2462,6 +2467,7 @@ namespace Chummer
                     {
                         return OriginSource == QualitySource.BuiltIn
                                || OriginSource == QualitySource.Improvement
+                               || OriginSource == QualitySource.QualityLevelImprovement
                                || OriginSource == QualitySource.LifeModule
                                || OriginSource == QualitySource.Metatype
                                || OriginSource == QualitySource.Heritage
@@ -2470,6 +2476,7 @@ namespace Chummer
                     }
                     return OriginSource == QualitySource.BuiltIn
                            || OriginSource == QualitySource.Improvement
+                           || OriginSource == QualitySource.QualityLevelImprovement
                            || OriginSource == QualitySource.LifeModule
                            || OriginSource == QualitySource.Metatype
                            || OriginSource == QualitySource.Heritage
@@ -2493,6 +2500,7 @@ namespace Chummer
                 {
                     return OriginSource == QualitySource.BuiltIn
                             || OriginSource == QualitySource.Improvement
+                            || OriginSource == QualitySource.QualityLevelImprovement
                             || OriginSource == QualitySource.LifeModule
                             || OriginSource == QualitySource.Metatype
                             || OriginSource == QualitySource.Heritage
@@ -2501,6 +2509,7 @@ namespace Chummer
                 }
                 return OriginSource == QualitySource.BuiltIn
                         || OriginSource == QualitySource.Improvement
+                        || OriginSource == QualitySource.QualityLevelImprovement
                         || OriginSource == QualitySource.LifeModule
                         || OriginSource == QualitySource.Metatype
                         || OriginSource == QualitySource.Heritage

@@ -452,6 +452,7 @@ namespace Chummer
                         {
                             QualitySource eOriginSource = await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false);
                             if (eOriginSource == QualitySource.Improvement
+                                || eOriginSource == QualitySource.QualityLevelImprovement
                                 || eOriginSource == QualitySource.Metatype
                                 || eOriginSource == QualitySource.MetatypeRemovable
                                 || eOriginSource == QualitySource.MetatypeRemovedAtChargen)

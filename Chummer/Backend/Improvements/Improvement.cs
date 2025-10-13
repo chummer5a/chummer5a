@@ -3056,7 +3056,7 @@ namespace Chummer
                 case ImprovementType.QualityLevel:
                 {
                     yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
-                        nameof(Character.QualityLevelsProcessed));
+                        nameof(Character.HasAnyQualitiesWithQualityLevels));
                     break;
                 }
             }
@@ -5038,7 +5038,7 @@ namespace Chummer
                 case ImprovementType.QualityLevel:
                     {
                         lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(_objCharacter,
-                            nameof(Character.QualityLevelsProcessed)));
+                            nameof(Character.HasAnyQualitiesWithQualityLevels)));
                         break;
                     }
             }
