@@ -1831,6 +1831,7 @@ namespace Chummer
 
         /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, params string[] astrValues)
@@ -1849,6 +1850,7 @@ namespace Chummer
 
         /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2)
@@ -1864,6 +1866,7 @@ namespace Chummer
 
         /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, char chr2)
@@ -1875,6 +1878,7 @@ namespace Chummer
 
         /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, string str2)
@@ -1886,6 +1890,7 @@ namespace Chummer
 
         /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Insert(int, char)"/> over multiple chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, char chr2)
@@ -1896,6 +1901,7 @@ namespace Chummer
 
         /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, string str3)
@@ -1911,6 +1917,7 @@ namespace Chummer
 
         /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, char chr3)
@@ -1922,6 +1929,7 @@ namespace Chummer
 
         /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, char chr2, string str3)
@@ -1933,6 +1941,7 @@ namespace Chummer
 
         /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, char chr2, char chr3)
@@ -1944,6 +1953,7 @@ namespace Chummer
 
         /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, string str2, string str3)
@@ -1955,6 +1965,7 @@ namespace Chummer
 
         /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, string str2, char chr3)
@@ -1966,6 +1977,7 @@ namespace Chummer
 
         /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, char chr2, string str3)
@@ -1987,6 +1999,7 @@ namespace Chummer
 
         /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, string str3, string str4)
@@ -2002,6 +2015,7 @@ namespace Chummer
 
         /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, string str3, string str4, string str5)
@@ -2017,6 +2031,7 @@ namespace Chummer
 
         /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, string str3, string str4, string str5, string str6)
@@ -2032,6 +2047,7 @@ namespace Chummer
 
         /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, string str3, string str4, string str5, string str6, string str7)
