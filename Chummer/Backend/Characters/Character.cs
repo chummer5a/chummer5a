@@ -46935,8 +46935,8 @@ namespace Chummer
                                             decimal decNonCyberwareEssence = await GetBiowareEssenceAsync(token).ConfigureAwait(false) + await GetEssenceHoleAsync(token).ConfigureAwait(false);
                                             int intMaxCyberadeptDaemonBonus = Math.Ceiling(decNonCyberwareEssence) ==
                                                                               Math.Floor(decNonCyberwareEssence)
-                                                ? (int)Math.Ceiling(CyberwareEssence)
-                                                : (int)Math.Floor(CyberwareEssence);
+                                                ? (int)Math.Ceiling(await GetCyberwareEssenceAsync(token).ConfigureAwait(false))
+                                                : (int)Math.Floor(await GetCyberwareEssenceAsync(token).ConfigureAwait(false));
                                             int intCyberadeptDaemonBonus = 0;
                                             for (int i = 1; i <= intSubmersionGrade; ++i)
                                             {
