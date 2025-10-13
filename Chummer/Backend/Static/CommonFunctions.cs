@@ -2860,17 +2860,16 @@ namespace Chummer
 
         /// <summary>
         /// Generate XPath expression for numeric range filtering.
+        /// NOTE: This will only check numerical values, it does not work if the cost element contains any non-numerical values, including the ones we use for e.g. Rating strings!
         /// </summary>
         /// <param name="decMaxValue">Maximum value</param>
         /// <param name="decMinValue">Minimum value</param>
         /// <param name="strElementName">Name of the element to filter (default: "cost")</param>
+        /// <param name="blnInclusive">Uses greater than or equal to and less than or equal to if true, uses greater than and less than if false.</param>
         /// <returns>XPath expression for numeric range filtering</returns>
-        public static string GenerateNumericRangeXPath(decimal decMaxValue, decimal decMinValue, string strElementName = "cost")
+        public static string GenerateNumericRangeXPath(decimal decMaxValue, decimal decMinValue, string strElementName = "cost", bool blnInclusive = true)
         {
-            string strMax = decMaxValue.ToString(GlobalSettings.InvariantCultureInfo);
-            string strMin = decMinValue.ToString(GlobalSettings.InvariantCultureInfo);
-
-            return $"{strElementName} >= {strMin} and {strElementName} <= {strMax}";
+            return "((" + strElementName + (blnInclusive ? " >= " : " > ") + decMinValue.ToString(GlobalSettings.InvariantCultureInfo) + ") and (" + strElementName + (blnInclusive ? " <= " : " < ") + decMaxValue.ToString(GlobalSettings.InvariantCultureInfo) + "))";
         }
 
         #endregion Equipment Filtering
