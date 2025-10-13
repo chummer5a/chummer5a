@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -226,7 +227,7 @@ namespace Chummer
                     if (sbdFilter.Length > 0)
                     {
                         sbdFilter.Length -= 4;
-                        strFilter = sbdFilter.Insert(0, strFilter, " and (", ')').ToString();
+                        strFilter = sbdFilter.Insert(0, strFilter, " and (").Append(')').ToString();
                     }
                 }
             }
