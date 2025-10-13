@@ -156,8 +156,8 @@ namespace Chummer
                                                            .Select("/chummer/weapons/weapon[(category = "
                                                                    + (strSelectedCategory + "s").CleanXPath()
                                                                    + " or useskill = "
-                                                                   + strSelectedCategory.CleanXPath() + ") and ("
-                                                                   + await objSettings.BookXPathAsync(false, token).ConfigureAwait(false) + ")]");
+                                                                   + strSelectedCategory.CleanXPath() + ") and "
+                                                                   + await objSettings.BookXPathAsync(false, token).ConfigureAwait(false) + "]");
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkillSpecializations))
             {
                 if (xmlWeaponList.Count > 0)
@@ -177,9 +177,9 @@ namespace Chummer
 
                 foreach (XPathNavigator xmlSpec in (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
                                                                 .Select("/chummer/skills/skill[name = "
-                                                                        + strSelectedCategory.CleanXPath() + " and ("
+                                                                        + strSelectedCategory.CleanXPath() + " and "
                                                                         + await objSettings.BookXPathAsync(token: token).ConfigureAwait(false)
-                                                                        + ")]/specs/spec"))
+                                                                        + "]/specs/spec"))
                 {
                     string strName = xmlSpec.Value;
                     if (!string.IsNullOrEmpty(strName))

@@ -16520,7 +16520,7 @@ namespace Chummer
                     CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
                     if (objSettings != null)
                     {
-                        sbdFilter.Append('(', await objSettings.BookXPathAsync(token: token).ConfigureAwait(false), ") and ");
+                        sbdFilter.Append(await objSettings.BookXPathAsync(token: token).ConfigureAwait(false), " and ");
                         if (!await GetIgnoreRulesAsync(token).ConfigureAwait(false) && !await GetCreatedAsync(token).ConfigureAwait(false) && !blnIgnoreBannedGrades)
                         {
                             foreach (string strBannedGrade in objSettings.BannedWareGrades)
@@ -16595,7 +16595,7 @@ namespace Chummer
                 {
                     if (Settings != null)
                     {
-                        sbdFilter.Append('(', await (await GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false), ") and ");
+                        sbdFilter.Append(await (await GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false), " and ");
                         if (!blnIgnoreBannedGrades && !await GetCreatedAsync(token).ConfigureAwait(false) && !await GetIgnoreRulesAsync(token).ConfigureAwait(false))
                         {
                             foreach (string strBannedGrade in (await GetSettingsAsync(token).ConfigureAwait(false)).BannedWareGrades)

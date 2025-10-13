@@ -114,9 +114,7 @@ namespace Chummer
                 string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
-                    sbdFilter.Append('(',
-                        await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false),
-                        ')');
+                    sbdFilter.Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false));
                     if (!string.IsNullOrEmpty(strSearch))
                         sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
 
@@ -133,7 +131,7 @@ namespace Chummer
                     else if (decMinimumCost != 0 || decMaximumCost != 0)
                     {
                         // Range cost filtering
-                        sbdFilter.Append(" and (", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"), ')');
+                        sbdFilter.Append(" and ", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"));
                     }
 
                     if (sbdFilter.Length > 0)

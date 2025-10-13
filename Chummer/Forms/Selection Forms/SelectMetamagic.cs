@@ -167,7 +167,7 @@ namespace Chummer
         /// </summary>
         private async Task BuildMetamagicList(CancellationToken token = default)
         {
-            string strFilter = "(" + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + ")";
+            string strFilter = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false);
             // If the character has MAG enabled, filter the list based on Adept/Magician availability.
             if (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
             {
@@ -175,9 +175,9 @@ namespace Chummer
                 if (blnIsMagician != await _objCharacter.GetAdeptEnabledAsync(token).ConfigureAwait(false))
                 {
                     if (blnIsMagician)
-                        strFilter += "and magician = " + bool.TrueString.CleanXPath();
+                        strFilter += " and magician = " + bool.TrueString.CleanXPath();
                     else
-                        strFilter += "and adept = " + bool.TrueString.CleanXPath();
+                        strFilter += " and adept = " + bool.TrueString.CleanXPath();
                 }
             }
 
@@ -198,10 +198,12 @@ namespace Chummer
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
+            if (!string.IsNullOrEmpty(strFilter))
+                strFilter = "[" + strFilter + "]";
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetamagics))
             {
                 foreach (XPathNavigator objXmlMetamagic in
-                         _objXmlDocument.Select(_strRootXPath + "[" + strFilter + "]"))
+                         _objXmlDocument.Select(_strRootXPath + strFilter))
                 {
                     string strId = objXmlMetamagic.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (string.IsNullOrEmpty(strId))

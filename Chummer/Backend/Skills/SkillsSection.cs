@@ -687,9 +687,8 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                           .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
+                           .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and " +
                                         await _objCharacterSettings.BookXPathAsync(token: token).ConfigureAwait(false)
-                                        + ")"
                                         + SkillFilter(eFilterOption, strName) + "]"))
                 {
                     lstReturn = new List<ValueTuple<Skill, bool>>(xmlSkillList?.Count ?? 0);
@@ -1269,10 +1268,9 @@ namespace Chummer.Backend.Skills
                 XmlDocument xmlSkillsDocument =
                     await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                           .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
+                           .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and " +
                                         await _objCharacterSettings.BookXPathAsync(token: token)
                                             .ConfigureAwait(false)
-                                        + ")"
                                         + SkillFilter(eFilterOption, strName) + "]"))
                 {
                     if (xmlSkillList?.Count > 0)
@@ -1630,14 +1628,14 @@ namespace Chummer.Backend.Skills
                                                                     .ConfigureAwait(false);
                                                             using (XmlNodeList lstSkillDataNodes =
                                                                    xmlSkillsDataDoc.SelectNodes(
-                                                                       "/chummer/skills/skill[not(exotic = 'True') and ("
+                                                                       "/chummer/skills/skill[not(exotic = 'True') and "
                                                                        + (blnSync
                                                                            // ReSharper disable once MethodHasAsyncOverload
                                                                            ? _objCharacterSettings.BookXPath(
                                                                                token: token)
                                                                            : await _objCharacterSettings
                                                                                .BookXPathAsync(token: token)
-                                                                               .ConfigureAwait(false)) + ")"
+                                                                               .ConfigureAwait(false))
                                                                        + SkillFilter(FilterOption.NonSpecial) +
                                                                        "]"))
                                                             {
@@ -2328,12 +2326,12 @@ namespace Chummer.Backend.Skills
                                         : await _objCharacter.LoadDataAsync("skills.xml", token: token)
                                             .ConfigureAwait(false);
                                     using (XmlNodeList lstSkillDataNodes = xmlSkillsDataDoc.SelectNodes(
-                                               "/chummer/skills/skill[not(exotic = 'True') and ("
+                                               "/chummer/skills/skill[not(exotic = 'True') and "
                                                + (blnSync
                                                    // ReSharper disable once MethodHasAsyncOverload
                                                    ? _objCharacterSettings.BookXPath(token: token)
                                                    : await _objCharacterSettings.BookXPathAsync(token: token)
-                                                       .ConfigureAwait(false)) + ")"
+                                                       .ConfigureAwait(false))
                                                + SkillFilter(FilterOption.NonSpecial) + "]"))
                                     {
                                         if (lstSkillDataNodes?.Count > 0)
@@ -3297,10 +3295,10 @@ namespace Chummer.Backend.Skills
                             try
                             {
                                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                                           .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and ("
+                                           .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and "
                                                         + await (await _objCharacter.GetSettingsAsync(token)
                                                                 .ConfigureAwait(false)).BookXPathAsync(token: token)
-                                                            .ConfigureAwait(false) + ")"
+                                                            .ConfigureAwait(false)
                                                         + SkillFilter(FilterOption.NonSpecial) + "]"))
                                 {
                                     if (xmlSkillList?.Count > 0)

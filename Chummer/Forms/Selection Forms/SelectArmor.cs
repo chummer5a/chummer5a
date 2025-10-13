@@ -130,7 +130,7 @@ namespace Chummer
                 // Populate the Armor Category list.
                 if (_objXmlArmorDocumentChummerNode.SelectSingleNodeAndCacheExpression("/chummer/categories/category", _objGenericToken) != null)
                 {
-                    string strFilterPrefix = "armors/armor[(" + await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).BookXPathAsync(token: _objGenericToken).ConfigureAwait(false) + ") and category = ";
+                    string strFilterPrefix = "armors/armor[" + await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).BookXPathAsync(token: _objGenericToken).ConfigureAwait(false) + " and category = ";
                     foreach (XPathNavigator objXmlCategory in _objXmlArmorDocumentChummerNode.SelectAndCacheExpression("/chummer/categories/category", _objGenericToken))
                     {
                         string strInnerText = objXmlCategory.Value;
@@ -651,9 +651,8 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
-                        sbdFilter.Append("/chummer/armors/armor[(",
-                            await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false),
-                            ')');
+                        sbdFilter.Append("/chummer/armors/armor[",
+                            await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false));
 
                         string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
@@ -700,7 +699,7 @@ namespace Chummer
                         else if (decMinimumCost != 0 || decMaximumCost != 0)
                         {
                             // Range cost filtering
-                            sbdFilter.Append(" and (", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"), ')');
+                            sbdFilter.Append(" and ", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"));
                         }
 
                         await BuildArmorList(_objXmlDocument.SelectNodes(sbdFilter.Append(']').ToString()),

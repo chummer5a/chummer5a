@@ -309,7 +309,7 @@ namespace Chummer
 
         private async Task<string> GetSelectString(CancellationToken token = default)
         {
-            string strReturn = "[(" + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false);
+            string strReturn = "[" + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false);
 
             //chummer/modules/module//name[contains(., "C")]/..["" = string.Empty]
             // /chummer/modules/module//name[contains(., "can")]/..[id]
@@ -321,7 +321,7 @@ namespace Chummer
             //}
             if (!string.IsNullOrWhiteSpace(_strWorkStage))
             {
-                strReturn += ") and (stage = " + _strWorkStage.CleanXPath();
+                strReturn += " and (stage = " + _strWorkStage.CleanXPath();
             }
 
             return strReturn + ")]";

@@ -95,6 +95,8 @@ namespace Chummer
                             string strLoopValue = objSpec.Value.ToString().CleanXPath();
                             sbdFilter.Append(" or spec = ", strLoopValue, " or spec2 = ", strLoopValue);
                         }
+                        if (sbdFilter.Length > 0)
+                            sbdFilter = sbdFilter.Insert(0, '(').Append(") and ");
                         strXPathFilter = sbdFilter.ToString();
                     }
 
@@ -102,10 +104,10 @@ namespace Chummer
                     {
                         //Might need to include skill name or might miss some values?
                         foreach (XPathNavigator objXmlWeapon in objXmlWeaponDocument.Select(
-                                     "/chummer/weapons/weapon[(" + strXPathFilter + ") and ("
+                                     "/chummer/weapons/weapon[" + strXPathFilter
                                      + await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false))
                                              .BookXPathAsync().ConfigureAwait(false)
-                                     + ")]"))
+                                     + "]"))
                         {
                             string strName = objXmlWeapon.SelectSingleNodeAndCacheExpression("name")?.Value;
                             if (!string.IsNullOrEmpty(strName))

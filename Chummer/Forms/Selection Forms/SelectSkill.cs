@@ -79,26 +79,26 @@ namespace Chummer
                     {
                         objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill[name = "
                                                                  + strForcedExoticSkillName.CleanXPath()
-                                                                 + " and exotic = 'True' and ("
+                                                                 + " and exotic = 'True' and "
                                                                  + await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync()
-                                                                     .ConfigureAwait(false) + ")]");
+                                                                     .ConfigureAwait(false) + "]");
                     }
                     else
                     {
                         objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill[name = "
                                                                  + _strForceSkill.CleanXPath()
-                                                                 + " and not(exotic = 'True') and ("
+                                                                 + " and not(exotic = 'True') and "
                                                                  + await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync()
-                                                                     .ConfigureAwait(false) + ")]");
+                                                                     .ConfigureAwait(false) + "]");
                     }
                 }
                 else if (!string.IsNullOrEmpty(_strLimitToCategories))
                 {
                     objXmlSkillList = _objXmlDocument.Select(
                         "/chummer/skills/skill["
-                        + _strLimitToCategories + " and ("
+                        + _strLimitToCategories + " and "
                         + await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync()
-                                             .ConfigureAwait(false) + ")]");
+                                             .ConfigureAwait(false) + "]");
                 }
                 else
                 {
@@ -108,7 +108,7 @@ namespace Chummer
                         // If we don't have a minimum rating, include exotic skills as normal because they'll just make the second dropdown appear when selected
                         if (_intMinimumRating > 0)
                             sbdFilter.Append("not(exotic = 'True') and ");
-                        sbdFilter.Append('(', await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false), ')');
+                        sbdFilter.Append(await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false));
                         if (!string.IsNullOrEmpty(_strIncludeCategory))
                         {
                             sbdFilter.Append(" and (");
@@ -559,8 +559,8 @@ namespace Chummer
                         .Select("/chummer/weapons/weapon[(category = "
                                 + (strSelectedCategory + "s").CleanXPath()
                                 + " or useskill = "
-                                + strSelectedCategory.CleanXPath() + ") and ("
-                                + await objSettings.BookXPathAsync(false, token).ConfigureAwait(false) + ")]");
+                                + strSelectedCategory.CleanXPath() + ") and "
+                                + await objSettings.BookXPathAsync(false, token).ConfigureAwait(false) + "]");
                     if (xmlWeaponList.Count > 0)
                     {
                         foreach (XPathNavigator xmlWeapon in xmlWeaponList)
@@ -580,9 +580,9 @@ namespace Chummer
                                                               .LoadDataXPathAsync("skills.xml", token: token)
                                                               .ConfigureAwait(false))
                              .Select("/chummer/skills/skill[name = "
-                                     + strSelectedCategory.CleanXPath() + " and ("
+                                     + strSelectedCategory.CleanXPath() + " and "
                                      + await objSettings.BookXPathAsync(token: token).ConfigureAwait(false)
-                                     + ")]/specs/spec"))
+                                     + "]/specs/spec"))
                     {
                         string strName = xmlSpec.Value;
                         if (!string.IsNullOrEmpty(strName))

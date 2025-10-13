@@ -3402,10 +3402,10 @@ namespace Chummer
                                          .SelectSingleNodeAndCacheExpression("prioritytable", token) != null)
                             {
                                 foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select(
-                                             "metatypes/metatype[("
+                                             "metatypes/metatype["
                                              + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token)
                                                                   .ConfigureAwait(false)
-                                             + ") and category = " + strSelectedCategory.CleanXPath()
+                                             + " and category = " + strSelectedCategory.CleanXPath()
                                              + "]"))
                                 {
                                     string strId = objXmlMetatype
@@ -3539,9 +3539,9 @@ namespace Chummer
                                          .SelectSingleNodeAndCacheExpression("prioritytable", token) != null)
                             {
                                 foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select(
-                                             "metatypes/metatype[category = " + objXmlCategory.Value.CleanXPath() + " and ("
+                                             "metatypes/metatype[category = " + objXmlCategory.Value.CleanXPath() + " and "
                                              + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token)
-                                                                  .ConfigureAwait(false) + ")]"))
+                                                                  .ConfigureAwait(false) + "]"))
                                 {
                                     if (xmlBaseMetatypePriority.TryGetNodeByNameOrId(
                                             "metatypes/metatype", objXmlMetatype

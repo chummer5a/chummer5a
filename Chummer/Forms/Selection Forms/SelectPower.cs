@@ -215,7 +215,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strFilter = "(" + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + ")";
+            string strFilter = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(_strLimitToPowers))
             {
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
@@ -234,10 +234,12 @@ namespace Chummer
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
+            if (!string.IsNullOrEmpty(strFilter))
+                strFilter = "[" + strFilter + "]";
 
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPower))
             {
-                foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power[" + strFilter + "]"))
+                foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power" + strFilter))
                 {
                     decimal.TryParse(objXmlPower.SelectSingleNodeAndCacheExpression("points", token: token)?.Value, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decPoints);
                     string strExtraPointCost = objXmlPower.SelectSingleNodeAndCacheExpression("extrapointcost", token: token)?.Value;

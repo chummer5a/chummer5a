@@ -106,8 +106,8 @@ namespace Chummer
                                             continue;
                                         if (xmlMetatypesNode.SelectSingleNode(
                                                 "metatype[category = " + strInnerText.CleanXPath()
-                                                                       + " and (" + await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).BookXPathAsync(token: _objGenericToken).ConfigureAwait(false)
-                                                                       + ")]")
+                                                                       + " and " + await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).BookXPathAsync(token: _objGenericToken).ConfigureAwait(false)
+                                                                       + "]")
                                             != null)
                                         {
                                             lstCategories.Add(new ListItem(strInnerText,
@@ -1129,7 +1129,7 @@ namespace Chummer
                         string strFilter = string.Empty;
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                         {
-                            sbdFilter.Append('(', await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false), ')');
+                            sbdFilter.Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false));
                             if (!string.IsNullOrEmpty(strSelectedCategory) && strSelectedCategory != "Show All"
                                                                            && (GlobalSettings.SearchInCategoryOnly
                                                                                || strSearchText.Length == 0))

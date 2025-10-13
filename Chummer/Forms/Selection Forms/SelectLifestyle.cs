@@ -448,8 +448,10 @@ namespace Chummer
                 string strFilter = await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false);
                 if (await _objLifestyle.GetStyleTypeAsync().ConfigureAwait(false) == LifestyleType.Standard)
                     strFilter += " and (source = \"SR5\" or category = \"Contracts\")";
+                if (!string.IsNullOrEmpty(strFilter))
+                    strFilter = "[" + strFilter + "]";
                 using (XmlNodeList xmlLifestyleList
-                       = _xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + strFilter + "]"))
+                       = _xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle" + strFilter))
                 {
                     if (xmlLifestyleList?.Count > 0)
                     {

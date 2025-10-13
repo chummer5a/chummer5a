@@ -113,8 +113,8 @@ namespace Chummer
 
                 // Populate the Category list.
                 string strFilterPrefix = (VehicleMountMods
-                    ? "weaponmountmods/mod[("
-                    : "mods/mod[(") + await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false) + ") and category = ";
+                    ? "weaponmountmods/mod["
+                    : "mods/mod[") + await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false) + " and category = ";
                 foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.SelectAndCacheExpression("modcategories/category"))
                 {
                     string strInnerText = objXmlCategory.Value;
@@ -314,54 +314,61 @@ namespace Chummer
         /// </summary>
         private async Task RefreshList(CancellationToken token = default)
         {
-            string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
-            string strFilter = "(" + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + ")";
-            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (string.IsNullOrWhiteSpace(strSearch) || GlobalSettings.SearchInCategoryOnly))
-                strFilter += " and category = " + strCategory.CleanXPath();
-            /*
-            else if (!string.IsNullOrEmpty(AllowedCategories))
+            string strFilter = string.Empty;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                          out StringBuilder sbdCategoryFilter))
+                sbdFilter.Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false));
+                string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
+                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (string.IsNullOrWhiteSpace(strSearch) || GlobalSettings.SearchInCategoryOnly))
+                    sbdFilter.Append(" and category = ", strCategory.CleanXPath());
+                /*
+                else if (!string.IsNullOrEmpty(AllowedCategories))
                 {
-                    foreach (string strItem in _lstCategory.Select(x => x.Value))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdCategoryFilter))
                     {
-                        if (!string.IsNullOrEmpty(strItem))
-                            sbdCategoryFilter.Append("category = ", strItem.CleanXPath(), " or ");
-                    }
-                    if (sbdCategoryFilter.Length > 0)
-                    {
-                        sbdCategoryFilter.Length -= 4;
-                        strFilter = sbdCategoryFilter.Insert(0, strFilter, " and (", ')').ToString();
+                        foreach (string strItem in _lstCategory.Select(x => x.Value))
+                        {
+                            if (!string.IsNullOrEmpty(strItem))
+                                sbdCategoryFilter.Append("category = ", strItem.CleanXPath(), " or ");
+                        }
+                        if (sbdCategoryFilter.Length > 0)
+                        {
+                            sbdCategoryFilter.Length -= 4;
+                            strFilter = sbdCategoryFilter.Insert(0, strFilter, " and (", ')').ToString();
+                        }
                     }
                 }
-            }
-            */
+                */
 
-            if (!string.IsNullOrEmpty(strSearch))
-                strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
+                if (!string.IsNullOrEmpty(strSearch))
+                    sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
 
-            // Apply cost filtering
-            decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-            decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-            decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                // Apply cost filtering
+                decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
 
-            if (decExactCost > 0)
-            {
-                // Exact cost filtering
-                strFilter += " and (cost = " + decExactCost.ToString(GlobalSettings.InvariantCultureInfo) + ")";
-            }
-            else if (decMinimumCost != 0 || decMaximumCost != 0)
-            {
-                // Range cost filtering
-                strFilter += " and (" + CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost") + ")";
+                if (decExactCost > 0)
+                {
+                    // Exact cost filtering
+                    sbdFilter.Append(" and (cost = ", decExactCost.ToString(GlobalSettings.InvariantCultureInfo), ')');
+                }
+                else if (decMinimumCost != 0 || decMaximumCost != 0)
+                {
+                    // Range cost filtering
+                    sbdFilter.Append(" and ", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"));
+                }
+
+                if (sbdFilter.Length > 0)
+                    strFilter = sbdFilter.Insert(0, '[').Append(']').ToString();
             }
 
             // Retrieve the list of Mods for the selected Category.
             XPathNodeIterator objXmlModList = VehicleMountMods
-                ? _xmlBaseVehicleDataNode.Select("weaponmountmods/mod[" + strFilter + "]")
-                : _xmlBaseVehicleDataNode.Select("mods/mod[" + strFilter + "]");
+                ? _xmlBaseVehicleDataNode.Select("weaponmountmods/mod" + strFilter)
+                : _xmlBaseVehicleDataNode.Select("mods/mod" + strFilter);
             // Update the list of Mods based on the selected Category.
             int intOverLimit = 0;
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMods))

@@ -104,9 +104,9 @@ namespace Chummer
 
                     // Populate the Weapon Category list.
                     // Populate the Category list.
-                    string strFilterPrefix = "/chummer/weapons/weapon[(" +
+                    string strFilterPrefix = "/chummer/weapons/weapon[" +
                                              await objSettings.BookXPathAsync(token: _objGenericToken)
-                                                 .ConfigureAwait(false) + ") and category = ";
+                                                 .ConfigureAwait(false) + " and category = ";
                     using (XmlNodeList xmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
                     {
                         if (xmlCategoryList != null)
@@ -1087,9 +1087,7 @@ namespace Chummer
                     string strFilter = string.Empty;
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
-                        sbdFilter.Append('(',
-                            await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false),
-                            ')');
+                        sbdFilter.Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false));
                         if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                                && (GlobalSettings.SearchInCategoryOnly
                                                                    || txtSearch.TextLength == 0))
@@ -1136,7 +1134,7 @@ namespace Chummer
                         else if (decMinimumCost != 0 || decMaximumCost != 0)
                         {
                             // Range cost filtering
-                            sbdFilter.Append(" and (", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"), ')');
+                            sbdFilter.Append(" and ", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"));
                         }
 
                         // Apply additional weapon filter if specified

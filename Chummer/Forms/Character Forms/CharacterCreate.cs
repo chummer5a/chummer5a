@@ -22536,8 +22536,8 @@ namespace Chummer
                                     continue;
                                 XmlNode objXmlSpellNode = objXmlSpellDocument.TryGetNodeByNameOrId(
                                     "/chummer/spells/spell", strName,
-                                    "category = " + strCategory.CleanXPath() + " and (" + await CharacterObjectSettings
-                                        .BookXPathAsync(token: token).ConfigureAwait(false) + ")");
+                                    "category = " + strCategory.CleanXPath() + " and " + await CharacterObjectSettings
+                                        .BookXPathAsync(token: token).ConfigureAwait(false));
 
                                 if (objXmlSpellNode == null)
                                     continue;
@@ -23928,8 +23928,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strCategory))
                     objXmlGearNode = objXmlGearDocument.TryGetNodeByNameOrId(
                         "/chummer/gears/gear", strName.CleanXPath(),
-                        "(" + await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false)
-                            + ") and category = " + strCategory.CleanXPath());
+                        await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false)
+                            + " and category = " + strCategory.CleanXPath());
                 else
                     objXmlGearNode = objXmlGearDocument.TryGetNodeByNameOrId(
                         "/chummer/gears/gear", strName.CleanXPath(),
