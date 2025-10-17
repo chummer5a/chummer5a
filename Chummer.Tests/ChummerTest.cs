@@ -33,6 +33,7 @@ using System.Xml.Schema;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Org.XmlUnit.Builder;
 using Org.XmlUnit.Diff;
+using Chummer;
 
 namespace Chummer.Tests
 {

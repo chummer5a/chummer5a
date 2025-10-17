@@ -341,23 +341,6 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
-
-            // Apply cost filtering
-            decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-            decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-            decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-
-            if (decExactCost > 0)
-            {
-                // Exact cost filtering
-                strFilter += " and (cost = " + decExactCost.ToString(GlobalSettings.InvariantCultureInfo) + ")";
-            }
-            else if (decMinimumCost != 0 || decMaximumCost != 0)
-            {
-                // Range cost filtering
-                strFilter += " and (" + CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost") + ")";
-            }
-
             // Retrieve the list of Mods for the selected Category.
             XPathNodeIterator objXmlModList = VehicleMountMods
                 ? _xmlBaseVehicleDataNode.Select("weaponmountmods/mod[" + strFilter + "]")
@@ -414,18 +397,26 @@ namespace Chummer
                     }
 
                     decimal decCostMultiplier = decBaseCostMultiplier;
+
+                    // Apply cost filtering
+                    decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                    decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                    decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+
                     if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNodeAndCacheExpression("category", token: token)?.Value))
                         decCostMultiplier *= 0.9m;
-                    if ((!blnHideOverAvailLimit || await objXmlMod.CheckAvailRestrictionAsync(_objCharacter, intMinRating, (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlMod.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token).ConfigureAwait(false))
-                        &&
-                        (!blnShowOnlyAffordItems || blnFreeItem
-                                                 || await objXmlMod.CheckNuyenRestrictionAsync(
-                                                     _objCharacter, decNuyen, decCostMultiplier, intMinRating, token).ConfigureAwait(false)))
+                    if (!blnHideOverAvailLimit || await objXmlMod.CheckAvailRestrictionAsync(_objCharacter, intMinRating, (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlMod.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token).ConfigureAwait(false))
                     {
-                        lstMods.Add(new ListItem(objXmlMod.SelectSingleNodeAndCacheExpression("id", token: token)?.Value,
-                                                 objXmlMod.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
-                                                 ?? objXmlMod.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
-                                                 ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
+                        // Use unified cost filtering with parent context
+                        if (blnFreeItem || !blnShowOnlyAffordItems || await objXmlMod.CheckNuyenRestrictionAsync(
+                                _objCharacter, decNuyen, decCostMultiplier, intMinRating, _objVehicle, 
+                                decMinimumCost, decMaximumCost, decExactCost, token).ConfigureAwait(false))
+                        {
+                            lstMods.Add(new ListItem(objXmlMod.SelectSingleNodeAndCacheExpression("id", token: token)?.Value,
+                                                     objXmlMod.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                                     ?? objXmlMod.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
+                                                     ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
+                        }
                     }
                     else
                         ++intOverLimit;
@@ -994,37 +985,13 @@ namespace Chummer
 
         private async Task<ValueTuple<decimal, bool>> ProcessInvariantXPathExpression(string strExpression, int intRating, int intExtraSlots = 0, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            bool blnSuccess = true;
-            strExpression = strExpression.ProcessFixedValuesString(intRating);
-            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-            {
-                blnSuccess = false;
-                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
-                {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
-                    {
-                        sbdValue.Append(strExpression);
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "Rating", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        string strSlotsString = (_intWeaponMountSlots + intExtraSlots).ToString(GlobalSettings.InvariantCultureInfo);
-                        sbdValue.Replace("{Parent Slots}", strSlotsString);
-                        sbdValue.Replace("Parent Slots", strSlotsString);
-                        sbdValue.Replace("{Slots}", strSlotsString);
-                        sbdValue.Replace("Slots", strSlotsString);
-                        sbdValue.Replace("{Parent Cost}", ParentWeaponMountOwnCost.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.Replace("Parent Cost", ParentWeaponMountOwnCost.ToString(GlobalSettings.InvariantCultureInfo));
-                        await _objVehicle.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                        strExpression = sbdValue.ToString();
-                    }
-                }
-                (bool blnIsSuccess, object objProcess)
-                    = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
-                if (blnIsSuccess)
-                    return new ValueTuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
-            }
-
-            return new ValueTuple<decimal, bool>(decValue, blnSuccess);
+            return await CommonFunctions.ProcessInvariantXPathExpressionAsync(
+                strExpression, 
+                intRating, 
+                _objCharacter, 
+                _objVehicle, 
+                intExtraSlots: intExtraSlots, 
+                token: token).ConfigureAwait(false);
         }
 
         #endregion Methods

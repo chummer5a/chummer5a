@@ -3612,6 +3612,17 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Own cost of the Lifestyle (baseline cost without sub-items like roommates).
+        /// </summary>
+        public decimal OwnCost => CostPreSplit;
+
+        /// <summary>
+        /// Own cost of the Lifestyle (baseline cost without sub-items like roommates).
+        /// </summary>
+        public async Task<decimal> GetOwnCostAsync(CancellationToken token = default) =>
+            await GetCostPreSplitAsync(token).ConfigureAwait(false);
+
+        /// <summary>
         /// Total Area of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
         public int TotalArea

@@ -33,7 +33,7 @@ using NLog;
 
 namespace Chummer.Backend.Equipment
 {
-    public sealed class Drug : IHasName, IHasSourceId, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable, IAsyncDisposable, IHasCharacterObject, IHasNotes, IHasInternalId
+    public sealed class Drug : IHasName, IHasSourceId, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable, IAsyncDisposable, IHasCharacterObject, IHasNotes, IHasInternalId, IHasCost
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -567,6 +567,17 @@ namespace Chummer.Backend.Equipment
 
         public async Task<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) =>
             Stolen ? 0 : await GetTotalCostAsync(token).ConfigureAwait(false);
+
+        /// <summary>
+        /// Own cost of the Drug (cost per unit).
+        /// </summary>
+        public decimal OwnCost => Cost;
+
+        /// <summary>
+        /// Own cost of the Drug (cost per unit).
+        /// </summary>
+        public async Task<decimal> GetOwnCostAsync(CancellationToken token = default) =>
+            await GetCostAsync(token).ConfigureAwait(false);
 
         /// <summary>
         /// Total amount of the Drug held by the character.

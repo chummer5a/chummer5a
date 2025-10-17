@@ -3015,7 +3015,7 @@ namespace Chummer.Backend.Skills
                         case Improvement.ImprovementType.Skill:
                         case Improvement.ImprovementType.SkillDisable:
                         case Improvement.ImprovementType.SkillEnableMovement:
-                            if (objImprovement.ImprovedName == strNameToUse)
+                             if (objImprovement.ImprovedName == strNameToUse)
                             {
                                 yield return objImprovement;
                                 if (blnExitAfterFirst)
@@ -4517,7 +4517,9 @@ namespace Chummer.Backend.Skills
                 : Task.CompletedTask;
         }
 
+#pragma warning disable CS3008 // Identifier is not CLS-compliant
         protected string _strDictionaryKey;
+#pragma warning restore CS3008 // Identifier is not CLS-compliant
 
         public virtual string DictionaryKey
         {

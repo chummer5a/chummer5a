@@ -774,8 +774,8 @@ namespace Chummer
                 {
                     await nudExactCost.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
                     
-                    // Ensure maximum is not less than minimum
-                    if (decMaximumCost < decMinimumCost)
+                    // Ensure maximum is not less than minimum (only if maximum is actually set)
+                    if (decMaximumCost > 0 && decMaximumCost < decMinimumCost)
                     {
                         if (sender == nudMaximumCost)
                             await nudMinimumCost.DoThreadSafeAsync(x => x.Value = decMaximumCost, _objGenericToken).ConfigureAwait(false);
@@ -1545,6 +1545,10 @@ namespace Chummer
                 return false;
             }
 
+            decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+            decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+            decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+
             string strCurrentGradeId = await cboGrade
                                              .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
                                              .ConfigureAwait(false);
@@ -1606,22 +1610,6 @@ namespace Chummer
                     sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
 
                 // Note: Essence filtering is handled in post-processing due to dynamic expressions like Rating * 0.1 and FixedValues()
-
-                // Apply cost filtering
-                decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                
-                if (decExactCost > 0)
-                {
-                    // Exact cost filtering
-                    sbdFilter.Append(" and (cost = ", decExactCost.ToString(GlobalSettings.InvariantCultureInfo), ')');
-                }
-                else if (decMinimumCost != 0 || decMaximumCost != 0)
-                {
-                    // Range cost filtering
-                    sbdFilter.Append(" and (", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"), ')');
-                }
 
                 if (sbdFilter.Length > 0)
                     strFilter = sbdFilter.Insert(0, '[').Append(']').ToString();
@@ -1882,13 +1870,20 @@ namespace Chummer
                             }
                         }
 
-                        string strId = xmlCyberware.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
-                        if (!string.IsNullOrEmpty(strId))
-                            lstCyberwares.Add(new ListItem(
-                                                  strId,
-                                                  xmlCyberware.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
-                                                  ?? xmlCyberware.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
-                                                  ?? strId));
+                        bool blnPassesCostFilter = true;
+                        blnPassesCostFilter = await CommonFunctions.CheckCostFilterAsync(xmlCyberware, _objCharacter, 
+                            CyberwareParent, 1.0m, 1, decMinimumCost, decMaximumCost, decExactCost, token).ConfigureAwait(false);
+
+                        if (blnPassesCostFilter)
+                        {
+                            string strId = xmlCyberware.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
+                            if (!string.IsNullOrEmpty(strId))
+                                lstCyberwares.Add(new ListItem(
+                                                      strId,
+                                                      xmlCyberware.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                                      ?? xmlCyberware.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
+                                                      ?? strId));
+                        }
                     }
                 }
 
@@ -2260,9 +2255,28 @@ namespace Chummer
 
         private async Task<ValueTuple<decimal, bool>> ProcessInvariantXPathExpression(XPathNavigator xmlCyberware, string strExpression, int intMinRating, int intRating, CancellationToken token = default)
         {
+            // Use the unified method for basic pattern replacement
+            var (decValue, blnSuccess) = await CommonFunctions.ProcessInvariantXPathExpressionAsync(
+                strExpression, 
+                intRating, 
+                _objCharacter, 
+                CyberwareParent, 
+                xmlCyberware, 
+                intMinRating, 
+                token: token).ConfigureAwait(false);
+            
+            // If the unified method couldn't handle it, fall back to the complex cyberlimb logic
+            if (!blnSuccess && strExpression.HasValuesNeedingReplacementForXPathProcessing())
+            {
+                return await ProcessComplexCyberlimbExpression(xmlCyberware, strExpression, intMinRating, intRating, token).ConfigureAwait(false);
+            }
+            
+            return new ValueTuple<decimal, bool>(decValue, blnSuccess);
+        }
+        
+        private async Task<ValueTuple<decimal, bool>> ProcessComplexCyberlimbExpression(XPathNavigator xmlCyberware, string strExpression, int intMinRating, int intRating, CancellationToken token = default)
+        {
             token.ThrowIfCancellationRequested();
-            if (string.IsNullOrEmpty(strExpression))
-                return new ValueTuple<decimal, bool>(0, true);
             bool blnSuccess = true;
             strExpression = strExpression.ProcessFixedValuesString(intRating).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))

@@ -2616,6 +2616,17 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetTotalCostAsync(CancellationToken token = default) => IncludedInParent ? 0 : await GetCostAsync(token).ConfigureAwait(false);
 
         /// <summary>
+        /// Own cost of the WeaponMountOption (cost per unit).
+        /// </summary>
+        public decimal OwnCost => Cost;
+
+        /// <summary>
+        /// Own cost of the WeaponMountOption (cost per unit).
+        /// </summary>
+        public async Task<decimal> GetOwnCostAsync(CancellationToken token = default) =>
+            await GetCostAsync(token).ConfigureAwait(false);
+
+        /// <summary>
         /// Slots consumed by the WeaponMountOption.
         /// </summary>
         public int Slots => _intSlots;

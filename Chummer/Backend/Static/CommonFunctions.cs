@@ -2859,18 +2859,421 @@ namespace Chummer
         #region Equipment Filtering
 
         /// <summary>
-        /// Generate XPath expression for numeric range filtering.
+        /// Calculate the actual cost of an item with optional context awareness for hierarchical dependencies.
+        /// This method properly handles complex cost formulas (Rating, Parent Rating, FixedValues, etc.)
+        /// and can handle Parent Cost, Parent Rating, and other complex relationships when parent context is provided.
         /// </summary>
-        /// <param name="decMaxValue">Maximum value</param>
-        /// <param name="decMinValue">Minimum value</param>
-        /// <param name="strElementName">Name of the element to filter (default: "cost")</param>
-        /// <returns>XPath expression for numeric range filtering</returns>
-        public static string GenerateNumericRangeXPath(decimal decMaxValue, decimal decMinValue, string strElementName = "cost")
+        /// <param name="objXmlItem">The XML item to calculate cost for</param>
+        /// <param name="objCharacter">Character for cost calculation context</param>
+        /// <param name="objParentItem">Parent item for Parent Cost/Rating calculations (optional)</param>
+        /// <param name="decCostMultiplier">Cost multiplier to apply</param>
+        /// <param name="intRating">Rating to use for cost calculation</param>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>The calculated cost after applying multipliers and context</returns>
+        public static async Task<decimal> CalculateItemCostAsync(XPathNavigator objXmlItem, Character objCharacter, 
+            object objParentItem = null, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
         {
-            string strMax = decMaxValue.ToString(GlobalSettings.InvariantCultureInfo);
-            string strMin = decMinValue.ToString(GlobalSettings.InvariantCultureInfo);
+            if (objXmlItem == null || objCharacter == null)
+                return 0;
+            XPathNavigator objCostNode = objXmlItem.SelectSingleNodeAndCacheExpression("cost", token: token);
+            
+            if (objCostNode == null)
+            {
+                // Try to find cost nodes with rating-specific values
+                int intCostRating = 1;
+                foreach (XPathNavigator objLoopNode in objXmlItem.SelectChildren(XPathNodeType.Element))
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!objLoopNode.Name.StartsWith("cost", StringComparison.Ordinal))
+                        continue;
+                    string strLoopCostString = objLoopNode.Name.Substring(4);
+                    if (int.TryParse(strLoopCostString, out int intTmp) && intTmp <= intRating)
+                    {
+                        intCostRating = Math.Max(intCostRating, intTmp);
+                    }
+                }
 
-            return $"{strElementName} >= {strMin} and {strElementName} <= {strMax}";
+                objCostNode = objXmlItem.SelectSingleNodeAndCacheExpression("cost" + intCostRating.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+            }
+
+            string strCost = objCostNode?.Value;
+            if (!string.IsNullOrEmpty(strCost))
+            {
+                // Handle Variable cost expressions
+                if (strCost.StartsWith("Variable", StringComparison.Ordinal))
+                {
+                    strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                    int intHyphenIndex = strCost.IndexOf('-');
+                    strCost = intHyphenIndex != -1 ? strCost.Substring(0, intHyphenIndex) : strCost.FastEscape('+');
+                }
+                
+                // Use the unified ProcessInvariantXPathExpressionAsync method
+                var (decCalculatedCost, blnSuccess) = await ProcessInvariantXPathExpressionAsync(
+                    strCost, 
+                    intRating, 
+                    objCharacter, 
+                    objParentItem, 
+                    objXmlItem, 
+                    token: token).ConfigureAwait(false);
+                
+                if (blnSuccess)
+                {
+                    // Apply cost multiplier and return final cost
+                    return decCalculatedCost * decCostMultiplier;
+                }
+            }
+
+            return 0;
+        }
+
+
+        /// <summary>
+        /// Check if an item's calculated cost falls within the specified range.
+        /// This method should be used for post-processing cost filtering after XPath evaluation,
+        /// as it properly handles complex cost formulas (Rating, Parent Rating, FixedValues, etc.).
+        /// </summary>
+        /// <param name="objXmlItem">The XML item to check</param>
+        /// <param name="objCharacter">Character for cost calculation context</param>
+        /// <param name="decMinCost">Minimum cost (inclusive)</param>
+        /// <param name="decMaxCost">Maximum cost (inclusive)</param>
+        /// <param name="decCostMultiplier">Cost multiplier to apply</param>
+        /// <param name="intRating">Rating to use for cost calculation</param>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>True if the item's cost falls within the specified range</returns>
+        public static async Task<bool> CheckCostRangeAsync(XPathNavigator objXmlItem, Character objCharacter, 
+            decimal decMinCost, decimal decMaxCost, object objParentItem = null, decimal decCostMultiplier = 1.0m, int intRating = 1, 
+            CancellationToken token = default)
+        {
+            decimal decFinalCost = await CalculateItemCostAsync(objXmlItem, objCharacter, objParentItem, decCostMultiplier, intRating, token).ConfigureAwait(false);
+            return decFinalCost >= decMinCost && decFinalCost <= decMaxCost;
+        }
+
+        /// <summary>
+        /// Check if an item passes cost filtering criteria (min/max/exact cost).
+        /// This method handles the common cost filtering logic used across selection forms.
+        /// </summary>
+        /// <param name="objXmlItem">The XML item to check</param>
+        /// <param name="objCharacter">Character for cost calculation context</param>
+        /// <param name="objParentItem">Parent item for context-aware calculations (optional)</param>
+        /// <param name="decCostMultiplier">Cost multiplier to apply</param>
+        /// <param name="intRating">Rating to use for cost calculation</param>
+        /// <param name="decMinimumCost">Minimum cost filter (0 = no minimum)</param>
+        /// <param name="decMaximumCost">Maximum cost filter (0 = no maximum)</param>
+        /// <param name="decExactCost">Exact cost filter (0 = no exact match)</param>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>True if the item passes all cost filters</returns>
+        public static async Task<bool> CheckCostFilterAsync(XPathNavigator objXmlItem, Character objCharacter, 
+            object objParentItem, decimal decCostMultiplier, int intRating, 
+            decimal decMinimumCost, decimal decMaximumCost, decimal decExactCost, 
+            CancellationToken token = default)
+        {
+            // If no cost filters are set, item passes
+            if (decExactCost == 0 && decMinimumCost == 0 && decMaximumCost == 0)
+                return true;
+
+            // Calculate the actual cost using context-aware logic
+            decimal decCalculatedCost = await CalculateItemCostAsync(objXmlItem, objCharacter, objParentItem, decCostMultiplier, intRating, token).ConfigureAwait(false);
+            
+            // Check exact cost filter
+            if (decExactCost > 0)
+                return decCalculatedCost == decExactCost;
+            
+            // Check range cost filters
+            bool blnPassesMinimum = decMinimumCost == 0 || decCalculatedCost >= decMinimumCost;
+            bool blnPassesMaximum = decMaximumCost == 0 || decCalculatedCost <= decMaximumCost;
+            
+            return blnPassesMinimum && blnPassesMaximum;
+        }
+
+        /// <summary>
+        /// Process and evaluate XPath expressions with comprehensive pattern replacement support.
+        /// This unified method replaces all the various ProcessInvariantXPathExpression methods
+        /// across different selection forms, providing consistent pattern handling.
+        /// </summary>
+        /// <param name="strExpression">The XPath expression to process</param>
+        /// <param name="intRating">Rating value for FixedValues and generic Rating patterns</param>
+        /// <param name="objCharacter">Character for attribute processing</param>
+        /// <param name="objParentItem">Parent item for context-aware calculations (optional)</param>
+        /// <param name="xmlContext">XML context for additional pattern processing (optional)</param>
+        /// <param name="intMinRating">Minimum rating for MinRating patterns (optional)</param>
+        /// <param name="intExtraSlots">Extra slots for vehicle mod patterns (optional)</param>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>Tuple containing the calculated value and success status</returns>
+        public static async Task<ValueTuple<decimal, bool>> ProcessInvariantXPathExpressionAsync(
+            string strExpression, 
+            int intRating, 
+            Character objCharacter = null,
+            object objParentItem = null, 
+            XPathNavigator xmlContext = null,
+            int intMinRating = 0,
+            int intExtraSlots = 0,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strExpression))
+                return new ValueTuple<decimal, bool>(0, true);
+
+            bool blnSuccess = true;
+            strExpression = strExpression.ProcessFixedValuesString(intRating).TrimStart('+');
+            
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+            {
+                blnSuccess = false;
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
+                {
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                    {
+                        sbdValue.Append(strExpression);
+                        
+                        // Handle Rating patterns (generic and context-specific)
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", 
+                            () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Rating", 
+                            () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        
+                        // Handle MinRating patterns
+                        if (intMinRating > 0)
+                        {
+                            await sbdValue.CheapReplaceAsync(strExpression, "{MinRating}", 
+                                () => intMinRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "MinRating", 
+                                () => intMinRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        }
+                        
+                        // Handle Parent Cost patterns (from CalculateItemCostAsync)
+                        if (objParentItem != null && objParentItem is IHasCost objParentWithCost)
+                        {
+                            string strParentCost = objParentWithCost.OwnCost.ToString(GlobalSettings.InvariantCultureInfo);
+                            string strParentTotalCost = objParentWithCost.TotalCost.ToString(GlobalSettings.InvariantCultureInfo);
+                            
+                            // Define cost patterns to replace
+                            var costPatterns = new Dictionary<string, string>
+                            {
+                                { "Parent Cost", strParentCost },
+                                { "Armor Cost", strParentCost },
+                                { "Weapon Cost", strParentCost },
+                                { "Vehicle Cost", strParentCost },
+                                { "Cyberware Cost", strParentCost },
+                                { "Weapon Total Cost", strParentTotalCost }
+                            };
+                            
+                            foreach (var kvp in costPatterns)
+                            {
+                                if (strExpression.Contains(kvp.Key))
+                                {
+                                    sbdValue.Replace("{" + kvp.Key + "}", kvp.Value);
+                                    sbdValue.Replace(kvp.Key, kvp.Value);
+                                }
+                            }
+                        }
+                        
+                        // Handle Parent Rating patterns (from CalculateItemCostAsync)
+                        if (objParentItem != null && objParentItem is IHasRating objParentWithRating)
+                        {
+                            string strParentRating = objParentWithRating.Rating.ToString(GlobalSettings.InvariantCultureInfo);
+                            
+                            // Define rating patterns to replace
+                            string[] arrRatingPatterns = { "Parent Rating", "Armor Rating", "Weapon Rating", "Vehicle Rating", "Cyberware Rating" };
+                            foreach (string strPattern in arrRatingPatterns)
+                            {
+                                if (strExpression.Contains(strPattern))
+                                {
+                                    sbdValue.Replace("{" + strPattern + "}", strParentRating);
+                                    sbdValue.Replace(strPattern, strParentRating);
+                                }
+                            }
+                        }
+                        
+                        // Handle Weight patterns (from CalculateItemCostAsync)
+                        if (objParentItem != null)
+                        {
+                            // Get weight from common weight properties
+                            string strWeight = "0";
+                            var weightProperty = objParentItem.GetType().GetProperty("Weight");
+                            if (weightProperty != null)
+                            {
+                                var weightValue = weightProperty.GetValue(objParentItem);
+                                if (weightValue is decimal decWeight)
+                                    strWeight = decWeight.ToString(GlobalSettings.InvariantCultureInfo);
+                                else if (weightValue is string strWeightValue && decimal.TryParse(strWeightValue, out decimal decParsedWeight))
+                                    strWeight = decParsedWeight.ToString(GlobalSettings.InvariantCultureInfo);
+                            }
+                            
+                            // Get total weight from common total weight properties
+                            string strTotalWeight = "0";
+                            var totalWeightProperty = objParentItem.GetType().GetProperty("TotalWeight");
+                            if (totalWeightProperty != null)
+                            {
+                                var totalWeightValue = totalWeightProperty.GetValue(objParentItem);
+                                if (totalWeightValue is decimal decTotalWeight)
+                                    strTotalWeight = decTotalWeight.ToString(GlobalSettings.InvariantCultureInfo);
+                                else if (totalWeightValue is string strTotalWeightValue && decimal.TryParse(strTotalWeightValue, out decimal decParsedTotalWeight))
+                                    strTotalWeight = decParsedTotalWeight.ToString(GlobalSettings.InvariantCultureInfo);
+                            }
+                            
+                            // Define weight patterns to replace
+                            var weightPatterns = new Dictionary<string, string>
+                            {
+                                { "Parent Weight", strWeight },
+                                { "Armor Weight", strWeight },
+                                { "Weapon Weight", strWeight },
+                                { "Vehicle Weight", strWeight },
+                                { "Weapon Total Weight", strTotalWeight }
+                            };
+                            
+                            foreach (var kvp in weightPatterns)
+                            {
+                                if (strExpression.Contains(kvp.Key))
+                                {
+                                    sbdValue.Replace("{" + kvp.Key + "}", kvp.Value);
+                                    sbdValue.Replace(kvp.Key, kvp.Value);
+                                }
+                            }
+                        }
+                        
+                        // Handle Capacity patterns (from SelectArmorMod)
+                        if (objParentItem != null)
+                        {
+                            string strCapacity = "0";
+                            var capacityProperty = objParentItem.GetType().GetProperty("Capacity");
+                            if (capacityProperty != null)
+                            {
+                                var capacityValue = capacityProperty.GetValue(objParentItem);
+                                if (capacityValue is decimal decCapacity)
+                                    strCapacity = decCapacity.ToString(GlobalSettings.InvariantCultureInfo);
+                                else if (capacityValue is string strCapacityValue && decimal.TryParse(strCapacityValue, out decimal decParsedCapacity))
+                                    strCapacity = decParsedCapacity.ToString(GlobalSettings.InvariantCultureInfo);
+                            }
+                            
+                            // Define capacity patterns to replace
+                            var capacityPatterns = new Dictionary<string, string>
+                            {
+                                { "Parent Capacity", strCapacity },
+                                { "Armor Capacity", strCapacity },
+                                { "Capacity", strCapacity }
+                            };
+                            
+                            foreach (var kvp in capacityPatterns)
+                            {
+                                if (strExpression.Contains(kvp.Key))
+                                {
+                                    sbdValue.Replace("{" + kvp.Key + "}", kvp.Value);
+                                    sbdValue.Replace(kvp.Key, kvp.Value);
+                                }
+                            }
+                        }
+                        
+                        // Handle Slots patterns (from SelectVehicleMod)
+                        if (intExtraSlots > 0)
+                        {
+                            string strSlotsString = intExtraSlots.ToString(GlobalSettings.InvariantCultureInfo);
+                            sbdValue.Replace("{Parent Slots}", strSlotsString);
+                            sbdValue.Replace("Parent Slots", strSlotsString);
+                            sbdValue.Replace("{Slots}", strSlotsString);
+                            sbdValue.Replace("Slots", strSlotsString);
+                        }
+                        
+                        // Handle Children Cost and Gear Cost (default to 0 for XML items)
+                        if (strExpression.Contains("Children Cost") || strExpression.Contains("Gear Cost"))
+                        {
+                            sbdValue.Replace("{Children Cost}", "0");
+                            sbdValue.Replace("Children Cost", "0");
+                            sbdValue.Replace("{Gear Cost}", "0");
+                            sbdValue.Replace("Gear Cost", "0");
+                        }
+                        
+                        // Handle Children Weight and Gear Weight (default to 0 for XML items)
+                        if (strExpression.Contains("Gear Weight") || strExpression.Contains("Children Weight"))
+                        {
+                            sbdValue.Replace("{Gear Weight}", "0");
+                            sbdValue.Replace("Gear Weight", "0");
+                            sbdValue.Replace("{Children Weight}", "0");
+                            sbdValue.Replace("Children Weight", "0");
+                        }
+                        
+                        // Handle Parent Gear Cost and Parent Gear Weight (from parent's children)
+                        if (strExpression.Contains("Parent Gear Cost") || strExpression.Contains("Parent Gear Weight"))
+                        {
+                            string strParentGearCost = "0";
+                            string strParentGearWeight = "0";
+                            
+                            if (objParentItem != null)
+                            {
+                                // Try to get gear cost/weight from children of the parent item
+                                var childrenProperty = objParentItem.GetType().GetProperty("Children");
+                                if (childrenProperty != null)
+                                {
+                                    var children = childrenProperty.GetValue(objParentItem);
+                                    if (children is System.Collections.IEnumerable enumerable)
+                                    {
+                                        decimal decTotalParentGearCost = 0;
+                                        decimal decTotalParentGearWeight = 0;
+                                        foreach (var objChild in enumerable)
+                                        {
+                                            var childCostProperty = objChild.GetType().GetProperty("OwnCost");
+                                            var childWeightProperty = objChild.GetType().GetProperty("Weight");
+                                            
+                                            if (childCostProperty != null)
+                                            {
+                                                var childCostValue = childCostProperty.GetValue(objChild);
+                                                if (childCostValue is decimal decChildCost)
+                                                    decTotalParentGearCost += decChildCost;
+                                            }
+                                            
+                                            if (childWeightProperty != null)
+                                            {
+                                                var childWeightValue = childWeightProperty.GetValue(objChild);
+                                                if (childWeightValue is decimal decChildWeight)
+                                                    decTotalParentGearWeight += decChildWeight;
+                                                else if (childWeightValue is string strChildWeight && decimal.TryParse(strChildWeight, out decimal decParsedChildWeight))
+                                                    decTotalParentGearWeight += decParsedChildWeight;
+                                            }
+                                        }
+                                        strParentGearCost = decTotalParentGearCost.ToString(GlobalSettings.InvariantCultureInfo);
+                                        strParentGearWeight = decTotalParentGearWeight.ToString(GlobalSettings.InvariantCultureInfo);
+                                    }
+                                }
+                            }
+                            
+                            sbdValue.Replace("{Parent Gear Cost}", strParentGearCost);
+                            sbdValue.Replace("Parent Gear Cost", strParentGearCost);
+                            sbdValue.Replace("{Parent Gear Weight}", strParentGearWeight);
+                            sbdValue.Replace("Parent Gear Weight", strParentGearWeight);
+                        }
+                        
+                        // Handle Matrix Attribute patterns (from SelectGear)
+                        if (objParentItem != null && objParentItem is IHasMatrixAttributes objParentWithMatrixAttributes)
+                        {
+                            foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                            {
+                                if (strExpression.Contains("{Gear " + strMatrixAttribute + "}") || strExpression.Contains("{Parent " + strMatrixAttribute + "}"))
+                                {
+                                    string strBaseMatrixAttribute = objParentWithMatrixAttributes.GetBaseMatrixAttribute(strMatrixAttribute).ToString(GlobalSettings.InvariantCultureInfo);
+                                    string strMatrixAttributeString = objParentWithMatrixAttributes.GetMatrixAttributeString(strMatrixAttribute);
+                                    
+                                    sbdValue.Replace("{Gear " + strMatrixAttribute + "}", strBaseMatrixAttribute);
+                                    sbdValue.Replace("{Parent " + strMatrixAttribute + "}", strMatrixAttributeString);
+                                }
+                            }
+                        }
+                        
+                        strExpression = sbdValue.ToString();
+                    }
+                }
+                
+                // Process character attributes if character is provided
+                if (objCharacter != null)
+                {
+                    strExpression = await objCharacter.ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                }
+                
+                // Evaluate the final expression
+                (bool blnIsSuccess, object objProcess) = await EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    return new ValueTuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
+            }
+
+            return new ValueTuple<decimal, bool>(decValue, blnSuccess);
         }
 
         #endregion Equipment Filtering

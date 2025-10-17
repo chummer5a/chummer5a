@@ -276,7 +276,7 @@ namespace Chummer
                             decCostMultiplier *= 0.9m;
                         int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt, token: token).ConfigureAwait(false);
                         decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
-                        while (intMaximum > 1 && !await objXmlMod.CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, intMaximum, token).ConfigureAwait(false))
+                        while (intMaximum > 1 && !await objXmlMod.CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, intMaximum, token: token).ConfigureAwait(false))
                         {
                             --intMaximum;
                         }
@@ -499,23 +499,6 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(txtSearch.Text))
                         sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(txtSearch.Text));
-
-                    // Apply cost filtering
-                    decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                    decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                    decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-
-                    if (decExactCost > 0)
-                    {
-                        // Exact cost filtering
-                        sbdFilter.Append(" and (cost = ", decExactCost.ToString(GlobalSettings.InvariantCultureInfo), ')');
-                    }
-                    else if (decMinimumCost != 0 || decMaximumCost != 0)
-                    {
-                        // Range cost filtering
-                        sbdFilter.Append(" and (", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"), ')');
-                    }
-
                     if (sbdFilter.Length > 0)
                         strFilter = sbdFilter.Insert(0, '[').Append(']').ToString();
                 }
@@ -556,11 +539,24 @@ namespace Chummer
                              await objXmlMod.CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, token: token).ConfigureAwait(false))
                             && await objXmlMod.RequirementsMetAsync(_objCharacter, _objArmor, token: token).ConfigureAwait(false))
                         {
-                            lstMods.Add(new ListItem(
-                                            strId,
-                                            objXmlMod.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
-                                            ?? objXmlMod.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
-                                            ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
+                            // Apply post-processing cost filtering to handle complex cost formulas
+                            bool blnPassesCostFilter = true;
+                            decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                            decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                            decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+
+                            // Check cost filters using the centralized method
+                            blnPassesCostFilter = await CommonFunctions.CheckCostFilterAsync(objXmlMod, _objCharacter, 
+                                _objArmor, decCostMultiplier, 1, decMinimumCost, decMaximumCost, decExactCost, token).ConfigureAwait(false);
+
+                            if (blnPassesCostFilter)
+                            {
+                                lstMods.Add(new ListItem(
+                                                strId,
+                                                objXmlMod.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                                ?? objXmlMod.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
+                                                ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
+                            }
                         }
                         else
                             ++intOverLimit;
@@ -621,92 +617,12 @@ namespace Chummer
 
         private async Task<ValueTuple<decimal, bool>> ProcessInvariantXPathExpression(string strExpression, int intRating, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            bool blnSuccess = true;
-            strExpression = strExpression.ProcessFixedValuesString(intRating);
-            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
-            {
-                blnSuccess = false;
-                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
-                {
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
-                    {
-                        sbdValue.Append(strExpression);
-                        if (_objArmor != null)
-                        {
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Armor Rating}",
-                                () => _strCachedParentRating.GetValueAsync(token), token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "Armor Rating",
-                                () => _strCachedParentRating.GetValueAsync(token), token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
-                                () => _strCachedParentRating.GetValueAsync(token), token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "Parent Rating",
-                                () => _strCachedParentRating.GetValueAsync(token), token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Armor Cost}",
-                                () => _strCachedParentOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "Armor Cost",
-                                () => _strCachedParentOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent Cost}",
-                                () => _strCachedParentOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "Parent Cost",
-                                () => _strCachedParentOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Armor Weight}",
-                                () => _strCachedParentOwnWeight.Value, token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "Armor Weight",
-                                () => _strCachedParentOwnWeight.Value, token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent Weight}",
-                                () => _strCachedParentOwnWeight.Value, token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "Parent Weight",
-                                () => _strCachedParentOwnWeight.Value, token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Armor Capacity}",
-                                () => _strCachedParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "Armor Capacity",
-                                () => _strCachedParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent Capacity}",
-                                () => _strCachedParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "Parent Capacity",
-                                () => _strCachedParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Capacity}",
-                                () => _strCachedParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "Capacity",
-                                () => _strCachedParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            sbdValue.Replace("{Armor Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Armor Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Parent Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("{Armor Cost}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Armor Cost", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("{Parent Cost}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Parent Cost", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("{Armor Weight}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Armor Weight", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("{Parent Weight}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Parent Weight", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("{Armor Capacity}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Armor Capacity", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("{Parent Capacity}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Parent Capacity", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("{Capacity}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Capacity", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                        }
-
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "Rating", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        await _objCharacter
-                            .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
-                        strExpression = sbdValue.ToString();
-                    }
-                }
-                (bool blnIsSuccess, object objProcess)
-                    = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
-                if (blnIsSuccess)
-                    return new ValueTuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
-            }
-
-            return new ValueTuple<decimal, bool>(decValue, blnSuccess);
+            return await CommonFunctions.ProcessInvariantXPathExpressionAsync(
+                strExpression, 
+                intRating, 
+                _objCharacter, 
+                _objArmor, 
+                token: token).ConfigureAwait(false);
         }
 
         #endregion Methods

@@ -489,6 +489,10 @@ namespace Chummer
             await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
             try
             {
+                decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                
                 bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
@@ -525,6 +529,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
+
+                        // Apply cost range filtering (min/max/exact)
                         foreach (XmlNode objXmlWeapon in objNodeList)
                         {
                             if (!await objXmlWeapon.CreateNavigator()
@@ -567,13 +573,38 @@ namespace Chummer
                                     .CheckAvailRestrictionAsync(objXmlWeapon, _objCharacter, (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlWeapon["id"]?.InnerTextViaPool(token), blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token)
                                     .ConfigureAwait(false))
                                 continue;
-                            if (!blnFreeItem && blnShowOnlyAffordItems)
+                            // Apply cost filtering (affordability and range filters)
+                            // Note: Cost filtering for affordability is now handled by CheckCostFilterAsync below
+                            
+                            if (decExactCost > 0 || decMinimumCost != 0 || decMaximumCost != 0)
                             {
+                                // Calculate cost multiplier for cost filtering
                                 decimal decCostMultiplier = decBaseCostMultiplier;
                                 if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerTextViaPool(token)))
                                     decCostMultiplier *= 0.9m;
-                                if (!await SelectionShared.CheckNuyenRestrictionAsync(objXmlWeapon, _objCharacter, decNuyen,
-                                        decCostMultiplier, token: token).ConfigureAwait(false))
+                                if (!string.IsNullOrEmpty(ParentWeapon?.DoubledCostModificationSlots) &&
+                                    (!string.IsNullOrEmpty(objXmlWeapon["mount"]?.InnerTextViaPool(token)) || 
+                                     !string.IsNullOrEmpty(objXmlWeapon["extramount"]?.InnerTextViaPool(token))))
+                                {
+                                    bool blnBreakAfterFound = string.IsNullOrEmpty(objXmlWeapon["mount"]?.InnerTextViaPool(token)) || 
+                                                             string.IsNullOrEmpty(objXmlWeapon["extramount"]?.InnerTextViaPool(token));
+                                    foreach (string strDoubledCostSlot in ParentWeapon.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        if (strDoubledCostSlot == objXmlWeapon["mount"]?.InnerTextViaPool(token) || 
+                                            strDoubledCostSlot == objXmlWeapon["extramount"]?.InnerTextViaPool(token))
+                                        {
+                                            decCostMultiplier *= 2;
+                                            if (blnBreakAfterFound)
+                                                break;
+                                            else
+                                                blnBreakAfterFound = true;
+                                        }
+                                    }
+                                }
+
+                                // Check cost filters using the centralized method
+                                if (!await CommonFunctions.CheckCostFilterAsync(objXmlWeapon.CreateNavigator(), _objCharacter, 
+                                    null, decCostMultiplier, 1, decMinimumCost, decMaximumCost, decExactCost, token).ConfigureAwait(false))
                                     continue;
                             }
 
@@ -752,17 +783,51 @@ namespace Chummer
                                     }
                                 }
 
-                                if (!await SelectionShared.CheckNuyenRestrictionAsync(
-                                        objXmlWeapon, _objCharacter, decNuyen, decCostMultiplier, token: token).ConfigureAwait(false))
+                                if (!await objXmlWeapon.CreateNavigator().CheckNuyenRestrictionAsync(
+                                        _objCharacter, decNuyen, decCostMultiplier, token: token).ConfigureAwait(false))
                                 {
                                     ++intOverLimit;
                                     continue;
                                 }
                             }
 
-                            lstWeapons.Add(new ListItem(objXmlWeapon["id"]?.InnerTextViaPool(token),
-                                                        objXmlWeapon["translate"]?.InnerTextViaPool(token)
-                                                        ?? objXmlWeapon["name"]?.InnerTextViaPool(token)));
+                            // Apply post-processing cost filtering to handle complex cost formulas
+                            bool blnPassesCostFilter = true;
+
+                            if (decExactCost > 0 || decMinimumCost != 0 || decMaximumCost != 0)
+                            {
+                                // Calculate cost multiplier for cost filtering
+                                decimal decCostMultiplier = decBaseCostMultiplier;
+                                if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerTextViaPool(token)))
+                                    decCostMultiplier *= 0.9m;
+                                if (!string.IsNullOrEmpty(ParentWeapon?.DoubledCostModificationSlots) &&
+                                    (!string.IsNullOrEmpty(strMount) || !string.IsNullOrEmpty(strExtraMount)))
+                                {
+                                    bool blnBreakAfterFound = string.IsNullOrEmpty(strMount) || string.IsNullOrEmpty(strExtraMount);
+                                    foreach (string strDoubledCostSlot in ParentWeapon.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        if (strDoubledCostSlot == strMount || strDoubledCostSlot == strExtraMount)
+                                        {
+                                            decCostMultiplier *= 2;
+                                            if (blnBreakAfterFound)
+                                                break;
+                                            else
+                                                blnBreakAfterFound = true;
+                                        }
+                                    }
+                                }
+
+                            // Check cost filters using the centralized method
+                            blnPassesCostFilter = await CommonFunctions.CheckCostFilterAsync(objXmlWeapon.CreateNavigator(), _objCharacter, 
+                                null, decCostMultiplier, 1, decMinimumCost, decMaximumCost, decExactCost, token).ConfigureAwait(false);
+                            }
+
+                            if (blnPassesCostFilter)
+                            {
+                                lstWeapons.Add(new ListItem(objXmlWeapon["id"]?.InnerTextViaPool(token),
+                                                            objXmlWeapon["translate"]?.InnerTextViaPool(token)
+                                                            ?? objXmlWeapon["name"]?.InnerTextViaPool(token)));
+                            }
                         }
 
                         if (blnForCategories)
@@ -900,8 +965,8 @@ namespace Chummer
                     }
                 }, _objGenericToken).ConfigureAwait(false);
 
-                decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false);
                 decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false);
+                decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false);
                 decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false);
                 
                 // If exact cost is specified, clear range values
@@ -915,8 +980,8 @@ namespace Chummer
                 {
                     await nudExactCost.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
                     
-                    // Ensure maximum is not less than minimum
-                    if (decMaximumCost < decMinimumCost)
+                    // Ensure maximum is not less than minimum (only if maximum is actually set)
+                    if (decMaximumCost > 0 && decMaximumCost < decMinimumCost)
                     {
                         if (sender == nudMaximumCost)
                             await nudMinimumCost.DoThreadSafeAsync(x => x.Value = decMaximumCost, _objGenericToken).ConfigureAwait(false);
@@ -1122,22 +1187,6 @@ namespace Chummer
 
                         if (!string.IsNullOrEmpty(txtSearch.Text))
                             sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(txtSearch.Text));
-
-                        // Apply cost filtering
-                        decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                        decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                        decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                        
-                        if (decExactCost > 0)
-                        {
-                            // Exact cost filtering
-                            sbdFilter.Append(" and (cost = ", decExactCost.ToString(GlobalSettings.InvariantCultureInfo), ')');
-                        }
-                        else if (decMinimumCost != 0 || decMaximumCost != 0)
-                        {
-                            // Range cost filtering
-                            sbdFilter.Append(" and (", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"), ')');
-                        }
 
                         // Apply additional weapon filter if specified
                         if (!string.IsNullOrEmpty(_strWeaponFilter))

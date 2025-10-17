@@ -25,7 +25,10 @@ namespace Chummer
     public interface IHasCost
     {
         decimal TotalCost { get; }
+        decimal OwnCost { get; }
 
         Task<decimal> GetTotalCostAsync(CancellationToken token = default);
+
+        Task<decimal> GetOwnCostAsync(CancellationToken token = default);
     }
 }

@@ -153,7 +153,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)Chummer\Chummer.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Chummer\Chummer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="4.14.0">

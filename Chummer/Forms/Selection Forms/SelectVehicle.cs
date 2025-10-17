@@ -631,22 +631,6 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(txtSearch.Text))
                             sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
-                        // Apply cost filtering
-                        decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                        decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                        decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-
-                        if (decExactCost > 0)
-                        {
-                            // Exact cost filtering
-                            sbdFilter.Append(" and (cost = ", decExactCost.ToString(GlobalSettings.InvariantCultureInfo), ')');
-                        }
-                        else if (decMinimumCost != 0 || decMaximumCost != 0)
-                        {
-                            // Range cost filtering
-                            sbdFilter.Append(" and (", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"), ')');
-                        }
-
                         if (sbdFilter.Length > 0)
                             strFilter = sbdFilter.Insert(0, '[').Append(']').ToString();
                     }
@@ -676,6 +660,10 @@ namespace Chummer
                     decBaseCostMultiplier -= await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m;
                 decBaseCostMultiplier *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m;
                 bool blnHasSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength != 0, token).ConfigureAwait(false);
+                decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+
                 if (await tabViews.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == 1)
                 {
                     IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
@@ -723,20 +711,28 @@ namespace Chummer
                                             .SelectSingleNodeAndCacheExpression(
                                                 "category", token)
                                             ?.Value))
-                                        decCostMultiplier *= 0.9m;
+                                        decBaseCostMultiplier *= 0.9m;
                                     if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps,
                                             objXmlVehicle
                                                 .SelectSingleNodeAndCacheExpression(
                                                     "category", token)
                                                 ?.Value))
-                                        decCostMultiplier *= 0.9m;
+                                        decBaseCostMultiplier *= 0.9m;
                                     if (!await objXmlVehicle
-                                            .CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, token: token)
+                                            .CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decBaseCostMultiplier, token: token)
                                             .ConfigureAwait(false))
                                     {
                                         ++intOverLimit;
                                         continue;
                                     }
+                                }
+                                
+                                // Check cost filters using the centralized method
+                                if (!await CommonFunctions.CheckCostFilterAsync(objXmlVehicle, _objCharacter, 
+                                    null, decBaseCostMultiplier, 1, decMinimumCost, decMaximumCost, decExactCost, token).ConfigureAwait(false))
+                                {
+                                    ++intOverLimit;
+                                    continue;
                                 }
 
                                 Vehicle objVehicle = new Vehicle(_objCharacter);
@@ -880,6 +876,8 @@ namespace Chummer
                 {
                     decimal decNuyen = blnFreeItem || !blnShowOnlyAffordItems ? decimal.MaxValue : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                    decimal decCostMultiplier = decBaseCostMultiplier;
+
                     using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstVehicles))
                     {
@@ -893,7 +891,6 @@ namespace Chummer
 
                             if (!blnFreeItem && blnShowOnlyAffordItems)
                             {
-                                decimal decCostMultiplier = decBaseCostMultiplier;
                                 if (blnBlackMarketDiscount
                                     && _setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNodeAndCacheExpression(
                                             "category", token)
@@ -932,9 +929,23 @@ namespace Chummer
                                 }
                             }
 
-                            lstVehicles.Add(new ListItem(
-                                                objXmlVehicle.SelectSingleNodeAndCacheExpression("id", token)?.Value ?? string.Empty,
-                                                strDisplayname));
+                            // Apply post-processing cost filtering to handle complex cost formulas
+                            bool blnPassesCostFilter = true;
+
+                            // Check cost filters using the centralized method
+                            blnPassesCostFilter = await CommonFunctions.CheckCostFilterAsync(objXmlVehicle, _objCharacter, 
+                                null, decCostMultiplier, 1, decMinimumCost, decMaximumCost, decExactCost, token).ConfigureAwait(false);
+
+                            if (blnPassesCostFilter)
+                            {
+                                lstVehicles.Add(new ListItem(
+                                                    objXmlVehicle.SelectSingleNodeAndCacheExpression("id", token)?.Value ?? string.Empty,
+                                                    strDisplayname));
+                            }
+                            else
+                            {
+                                ++intOverLimit;
+                            }
                         }
 
                         lstVehicles.Sort(CompareListItems.CompareNames);

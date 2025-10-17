@@ -4044,59 +4044,40 @@ namespace Chummer
         }
 
         /// <summary>
-        ///     Evaluates whether a given node can be purchased.
+        ///     Evaluates whether a given node can be purchased with comprehensive cost filtering.
         /// </summary>
         /// <param name="objXmlGear">XPathNavigator element to evaluate.</param>
         /// <param name="objCharacter">Character to use for compound cost strings.</param>
         /// <param name="decMaxNuyen">Total nuyen amount that the character possesses.</param>
         /// <param name="decCostMultiplier">Multiplier of the object's cost value.</param>
         /// <param name="intRating">Effective Rating of the object.</param>
+        /// <param name="objParentItem">Parent item for context-aware cost calculations (e.g., weapon for accessories).</param>
+        /// <param name="decMinimumCost">Minimum cost filter (0 = no minimum).</param>
+        /// <param name="decMaximumCost">Maximum cost filter (0 = no maximum).</param>
+        /// <param name="decExactCost">Exact cost filter (0 = no exact match).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Returns False if not permitted with the current restrictions. Returns True if valid.</returns>
-        public static async Task<bool> CheckNuyenRestrictionAsync(this XPathNavigator objXmlGear, Character objCharacter, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
+        public static async Task<bool> CheckNuyenRestrictionAsync(this XPathNavigator objXmlGear, Character objCharacter, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, object objParentItem = null, decimal decMinimumCost = 0, decimal decMaximumCost = 0, decimal decExactCost = 0, CancellationToken token = default)
         {
             if (objXmlGear == null)
                 return false;
-            // Cost.
-            decimal decCost = 0.0m;
-            XPathNavigator objCostNode = objXmlGear.SelectSingleNodeAndCacheExpression("cost", token);
-            if (objCostNode == null)
-            {
-                int intCostRating = 1;
-                foreach (XmlNode objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
-                {
-                    if (!objLoopNode.Name.StartsWith("cost", StringComparison.Ordinal))
-                        continue;
-                    string strLoopCostString = objLoopNode.Name.Substring(4);
-                    if (int.TryParse(strLoopCostString, out int intTmp) && intTmp <= intRating)
-                    {
-                        intCostRating = Math.Max(intCostRating, intTmp);
-                    }
-                }
-
-                objCostNode = objXmlGear.SelectSingleNode("cost" + intCostRating.ToString(GlobalSettings.InvariantCultureInfo));
-            }
-            string strCost = objCostNode?.Value;
-            if (!string.IsNullOrEmpty(strCost))
-            {
-                strCost = strCost.ProcessFixedValuesString(intRating)
-                    .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
-                    .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
-                if (strCost.StartsWith("Variable", StringComparison.Ordinal))
-                {
-                    strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                    int intHyphenIndex = strCost.IndexOf('-');
-                    strCost = intHyphenIndex != -1 ? strCost.Substring(0, intHyphenIndex) : strCost.FastEscape('+');
-                }
-                if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decCost))
-                {
-                    strCost = await objCharacter.ProcessAttributesInXPathAsync(strCost, token: token).ConfigureAwait(false);
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        decCost = Convert.ToDecimal((double)objProcess);
-                }
-            }
-            return decMaxNuyen >= decCost * decCostMultiplier;
+            
+            // Calculate the actual cost using context-aware logic
+            decimal decFinalCost = await CommonFunctions.CalculateItemCostAsync(objXmlGear, objCharacter, objParentItem, decCostMultiplier, intRating, token).ConfigureAwait(false);
+            
+            // Check affordability
+            if (decMaxNuyen < decFinalCost)
+                return false;
+            
+            // Check exact cost filter
+            if (decExactCost > 0)
+                return decFinalCost == decExactCost;
+            
+            // Check range cost filter
+            if (decMinimumCost != 0 || decMaximumCost != 0)
+                return decFinalCost >= decMinimumCost && decFinalCost <= decMaximumCost;
+            
+            return true;
         }
     }
 }

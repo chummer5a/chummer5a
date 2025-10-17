@@ -422,8 +422,8 @@ namespace Chummer
                     }
                 }, _objGenericToken).ConfigureAwait(false);
 
-                decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false);
                 decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false);
+                decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false);
                 decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false);
                 
                 // If exact cost is specified, clear range values
@@ -437,8 +437,8 @@ namespace Chummer
                 {
                     await nudExactCost.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
                     
-                    // Ensure maximum is not less than minimum
-                    if (decMaximumCost < decMinimumCost)
+                    // Ensure maximum is not less than minimum (only if maximum is actually set)
+                    if (decMaximumCost > 0 && decMaximumCost < decMinimumCost)
                     {
                         if (sender == nudMaximumCost)
                             await nudMinimumCost.DoThreadSafeAsync(x => x.Value = decMaximumCost, _objGenericToken).ConfigureAwait(false);
@@ -687,22 +687,6 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strSearch))
                             sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
 
-                        // Apply cost filtering
-                        decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                        decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                        decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                        
-                        if (decExactCost > 0)
-                        {
-                            // Exact cost filtering
-                            sbdFilter.Append(" and (cost = ", decExactCost.ToString(GlobalSettings.InvariantCultureInfo), ')');
-                        }
-                        else if (decMinimumCost != 0 || decMaximumCost != 0)
-                        {
-                            // Range cost filtering
-                            sbdFilter.Append(" and (", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"), ')');
-                        }
-
                         await BuildArmorList(_objXmlDocument.SelectNodes(sbdFilter.Append(']').ToString()),
                             token).ConfigureAwait(false);
                     }
@@ -721,6 +705,10 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         private async Task BuildArmorList(XmlNodeList objXmlArmorList, CancellationToken token = default)
         {
+            decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+            decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+            decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+            
             decimal decBaseMarkup = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
             bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
             bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
@@ -763,6 +751,9 @@ namespace Chummer
                                                                    objXmlArmor, _objCharacter, decNuyen, decCostMultiplier,
                                                                    token: token).ConfigureAwait(false)))
                             {
+                                if (!await CommonFunctions.CheckCostFilterAsync(objXmlArmor.CreateNavigator(), _objCharacter, 
+                                    null, decCostMultiplier, 1, decMinimumCost, decMaximumCost, decExactCost, token).ConfigureAwait(false))
+                                    continue;
                                 Armor objArmor = new Armor(_objCharacter);
                                 try
                                 {
@@ -864,7 +855,13 @@ namespace Chummer
                                     }
                                 }
 
-                                lstArmors.Add(new ListItem(objXmlArmor["id"]?.InnerTextViaPool(token), strDisplayName));
+                                bool blnPassesCostFilter = await CommonFunctions.CheckCostFilterAsync(objXmlArmor.CreateNavigator(), _objCharacter, 
+                                    null, decCostMultiplier, 1, decMinimumCost, decMaximumCost, decExactCost, token).ConfigureAwait(false);
+
+                                if (blnPassesCostFilter)
+                                {
+                                    lstArmors.Add(new ListItem(objXmlArmor["id"]?.InnerTextViaPool(token), strDisplayName));
+                                }
                             }
                             else
                                 ++intOverLimit;
