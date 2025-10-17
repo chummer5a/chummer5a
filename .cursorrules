@@ -1,0 +1,41 @@
+# Chummer5a Cursor Rules
+
+## Async Method Preferences
+- ALWAYS prefer async methods over synchronous ones when both are available
+- Use `GetSkillsSectionAsync()` instead of `SkillsSection` property
+- Use `GetKnowledgeSkillsAsync()` instead of `KnowledgeSkills` property
+- Use `GetSkillsAsync()` instead of `Skills` property
+- Use `GetActiveSkillAsync()` instead of `GetActiveSkill()`
+- Use `GetBuildMethodAsync()` instead of `BuildMethod` property
+
+## Thread Safety
+- Always use async methods for thread-safe operations
+- Prefer `await` over `.Result` or `.Wait()`
+- Use `ConfigureAwait(false)` for library code
+- Always handle `CancellationToken` properly
+
+## Code Patterns
+- When accessing character data, use async methods
+- When loading XML data, use `LoadDataAsync()`
+- When performing file operations, use async versions
+- When working with collections, prefer async enumeration methods
+
+## Examples
+```csharp
+// ❌ Avoid synchronous access
+var skills = character.SkillsSection;
+
+// ✅ Prefer async access
+var skills = await character.GetSkillsSectionAsync(token);
+
+// ❌ Avoid blocking calls
+var skill = character.SkillsSection.GetActiveSkill("Pistols");
+
+// ✅ Prefer async calls
+var skill = await (await character.GetSkillsSectionAsync(token)).GetActiveSkillAsync("Pistols", token);
+```
+
+## Memory Management
+- Always dispose of async locks properly using `using` statements
+- Use `IAsyncDisposable` for proper resource cleanup
+- Follow the async disposal pattern: `await objLocker.DisposeAsync().ConfigureAwait(false)`
