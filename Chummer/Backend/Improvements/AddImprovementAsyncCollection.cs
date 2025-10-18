@@ -2420,19 +2420,21 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             }
         }
 
-        public async Task pushtextforqualitygroup(XmlNode bonusNode, CancellationToken token = default)
+        public Task pushtextforqualitygroup(XmlNode bonusNode, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+                return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
             
             string strPush = bonusNode.InnerTextViaPool(token);
             string strQualityGroup = bonusNode.Attributes?["group"]?.InnerTextViaPool(token) ?? string.Empty;
             
             if (!string.IsNullOrWhiteSpace(strPush) && !string.IsNullOrEmpty(strQualityGroup))
             {
-                _objCharacter.PushTextForQualityGroup(strQualityGroup, strPush);
+                return _objCharacter.PushTextForQualityGroupAsync(strQualityGroup, strPush, token);
             }
+            return Task.CompletedTask;
         }
 
         public async Task activesoft(XmlNode bonusNode, CancellationToken token = default)

@@ -45441,6 +45441,29 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Push a value for a specific quality group that will be used instead of dialog in next <selecttext />
+        /// </summary>
+        public async Task PushTextForQualityGroupAsync(string strQualityGroup, string strText, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strQualityGroup) || string.IsNullOrEmpty(strText))
+                return;
+
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                ConcurrentStack<string> stkPushText = _dicQualityGroupPushText.Value.GetOrAdd(strQualityGroup,
+                    _ => new ConcurrentStack<string>());
+                stkPushText.Push(strText);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Get the push text stack for a specific quality group
         /// </summary>
         public async Task<ConcurrentStack<string>> GetPushTextForQualityGroupAsync(string strQualityGroup, CancellationToken token = default)

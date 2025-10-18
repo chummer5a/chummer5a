@@ -81,8 +81,10 @@ namespace Chummer
             GenericToken = _objGenericCancellationTokenSource.Token;
             _objCharacter = objCharacter;
             _objCharacter.MultiplePropertiesChangedAsync += CharacterPropertyChanged;
-            dlgSaveFile = new SaveFileDialog();
-            dlgSaveFile.DefaultExt = "chum5";
+            dlgSaveFile = new SaveFileDialog
+            {
+                DefaultExt = "chum5"
+            };
             Load += OnLoad;
             Program.MainForm.OpenCharacterEditorForms?.Add(this);
             string name = "Show_Form_" + GetType();

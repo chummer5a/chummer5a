@@ -76,11 +76,15 @@ namespace Chummer
 
             Paint += panel1_Paint;
 
-            _tmrDraw = new Timer();
-            _tmrDraw.Interval = 100;
+            _tmrDraw = new Timer
+            {
+                Interval = 100
+            };
             _tmrDraw.Tick += tmr_DrawTick;
-            _tmrTip = new Timer();
-            _tmrTip.Interval = 300000;
+            _tmrTip = new Timer
+            {
+                Interval = 300000
+            };
             _tmrTip.Tick += tmr_TipTick;
             
             _myToolTip.Show(LanguageManager.GetString("Chummy_Intro").WordWrap().CleanForHtml(), this, _mouthCenter);
