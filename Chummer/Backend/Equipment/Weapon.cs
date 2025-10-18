@@ -4221,6 +4221,15 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Whether the Weapon is equipped (async version for thread safety).
+        /// </summary>
+        public async Task<bool> GetEquippedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return _blnEquipped;
+        }
+
+        /// <summary>
         /// Active Skill that should be used with this Weapon instead of the default one.
         /// </summary>
         public string UseSkill
@@ -6159,16 +6168,27 @@ namespace Chummer.Backend.Equipment
             {
                 if (!objAccessory.Equipped)
                     continue;
+                // Add mounts from accessories that provide additional mount slots
                 string strLoop = objAccessory.AddMount;
                 if (!string.IsNullOrEmpty(strLoop))
                 {
-                    foreach (string strMount in strLoop.SplitNoAlloc(
-                                '/', StringSplitOptions.RemoveEmptyEntries))
+                    string strAccessoryMount = objAccessory.Mount;
+                    if (!string.IsNullOrEmpty(strAccessoryMount))
                     {
-                        if (dicMounts.TryGetValue(strMount, out intOldValue))
-                            dicMounts[strMount] = intOldValue + 1;
-                        else
-                            dicMounts.Add(strMount, 1);
+                        foreach (string strProvidedMount in strLoop.SplitNoAlloc(
+                                    '/', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            // Handle Passthrough: if AddMount is "Passthrough", don't add to weapon mounts
+                            // Instead, the accessory itself acts as a mount point for other accessories
+                            if (!strProvidedMount.Equals("Passthrough", StringComparison.OrdinalIgnoreCase))
+                            {
+                                // Only add specific mount types to the weapon's mount count
+                                if (dicMounts.TryGetValue(strProvidedMount, out intOldValue))
+                                    dicMounts[strProvidedMount] = intOldValue + 1;
+                                else
+                                    dicMounts.Add(strProvidedMount, 1);
+                            }
+                        }
                     }
                 }
                 strLoop = objAccessory.Mount;
@@ -6180,6 +6200,39 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(strLoop) && dicMounts.TryGetValue(strLoop, out intOldValue))
                 {
                     dicMounts[strLoop] = intOldValue - 1;
+                }
+            }
+            
+            // Account for accessories mounted on other accessories (like slide mounts)
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+            {
+                if (!objAccessory.Equipped || string.IsNullOrEmpty(objAccessory.MountedOnAccessoryID))
+                    continue;
+                
+                // Find the accessory this is mounted on
+                WeaponAccessory objMountedOnAccessory = WeaponAccessories.FirstOrDefault(x => x.InternalId == objAccessory.MountedOnAccessoryID);
+                if (objMountedOnAccessory != null && !string.IsNullOrEmpty(objMountedOnAccessory.AddMount))
+                {
+                    string strMountedOnMount = objMountedOnAccessory.Mount;
+                    if (!string.IsNullOrEmpty(strMountedOnMount))
+                    {
+                        // Check if the mounted-on accessory provides Passthrough mounts
+                        foreach (string strAddMount in objMountedOnAccessory.AddMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            if (strAddMount.Equals("Passthrough", StringComparison.OrdinalIgnoreCase))
+                            {
+                                // This accessory is mounted on a Passthrough accessory, so it consumes the virtual mount slot
+                                foreach (string strMountType in strMountedOnMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    if (dicMounts.TryGetValue(strMountType, out intOldValue))
+                                    {
+                                        dicMounts[strMountType] = intOldValue - 1;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
                 }
             }
             foreach (Weapon objWeapon in UnderbarrelWeapons)
@@ -6243,16 +6296,27 @@ namespace Chummer.Backend.Equipment
             {
                 if (!objAccessory.Equipped)
                     return;
+                // Add mounts from accessories that provide additional mount slots
                 string strLoop = objAccessory.AddMount;
                 if (!string.IsNullOrEmpty(strLoop))
                 {
-                    foreach (string strMount in strLoop.SplitNoAlloc(
-                                '/', StringSplitOptions.RemoveEmptyEntries))
+                    string strAccessoryMount = objAccessory.Mount;
+                    if (!string.IsNullOrEmpty(strAccessoryMount))
                     {
-                        if (dicMounts.TryGetValue(strMount, out intOldValue))
-                            dicMounts[strMount] = intOldValue + 1;
-                        else
-                            dicMounts.Add(strMount, 1);
+                        foreach (string strProvidedMount in strLoop.SplitNoAlloc(
+                                    '/', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            // Handle Passthrough: if AddMount is "Passthrough", don't add to weapon mounts
+                            // Instead, the accessory itself acts as a mount point for other accessories
+                            if (!strProvidedMount.Equals("Passthrough", StringComparison.OrdinalIgnoreCase))
+                            {
+                                // Only add specific mount types to the weapon's mount count
+                                if (dicMounts.TryGetValue(strProvidedMount, out intOldValue))
+                                    dicMounts[strProvidedMount] = intOldValue + 1;
+                                else
+                                    dicMounts.Add(strProvidedMount, 1);
+                            }
+                        }
                     }
                 }
                 strLoop = objAccessory.Mount;
@@ -6266,6 +6330,40 @@ namespace Chummer.Backend.Equipment
                     dicMounts[strLoop] = intOldValue - 1;
                 }
             }, token).ConfigureAwait(false);
+            
+            // Account for accessories mounted on other accessories (like slide mounts)
+            await WeaponAccessories.ForEachAsync(objAccessory =>
+            {
+                if (!objAccessory.Equipped || string.IsNullOrEmpty(objAccessory.MountedOnAccessoryID))
+                    return;
+                
+                // Find the accessory this is mounted on
+                WeaponAccessory objMountedOnAccessory = WeaponAccessories.FirstOrDefault(x => x.InternalId == objAccessory.MountedOnAccessoryID);
+                if (objMountedOnAccessory != null && !string.IsNullOrEmpty(objMountedOnAccessory.AddMount))
+                {
+                    string strMountedOnMount = objMountedOnAccessory.Mount;
+                    if (!string.IsNullOrEmpty(strMountedOnMount))
+                    {
+                        // Check if the mounted-on accessory provides Passthrough mounts
+                        foreach (string strAddMount in objMountedOnAccessory.AddMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            if (strAddMount.Equals("Passthrough", StringComparison.OrdinalIgnoreCase))
+                            {
+                                // This accessory is mounted on a Passthrough accessory, so it consumes the virtual mount slot
+                                foreach (string strMountType in strMountedOnMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    if (dicMounts.TryGetValue(strMountType, out intOldValue))
+                                    {
+                                        dicMounts[strMountType] = intOldValue - 1;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }, token).ConfigureAwait(false);
+            
             await UnderbarrelWeapons.ForEachAsync(objWeapon =>
             {
                 if (!objWeapon.Equipped)
@@ -14139,6 +14237,7 @@ namespace Chummer.Backend.Equipment
             if (!blnMountFound || !blnExtraMountFound)
                 return false;
 
+
             if (!objXmlAccessory.RequirementsMet(_objCharacter, this))
                 return false;
 
@@ -14275,6 +14374,7 @@ namespace Chummer.Backend.Equipment
 
             if (!blnMountFound || !blnExtraMountFound)
                 return false;
+
 
             if (!await objXmlAccessory.RequirementsMetAsync(_objCharacter, this, token: token).ConfigureAwait(false))
                 return false;

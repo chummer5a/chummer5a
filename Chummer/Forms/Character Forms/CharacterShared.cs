@@ -3324,6 +3324,54 @@ namespace Chummer
 
         #endregion Locations
 
+        /// <summary>
+        /// Update only the detached accessories node in the weapons tree view.
+        /// This is more efficient than calling RefreshWeapons which causes debug errors.
+        /// </summary>
+        protected async Task RefreshDetachedAccessoriesNode(TreeView treWeapons, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (treWeapons == null)
+                return;
+
+            // Create the detached accessories node outside the DoThreadSafeAsync call
+            TreeNode nodDetachedAccessories = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode("Node_DetachedAccessories", false),
+                                                                     token).ConfigureAwait(false);
+            if (CharacterObject.DetachedWeaponAccessories.Count > 0)
+            {
+                if (nodDetachedAccessories == null)
+                {
+                    nodDetachedAccessories = new TreeNode
+                    {
+                        Name = "nodDetachedAccessories",
+                        Tag = "Node_DetachedAccessories",
+                        Text = await LanguageManager.GetStringAsync("Node_DetachedAccessories", token: token).ConfigureAwait(false)
+                    };
+                }
+                else
+                {
+                    // Clear existing nodes
+                    await treWeapons.DoThreadSafeAsync(() => nodDetachedAccessories.Nodes.Clear(), token).ConfigureAwait(false);
+                }
+
+                // Add detached accessories to the node
+                foreach (WeaponAccessory objAccessory in CharacterObject.DetachedWeaponAccessories)
+                    {
+                        TreeNode objNode = await objAccessory.CreateTreeNode(cmsWeaponAccessory, cmsWeaponAccessoryGear, token).ConfigureAwait(false);
+                        if (objNode != null)
+                        {
+                            nodDetachedAccessories.Nodes.Add(objNode);
+                        }
+                    }
+            }
+            else
+            {
+                if (nodDetachedAccessories == null)
+                    return;
+                treWeapons.Nodes.Remove(nodDetachedAccessories);
+            }
+        }
+
         protected async Task RefreshWeaponsClearBindings(TreeView treWeapons, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -3384,6 +3432,29 @@ namespace Chummer
                                         x => x.Nodes.Add(objNode),
                                         token).ConfigureAwait(false);
                                 }, token).ConfigureAwait(false);
+
+                        // Add detached accessories as a special "location"
+                        if (CharacterObject.DetachedWeaponAccessories.Count > 0)
+                        {
+                            TreeNode nodDetachedAccessories = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode("Node_DetachedAccessories", false),
+                                                                     token).ConfigureAwait(false);
+                            if (nodDetachedAccessories == null)
+                            {
+                                nodDetachedAccessories = new TreeNode
+                                {
+                                    Name = "nodDetachedAccessories",
+                                    Tag = "Node_DetachedAccessories",
+                                    Text = await LanguageManager.GetStringAsync("Node_DetachedAccessories", token: token).ConfigureAwait(false)
+                                };
+                            }
+                            await CharacterObject.DetachedWeaponAccessories.ForEachAsync(async objAccessory =>
+                            {
+                                TreeNode objNode = await objAccessory.CreateTreeNode(cmsWeaponAccessory, cmsWeaponAccessoryGear, token).ConfigureAwait(false);
+                                nodDetachedAccessories.Nodes.Add(objNode);
+                            }, token).ConfigureAwait(false);
+                            
+                            await treWeapons.DoThreadSafeAsync(x => x.Nodes.Add(nodDetachedAccessories), token).ConfigureAwait(false);
+                        }
 
                         await CharacterObject.Weapons.ForEachWithSideEffectsAsync(async objWeapon =>
                         {

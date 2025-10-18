@@ -17576,6 +17576,7 @@
       <id>de62b79f-2864-4023-a286-6c1f270aade3</id>
       <name>Slide Mount</name>
       <mount>Top/Under/Side</mount>
+      <addmount>Passthrough</addmount>
       <avail>4</avail>
       <cost>500</cost>
       <source>RG</source>

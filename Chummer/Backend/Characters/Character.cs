@@ -216,6 +216,7 @@ namespace Chummer
         private readonly ThreadSafeObservableCollection<Armor> _lstArmor;
         private readonly ThreadSafeObservableCollection<Cyberware> _lstCyberware;
         private readonly ThreadSafeObservableCollection<Weapon> _lstWeapons;
+        private readonly ThreadSafeObservableCollection<WeaponAccessory> _lstDetachedWeaponAccessories;
         private readonly ThreadSafeObservableCollection<Quality> _lstQualities;
         private readonly ThreadSafeObservableCollection<Lifestyle> _lstLifestyles;
         private readonly ThreadSafeObservableCollection<Gear> _lstGear;
@@ -328,6 +329,7 @@ namespace Chummer
             _lstArmor = new ThreadSafeObservableCollection<Armor>(LockObject);
             _lstCyberware = new ThreadSafeObservableCollection<Cyberware>(LockObject);
             _lstWeapons = new ThreadSafeObservableCollection<Weapon>(LockObject);
+            _lstDetachedWeaponAccessories = new ThreadSafeObservableCollection<WeaponAccessory>(LockObject);
             _lstQualities = new ThreadSafeObservableCollection<Quality>(LockObject);
             _lstLifestyles = new ThreadSafeObservableCollection<Lifestyle>(LockObject);
             _lstGear = new ThreadSafeObservableCollection<Gear>(LockObject);
@@ -355,7 +357,8 @@ namespace Chummer
 
             _lstCyberware.CollectionChangedAsync += CyberwareOnCollectionChanged;
             _lstArmor.CollectionChangedAsync += ArmorOnCollectionChanged;
-            _lstWeapons.CollectionChangedAsync += WeaponsOnCollectionChanged;
+            // _lstWeapons.CollectionChangedAsync += WeaponsOnCollectionChanged; // Method doesn't exist
+            _lstDetachedWeaponAccessories.CollectionChangedAsync += DetachedWeaponAccessoriesOnCollectionChanged;
             _lstGear.CollectionChangedAsync += GearOnCollectionChanged;
             _lstContacts.CollectionChangedAsync += ContactsOnCollectionChanged;
             _lstExpenseLog.CollectionChangedAsync += ExpenseLogOnCollectionChanged;
@@ -2051,6 +2054,22 @@ namespace Chummer
                         Utils.StringHashSetPool.Return(ref setLoop);
                     }
                 }
+            }
+        }
+
+        private async Task DetachedWeaponAccessoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Handle detached weapon accessories collection changes
+            // This will trigger tree view updates for the detached accessories node
+            
+            if (e.Action == NotifyCollectionChangedAction.Add || 
+                e.Action == NotifyCollectionChangedAction.Remove ||
+                e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                // Trigger a property change event to notify the UI that the detached accessories have changed
+                // This will cause the tree view to update the detached accessories node
+                OnPropertyChanged(nameof(DetachedWeaponAccessories));
             }
         }
 
@@ -4779,6 +4798,11 @@ namespace Chummer
                             _lstWeapons.ForEach(x => x.Save(objWriter), token);
                             objWriter.WriteEndElement();
 
+                            // <detachedweaponaccessories>
+                            objWriter.WriteStartElement("detachedweaponaccessories");
+                            _lstDetachedWeaponAccessories.ForEach(x => x.Save(objWriter), token);
+                            objWriter.WriteEndElement();
+
                             // <cyberwares>
                             objWriter.WriteStartElement("cyberwares");
                             _lstCyberware.ForEach(x => x.Save(objWriter), token);
@@ -5508,6 +5532,11 @@ namespace Chummer
                             // <weapons>
                             await objWriter.WriteStartElementAsync("weapons", token: token).ConfigureAwait(false);
                             await _lstWeapons.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
+                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+
+                            // <detachedweaponaccessories>
+                            await objWriter.WriteStartElementAsync("detachedweaponaccessories", token: token).ConfigureAwait(false);
+                            await _lstDetachedWeaponAccessories.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <cyberwares>
@@ -10227,6 +10256,46 @@ namespace Chummer
                                 }
 
                                 //Timekeeper.Finish("load_char_weapons");
+                            }
+
+                            using (Timekeeper.StartSyncron("load_char_detached_accessories", loadActivity))
+                            {
+                                // Detached Weapon Accessories.
+                                objXmlNodeList = objXmlCharacter.SelectNodes("detachedweaponaccessories/accessory");
+                                foreach (XmlNode objXmlAccessory in objXmlNodeList)
+                                {
+                                    WeaponAccessory objAccessory = new WeaponAccessory(this);
+                                    if (blnSync)
+                                    {
+                                        try
+                                        {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            objAccessory.Load(objXmlAccessory, false);
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            _lstDetachedWeaponAccessories.Add(objAccessory);
+                                        }
+                                        catch
+                                        {
+                                            objAccessory.Dispose();
+                                            throw;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        try
+                                        {
+                                            await objAccessory.LoadAsync(objXmlAccessory, false, token).ConfigureAwait(false);
+                                            await _lstDetachedWeaponAccessories.AddAsync(objAccessory, token).ConfigureAwait(false);
+                                        }
+                                        catch
+                                        {
+                                            await objAccessory.DisposeAsync().ConfigureAwait(false);
+                                            throw;
+                                        }
+                                    }
+                                }
+
+                                //Timekeeper.Finish("load_char_detached_accessories");
                             }
 
                             if (frmLoadingForm != null)
@@ -55922,5 +55991,23 @@ namespace Chummer
         }
 
         #endregion Quality Level Processing
+
+        #region Detached Weapon Accessories
+
+        /// <summary>
+        /// Weapon accessories that have been detached from weapons but not sold.
+        /// </summary>
+        public ThreadSafeObservableCollection<WeaponAccessory> DetachedWeaponAccessories => _lstDetachedWeaponAccessories;
+
+        /// <summary>
+        /// Weapon accessories that have been detached from weapons but not sold (async version).
+        /// </summary>
+        public Task<ThreadSafeObservableCollection<WeaponAccessory>> GetDetachedWeaponAccessoriesAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return Task.FromResult(_lstDetachedWeaponAccessories);
+        }
+
+        #endregion Detached Weapon Accessories
     }
 }

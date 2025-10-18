@@ -1308,6 +1308,10 @@
       <key>String_MountStock</key>
       <text>Stock</text>
     </string>
+    <string>
+      <key>String_MountPassthrough</key>
+      <text>Passthrough</text>
+    </string>
     <!-- End Region-->
     <!-- Region Common Message Boxes -->
     <string>
@@ -1929,6 +1933,14 @@
     <string>
       <key>Menu_AddGear</key>
       <text>A&amp;dd Gear</text>
+    </string>
+    <string>
+      <key>Menu_DetachAccessory</key>
+      <text>&amp;Detach Accessory</text>
+    </string>
+    <string>
+      <key>Menu_AttachAccessory</key>
+      <text>&amp;Attach to Another Weapon</text>
     </string>
     <string>
       <key>Menu_AddWeapon</key>
@@ -2741,6 +2753,34 @@
     <string>
       <key>Message_SelectWeaponAccessory</key>
       <text>You must first select a Weapon to add an Accessory to.</text>
+    </string>
+    <string>
+      <key>Message_AccessoryCannotBeDetached</key>
+      <text>This accessory cannot be detached as it is not a modular accessory.</text>
+    </string>
+    <string>
+      <key>Message_AccessoryCannotBeAttached</key>
+      <text>This accessory cannot be attached as it is not a modular accessory.</text>
+    </string>
+    <string>
+      <key>Message_ConfirmDetachAccessory</key>
+      <text>Are you sure you want to detach this accessory from its current weapon?</text>
+    </string>
+    <string>
+      <key>MessageTitle_DetachAccessory</key>
+      <text>Detach Accessory</text>
+    </string>
+    <string>
+      <key>MessageTitle_AttachAccessory</key>
+      <text>Attach Accessory</text>
+    </string>
+    <string>
+      <key>Message_AccessoryMovedToVehicle</key>
+      <text>Accessory has been moved to vehicle weapon.</text>
+    </string>
+    <string>
+      <key>Message_AccessoryMovedToCharacter</key>
+      <text>Accessory has been moved to character weapon.</text>
     </string>
     <string>
       <key>Message_SelectWeaponMod</key>
@@ -5494,6 +5534,10 @@
     <string>
       <key>Node_SelectedWeapons</key>
       <text>Selected Weapons</text>
+    </string>
+    <string>
+      <key>Node_DetachedAccessories</key>
+      <text>Detached Accessories</text>
     </string>
     <string>
       <key>String_WeaponAccessory</key>
@@ -9464,6 +9508,14 @@
     <string>
       <key>Label_SelectWeapon_IncludedItems</key>
       <text>Included Accessories and Modifications:</text>
+    </string>
+    <string>
+      <key>Label_SelectWeaponAccessoryTarget</key>
+      <text>Select target weapon or accessory:</text>
+    </string>
+    <string>
+      <key>Title_SelectWeaponAccessoryTarget</key>
+      <text>Select Target</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Weapon Accessory Window -->

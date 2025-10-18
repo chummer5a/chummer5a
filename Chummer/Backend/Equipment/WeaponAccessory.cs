@@ -100,6 +100,7 @@ namespace Chummer.Backend.Equipment
         private XmlElement _nodWirelessWeaponBonus;
         private bool _blnStolen;
         private string _strParentID;
+        private string _strMountedOnAccessoryID = string.Empty;
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -518,6 +519,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("mount", _strMount);
             objWriter.WriteElementString("extramount", _strExtraMount);
             objWriter.WriteElementString("addmount", _strAddMount);
+            objWriter.WriteElementString("mountedonaccessory", _strMountedOnAccessoryID);
             objWriter.WriteElementString("rc", _strRC);
             objWriter.WriteElementString("maxrating", _strMaxRating);
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -636,6 +638,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("mount", ref _strMount);
             objNode.TryGetStringFieldQuickly("extramount", ref _strExtraMount);
             objNode.TryGetStringFieldQuickly("addmount", ref _strAddMount);
+            objNode.TryGetStringFieldQuickly("mountedonaccessory", ref _strMountedOnAccessoryID);
             objNode.TryGetStringFieldQuickly("rc", ref _strRC);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
@@ -1186,6 +1189,114 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// ID of the accessory this accessory is mounted on (if any).
+        /// </summary>
+        public string MountedOnAccessoryID
+        {
+            get => _strMountedOnAccessoryID;
+            set => _strMountedOnAccessoryID = value;
+        }
+
+        /// <summary>
+        /// Display mount information showing mounting relationship if applicable.
+        /// </summary>
+        public string DisplayMount(string strLanguage)
+        {
+            if (string.IsNullOrEmpty(_strMountedOnAccessoryID))
+            {
+                // Not mounted on another accessory, show normal mount
+                return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                    ? Mount
+                    : LanguageManager.GetString("String_Mount" + Mount, strLanguage);
+            }
+
+            // Find the accessory this is mounted on
+            WeaponAccessory objMountedOnAccessory = Parent?.WeaponAccessories.FirstOrDefault(x => x.InternalId == _strMountedOnAccessoryID);
+            if (objMountedOnAccessory != null)
+            {
+                string strMountDisplay = strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                    ? Mount
+                    : LanguageManager.GetString("String_Mount" + Mount, strLanguage);
+                
+                string strAccessoryName = objMountedOnAccessory.DisplayNameShort(strLanguage);
+                
+                return strMountDisplay + " (" + strAccessoryName + ")";
+            }
+
+            // Fallback to normal mount if accessory not found
+            return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                ? Mount
+                : LanguageManager.GetString("String_Mount" + Mount, strLanguage);
+        }
+
+        /// <summary>
+        /// Display mount information showing mounting relationship if applicable (async version).
+        /// </summary>
+        public async Task<string> DisplayMountAsync(string strLanguage, CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(_strMountedOnAccessoryID))
+            {
+                // Not mounted on another accessory, show normal mount
+                return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                    ? Mount
+                    : await LanguageManager.GetStringAsync("String_Mount" + Mount, strLanguage, token: token).ConfigureAwait(false);
+            }
+
+            // Find the accessory this is mounted on
+            WeaponAccessory objMountedOnAccessory = Parent?.WeaponAccessories.FirstOrDefault(x => x.InternalId == _strMountedOnAccessoryID);
+            if (objMountedOnAccessory != null)
+            {
+                string strMountDisplay = strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                    ? Mount
+                    : await LanguageManager.GetStringAsync("String_Mount" + Mount, strLanguage, token: token).ConfigureAwait(false);
+                
+                string strAccessoryName = await objMountedOnAccessory.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                
+                return strMountDisplay + " (" + strAccessoryName + ")";
+            }
+
+            // Fallback to normal mount if accessory not found
+            return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                ? Mount
+                : await LanguageManager.GetStringAsync("String_Mount" + Mount, strLanguage, token: token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Whether this accessory is included in the base weapon and cannot be detached.
+        /// </summary>
+        public bool IncludedInWeapon
+        {
+            get => _blnIncludedInWeapon;
+            set => _blnIncludedInWeapon = value;
+        }
+
+        /// <summary>
+        /// What additional mount slots this accessory provides (for modular accessories).
+        /// </summary>
+        public async Task<string> GetAddMountAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return _strAddMount;
+        }
+
+        /// <summary>
+        /// Whether this accessory is included in the base weapon and cannot be detached (async version).
+        /// </summary>
+        public async Task<bool> GetIncludedInWeaponAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return _blnIncludedInWeapon;
+        }
+
+        /// <summary>
+        /// Whether this accessory is currently equipped and contributing to the weapon's stats.
+        /// </summary>
+        public bool IsModularCurrentlyEquipped
+        {
+            get => Equipped && Parent != null && Parent.Equipped;
+        }
+
+        /// <summary>
         /// Recoil.
         /// </summary>
         public string RC
@@ -1706,15 +1817,6 @@ namespace Chummer.Backend.Equipment
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             string strReturn = objNode?.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(strReturn) ? strReturn : Page;
-        }
-
-        /// <summary>
-        /// Whether this Accessory is part of the base weapon configuration.
-        /// </summary>
-        public bool IncludedInWeapon
-        {
-            get => _blnIncludedInWeapon;
-            set => _blnIncludedInWeapon = value;
         }
 
         /// <summary>

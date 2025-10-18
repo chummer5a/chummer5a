@@ -9979,6 +9979,502 @@ namespace Chummer
             }
         }
 
+        private async void tsWeaponAccessoryDetach_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                                      .ConfigureAwait(false) is WeaponAccessory objAccessory))
+                    return;
+
+                // Check if this accessory is part of the base weapon
+                if (objAccessory.IncludedInWeapon)
+                {
+                    await Program.ShowScrollableMessageBoxAsync(
+                        this,
+                        await LanguageManager.GetStringAsync("Message_AccessoryCannotBeDetached", token: GenericToken).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_DetachAccessory", token: GenericToken).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken).ConfigureAwait(false);
+                    return;
+                }
+
+                // Confirm detachment
+                if (await Program.ShowScrollableMessageBoxAsync(
+                        this,
+                        await LanguageManager.GetStringAsync("Message_ConfirmDetachAccessory", token: GenericToken).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_DetachAccessory", token: GenericToken).ConfigureAwait(false),
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: GenericToken).ConfigureAwait(false) != DialogResult.Yes)
+                    return;
+
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync(GenericToken).ConfigureAwait(false);
+                    try
+                    {
+                        GenericToken.ThrowIfCancellationRequested();
+
+                        // Remove from parent weapon
+                        Weapon objParentWeapon = objAccessory.Parent;
+                        if (objParentWeapon != null)
+                        {
+                            // Store the parent weapon reference before removal
+                            string strParentWeaponId = objParentWeapon.InternalId;
+                            
+                            // Try multiple removal methods to ensure it's removed
+                            bool blnRemoved = false;
+                            
+                            // Method 1: Async removal
+                            if (objParentWeapon.WeaponAccessories.Contains(objAccessory))
+                            {
+                                await objParentWeapon.WeaponAccessories.RemoveAsync(objAccessory, GenericToken).ConfigureAwait(false);
+                                blnRemoved = !objParentWeapon.WeaponAccessories.Contains(objAccessory);
+                            }
+                            
+                            // Method 2: Synchronous removal if async failed
+                            if (!blnRemoved && objParentWeapon.WeaponAccessories.Contains(objAccessory))
+                            {
+                                objParentWeapon.WeaponAccessories.Remove(objAccessory);
+                                blnRemoved = !objParentWeapon.WeaponAccessories.Contains(objAccessory);
+                            }
+                            
+                            // Method 3: Force removal by index if still present
+                            if (!blnRemoved)
+                            {
+                                int intIndex = objParentWeapon.WeaponAccessories.IndexOf(objAccessory);
+                                if (intIndex >= 0)
+                                {
+                                    objParentWeapon.WeaponAccessories.RemoveAt(intIndex);
+                                }
+                            }
+                            
+                        // Clear the accessory's parent reference and mounting relationship
+                        objAccessory.Parent = null;
+                        objAccessory.MountedOnAccessoryID = string.Empty;
+                        }
+
+                        // Check if this accessory has other accessories mounted on it (cascading detach)
+                        if (!string.IsNullOrEmpty(objAccessory.AddMount) && objAccessory.AddMount.Equals("Passthrough", StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Find any accessories that are mounted on this accessory
+                            List<WeaponAccessory> lstMountedAccessories = new List<WeaponAccessory>();
+                            foreach (WeaponAccessory objMountedAccessory in objParentWeapon.WeaponAccessories)
+                            {
+                                if (objMountedAccessory.MountedOnAccessoryID == objAccessory.InternalId)
+                                {
+                                    lstMountedAccessories.Add(objMountedAccessory);
+                                }
+                            }
+                            
+                            // Detach all accessories that are mounted on this accessory
+                            foreach (WeaponAccessory objMountedAccessory in lstMountedAccessories)
+                            {
+                                // Remove from parent weapon
+                                if (objParentWeapon.WeaponAccessories.Contains(objMountedAccessory))
+                                {
+                                    await objParentWeapon.WeaponAccessories.RemoveAsync(objMountedAccessory, GenericToken).ConfigureAwait(false);
+                                }
+                                
+                                // Clear the mounted accessory's parent reference and mounting relationship
+                                objMountedAccessory.Parent = null;
+                                objMountedAccessory.MountedOnAccessoryID = string.Empty;
+                                
+                                // Add to detached accessories collection
+                                if (!CharacterObject.DetachedWeaponAccessories.Contains(objMountedAccessory))
+                                {
+                                    await CharacterObject.DetachedWeaponAccessories.AddAsync(objMountedAccessory, GenericToken).ConfigureAwait(false);
+                                }
+                            }
+                        }
+
+                        // Ensure accessory is not already in detached collection
+                        if (!CharacterObject.DetachedWeaponAccessories.Contains(objAccessory))
+                        {
+                            // Add to character's detached accessories collection
+                            await CharacterObject.DetachedWeaponAccessories.AddAsync(objAccessory, GenericToken).ConfigureAwait(false);
+                        }
+                        
+                        // Accessory is now detached (no need to change equip status)
+
+                        // Refresh only the detached accessories node to avoid debug errors
+                        await RefreshDetachedAccessoriesNode(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear, GenericToken).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsWeaponAccessoryAttach_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                                      .ConfigureAwait(false) is WeaponAccessory objAccessory))
+                    return;
+
+                // All accessories can be attached to other weapons/accessories
+
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    using (ThreadSafeForm<SelectWeaponAccessoryTarget> frmSelectTarget
+                           = await ThreadSafeForm<SelectWeaponAccessoryTarget>.GetAsync(
+                               () => new SelectWeaponAccessoryTarget(CharacterObject, objAccessory), GenericToken).ConfigureAwait(false))
+                    {
+                        if (await frmSelectTarget.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.OK)
+                        {
+                            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync(GenericToken).ConfigureAwait(false);
+                            try
+                            {
+                                GenericToken.ThrowIfCancellationRequested();
+
+                                Weapon objTargetWeapon = frmSelectTarget.MyForm.SelectedWeapon;
+                                WeaponAccessory objTargetAccessory = frmSelectTarget.MyForm.SelectedAccessory;
+
+                                if (objTargetWeapon != null)
+                                {
+                                    // Check if the accessory is already on this weapon to prevent conflicts
+                                    if (objAccessory.Parent != objTargetWeapon)
+                                    {
+                                        // Remove from current parent if it has one
+                                        if (objAccessory.Parent != null)
+                                        {
+                                            await objAccessory.Parent.WeaponAccessories.RemoveAsync(objAccessory, GenericToken).ConfigureAwait(false);
+                                        }
+                                        
+                                        // Ensure accessory is not already in target weapon's accessories
+                                        if (!objTargetWeapon.WeaponAccessories.Contains(objAccessory))
+                                        {
+                                            // Set the parent weapon reference
+                                            objAccessory.Parent = objTargetWeapon;
+                                            
+                                            // Add to target weapon
+                                            await objTargetWeapon.WeaponAccessories.AddAsync(objAccessory, GenericToken).ConfigureAwait(false);
+                                        }
+                                    }
+                                }
+                                else if (objTargetAccessory != null)
+                                {
+                                    // Attach to another accessory - set the mounting relationship
+                                    if (objAccessory.Parent != objTargetAccessory.Parent)
+                                    {
+                                        // Remove from current parent if it has one
+                                        if (objAccessory.Parent != null)
+                                        {
+                                            await objAccessory.Parent.WeaponAccessories.RemoveAsync(objAccessory, GenericToken).ConfigureAwait(false);
+                                        }
+                                        
+                                        // Set the mounting relationship
+                                        objAccessory.MountedOnAccessoryID = objTargetAccessory.InternalId;
+                                        
+                                        // Add to the target accessory's parent weapon
+                                        await objTargetAccessory.Parent.WeaponAccessories.AddAsync(objAccessory, GenericToken).ConfigureAwait(false);
+                                    }
+                                }
+
+                                // Remove from detached accessories collection if it's there
+                                if (CharacterObject.DetachedWeaponAccessories.Contains(objAccessory))
+                                {
+                                    await CharacterObject.DetachedWeaponAccessories.RemoveAsync(objAccessory, GenericToken).ConfigureAwait(false);
+                                }
+
+                                // Accessory is now attached (no need to change equip status)
+
+                                // Show appropriate message based on target location
+                                bool blnTargetIsVehicle = objTargetWeapon?.Parent?.Parent is Vehicle || objTargetAccessory?.Parent?.Parent?.Parent is Vehicle;
+                                bool blnSourceIsVehicle = objAccessory.Parent?.Parent is Vehicle;
+                                
+                                if (blnTargetIsVehicle && !blnSourceIsVehicle)
+                                {
+                                    await Program.ShowScrollableMessageBoxAsync(
+                                        this,
+                                        await LanguageManager.GetStringAsync("Message_AccessoryMovedToVehicle", token: GenericToken).ConfigureAwait(false),
+                                        await LanguageManager.GetStringAsync("MessageTitle_AttachAccessory", token: GenericToken).ConfigureAwait(false),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken).ConfigureAwait(false);
+                                }
+                                else if (!blnTargetIsVehicle && blnSourceIsVehicle)
+                                {
+                                    await Program.ShowScrollableMessageBoxAsync(
+                                        this,
+                                        await LanguageManager.GetStringAsync("Message_AccessoryMovedToCharacter", token: GenericToken).ConfigureAwait(false),
+                                        await LanguageManager.GetStringAsync("MessageTitle_AttachAccessory", token: GenericToken).ConfigureAwait(false),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken).ConfigureAwait(false);
+                                }
+
+                                // Refresh only the detached accessories node to avoid debug errors
+                                await  RefreshDetachedAccessoriesNode(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear, GenericToken).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsVehicleWeaponAccessoryDetach_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                                      .ConfigureAwait(false) is WeaponAccessory objAccessory))
+                    return;
+
+                // Check if accessory is part of base weapon
+                if (objAccessory.IncludedInWeapon)
+                {
+                    await Program.ShowScrollableMessageBoxAsync(
+                        this,
+                        await LanguageManager.GetStringAsync("Message_AccessoryCannotBeDetached", token: GenericToken).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_DetachAccessory", token: GenericToken).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken).ConfigureAwait(false);
+                    return;
+                }
+
+                // Confirm detach
+                if (await Program.ShowScrollableMessageBoxAsync(
+                        this,
+                        await LanguageManager.GetStringAsync("Message_ConfirmDetachAccessory", token: GenericToken).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_DetachAccessory", token: GenericToken).ConfigureAwait(false),
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: GenericToken).ConfigureAwait(false) != DialogResult.Yes)
+                    return;
+
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync(GenericToken).ConfigureAwait(false);
+                    try
+                    {
+                        GenericToken.ThrowIfCancellationRequested();
+
+                        // Get the parent weapon
+                        Weapon objParentWeapon = objAccessory.Parent;
+                        if (objParentWeapon != null)
+                        {
+                            // Try multiple removal methods to ensure it's removed
+                            bool blnRemoved = false;
+                            // Method 1: Async removal
+                            if (objParentWeapon.WeaponAccessories.Contains(objAccessory))
+                            {
+                                await objParentWeapon.WeaponAccessories.RemoveAsync(objAccessory, GenericToken).ConfigureAwait(false);
+                                blnRemoved = !objParentWeapon.WeaponAccessories.Contains(objAccessory);
+                            }
+                            // Method 2: Synchronous removal if async failed
+                            if (!blnRemoved && objParentWeapon.WeaponAccessories.Contains(objAccessory))
+                            {
+                                objParentWeapon.WeaponAccessories.Remove(objAccessory);
+                                blnRemoved = !objParentWeapon.WeaponAccessories.Contains(objAccessory);
+                            }
+                            // Method 3: Force removal by index if still present
+                            if (!blnRemoved)
+                            {
+                                int intIndex = objParentWeapon.WeaponAccessories.IndexOf(objAccessory);
+                                if (intIndex >= 0)
+                                {
+                                    objParentWeapon.WeaponAccessories.RemoveAt(intIndex);
+                                }
+                            }
+                        }
+
+                        // Clear the accessory's parent reference and mounting relationship
+                        objAccessory.Parent = null;
+                        objAccessory.MountedOnAccessoryID = string.Empty;
+
+                        // Check if this accessory has other accessories mounted on it (cascading detach)
+                        if (!string.IsNullOrEmpty(objAccessory.AddMount) && objAccessory.AddMount.Equals("Passthrough", StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Find any accessories that are mounted on this accessory
+                            List<WeaponAccessory> lstMountedAccessories = new List<WeaponAccessory>();
+                            foreach (WeaponAccessory objMountedAccessory in objParentWeapon.WeaponAccessories)
+                            {
+                                if (objMountedAccessory.MountedOnAccessoryID == objAccessory.InternalId)
+                                {
+                                    lstMountedAccessories.Add(objMountedAccessory);
+                                }
+                            }
+                            
+                            // Detach all accessories that are mounted on this accessory
+                            foreach (WeaponAccessory objMountedAccessory in lstMountedAccessories)
+                            {
+                                // Remove from parent weapon
+                                if (objParentWeapon.WeaponAccessories.Contains(objMountedAccessory))
+                                {
+                                    await objParentWeapon.WeaponAccessories.RemoveAsync(objMountedAccessory, GenericToken).ConfigureAwait(false);
+                                }
+                                
+                                // Clear the mounted accessory's parent reference and mounting relationship
+                                objMountedAccessory.Parent = null;
+                                objMountedAccessory.MountedOnAccessoryID = string.Empty;
+                                
+                                // Add to detached accessories collection
+                                if (!CharacterObject.DetachedWeaponAccessories.Contains(objMountedAccessory))
+                                {
+                                    await CharacterObject.DetachedWeaponAccessories.AddAsync(objMountedAccessory, GenericToken).ConfigureAwait(false);
+                                }
+                            }
+                        }
+
+                        // Add to detached accessories collection
+                        await CharacterObject.DetachedWeaponAccessories.AddAsync(objAccessory, GenericToken).ConfigureAwait(false);
+
+                        // Refresh only the detached accessories node to avoid debug errors
+                        await RefreshDetachedAccessoriesNode(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear, GenericToken).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsVehicleWeaponAccessoryAttach_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                                      .ConfigureAwait(false) is WeaponAccessory objAccessory))
+                    return;
+
+                // All accessories can be attached to other weapons/accessories
+
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    // Show a dialog to select which weapon/accessory to attach to
+                    using (ThreadSafeForm<SelectWeaponAccessoryTarget> frmSelectTarget
+                           = await ThreadSafeForm<SelectWeaponAccessoryTarget>.GetAsync(
+                               () => new SelectWeaponAccessoryTarget(CharacterObject, objAccessory), GenericToken).ConfigureAwait(false))
+                    {
+                        if (await frmSelectTarget.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.OK)
+                        {
+                            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync(GenericToken).ConfigureAwait(false);
+                            try
+                            {
+                                GenericToken.ThrowIfCancellationRequested();
+
+                                // Get the target weapon/accessory
+                                Weapon objTargetWeapon = frmSelectTarget.MyForm.SelectedWeapon;
+                                WeaponAccessory objTargetAccessory = frmSelectTarget.MyForm.SelectedAccessory;
+
+                                // Remove from detached accessories collection if it's there
+                                if (CharacterObject.DetachedWeaponAccessories.Contains(objAccessory))
+                                {
+                                    await CharacterObject.DetachedWeaponAccessories.RemoveAsync(objAccessory, GenericToken).ConfigureAwait(false);
+                                }
+
+                                if (objTargetWeapon != null)
+                                {
+                                    // Check if the accessory is already on this weapon to prevent conflicts
+                                    if (objAccessory.Parent != objTargetWeapon)
+                                    {
+                                        // Remove from current parent if it has one
+                                        if (objAccessory.Parent != null)
+                                        {
+                                            await objAccessory.Parent.WeaponAccessories.RemoveAsync(objAccessory, GenericToken).ConfigureAwait(false);
+                                        }
+                                        
+                                        // Ensure accessory is not already in target weapon's accessories
+                                        if (!objTargetWeapon.WeaponAccessories.Contains(objAccessory))
+                                        {
+                                            // Set the parent weapon reference
+                                            objAccessory.Parent = objTargetWeapon;
+                                            
+                                            // Add to target weapon
+                                            await objTargetWeapon.WeaponAccessories.AddAsync(objAccessory, GenericToken).ConfigureAwait(false);
+                                        }
+                                    }
+                                }
+                                else if (objTargetAccessory != null)
+                                {
+                                    // Attach to another accessory - set the mounting relationship
+                                    if (objAccessory.Parent != objTargetAccessory.Parent)
+                                    {
+                                        // Remove from current parent if it has one
+                                        if (objAccessory.Parent != null)
+                                        {
+                                            await objAccessory.Parent.WeaponAccessories.RemoveAsync(objAccessory, GenericToken).ConfigureAwait(false);
+                                        }
+                                        
+                                        // Set the mounting relationship
+                                        objAccessory.MountedOnAccessoryID = objTargetAccessory.InternalId;
+                                        
+                                        // Add to the target accessory's parent weapon
+                                        await objTargetAccessory.Parent.WeaponAccessories.AddAsync(objAccessory, GenericToken).ConfigureAwait(false);
+                                    }
+                                }
+
+                                // Show appropriate message for cross-platform movement
+                                bool blnSourceIsVehicle = objAccessory.Parent?.Parent?.Parent is Vehicle;
+                                bool blnTargetIsVehicle = objTargetWeapon?.Parent?.Parent is Vehicle || objTargetAccessory?.Parent?.Parent?.Parent is Vehicle;
+
+                                if (blnSourceIsVehicle && !blnTargetIsVehicle)
+                                {
+                                    await Program.ShowScrollableMessageBoxAsync(
+                                        this,
+                                        await LanguageManager.GetStringAsync("Message_AccessoryMovedToCharacter", token: GenericToken).ConfigureAwait(false),
+                                        await LanguageManager.GetStringAsync("MessageTitle_AttachAccessory", token: GenericToken).ConfigureAwait(false),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken).ConfigureAwait(false);
+                                }
+                                else if (!blnSourceIsVehicle && blnTargetIsVehicle)
+                                {
+                                    await Program.ShowScrollableMessageBoxAsync(
+                                        this,
+                                        await LanguageManager.GetStringAsync("Message_AccessoryMovedToVehicle", token: GenericToken).ConfigureAwait(false),
+                                        await LanguageManager.GetStringAsync("MessageTitle_AttachAccessory", token: GenericToken).ConfigureAwait(false),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken).ConfigureAwait(false);
+                                }
+
+                                // Refresh only the detached accessories node to avoid debug errors
+                                await RefreshDetachedAccessoriesNode(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear, GenericToken).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async void tsWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
             try
@@ -16078,20 +16574,7 @@ namespace Chummer
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdSlotsText))
                             {
-                                sbdSlotsText.Append(objSelectedAccessory.Mount);
-                                if (sbdSlotsText.Length > 0
-                                    && !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
-                                                                       StringComparison.OrdinalIgnoreCase))
-                                {
-                                    sbdSlotsText.Clear();
-                                    foreach (string strMount in objSelectedAccessory.Mount.SplitNoAlloc(
-                                                 '/', StringSplitOptions.RemoveEmptyEntries))
-                                        sbdSlotsText
-                                            .Append(await LanguageManager
-                                                          .GetStringAsync("String_Mount" + strMount, token: token)
-                                                          .ConfigureAwait(false), '/');
-                                    --sbdSlotsText.Length;
-                                }
+                                sbdSlotsText.Append(await objSelectedAccessory.DisplayMountAsync(GlobalSettings.Language, token).ConfigureAwait(false));
 
                                 token.ThrowIfCancellationRequested();
                                 if (!string.IsNullOrEmpty(objSelectedAccessory.ExtraMount)
@@ -19754,15 +20237,7 @@ namespace Chummer
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                         out StringBuilder sbdMount))
                             {
-                                foreach (string strCurrentMount in objAccessory.Mount.SplitNoAlloc(
-                                             '/', StringSplitOptions.RemoveEmptyEntries))
-                                    sbdMount.Append(await LanguageManager
-                                                          .GetStringAsync(
-                                                              "String_Mount" + strCurrentMount, token: token)
-                                                          .ConfigureAwait(false), '/');
-                                // Remove the trailing /
-                                if (sbdMount.Length > 0)
-                                    --sbdMount.Length;
+                                sbdMount.Append(await objAccessory.DisplayMountAsync(GlobalSettings.Language, token).ConfigureAwait(false));
                                 if (!string.IsNullOrEmpty(objAccessory.ExtraMount) && objAccessory.ExtraMount != "None")
                                 {
                                     bool boolHaveAddedItem = false;

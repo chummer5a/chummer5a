@@ -280,6 +280,8 @@ namespace Chummer
             this.cmsWeaponAccessory = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsWeaponAccessoryAddGear = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsWeaponAccessoryNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsWeaponAccessoryDetach = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsWeaponAccessoryAttach = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsBioware = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsBiowareNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsBiowareReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
@@ -305,6 +307,8 @@ namespace Chummer
             this.tsVehicleLocationAddVehicle = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsVehicleRenameLocation = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsVehicleWeaponAccessory = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsVehicleWeaponAccessoryDetach = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleWeaponAccessoryAttach = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsVehicleWeaponAccessoryAddGear = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsVehicleWeaponAccessoryNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsVehicleWeaponAccessoryGear = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -3944,9 +3948,11 @@ namespace Chummer
             // 
             this.cmsWeaponAccessory.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsWeaponAccessoryAddGear,
-            this.tsWeaponAccessoryNotes});
+            this.tsWeaponAccessoryNotes,
+            this.tsWeaponAccessoryDetach,
+            this.tsWeaponAccessoryAttach});
             this.cmsWeaponAccessory.Name = "cmsWeaponAccessory";
-            this.cmsWeaponAccessory.Size = new System.Drawing.Size(124, 48);
+            this.cmsWeaponAccessory.Size = new System.Drawing.Size(124, 92);
             // 
             // tsWeaponAccessoryAddGear
             // 
@@ -3977,6 +3983,36 @@ namespace Chummer
             this.tsWeaponAccessoryNotes.Tag = "Menu_Notes";
             this.tsWeaponAccessoryNotes.Text = "&Notes";
             this.tsWeaponAccessoryNotes.Click += new System.EventHandler(this.tsWeaponNotes_Click);
+            // 
+            // tsWeaponAccessoryDetach
+            // 
+            this.tsWeaponAccessoryDetach.Image = global::Chummer.Properties.Resources.link_delete_16;
+            this.tsWeaponAccessoryDetach.ImageDpi120 = global::Chummer.Properties.Resources.link_delete_20;
+            this.tsWeaponAccessoryDetach.ImageDpi144 = global::Chummer.Properties.Resources.link_delete_24;
+            this.tsWeaponAccessoryDetach.ImageDpi192 = global::Chummer.Properties.Resources.link_delete_32;
+            this.tsWeaponAccessoryDetach.ImageDpi288 = global::Chummer.Properties.Resources.link_delete_48;
+            this.tsWeaponAccessoryDetach.ImageDpi384 = global::Chummer.Properties.Resources.link_delete_64;
+            this.tsWeaponAccessoryDetach.ImageDpi96 = global::Chummer.Properties.Resources.link_delete_16;
+            this.tsWeaponAccessoryDetach.Name = "tsWeaponAccessoryDetach";
+            this.tsWeaponAccessoryDetach.Size = new System.Drawing.Size(123, 22);
+            this.tsWeaponAccessoryDetach.Tag = "Menu_DetachAccessory";
+            this.tsWeaponAccessoryDetach.Text = "&Detach Accessory";
+            this.tsWeaponAccessoryDetach.Click += new System.EventHandler(this.tsWeaponAccessoryDetach_Click);
+            // 
+            // tsWeaponAccessoryAttach
+            // 
+            this.tsWeaponAccessoryAttach.Image = global::Chummer.Properties.Resources.link_add_16;
+            this.tsWeaponAccessoryAttach.ImageDpi120 = global::Chummer.Properties.Resources.link_add_20;
+            this.tsWeaponAccessoryAttach.ImageDpi144 = global::Chummer.Properties.Resources.link_add_24;
+            this.tsWeaponAccessoryAttach.ImageDpi192 = global::Chummer.Properties.Resources.link_add_32;
+            this.tsWeaponAccessoryAttach.ImageDpi288 = global::Chummer.Properties.Resources.link_add_48;
+            this.tsWeaponAccessoryAttach.ImageDpi384 = global::Chummer.Properties.Resources.link_add_64;
+            this.tsWeaponAccessoryAttach.ImageDpi96 = global::Chummer.Properties.Resources.link_add_16;
+            this.tsWeaponAccessoryAttach.Name = "tsWeaponAccessoryAttach";
+            this.tsWeaponAccessoryAttach.Size = new System.Drawing.Size(123, 22);
+            this.tsWeaponAccessoryAttach.Tag = "Menu_AttachAccessory";
+            this.tsWeaponAccessoryAttach.Text = "&Attach Accessory";
+            this.tsWeaponAccessoryAttach.Click += new System.EventHandler(this.tsWeaponAccessoryAttach_Click);
             // 
             // cmsBioware
             // 
@@ -4285,10 +4321,42 @@ namespace Chummer
             // cmsVehicleWeaponAccessory
             // 
             this.cmsVehicleWeaponAccessory.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsVehicleWeaponAccessoryDetach,
+            this.tsVehicleWeaponAccessoryAttach,
             this.tsVehicleWeaponAccessoryAddGear,
             this.tsVehicleWeaponAccessoryNotes});
             this.cmsVehicleWeaponAccessory.Name = "cmsWeaponAccessory";
-            this.cmsVehicleWeaponAccessory.Size = new System.Drawing.Size(124, 48);
+            this.cmsVehicleWeaponAccessory.Size = new System.Drawing.Size(124, 92);
+            // 
+            // tsVehicleWeaponAccessoryDetach
+            // 
+            this.tsVehicleWeaponAccessoryDetach.Image = global::Chummer.Properties.Resources.link_delete_16;
+            this.tsVehicleWeaponAccessoryDetach.ImageDpi120 = global::Chummer.Properties.Resources.link_delete_20;
+            this.tsVehicleWeaponAccessoryDetach.ImageDpi144 = global::Chummer.Properties.Resources.link_delete_24;
+            this.tsVehicleWeaponAccessoryDetach.ImageDpi192 = global::Chummer.Properties.Resources.link_delete_32;
+            this.tsVehicleWeaponAccessoryDetach.ImageDpi288 = global::Chummer.Properties.Resources.link_delete_48;
+            this.tsVehicleWeaponAccessoryDetach.ImageDpi384 = global::Chummer.Properties.Resources.link_delete_64;
+            this.tsVehicleWeaponAccessoryDetach.ImageDpi96 = global::Chummer.Properties.Resources.link_delete_16;
+            this.tsVehicleWeaponAccessoryDetach.Name = "tsVehicleWeaponAccessoryDetach";
+            this.tsVehicleWeaponAccessoryDetach.Size = new System.Drawing.Size(123, 22);
+            this.tsVehicleWeaponAccessoryDetach.Tag = "Menu_DetachAccessory";
+            this.tsVehicleWeaponAccessoryDetach.Text = "&Detach Accessory";
+            this.tsVehicleWeaponAccessoryDetach.Click += new System.EventHandler(this.tsVehicleWeaponAccessoryDetach_Click);
+            // 
+            // tsVehicleWeaponAccessoryAttach
+            // 
+            this.tsVehicleWeaponAccessoryAttach.Image = global::Chummer.Properties.Resources.link_add_16;
+            this.tsVehicleWeaponAccessoryAttach.ImageDpi120 = global::Chummer.Properties.Resources.link_add_20;
+            this.tsVehicleWeaponAccessoryAttach.ImageDpi144 = global::Chummer.Properties.Resources.link_add_24;
+            this.tsVehicleWeaponAccessoryAttach.ImageDpi192 = global::Chummer.Properties.Resources.link_add_32;
+            this.tsVehicleWeaponAccessoryAttach.ImageDpi288 = global::Chummer.Properties.Resources.link_add_48;
+            this.tsVehicleWeaponAccessoryAttach.ImageDpi384 = global::Chummer.Properties.Resources.link_add_64;
+            this.tsVehicleWeaponAccessoryAttach.ImageDpi96 = global::Chummer.Properties.Resources.link_add_16;
+            this.tsVehicleWeaponAccessoryAttach.Name = "tsVehicleWeaponAccessoryAttach";
+            this.tsVehicleWeaponAccessoryAttach.Size = new System.Drawing.Size(123, 22);
+            this.tsVehicleWeaponAccessoryAttach.Tag = "Menu_AttachAccessory";
+            this.tsVehicleWeaponAccessoryAttach.Text = "&Attach to Another Weapon";
+            this.tsVehicleWeaponAccessoryAttach.Click += new System.EventHandler(this.tsVehicleWeaponAccessoryAttach_Click);
             // 
             // tsVehicleWeaponAccessoryAddGear
             // 
@@ -17261,6 +17329,8 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsLifestyleNotes;
         private DpiFriendlyToolStripMenuItem tsWeaponAccessoryAddGear;
         private DpiFriendlyToolStripMenuItem tsWeaponAccessoryNotes;
+        private DpiFriendlyToolStripMenuItem tsWeaponAccessoryDetach;
+        private DpiFriendlyToolStripMenuItem tsWeaponAccessoryAttach;
         private DpiFriendlyToolStripMenuItem tsBiowareNotes;
         private DpiFriendlyToolStripMenuItem tsEditAdvancedLifestyle;
         private DpiFriendlyToolStripMenuItem tsAdvancedLifestyleNotes;
@@ -17274,6 +17344,8 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsAIProgramNotes;
         private DpiFriendlyToolStripMenuItem tsArmorLocationAddArmor;
         private DpiFriendlyToolStripMenuItem tsArmorRenameLocation;
+        private DpiFriendlyToolStripMenuItem tsVehicleWeaponAccessoryDetach;
+        private DpiFriendlyToolStripMenuItem tsVehicleWeaponAccessoryAttach;
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponAccessoryAddGear;
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponAccessoryNotes;
         private DpiFriendlyToolStripMenuItem tsWeaponLocationAddWeapon;
