@@ -227,6 +227,7 @@ Data Changes:
 - Added xpath filter using the new weaponfilter property for the Micro weapon accessory mount to only show Melee weapons that have Reach 0.
 - Added nuyen and essence filters in the equipment selection screen to allow filtering by maximum essence cost and by maximum nuyen cost.
 - Refactored life modules that grant SINs to use the new qualitylevel improvement type. Existing characters with life modules that grant SINs will need to reapply their improvements to see any changes and may find it preferable to remove and re-add the modules.
+- Fixed the additional optional powers for infected from Dark Terrors not having the correct filters.
 
 Fixes implemented by BM123499
 
