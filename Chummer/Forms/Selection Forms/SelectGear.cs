@@ -1323,7 +1323,7 @@ namespace Chummer
                         continue;
                     }
 
-                    if (!await objXmlGear.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
+                    if (!await objXmlGear.RequirementsMetAsync(_objCharacter, _objGearParent, token: token).ConfigureAwait(false))
                         continue;
 
                     if (!blnDoUIUpdate)

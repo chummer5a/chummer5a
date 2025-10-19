@@ -381,6 +381,8 @@ Checks for the presence of a given piece of named Gear on the current character.
 
 **maxrating** The gear must have a rating that is less than or equal to this value
 
+**sameparent** Boolean. If present, requires that the gear be attached to the same piece of gear as the intended parent. If specified and there is no parent will return false.
+
 #### Elements
 None.
 

@@ -1831,6 +1831,21 @@ namespace Chummer
                         }
                     }
 
+                    if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
+                    {
+                        return new ValueTuple<bool, string>(objParent is IHasGear objGearParent && (blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? objGearParent.GearChildren.Any(
+                                    x => x.Name == strNodeInnerText
+                                         || string.Equals(x.SourceIDString, strNodeInnerText,
+                                             StringComparison.OrdinalIgnoreCase), token)
+                                : await objGearParent.GearChildren.AnyAsync(
+                                    x => x.Name == strNodeInnerText
+                                         || string.Equals(x.SourceIDString, strNodeInnerText,
+                                             StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false)),
+                            strName);
+                    }
+
                     if (objGear != null)
                     {
                         if (blnShowMessage)
@@ -3682,7 +3697,7 @@ namespace Chummer
                 }
                 case "accessory" when objParent is Weapon objWeapon:
                 {
-                    bool blnReturn = blnSync
+                        bool blnReturn = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objWeapon.WeaponAccessories.Any(x =>
                                 x.Name == strNodeInnerText
