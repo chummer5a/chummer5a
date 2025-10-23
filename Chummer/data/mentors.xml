@@ -1933,7 +1933,7 @@
           <name>Combat Active</name>
           <val>-1</val>
           <min>3</min>
-          <condition>career</condition>
+          <condition>/character/created</condition>
         </skillcategorykarmacost>
       </bonus>
       <choices>

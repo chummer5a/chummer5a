@@ -5220,8 +5220,9 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
+            string strCondition = bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty;
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
-                Improvement.ImprovementType.SpellCategory, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                Improvement.ImprovementType.SpellCategory, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), strCondition: strCondition, token: token).ConfigureAwait(false);
         }
 
         // Check for dicepool bonuses for a specific Spell.

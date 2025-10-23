@@ -4961,8 +4961,9 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
+            string strCondition = bonusNode["condition"]?.InnerTextViaPool() ?? string.Empty;
             CreateImprovement(bonusNode["name"]?.InnerTextViaPool(), _objImprovementSource, SourceName,
-                Improvement.ImprovementType.SpellCategory, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["val"]?.InnerTextViaPool(), _intRating));
+                Improvement.ImprovementType.SpellCategory, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["val"]?.InnerTextViaPool(), _intRating), strCondition: strCondition);
         }
 
         // Check for dicepool bonuses for a specific Spell.

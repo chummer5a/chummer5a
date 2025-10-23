@@ -2918,17 +2918,24 @@ namespace Chummer.Backend.Skills
                             decReturn += objImprovement.Value;
                         else
                         {
-                            decimal decLoopMaxValue = decMaxConditionalValue;
-                            if (objMaxConditionalSpecialization != null)
-                                decLoopMaxValue += objMaxConditionalSpecialization.SpecializationBonus;
-                            decimal decLoop = objImprovement.Value;
-                            SkillSpecialization objLoopSpec = GetSpecialization(objImprovement.Condition);
-                            if (objLoopSpec != null)
-                                decLoop += objLoopSpec.SpecializationBonus;
-                            if (decLoop > decLoopMaxValue)
+                            // Use the generic condition evaluator for both legacy and new conditions
+                            if (ImprovementManager.EvaluateImprovementCondition(objImprovement, this))
                             {
-                                decMaxConditionalValue = objImprovement.Value;
-                                objMaxConditionalSpecialization = objLoopSpec;
+                                decimal decLoopMaxValue = decMaxConditionalValue;
+                                if (objMaxConditionalSpecialization != null)
+                                    decLoopMaxValue += objMaxConditionalSpecialization.SpecializationBonus;
+                                decimal decLoop = objImprovement.Value;
+                                
+                                // Handle legacy specialization conditions
+                                SkillSpecialization objLoopSpec = GetSpecialization(objImprovement.Condition);
+                                if (objLoopSpec != null)
+                                    decLoop += objLoopSpec.SpecializationBonus;
+                                
+                                if (decLoop > decLoopMaxValue)
+                                {
+                                    decMaxConditionalValue = objImprovement.Value;
+                                    objMaxConditionalSpecialization = objLoopSpec;
+                                }
                             }
                         }
                     }
@@ -2963,17 +2970,24 @@ namespace Chummer.Backend.Skills
                             decReturn += objImprovement.Value;
                         else
                         {
-                            decimal decLoopMaxValue = decMaxConditionalValue;
-                            if (objMaxConditionalSpecialization != null)
-                                decLoopMaxValue += await objMaxConditionalSpecialization.GetSpecializationBonusAsync(token).ConfigureAwait(false);
-                            decimal decLoop = objImprovement.Value;
-                            SkillSpecialization objLoopSpec = await GetSpecializationAsync(objImprovement.Condition, token).ConfigureAwait(false);
-                            if (objLoopSpec != null)
-                                decLoop += await objLoopSpec.GetSpecializationBonusAsync(token).ConfigureAwait(false);
-                            if (decLoop > decLoopMaxValue)
+                            // Use the generic condition evaluator for both legacy and new conditions
+                            if (await ImprovementManager.EvaluateImprovementConditionAsync(objImprovement, this, token).ConfigureAwait(false))
                             {
-                                decMaxConditionalValue = objImprovement.Value;
-                                objMaxConditionalSpecialization = objLoopSpec;
+                                decimal decLoopMaxValue = decMaxConditionalValue;
+                                if (objMaxConditionalSpecialization != null)
+                                    decLoopMaxValue += await objMaxConditionalSpecialization.GetSpecializationBonusAsync(token).ConfigureAwait(false);
+                                decimal decLoop = objImprovement.Value;
+                                
+                                // Handle legacy specialization conditions
+                                SkillSpecialization objLoopSpec = await GetSpecializationAsync(objImprovement.Condition, token).ConfigureAwait(false);
+                                if (objLoopSpec != null)
+                                    decLoop += await objLoopSpec.GetSpecializationBonusAsync(token).ConfigureAwait(false);
+                                
+                                if (decLoop > decLoopMaxValue)
+                                {
+                                    decMaxConditionalValue = objImprovement.Value;
+                                    objMaxConditionalSpecialization = objLoopSpec;
+                                }
                             }
                         }
                     }

@@ -2674,6 +2674,19 @@ namespace Chummer
                         case Improvement.ImprovementType.SpellCategory:
                             if (objImprovement.ImprovedName == Category)
                             {
+                                // Check if this improvement has a condition that should be evaluated
+                                if (!string.IsNullOrEmpty(objImprovement.Condition))
+                                {
+                                    // Evaluate the condition using the generic improvement condition evaluator
+                                    // Supports complex conditions like:
+                                    // - not(@alchemical) - exclude alchemical spells
+                                    // - @range = Touch - only apply to touch spells
+                                    // - @name != "Specific Spell" - exclude specific spells
+                                    // - @alchemical = false and @range = Touch - multiple conditions
+                                    if (!await ImprovementManager.EvaluateImprovementConditionAsync(objImprovement, this, token).ConfigureAwait(false))
+                                        break;
+                                }
+                                
                                 // SR5 318: Regardless of the number of bonded foci you have,
                                 // only one focus may add its Force to a dicepool for any given test.
                                 // We need to do some checking to make sure this is the most powerful focus before we add it in
