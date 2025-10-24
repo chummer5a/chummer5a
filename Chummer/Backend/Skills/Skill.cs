@@ -654,7 +654,7 @@ namespace Chummer.Backend.Skills
                         {
                             foreach (XmlNode xmlSpec in xmlSpecList)
                             {
-                                SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
+                                SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, objLoadingSkill, xmlSpec);
                                 if (objSpec != null)
                                 {
                                     try
@@ -908,7 +908,7 @@ namespace Chummer.Backend.Skills
                         {
                             foreach (XmlNode xmlSpec in xmlSpecList)
                             {
-                                SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
+                                SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, objLoadingSkill, xmlSpec);
                                 if (objSpec != null)
                                 {
                                     try
@@ -1055,7 +1055,7 @@ namespace Chummer.Backend.Skills
                     {
                         foreach (XmlNode xmlSpec in xmlSpecList)
                         {
-                            SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
+                            SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, objSkill, xmlSpec);
                             if (objSpec != null)
                             {
                                 try
@@ -1190,7 +1190,7 @@ namespace Chummer.Backend.Skills
                     int intLastPlus = strSpecializationName.LastIndexOf('+');
                     if (intLastPlus > strSpecializationName.Length)
                         strSpecializationName = strSpecializationName.Substring(0, intLastPlus - 1);
-                    SkillSpecialization objSpec = new SkillSpecialization(objCharacter, strSpecializationName);
+                    SkillSpecialization objSpec = new SkillSpecialization(objCharacter, objSkill, strSpecializationName);
                     try
                     {
                         objSkill.Specializations.Add(objSpec);
@@ -5031,7 +5031,7 @@ namespace Chummer.Backend.Skills
                 using (Specializations.LockObject.EnterWriteLock())
                 {
                     int intIndexToReplace = Specializations.FindIndex(x => !x.Free);
-                    SkillSpecialization objNewSpec = new SkillSpecialization(CharacterObject, value);
+                    SkillSpecialization objNewSpec = new SkillSpecialization(CharacterObject, this, value);
                     try
                     {
                         if (intIndexToReplace < 0)
@@ -5112,7 +5112,7 @@ namespace Chummer.Backend.Skills
                 {
                     token.ThrowIfCancellationRequested();
                     int intIndexToReplace = await lstSpecs.FindIndexAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
-                    SkillSpecialization objNewSpec = new SkillSpecialization(CharacterObject, value);
+                    SkillSpecialization objNewSpec = new SkillSpecialization(CharacterObject, this, value);
                     try
                     {
                         if (intIndexToReplace < 0)
@@ -7867,7 +7867,9 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (_intSkipSpecializationRefresh > 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            
+            // Use upgradeable read lock like other collection change handlers in the codebase
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -7885,46 +7887,21 @@ namespace Chummer.Backend.Skills
                         _strDictionaryKey = null;
                     switch (e.Action)
                     {
-                        case NotifyCollectionChangedAction.Add:
-                            foreach (SkillSpecialization objSkillSpecialization in e.NewItems)
-                                objSkillSpecialization.Parent = this;
-                            break;
-
                         case NotifyCollectionChangedAction.Remove:
-                            foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
-                            {
-                                if (objSkillSpecialization.Parent == this)
-                                    objSkillSpecialization.Parent = null;
-                                await objSkillSpecialization.DisposeAsync().ConfigureAwait(false);
-                            }
-
-                            break;
-
                         case NotifyCollectionChangedAction.Replace:
                             foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
                             {
-                                if (objSkillSpecialization.Parent == this)
-                                    objSkillSpecialization.Parent = null;
                                 await objSkillSpecialization.DisposeAsync().ConfigureAwait(false);
                             }
-
-                            foreach (SkillSpecialization objSkillSpecialization in e.NewItems)
-                                objSkillSpecialization.Parent = this;
-                            break;
-
-                        case NotifyCollectionChangedAction.Reset:
-                            await Specializations
-                                .ForEachAsync(objSkillSpecialization => objSkillSpecialization.Parent = this,
-                                    token: token).ConfigureAwait(false);
                             break;
                     }
+
+                    await OnPropertyChangedAsync(nameof(Specializations), token).ConfigureAwait(false);
                 }
                 finally
                 {
                     Interlocked.Decrement(ref _intSkipSpecializationRefresh);
                 }
-
-                await OnPropertyChangedAsync(nameof(Specializations), token).ConfigureAwait(false);
             }
             finally
             {
@@ -7938,7 +7915,7 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (_intSkipSpecializationRefresh > 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -7953,8 +7930,6 @@ namespace Chummer.Backend.Skills
                 {
                     foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
                     {
-                        if (objSkillSpecialization.Parent == this)
-                            objSkillSpecialization.Parent = null;
                         await objSkillSpecialization.DisposeAsync().ConfigureAwait(false);
                     }
                 }
@@ -8581,7 +8556,7 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                SkillSpecialization nspec = new SkillSpecialization(CharacterObject, strName);
+                SkillSpecialization nspec = new SkillSpecialization(CharacterObject, this, strName);
                 try
                 {
                     bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);

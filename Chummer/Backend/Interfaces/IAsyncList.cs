@@ -49,7 +49,10 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             IAsyncDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            {
+                // Use EnterReadLockWithMatchingParentLockAsync to avoid parent lock acquisition issues
+                objLocker = await objHasLock.LockObject.EnterReadLockWithMatchingParentLockAsync(token).ConfigureAwait(false);
+            }
             else
                 objHasLock = null;
             try
@@ -105,19 +108,19 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IAsyncDisposable objLocker2 = objHasLock != null
-                    ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
-                    : null;
-                try
+                // Release read lock before acquiring write lock to avoid deadlocks
+                if (objLocker != null)
                 {
-                    token.ThrowIfCancellationRequested();
-                    await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    objLocker = null;
                 }
-                finally
-                {
-                    if (objLocker2 != null)
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
+
+                // Acquire write lock for insertion
+                if (objHasLock != null)
+                    objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+
+                token.ThrowIfCancellationRequested();
+                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
             }
             finally
             {
@@ -136,7 +139,10 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(comparer));
             IAsyncDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            {
+                // Use EnterReadLockWithMatchingParentLockAsync to avoid parent lock acquisition issues
+                objLocker = await objHasLock.LockObject.EnterReadLockWithMatchingParentLockAsync(token).ConfigureAwait(false);
+            }
             else
                 objHasLock = null;
             try
@@ -192,19 +198,19 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IAsyncDisposable objLocker2 = objHasLock != null
-                    ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
-                    : null;
-                try
+                // Release read lock before acquiring write lock to avoid deadlocks
+                if (objLocker != null)
                 {
-                    token.ThrowIfCancellationRequested();
-                    await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    objLocker = null;
                 }
-                finally
-                {
-                    if (objLocker2 != null)
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
+
+                // Acquire write lock for insertion
+                if (objHasLock != null)
+                    objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+
+                token.ThrowIfCancellationRequested();
+                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
             }
             finally
             {
@@ -223,7 +229,10 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(funcComparison));
             IAsyncDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            {
+                // Use EnterReadLockWithMatchingParentLockAsync to avoid parent lock acquisition issues
+                objLocker = await objHasLock.LockObject.EnterReadLockWithMatchingParentLockAsync(token).ConfigureAwait(false);
+            }
             else
                 objHasLock = null;
             try
@@ -279,19 +288,19 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IAsyncDisposable objLocker2 = objHasLock != null
-                    ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
-                    : null;
-                try
+                // Release read lock before acquiring write lock to avoid deadlocks
+                if (objLocker != null)
                 {
-                    token.ThrowIfCancellationRequested();
-                    await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    objLocker = null;
                 }
-                finally
-                {
-                    if (objLocker2 != null)
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
+
+                // Acquire write lock for insertion
+                if (objHasLock != null)
+                    objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+
+                token.ThrowIfCancellationRequested();
+                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
             }
             finally
             {
@@ -429,7 +438,10 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             IAsyncDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            {
+                // Use EnterReadLockWithMatchingParentLockAsync to avoid parent lock acquisition issues
+                objLocker = await objHasLock.LockObject.EnterReadLockWithMatchingParentLockAsync(token).ConfigureAwait(false);
+            }
             else
                 objHasLock = null;
             try
@@ -485,19 +497,19 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IAsyncDisposable objLocker2 = objHasLock != null
-                    ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
-                    : null;
-                try
+                // Release read lock before acquiring write lock to avoid deadlocks
+                if (objLocker != null)
                 {
-                    token.ThrowIfCancellationRequested();
-                    await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    objLocker = null;
                 }
-                finally
-                {
-                    if (objLocker2 != null)
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
+
+                // Acquire write lock for insertion
+                if (objHasLock != null)
+                    objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+
+                token.ThrowIfCancellationRequested();
+                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
             }
             finally
             {
@@ -516,7 +528,10 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(comparer));
             IAsyncDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            {
+                // Use EnterReadLockWithMatchingParentLockAsync to avoid parent lock acquisition issues
+                objLocker = await objHasLock.LockObject.EnterReadLockWithMatchingParentLockAsync(token).ConfigureAwait(false);
+            }
             else
                 objHasLock = null;
             try
@@ -572,19 +587,19 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IAsyncDisposable objLocker2 = objHasLock != null
-                    ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
-                    : null;
-                try
+                // Release read lock before acquiring write lock to avoid deadlocks
+                if (objLocker != null)
                 {
-                    token.ThrowIfCancellationRequested();
-                    await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    objLocker = null;
                 }
-                finally
-                {
-                    if (objLocker2 != null)
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
+
+                // Acquire write lock for insertion
+                if (objHasLock != null)
+                    objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+
+                token.ThrowIfCancellationRequested();
+                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
             }
             finally
             {
@@ -603,7 +618,10 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(funcComparison));
             IAsyncDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            {
+                // Use EnterReadLockWithMatchingParentLockAsync to avoid parent lock acquisition issues
+                objLocker = await objHasLock.LockObject.EnterReadLockWithMatchingParentLockAsync(token).ConfigureAwait(false);
+            }
             else
                 objHasLock = null;
             try
@@ -658,20 +676,8 @@ namespace Chummer
                     else
                         intIntervalEnd = intTargetIndex - 1;
                 }
-
-                IAsyncDisposable objLocker2 = objHasLock != null
-                    ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
-                    : null;
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    if (objLocker2 != null)
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
+                token.ThrowIfCancellationRequested();
+                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
             }
             finally
             {
@@ -690,7 +696,10 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(funcComparison));
             IAsyncDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            {
+                // Use EnterReadLockWithMatchingParentLockAsync to avoid parent lock acquisition issues
+                objLocker = await objHasLock.LockObject.EnterReadLockWithMatchingParentLockAsync(token).ConfigureAwait(false);
+            }
             else
                 objHasLock = null;
             try
@@ -746,19 +755,19 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IAsyncDisposable objLocker2 = objHasLock != null
-                    ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
-                    : null;
-                try
+                // Release read lock before acquiring write lock to avoid deadlocks
+                if (objLocker != null)
                 {
-                    token.ThrowIfCancellationRequested();
-                    await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    objLocker = null;
                 }
-                finally
-                {
-                    if (objLocker2 != null)
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
+
+                // Acquire write lock for insertion
+                if (objHasLock != null)
+                    objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+
+                token.ThrowIfCancellationRequested();
+                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
             }
             finally
             {
@@ -777,7 +786,10 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(funcComparison));
             IAsyncDisposable objLocker = null;
             if (lstCollection is IHasLockObject objHasLock)
-                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            {
+                // Use EnterReadLockWithMatchingParentLockAsync to avoid parent lock acquisition issues
+                objLocker = await objHasLock.LockObject.EnterReadLockWithMatchingParentLockAsync(token).ConfigureAwait(false);
+            }
             else
                 objHasLock = null;
             try
@@ -833,19 +845,19 @@ namespace Chummer
                         intIntervalEnd = intTargetIndex - 1;
                 }
 
-                IAsyncDisposable objLocker2 = objHasLock != null
-                    ? await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
-                    : null;
-                try
+                // Release read lock before acquiring write lock to avoid deadlocks
+                if (objLocker != null)
                 {
-                    token.ThrowIfCancellationRequested();
-                    await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    objLocker = null;
                 }
-                finally
-                {
-                    if (objLocker2 != null)
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
+
+                // Acquire write lock for insertion
+                if (objHasLock != null)
+                    objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+
+                token.ThrowIfCancellationRequested();
+                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
             }
             finally
             {
