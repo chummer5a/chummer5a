@@ -613,6 +613,69 @@ Contents
 -   [Limitations](#Limitations_83)
 -   [Example](#Example_83)
 
+[weaponcategorydice](#weaponcategorydice)
+
+-   [Attributes](#Attributes_84)
+-   [Elements](#Elements_84)
+-   [Limitations](#Limitations_84)
+-   [Example](#Example_84)
+
+[weaponcategoryap](#weaponcategoryap)
+
+-   [Attributes](#Attributes_85)
+-   [Elements](#Elements_85)
+-   [Limitations](#Limitations_85)
+-   [Example](#Example_85)
+
+[weaponcategoryaccuracy](#weaponcategoryaccuracy)
+
+-   [Attributes](#Attributes_86)
+-   [Elements](#Elements_86)
+-   [Limitations](#Limitations_86)
+-   [Example](#Example_86)
+
+[weaponcategoryreach](#weaponcategoryreach)
+
+-   [Attributes](#Attributes_87)
+-   [Elements](#Elements_87)
+-   [Limitations](#Limitations_87)
+-   [Example](#Example_87)
+
+[weaponspecificdice](#weaponspecificdice)
+
+-   [Attributes](#Attributes_88)
+-   [Elements](#Elements_88)
+-   [Limitations](#Limitations_88)
+-   [Example](#Example_88)
+
+[weaponspecificdv](#weaponspecificdv)
+
+-   [Attributes](#Attributes_89)
+-   [Elements](#Elements_89)
+-   [Limitations](#Limitations_89)
+-   [Example](#Example_89)
+
+[weaponspecificap](#weaponspecificap)
+
+-   [Attributes](#Attributes_90)
+-   [Elements](#Elements_90)
+-   [Limitations](#Limitations_90)
+-   [Example](#Example_90)
+
+[weaponspecificaccuracy](#weaponspecificaccuracy)
+
+-   [Attributes](#Attributes_91)
+-   [Elements](#Elements_91)
+-   [Limitations](#Limitations_91)
+-   [Example](#Example_91)
+
+[weaponspecificrange](#weaponspecificrange)
+
+-   [Attributes](#Attributes_92)
+-   [Elements](#Elements_92)
+-   [Limitations](#Limitations_92)
+-   [Example](#Example_92)
+
 [Example Interaction](#interaction)
 
 * * * * *
@@ -3169,6 +3232,10 @@ None.
 
 **bonus** Improves the Damage of all Weapons in the Category by the specified amount.
 
+**selectskill** Prompts the user to select a specific skill, then applies the bonus to Weapons that use that skill.
+
+**selectcategory** Prompts the user to select from a list of weapon categories, then applies the bonus to weapons in the selected category.
+
 ##### Limitations
 
 None.
@@ -3183,6 +3250,436 @@ The following example adjusts the Damage a character does with Clubs by 1.
 <name>Clubs</name>
 <bonus>1</bonus>
 </weaponcategorydv>
+</bonus>
+```
+
+The following example prompts the user to select a weapon category and applies a bonus of 2 to the selected category.
+
+```XML
+<bonus>
+<weaponcategorydv>
+<selectcategory>
+<category>Clubs</category>
+<category>Blades</category>
+<value>2</value>
+</selectcategory>
+</weaponcategorydv>
+</bonus>
+```
+
+The following example prompts the user to select a skill and applies a bonus of 1 to weapons that use that skill.
+
+```XML
+<bonus>
+<weaponcategorydv>
+<selectskill>
+<name>Blades</name>
+<bonus>1</bonus>
+</selectskill>
+</weaponcategorydv>
+</bonus>
+```
+
+### weaponcategorydice
+
+Adjusts the Dice Pool of all weapons in a Category by the specified amount.
+
+##### Attributes
+
+None.
+
+##### Elements
+
+**name** The Weapon Category that will be affected.
+
+**bonus** Improves the Dice Pool of all Weapons in the Category by the specified amount.
+
+**selectskill** Prompts the user to select a specific skill, then applies the bonus to Weapons that use that skill.
+
+**selectcategory** Prompts the user to select from a list of weapon categories, then applies the bonus to weapons in the selected category.
+
+##### Limitations
+
+None.
+
+##### Example
+
+The following example adjusts the Dice Pool a character has with Clubs by 2. 
+
+```XML
+<bonus>
+<weaponcategorydice>
+<name>Clubs</name>
+<bonus>2</bonus>
+</weaponcategorydice>
+</bonus>
+```
+
+The following example prompts the user to select a weapon category and applies a dice pool bonus of 1 to the selected category.
+
+```XML
+<bonus>
+<weaponcategorydice>
+<selectcategory>
+<category>Clubs</category>
+<category>Blades</category>
+<value>1</value>
+</selectcategory>
+</weaponcategorydice>
+</bonus>
+```
+
+The following example prompts the user to select a skill and applies a dice pool bonus of 2 to weapons that use that skill.
+
+```XML
+<bonus>
+<weaponcategorydice>
+<selectskill>
+<name>Pistols</name>
+<bonus>2</bonus>
+</selectskill>
+</weaponcategorydice>
+</bonus>
+```
+
+### weaponcategoryap
+
+Adjusts the Armor Penetration of all weapons in a Category by the specified amount.
+
+##### Attributes
+
+None.
+
+##### Elements
+
+**name** The Weapon Category that will be affected.
+
+**bonus** Improves the Armor Penetration of all Weapons in the Category by the specified amount.
+
+**selectskill** Prompts the user to select a specific skill, then applies the bonus to Weapons that use that skill.
+
+**selectcategory** Prompts the user to select from a list of weapon categories, then applies the bonus to weapons in the selected category.
+
+##### Limitations
+
+None.
+
+##### Example
+
+The following example adjusts the Armor Penetration a character has with Clubs by -1. 
+
+```XML
+<bonus>
+<weaponcategoryap>
+<name>Clubs</name>
+<bonus>-1</bonus>
+</weaponcategoryap>
+</bonus>
+```
+
+The following example prompts the user to select a weapon category and applies an AP bonus of -2 to the selected category.
+
+```XML
+<bonus>
+<weaponcategoryap>
+<selectcategory>
+<category>Clubs</category>
+<category>Blades</category>
+<value>-2</value>
+</selectcategory>
+</weaponcategoryap>
+</bonus>
+```
+
+The following example prompts the user to select a skill and applies an AP bonus of -1 to weapons that use that skill.
+
+```XML
+<bonus>
+<weaponcategoryap>
+<selectskill>
+<name>Blades</name>
+<bonus>-1</bonus>
+</selectskill>
+</weaponcategoryap>
+</bonus>
+```
+
+### weaponcategoryaccuracy
+
+Adjusts the Accuracy of all weapons in a Category by the specified amount.
+
+##### Attributes
+
+None.
+
+##### Elements
+
+**name** The Weapon Category that will be affected.
+
+**bonus** Improves the Accuracy of all Weapons in the Category by the specified amount.
+
+**selectskill** Prompts the user to select a specific skill, then applies the bonus to Weapons that use that skill.
+
+**selectcategory** Prompts the user to select from a list of weapon categories, then applies the bonus to weapons in the selected category.
+
+##### Limitations
+
+None.
+
+##### Example
+
+The following example adjusts the Accuracy a character has with Clubs by 1. 
+
+```XML
+<bonus>
+<weaponcategoryaccuracy>
+<name>Clubs</name>
+<bonus>1</bonus>
+</weaponcategoryaccuracy>
+</bonus>
+```
+
+The following example prompts the user to select a weapon category and applies an Accuracy bonus of 2 to the selected category.
+
+```XML
+<bonus>
+<weaponcategoryaccuracy>
+<selectcategory>
+<category>Clubs</category>
+<category>Blades</category>
+<value>2</value>
+</selectcategory>
+</weaponcategoryaccuracy>
+</bonus>
+```
+
+The following example prompts the user to select a skill and applies an Accuracy bonus of 1 to weapons that use that skill.
+
+```XML
+<bonus>
+<weaponcategoryaccuracy>
+<selectskill>
+<name>Pistols</name>
+<bonus>1</bonus>
+</selectskill>
+</weaponcategoryaccuracy>
+</bonus>
+```
+
+### weaponcategoryreach
+
+Adjusts the Reach of all melee weapons in a Category by the specified amount.
+
+##### Attributes
+
+None.
+
+##### Elements
+
+**name** The Weapon Category that will be affected.
+
+**bonus** Improves the Reach of all Melee Weapons in the Category by the specified amount.
+
+**selectskill** Prompts the user to select a specific skill, then applies the bonus to Weapons that use that skill.
+
+**selectcategory** Prompts the user to select from a list of weapon categories, then applies the bonus to weapons in the selected category.
+
+##### Limitations
+
+None.
+
+##### Example
+
+The following example adjusts the Reach a character has with Clubs by 1. 
+
+```XML
+<bonus>
+<weaponcategoryreach>
+<name>Clubs</name>
+<bonus>1</bonus>
+</weaponcategoryreach>
+</bonus>
+```
+
+The following example prompts the user to select a weapon category and applies a Reach bonus of 1 to the selected category.
+
+```XML
+<bonus>
+<weaponcategoryreach>
+<selectcategory>
+<category>Clubs</category>
+<category>Blades</category>
+<value>1</value>
+</selectcategory>
+</weaponcategoryreach>
+</bonus>
+```
+
+The following example prompts the user to select a skill and applies a Reach bonus of 1 to weapons that use that skill.
+
+```XML
+<bonus>
+<weaponcategoryreach>
+<selectskill>
+<name>Blades</name>
+<bonus>1</bonus>
+</selectskill>
+</weaponcategoryreach>
+</bonus>
+```
+
+### weaponspecificdice
+
+Adjusts the Dice Pool of a specific weapon by the specified amount.
+
+##### Attributes
+
+None.
+
+##### Elements
+
+**name** The specific weapon name that will be affected.
+
+**bonus** Improves the Dice Pool of the specific weapon by the specified amount.
+
+##### Limitations
+
+None.
+
+##### Example
+
+The following example adjusts the Dice Pool a character has with a specific weapon by 2. 
+
+```XML
+<bonus>
+<weaponspecificdice>
+<name>Combat Knife</name>
+<bonus>2</bonus>
+</weaponspecificdice>
+</bonus>
+```
+
+### weaponspecificdv
+
+Adjusts the Damage of a specific weapon by the specified amount.
+
+##### Attributes
+
+None.
+
+##### Elements
+
+**name** The specific weapon name that will be affected.
+
+**bonus** Improves the Damage of the specific weapon by the specified amount.
+
+##### Limitations
+
+None.
+
+##### Example
+
+The following example adjusts the Damage a character does with a specific weapon by 1. 
+
+```XML
+<bonus>
+<weaponspecificdv>
+<name>Combat Knife</name>
+<bonus>1</bonus>
+</weaponspecificdv>
+</bonus>
+```
+
+### weaponspecificap
+
+Adjusts the Armor Penetration of a specific weapon by the specified amount.
+
+##### Attributes
+
+None.
+
+##### Elements
+
+**name** The specific weapon name that will be affected.
+
+**bonus** Improves the Armor Penetration of the specific weapon by the specified amount.
+
+##### Limitations
+
+None.
+
+##### Example
+
+The following example adjusts the Armor Penetration a character has with a specific weapon by -1. 
+
+```XML
+<bonus>
+<weaponspecificap>
+<name>Combat Knife</name>
+<bonus>-1</bonus>
+</weaponspecificap>
+</bonus>
+```
+
+### weaponspecificaccuracy
+
+Adjusts the Accuracy of a specific weapon by the specified amount.
+
+##### Attributes
+
+None.
+
+##### Elements
+
+**name** The specific weapon name that will be affected.
+
+**bonus** Improves the Accuracy of the specific weapon by the specified amount.
+
+##### Limitations
+
+None.
+
+##### Example
+
+The following example adjusts the Accuracy a character has with a specific weapon by 1. 
+
+```XML
+<bonus>
+<weaponspecificaccuracy>
+<name>Combat Knife</name>
+<bonus>1</bonus>
+</weaponspecificaccuracy>
+</bonus>
+```
+
+### weaponspecificrange
+
+Adjusts the Range of a specific weapon by the specified amount.
+
+##### Attributes
+
+None.
+
+##### Elements
+
+**name** The specific weapon name that will be affected.
+
+**bonus** Improves the Range of the specific weapon by the specified amount.
+
+##### Limitations
+
+None.
+
+##### Example
+
+The following example adjusts the Range a character has with a specific weapon by 10. 
+
+```XML
+<bonus>
+<weaponspecificrange>
+<name>Combat Knife</name>
+<bonus>10</bonus>
+</weaponspecificrange>
 </bonus>
 ```
 

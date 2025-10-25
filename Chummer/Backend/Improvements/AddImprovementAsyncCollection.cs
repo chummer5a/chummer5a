@@ -3605,41 +3605,43 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         // Check for Weapon Category DV modifiers.
         public async Task weaponcategorydv(XmlNode bonusNode, CancellationToken token = default)
         {
+            await CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryDV, token).ConfigureAwait(false);
+        }
+
+        public async Task weaponcategorydice(XmlNode bonusNode, CancellationToken token = default)
+        {
+            await CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryDice, token).ConfigureAwait(false);
+        }
+
+        public async Task weaponcategoryap(XmlNode bonusNode, CancellationToken token = default)
+        {
+            await CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryAP, token).ConfigureAwait(false);
+        }
+
+        public async Task weaponcategoryaccuracy(XmlNode bonusNode, CancellationToken token = default)
+        {
+            await CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryAccuracy, token).ConfigureAwait(false);
+        }
+
+        public async Task weaponcategoryreach(XmlNode bonusNode, CancellationToken token = default)
+        {
+            await CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryReach, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Consolidated async method for creating weapon category improvements with full WeaponCategoryDV support.
+        /// </summary>
+        /// <param name="bonusNode">The XML node containing the improvement data</param>
+        /// <param name="improvementType">The type of improvement to create</param>
+        /// <param name="token">Cancellation token</param>
+        private async Task CreateWeaponCategoryImprovementAsync(XmlNode bonusNode, Improvement.ImprovementType improvementType, CancellationToken token = default)
+        {
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            //TODO: FIX THIS
-            /*
-             * I feel like talking a little bit about improvementmanager at
-             * this point. It is an interesting class. First of all, it
-             * manages to throw out everything we ever learned about OOP
-             * and create a class based on functional programming.
-             *
-             * That is true, it is a class, based on manipulating a single
-             * list on another class.
-             *
-             * But at least there is a reference to it somewhere right?
-             *
-             * No, you create one wherever you need it, meaning there are
-             * tens of instances of this class, all operating on the same
-             * list
-             *
-             * After that, it is just plain stupid.
-             * If you have an list of xmlNodes and some might be the same
-             * it checks if a specific node exists (sometimes even by text
-             * comparison on .OuterXml) and then runs specific code for
-             * each. If it is there multiple times either of those 2 things
-             * happen.
-             *
-             * 1. Sad, nothing we can do, guess you have to survive
-             * 2. Lets create a foreach in that specific part of the code
-             *
-             * Fuck ImprovementManager, kill it with fire, burn the ashes
-             * and feed what remains to a dragon that eats unholy
-             * abominations
-             */
 
             string strSelectedValue = string.Empty;
+            decimal decValue = 0;
             if (bonusNode["selectskill"] != null)
             {
                 bool blnKnowledgeSkill;
@@ -3649,185 +3651,108 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                 {
                     throw new AbortedException();
                 }
-
-                Power objPower = await _objCharacter.Powers.FirstOrDefaultAsync(p => p.InternalId == SourceName, token).ConfigureAwait(false);
-                if (objPower != null)
-                    await objPower.SetExtraAsync(strSelectedValue, token).ConfigureAwait(false);
+                decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
             }
-            else if (bonusNode["selectcategories"] != null)
-            {
-                using (XmlNodeList xmlSelectCategoryList = bonusNode.SelectNodes("selectcategories"))
+            else if (bonusNode["selectcategory"] != null)
+            {   
+                // Display the Select Category window and record which Category was selected.
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
+                                                               out List<ListItem> lstGeneralItems))
                 {
-                    if (xmlSelectCategoryList?.Count > 0)
+                    XmlElement xmlSelectCategory = bonusNode["selectcategory"];
+                    using (XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category"))
                     {
-                        foreach (XmlNode xmlSelectCategory in xmlSelectCategoryList)
+                        if (xmlCategoryList?.Count > 0)
                         {
-                            // Display the Select Category window and record which Category was selected.
-                            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                           out List<ListItem> lstGeneralItems))
+                            foreach (XmlNode objXmlCategory in xmlCategoryList)
                             {
-                                using (XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category"))
-                                {
-                                    if (xmlCategoryList?.Count > 0)
-                                    {
-                                        foreach (XmlNode objXmlCategory in xmlCategoryList)
-                                        {
-                                            string strInnerText = objXmlCategory.InnerTextViaPool(token);
-                                            lstGeneralItems.Add(new ListItem(strInnerText,
-                                                                             await _objCharacter.TranslateExtraAsync(
-                                                                                 strInnerText, GlobalSettings.Language,
-                                                                                 "weapons.xml", token).ConfigureAwait(false)));
-                                        }
-                                    }
-                                }
-
-                                string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                                                   ? string.Format(GlobalSettings.CultureInfo,
-                                                       await LanguageManager.GetStringAsync(
-                                                           "String_Improvement_SelectSkillNamed", token: token).ConfigureAwait(false), _strFriendlyName)
-                                                   : await LanguageManager.GetStringAsync("Title_SelectWeaponCategory", token: token).ConfigureAwait(false);
-                                using (ThreadSafeForm<SelectItem> frmPickCategory = await ThreadSafeForm<SelectItem>.GetAsync(() =>
-                                           new SelectItem(), token).ConfigureAwait(false))
-                                {
-                                    await frmPickCategory.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
-                                    frmPickCategory.MyForm.SetGeneralItemsMode(lstGeneralItems);
-
-                                    if (ForcedValue.StartsWith("Adept:", StringComparison.Ordinal)
-                                        || ForcedValue.StartsWith("Magician:", StringComparison.Ordinal))
-                                        ForcedValue = string.Empty;
-
-                                    if (!string.IsNullOrEmpty(ForcedValue))
-                                    {
-                                        frmPickCategory.MyForm.Opacity = 0;
-                                        frmPickCategory.MyForm.ForceItem(ForcedValue);
-                                    }
-
-                                    // Make sure the dialogue window was not canceled.
-                                    if (await frmPickCategory.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
-                                    {
-                                        throw new AbortedException();
-                                    }
-
-                                    strSelectedValue = await frmPickCategory.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
-                                }
+                                string strInnerText = objXmlCategory.InnerTextViaPool(token);
+                                lstGeneralItems.Add(new ListItem(strInnerText,
+                                                                 await _objCharacter.TranslateExtraAsync(
+                                                                     strInnerText, GlobalSettings.Language,
+                                                                     "weapons.xml", token).ConfigureAwait(false)));
                             }
-
-                            await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).ForEachAsync(async objPower =>
-                            {
-                                if (objPower.InternalId == SourceName)
-                                {
-                                    await objPower.SetExtraAsync(SelectedValue, token).ConfigureAwait(false);
-                                }
-                            }, token).ConfigureAwait(false);
                         }
+                    }
+
+                    string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
+                        ? string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync("String_Improvement_SelectSkillNamed", token: token).ConfigureAwait(false), _strFriendlyName)
+                        : await LanguageManager.GetStringAsync("Title_SelectWeaponCategory", token: token).ConfigureAwait(false);
+                    using (ThreadSafeForm<SelectItem> frmPickCategory = await ThreadSafeForm<SelectItem>.GetAsync(() =>
+                               new SelectItem(), token).ConfigureAwait(false))
+                    {
+                        await frmPickCategory.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
+                        frmPickCategory.MyForm.SetGeneralItemsMode(lstGeneralItems);
+
+                        if (ForcedValue.StartsWith("Adept:", StringComparison.Ordinal)
+                            || ForcedValue.StartsWith("Magician:", StringComparison.Ordinal))
+                            ForcedValue = string.Empty;
+
+                        if (!string.IsNullOrEmpty(ForcedValue))
+                        {
+                            frmPickCategory.MyForm.Opacity = 0;
+                            frmPickCategory.MyForm.ForceItem(ForcedValue);
+                        }
+
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickCategory.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        strSelectedValue = await frmPickCategory.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
+                        decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, xmlSelectCategory["value"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
                     }
                 }
             }
             else if (bonusNode["name"] != null)
             {
                 strSelectedValue = bonusNode["name"].InnerTextViaPool(token);
+                decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
             }
             else
             {
                 Utils.BreakIfDebug();
             }
+
             SelectedValue = strSelectedValue;
             await CreateImprovementAsync(strSelectedValue, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.WeaponCategoryDV, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-        }
-
-        public async Task weaponcategorydice(XmlNode bonusNode, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
-            using (XmlNodeList xmlSelectCategoryList = bonusNode.SelectNodes("selectcategory"))
-            {
-                if (xmlSelectCategoryList?.Count > 0)
-                {
-                    foreach (XmlNode xmlSelectCategory in xmlSelectCategoryList)
-                    {
-                        string strSelectedValue;
-                        // Display the Select Category window and record which Category was selected.
-                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                       out List<ListItem> lstGeneralItems))
-                        {
-                            using (XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category"))
-                            {
-                                if (xmlCategoryList?.Count > 0)
-                                {
-                                    foreach (XmlNode objXmlCategory in xmlCategoryList)
-                                    {
-                                        string strInnerText = objXmlCategory.InnerTextViaPool(token);
-                                        lstGeneralItems.Add(new ListItem(strInnerText,
-                                                                         await _objCharacter.TranslateExtraAsync(
-                                                                             strInnerText, GlobalSettings.Language,
-                                                                             "weapons.xml", token).ConfigureAwait(false)));
-                                    }
-                                }
-                            }
-
-                            string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                                ? string.Format(GlobalSettings.CultureInfo,
-                                    await LanguageManager.GetStringAsync(
-                                        "String_Improvement_SelectSkillNamed", token: token).ConfigureAwait(false),
-                                    _strFriendlyName)
-                                : await LanguageManager.GetStringAsync("Title_SelectWeaponCategory", token: token).ConfigureAwait(false);
-                            using (ThreadSafeForm<SelectItem> frmPickCategory = await ThreadSafeForm<SelectItem>.GetAsync(() =>
-                                       new SelectItem(), token).ConfigureAwait(false))
-                            {
-                                await frmPickCategory.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
-                                frmPickCategory.MyForm.SetGeneralItemsMode(lstGeneralItems);
-
-                                if (ForcedValue.StartsWith("Adept:", StringComparison.Ordinal)
-                                    || ForcedValue.StartsWith("Magician:", StringComparison.Ordinal))
-                                    ForcedValue = string.Empty;
-
-                                if (!string.IsNullOrEmpty(ForcedValue))
-                                {
-                                    frmPickCategory.MyForm.Opacity = 0;
-                                    frmPickCategory.MyForm.ForceItem(ForcedValue);
-                                }
-
-                                // Make sure the dialogue window was not canceled.
-                                if (await frmPickCategory.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
-                                {
-                                    throw new AbortedException();
-                                }
-
-                                strSelectedValue = await frmPickCategory.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
-                            }
-                        }
-
-                        SelectedValue = strSelectedValue;
-                        await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).ForEachAsync(async objPower =>
-                        {
-                            if (objPower.InternalId == SourceName)
-                            {
-                                await objPower.SetExtraAsync(strSelectedValue, token).ConfigureAwait(false);
-                            }
-                        }, token).ConfigureAwait(false);
-
-                        await CreateImprovementAsync(strSelectedValue, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.WeaponCategoryDice, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, xmlSelectCategory["value"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                    }
-                }
-            }
-
-            using (XmlNodeList xmlCategoryList = bonusNode.SelectNodes("category"))
-            {
-                if (xmlCategoryList?.Count > 0)
-                {
-                    foreach (XmlNode xmlCategory in xmlCategoryList)
-                    {
-                        await CreateImprovementAsync(xmlCategory["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.WeaponCategoryDice, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, xmlCategory["value"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                    }
-                }
-            }
+                improvementType, _strUnique, decValue, token: token).ConfigureAwait(false);
         }
 
         public async Task weaponspecificdice(XmlNode bonusNode, CancellationToken token = default)
+        {
+            await CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificDice, token).ConfigureAwait(false);
+        }
+
+        public async Task weaponspecificdv(XmlNode bonusNode, CancellationToken token = default)
+        {
+            await CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificDV, token).ConfigureAwait(false);
+        }
+
+        public async Task weaponspecificap(XmlNode bonusNode, CancellationToken token = default)
+        {
+            await CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificAP, token).ConfigureAwait(false);
+        }
+
+        public async Task weaponspecificaccuracy(XmlNode bonusNode, CancellationToken token = default)
+        {
+            await CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificAccuracy, token).ConfigureAwait(false);
+        }
+
+        public async Task weaponspecificrange(XmlNode bonusNode, CancellationToken token = default)
+        {
+            await CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificRange, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Consolidated async method for creating weapon-specific improvements.
+        /// </summary>
+        /// <param name="bonusNode">The XML node containing the improvement data</param>
+        /// <param name="improvementType">The type of improvement to create</param>
+        /// <param name="token">Cancellation token</param>
+        private async Task CreateWeaponSpecificImprovementAsync(XmlNode bonusNode, Improvement.ImprovementType improvementType, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
@@ -3885,7 +3810,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
                 SelectedValue = objSelectedWeapon.Name;
                 await CreateImprovementAsync(objSelectedWeapon.InternalId, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.WeaponSpecificDice, _strUnique,
+                    improvementType, _strUnique,
                     await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
         }

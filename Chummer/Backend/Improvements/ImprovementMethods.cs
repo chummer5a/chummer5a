@@ -294,6 +294,20 @@ namespace Chummer
                     return objImprovementAdder.weaponcategorydice;
                 case "WEAPONSPECIFICDICE":
                     return objImprovementAdder.weaponspecificdice;
+                case "WEAPONCATEGORYAP":
+                    return objImprovementAdder.weaponcategoryap;
+                case "WEAPONCATEGORYACCURACY":
+                    return objImprovementAdder.weaponcategoryaccuracy;
+                case "WEAPONCATEGORYREACH":
+                    return objImprovementAdder.weaponcategoryreach;
+                case "WEAPONSPECIFICDV":
+                    return objImprovementAdder.weaponspecificdv;
+                case "WEAPONSPECIFICAP":
+                    return objImprovementAdder.weaponspecificap;
+                case "WEAPONSPECIFICACCURACY":
+                    return objImprovementAdder.weaponspecificaccuracy;
+                case "WEAPONSPECIFICRANGE":
+                    return objImprovementAdder.weaponspecificrange;
                 case "SELECTMENTORSPIRIT":
                     return objImprovementAdder.selectmentorspirit;
                 case "SELECTPARAGON":
@@ -945,6 +959,20 @@ namespace Chummer
                     return objImprovementAsyncAdder.weaponcategorydice;
                 case "WEAPONSPECIFICDICE":
                     return objImprovementAsyncAdder.weaponspecificdice;
+                case "WEAPONCATEGORYAP":
+                    return objImprovementAsyncAdder.weaponcategoryap;
+                case "WEAPONCATEGORYACCURACY":
+                    return objImprovementAsyncAdder.weaponcategoryaccuracy;
+                case "WEAPONCATEGORYREACH":
+                    return objImprovementAsyncAdder.weaponcategoryreach;
+                case "WEAPONSPECIFICDV":
+                    return objImprovementAsyncAdder.weaponspecificdv;
+                case "WEAPONSPECIFICAP":
+                    return objImprovementAsyncAdder.weaponspecificap;
+                case "WEAPONSPECIFICACCURACY":
+                    return objImprovementAsyncAdder.weaponspecificaccuracy;
+                case "WEAPONSPECIFICRANGE":
+                    return objImprovementAsyncAdder.weaponspecificrange;
                 case "SELECTMENTORSPIRIT":
                     return objImprovementAsyncAdder.selectmentorspirit;
                 case "SELECTPARAGON":

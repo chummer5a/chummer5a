@@ -73,7 +73,14 @@ namespace Chummer
             EnhancedArticulation,
             WeaponCategoryDV,
             WeaponCategoryDice,
+            WeaponCategoryAP,
+            WeaponCategoryAccuracy,
+            WeaponCategoryReach,
             WeaponSpecificDice,
+            WeaponSpecificDV,
+            WeaponSpecificAP,
+            WeaponSpecificAccuracy,
+            WeaponSpecificRange,
             CyberwareEssCost,
             CyberwareTotalEssMultiplier,
             CyberwareEssCostNonRetroactive,
@@ -1246,6 +1253,30 @@ namespace Chummer
                     break;
 
                 case ImprovementType.WeaponCategoryDice:
+                    break;
+
+                case ImprovementType.WeaponCategoryAP:
+                    break;
+
+                case ImprovementType.WeaponCategoryAccuracy:
+                    break;
+
+                case ImprovementType.WeaponCategoryReach:
+                    break;
+
+                case ImprovementType.WeaponSpecificDice:
+                    break;
+
+                case ImprovementType.WeaponSpecificDV:
+                    break;
+
+                case ImprovementType.WeaponSpecificAP:
+                    break;
+
+                case ImprovementType.WeaponSpecificAccuracy:
+                    break;
+
+                case ImprovementType.WeaponSpecificRange:
                     break;
 
                 case ImprovementType.SpecialTab:
@@ -3285,6 +3316,30 @@ namespace Chummer
                     break;
 
                 case ImprovementType.WeaponCategoryDice:
+                    break;
+
+                case ImprovementType.WeaponCategoryAP:
+                    break;
+
+                case ImprovementType.WeaponCategoryAccuracy:
+                    break;
+
+                case ImprovementType.WeaponCategoryReach:
+                    break;
+
+                case ImprovementType.WeaponSpecificDice:
+                    break;
+
+                case ImprovementType.WeaponSpecificDV:
+                    break;
+
+                case ImprovementType.WeaponSpecificAP:
+                    break;
+
+                case ImprovementType.WeaponSpecificAccuracy:
+                    break;
+
+                case ImprovementType.WeaponSpecificRange:
                     break;
 
                 case ImprovementType.SpecialTab:

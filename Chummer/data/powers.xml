@@ -116,13 +116,13 @@
       </adeptwayrequires>
       <bonus>
         <weaponcategorydv>
-          <selectcategories>
+          <selectcategory>
             <category>Astral Combat</category>
             <category>Blades</category>
             <category>Clubs</category>
             <category>Exotic Melee Weapon</category>
             <category>Unarmed Combat</category>
-          </selectcategories>
+          </selectcategory>
           <bonus>1</bonus>
         </weaponcategorydv>
       </bonus>

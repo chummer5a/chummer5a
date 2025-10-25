@@ -3442,40 +3442,42 @@ namespace Chummer
         // Check for Weapon Category DV modifiers.
         public void weaponcategorydv(XmlNode bonusNode)
         {
+            CreateWeaponCategoryImprovement(bonusNode, Improvement.ImprovementType.WeaponCategoryDV);
+        }
+
+        public void weaponcategorydice(XmlNode bonusNode)
+        {
+            CreateWeaponCategoryImprovement(bonusNode, Improvement.ImprovementType.WeaponCategoryDice);
+        }
+
+        public void weaponcategoryap(XmlNode bonusNode)
+        {
+            CreateWeaponCategoryImprovement(bonusNode, Improvement.ImprovementType.WeaponCategoryAP);
+        }
+
+        public void weaponcategoryaccuracy(XmlNode bonusNode)
+        {
+            CreateWeaponCategoryImprovement(bonusNode, Improvement.ImprovementType.WeaponCategoryAccuracy);
+        }
+
+        public void weaponcategoryreach(XmlNode bonusNode)
+        {
+            CreateWeaponCategoryImprovement(bonusNode, Improvement.ImprovementType.WeaponCategoryReach);
+        }
+
+        /// <summary>
+        /// Consolidated method for creating weapon category improvements with full WeaponCategoryDV support.
+        /// </summary>
+        /// <param name="bonusNode">The XML node containing the improvement data</param>
+        /// <param name="improvementType">The type of improvement to create</param>
+        private void CreateWeaponCategoryImprovement(XmlNode bonusNode, Improvement.ImprovementType improvementType)
+        {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            //TODO: FIX THIS
-            /*
-             * I feel like talking a little bit about improvementmanager at
-             * this point. It is an interesting class. First of all, it
-             * manages to throw out everything we ever learned about OOP
-             * and create a class based on functional programming.
-             *
-             * That is true, it is a class, based on manipulating a single
-             * list on another class.
-             *
-             * But at least there is a reference to it somewhere right?
-             *
-             * No, you create one wherever you need it, meaning there are
-             * tens of instances of this class, all operating on the same
-             * list
-             *
-             * After that, it is just plain stupid.
-             * If you have an list of xmlNodes and some might be the same
-             * it checks if a specific node exists (sometimes even by text
-             * comparison on .OuterXml) and then runs specific code for
-             * each. If it is there multiple times either of those 2 things
-             * happen.
-             *
-             * 1. Sad, nothing we can do, guess you have to survive
-             * 2. Lets create a foreach in that specific part of the code
-             *
-             * Fuck ImprovementManager, kill it with fire, burn the ashes
-             * and feed what remains to a dragon that eats unholy
-             * abominations
-             */
 
             string strSelectedValue = string.Empty;
+            decimal decValue = 0;
+            
             if (bonusNode["selectskill"] != null)
             {
                 bool blnKnowledgeSkill;
@@ -3485,183 +3487,107 @@ namespace Chummer
                 {
                     throw new AbortedException();
                 }
-
-                Power objPower = _objCharacter.Powers.FirstOrDefault(p => p.InternalId == SourceName);
-                if (objPower != null)
-                    objPower.Extra = strSelectedValue;
+                decValue = ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerTextViaPool(), _intRating);
             }
-            else if (bonusNode["selectcategories"] != null)
+            else if (bonusNode["selectcategory"] != null)
             {
-                using (XmlNodeList xmlSelectCategoryList = bonusNode.SelectNodes("selectcategories"))
+                XmlElement xmlSelectCategory = bonusNode["selectcategory"];
+                // Display the Select Category window and record which Category was selected.
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
+                                                               out List<ListItem> lstGeneralItems))
                 {
-                    if (xmlSelectCategoryList?.Count > 0)
+                    using (XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category"))
                     {
-                        foreach (XmlNode xmlSelectCategory in xmlSelectCategoryList)
+                        if (xmlCategoryList?.Count > 0)
                         {
-                            // Display the Select Category window and record which Category was selected.
-                            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                           out List<ListItem> lstGeneralItems))
+                            foreach (XmlNode objXmlCategory in xmlCategoryList)
                             {
-                                using (XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category"))
-                                {
-                                    if (xmlCategoryList?.Count > 0)
-                                    {
-                                        foreach (XmlNode objXmlCategory in xmlCategoryList)
-                                        {
-                                            string strInnerText = objXmlCategory.InnerTextViaPool();
-                                            lstGeneralItems.Add(new ListItem(strInnerText,
-                                                                             _objCharacter.TranslateExtra(
-                                                                                 strInnerText, GlobalSettings.Language,
-                                                                                 "weapons.xml")));
-                                        }
-                                    }
-                                }
-
-                                using (ThreadSafeForm<SelectItem> frmPickCategory = ThreadSafeForm<SelectItem>.Get(() =>
-                                           new SelectItem
-                                           {
-                                               Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                                   ? string.Format(GlobalSettings.CultureInfo,
-                                                       LanguageManager.GetString(
-                                                           "String_Improvement_SelectSkillNamed"), _strFriendlyName)
-                                                   : LanguageManager.GetString("Title_SelectWeaponCategory")
-                                           }))
-                                {
-                                    frmPickCategory.MyForm.SetGeneralItemsMode(lstGeneralItems);
-
-                                    if (ForcedValue.StartsWith("Adept:", StringComparison.Ordinal)
-                                        || ForcedValue.StartsWith("Magician:", StringComparison.Ordinal))
-                                        ForcedValue = string.Empty;
-
-                                    if (!string.IsNullOrEmpty(ForcedValue))
-                                    {
-                                        frmPickCategory.MyForm.Opacity = 0;
-                                        frmPickCategory.MyForm.ForceItem(ForcedValue);
-                                    }
-
-                                    // Make sure the dialogue window was not canceled.
-                                    if (frmPickCategory.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
-                                    {
-                                        throw new AbortedException();
-                                    }
-
-                                    strSelectedValue = frmPickCategory.MyForm.SelectedItem;
-                                }
+                                string strInnerText = objXmlCategory.InnerTextViaPool();
+                                lstGeneralItems.Add(new ListItem(strInnerText,
+                                                                 _objCharacter.TranslateExtra(
+                                                                     strInnerText, GlobalSettings.Language,
+                                                                     "weapons.xml")));
                             }
-
-                            _objCharacter.Powers.ForEach(objPower =>
-                            {
-                                if (objPower.InternalId == SourceName)
-                                {
-                                    objPower.Extra = strSelectedValue;
-                                }
-                            });
                         }
+                    }
+
+                    using (ThreadSafeForm<SelectItem> frmPickCategory = ThreadSafeForm<SelectItem>.Get(() =>
+                                new SelectItem
+                                {
+                                    Description = !string.IsNullOrEmpty(_strFriendlyName)
+                                        ? string.Format(GlobalSettings.CultureInfo,
+                                            LanguageManager.GetString("String_Improvement_SelectSkillNamed"), _strFriendlyName)
+                                        : LanguageManager.GetString("Title_SelectWeaponCategory")
+                                }))
+                    {
+                        frmPickCategory.MyForm.SetGeneralItemsMode(lstGeneralItems);
+
+                        if (ForcedValue.StartsWith("Adept:", StringComparison.Ordinal)
+                            || ForcedValue.StartsWith("Magician:", StringComparison.Ordinal))
+                            ForcedValue = string.Empty;
+
+                        if (!string.IsNullOrEmpty(ForcedValue))
+                        {
+                            frmPickCategory.MyForm.Opacity = 0;
+                            frmPickCategory.MyForm.ForceItem(ForcedValue);
+                        }
+
+                        if (frmPickCategory.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        strSelectedValue = frmPickCategory.MyForm.SelectedItem;
+                        decValue = ImprovementManager.ValueToDec(_objCharacter, xmlSelectCategory["value"]?.InnerTextViaPool(), _intRating);
                     }
                 }
             }
             else if (bonusNode["name"] != null)
             {
                 strSelectedValue = bonusNode["name"].InnerTextViaPool();
+                decValue = ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerTextViaPool(), _intRating);
             }
             else
             {
                 Utils.BreakIfDebug();
             }
+
             SelectedValue = strSelectedValue;
             CreateImprovement(strSelectedValue, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.WeaponCategoryDV, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerTextViaPool(), _intRating));
-        }
-
-        public void weaponcategorydice(XmlNode bonusNode)
-        {
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
-            using (XmlNodeList xmlSelectCategoryList = bonusNode.SelectNodes("selectcategory"))
-            {
-                if (xmlSelectCategoryList?.Count > 0)
-                {
-                    foreach (XmlNode xmlSelectCategory in xmlSelectCategoryList)
-                    {
-                        // Display the Select Category window and record which Category was selected.
-                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                       out List<ListItem> lstGeneralItems))
-                        {
-                            using (XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category"))
-                            {
-                                if (xmlCategoryList?.Count > 0)
-                                {
-                                    foreach (XmlNode objXmlCategory in xmlCategoryList)
-                                    {
-                                        string strInnerText = objXmlCategory.InnerTextViaPool();
-                                        lstGeneralItems.Add(new ListItem(strInnerText,
-                                                                         _objCharacter.TranslateExtra(
-                                                                             strInnerText, GlobalSettings.Language,
-                                                                             "weapons.xml")));
-                                    }
-                                }
-                            }
-
-                            using (ThreadSafeForm<SelectItem> frmPickCategory = ThreadSafeForm<SelectItem>.Get(() =>
-                                       new SelectItem
-                                       {
-                                           Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                               ? string.Format(GlobalSettings.CultureInfo,
-                                                   LanguageManager.GetString(
-                                                       "String_Improvement_SelectSkillNamed"), _strFriendlyName)
-                                               : LanguageManager.GetString("Title_SelectWeaponCategory")
-                                       }))
-                            {
-                                frmPickCategory.MyForm.SetGeneralItemsMode(lstGeneralItems);
-
-                                if (ForcedValue.StartsWith("Adept:", StringComparison.Ordinal)
-                                    || ForcedValue.StartsWith("Magician:", StringComparison.Ordinal))
-                                    ForcedValue = string.Empty;
-
-                                if (!string.IsNullOrEmpty(ForcedValue))
-                                {
-                                    frmPickCategory.MyForm.Opacity = 0;
-                                    frmPickCategory.MyForm.ForceItem(ForcedValue);
-                                }
-
-                                // Make sure the dialogue window was not canceled.
-                                if (frmPickCategory.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
-                                {
-                                    throw new AbortedException();
-                                }
-
-                                SelectedValue = frmPickCategory.MyForm.SelectedItem;
-                            }
-                        }
-
-                        _objCharacter.Powers.ForEach(objPower =>
-                        {
-                            if (objPower.InternalId == SourceName)
-                            {
-                                objPower.Extra = SelectedValue;
-                            }
-                        });
-
-                        CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.WeaponCategoryDice, _strUnique, ImprovementManager.ValueToDec(_objCharacter, xmlSelectCategory["value"]?.InnerTextViaPool(), _intRating));
-                    }
-                }
-            }
-
-            using (XmlNodeList xmlCategoryList = bonusNode.SelectNodes("category"))
-            {
-                if (xmlCategoryList?.Count > 0)
-                {
-                    foreach (XmlNode xmlCategory in xmlCategoryList)
-                    {
-                        CreateImprovement(xmlCategory["name"]?.InnerTextViaPool(), _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.WeaponCategoryDice, _strUnique, ImprovementManager.ValueToDec(_objCharacter, xmlCategory["value"]?.InnerTextViaPool(), _intRating));
-                    }
-                }
-            }
+                improvementType, _strUnique, decValue);
         }
 
         public void weaponspecificdice(XmlNode bonusNode)
+        {
+            CreateWeaponSpecificImprovement(bonusNode, Improvement.ImprovementType.WeaponSpecificDice);
+        }
+
+        public void weaponspecificdv(XmlNode bonusNode)
+        {
+            CreateWeaponSpecificImprovement(bonusNode, Improvement.ImprovementType.WeaponSpecificDV);
+        }
+
+        public void weaponspecificap(XmlNode bonusNode)
+        {
+            CreateWeaponSpecificImprovement(bonusNode, Improvement.ImprovementType.WeaponSpecificAP);
+        }
+
+        public void weaponspecificaccuracy(XmlNode bonusNode)
+        {
+            CreateWeaponSpecificImprovement(bonusNode, Improvement.ImprovementType.WeaponSpecificAccuracy);
+        }
+
+        public void weaponspecificrange(XmlNode bonusNode)
+        {
+            CreateWeaponSpecificImprovement(bonusNode, Improvement.ImprovementType.WeaponSpecificRange);
+        }
+
+        /// <summary>
+        /// Consolidated method for creating weapon-specific improvements.
+        /// </summary>
+        /// <param name="bonusNode">The XML node containing the improvement data</param>
+        /// <param name="improvementType">The type of improvement to create</param>
+        private void CreateWeaponSpecificImprovement(XmlNode bonusNode, Improvement.ImprovementType improvementType)
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
@@ -3718,7 +3644,7 @@ namespace Chummer
 
                 SelectedValue = objSelectedWeapon.Name;
                 CreateImprovement(objSelectedWeapon.InternalId, _objImprovementSource, SourceName,
-                                  Improvement.ImprovementType.WeaponSpecificDice, _strUnique,
+                                  improvementType, _strUnique,
                                   ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerTextViaPool(), _intRating));
             }
         }

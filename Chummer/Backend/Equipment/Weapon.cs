@@ -4562,28 +4562,9 @@ namespace Chummer.Backend.Equipment
             decimal decImprove = 0;
             if (_objCharacter != null)
             {
-                string strCategory = Category;
-                if (strCategory == "Unarmed")
-                {
-                    strCategory = "Unarmed Combat";
-                }
-
                 if (blnSync)
                 {
-                    string strUseSkill = Skill?.DictionaryKey ?? string.Empty;
-                    // ReSharper disable MethodHasAsyncOverload
-                    decImprove += ImprovementManager.ValueOf(_objCharacter,
-                        Improvement.ImprovementType.WeaponCategoryDV,
-                        strImprovedName: strCategory, token: token);
-                    if (!string.IsNullOrEmpty(strUseSkill) && strCategory != strUseSkill)
-                        decImprove += ImprovementManager.ValueOf(_objCharacter,
-                            Improvement.ImprovementType.WeaponCategoryDV,
-                            strImprovedName: strUseSkill, token: token);
-                    if (strCategory.StartsWith("Cyberware ", StringComparison.Ordinal))
-                        decImprove += ImprovementManager.ValueOf(_objCharacter,
-                            Improvement.ImprovementType.WeaponCategoryDV,
-                            strImprovedName: strCategory.TrimStartOnce(
-                                "Cyberware ", true), token: token);
+                    decImprove += GetWeaponCategoryImprovements(Improvement.ImprovementType.WeaponCategoryDV);
 
                     // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
                     // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
@@ -4599,7 +4580,8 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
-                    else if (strUseSkill == "Unarmed Combat"
+                    string strUseSkill = Skill?.DictionaryKey ?? string.Empty;
+                    if (strUseSkill == "Unarmed Combat"
                              && _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
                     {
                         decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV,
@@ -4609,22 +4591,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
-                    string strUseSkill = objSkill != null
-                        ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
-                        : string.Empty;
-                    decImprove += await ImprovementManager.ValueOfAsync(_objCharacter,
-                        Improvement.ImprovementType.WeaponCategoryDV,
-                        strImprovedName: strCategory, token: token).ConfigureAwait(false);
-                    if (!string.IsNullOrEmpty(strUseSkill) && strCategory != strUseSkill)
-                        decImprove += await ImprovementManager.ValueOfAsync(_objCharacter,
-                            Improvement.ImprovementType.WeaponCategoryDV,
-                            strImprovedName: strUseSkill, token: token).ConfigureAwait(false);
-                    if (strCategory.StartsWith("Cyberware ", StringComparison.Ordinal))
-                        decImprove += await ImprovementManager.ValueOfAsync(_objCharacter,
-                            Improvement.ImprovementType.WeaponCategoryDV,
-                            strImprovedName: strCategory.TrimStartOnce(
-                                "Cyberware ", true), token: token).ConfigureAwait(false);
+                    decImprove += await GetWeaponCategoryImprovementsAsync(Improvement.ImprovementType.WeaponCategoryDV, token).ConfigureAwait(false);
 
                     // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
                     // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
@@ -4642,7 +4609,11 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
-                    else if (strUseSkill == "Unarmed Combat"
+                    Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+                    string strUseSkill = objSkill != null
+                        ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                        : string.Empty;
+                    if (strUseSkill == "Unarmed Combat"
                              && _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
                     {
                         decImprove += await ImprovementManager
@@ -6792,6 +6763,28 @@ namespace Chummer.Backend.Equipment
                                     .ConfigureAwait(false))
                             .StandardRound();
                     }
+
+                    // Include WeaponCategoryAP Improvements.
+                    if (blnSync)
+                    {
+                        intImprove += GetWeaponCategoryImprovements(Improvement.ImprovementType.WeaponCategoryAP).StandardRound();
+                    }
+                    else
+                    {
+                        intImprove += (await GetWeaponCategoryImprovementsAsync(Improvement.ImprovementType.WeaponCategoryAP, token).ConfigureAwait(false)).StandardRound();
+                    }
+
+                    // Include WeaponSpecificAP Improvements.
+                    if (blnSync)
+                    {
+                        intImprove += ImprovementManager.ValueOf(_objCharacter,
+                            Improvement.ImprovementType.WeaponSpecificAP, false, InternalId, token: token).StandardRound();
+                    }
+                    else
+                    {
+                        intImprove += (await ImprovementManager.ValueOfAsync(_objCharacter,
+                            Improvement.ImprovementType.WeaponSpecificAP, false, InternalId, token: token).ConfigureAwait(false)).StandardRound();
+                    }
                 }
 
                 if (strAP == "-")
@@ -7353,6 +7346,7 @@ namespace Chummer.Backend.Equipment
             return new ValueTuple<string, string>(strRC, strTooltip);
         }
 
+
         /// <summary>
         /// The full Reach of the Weapons including the Character's Reach.
         /// </summary>
@@ -7367,6 +7361,13 @@ namespace Chummer.Backend.Equipment
                     // Run through the Character's Improvements and add any Reach Improvements.
                     decReach += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Reach,
                         strImprovedName: Name, blnIncludeNonImproved: true);
+                    
+                    // Include WeaponCategoryReach Improvements.
+                    string strCategory = Category;
+                    if (strCategory == "Unarmed")
+                        strCategory = "Unarmed Combat";
+                    decReach += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryReach,
+                        strImprovedName: strCategory);
                 }
 
                 if (Name == "Unarmed Attack" || Skill?.DictionaryKey == "Unarmed Combat" &&
@@ -7377,6 +7378,59 @@ namespace Chummer.Backend.Equipment
 
                 return decReach.StandardRound();
             }
+        }
+
+        /// <summary>
+        /// Calculate weapon category improvements for this weapon.
+        /// </summary>
+        private decimal GetWeaponCategoryImprovements(Improvement.ImprovementType improvementType)
+        {
+            string strCategory = Category;
+            if (strCategory == "Unarmed")
+                strCategory = "Unarmed Combat";
+            
+            decimal decImprove = ImprovementManager.ValueOf(_objCharacter, improvementType, strImprovedName: strCategory);
+            
+            // Check skill-based improvements
+            string strUseSkill = Skill?.DictionaryKey ?? string.Empty;
+            if (!string.IsNullOrEmpty(strUseSkill) && strCategory != strUseSkill)
+                decImprove += ImprovementManager.ValueOf(_objCharacter, improvementType, strImprovedName: strUseSkill);
+            
+            // Handle cyberware categories
+            if (strCategory.StartsWith("Cyberware ", StringComparison.Ordinal))
+                decImprove += ImprovementManager.ValueOf(_objCharacter, improvementType, 
+                    strImprovedName: strCategory.TrimStartOnce("Cyberware ", true));
+            
+            return decImprove;
+        }
+
+        /// <summary>
+        /// Calculate weapon category improvements for this weapon (async version).
+        /// </summary>
+        private async Task<decimal> GetWeaponCategoryImprovementsAsync(Improvement.ImprovementType improvementType, CancellationToken token = default)
+        {
+            string strCategory = Category;
+            if (strCategory == "Unarmed")
+                strCategory = "Unarmed Combat";
+            
+            decimal decImprove = await ImprovementManager.ValueOfAsync(_objCharacter, improvementType, 
+                strImprovedName: strCategory, token: token).ConfigureAwait(false);
+            
+            // Check skill-based improvements
+            Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+            string strUseSkill = objSkill != null
+                ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                : string.Empty;
+            if (!string.IsNullOrEmpty(strUseSkill) && strCategory != strUseSkill)
+                decImprove += await ImprovementManager.ValueOfAsync(_objCharacter, improvementType, 
+                    strImprovedName: strUseSkill, token: token).ConfigureAwait(false);
+            
+            // Handle cyberware categories
+            if (strCategory.StartsWith("Cyberware ", StringComparison.Ordinal))
+                decImprove += await ImprovementManager.ValueOfAsync(_objCharacter, improvementType, 
+                    strImprovedName: strCategory.TrimStartOnce("Cyberware ", true), token: token).ConfigureAwait(false);
+            
+            return decImprove;
         }
 
         /// <summary>
@@ -7391,6 +7445,13 @@ namespace Chummer.Backend.Equipment
                 // Run through the Character's Improvements and add any Reach Improvements.
                 decReach += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Reach,
                     strImprovedName: Name, blnIncludeNonImproved: true, token: token).ConfigureAwait(false);
+                
+                // Include WeaponCategoryReach Improvements.
+                string strCategory = Category;
+                if (strCategory == "Unarmed")
+                    strCategory = "Unarmed Combat";
+                decReach += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.WeaponCategoryReach,
+                    strImprovedName: strCategory, token: token).ConfigureAwait(false);
             }
 
             if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetUnarmedImprovementsApplyToWeaponsAsync(token).ConfigureAwait(false))
@@ -7409,6 +7470,7 @@ namespace Chummer.Backend.Equipment
 
             return decReach.StandardRound();
         }
+
 
         /// <summary>
         /// The full Accuracy of the Weapon including modifiers from accessories.
@@ -9124,6 +9186,14 @@ namespace Chummer.Backend.Equipment
                                 false, Category);
                         decDicePoolModifier += ImprovementManager.ValueOf(
                             _objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId);
+                        decDicePoolModifier += ImprovementManager.ValueOf(
+                            _objCharacter, Improvement.ImprovementType.WeaponSpecificDV, false, InternalId);
+                        decDicePoolModifier += ImprovementManager.ValueOf(
+                            _objCharacter, Improvement.ImprovementType.WeaponSpecificAP, false, InternalId);
+                        decDicePoolModifier += ImprovementManager.ValueOf(
+                            _objCharacter, Improvement.ImprovementType.WeaponSpecificAccuracy, false, InternalId);
+                        decDicePoolModifier += ImprovementManager.ValueOf(
+                            _objCharacter, Improvement.ImprovementType.WeaponSpecificRange, false, InternalId);
 
                         // If the character has a Specialization, include it in the Dice Pool string.
                         if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
@@ -9530,6 +9600,18 @@ namespace Chummer.Backend.Equipment
                                 false, Category, token: token).ConfigureAwait(false);
                         decDicePoolModifier += await ImprovementManager.ValueOfAsync(
                             _objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId,
+                            token: token).ConfigureAwait(false);
+                        decDicePoolModifier += await ImprovementManager.ValueOfAsync(
+                            _objCharacter, Improvement.ImprovementType.WeaponSpecificDV, false, InternalId,
+                            token: token).ConfigureAwait(false);
+                        decDicePoolModifier += await ImprovementManager.ValueOfAsync(
+                            _objCharacter, Improvement.ImprovementType.WeaponSpecificAP, false, InternalId,
+                            token: token).ConfigureAwait(false);
+                        decDicePoolModifier += await ImprovementManager.ValueOfAsync(
+                            _objCharacter, Improvement.ImprovementType.WeaponSpecificAccuracy, false, InternalId,
+                            token: token).ConfigureAwait(false);
+                        decDicePoolModifier += await ImprovementManager.ValueOfAsync(
+                            _objCharacter, Improvement.ImprovementType.WeaponSpecificRange, false, InternalId,
                             token: token).ConfigureAwait(false);
 
                         // If the character has a Specialization, include it in the Dice Pool string.
@@ -10292,7 +10374,31 @@ namespace Chummer.Backend.Equipment
                                              .GetCachedImprovementListForValueOf(
                                                  _objCharacter,
                                                  Improvement.ImprovementType
-                                                     .WeaponSpecificDice, InternalId)))
+                                                     .WeaponSpecificDice, InternalId))
+                                     .Concat(
+                                         ImprovementManager
+                                             .GetCachedImprovementListForValueOf(
+                                                 _objCharacter,
+                                                 Improvement.ImprovementType
+                                                     .WeaponSpecificDV, InternalId))
+                                     .Concat(
+                                         ImprovementManager
+                                             .GetCachedImprovementListForValueOf(
+                                                 _objCharacter,
+                                                 Improvement.ImprovementType
+                                                     .WeaponSpecificAP, InternalId))
+                                     .Concat(
+                                         ImprovementManager
+                                             .GetCachedImprovementListForValueOf(
+                                                 _objCharacter,
+                                                 Improvement.ImprovementType
+                                                     .WeaponSpecificAccuracy, InternalId))
+                                     .Concat(
+                                         ImprovementManager
+                                             .GetCachedImprovementListForValueOf(
+                                                 _objCharacter,
+                                                 Improvement.ImprovementType
+                                                     .WeaponSpecificRange, InternalId)))
                         {
                             sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
                                 strSpace, _objCharacter.GetObjectName(objImprovement),
@@ -10897,7 +11003,31 @@ namespace Chummer.Backend.Equipment
                                      .GetCachedImprovementListForValueOfAsync(
                                          _objCharacter,
                                          Improvement.ImprovementType
-                                             .WeaponSpecificDice, InternalId, token: token).ConfigureAwait(false)))
+                                             .WeaponSpecificDice, InternalId, token: token).ConfigureAwait(false))
+                             .Concat(
+                                 await ImprovementManager
+                                     .GetCachedImprovementListForValueOfAsync(
+                                         _objCharacter,
+                                         Improvement.ImprovementType
+                                             .WeaponSpecificDV, InternalId, token: token).ConfigureAwait(false))
+                             .Concat(
+                                 await ImprovementManager
+                                     .GetCachedImprovementListForValueOfAsync(
+                                         _objCharacter,
+                                         Improvement.ImprovementType
+                                             .WeaponSpecificAP, InternalId, token: token).ConfigureAwait(false))
+                             .Concat(
+                                 await ImprovementManager
+                                     .GetCachedImprovementListForValueOfAsync(
+                                         _objCharacter,
+                                         Improvement.ImprovementType
+                                             .WeaponSpecificAccuracy, InternalId, token: token).ConfigureAwait(false))
+                             .Concat(
+                                 await ImprovementManager
+                                     .GetCachedImprovementListForValueOfAsync(
+                                         _objCharacter,
+                                         Improvement.ImprovementType
+                                             .WeaponSpecificRange, InternalId, token: token).ConfigureAwait(false)))
                     {
                         sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
                             strSpace,

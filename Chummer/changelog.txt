@@ -129,6 +129,18 @@ Application Changes:
 - Fixed MysAdeptAllowPpCareer, MysAdeptSecondMAGAttribute and PrioritySpellsAsAdeptPowers not saving values correctly when being disabled.
 - Added support for Gear objects to use the 'sameparent' attribute in requirement and forbidden nodes. This allows for checking properties of the parent item of the gear item, such as checking whether the parent already has another gear object.
 - Removed Math.Max from gear Capacity calculation when using complex formulas that prevented using [-Rating] or similar.
+- Added new improvement types for Weapons:
+    - Added WeaponCategoryDice - applies dice pool bonuses to all weapons in a category
+    - Added WeaponCategoryAP - applies armor penetration bonuses to all weapons in a category
+    - Added WeaponCategoryAccuracy - applies accuracy bonuses to all weapons in a category
+    - Added WeaponCategoryReach - applies reach bonuses to all melee weapons in a category
+    - Added WeaponSpecificDice - applies dice pool bonuses to specific weapons
+    - Added WeaponSpecificDV - applies damage value bonuses to specific weapons
+    - Added WeaponSpecificAP - applies armor penetration bonuses to specific weapons
+    - Added WeaponSpecificAccuracy - applies accuracy bonuses to specific weapons
+    - Added WeaponSpecificRange - applies range bonuses to specific weapons
+- Consolidated weapon category improvement logic into reusable GetWeaponCategoryImprovements() methods
+- Refactored AP and damage calculations to use new consolidated improvement methods
 - Implemented a bonus type (cyberlimbattributebonus) to provide AGI or STR bonuses to cyberware attribute bonuses. Example behaviour:
 
 <!-- Simple values -->
@@ -229,6 +241,7 @@ Data Changes:
 - Added nuyen and essence filters in the equipment selection screen to allow filtering by maximum essence cost and by maximum nuyen cost.
 - Refactored life modules that grant SINs to use the new qualitylevel improvement type. Existing characters with life modules that grant SINs will need to reapply their improvements to see any changes and may find it preferable to remove and re-add the modules.
 - Fixed the additional optional powers for infected from Dark Terrors not having the correct filters.
+- Refactored Critical Strike to use updated structure. Should not affect existing characters.
 
 Fixes implemented by BM123499
 
