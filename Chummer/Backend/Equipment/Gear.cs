@@ -4314,7 +4314,7 @@ namespace Chummer.Backend.Equipment
                 {
                     decReturn = ProcessRatingStringAsDec(strReturn, () => Rating, out bool blnIsSuccess);
                     if (blnIsSuccess)
-                        strReturn = Math.Max(decReturn, 1.0m).ToString("#,0.##", objCulture);
+                        strReturn = decReturn.ToString("#,0.##", objCulture);
                 }
                 else
                 {
@@ -4393,7 +4393,7 @@ namespace Chummer.Backend.Equipment
                     bool blnIsSuccess;
                     (decReturn, blnIsSuccess) = await ProcessRatingStringAsDecAsync(strReturn, () => GetRatingAsync(token), token).ConfigureAwait(false);
                     if (blnIsSuccess)
-                        strReturn = Math.Max(decReturn, 1.0m).ToString("#,0.##", objCulture);
+                        strReturn = decReturn.ToString("#,0.##", objCulture);
                 }
                 else
                 {

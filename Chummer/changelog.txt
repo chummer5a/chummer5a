@@ -128,6 +128,7 @@ Application Changes:
 - When searching in the Select Weapon Accessory window, an indicator will be shown for accessories that are not compatible with the currently selected weapon's mounts.
 - Fixed MysAdeptAllowPpCareer, MysAdeptSecondMAGAttribute and PrioritySpellsAsAdeptPowers not saving values correctly when being disabled.
 - Added support for Gear objects to use the 'sameparent' attribute in requirement and forbidden nodes. This allows for checking properties of the parent item of the gear item, such as checking whether the parent already has another gear object.
+- Removed Math.Max from gear Capacity calculation when using complex formulas that prevented using [-Rating] or similar.
 - Implemented a bonus type (cyberlimbattributebonus) to provide AGI or STR bonuses to cyberware attribute bonuses. Example behaviour:
 
 <!-- Simple values -->
