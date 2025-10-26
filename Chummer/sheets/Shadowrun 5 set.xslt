@@ -1624,8 +1624,7 @@
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
         </xsl:if>
         <td>
-          <xsl:value-of select="name" />
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
+            <xsl:value-of select="fullname" />
         </td>
       </tr>
       <xsl:if test="notes != '' and $ProduceNotes">
@@ -1651,8 +1650,7 @@
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
         </xsl:if>
         <td>
-          <xsl:value-of select="name" />
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
+          <xsl:value-of select="fullname" />
         </td>
       </tr>
       <xsl:if test="notes != '' and $ProduceNotes">
@@ -1678,8 +1676,7 @@
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
         </xsl:if>
         <td>
-          <xsl:value-of select="name" />
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
+            <xsl:value-of select="fullname" />
         </td>
       </tr>
       <xsl:if test="notes != '' and $ProduceNotes">
