@@ -2829,7 +2829,7 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            IAsyncDisposable objLocker3 = await _objLinkedCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                            IAsyncDisposable objLocker3 = await _objLinkedCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                             try
                             {
                                 token.ThrowIfCancellationRequested();

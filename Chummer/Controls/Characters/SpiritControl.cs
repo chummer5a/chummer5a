@@ -298,11 +298,15 @@ namespace Chummer
                         .ConfigureAwait(false);
                     await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
 
-                    // Set the relative path.
-                    Uri uriApplication = new Uri(Utils.GetStartupPath);
-                    Uri uriFile = new Uri(await _objSpirit.GetFileNameAsync(_objMyToken).ConfigureAwait(false));
-                    Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
-                    await _objSpirit.SetRelativeFileNameAsync("../" + uriRelative.ToString(), _objMyToken).ConfigureAwait(false);
+                    // Set the relative path only if there was a filename to work with
+                    string strFileName = await _objSpirit.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strFileName))
+                    {
+                        Uri uriApplication = new Uri(Utils.GetStartupPath);
+                        Uri uriFile = new Uri(strFileName);
+                        Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
+                        await _objSpirit.SetRelativeFileNameAsync("../" + uriRelative.ToString(), _objMyToken).ConfigureAwait(false);
+                    }
                 }
             }
             catch (OperationCanceledException)
