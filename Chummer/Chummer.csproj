@@ -175,6 +175,9 @@
     <Content Include="customdata\Shapeshifter Provisional Run Faster Errata\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="data\groups.xml" >
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Update="data\drugcomponents.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -25689,6 +25692,9 @@
     <Compile Remove="Forms\Selection Forms\SelectProgramOption.Designer.cs" />
     <Compile Remove="InheritedListView.cs" />
     <Compile Remove="packages\Codaxy.WkHtmlToPdf.0.5.8\content\PdfConvert.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="data\groups.xml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Ben.Demystifier" Version="0.4.1" />

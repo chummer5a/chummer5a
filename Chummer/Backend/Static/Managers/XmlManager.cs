@@ -954,6 +954,13 @@ namespace Chummer
                                                 }
                                             }
 
+                                            // Load groups.xml first to make group definitions available for all other processing
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                LoadGroupsFile(xmlReturn, token);
+                                            else
+                                                await LoadGroupsFileAsync(xmlReturn, token).ConfigureAwait(false);
+
                                             // Load any override data files the user might have. Do not attempt this if we're loading the Improvements file.
                                             if (blnHasCustomData)
                                             {
@@ -1009,6 +1016,13 @@ namespace Chummer
                                                     }
                                                 }
                                             }
+
+                                            // Resolve group references again after custom data processing
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ResolveGroupReferences(xmlReturn, token);
+                                            else
+                                                await ResolveGroupReferencesAsync(xmlReturn, token).ConfigureAwait(false);
 
                                             // Cache the merged document and its relevant information
                                             if (blnSync)
@@ -3382,6 +3396,382 @@ namespace Chummer
                     // </results>
                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                     await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Resolve group references in an XML document by expanding groupref elements with their constituent items.
+        /// This method processes the document in two passes: first collecting group definitions from the current document or groups.xml, then resolving references.
+        /// </summary>
+        /// <param name="xmlDoc">The XML document to process</param>
+        /// <param name="token">Cancellation token to use</param>
+        private static async Task ResolveGroupReferencesAsync(XmlDocument xmlDoc, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (xmlDoc?.DocumentElement == null)
+                return;
+
+            // First pass: collect all group definitions
+            Dictionary<string, List<string>> dicGroups = new Dictionary<string, List<string>>();
+            
+            // First try to find group definitions in the current document
+            using (XmlNodeList xmlGroups = xmlDoc.SelectNodes("/chummer/groups/group"))
+            {
+                if (xmlGroups?.Count > 0)
+                {
+                    Log.Info($"Found {xmlGroups.Count} groups in document for resolution");
+                    foreach (XmlNode xmlGroup in xmlGroups)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strGroupId = xmlGroup["id"]?.InnerText;
+                        if (string.IsNullOrEmpty(strGroupId)) 
+                        {
+                            Log.Warn("Group found but no ID attribute");
+                            continue;
+                        }
+                        
+                        Log.Info($"Processing group: {strGroupId}");
+                        List<string> lstItems = new List<string>();
+                        using (XmlNodeList xmlItems = xmlGroup.SelectNodes("items/*"))
+                        {
+                            if (xmlItems?.Count > 0)
+                            {
+                                Log.Info($"Found {xmlItems.Count} items in group {strGroupId}");
+                                foreach (XmlNode xmlItem in xmlItems)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    string strItemText = xmlItem.InnerText;
+                                    Log.Info($"Adding item to group {strGroupId}: {strItemText}");
+                                    lstItems.Add(strItemText);
+                                }
+                            }
+                            else
+                            {
+                                Log.Warn($"No items found in group {strGroupId}");
+                            }
+                        }
+                        dicGroups[strGroupId] = lstItems;
+                        Log.Info($"Loaded group '{strGroupId}' with {lstItems.Count} items");
+                    }
+                }
+                else
+                {
+                    Log.Warn("No groups found in document for resolution");
+                    // Let's also check if there's a groups section at all
+                    XmlNode xmlGroupsSection = xmlDoc.SelectSingleNode("/chummer/groups");
+                    if (xmlGroupsSection == null)
+                    {
+                        Log.Warn("No groups section found in document");
+                    }
+                    else
+                    {
+                        Log.Warn($"Groups section exists but contains {xmlGroupsSection.ChildNodes.Count} child nodes");
+                    }
+                }
+            }
+
+            // Groups should already be loaded into the document by LoadGroupsFileAsync
+            // No need to load groups.xml again here as it would create a circular dependency
+
+            // Second pass: resolve group references throughout the document
+            Log.Info($"Dictionary contains {dicGroups.Count} groups after parsing");
+            foreach (var kvp in dicGroups)
+            {
+                Log.Info($"Group '{kvp.Key}' has {kvp.Value.Count} items");
+            }
+            
+            if (dicGroups.Count > 0)
+            {
+                Log.Info($"Resolving group references with {dicGroups.Count} groups available");
+                await ResolveGroupReferencesInNodeAsync(xmlDoc.DocumentElement, dicGroups, token).ConfigureAwait(false);
+            }
+            else
+            {
+                Log.Warn("No groups available for resolution");
+            }
+        }
+
+        /// <summary>
+        /// Recursively resolve group references within a specific XML node and its children.
+        /// </summary>
+        /// <param name="xmlNode">The XML node to process</param>
+        /// <param name="dicGroups">Dictionary of group definitions</param>
+        /// <param name="token">Cancellation token to use</param>
+        private static async Task ResolveGroupReferencesInNodeAsync(XmlNode xmlNode, Dictionary<string, List<string>> dicGroups, CancellationToken token = default)
+        {
+            if (xmlNode == null) 
+                return;
+            
+            token.ThrowIfCancellationRequested();
+            
+            // Process all child nodes - collect them first to avoid modification during iteration
+            List<XmlNode> lstNodesToProcess = new List<XmlNode>();
+            foreach (XmlNode xmlChild in xmlNode.ChildNodes)
+            {
+                lstNodesToProcess.Add(xmlChild);
+            }
+            
+            foreach (XmlNode xmlChild in lstNodesToProcess)
+            {
+                token.ThrowIfCancellationRequested();
+                
+                if (xmlChild.Name == "groupref")
+                {
+                    string strGroupId = xmlChild.InnerText;
+                    if (dicGroups.TryGetValue(strGroupId, out List<string> lstGroupItems))
+                    {
+                        // Replace the groupref with individual items
+                        XmlNode xmlParent = xmlChild.ParentNode;
+                        if (xmlParent != null)
+                        {
+                            // Determine the element name to use for the expanded items
+                            // Use the parent node's name (e.g., "quality" if parent is "oneof")
+                            string strElementName = xmlParent.Name;
+                            
+                            foreach (string strItem in lstGroupItems)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                XmlElement xmlNewItem = xmlChild.OwnerDocument.CreateElement(strElementName);
+                                xmlNewItem.InnerText = strItem;
+                                xmlParent.InsertBefore(xmlNewItem, xmlChild);
+                            }
+                            xmlParent.RemoveChild(xmlChild);
+                        }
+                    }
+                }
+                else if (xmlChild.HasChildNodes)
+                {
+                    // Recursively process child nodes
+                    await ResolveGroupReferencesInNodeAsync(xmlChild, dicGroups, token).ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Load groups.xml file and merge its group definitions into the main document.
+        /// </summary>
+        /// <param name="xmlDoc">The main XML document to merge groups into</param>
+        /// <param name="token">Cancellation token</param>
+        private static void LoadGroupsFile(XmlDocument xmlDoc, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (xmlDoc?.DocumentElement == null)
+                return;
+
+            try
+            {
+                string strGroupsPath = Path.Combine(Utils.GetStartupPath, "data", "groups.xml");
+                if (!File.Exists(strGroupsPath))
+                    return;
+
+                XmlDocument xmlGroupsDoc = new XmlDocument();
+                xmlGroupsDoc.Load(strGroupsPath);
+
+                // Find or create the groups section in the main document
+                XmlNode xmlMainGroups = xmlDoc.SelectSingleNode("/chummer/groups");
+                if (xmlMainGroups == null)
+                {
+                    xmlMainGroups = xmlDoc.CreateElement("groups");
+                    xmlDoc.DocumentElement.AppendChild(xmlMainGroups);
+                }
+
+                // Copy all group definitions from groups.xml
+                using (XmlNodeList xmlGroups = xmlGroupsDoc.SelectNodes("/chummer/groups/group"))
+                {
+                    if (xmlGroups?.Count > 0)
+                    {
+                        foreach (XmlNode xmlGroup in xmlGroups)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            XmlNode xmlImportedGroup = xmlDoc.ImportNode(xmlGroup, true);
+                            xmlMainGroups.AppendChild(xmlImportedGroup);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Warn(e);
+                Utils.BreakIfDebug();
+            }
+        }
+
+        /// <summary>
+        /// Load groups.xml file and merge its group definitions into the main document (async version).
+        /// </summary>
+        /// <param name="xmlDoc">The main XML document to merge groups into</param>
+        /// <param name="token">Cancellation token</param>
+        private static Task LoadGroupsFileAsync(XmlDocument xmlDoc, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (xmlDoc?.DocumentElement == null)
+                return Task.CompletedTask;
+
+            try
+            {
+                string strGroupsPath = Path.Combine(Utils.GetStartupPath, "data", "groups.xml");
+                if (!File.Exists(strGroupsPath))
+                {
+                    Log.Warn("groups.xml file not found");
+                    return Task.CompletedTask;
+                }
+
+                XmlDocument xmlGroupsDoc = new XmlDocument();
+                using (FileStream fs = new FileStream(strGroupsPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    // Load the XML document synchronously within the async method
+                    xmlGroupsDoc.Load(fs);
+                }
+
+                // Find or create the groups section in the main document
+                XmlNode xmlMainGroups = xmlDoc.SelectSingleNode("/chummer/groups");
+                if (xmlMainGroups == null)
+                {
+                    xmlMainGroups = xmlDoc.CreateElement("groups");
+                    xmlDoc.DocumentElement.AppendChild(xmlMainGroups);
+                    Log.Info("Created groups section in document");
+                }
+
+                // Copy all group definitions from groups.xml
+                using (XmlNodeList xmlGroups = xmlGroupsDoc.SelectNodes("/chummer/groups/group"))
+                {
+                    if (xmlGroups?.Count > 0)
+                    {
+                        Log.Info($"Loading {xmlGroups.Count} groups from groups.xml into document");
+                        foreach (XmlNode xmlGroup in xmlGroups)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            string strGroupId = xmlGroup["id"]?.InnerText;
+                            Log.Info($"Loading group: {strGroupId}");
+                            XmlNode xmlImportedGroup = xmlDoc.ImportNode(xmlGroup, true);
+                            xmlMainGroups.AppendChild(xmlImportedGroup);
+                        }
+                        Log.Info($"Successfully loaded {xmlGroups.Count} groups into document");
+                    }
+                    else
+                    {
+                        Log.Warn("No groups found in groups.xml");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Warn(e);
+                Utils.BreakIfDebug();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Resolve group references in an XML document by expanding groupref elements with their constituent items.
+        /// This method processes the document in two passes: first collecting group definitions from the current document or groups.xml, then resolving references.
+        /// Synchronous version.
+        /// </summary>
+        /// <param name="xmlDoc">The XML document to process</param>
+        /// <param name="token">Cancellation token to use</param>
+        private static void ResolveGroupReferences(XmlDocument xmlDoc, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (xmlDoc?.DocumentElement == null)
+                return;
+
+            // First pass: collect all group definitions
+            Dictionary<string, List<string>> dicGroups = new Dictionary<string, List<string>>();
+            
+            // First try to find group definitions in the current document
+            using (XmlNodeList xmlGroups = xmlDoc.SelectNodes("/chummer/groups/group"))
+            {
+                if (xmlGroups?.Count > 0)
+                {
+                    foreach (XmlNode xmlGroup in xmlGroups)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strGroupId = xmlGroup["id"]?.InnerText;
+                        if (string.IsNullOrEmpty(strGroupId)) 
+                            continue;
+                        
+                        List<string> lstItems = new List<string>();
+                        using (XmlNodeList xmlItems = xmlGroup.SelectNodes("items/*"))
+                        {
+                            if (xmlItems?.Count > 0)
+                            {
+                                foreach (XmlNode xmlItem in xmlItems)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    lstItems.Add(xmlItem.InnerText);
+                                }
+                            }
+                        }
+                        dicGroups[strGroupId] = lstItems;
+                    }
+                }
+            }
+
+            // Groups should already be loaded into the document by LoadGroupsFileAsync
+            // No need to load groups.xml again here as it would create a circular dependency
+
+            // Second pass: resolve group references throughout the document
+            if (dicGroups.Count > 0)
+            {
+                ResolveGroupReferencesInNode(xmlDoc.DocumentElement, dicGroups, token);
+            }
+        }
+
+        /// <summary>
+        /// Recursively resolve group references within a specific XML node and its children.
+        /// Synchronous version.
+        /// </summary>
+        /// <param name="xmlNode">The XML node to process</param>
+        /// <param name="dicGroups">Dictionary of group definitions</param>
+        /// <param name="token">Cancellation token to use</param>
+        private static void ResolveGroupReferencesInNode(XmlNode xmlNode, Dictionary<string, List<string>> dicGroups, CancellationToken token = default)
+        {
+            if (xmlNode == null) 
+                return;
+            
+            token.ThrowIfCancellationRequested();
+            
+            // Process all child nodes - collect them first to avoid modification during iteration
+            List<XmlNode> lstNodesToProcess = new List<XmlNode>();
+            foreach (XmlNode xmlChild in xmlNode.ChildNodes)
+            {
+                lstNodesToProcess.Add(xmlChild);
+            }
+            
+            foreach (XmlNode xmlChild in lstNodesToProcess)
+            {
+                token.ThrowIfCancellationRequested();
+                
+                if (xmlChild.Name == "groupref")
+                {
+                    string strGroupId = xmlChild.InnerText;
+                    if (dicGroups.TryGetValue(strGroupId, out List<string> lstGroupItems))
+                    {
+                        // Replace the groupref with individual items
+                        XmlNode xmlParent = xmlChild.ParentNode;
+                        if (xmlParent != null)
+                        {
+                            // Determine the element name to use for the expanded items
+                            // Use the parent node's name (e.g., "quality" if parent is "oneof")
+                            string strElementName = xmlParent.Name;
+                            
+                            foreach (string strItem in lstGroupItems)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                XmlElement xmlNewItem = xmlChild.OwnerDocument.CreateElement(strElementName);
+                                xmlNewItem.InnerText = strItem;
+                                xmlParent.InsertBefore(xmlNewItem, xmlChild);
+                            }
+                            xmlParent.RemoveChild(xmlChild);
+                        }
+                    }
+                }
+                else if (xmlChild.HasChildNodes)
+                {
+                    // Recursively process child nodes
+                    ResolveGroupReferencesInNode(xmlChild, dicGroups, token);
                 }
             }
         }

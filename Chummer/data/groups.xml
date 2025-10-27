@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema groups.xsd">
+
+  <!-- Group Definitions for Reference System -->
+  <groups>
+    <group id="ghoul_qualities">
+      <name>Infected: Ghoul Qualities</name>
+      <description>All variants of the Infected: Ghoul quality</description>
+      <items>
+        <quality>Infected: Ghoul (Dwarf)</quality>
+        <quality>Infected: Ghoul (Elf)</quality>
+        <quality>Infected: Ghoul (Human)</quality>
+        <quality>Infected: Ghoul (Ork)</quality>
+        <quality>Infected: Ghoul (Sasquatch)</quality>
+        <quality>Infected: Ghoul (Troll)</quality>
+      </items>
+    </group>
+    <group id="vampire_qualities">
+      <name>Infected: Vampire Qualities</name>
+      <description>All variants of the Infected: Vampire quality</description>
+      <items>
+        <quality>Infected: Vampire (Human)</quality>
+        <quality>Infected: Vampire (Non-Human)</quality>
+      </items>
+    </group>
+    <group id="infected_qualities">
+      <name>Infected Qualities</name>
+      <description>All infected qualities</description>
+      <items>
+        <groupref>ghoul_qualities</groupref>
+        <groupref>vampire_qualities</groupref>
+        <quality>Infected: Bandersnatch</quality>
+        <quality>Infected: Banshee</quality>
+        <quality>Infected: Dzoo-Noo-Qua</quality>
+        <quality>Infected: Fomoraig</quality>
+        <quality>Infected: Gnawer</quality>
+        <quality>Infected: Goblin</quality>
+        <quality>Infected: Grendel</quality>
+        <quality>Infected: Harvester</quality>
+        <quality>Infected: Loup-Garou</quality>
+        <quality>Infected: Mutaqua</quality>
+        <quality>Infected: Nosferatu</quality>
+        <quality>Infected: Sukuyan (Human)</quality>
+        <quality>Infected: Sukuyan (Non-Human)</quality>
+        <quality>Infected: Wendigo</quality>
+      </items>
+    </group>
+    <group id="magic_qualities">
+      <name>Magic Qualities</name>
+      <description>Qualities related to magic and magical abilities</description>
+      <items>
+        <quality>Adept</quality>
+        <quality>Aware</quality>
+        <quality>Aspected Magician</quality>
+        <quality>Enchanter</quality>
+        <quality>Explorer</quality>
+        <quality>Apprentice</quality>
+        <quality>Magician</quality>
+        <quality>Mystic Adept</quality>
+      </items>
+    </group>
+  </groups>
+</chummer>
