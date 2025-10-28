@@ -653,7 +653,7 @@ namespace Chummer.UI.Attributes
                                 intOldBase = 0;
                             }
 
-                            await nudBase.DoThreadSafeAsync(x => x.Value = intOldBase, token: _objMyToken)
+                            await nudBase.DoThreadSafeAsync(x => x.SetValueSafely(intOldBase), token: _objMyToken)
                                 .ConfigureAwait(false);
                             return;
                         }
@@ -739,7 +739,7 @@ namespace Chummer.UI.Attributes
                                 intOldKarma = 0;
                             }
 
-                            await nudKarma.DoThreadSafeAsync(x => x.Value = intOldKarma, token: _objMyToken)
+                            await nudKarma.DoThreadSafeAsync(x => x.SetValueSafely(intOldKarma), token: _objMyToken)
                                 .ConfigureAwait(false);
                             return;
                         }
@@ -899,7 +899,7 @@ namespace Chummer.UI.Attributes
                 await nudKarma.DoThreadSafeAsync(x =>
                 {
                     if (x.ValueAsInt >= intIncrement)
-                        x.ValueAsInt -= intIncrement;
+                        x.SetValueSafely(x.ValueAsInt - intIncrement);
                     else
                         e.Cancel = true;
                 }, token: _objMyToken).ConfigureAwait(false);
@@ -936,7 +936,7 @@ namespace Chummer.UI.Attributes
                 await nudBase.DoThreadSafeAsync(x =>
                 {
                     if (x.ValueAsInt >= intIncrement)
-                        x.ValueAsInt -= intIncrement;
+                        x.SetValueSafely(x.ValueAsInt - intIncrement);
                     else
                         e.Cancel = true;
                 }, token: _objMyToken).ConfigureAwait(false);
