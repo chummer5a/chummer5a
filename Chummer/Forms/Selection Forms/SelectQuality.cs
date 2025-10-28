@@ -336,9 +336,9 @@ namespace Chummer
             if (decMaximumBP < decMinimumBP)
             {
                 if (sender == nudMaximumBP)
-                    await nudMinimumBP.DoThreadSafeAsync(x => x.Value = decMaximumBP).ConfigureAwait(false);
+                    await nudMinimumBP.DoThreadSafeAsync(x => x.SetValueSafely(decMaximumBP)).ConfigureAwait(false);
                 else
-                    await nudMaximumBP.DoThreadSafeAsync(x => x.Value = decMinimumBP).ConfigureAwait(false);
+                    await nudMaximumBP.DoThreadSafeAsync(x => x.SetValueSafely(decMinimumBP)).ConfigureAwait(false);
             }
 
             _blnLoading = false;

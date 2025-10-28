@@ -244,7 +244,7 @@ namespace Chummer.UI.Attributes
                                 {
                                     x.Maximum = intPriorityMaximum;
                                     x.Enabled = blnBaseUnlocked;
-                                    x.Value = intBase;
+                                    x.SetValueSafely(intBase, intPriorityMaximum);
                                 }, token)
                                 .ConfigureAwait(false);
                         }
@@ -264,7 +264,7 @@ namespace Chummer.UI.Attributes
                         await nudBase.DoThreadSafeAsync(x =>
                             {
                                 x.Maximum = intPriorityMaximum;
-                                x.Value = intBase;
+                                x.SetValueSafely(intBase, intPriorityMaximum);
                             }, token)
                             .ConfigureAwait(false);
                     }
@@ -285,7 +285,7 @@ namespace Chummer.UI.Attributes
                         await nudBase.DoThreadSafeAsync(x =>
                             {
                                 x.Enabled = blnBaseUnlocked;
-                                x.Value = intBase;
+                                x.SetValueSafely(intBase);
                             }, token)
                             .ConfigureAwait(false);
                     }
@@ -298,7 +298,7 @@ namespace Chummer.UI.Attributes
                     int intBase =
                         await objAttrib.GetBaseAsync(token)
                             .ConfigureAwait(false);
-                    await nudBase.DoThreadSafeAsync(x => x.Value = intBase, token)
+                    await nudBase.DoThreadSafeAsync(x => x.SetValueSafely(intBase), token)
                         .ConfigureAwait(false);
                 }
 
@@ -315,7 +315,7 @@ namespace Chummer.UI.Attributes
                         await nudKarma.DoThreadSafeAsync(x =>
                             {
                                 x.Maximum = intKarmaMaximum;
-                                x.Value = intKarma;
+                                x.SetValueSafely(intKarma, intKarmaMaximum);
                             }, token)
                             .ConfigureAwait(false);
                     }
@@ -328,7 +328,7 @@ namespace Chummer.UI.Attributes
                     int intKarma =
                         await objAttrib.GetKarmaAsync(token)
                             .ConfigureAwait(false);
-                    await nudKarma.DoThreadSafeAsync(x => x.Value = intKarma, token)
+                    await nudKarma.DoThreadSafeAsync(x => x.SetValueSafely(intKarma), token)
                         .ConfigureAwait(false);
                 }
             }
@@ -388,14 +388,14 @@ namespace Chummer.UI.Attributes
                             await nudKarma.DoThreadSafeAsync(x =>
                                 {
                                     x.Maximum = intKarmaMaximum;
-                                    x.Value = intKarma;
+                                    x.SetValueSafely(intKarma, intKarmaMaximum);
                                 }, _objMyToken)
                                 .ConfigureAwait(false);
                             await nudBase.DoThreadSafeAsync(x =>
                                 {
                                     x.Enabled = blnBaseUnlocked;
                                     x.Maximum = intPriorityMaximum;
-                                    x.Value = intBase;
+                                    x.SetValueSafely(intBase, intPriorityMaximum);
                                 }, _objMyToken)
                                 .ConfigureAwait(false);
                             await nudBase.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
@@ -640,21 +640,21 @@ namespace Chummer.UI.Attributes
                                     intValue, _objMyToken)
                                 .ConfigureAwait(false))
                         {
-                            await nudBase.DoThreadSafeAsync(x =>
+                            // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to.
+                            int intPriorityMaximum = await objAttribute.GetPriorityMaximumAsync(_objMyToken).ConfigureAwait(false);
+                            if (intOldBase > intPriorityMaximum)
                             {
-                                decimal newValue = Math.Max(x.Value - 1, 0);
-                                if (newValue > x.Maximum)
-                                {
-                                    newValue = x.Maximum;
-                                }
+                                intOldBase = intPriorityMaximum;
+                            }
+                            if (intOldBase < 0)
+                            {
+                                int intOldBaseLocal = intOldBase;
+                                await nudKarma.DoThreadSafeAsync(x => x.AdjustValueSafely(-intOldBaseLocal), token: _objMyToken).ConfigureAwait(false);
+                                intOldBase = 0;
+                            }
 
-                                if (newValue < x.Minimum)
-                                {
-                                    newValue = x.Minimum;
-                                }
-
-                                x.Value = newValue;
-                            }, token: _objMyToken).ConfigureAwait(false);
+                            await nudBase.DoThreadSafeAsync(x => x.Value = intOldBase, token: _objMyToken)
+                                .ConfigureAwait(false);
                             return;
                         }
 
@@ -735,21 +735,7 @@ namespace Chummer.UI.Attributes
                             if (intOldKarma < 0)
                             {
                                 int intOldKarmaLocal = intOldKarma;
-                                await nudBase.DoThreadSafeAsync(x =>
-                                {
-                                    decimal newValue = Math.Max(x.Value - intOldKarmaLocal, 0);
-                                    if (newValue > x.Maximum)
-                                    {
-                                        newValue = x.Maximum;
-                                    }
-
-                                    if (newValue < x.Minimum)
-                                    {
-                                        newValue = x.Minimum;
-                                    }
-
-                                    x.Value = newValue;
-                                }, token: _objMyToken).ConfigureAwait(false);
+                            await nudBase.DoThreadSafeAsync(x => x.AdjustValueSafely(-intOldKarmaLocal), token: _objMyToken).ConfigureAwait(false);
                                 intOldKarma = 0;
                             }
 

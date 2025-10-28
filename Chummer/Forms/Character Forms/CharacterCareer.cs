@@ -500,7 +500,7 @@ namespace Chummer
                                             {
                                                 x.Minimum = 1;
                                                 x.Maximum = intMugshotCount;
-                                                x.Value = Math.Max(intMainMugshotIndex, 0) + 1;
+                                                x.SetValueSafely(Math.Max(intMainMugshotIndex, 0) + 1);
                                             }, GenericToken).ConfigureAwait(false);
                                         }
                                         else
@@ -7082,7 +7082,7 @@ namespace Chummer
                 await nudMugshotIndex.DoThreadSafeAsync(x =>
                 {
                     ++x.Maximum;
-                    x.Value = intMugshotCount;
+                    x.SetValueSafely(intMugshotCount);
                 }, GenericToken).ConfigureAwait(false);
                 await SetDirty(true).ConfigureAwait(false);
             }
@@ -9336,7 +9336,7 @@ namespace Chummer
                         try
                         {
                             x.Maximum = intMaxRating;
-                            x.Value = intLevels;
+                            x.SetValueSafely(intLevels, intMaxRating);
                             x.Enabled = true;
                         }
                         finally

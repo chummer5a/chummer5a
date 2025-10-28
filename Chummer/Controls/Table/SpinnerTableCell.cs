@@ -97,7 +97,7 @@ namespace Chummer.UI.Table
                     return;
                 try
                 {
-                    nudSpinner.Value = Math.Min(Math.Max(Utils.SafelyRunSynchronously(() => ValueGetter(tValue, _objMyToken), _objMyToken), nudSpinner.Minimum), nudSpinner.Maximum);
+                    nudSpinner.SetValueSafely(Utils.SafelyRunSynchronously(() => ValueGetter(tValue, _objMyToken), _objMyToken));
                 }
                 finally
                 {
@@ -151,7 +151,7 @@ namespace Chummer.UI.Table
                             x.Maximum = Math.Max(decMax, decMin);
                         if (blnDoEnabled)
                             x.Enabled = blnEnabled;
-                        x.Value = Math.Min(Math.Max(decValue, x.Minimum), x.Maximum);
+                        x.SetValueSafely((int)decValue);
                     }, token: token).ConfigureAwait(false);
                 }
                 finally

@@ -606,7 +606,7 @@ namespace Chummer
                                             {
                                                 x.Minimum = 1;
                                                 x.Maximum = intMugshotCount;
-                                                x.Value = Math.Max(intMainMugshotIndex, 0) + 1;
+                                                x.SetValueSafely(Math.Max(intMainMugshotIndex, 0) + 1);
                                             }, GenericToken).ConfigureAwait(false);
                                         }
                                         else

@@ -441,9 +441,9 @@ namespace Chummer
                     if (decMaximumCost < decMinimumCost)
                     {
                         if (sender == nudMaximumCost)
-                            await nudMinimumCost.DoThreadSafeAsync(x => x.Value = decMaximumCost, _objGenericToken).ConfigureAwait(false);
+                            await nudMinimumCost.DoThreadSafeAsync(x => x.SetValueSafely(decMaximumCost), _objGenericToken).ConfigureAwait(false);
                         else
-                            await nudMaximumCost.DoThreadSafeAsync(x => x.Value = decMinimumCost, _objGenericToken).ConfigureAwait(false);
+                            await nudMaximumCost.DoThreadSafeAsync(x => x.SetValueSafely(decMinimumCost), _objGenericToken).ConfigureAwait(false);
                     }
                 }
 

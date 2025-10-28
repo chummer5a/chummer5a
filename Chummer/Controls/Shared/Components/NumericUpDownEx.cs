@@ -683,5 +683,88 @@ namespace Chummer
         }
 
         #endregion UpDownButtons visibility management
+
+        #region Safe Value Setting Methods
+        #region Integer input
+        /// <summary>
+        /// Safely sets the value, ensuring it doesn't exceed the maximum.
+        /// </summary>
+        /// <param name="value">The value to set</param>
+        public void SetValueSafely(int value)
+        {
+            int intAdjustedValue = Math.Min(value, (int)Maximum);
+            Value = intAdjustedValue;
+        }
+
+        /// <summary>
+        /// Safely sets the value with a known maximum, ensuring it doesn't exceed the maximum.
+        /// </summary>
+        /// <param name="value">The value to set</param>
+        /// <param name="maximum">The maximum value to enforce</param>
+        public void SetValueSafely(int value, int maximum)
+        {
+            int intAdjustedValue = Math.Min(value, maximum);
+            Value = intAdjustedValue;
+        }
+
+        /// <summary>
+        /// Safely adjusts the value by a given amount, ensuring it stays within the minimum and maximum bounds.
+        /// </summary>
+        /// <param name="adjustment">The amount to adjust the value by (can be negative)</param>
+        public void AdjustValueSafely(int adjustment)
+        {
+            decimal newValue = Math.Max(Value - adjustment, 0);
+            if (newValue > Maximum)
+            {
+                newValue = Maximum;
+            }
+            if (newValue < Minimum)
+            {
+                newValue = Minimum;
+            }
+            Value = newValue;
+        }
+        #endregion
+        #region Decimal input
+        /// <summary>
+        /// Safely sets the value, ensuring it doesn't exceed the maximum.
+        /// </summary>
+        /// <param name="value">The value to set</param>
+        public void SetValueSafely(decimal value)
+        {
+            decimal decAdjustedValue = Math.Min(value, Maximum);
+            Value = decAdjustedValue;
+        }
+
+        /// <summary>
+        /// Safely sets the value with a known maximum, ensuring it doesn't exceed the maximum.
+        /// </summary>
+        /// <param name="value">The value to set</param>
+        /// <param name="maximum">The maximum value to enforce</param>
+        public void SetValueSafely(decimal value, decimal maximum)
+        {
+            decimal decAdjustedValue = Math.Min(value, maximum);
+            Value = decAdjustedValue;
+        }
+
+        /// <summary>
+        /// Safely adjusts the value by a given amount, ensuring it stays within the minimum and maximum bounds.
+        /// </summary>
+        /// <param name="adjustment">The amount to adjust the value by (can be negative)</param>
+        public void AdjustValueSafely(decimal adjustment)
+        {
+            decimal newValue = Math.Max(Value - adjustment, 0);
+            if (newValue > Maximum)
+            {
+                newValue = Maximum;
+            }
+            if (newValue < Minimum)
+            {
+                newValue = Minimum;
+            }
+            Value = newValue;
+        }
+        #endregion
+        #endregion Safe Value Setting Methods
     }
 }
