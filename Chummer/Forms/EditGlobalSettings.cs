@@ -1320,26 +1320,24 @@ namespace Chummer
 
         private async Task RefreshGlobalSourcebookInfosListView(CancellationToken token = default)
         {
-            // Load the Sourcebook information.
+            // Load the Sourcebook information from GlobalSettings, which includes both main and custom books. Custom books are only surfaced if they have been added to any CharacterSettings.
             // Put the Sourcebooks into a List so they can first be sorted.
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstSourcebookInfos))
             {
-                foreach (XPathNavigator objXmlBook in (await XmlManager
-                                                                   .LoadXPathAsync(
-                                                                       "books.xml", strLanguage: _strSelectedLanguage,
-                                                                       token: token).ConfigureAwait(false))
-                                                            .SelectAndCacheExpression(
-                                                                "/chummer/books/book", token: token))
+                // Use the unified data source from GlobalSettings - this ensures complete consistency
+                IReadOnlyDictionary<string, SourcebookInfo> dicSourcebookInfos = await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false);
+                
+                foreach (KeyValuePair<string, SourcebookInfo> kvpSourcebook in dicSourcebookInfos)
                 {
-                    string strCode = objXmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
-                    if (!string.IsNullOrEmpty(strCode))
+                    string strCode = kvpSourcebook.Key;
+                    SourcebookInfo objSourcebookInfo = kvpSourcebook.Value;
+                    
+                    if (!string.IsNullOrEmpty(strCode) && objSourcebookInfo != null)
                     {
-                        ListItem objBookInfo
-                            = new ListItem(
-                                strCode,
-                                objXmlBook.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
-                                ?? objXmlBook.SelectSingleNodeAndCacheExpression("name", token: token)?.Value ?? strCode);
+                        // Get display name by looking up the book in XML
+                        string strDisplayName = await GetBookDisplayNameAsync(strCode, token).ConfigureAwait(false) ?? strCode;
+                        ListItem objBookInfo = new ListItem(strCode, strDisplayName);
                         lstSourcebookInfos.Add(objBookInfo);
                     }
                 }
@@ -1368,6 +1366,48 @@ namespace Chummer
                         x.SelectedValue = strOldSelected;
                 }, token).ConfigureAwait(false);
             }
+        }
+
+        /// <summary>
+        /// Get the display name for a book by looking it up in the XML files
+        /// </summary>
+        private async Task<string> GetBookDisplayNameAsync(string strBookCode, CancellationToken token = default)
+        {
+            // First try main books.xml
+            foreach (XPathNavigator objXmlBook in (await XmlManager
+                                                           .LoadXPathAsync(
+                                                               "books.xml", strLanguage: _strSelectedLanguage,
+                                                               token: token).ConfigureAwait(false))
+                                                    .SelectAndCacheExpression(
+                                                        "/chummer/books/book", token: token))
+            {
+                string strCode = objXmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
+                if (strCode == strBookCode)
+                {
+                    return objXmlBook.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                           ?? objXmlBook.SelectSingleNodeAndCacheExpression("name", token: token)?.Value;
+                }
+            }
+
+            // Then try custom data books
+            foreach (KeyValuePair<string, CharacterSettings> kvpCustomSettings in SettingsManager.LoadedCharacterSettings)
+            {
+                CharacterSettings objCustomSettings = kvpCustomSettings.Value;
+                foreach (XPathNavigator objXmlBook in (await XmlManager.LoadXPathAsync("books.xml",
+                                     await objCustomSettings.GetEnabledCustomDataDirectoryPathsAsync(token)
+                                         .ConfigureAwait(false), strLanguage: _strSelectedLanguage, token: token).ConfigureAwait(false))
+                             .SelectAndCacheExpression("/chummer/books/book", token: token))
+                {
+                    string strCode = objXmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
+                    if (strCode == strBookCode)
+                    {
+                        return objXmlBook.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                               ?? objXmlBook.SelectSingleNodeAndCacheExpression("name", token: token)?.Value;
+                    }
+                }
+            }
+
+            return null;
         }
 
         private void PopulateCustomDataDirectoryListBox()
