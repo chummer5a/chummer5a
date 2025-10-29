@@ -44,7 +44,7 @@ namespace Chummer.Backend.Skills
 
         #region Constructor, Create, Save, Load, and Print Methods
 
-        public SkillSpecialization(Character objCharacter, string strName, bool blnFree = false, bool blnExpertise = false)
+        public SkillSpecialization(Character objCharacter, Skill objParent, string strName, bool blnFree = false, bool blnExpertise = false)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             LockObject = objCharacter.LockObject;
@@ -52,6 +52,7 @@ namespace Chummer.Backend.Skills
             _guiID = Guid.NewGuid();
             _blnFree = blnFree;
             _blnExpertise = blnExpertise;
+            _objParent = objParent;
         }
 
         /// <summary>
@@ -80,7 +81,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         /// <param name="objCharacter">Character to load for.</param>
         /// <param name="xmlNode">XmlNode to load.</param>
-        public static SkillSpecialization Load(Character objCharacter, XmlNode xmlNode)
+        public static SkillSpecialization Load(Character objCharacter, Skill objParent, XmlNode xmlNode)
         {
             string strName = string.Empty;
             if (!xmlNode.TryGetStringFieldQuickly("name", ref strName) || string.IsNullOrEmpty(strName))
@@ -88,7 +89,7 @@ namespace Chummer.Backend.Skills
             if (!xmlNode.TryGetField("guid", Guid.TryParse, out Guid guiTemp))
                 guiTemp = Guid.NewGuid();
 
-            return new SkillSpecialization(objCharacter, strName, xmlNode["free"]?.InnerTextIsTrueString() == true, xmlNode["expertise"]?.InnerTextIsTrueString() == true)
+            return new SkillSpecialization(objCharacter, objParent, strName, xmlNode["free"]?.InnerTextIsTrueString() == true, xmlNode["expertise"]?.InnerTextIsTrueString() == true)
             {
                 _guiID = guiTemp
             };
@@ -209,11 +210,6 @@ namespace Chummer.Backend.Skills
                 using (LockObject.EnterReadLock())
                     return _objParent;
             }
-            set
-            {
-                using (LockObject.EnterWriteLock())
-                    _objParent = value;
-            }
         }
 
         /// <summary>
@@ -277,7 +273,7 @@ namespace Chummer.Backend.Skills
 
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
-        private Skill _objParent;
+        private readonly Skill _objParent;
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {

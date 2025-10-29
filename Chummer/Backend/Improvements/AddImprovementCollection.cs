@@ -5815,7 +5815,7 @@ namespace Chummer
             {
                 // Create the Improvement.
                 string strSpec = bonusNode["spec"]?.InnerTextViaPool() ?? string.Empty;
-                SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, strSpec);
+                SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, objSkill, strSpec);
                 try
                 {
                     objSkill.Specializations.Add(objSpec);
@@ -5864,7 +5864,7 @@ namespace Chummer
                     CreateImprovement(objSkill.DictionaryKey, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecializationOption, strSpec);
                     if (_objCharacter.Settings.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)
                     {
-                        SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, strSpec);
+                        SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, objSkill, strSpec);
                         try
                         {
                             objSkill.Specializations.Add(objSpec);
@@ -7006,7 +7006,7 @@ namespace Chummer
                 SelectedValue = strSelected;
             }
             // Create the Improvement.
-            SkillSpecialization objExpertise = new SkillSpecialization(_objCharacter, SelectedValue, true, true);
+            SkillSpecialization objExpertise = new SkillSpecialization(_objCharacter, objSkill, SelectedValue, true, true);
             try
             {
                 objSkill.Specializations.Add(objExpertise);

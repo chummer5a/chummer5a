@@ -6114,7 +6114,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 // Create the Improvement.
                 string strSpec = bonusNode["spec"]?.InnerTextViaPool(token) ?? string.Empty;
-                SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, strSpec);
+                SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, objSkill, strSpec);
                 try
                 {
                     await (await objSkill.GetSpecializationsAsync(token).ConfigureAwait(false)).AddAsync(objSpec, token).ConfigureAwait(false);
@@ -6164,7 +6164,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                     await CreateImprovementAsync(await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false), _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecializationOption, strSpec, token: token).ConfigureAwait(false);
                     if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetFreeMartialArtSpecializationAsync(token).ConfigureAwait(false) && _objImprovementSource == Improvement.ImprovementSource.MartialArt)
                     {
-                        SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, strSpec);
+                        SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, objSkill, strSpec);
                         try
                         {
                             await objSkill.Specializations.AddAsync(objSpec, token).ConfigureAwait(false);
@@ -7455,7 +7455,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                 SelectedValue = strSelected;
             }
             // Create the Improvement.
-            SkillSpecialization objExpertise = new SkillSpecialization(_objCharacter, SelectedValue, true, true);
+            SkillSpecialization objExpertise = new SkillSpecialization(_objCharacter, objSkill, SelectedValue, true, true);
             try
             {
                 await (await objSkill.GetSpecializationsAsync(token).ConfigureAwait(false)).AddAsync(objExpertise, token).ConfigureAwait(false);

@@ -2956,7 +2956,7 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strSpec)) continue;
                         if (objSkill.Specializations.All(x => x.Name != strSpec, token))
                         {
-                            SkillSpecialization objSpec = new SkillSpecialization(this, strSpec);
+                            SkillSpecialization objSpec = new SkillSpecialization(this, objSkill, strSpec, false, false);
                             try
                             {
                                 token.ThrowIfCancellationRequested();
@@ -3743,7 +3743,7 @@ namespace Chummer
                         if (await objSkill.Specializations.AllAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) != strSpec, token)
                                 .ConfigureAwait(false))
                         {
-                            SkillSpecialization objSpec = new SkillSpecialization(this, strSpec);
+                            SkillSpecialization objSpec = new SkillSpecialization(this, objSkill, strSpec, false, false);
                             try
                             {
                                 token.ThrowIfCancellationRequested();
