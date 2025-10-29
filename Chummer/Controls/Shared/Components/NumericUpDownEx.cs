@@ -533,7 +533,12 @@ namespace Chummer
                 lock (_objIntValueLock) // Lock ensures synchronicity
                     return _intValue;
             }
-            set => Value = value;
+            set
+            {
+                // Ensure value is within bounds before setting
+                int intAdjustedValue = Math.Max(Math.Min(value, (int)Maximum), (int)Minimum);
+                Value = intAdjustedValue;
+            }
         }
 
         /// <summary>
@@ -687,23 +692,23 @@ namespace Chummer
         #region Safe Value Setting Methods
         #region Integer input
         /// <summary>
-        /// Safely sets the value, ensuring it doesn't exceed the maximum.
+        /// Safely sets the value, ensuring it stays within the minimum and maximum bounds.
         /// </summary>
         /// <param name="value">The value to set</param>
         public void SetValueSafely(int value)
         {
-            int intAdjustedValue = Math.Min(value, (int)Maximum);
+            int intAdjustedValue = Math.Max(Math.Min(value, (int)Maximum), (int)Minimum);
             Value = intAdjustedValue;
         }
 
         /// <summary>
-        /// Safely sets the value with a known maximum, ensuring it doesn't exceed the maximum.
+        /// Safely sets the value with a known maximum, ensuring it stays within the minimum and maximum bounds.
         /// </summary>
         /// <param name="value">The value to set</param>
         /// <param name="maximum">The maximum value to enforce</param>
         public void SetValueSafely(int value, int maximum)
         {
-            int intAdjustedValue = Math.Min(value, maximum);
+            int intAdjustedValue = Math.Max(Math.Min(value, maximum), (int)Minimum);
             Value = intAdjustedValue;
         }
 
@@ -727,23 +732,23 @@ namespace Chummer
         #endregion
         #region Decimal input
         /// <summary>
-        /// Safely sets the value, ensuring it doesn't exceed the maximum.
+        /// Safely sets the value, ensuring it stays within the minimum and maximum bounds.
         /// </summary>
         /// <param name="value">The value to set</param>
         public void SetValueSafely(decimal value)
         {
-            decimal decAdjustedValue = Math.Min(value, Maximum);
+            decimal decAdjustedValue = Math.Max(Math.Min(value, Maximum), Minimum);
             Value = decAdjustedValue;
         }
 
         /// <summary>
-        /// Safely sets the value with a known maximum, ensuring it doesn't exceed the maximum.
+        /// Safely sets the value with a known maximum, ensuring it stays within the minimum and maximum bounds.
         /// </summary>
         /// <param name="value">The value to set</param>
         /// <param name="maximum">The maximum value to enforce</param>
         public void SetValueSafely(decimal value, decimal maximum)
         {
-            decimal decAdjustedValue = Math.Min(value, maximum);
+            decimal decAdjustedValue = Math.Max(Math.Min(value, maximum), Minimum);
             Value = decAdjustedValue;
         }
 
