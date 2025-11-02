@@ -21925,7 +21925,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                Interlocked.Add(ref _intBurntStreetCred, _intBurntStreetCred);
+                Interlocked.Add(ref _intBurntStreetCred, value);
                 await OnPropertyChangedAsync(nameof(BurntStreetCred), token).ConfigureAwait(false);
             }
             finally
