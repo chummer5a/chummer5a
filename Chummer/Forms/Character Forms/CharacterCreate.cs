@@ -7509,16 +7509,49 @@ namespace Chummer
         {
             try
             {
-                TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x =>
-                {
-                    TreeNode objTemp = x.SelectedNode;
-                    while (objTemp?.Level > 1)
-                        objTemp = objTemp.Parent;
-                    return objTemp;
-                }, GenericToken).ConfigureAwait(false);
+                TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken).ConfigureAwait(false);
 
                 // Make sure a parent items is selected, then open the Select Vehicle Mod window.
-                if (!(objSelectedNode?.Tag is Vehicle objVehicle))
+                Vehicle objVehicle = null;
+                string strCategory = string.Empty;
+                
+                if (objSelectedNode?.Tag is VehicleModCategoryGroup objCategoryGroup)
+                {
+                    // Right-clicked on a category group node
+                    objVehicle = objCategoryGroup.Vehicle;
+                    strCategory = objCategoryGroup.Category;
+                }
+                else if (objSelectedNode?.Tag is Vehicle objVehicleTag)
+                {
+                    objVehicle = objVehicleTag;
+                }
+                else if (objSelectedNode?.Tag is VehicleMod objMod)
+                {
+                    // Right-clicked on a mod, get its parent vehicle
+                    objVehicle = objMod.Parent;
+                }
+                else
+                {
+                    // Walk up the tree to find a vehicle or category node
+                    TreeNode objNode = objSelectedNode;
+                    while (objNode != null && objVehicle == null)
+                    {
+                        if (objNode.Tag is VehicleModCategoryGroup objCategoryGroup2)
+                        {
+                            objVehicle = objCategoryGroup2.Vehicle;
+                            strCategory = objCategoryGroup2.Category;
+                            break;
+                        }
+                        if (objNode.Tag is Vehicle objVehicleTag2)
+                        {
+                            objVehicle = objVehicleTag2;
+                            break;
+                        }
+                        objNode = objNode.Parent;
+                    }
+                }
+                
+                if (objVehicle == null)
                 {
                     await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectVehicle", token: GenericToken).ConfigureAwait(false),
@@ -7539,7 +7572,7 @@ namespace Chummer
                         using (ThreadSafeForm<SelectVehicleMod> frmPickVehicleMod
                                = await ThreadSafeForm<SelectVehicleMod>.GetAsync(
                                                                            () => new SelectVehicleMod(CharacterObject,
-                                                                               objVehicle), GenericToken)
+                                                                               objVehicle, strCategory), GenericToken)
                                                                        .ConfigureAwait(false))
                         {
                             // Make sure the dialogue window was not canceled.

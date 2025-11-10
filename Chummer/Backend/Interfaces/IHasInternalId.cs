@@ -703,7 +703,21 @@ namespace Chummer
                             await objVehicleMod.Cyberware.ForEachWithSideEffectsAsync(objCyberware => objCyberware.SetupChildrenCyberwareCollectionChangedAsync(false, treVehicles, token: token), token).ConfigureAwait(false);
                             await objVehicleMod.Weapons.RemoveTaggedAsyncCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                             await objVehicleMod.Weapons.ForEachWithSideEffectsAsync(objWeapon => objWeapon.SetupChildrenWeaponsCollectionChangedAsync(false, treVehicles, token: token), token).ConfigureAwait(false);
-                            await treVehicles.DoThreadSafeAsync(() => nodParent.FindNodeByTag(objVehicleMod)?.Remove(), token: token).ConfigureAwait(false);
+                            await treVehicles.DoThreadSafeAsync(() =>
+                            {
+                                TreeNode objModNode = nodParent.FindNodeByTag(objVehicleMod);
+                                if (objModNode != null)
+                                {
+                                    TreeNode objCategoryNode = objModNode.Parent;
+                                    objModNode.Remove();
+                                    // Remove category node if it's now empty
+                                    if (objCategoryNode != null && objCategoryNode.Tag is VehicleModCategoryGroup 
+                                        && objCategoryNode.Nodes.Count == 0)
+                                    {
+                                        objCategoryNode.Remove();
+                                    }
+                                }
+                            }, token: token).ConfigureAwait(false);
                         }
                     }
                     break;
@@ -717,7 +731,21 @@ namespace Chummer
                             await objVehicleMod.Cyberware.ForEachWithSideEffectsAsync(objCyberware => objCyberware.SetupChildrenCyberwareCollectionChangedAsync(false, treVehicles, token: token), token).ConfigureAwait(false);
                             await objVehicleMod.Weapons.RemoveTaggedAsyncCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                             await objVehicleMod.Weapons.ForEachWithSideEffectsAsync(objWeapon => objWeapon.SetupChildrenWeaponsCollectionChangedAsync(false, treVehicles, token: token), token).ConfigureAwait(false);
-                            await treVehicles.DoThreadSafeAsync(() => nodParent.FindNodeByTag(objVehicleMod)?.Remove(), token: token).ConfigureAwait(false);
+                            await treVehicles.DoThreadSafeAsync(() =>
+                            {
+                                TreeNode objModNode = nodParent.FindNodeByTag(objVehicleMod);
+                                if (objModNode != null)
+                                {
+                                    TreeNode objCategoryNode = objModNode.Parent;
+                                    objModNode.Remove();
+                                    // Remove category node if it's now empty
+                                    if (objCategoryNode != null && objCategoryNode.Tag is VehicleModCategoryGroup 
+                                        && objCategoryNode.Nodes.Count == 0)
+                                    {
+                                        objCategoryNode.Remove();
+                                    }
+                                }
+                            }, token: token).ConfigureAwait(false);
                         }
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
@@ -769,7 +797,18 @@ namespace Chummer
                         {
                             foreach (VehicleMod objVehicleMod in e.OldItems)
                             {
-                                nodParent.FindNodeByTag(objVehicleMod)?.Remove();
+                                TreeNode objModNode = nodParent.FindNodeByTag(objVehicleMod);
+                                if (objModNode != null)
+                                {
+                                    TreeNode objCategoryNode = objModNode.Parent;
+                                    objModNode.Remove();
+                                    // Remove category node if it's now empty
+                                    if (objCategoryNode != null && objCategoryNode.Tag is VehicleModCategoryGroup 
+                                        && objCategoryNode.Nodes.Count == 0)
+                                    {
+                                        objCategoryNode.Remove();
+                                    }
+                                }
                             }
                         }, token: token).ConfigureAwait(false);
                         int intNewIndex = e.NewStartingIndex;
@@ -797,6 +836,25 @@ namespace Chummer
                                 {
                                     objNode.Remove();
                                 }
+                                else if (objNode.Tag is VehicleModCategoryGroup objCategoryGroup)
+                                {
+                                    // Remove all mods from category groups and remove empty category groups
+                                    for (int j = objNode.Nodes.Count - 1; j >= 0; --j)
+                                    {
+                                        TreeNode objModNode = objNode.Nodes[j];
+                                        if (objModNode.Tag is VehicleMod objNodeMod2
+                                            && (!ReferenceEquals(objNodeMod2.Parent, objParent)
+                                                && !ReferenceEquals(objNodeMod2.WeaponMountParent, objParent)))
+                                        {
+                                            objModNode.Remove();
+                                        }
+                                    }
+                                    // Remove category group if it's now empty
+                                    if (objNode.Nodes.Count == 0)
+                                    {
+                                        objNode.Remove();
+                                    }
+                                }
                             }
                         }, token: token).ConfigureAwait(false);
                         break;
@@ -810,13 +868,75 @@ namespace Chummer
                 {
                     await treVehicles.DoThreadSafeAsync(x =>
                     {
-                        if (intIndex >= 0)
-                            nodParent.Nodes.Insert(intIndex, objNode);
+                        string strCategory = objVehicleMod.Category;
+                        if (string.IsNullOrEmpty(strCategory))
+                        {
+                            // Mods without categories go directly to root
+                            if (intIndex >= 0)
+                                nodParent.Nodes.Insert(intIndex, objNode);
+                            else
+                                nodParent.Nodes.Add(objNode);
+                            nodParent.Expand();
+                            if (blnSingleAdd)
+                                x.SelectedNode = objNode;
+                        }
                         else
-                            nodParent.Nodes.Add(objNode);
-                        nodParent.Expand();
-                        if (blnSingleAdd)
-                            x.SelectedNode = objNode;
+                        {
+                            // Mods with categories are grouped
+                            TreeNode objCategoryNode = null;
+                            foreach (TreeNode objChild in nodParent.Nodes)
+                            {
+                                if (objChild.Tag is VehicleModCategoryGroup objCategoryGroup 
+                                    && objCategoryGroup.Category == strCategory)
+                                {
+                                    objCategoryNode = objChild;
+                                    break;
+                                }
+                            }
+                            
+                            // Create category node if it doesn't exist
+                            if (objCategoryNode == null)
+                            {
+                                string strCategoryDisplayName = objVehicleMod.DisplayCategory(GlobalSettings.Language);
+                                objCategoryNode = new TreeNode
+                                {
+                                    Name = "VehicleModCategory_" + strCategory,
+                                    Text = strCategoryDisplayName,
+                                    Tag = new VehicleModCategoryGroup(strCategory, objVehicleMod.Parent),
+                                    ContextMenuStrip = cmsVehicleMod
+                                };
+                                
+                                // Insert category node in sorted position (after locations, before other nodes)
+                                int intInsertIndex = 0;
+                                foreach (TreeNode objChild in nodParent.Nodes)
+                                {
+                                    if (objChild.Tag is VehicleModCategoryGroup objExistingCategory)
+                                    {
+                                        if (string.Compare(objChild.Text, objCategoryNode.Text, StringComparison.OrdinalIgnoreCase) > 0)
+                                            break;
+                                        intInsertIndex++;
+                                    }
+                                    else
+                                    {
+                                        // Keep locations and other non-category nodes before category nodes
+                                        if (!(objChild.Tag is Location))
+                                            break;
+                                        intInsertIndex++;
+                                    }
+                                }
+                                nodParent.Nodes.Insert(intInsertIndex, objCategoryNode);
+                            }
+                            
+                            // Add mod to category node
+                            if (intIndex >= 0)
+                                objCategoryNode.Nodes.Insert(intIndex, objNode);
+                            else
+                                objCategoryNode.Nodes.Add(objNode);
+                            objCategoryNode.Expand();
+                            nodParent.Expand();
+                            if (blnSingleAdd)
+                                x.SelectedNode = objNode;
+                        }
                     }, token: token).ConfigureAwait(false);
                 }
             }

@@ -5295,14 +5295,48 @@ namespace Chummer.Backend.Equipment
                         lstChildNodes.Add(await objLocation.CreateTreeNode(cmsVehicleLocation, token)
                             .ConfigureAwait(false)), token).ConfigureAwait(false);
 
-            // VehicleMods.
+            // VehicleMods - Group by Category.
+            Dictionary<string, TreeNode> dicCategoryNodes = new Dictionary<string, TreeNode>();
             await Mods.ForEachAsync(async objMod =>
             {
                 TreeNode objLoopNode = await objMod.CreateTreeNode(cmsVehicle, cmsCyberware, cmsCyberwareGear,
                     cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, token).ConfigureAwait(false);
-                if (objLoopNode != null)
+                if (objLoopNode == null)
+                    return;
+                
+                string strCategory = objMod.Category;
+                if (string.IsNullOrEmpty(strCategory))
+                {
+                    // Mods without categories go directly to root
                     lstChildNodes.Add(objLoopNode);
+                }
+                else
+                {
+                    // Mods with categories are grouped
+                    if (!dicCategoryNodes.TryGetValue(strCategory, out TreeNode objCategoryNode))
+                    {
+                        // Create category group node
+                        string strCategoryDisplayName = await objMod.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                        objCategoryNode = new TreeNode
+                        {
+                            Name = "VehicleModCategory_" + strCategory,
+                            Text = strCategoryDisplayName,
+                            Tag = new VehicleModCategoryGroup(strCategory, this),
+                            ContextMenuStrip = cmsVehicle
+                        };
+                        dicCategoryNodes[strCategory] = objCategoryNode;
+                    }
+                    
+                    objCategoryNode.Nodes.Add(objLoopNode);
+                    objCategoryNode.Expand();
+                }
             }, token).ConfigureAwait(false);
+            
+            // Add category nodes to tree
+            foreach (TreeNode objCategoryNode in dicCategoryNodes.Values.OrderBy(x => x.Text))
+            {
+                lstChildNodes.Add(objCategoryNode);
+            }
             if (await WeaponMounts.GetCountAsync(token).ConfigureAwait(false) > 0)
             {
                 TreeNode nodMountsNode = new TreeNode
@@ -6681,6 +6715,21 @@ namespace Chummer.Backend.Equipment
             await _lstWeapons.DisposeAsync().ConfigureAwait(false);
             await _lstWeaponMounts.DisposeAsync().ConfigureAwait(false);
             await _lstLocations.DisposeAsync().ConfigureAwait(false);
+        }
+    }
+
+    /// <summary>
+    /// Helper class to identify vehicle mod category group nodes in the tree view.
+    /// </summary>
+    public sealed class VehicleModCategoryGroup
+    {
+        public string Category { get; }
+        public Vehicle Vehicle { get; }
+
+        public VehicleModCategoryGroup(string strCategory, Vehicle objVehicle)
+        {
+            Category = strCategory ?? string.Empty;
+            Vehicle = objVehicle ?? throw new ArgumentNullException(nameof(objVehicle));
         }
     }
 }

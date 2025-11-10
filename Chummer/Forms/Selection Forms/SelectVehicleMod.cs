@@ -38,6 +38,7 @@ namespace Chummer
         private bool _blnLoading = true;
         private bool _blnSkipUpdate;
         private static string _strSelectCategory = string.Empty;
+        private readonly string _strInitialCategory = string.Empty;
 
         private bool _blnAddAgain;
 
@@ -50,10 +51,11 @@ namespace Chummer
 
         #region Control Events
 
-        public SelectVehicleMod(Character objCharacter, Vehicle objVehicle)
+        public SelectVehicleMod(Character objCharacter, Vehicle objVehicle, string strInitialCategory = "")
         {
             _objVehicle = objVehicle ?? throw new ArgumentNullException(nameof(objVehicle));
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            _strInitialCategory = strInitialCategory ?? string.Empty;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -133,9 +135,12 @@ namespace Chummer
             await cboCategory.PopulateWithListItemsAsync(_lstCategory).ConfigureAwait(false);
             await cboCategory.DoThreadSafeAsync(x =>
             {
-                // Select the first Category in the list.
-                if (!string.IsNullOrEmpty(_strSelectCategory))
-                    x.SelectedValue = _strSelectCategory;
+                // Select the initial category if provided, otherwise use the static category, otherwise first in list
+                string strCategoryToSelect = !string.IsNullOrEmpty(_strInitialCategory) 
+                    ? _strInitialCategory 
+                    : _strSelectCategory;
+                if (!string.IsNullOrEmpty(strCategoryToSelect))
+                    x.SelectedValue = strCategoryToSelect;
                 if (x.SelectedIndex == -1 && _lstCategory.Count > 0)
                     x.SelectedIndex = 0;
             }).ConfigureAwait(false);
