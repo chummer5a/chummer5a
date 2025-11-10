@@ -48,6 +48,35 @@ namespace Chummer
         private List<ListItem> _lstCategory;
         private HashSet<string> _setBlackMarketMaps;
 
+        // Shopping cart for multiple purchases
+        private readonly List<CartItem> _lstShoppingCart = new List<CartItem>();
+
+        /// <summary>
+        /// Represents an item in the shopping cart
+        /// </summary>
+        public class CartItem
+        {
+            public string VehicleModId { get; set; }
+            public string VehicleModName { get; set; }
+            public int Rating { get; set; }
+            public decimal Markup { get; set; }
+            public bool FreeCost { get; set; }
+            public bool BlackMarketDiscount { get; set; }
+            public int SlotsUsed { get; set; }
+            public string Category { get; set; }
+
+            public override string ToString()
+            {
+                string strSlotsInfo = SlotsUsed > 0 ? $" ({SlotsUsed} slot{(SlotsUsed != 1 ? "s" : "")})" : string.Empty;
+                return $"{VehicleModName} (Rating {Rating}{strSlotsInfo})";
+            }
+        }
+
+        /// <summary>
+        /// Get all items in the shopping cart
+        /// </summary>
+        public List<CartItem> ShoppingCartItems => new List<CartItem>(_lstShoppingCart);
+
         #region Control Events
 
         public SelectVehicleMod(Character objCharacter, Vehicle objVehicle)
@@ -140,6 +169,13 @@ namespace Chummer
                     x.SelectedIndex = 0;
             }).ConfigureAwait(false);
 
+            // Enable shopping cart (always enabled)
+            await gpbShoppingCart.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+            await cmdAddToCart.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+            await cmdOK.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+            await cmdOKAdd.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+            await UpdateShoppingCartDisplayAsync().ConfigureAwait(false);
+
             _blnLoading = false;
             await UpdateGearInfo().ConfigureAwait(false);
         }
@@ -198,6 +234,181 @@ namespace Chummer
         {
             _blnAddAgain = true;
             AcceptForm();
+        }
+
+        private async void cmdAddToCart_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string strSelectedId = lstMod.SelectedValue?.ToString();
+                if (string.IsNullOrEmpty(strSelectedId))
+                    return;
+
+                XPathNavigator xmlVehicleMod = _xmlBaseVehicleDataNode.TryGetNodeByNameOrId((VehicleMountMods ? "weaponmountmods" : "mods") + "/mod", strSelectedId);
+                if (xmlVehicleMod == null)
+                    return;
+
+                string strModName = xmlVehicleMod.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
+                int intRating = nudRating.ValueAsInt;
+                decimal decMarkup = nudMarkup.Value;
+                bool blnFreeCost = chkFreeItem.Checked;
+                bool blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
+                string strCategory = xmlVehicleMod.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
+
+                // Calculate slots used
+                int intSlotsUsed = 0;
+                string strSlots = xmlVehicleMod.SelectSingleNodeAndCacheExpression("slots")?.Value ?? string.Empty;
+                if (!string.IsNullOrEmpty(strSlots))
+                {
+                    if (strSlots.StartsWith("FixedValues(", StringComparison.Ordinal))
+                    {
+                        intSlotsUsed = (await ProcessInvariantXPathExpression(strSlots, intRating, token: CancellationToken.None).ConfigureAwait(false)).Item1.StandardRound();
+                    }
+                    else
+                    {
+                        intSlotsUsed = (await ProcessInvariantXPathExpression(strSlots, 0, token: CancellationToken.None).ConfigureAwait(false)).Item1.StandardRound();
+                    }
+                }
+
+                // Check capacity - either category-specific (R5) or general vehicle slots
+                bool blnOverCapacity = false;
+                
+                if (!string.IsNullOrEmpty(strCategory) && Vehicle.ModCategoryStrings.Contains(strCategory))
+                {
+                    // Category-specific slots (Powertrain, Protection, Weapons, Body, Electromagnetic, Cosmetic)
+                    // Calculate total slots that would be used by cart items plus this new item
+                    int intCartSlotsUsed = _lstShoppingCart
+                        .Where(x => x.Category.Equals(strCategory, StringComparison.OrdinalIgnoreCase))
+                        .Sum(x => x.SlotsUsed);
+                    int intTotalSlotsUsed = intCartSlotsUsed + intSlotsUsed;
+
+                    // Get available capacity for this category
+                    int intAvailableCapacity = await _objVehicle.CalcCategoryAvailAsync(strCategory, token: CancellationToken.None).ConfigureAwait(false);
+                    
+                    // Check if adding this mod would exceed capacity
+                    blnOverCapacity = intTotalSlotsUsed > intAvailableCapacity;
+                }
+                else if (intSlotsUsed > 0)
+                {
+                    // General vehicle slots (for mods not in R5 categories)
+                    // Calculate total slots that would be used by cart items plus this new item
+                    int intCartSlotsUsed = _lstShoppingCart
+                        .Where(x => !Vehicle.ModCategoryStrings.Contains(x.Category ?? string.Empty))
+                        .Sum(x => x.SlotsUsed);
+                    int intTotalSlotsUsed = intCartSlotsUsed + intSlotsUsed;
+
+                    // Get available general vehicle slots
+                    int intAvailableSlots = await _objVehicle.GetSlotsAsync(token: CancellationToken.None).ConfigureAwait(false);
+                    int intVehicleSlotsUsed = await _objVehicle.GetSlotsUsedAsync(token: CancellationToken.None).ConfigureAwait(false);
+                    int intRemainingSlots = intAvailableSlots - intVehicleSlotsUsed;
+                    
+                    // Check if adding this mod would exceed capacity
+                    blnOverCapacity = intTotalSlotsUsed > intRemainingSlots;
+                }
+
+                if (blnOverCapacity)
+                {
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        await LanguageManager.GetStringAsync("Message_CapacityReached").ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_CapacityReached").ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
+                    return;
+                }
+
+                CartItem objCartItem = new CartItem
+                {
+                    VehicleModId = strSelectedId,
+                    VehicleModName = strModName,
+                    Rating = intRating,
+                    Markup = decMarkup,
+                    FreeCost = blnFreeCost,
+                    BlackMarketDiscount = blnBlackMarketDiscount,
+                    SlotsUsed = intSlotsUsed,
+                    Category = strCategory
+                };
+
+                _lstShoppingCart.Add(objCartItem);
+                await UpdateShoppingCartDisplayAsync().ConfigureAwait(false);
+                // Update gear info to reflect capacity changes
+                await UpdateGearInfo().ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdRemoveFromCart_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int intSelectedIndex = lstShoppingCart.SelectedIndex;
+                if (intSelectedIndex >= 0 && intSelectedIndex < _lstShoppingCart.Count)
+                {
+                    _lstShoppingCart.RemoveAt(intSelectedIndex);
+                    await UpdateShoppingCartDisplayAsync().ConfigureAwait(false);
+                    // Update gear info to reflect capacity changes
+                    await UpdateGearInfo().ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdPurchaseAll_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_lstShoppingCart.Count == 0)
+                {
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        await LanguageManager.GetStringAsync("Message_ShoppingCartEmpty").ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_ShoppingCartEmpty").ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
+                    return;
+                }
+
+                // Set the first item as selected and mark that we're using shopping cart
+                if (_lstShoppingCart.Count > 0)
+                {
+                    CartItem objFirstItem = _lstShoppingCart[0];
+                    SelectedMod = objFirstItem.VehicleModId;
+                    SelectedRating = objFirstItem.Rating;
+                    _decMarkup = objFirstItem.Markup;
+                    _blnFreeCost = objFirstItem.FreeCost;
+                    _blnBlackMarketDiscount = objFirstItem.BlackMarketDiscount;
+                }
+
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async Task UpdateShoppingCartDisplayAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            await lstShoppingCart.DoThreadSafeAsync(x =>
+            {
+                x.BeginUpdate();
+                try
+                {
+                    x.Items.Clear();
+                    foreach (CartItem objItem in _lstShoppingCart)
+                    {
+                        x.Items.Add(objItem);
+                    }
+                }
+                finally
+                {
+                    x.EndUpdate();
+                }
+            }, token).ConfigureAwait(false);
         }
 
         private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
@@ -832,7 +1043,11 @@ namespace Chummer
                             await lblVehicleCapacityLabel.DoThreadSafeAsync(x => x.Visible = true, token: token)
                                                          .ConfigureAwait(false);
                             int intSlots = (await ProcessInvariantXPathExpression(strSlots, intRating, intExtraSlots, token).ConfigureAwait(false)).Item1.StandardRound();
-                            string strCapacity = await GetRemainingModCapacity(strCategory, intSlots, token).ConfigureAwait(false);
+                            // Calculate total slots including shopping cart items
+                            int intCartSlotsUsed = _lstShoppingCart
+                                .Where(x => x.Category.Equals(strCategory, StringComparison.OrdinalIgnoreCase))
+                                .Sum(x => x.SlotsUsed);
+                            string strCapacity = await GetRemainingModCapacity(strCategory, intSlots + intCartSlotsUsed, token).ConfigureAwait(false);
                             await lblVehicleCapacity.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;

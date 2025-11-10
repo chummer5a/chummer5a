@@ -48,6 +48,46 @@ namespace Chummer
         private bool _blnBlackMarketDiscount;
         private HashSet<string> _setBlackMarketMaps;
 
+        // Shopping cart for multiple purchases
+        private readonly List<CartItem> _lstShoppingCart = new List<CartItem>();
+
+        /// <summary>
+        /// Represents an item in the shopping cart
+        /// </summary>
+        public class CartItem
+        {
+            public string AccessoryId { get; set; }
+            public string AccessoryName { get; set; }
+            public int Rating { get; set; }
+            public string Mount { get; set; }
+            public string ExtraMount { get; set; }
+            public decimal Markup { get; set; }
+            public bool FreeCost { get; set; }
+            public bool BlackMarketDiscount { get; set; }
+
+            public override string ToString()
+            {
+                string strMountInfo = string.Empty;
+                if (Mount != "None")
+                    strMountInfo = $" ({Mount}";
+                if (ExtraMount != "None" && ExtraMount != Mount)
+                {
+                    if (string.IsNullOrEmpty(strMountInfo))
+                        strMountInfo = $" ({ExtraMount}";
+                    else
+                        strMountInfo += $", {ExtraMount}";
+                }
+                if (!string.IsNullOrEmpty(strMountInfo))
+                    strMountInfo += ")";
+                return $"{AccessoryName} (Rating {Rating}{strMountInfo})";
+            }
+        }
+
+        /// <summary>
+        /// Get all items in the shopping cart
+        /// </summary>
+        public List<CartItem> ShoppingCartItems => new List<CartItem>(_lstShoppingCart);
+
         #region Control Events
 
         public SelectWeaponAccessory(Character objCharacter)
@@ -97,6 +137,13 @@ namespace Chummer
                     x.Checked = GlobalSettings.HideItemsOverAvailLimit;
                 }).ConfigureAwait(false);
             }
+
+            // Enable shopping cart (always enabled)
+            await gpbShoppingCart.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+            await cmdAddToCart.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+            await cmdOK.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+            await cmdOKAdd.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+            await UpdateShoppingCartDisplayAsync().ConfigureAwait(false);
 
             _blnLoading = false;
             await RefreshList().ConfigureAwait(false);
@@ -231,6 +278,122 @@ namespace Chummer
         {
             _blnAddAgain = true;
             AcceptForm();
+        }
+
+        private async void cmdAddToCart_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string strSelectedId = lstAccessory.SelectedValue?.ToString();
+                if (string.IsNullOrEmpty(strSelectedId))
+                    return;
+
+                XPathNavigator xmlAccessory = _xmlBaseChummerNode.TryGetNodeByNameOrId("accessories/accessory", strSelectedId);
+                if (xmlAccessory == null)
+                    return;
+
+                string strAccessoryName = xmlAccessory.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
+                int intRating = nudRating.Visible ? nudRating.ValueAsInt : 0;
+                string strMount = cboMount.SelectedItem?.ToString() ?? "None";
+                string strExtraMount = cboExtraMount.Visible && cboExtraMount.SelectedItem != null ? cboExtraMount.SelectedItem.ToString() : "None";
+                decimal decMarkup = nudMarkup.Value;
+                bool blnFreeCost = chkFreeItem.Checked;
+                bool blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
+
+                CartItem objCartItem = new CartItem
+                {
+                    AccessoryId = strSelectedId,
+                    AccessoryName = strAccessoryName,
+                    Rating = intRating,
+                    Mount = strMount,
+                    ExtraMount = strExtraMount,
+                    Markup = decMarkup,
+                    FreeCost = blnFreeCost,
+                    BlackMarketDiscount = blnBlackMarketDiscount
+                };
+
+                _lstShoppingCart.Add(objCartItem);
+                await UpdateShoppingCartDisplayAsync().ConfigureAwait(false);
+                // Update mount fields to reflect mounts used by cart items
+                await UpdateGearInfo(true).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdRemoveFromCart_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int intSelectedIndex = lstShoppingCart.SelectedIndex;
+                if (intSelectedIndex >= 0 && intSelectedIndex < _lstShoppingCart.Count)
+                {
+                    _lstShoppingCart.RemoveAt(intSelectedIndex);
+                    await UpdateShoppingCartDisplayAsync().ConfigureAwait(false);
+                    // Update mount fields to reflect mounts freed up by removing cart item
+                    await UpdateGearInfo(true).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdPurchaseAll_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_lstShoppingCart.Count == 0)
+                {
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        await LanguageManager.GetStringAsync("Message_ShoppingCartEmpty").ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_ShoppingCartEmpty").ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
+                    return;
+                }
+
+                // Set the first item as selected and mark that we're using shopping cart
+                if (_lstShoppingCart.Count > 0)
+                {
+                    CartItem objFirstItem = _lstShoppingCart[0];
+                    _strSelectedAccessory = objFirstItem.AccessoryId;
+                    _intSelectedRating = objFirstItem.Rating;
+                    _decMarkup = objFirstItem.Markup;
+                    _blnFreeCost = objFirstItem.FreeCost;
+                    _blnBlackMarketDiscount = objFirstItem.BlackMarketDiscount;
+                }
+
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async Task UpdateShoppingCartDisplayAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            await lstShoppingCart.DoThreadSafeAsync(x =>
+            {
+                x.BeginUpdate();
+                try
+                {
+                    x.Items.Clear();
+                    foreach (CartItem objItem in _lstShoppingCart)
+                    {
+                        x.Items.Add(objItem);
+                    }
+                }
+                finally
+                {
+                    x.EndUpdate();
+                }
+            }, token).ConfigureAwait(false);
         }
 
         private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
@@ -391,6 +554,42 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Get available mounts accounting for shopping cart items
+        /// </summary>
+        private async Task<List<string>> GetAvailableMountsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Start with all allowed mounts from the weapon (may contain duplicates for mounts with multiple slots)
+            List<string> lstAvailableMounts = new List<string>(_lstAllowedMounts);
+
+            // Remove mounts that are used by items in the shopping cart
+            // Note: Remove only removes the first occurrence, which is correct since each mount slot is represented once
+            foreach (CartItem objCartItem in _lstShoppingCart)
+            {
+                token.ThrowIfCancellationRequested();
+                // Remove the primary mount if it's not "None"
+                if (!string.IsNullOrEmpty(objCartItem.Mount) && objCartItem.Mount != "None")
+                {
+                    lstAvailableMounts.Remove(objCartItem.Mount);
+                }
+                // Remove the extra mount if it's not "None" and different from the primary mount
+                if (!string.IsNullOrEmpty(objCartItem.ExtraMount) && objCartItem.ExtraMount != "None" && objCartItem.ExtraMount != objCartItem.Mount)
+                {
+                    lstAvailableMounts.Remove(objCartItem.ExtraMount);
+                }
+            }
+
+            // Always ensure "None" and "Internal" are available if they're in the allowed mounts
+            // (they may have been removed if used, but they should always be available)
+            if (_lstAllowedMounts.Contains("None") && !lstAvailableMounts.Contains("None"))
+                lstAvailableMounts.Add("None");
+            if (_lstAllowedMounts.Contains("Internal") && !lstAvailableMounts.Contains("Internal"))
+                lstAvailableMounts.Add("Internal");
+
+            return lstAvailableMounts;
+        }
+
         private async Task UpdateGearInfo(bool blnUpdateMountComboBoxes = true, CancellationToken token = default)
         {
             if (_blnLoading)
@@ -505,6 +704,9 @@ namespace Chummer
 
             if (blnUpdateMountComboBoxes)
             {
+                // Calculate available mounts accounting for shopping cart items
+                List<string> lstAvailableMounts = await GetAvailableMountsAsync(token).ConfigureAwait(false);
+
                 string strDataMounts = xmlAccessory.SelectSingleNodeAndCacheExpression("mount", token)?.Value;
                 List<string> lstMounts = new List<string>(1);
                 if (!string.IsNullOrEmpty(strDataMounts))
@@ -521,7 +723,7 @@ namespace Chummer
                     x.Items.Clear();
                     foreach (string strCurrentMount in lstMounts)
                     {
-                        if (!string.IsNullOrEmpty(strCurrentMount) && _lstAllowedMounts.Contains(strCurrentMount))
+                        if (!string.IsNullOrEmpty(strCurrentMount) && lstAvailableMounts.Contains(strCurrentMount))
                         {
                             x.Items.Add(strCurrentMount);
                         }
@@ -548,7 +750,7 @@ namespace Chummer
                     x.Items.Clear();
                     foreach (string strCurrentMount in lstExtraMounts)
                     {
-                        if (!string.IsNullOrEmpty(strCurrentMount) && _lstAllowedMounts.Contains(strCurrentMount))
+                        if (!string.IsNullOrEmpty(strCurrentMount) && lstAvailableMounts.Contains(strCurrentMount))
                         {
                             x.Items.Add(strCurrentMount);
                         }

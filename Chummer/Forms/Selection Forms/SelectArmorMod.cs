@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,6 +42,33 @@ namespace Chummer
 
         private decimal _decMarkup;
         private bool _blnFreeCost;
+
+        // Shopping cart for multiple purchases
+        private readonly List<CartItem> _lstShoppingCart = new List<CartItem>();
+
+        /// <summary>
+        /// Represents an item in the shopping cart
+        /// </summary>
+        public class CartItem
+        {
+            public string ArmorModId { get; set; }
+            public string ArmorModName { get; set; }
+            public int Rating { get; set; }
+            public decimal Markup { get; set; }
+            public bool FreeCost { get; set; }
+            public bool BlackMarketDiscount { get; set; }
+            public decimal CapacityUsed { get; set; }
+
+            public override string ToString()
+            {
+                return $"{ArmorModName} (Rating {Rating})";
+            }
+        }
+
+        /// <summary>
+        /// Get all items in the shopping cart
+        /// </summary>
+        public List<CartItem> ShoppingCartItems => new List<CartItem>(_lstShoppingCart);
 
         #region Control Events
 
@@ -110,6 +138,19 @@ namespace Chummer
                     x.Checked = GlobalSettings.HideItemsOverAvailLimit;
                 }).ConfigureAwait(false);
             }
+            // Enable shopping cart (always enabled)
+            await gpbShoppingCart.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+            await cmdAddToCart.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+            await cmdOK.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+            await cmdOKAdd.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+            
+            // Only show capacity remaining if there's a parent armor object
+            bool blnShowCapacity = _objArmor != null;
+            await lblCartCapacityRemainingLabel.DoThreadSafeAsync(x => x.Visible = blnShowCapacity).ConfigureAwait(false);
+            await lblCartCapacityRemaining.DoThreadSafeAsync(x => x.Visible = blnShowCapacity).ConfigureAwait(false);
+            
+            await UpdateShoppingCartDisplayAsync().ConfigureAwait(false);
+
             _blnLoading = false;
             await RefreshList().ConfigureAwait(false);
         }
@@ -140,6 +181,166 @@ namespace Chummer
         {
             AddAgain = true;
             AcceptForm();
+        }
+
+        private async void cmdAddToCart_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string strSelectedId = lstMod.SelectedValue?.ToString();
+                if (string.IsNullOrEmpty(strSelectedId))
+                    return;
+
+                XPathNavigator objXmlMod = _xmlBaseDataNode.TryGetNodeByNameOrId("/chummer/mods/mod", strSelectedId);
+                if (objXmlMod == null)
+                    return;
+
+                string strModName = objXmlMod.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
+                int intRating = nudRating.ValueAsInt;
+                decimal decMarkup = nudMarkup.Value;
+                bool blnFreeCost = chkFreeItem.Checked;
+                bool blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
+
+                // Calculate capacity used (only if there's a parent armor object)
+                decimal decCapacityUsed = 0;
+                if (_objArmor != null)
+                {
+                    string strCapacity = objXmlMod.SelectSingleNodeAndCacheExpression("armorcapacity")?.Value ?? string.Empty;
+                    if (!string.IsNullOrEmpty(strCapacity))
+                    {
+                        // Parse capacity (format is usually [Rating] or [1])
+                        if (strCapacity.Contains('['))
+                        {
+                            string strCapacityValue = strCapacity.GetStringBetween('[', ']');
+                            if (!string.IsNullOrEmpty(strCapacityValue))
+                            {
+                                if (int.TryParse(strCapacityValue, out int intCapacity))
+                                {
+                                    decCapacityUsed = intCapacity;
+                                }
+                                else if (strCapacityValue == "Rating")
+                                {
+                                    decCapacityUsed = intRating;
+                                }
+                            }
+                        }
+                    }
+
+                    // Check if we have enough capacity (only check if there's a parent)
+                    decimal decRemainingCapacity = await _objArmor.GetCapacityRemainingAsync().ConfigureAwait(false);
+                    decimal decUsedCapacity = _lstShoppingCart.Sum(x => x.CapacityUsed);
+                    if (decRemainingCapacity - decUsedCapacity < decCapacityUsed)
+                    {
+                        await Program.ShowScrollableMessageBoxAsync(this,
+                            await LanguageManager.GetStringAsync("Message_CapacityReached").ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_CapacityReached").ConfigureAwait(false),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
+                        return;
+                    }
+                }
+
+                CartItem objCartItem = new CartItem
+                {
+                    ArmorModId = strSelectedId,
+                    ArmorModName = strModName,
+                    Rating = intRating,
+                    Markup = decMarkup,
+                    FreeCost = blnFreeCost,
+                    BlackMarketDiscount = blnBlackMarketDiscount,
+                    CapacityUsed = decCapacityUsed
+                };
+
+                _lstShoppingCart.Add(objCartItem);
+                await UpdateShoppingCartDisplayAsync().ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdRemoveFromCart_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int intSelectedIndex = lstShoppingCart.SelectedIndex;
+                if (intSelectedIndex >= 0 && intSelectedIndex < _lstShoppingCart.Count)
+                {
+                    _lstShoppingCart.RemoveAt(intSelectedIndex);
+                    await UpdateShoppingCartDisplayAsync().ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdPurchaseAll_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_lstShoppingCart.Count == 0)
+                {
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        await LanguageManager.GetStringAsync("Message_ShoppingCartEmpty").ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_ShoppingCartEmpty").ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
+                    return;
+                }
+
+                // Set the first item as selected and mark that we're using shopping cart
+                if (_lstShoppingCart.Count > 0)
+                {
+                    CartItem objFirstItem = _lstShoppingCart[0];
+                    SelectedArmorMod = objFirstItem.ArmorModId;
+                    SelectedRating = objFirstItem.Rating;
+                    _decMarkup = objFirstItem.Markup;
+                    _blnFreeCost = objFirstItem.FreeCost;
+                    BlackMarketDiscount = objFirstItem.BlackMarketDiscount;
+                }
+
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async Task UpdateShoppingCartDisplayAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            await lstShoppingCart.DoThreadSafeAsync(x =>
+            {
+                x.BeginUpdate();
+                try
+                {
+                    x.Items.Clear();
+                    foreach (CartItem objItem in _lstShoppingCart)
+                    {
+                        x.Items.Add(objItem);
+                    }
+                }
+                finally
+                {
+                    x.EndUpdate();
+                }
+            }, token).ConfigureAwait(false);
+
+            // Update capacity remaining (only if there's a parent armor object)
+            if (_objArmor != null)
+            {
+                decimal decRemainingCapacity = await _objArmor.GetCapacityRemainingAsync(token).ConfigureAwait(false);
+                decimal decUsedCapacity = _lstShoppingCart.Sum(x => x.CapacityUsed);
+                decimal decRemaining = decRemainingCapacity - decUsedCapacity;
+
+                await lblCartCapacityRemaining.DoThreadSafeAsync(x =>
+                {
+                    x.Text = decRemaining.ToString("#,0.##", GlobalSettings.CultureInfo);
+                }, token).ConfigureAwait(false);
+            }
         }
 
         private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)

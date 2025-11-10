@@ -75,6 +75,12 @@ namespace Chummer
             this.tlpTopRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.txtSearch = new System.Windows.Forms.TextBox();
+            this.gpbShoppingCart = new System.Windows.Forms.GroupBox();
+            this.tlpShoppingCart = new System.Windows.Forms.TableLayoutPanel();
+            this.lstShoppingCart = new System.Windows.Forms.ListBox();
+            this.cmdAddToCart = new System.Windows.Forms.Button();
+            this.cmdRemoveFromCart = new System.Windows.Forms.Button();
+            this.cmdPurchaseAll = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             this.tlpMain.SuspendLayout();
@@ -84,6 +90,8 @@ namespace Chummer
             this.flpMarkup.SuspendLayout();
             this.flpRating.SuspendLayout();
             this.tlpTopRight.SuspendLayout();
+            this.gpbShoppingCart.SuspendLayout();
+            this.tlpShoppingCart.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblMountLabel
@@ -452,6 +460,7 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.tlpButtons, 1, 6);
             this.tlpMain.Controls.Add(this.tlpRight, 1, 1);
             this.tlpMain.Controls.Add(this.tlpTopRight, 1, 0);
+            this.tlpMain.Controls.Add(this.gpbShoppingCart, 1, 2);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -462,7 +471,6 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.Size = new System.Drawing.Size(606, 423);
             this.tlpMain.TabIndex = 67;
@@ -805,6 +813,98 @@ namespace Chummer
             this.txtSearch.TabIndex = 69;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
+            // gpbShoppingCart
+            // 
+            this.gpbShoppingCart.AutoSize = true;
+            this.gpbShoppingCart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbShoppingCart.Controls.Add(this.tlpShoppingCart);
+            this.gpbShoppingCart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbShoppingCart.Location = new System.Drawing.Point(309, 26);
+            this.gpbShoppingCart.Name = "gpbShoppingCart";
+            this.gpbShoppingCart.Size = new System.Drawing.Size(294, 150);
+            this.gpbShoppingCart.TabIndex = 80;
+            this.gpbShoppingCart.TabStop = false;
+            this.gpbShoppingCart.Tag = "Label_ShoppingCart";
+            this.gpbShoppingCart.Text = "Shopping Cart";
+            this.gpbShoppingCart.Visible = false;
+            // 
+            // tlpShoppingCart
+            // 
+            this.tlpShoppingCart.AutoSize = true;
+            this.tlpShoppingCart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpShoppingCart.ColumnCount = 2;
+            this.tlpShoppingCart.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpShoppingCart.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpShoppingCart.Controls.Add(this.lstShoppingCart, 0, 0);
+            this.tlpShoppingCart.Controls.Add(this.cmdAddToCart, 1, 1);
+            this.tlpShoppingCart.Controls.Add(this.cmdRemoveFromCart, 1, 2);
+            this.tlpShoppingCart.Controls.Add(this.cmdPurchaseAll, 1, 3);
+            this.tlpShoppingCart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpShoppingCart.Location = new System.Drawing.Point(3, 16);
+            this.tlpShoppingCart.Name = "tlpShoppingCart";
+            this.tlpShoppingCart.RowCount = 4;
+            this.tlpShoppingCart.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpShoppingCart.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
+            this.tlpShoppingCart.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
+            this.tlpShoppingCart.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
+            this.tlpShoppingCart.Size = new System.Drawing.Size(288, 131);
+            this.tlpShoppingCart.TabIndex = 0;
+            // 
+            // lstShoppingCart
+            // 
+            this.lstShoppingCart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstShoppingCart.FormattingEnabled = true;
+            this.lstShoppingCart.Location = new System.Drawing.Point(3, 3);
+            this.lstShoppingCart.Name = "lstShoppingCart";
+            this.tlpShoppingCart.SetRowSpan(this.lstShoppingCart, 4);
+            this.lstShoppingCart.Size = new System.Drawing.Size(200, 125);
+            this.lstShoppingCart.TabIndex = 0;
+            // 
+            // cmdAddToCart
+            // 
+            this.cmdAddToCart.AutoSize = true;
+            this.cmdAddToCart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddToCart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdAddToCart.Location = new System.Drawing.Point(209, 44);
+            this.cmdAddToCart.MinimumSize = new System.Drawing.Size(80, 23);
+            this.cmdAddToCart.Name = "cmdAddToCart";
+            this.cmdAddToCart.Size = new System.Drawing.Size(76, 29);
+            this.cmdAddToCart.TabIndex = 1;
+            this.cmdAddToCart.Tag = "Button_AddToCart";
+            this.cmdAddToCart.Text = "Add to Cart";
+            this.cmdAddToCart.UseVisualStyleBackColor = true;
+            this.cmdAddToCart.Click += new System.EventHandler(this.cmdAddToCart_Click);
+            // 
+            // cmdRemoveFromCart
+            // 
+            this.cmdRemoveFromCart.AutoSize = true;
+            this.cmdRemoveFromCart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdRemoveFromCart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdRemoveFromCart.Location = new System.Drawing.Point(209, 73);
+            this.cmdRemoveFromCart.MinimumSize = new System.Drawing.Size(80, 23);
+            this.cmdRemoveFromCart.Name = "cmdRemoveFromCart";
+            this.cmdRemoveFromCart.Size = new System.Drawing.Size(76, 29);
+            this.cmdRemoveFromCart.TabIndex = 2;
+            this.cmdRemoveFromCart.Tag = "Button_RemoveFromCart";
+            this.cmdRemoveFromCart.Text = "Remove";
+            this.cmdRemoveFromCart.UseVisualStyleBackColor = true;
+            this.cmdRemoveFromCart.Click += new System.EventHandler(this.cmdRemoveFromCart_Click);
+            // 
+            // cmdPurchaseAll
+            // 
+            this.cmdPurchaseAll.AutoSize = true;
+            this.cmdPurchaseAll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdPurchaseAll.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdPurchaseAll.Location = new System.Drawing.Point(209, 102);
+            this.cmdPurchaseAll.MinimumSize = new System.Drawing.Size(80, 23);
+            this.cmdPurchaseAll.Name = "cmdPurchaseAll";
+            this.cmdPurchaseAll.Size = new System.Drawing.Size(76, 29);
+            this.cmdPurchaseAll.TabIndex = 3;
+            this.cmdPurchaseAll.Tag = "Button_PurchaseAll";
+            this.cmdPurchaseAll.Text = "Purchase All";
+            this.cmdPurchaseAll.UseVisualStyleBackColor = true;
+            this.cmdPurchaseAll.Click += new System.EventHandler(this.cmdPurchaseAll_Click);
+            // 
             // SelectWeaponAccessory
             // 
             this.AcceptButton = this.cmdOK;
@@ -839,6 +939,10 @@ namespace Chummer
             this.flpRating.PerformLayout();
             this.tlpTopRight.ResumeLayout(false);
             this.tlpTopRight.PerformLayout();
+            this.gpbShoppingCart.ResumeLayout(false);
+            this.gpbShoppingCart.PerformLayout();
+            this.tlpShoppingCart.ResumeLayout(false);
+            this.tlpShoppingCart.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -891,5 +995,11 @@ namespace Chummer
         private Chummer.NumericUpDownEx nudExactCost;
         private System.Windows.Forms.TableLayoutPanel tlpRight;
         private System.Windows.Forms.TableLayoutPanel tlpTopRight;
+        private System.Windows.Forms.GroupBox gpbShoppingCart;
+        private System.Windows.Forms.TableLayoutPanel tlpShoppingCart;
+        private System.Windows.Forms.ListBox lstShoppingCart;
+        private System.Windows.Forms.Button cmdAddToCart;
+        private System.Windows.Forms.Button cmdRemoveFromCart;
+        private System.Windows.Forms.Button cmdPurchaseAll;
     }
 }

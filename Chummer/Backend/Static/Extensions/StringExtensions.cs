@@ -4196,6 +4196,31 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Extract a substring between two specified characters.
+        /// </summary>
+        /// <param name="strInput">String on which to operate.</param>
+        /// <param name="chrStart">Starting character delimiter.</param>
+        /// <param name="chrEnd">Ending character delimiter.</param>
+        /// <param name="intStartIndex">Index from which to begin searching for the starting character. Defaults to 0.</param>
+        /// <returns>The substring between the two delimiters, or an empty string if the delimiters are not found.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string GetStringBetween(this string strInput, char chrStart, char chrEnd, int intStartIndex = 0)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+
+            int intOpenIndex = strInput.IndexOf(chrStart, intStartIndex);
+            if (intOpenIndex < 0)
+                return string.Empty;
+
+            int intCloseIndex = strInput.IndexOf(chrEnd, intOpenIndex + 1);
+            if (intCloseIndex <= intOpenIndex)
+                return string.Empty;
+
+            return strInput.Substring(intOpenIndex + 1, intCloseIndex - intOpenIndex - 1);
+        }
+
+        /// <summary>
         /// Determines whether the first char of this string instance matches the specified char.
         /// </summary>
         /// <param name="strInput">String to check.</param>

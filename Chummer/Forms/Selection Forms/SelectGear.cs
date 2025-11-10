@@ -69,6 +69,36 @@ namespace Chummer
         private readonly CancellationTokenSource _objGenericCancellationTokenSource;
         private readonly CancellationToken _objGenericToken;
 
+        // Shopping cart for multiple purchases
+        private readonly List<CartItem> _lstShoppingCart = new List<CartItem>();
+        private bool _blnShoppingCartMode = false;
+
+        /// <summary>
+        /// Represents an item in the shopping cart
+        /// </summary>
+        public class CartItem
+        {
+            public string GearId { get; set; }
+            public string GearName { get; set; }
+            public int Rating { get; set; }
+            public decimal Quantity { get; set; }
+            public decimal Markup { get; set; }
+            public bool FreeCost { get; set; }
+            public bool DoItYourself { get; set; }
+            public bool BlackMarketDiscount { get; set; }
+            public decimal CapacityUsed { get; set; }
+
+            public override string ToString()
+            {
+                return $"{GearName} (Rating {Rating}, Qty {Quantity})";
+            }
+        }
+
+        /// <summary>
+        /// Get all items in the shopping cart
+        /// </summary>
+        public List<CartItem> ShoppingCartItems => new List<CartItem>(_lstShoppingCart);
+
         #region Control Events
 
         public SelectGear(Character objCharacter, int intAvailModifier = 0, int intCostMultiplier = 1, object objGearParent = null, string strAllowedCategories = "", string strAllowedNames = "")
@@ -109,6 +139,9 @@ namespace Chummer
                 if (!string.IsNullOrWhiteSpace(strName))
                     _setAllowedNames.Add(strName.Trim());
             }
+
+            // Shopping cart is always enabled
+            _blnShoppingCartMode = true;
         }
 
         private async void SelectGear_Load(object sender, EventArgs e)
@@ -225,6 +258,29 @@ namespace Chummer
                     await lstGear.DoThreadSafeAsync(x => x.SelectedValue = _strSelectedGear, _objGenericToken).ConfigureAwait(false);
                 // Make sure right-side controls are properly updated depending on how the selections above worked out
                 await UpdateGearInfo(_objGenericToken).ConfigureAwait(false);
+
+                // Enable shopping cart (always enabled)
+                if (_blnShoppingCartMode)
+                {
+                    // Ensure maximum capacity is set from parent gear if not already set
+                    if (_decMaximumCapacity < 0 && _objGearParent is Gear objParentGearForCart)
+                    {
+                        decimal decRemainingCapacity = await objParentGearForCart.GetCapacityRemainingAsync(_objGenericToken).ConfigureAwait(false);
+                        await SetMaximumCapacityAsync(decRemainingCapacity, _objGenericToken).ConfigureAwait(false);
+                    }
+
+                    await gpbShoppingCart.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken).ConfigureAwait(false);
+                    await cmdAddToCart.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken).ConfigureAwait(false);
+                    await cmdOK.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
+                    await cmdOKAdd.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
+                    
+                    // Only show capacity remaining if there's a parent object
+                    bool blnShowCapacity = _objGearParent is Gear;
+                    await lblCartCapacityRemainingLabel.DoThreadSafeAsync(x => x.Visible = blnShowCapacity, _objGenericToken).ConfigureAwait(false);
+                    await lblCartCapacityRemaining.DoThreadSafeAsync(x => x.Visible = blnShowCapacity, _objGenericToken).ConfigureAwait(false);
+                    
+                    await UpdateShoppingCartDisplayAsync(_objGenericToken).ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -664,6 +720,185 @@ namespace Chummer
         {
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.TextLength, 0);
+        }
+
+        private async void cmdAddToCart_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string strSelectedId = await lstGear.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strSelectedId))
+                    return;
+
+                XPathNavigator objXmlGear = _xmlBaseGearDataNode.TryGetNodeByNameOrId("gears/gear", strSelectedId);
+                if (objXmlGear == null)
+                    return;
+
+                string strGearName = objXmlGear.SelectSingleNodeAndCacheExpression("name", _objGenericToken)?.Value ?? string.Empty;
+                int intRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, _objGenericToken).ConfigureAwait(false);
+                decimal decQty = await nudGearQty.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false);
+                decimal decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false);
+                bool blnFreeCost = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false);
+                bool blnDoItYourself = await chkDoItYourself.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false);
+                bool blnBlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false);
+
+                // Calculate capacity used (only if there's a parent object)
+                decimal decCapacityUsed = 0;
+                if (_objGearParent is Gear objParentGear)
+                {
+                    string strCapacity = objXmlGear.SelectSingleNodeAndCacheExpression("capacity", _objGenericToken)?.Value ?? string.Empty;
+                    if (!string.IsNullOrEmpty(strCapacity))
+                    {
+                        // Parse capacity (format is usually [Rating] or [1] for sensor functions)
+                        if (strCapacity.Contains('['))
+                        {
+                            string strCapacityValue = strCapacity.GetStringBetween('[', ']');
+                            if (!string.IsNullOrEmpty(strCapacityValue))
+                            {
+                                if (int.TryParse(strCapacityValue, out int intCapacity))
+                                {
+                                    decCapacityUsed = intCapacity;
+                                }
+                                else if (strCapacityValue == "Rating")
+                                {
+                                    decCapacityUsed = intRating;
+                                }
+                            }
+                        }
+                    }
+
+                    // Check if we have enough capacity (only check if there's a parent)
+                    decimal decRemainingCapacity = _decMaximumCapacity;
+                    if (decRemainingCapacity < 0)
+                    {
+                        decRemainingCapacity = await objParentGear.GetCapacityRemainingAsync(_objGenericToken).ConfigureAwait(false);
+                    }
+                    decimal decUsedCapacity = _lstShoppingCart.Sum(x => x.CapacityUsed);
+                    if (decRemainingCapacity - decUsedCapacity < decCapacityUsed)
+                    {
+                        await Program.ShowScrollableMessageBoxAsync(this,
+                            await LanguageManager.GetStringAsync("Message_CapacityReached", token: _objGenericToken).ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_CapacityReached", token: _objGenericToken).ConfigureAwait(false),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information, token: _objGenericToken).ConfigureAwait(false);
+                        return;
+                    }
+                }
+
+                CartItem objCartItem = new CartItem
+                {
+                    GearId = strSelectedId,
+                    GearName = strGearName,
+                    Rating = intRating,
+                    Quantity = decQty,
+                    Markup = decMarkup,
+                    FreeCost = blnFreeCost,
+                    DoItYourself = blnDoItYourself,
+                    BlackMarketDiscount = blnBlackMarketDiscount,
+                    CapacityUsed = decCapacityUsed
+                };
+
+                _lstShoppingCart.Add(objCartItem);
+                await UpdateShoppingCartDisplayAsync(_objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdRemoveFromCart_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int intSelectedIndex = await lstShoppingCart.DoThreadSafeFuncAsync(x => x.SelectedIndex, _objGenericToken).ConfigureAwait(false);
+                if (intSelectedIndex >= 0 && intSelectedIndex < _lstShoppingCart.Count)
+                {
+                    _lstShoppingCart.RemoveAt(intSelectedIndex);
+                    await UpdateShoppingCartDisplayAsync(_objGenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdPurchaseAll_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_lstShoppingCart.Count == 0)
+                {
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        await LanguageManager.GetStringAsync("Message_ShoppingCartEmpty", token: _objGenericToken).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_ShoppingCartEmpty", token: _objGenericToken).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: _objGenericToken).ConfigureAwait(false);
+                    return;
+                }
+
+                // Set the first item as selected and mark that we're using shopping cart
+                if (_lstShoppingCart.Count > 0)
+                {
+                    CartItem objFirstItem = _lstShoppingCart[0];
+                    _strSelectedGear = objFirstItem.GearId;
+                    _intSelectedRating = objFirstItem.Rating;
+                    _decSelectedQty = objFirstItem.Quantity;
+                    _decMarkup = objFirstItem.Markup;
+                    _blnFreeCost = objFirstItem.FreeCost;
+                    _blnDoItYourself = objFirstItem.DoItYourself;
+                    _blnStack = false;
+                    _blnBlackMarketDiscount = objFirstItem.BlackMarketDiscount;
+                }
+
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async Task UpdateShoppingCartDisplayAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            await lstShoppingCart.DoThreadSafeAsync(x =>
+            {
+                x.BeginUpdate();
+                try
+                {
+                    x.Items.Clear();
+                    foreach (CartItem objItem in _lstShoppingCart)
+                    {
+                        x.Items.Add(objItem);
+                    }
+                }
+                finally
+                {
+                    x.EndUpdate();
+                }
+            }, token).ConfigureAwait(false);
+
+            // Update capacity remaining (only if there's a parent object)
+            if (_objGearParent is Gear)
+            {
+                // If maximum capacity is not set, try to get it from parent gear
+                decimal decRemainingCapacity = _decMaximumCapacity;
+                if (decRemainingCapacity < 0 && _objGearParent is Gear objParentGearForDisplay)
+                {
+                    decRemainingCapacity = await objParentGearForDisplay.GetCapacityRemainingAsync(token).ConfigureAwait(false);
+                }
+                
+                decimal decUsedCapacity = _lstShoppingCart.Sum(x => x.CapacityUsed);
+                decimal decRemaining = decRemainingCapacity >= 0 ? decRemainingCapacity - decUsedCapacity : 0;
+
+                await lblCartCapacityRemaining.DoThreadSafeAsync(x =>
+                {
+                    x.Text = decRemainingCapacity >= 0
+                        ? decRemaining.ToString("#,0.##", GlobalSettings.CultureInfo)
+                        : "0";
+                }, token).ConfigureAwait(false);
+            }
         }
 
         #endregion Control Events

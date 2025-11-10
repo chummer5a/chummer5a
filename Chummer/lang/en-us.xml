@@ -247,6 +247,18 @@
       <text>Remove</text>
     </string>
     <string>
+      <key>Button_AddToCart</key>
+      <text>Add to Cart</text>
+    </string>
+    <string>
+      <key>Button_RemoveFromCart</key>
+      <text>Remove</text>
+    </string>
+    <string>
+      <key>Button_PurchaseAll</key>
+      <text>Purchase All</text>
+    </string>
+    <string>
       <key>String_Name</key>
       <text>Name</text>
     </string>
@@ -909,6 +921,14 @@
     <string>
       <key>Label_Capacity</key>
       <text>Capacity:</text>
+    </string>
+    <string>
+      <key>Label_CapacityRemaining</key>
+      <text>Capacity Remaining:</text>
+    </string>
+    <string>
+      <key>Label_ShoppingCart</key>
+      <text>Shopping Cart</text>
     </string>
     <string>
       <key>Label_DeviceRating</key>
@@ -2941,6 +2961,14 @@
     <string>
       <key>Message_CapacityReachedValidate</key>
       <text>The following {0} items are over their Capacity:</text>
+    </string>
+    <string>
+      <key>Message_ShoppingCartEmpty</key>
+      <text>The shopping cart is empty. Please add items to the cart before purchasing.</text>
+    </string>
+    <string>
+      <key>MessageTitle_ShoppingCartEmpty</key>
+      <text>Shopping Cart Empty</text>
     </string>
     <string>
       <key>MessageTitle_CapacityReached</key>
