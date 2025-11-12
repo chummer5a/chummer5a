@@ -21728,11 +21728,12 @@ namespace Chummer
                                                   .ConfigureAwait(false);
                             await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
-                            string strDamage = await objWeapon.GetDisplayDamageAsync(token).ConfigureAwait(false);
+                            (string strDamage, string strDamageTooltip) = await objWeapon.GetDisplayDamageWithTooltipAsync(token).ConfigureAwait(false);
                             await lblWeaponDamage.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                             await lblWeaponDamage.DoThreadSafeAsync(x => x.Text = strDamage, token)
                                                  .ConfigureAwait(false);
-                            string strAP = await objWeapon.GetDisplayTotalAPAsync(token).ConfigureAwait(false);
+                            await lblWeaponDamage.SetToolTipAsync(strDamageTooltip, token: token).ConfigureAwait(false);
+                            (string strAP, string strAPTooltip) = await objWeapon.GetDisplayTotalAPWithTooltipAsync(token).ConfigureAwait(false);
                             await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                 .ConfigureAwait(false);
                             await lblWeaponAP.DoThreadSafeAsync(x =>
@@ -21740,7 +21741,8 @@ namespace Chummer
                                 x.Visible = true;
                                 x.Text = strAP;
                             }, token).ConfigureAwait(false);
-                            string strAccuracy = await objWeapon.GetDisplayAccuracyAsync(token).ConfigureAwait(false);
+                            await lblWeaponAP.SetToolTipAsync(strAPTooltip, token: token).ConfigureAwait(false);
+                            (string strAccuracy, string strAccuracyTooltip) = await objWeapon.GetDisplayAccuracyWithTooltipAsync(token).ConfigureAwait(false);
                             await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                     .ConfigureAwait(false);
                             await lblWeaponAccuracy.DoThreadSafeAsync(x =>
@@ -21748,6 +21750,7 @@ namespace Chummer
                                 x.Visible = true;
                                 x.Text = strAccuracy;
                             }, token).ConfigureAwait(false);
+                            await lblWeaponAccuracy.SetToolTipAsync(strAccuracyTooltip, token: token).ConfigureAwait(false);
                             await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                         .ConfigureAwait(false);
                             int intPool
@@ -25490,7 +25493,7 @@ namespace Chummer
                                 x.Text = strDamage;
                                 x.Visible = true;
                             }, token).ConfigureAwait(false);
-                            string strAP = await objWeapon.GetDisplayTotalAPAsync(token).ConfigureAwait(false);
+                            (string strAP, string strAPTooltip) = await objWeapon.GetDisplayTotalAPWithTooltipAsync(token).ConfigureAwait(false);
                             await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                         .ConfigureAwait(false);
                             await lblVehicleWeaponAP.DoThreadSafeAsync(x =>
@@ -25498,6 +25501,7 @@ namespace Chummer
                                 x.Text = strAP;
                                 x.Visible = true;
                             }, token).ConfigureAwait(false);
+                            await lblVehicleWeaponAP.SetToolTipAsync(strAPTooltip, token: token).ConfigureAwait(false);
                             string strAccuracy = await objWeapon.GetDisplayAccuracyAsync(token).ConfigureAwait(false);
                             await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                             .ConfigureAwait(false);

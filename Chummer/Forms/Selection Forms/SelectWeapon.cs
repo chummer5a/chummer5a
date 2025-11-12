@@ -355,14 +355,16 @@ namespace Chummer
                         await lblWeaponReachLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strReach), token: token)
                                 .ConfigureAwait(false);
-                        string strDamage = await objSelectedWeapon.GetDisplayDamageAsync(token).ConfigureAwait(false);
+                        (string strDamage, string strDamageTooltip) = await objSelectedWeapon.GetDisplayDamageWithTooltipAsync(token).ConfigureAwait(false);
                         await lblWeaponDamage.DoThreadSafeAsync(x => x.Text = strDamage, token: token)
                                                 .ConfigureAwait(false);
+                        await lblWeaponDamage.SetToolTipAsync(strDamageTooltip, token: token).ConfigureAwait(false);
                         await lblWeaponDamageLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDamage), token: token)
                                 .ConfigureAwait(false);
-                        string strAP = await objSelectedWeapon.GetDisplayTotalAPAsync(token).ConfigureAwait(false);
+                        (string strAP, string strAPTooltip) = await objSelectedWeapon.GetDisplayTotalAPWithTooltipAsync(token).ConfigureAwait(false);
                         await lblWeaponAP.DoThreadSafeAsync(x => x.Text = strAP, token: token).ConfigureAwait(false);
+                        await lblWeaponAP.SetToolTipAsync(strAPTooltip, token: token).ConfigureAwait(false);
                         await lblWeaponAPLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAP), token: token)
                                 .ConfigureAwait(false);
@@ -385,9 +387,10 @@ namespace Chummer
                         await lblWeaponAmmoLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAmmo), token: token)
                                 .ConfigureAwait(false);
-                        string strAccuracy = await objSelectedWeapon.GetDisplayAccuracyAsync(token).ConfigureAwait(false);
+                        (string strAccuracy, string strAccuracyTooltip) = await objSelectedWeapon.GetDisplayAccuracyWithTooltipAsync(token).ConfigureAwait(false);
                         await lblWeaponAccuracy.DoThreadSafeAsync(x => x.Text = strAccuracy, token: token)
                                                 .ConfigureAwait(false);
+                        await lblWeaponAccuracy.SetToolTipAsync(strAccuracyTooltip, token: token).ConfigureAwait(false);
                         await lblWeaponAccuracyLabel
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAccuracy), token: token)
                                 .ConfigureAwait(false);

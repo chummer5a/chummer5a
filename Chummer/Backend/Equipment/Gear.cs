@@ -635,8 +635,8 @@ namespace Chummer.Backend.Equipment
             }
 
             // If the item grants a Weapon bonus (Ammunition), just fill the WeaponBonus XmlNode.
-            _nodWeaponBonus = objXmlGear["weaponbonus"];
-            _nodFlechetteWeaponBonus = objXmlGear["flechetteweaponbonus"];
+            _nodWeaponBonus = objXmlGear["weaponbonus"]?.CloneNode(true);
+            _nodFlechetteWeaponBonus = objXmlGear["flechetteweaponbonus"]?.CloneNode(true);
 
             if (!objXmlGear.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
             {
@@ -1393,10 +1393,10 @@ namespace Chummer.Backend.Equipment
                 _blnBonded = objGear.Bonded;
                 _blnEquipped = objGear.Equipped;
                 _blnWirelessOn = objGear.WirelessOn;
-                _nodBonus = objGear.Bonus;
-                _nodWirelessBonus = objGear.WirelessBonus;
-                _nodWeaponBonus = objGear.WeaponBonus;
-                _nodFlechetteWeaponBonus = objGear.FlechetteWeaponBonus;
+                _nodBonus = objGear.Bonus?.CloneNode(true);
+                _nodWirelessBonus = objGear.WirelessBonus?.CloneNode(true);
+                _nodWeaponBonus = objGear.WeaponBonus?.CloneNode(true);
+                _nodFlechetteWeaponBonus = objGear.FlechetteWeaponBonus?.CloneNode(true);
                 if (!Guid.TryParse(objGear.WeaponID, out _guiWeaponID))
                     _guiWeaponID = Guid.Empty;
                 _strNotes = objGear.Notes;
@@ -1483,10 +1483,10 @@ namespace Chummer.Backend.Equipment
                 _blnBonded = objGear.Bonded;
                 _blnEquipped = objGear.Equipped;
                 _blnWirelessOn = objGear.WirelessOn;
-                _nodBonus = objGear.Bonus;
-                _nodWirelessBonus = objGear.WirelessBonus;
-                _nodWeaponBonus = objGear.WeaponBonus;
-                _nodFlechetteWeaponBonus = objGear.FlechetteWeaponBonus;
+                _nodBonus = objGear.Bonus?.CloneNode(true);
+                _nodWirelessBonus = objGear.WirelessBonus?.CloneNode(true);
+                _nodWeaponBonus = objGear.WeaponBonus?.CloneNode(true);
+                _nodFlechetteWeaponBonus = objGear.FlechetteWeaponBonus?.CloneNode(true);
                 if (!Guid.TryParse(objGear.WeaponID, out _guiWeaponID))
                     _guiWeaponID = Guid.Empty;
                 _strNotes = objGear.Notes;

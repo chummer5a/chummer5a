@@ -15797,12 +15797,13 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
                             await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                   .ConfigureAwait(false);
-                            string strAP = await objWeapon.GetDisplayTotalAPAsync(token).ConfigureAwait(false);
+                            (string strAP, string strAPTooltip) = await objWeapon.GetDisplayTotalAPWithTooltipAsync(token).ConfigureAwait(false);
                             await lblWeaponAP.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
                                 x.Text = strAP;
                             }, token).ConfigureAwait(false);
+                            await lblWeaponAP.SetToolTipAsync(strAPTooltip, token: token).ConfigureAwait(false);
                             await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                         .ConfigureAwait(false);
                             string strAccuracy = await objWeapon.GetDisplayAccuracyAsync(token).ConfigureAwait(false);

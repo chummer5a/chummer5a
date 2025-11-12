@@ -4096,6 +4096,10 @@
       <text>(fire)</text>
     </string>
     <string>
+      <key>String_DamageType</key>
+      <text>Damage Type</text>
+    </string>
+    <string>
       <key>String_DamagePOrS</key>
       <text>P or S</text>
     </string>

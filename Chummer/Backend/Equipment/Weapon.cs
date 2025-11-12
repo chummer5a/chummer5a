@@ -4442,12 +4442,17 @@ namespace Chummer.Backend.Equipment
         public Task<string> GetDisplayDamageAsync(CancellationToken token = default) => CalculatedDamageAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token);
 
         /// <summary>
+        /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition in the program's current language. Returns a tuple with the damage string and tooltip.
+        /// </summary>
+        public Task<ValueTuple<string, string>> GetDisplayDamageWithTooltipAsync(CancellationToken token = default) => CalculatedDamageWithTooltipAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token);
+
+        /// <summary>
         /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition.
         /// </summary>
         public string CalculatedDamage(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true)
         {
             return Utils.SafelyRunSynchronously(() =>
-                CalculatedDamageCoreAsync(true, objCulture, strLanguage, blnIncludeAmmo));
+                CalculatedDamageCoreAsync(true, objCulture, strLanguage, blnIncludeAmmo, false)).Item1;
         }
 
         /// <summary>
@@ -4456,21 +4461,46 @@ namespace Chummer.Backend.Equipment
         public Task<string> CalculatedDamageAsync(CultureInfo objCulture, string strLanguage,
             bool blnIncludeAmmo = true, CancellationToken token = default)
         {
-            return CalculatedDamageCoreAsync(false, objCulture, strLanguage, blnIncludeAmmo, token);
+            return CalculatedDamageCoreAsync(false, objCulture, strLanguage, blnIncludeAmmo, false, token).ContinueWith(t => t.Result.Item1, token);
         }
 
         /// <summary>
-        /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition.
+        /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition. Returns a tuple with the damage string and tooltip.
         /// </summary>
-        private async Task<string> CalculatedDamageCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage,
+        public ValueTuple<string, string> CalculatedDamageWithTooltip(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true)
+        {
+            return Utils.SafelyRunSynchronously(() =>
+                CalculatedDamageCoreAsync(true, objCulture, strLanguage, blnIncludeAmmo, true));
+        }
+
+        /// <summary>
+        /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition. Returns a tuple with the damage string and tooltip.
+        /// </summary>
+        public Task<ValueTuple<string, string>> CalculatedDamageWithTooltipAsync(CultureInfo objCulture, string strLanguage,
             bool blnIncludeAmmo = true, CancellationToken token = default)
         {
+            return CalculatedDamageCoreAsync(false, objCulture, strLanguage, blnIncludeAmmo, true, token);
+        }
+
+        /// <summary>
+        /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition. Returns a tuple with the damage string and tooltip.
+        /// </summary>
+        private async Task<ValueTuple<string, string>> CalculatedDamageCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage,
+            bool blnIncludeAmmo = true, bool blnWithTooltip = false, CancellationToken token = default)
+        {
             token.ThrowIfCancellationRequested();
-            // If the cost is determined by the Rating, evaluate the expression.
-            string strDamageType = string.Empty;
-            string strDamageExtra = string.Empty;
-            string strDamage;
-            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDamage))
+            string strSpace = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LanguageManager.GetString("String_Space", strLanguage, token: token)
+                : await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            string strTooltip = string.Empty;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDamageTip))
+            {
+                // If the cost is determined by the Rating, evaluate the expression.
+                string strDamageType = string.Empty;
+                string strDamageExtra = string.Empty;
+                string strDamage;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDamage))
             {
                 sbdDamage.Append(Damage);
                 if (blnSync)
@@ -4491,6 +4521,137 @@ namespace Chummer.Backend.Equipment
 
                 strDamage = sbdDamage.ToString();
             }
+
+                if (blnWithTooltip)
+                {
+                    // Calculate base damage from original string (before attributes are processed)
+                    string strOriginalDamage = Damage;
+                    bool blnHasAttributes = !string.IsNullOrEmpty(strOriginalDamage) && _objCharacter != null && 
+                        AttributeSection.AttributeStrings.Any(x => strOriginalDamage.Contains("{" + x + "}"));
+                    
+                    if (blnHasAttributes)
+                    {
+                        // For attribute-based weapons, show all formula components on the first line
+                        bool blnFirstItem = true;
+                        
+                        // Show attributes first
+                        foreach (string strAttributeName in AttributeSection.AttributeStrings)
+                        {
+                            string strAttributePattern = "{" + strAttributeName + "}";
+                            if (strOriginalDamage.Contains(strAttributePattern))
+                            {
+                                CharacterAttrib objAttribute = blnSync
+                                    ? _objCharacter.GetAttribute(strAttributeName, token: token)
+                                    : await _objCharacter.GetAttributeAsync(strAttributeName, token: token).ConfigureAwait(false);
+                                if (objAttribute != null)
+                                {
+                                    int intAttributeValue = blnSync
+                                        ? objAttribute.TotalValue
+                                        : await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false);
+                                    string strAttributeDisplayName = blnSync
+                                        ? objAttribute.DisplayNameShort(strLanguage)
+                                        : await objAttribute.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                                    if (blnFirstItem)
+                                    {
+                                        sbdDamageTip.Append(strAttributeDisplayName)
+                                            .Append('(').Append(intAttributeValue.ToString(objCulture)).Append(')');
+                                        blnFirstItem = false;
+                                    }
+                                    else
+                                    {
+                                        sbdDamageTip.Append(strSpace, '+', strSpace)
+                                            .Append(strAttributeDisplayName)
+                                            .Append('(').Append(intAttributeValue.ToString(objCulture)).Append(')');
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Calculate and show base numeric value (without attributes) on the same line
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBaseDamage))
+                        {
+                            sbdBaseDamage.Append(strOriginalDamage);
+                            // Replace Rating but not attributes
+                            if (blnSync)
+                            {
+                                sbdBaseDamage.CheapReplace(strOriginalDamage, "{Rating}",
+                                    () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                            }
+                            else
+                            {
+                                await sbdBaseDamage.CheapReplaceAsync(strOriginalDamage,
+                                        "{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                    .ConfigureAwait(false);
+                            }
+                            // Remove attribute references for base calculation
+                            foreach (string strAttributeName in AttributeSection.AttributeStrings)
+                            {
+                                string strAttributePattern = "{" + strAttributeName + "}";
+                                sbdBaseDamage.Replace(strAttributePattern, "0");
+                            }
+                            
+                            string strBaseDamage = sbdBaseDamage.ToString();
+                            bool blnIsSuccess;
+                            decimal decBaseValue;
+                            if (blnSync)
+                                decBaseValue = ProcessRatingStringAsDec(strBaseDamage, () => Rating, out blnIsSuccess);
+                            else
+                                (decBaseValue, blnIsSuccess) = await ProcessRatingStringAsDecAsync(strBaseDamage, () => GetRatingAsync(token), token: token).ConfigureAwait(false);
+                            
+                            if (blnIsSuccess && decBaseValue != 0)
+                            {
+                                sbdDamageTip.Append(strSpace, '+', strSpace)
+                                    .Append(decBaseValue.ToString(objCulture));
+                            }
+                            else if (!blnIsSuccess && !string.IsNullOrEmpty(strBaseDamage) && strBaseDamage != "0")
+                            {
+                                // Try to extract just the numeric parts
+                                string strNumericPart = strBaseDamage;
+                                // Remove common operators and parentheses to find numeric values
+                                foreach (char c in new[] { '+', '-', '*', '/', '(', ')', ' ' })
+                                {
+                                    strNumericPart = strNumericPart.Replace(c.ToString(), strSpace);
+                                }
+                                string[] arrParts = strNumericPart.Split(new[] { strSpace }, StringSplitOptions.RemoveEmptyEntries);
+                                foreach (string strPart in arrParts)
+                                {
+                                    if (decimal.TryParse(strPart, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decPart) && decPart != 0)
+                                    {
+                                        sbdDamageTip.Append(strSpace, '+', strSpace)
+                                            .Append(decPart.ToString(objCulture));
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // For non-attribute-based weapons, use the processed damage string
+                        bool blnIsSuccess;
+                        decimal decBaseValue;
+                        if (blnSync)
+                            decBaseValue = ProcessRatingStringAsDec(strDamage, () => Rating, out blnIsSuccess);
+                        else
+                            (decBaseValue, blnIsSuccess) = await ProcessRatingStringAsDecAsync(strDamage, () => GetRatingAsync(token), token: token).ConfigureAwait(false);
+                        if (blnIsSuccess)
+                        {
+                            sbdDamageTip.Append(blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString("Label_Base", strLanguage, token: token)
+                                : await LanguageManager.GetStringAsync("Label_Base", strLanguage, token: token).ConfigureAwait(false))
+                                .Append(strSpace).Append('(').Append(decBaseValue.ToString(objCulture)).Append(')');
+                        }
+                        else
+                        {
+                            sbdDamageTip.Append(blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString("Label_Base", strLanguage, token: token)
+                                : await LanguageManager.GetStringAsync("Label_Base", strLanguage, token: token).ConfigureAwait(false))
+                                .Append(strSpace).Append('(').Append(strDamage).Append(')');
+                        }
+                    }
+                }
 
             // Evaluate the min expression if there is one.
             int intStart = strDamage.IndexOf("min(", StringComparison.Ordinal);
@@ -4558,23 +4719,39 @@ namespace Chummer.Backend.Equipment
                 strDamage = strDamage.FastEscape(strSplash).Trim();
             }
 
-            // Include WeaponCategoryDV Improvements.
-            decimal decImprove = 0;
-            if (_objCharacter != null)
-            {
-                if (blnSync)
+                // Include WeaponCategoryDV Improvements.
+                decimal decImprove = 0;
+                if (_objCharacter != null)
                 {
-                    decImprove += GetWeaponCategoryImprovements(Improvement.ImprovementType.WeaponCategoryDV);
+                    if (blnSync)
+                    {
+                        decImprove += GetWeaponCategoryImprovements(Improvement.ImprovementType.WeaponCategoryDV);
 
                     // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
                     // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
                     if (Name == "Unarmed Attack")
                     {
-                        if (strDamageType == "S" && ImprovementManager
-                                .GetCachedImprovementListForValueOf(
-                                    _objCharacter, Improvement.ImprovementType.UnarmedDVPhysical, token: token)
-                                .Count > 0)
-                            strDamageType = "P";
+                        List<Improvement> lstUnarmedDVPhysical = ImprovementManager
+                            .GetCachedImprovementListForValueOf(
+                                _objCharacter, Improvement.ImprovementType.UnarmedDVPhysical, token: token);
+                            if (strDamageType == "S" && lstUnarmedDVPhysical.Count > 0)
+                            {
+                                strDamageType = "P";
+                                if (blnWithTooltip)
+                                {
+                                    foreach (Improvement objImprovement in lstUnarmedDVPhysical)
+                                    {
+                                        string strSourceDisplayName = GetImprovementSourceDisplayName(objImprovement);
+                                        sbdDamageTip.Append(Environment.NewLine)
+                                            .Append(strSpace, '+', strSpace)
+                                            .Append(strSourceDisplayName)
+                                            .Append(strSpace)
+                                            .Append(LanguageManager.GetString("String_DamageType", strLanguage, token: token))
+                                            .Append(strSpace, ':', strSpace)
+                                            .Append("S").Append(strSpace, "→", strSpace).Append("P");
+                                    }
+                                }
+                            }
                         decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV,
                             token: token);
                     }
@@ -4586,6 +4763,17 @@ namespace Chummer.Backend.Equipment
                     {
                         decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV,
                             token: token);
+                        if (blnWithTooltip)
+                        {
+                            List<Improvement> lstUnarmedImprovements = ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV, token: token);
+                            foreach (Improvement objImprovement in lstUnarmedImprovements)
+                            {
+                                if (objImprovement.Value != 0)
+                                {
+                                    AppendImprovementToTooltip(sbdDamageTip, strSpace, objImprovement, objCulture);
+                                }
+                            }
+                        }
                     }
                     // ReSharper restore MethodHasAsyncOverload
                 }
@@ -4597,12 +4785,28 @@ namespace Chummer.Backend.Equipment
                     // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
                     if (Name == "Unarmed Attack")
                     {
-                        if (strDamageType == "S" && (await ImprovementManager
-                                .GetCachedImprovementListForValueOfAsync(
-                                    _objCharacter, Improvement.ImprovementType.UnarmedDVPhysical, token: token)
-                                .ConfigureAwait(false))
-                            .Count > 0)
+                        List<Improvement> lstUnarmedDVPhysical = await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                _objCharacter, Improvement.ImprovementType.UnarmedDVPhysical, token: token)
+                            .ConfigureAwait(false);
+                        if (strDamageType == "S" && lstUnarmedDVPhysical.Count > 0)
+                        {
                             strDamageType = "P";
+                            if (blnWithTooltip)
+                            {
+                                foreach (Improvement objImprovement in lstUnarmedDVPhysical)
+                                {
+                                    string strSourceDisplayName = await GetImprovementSourceDisplayNameAsync(objImprovement, token).ConfigureAwait(false);
+                                    sbdDamageTip.Append(Environment.NewLine)
+                                        .Append(strSpace, '+', strSpace)
+                                        .Append(strSourceDisplayName)
+                                        .Append(strSpace)
+                                        .Append(await LanguageManager.GetStringAsync("String_DamageType", strLanguage, token: token).ConfigureAwait(false))
+                                        .Append(strSpace, ':', strSpace)
+                                        .Append("S").Append(strSpace, "→", strSpace).Append("P");
+                                }
+                            }
+                        }
                         decImprove += await ImprovementManager
                             .ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedDV, token: token)
                             .ConfigureAwait(false);
@@ -4614,17 +4818,98 @@ namespace Chummer.Backend.Equipment
                         ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
                         : string.Empty;
                     if (strUseSkill == "Unarmed Combat"
-                             && _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
+                             && await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetUnarmedImprovementsApplyToWeaponsAsync(token).ConfigureAwait(false))
                     {
                         decImprove += await ImprovementManager
                             .ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedDV, token: token)
                             .ConfigureAwait(false);
+                        if (blnWithTooltip)
+                        {
+                            List<Improvement> lstUnarmedImprovements = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedDV, token: token).ConfigureAwait(false);
+                            foreach (Improvement objImprovement in lstUnarmedImprovements)
+                            {
+                                if (objImprovement.Value != 0)
+                                {
+                                    await AppendImprovementToTooltipAsync(sbdDamageTip, strSpace, objImprovement, objCulture, token).ConfigureAwait(false);
+                                }
+                            }
+                        }
                     }
                 }
 
-                if (_objCharacter.Settings.MoreLethalGameplay)
-                    decImprove += 2;
-            }
+                    bool blnMoreLethal = blnSync
+                        ? _objCharacter.Settings.MoreLethalGameplay
+                        : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMoreLethalGameplayAsync(token).ConfigureAwait(false);
+                    if (blnMoreLethal)
+                    {
+                        decImprove += 2;
+                        if (blnWithTooltip)
+                        {
+                            sbdDamageTip.Append(Environment.NewLine)
+                                .Append(strSpace, '+', strSpace)
+                                .Append(blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LanguageManager.GetString("String_MoreLethalGameplay", strLanguage, token: token)
+                                    : await LanguageManager.GetStringAsync("String_MoreLethalGameplay", strLanguage, token: token).ConfigureAwait(false))
+                                .Append(strSpace).Append("(+2)");
+                        }
+                    }
+
+                    // Add improvement bonuses to tooltip
+                    if (blnWithTooltip && decImprove != 0)
+                    {
+                        List<Improvement> lstImprovements = blnSync
+                            ? ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV, token: token)
+                            : await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV, token: token).ConfigureAwait(false);
+                        
+                        // Get the category and skill names to match what GetWeaponCategoryImprovements checks
+                        string strCategory = Category;
+                        if (strCategory == "Unarmed")
+                            strCategory = "Unarmed Combat";
+                        string strUseSkill = blnSync
+                            ? (Skill?.DictionaryKey ?? string.Empty)
+                            : (await GetSkillAsync(token).ConfigureAwait(false))?.DictionaryKey ?? string.Empty;
+                        string strCyberwareCategory = strCategory.StartsWith("Cyberware ", StringComparison.Ordinal)
+                            ? strCategory.TrimStartOnce("Cyberware ", true)
+                            : string.Empty;
+                        
+                        foreach (Improvement objImprovement in lstImprovements)
+                        {
+                            // Match category, skill (if different), or cyberware category
+                            bool blnShouldShow = false;
+                            if (objImprovement.ImprovedName == strCategory && objImprovement.Value != 0)
+                                blnShouldShow = true;
+                            else if (!string.IsNullOrEmpty(strUseSkill) && strCategory != strUseSkill && objImprovement.ImprovedName == strUseSkill && objImprovement.Value != 0)
+                                blnShouldShow = true;
+                            else if (!string.IsNullOrEmpty(strCyberwareCategory) && objImprovement.ImprovedName == strCyberwareCategory && objImprovement.Value != 0)
+                                blnShouldShow = true;
+                            
+                            if (blnShouldShow)
+                            {
+                                if (blnSync)
+                                    AppendImprovementToTooltip(sbdDamageTip, strSpace, objImprovement, objCulture);
+                                else
+                                    await AppendImprovementToTooltipAsync(sbdDamageTip, strSpace, objImprovement, objCulture, token).ConfigureAwait(false);
+                            }
+                        }
+                        if (Name == "Unarmed Attack")
+                        {
+                            List<Improvement> lstUnarmedImprovements = blnSync
+                                ? ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV, token: token)
+                                : await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedDV, token: token).ConfigureAwait(false);
+                            foreach (Improvement objImprovement in lstUnarmedImprovements)
+                            {
+                                if (objImprovement.Value != 0)
+                                {
+                                    if (blnSync)
+                                        AppendImprovementToTooltip(sbdDamageTip, strSpace, objImprovement, objCulture);
+                                    else
+                                        await AppendImprovementToTooltipAsync(sbdDamageTip, strSpace, objImprovement, objCulture, token).ConfigureAwait(false);
+                                }
+                            }
+                        }
+                    }
+                }
 
             bool blnDamageReplaced = false;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
@@ -4636,17 +4921,60 @@ namespace Chummer.Backend.Equipment
                     // Change the Weapon's Damage Type.
                     if (WirelessWeaponBonus["damagetype"] != null)
                     {
+                        string strNewDamageType = WirelessWeaponBonus["damagetype"].InnerTextViaPool(token);
+                        if (blnWithTooltip && !string.IsNullOrEmpty(strNewDamageType))
+                        {
+                            sbdDamageTip.Append(Environment.NewLine)
+                                .Append(strSpace, '+', strSpace)
+                                .Append(blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LanguageManager.GetString("String_Wireless", strLanguage, token: token)
+                                    : await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false))
+                                .Append(strSpace)
+                                .Append(blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LanguageManager.GetString("String_DamageType", strLanguage, token: token)
+                                    : await LanguageManager.GetStringAsync("String_DamageType", strLanguage, token: token).ConfigureAwait(false))
+                                .Append(strSpace, ':', strSpace)
+                                .Append(strNewDamageType);
+                        }
                         strDamageType = string.Empty;
-                        strDamageExtra = WirelessWeaponBonus["damagetype"].InnerTextViaPool(token);
+                        strDamageExtra = strNewDamageType;
                     }
 
                     // Adjust the Weapon's Damage.
                     string strTemp = WirelessWeaponBonus["damage"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrEmpty(strTemp) && strTemp != "0" && strTemp != "+0" && strTemp != "-0")
+                    {
                         sbdBonusDamage.Append('(', strTemp.TrimStart('+'), ')');
+                        if (blnWithTooltip)
+                            sbdDamageTip.Append(Environment.NewLine)
+                                .Append(strSpace, '+', strSpace)
+                                .Append(blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LanguageManager.GetString("String_Wireless", strLanguage, token: token)
+                                    : await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false))
+                                .Append(strSpace).Append('(').Append(strTemp.TrimStart('+')).Append(')');
+                    }
                     strTemp = WirelessWeaponBonus["damagereplace"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrEmpty(strTemp))
                     {
+                        if (blnWithTooltip)
+                        {
+                            sbdDamageTip.Append(Environment.NewLine)
+                                .Append(strSpace, '+', strSpace)
+                                .Append(blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LanguageManager.GetString("String_Wireless", strLanguage, token: token)
+                                    : await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false))
+                                .Append(strSpace)
+                                .Append(blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LanguageManager.GetString("String_DamageReplace", strLanguage, token: token)
+                                    : await LanguageManager.GetStringAsync("String_DamageReplace", strLanguage, token: token).ConfigureAwait(false))
+                                .Append(strSpace, ':', strSpace)
+                                .Append(strTemp);
+                        }
                         blnDamageReplaced = true;
                         strDamage = strTemp;
                     }
@@ -4659,15 +4987,57 @@ namespace Chummer.Backend.Equipment
                     {
                         if (!string.IsNullOrEmpty(objAccessory.DamageType))
                         {
+                            if (blnWithTooltip)
+                            {
+                                sbdDamageTip.Append(Environment.NewLine)
+                                    .Append(strSpace, '+', strSpace)
+                                    .Append(blnSync
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        ? objAccessory.DisplayName(strLanguage)
+                                        : await objAccessory.DisplayNameAsync(strLanguage, token).ConfigureAwait(false))
+                                    .Append(strSpace)
+                                    .Append(blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? LanguageManager.GetString("String_DamageType", strLanguage, token: token)
+                                        : await LanguageManager.GetStringAsync("String_DamageType", strLanguage, token: token).ConfigureAwait(false))
+                                    .Append(strSpace, ':', strSpace)
+                                    .Append(objAccessory.DamageType);
+                            }
                             strDamageType = string.Empty;
                             strDamageExtra = objAccessory.DamageType;
                         }
 
                         // Adjust the Weapon's Damage.
                         if (!string.IsNullOrEmpty(objAccessory.Damage))
+                        {
                             sbdBonusDamage.Append("+(", objAccessory.Damage.TrimStart('+'), ')');
+                            if (blnWithTooltip)
+                                sbdDamageTip.Append(Environment.NewLine)
+                                    .Append(strSpace, '+', strSpace)
+                                    .Append(blnSync
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        ? objAccessory.DisplayName(strLanguage)
+                                        : await objAccessory.DisplayNameAsync(strLanguage, token).ConfigureAwait(false))
+                                    .Append(strSpace).Append('(').Append(objAccessory.Damage.TrimStart('+')).Append(')');
+                        }
                         if (!string.IsNullOrEmpty(objAccessory.DamageReplacement))
                         {
+                            if (blnWithTooltip)
+                            {
+                                sbdDamageTip.Append(Environment.NewLine)
+                                    .Append(strSpace, '+', strSpace)
+                                    .Append(blnSync
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        ? objAccessory.DisplayName(strLanguage)
+                                        : await objAccessory.DisplayNameAsync(strLanguage, token).ConfigureAwait(false))
+                                    .Append(strSpace)
+                                    .Append(blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? LanguageManager.GetString("String_DamageReplace", strLanguage, token: token)
+                                        : await LanguageManager.GetStringAsync("String_DamageReplace", strLanguage, token: token).ConfigureAwait(false))
+                                    .Append(strSpace, ':', strSpace)
+                                    .Append(objAccessory.DamageReplacement);
+                            }
                             blnDamageReplaced = true;
                             strDamage = objAccessory.DamageReplacement;
                         }
@@ -4676,17 +5046,86 @@ namespace Chummer.Backend.Equipment
                             // Change the Weapon's Damage Type.
                             if (objAccessory.WirelessWeaponBonus["damagetype"] != null)
                             {
+                                string strNewDamageType = objAccessory.WirelessWeaponBonus["damagetype"].InnerTextViaPool(token);
+                                if (blnWithTooltip && !string.IsNullOrEmpty(strNewDamageType))
+                                {
+                                    sbdDamageTip.Append(Environment.NewLine)
+                                        .Append(strSpace, '+', strSpace);
+                                    if (blnSync)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        sbdDamageTip.Append(objAccessory.DisplayName(strLanguage), strSpace,
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            LanguageManager.GetString("String_Wireless", strLanguage, token: token));
+                                    }
+                                    else
+                                    {
+                                        sbdDamageTip.Append(await objAccessory.DisplayNameAsync(strLanguage, token).ConfigureAwait(false), strSpace,
+                                            await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false));
+                                    }
+                                    sbdDamageTip.Append(strSpace)
+                                        .Append(blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? LanguageManager.GetString("String_DamageType", strLanguage, token: token)
+                                            : await LanguageManager.GetStringAsync("String_DamageType", strLanguage, token: token).ConfigureAwait(false))
+                                        .Append(strSpace, ':', strSpace)
+                                        .Append(strNewDamageType);
+                                }
                                 strDamageType = string.Empty;
-                                strDamageExtra = objAccessory.WirelessWeaponBonus["damagetype"].InnerTextViaPool(token);
+                                strDamageExtra = strNewDamageType;
                             }
 
                             // Adjust the Weapon's Damage.
                             string strTemp = objAccessory.WirelessWeaponBonus["damage"]?.InnerTextViaPool(token);
                             if (!string.IsNullOrEmpty(strTemp) && strTemp != "0" && strTemp != "+0" && strTemp != "-0")
+                            {
                                 sbdBonusDamage.Append("+(", strTemp.TrimStart('+'), ')');
+                                if (blnWithTooltip)
+                                {
+                                    sbdDamageTip.Append(Environment.NewLine)
+                                        .Append(strSpace, '+', strSpace);
+                                    if (blnSync)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        sbdDamageTip.Append(objAccessory.DisplayName(strLanguage), strSpace,
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            LanguageManager.GetString("String_Wireless", strLanguage, token: token));
+                                    }
+                                    else
+                                    {
+                                        sbdDamageTip.Append(await objAccessory.DisplayNameAsync(strLanguage, token).ConfigureAwait(false), strSpace,
+                                            await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false));
+                                    }
+                                    sbdDamageTip.Append(strSpace).Append('(').Append(strTemp.TrimStart('+')).Append(')');
+                                }
+                            }
                             strTemp = objAccessory.WirelessWeaponBonus["damagereplace"]?.InnerTextViaPool(token);
                             if (!string.IsNullOrEmpty(strTemp))
                             {
+                                if (blnWithTooltip)
+                                {
+                                    sbdDamageTip.Append(Environment.NewLine)
+                                        .Append(strSpace, '+', strSpace);
+                                    if (blnSync)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        sbdDamageTip.Append(objAccessory.DisplayName(strLanguage), strSpace,
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            LanguageManager.GetString("String_Wireless", strLanguage, token: token));
+                                    }
+                                    else
+                                    {
+                                        sbdDamageTip.Append(await objAccessory.DisplayNameAsync(strLanguage, token).ConfigureAwait(false), strSpace,
+                                            await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false));
+                                    }
+                                    sbdDamageTip.Append(strSpace)
+                                        .Append(blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? LanguageManager.GetString("String_DamageReplace", strLanguage, token: token)
+                                            : await LanguageManager.GetStringAsync("String_DamageReplace", strLanguage, token: token).ConfigureAwait(false))
+                                        .Append(strSpace, ':', strSpace)
+                                        .Append(strTemp);
+                                }
                                 blnDamageReplaced = true;
                                 strDamage = strTemp;
                             }
@@ -4701,44 +5140,22 @@ namespace Chummer.Backend.Equipment
                     Gear objGear = AmmoLoaded;
                     if (objGear != null)
                     {
+                        // Check for FlechetteWeaponBonus first (only applies to flechette weapons)
                         if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
                         {
-                            if (objGear.FlechetteWeaponBonus["damagetype"] != null)
-                            {
-                                strDamageType = string.Empty;
-                                strDamageExtra = objGear.FlechetteWeaponBonus["damagetype"].InnerTextViaPool(token);
-                            }
-
-                            // Adjust the Weapon's Damage.
-                            string strTemp = objGear.FlechetteWeaponBonus["damage"]?.InnerTextViaPool(token);
-                            if (!string.IsNullOrEmpty(strTemp) && strTemp != "0" && strTemp != "+0" && strTemp != "-0")
-                                sbdBonusDamage.Append("+(", strTemp.TrimStart('+'), ')');
-                            strTemp = objGear.FlechetteWeaponBonus["damagereplace"]?.InnerTextViaPool(token);
-                            if (!string.IsNullOrEmpty(strTemp))
-                            {
-                                blnDamageReplaced = true;
-                                strDamage = strTemp;
-                            }
+                            (strDamage, strDamageType, strDamageExtra, blnDamageReplaced) = await ProcessWeaponBonusDamageAsync(objGear.FlechetteWeaponBonus, objGear, blnSync, strLanguage,
+                                blnWithTooltip, sbdBonusDamage, sbdDamageTip, strSpace,
+                                strDamage, strDamageType, strDamageExtra, blnDamageReplaced,
+                                false, token).ConfigureAwait(false); // FlechetteWeaponBonus doesn't process Rating for damage
                         }
-                        else if (objGear.WeaponBonus != null)
+                        
+                        // Check for regular WeaponBonus (applies to all ammo types)
+                        if (objGear.WeaponBonus != null)
                         {
-                            // Change the Weapon's Damage Type.
-                            if (objGear.WeaponBonus["damagetype"] != null)
-                            {
-                                strDamageType = string.Empty;
-                                strDamageExtra = objGear.WeaponBonus["damagetype"].InnerTextViaPool(token);
-                            }
-
-                            // Adjust the Weapon's Damage.
-                            string strTemp = objGear.WeaponBonus["damage"]?.InnerTextViaPool(token);
-                            if (!string.IsNullOrEmpty(strTemp))
-                                sbdBonusDamage.Append("+(", strTemp.TrimStart('+'), ')');
-                            strTemp = objGear.WeaponBonus["damagereplace"]?.InnerTextViaPool(token);
-                            if (!string.IsNullOrEmpty(strTemp))
-                            {
-                                blnDamageReplaced = true;
-                                strDamage = strTemp;
-                            }
+                            (strDamage, strDamageType, strDamageExtra, blnDamageReplaced) = await ProcessWeaponBonusDamageAsync(objGear.WeaponBonus, objGear, blnSync, strLanguage,
+                                blnWithTooltip, sbdBonusDamage, sbdDamageTip, strSpace,
+                                strDamage, strDamageType, strDamageExtra, blnDamageReplaced,
+                                true, token).ConfigureAwait(false); // WeaponBonus processes Rating for damage
                         }
 
                         // Do the same for any plugins.
@@ -4750,42 +5167,17 @@ namespace Chummer.Backend.Equipment
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear"
                                                        && objChild.FlechetteWeaponBonus != null)
                             {
-                                if (objChild.FlechetteWeaponBonus["damagetype"] != null)
-                                {
-                                    strDamageType = string.Empty;
-                                    strDamageExtra = objChild.FlechetteWeaponBonus["damagetype"].InnerTextViaPool(token);
-                                }
-
-                                // Adjust the Weapon's Damage.
-                                string strTemp = objGear.FlechetteWeaponBonus["damage"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strTemp) && strTemp != "0" && strTemp != "+0" && strTemp != "-0")
-                                    sbdBonusDamage.Append("+(", strTemp.TrimStart('+'), ')');
-                                strTemp = objGear.FlechetteWeaponBonus["damagereplace"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strTemp))
-                                {
-                                    blnDamageReplaced = true;
-                                    strDamage = strTemp;
-                                }
+                                (strDamage, strDamageType, strDamageExtra, blnDamageReplaced) = await ProcessWeaponBonusDamageAsync(objChild.FlechetteWeaponBonus, objChild, blnSync, strLanguage,
+                                    blnWithTooltip, sbdBonusDamage, sbdDamageTip, strSpace,
+                                    strDamage, strDamageType, strDamageExtra, blnDamageReplaced,
+                                    false, token).ConfigureAwait(false); // FlechetteWeaponBonus doesn't process Rating for damage
                             }
                             else if (objChild.WeaponBonus != null)
                             {
-                                // Change the Weapon's Damage Type.
-                                if (objChild.WeaponBonus["damagetype"] != null)
-                                {
-                                    strDamageType = string.Empty;
-                                    strDamageExtra = objChild.WeaponBonus["damagetype"].InnerTextViaPool(token);
-                                }
-
-                                // Adjust the Weapon's Damage.
-                                string strTemp = objGear.WeaponBonus["damage"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strTemp) && strTemp != "0" && strTemp != "+0" && strTemp != "-0")
-                                    sbdBonusDamage.Append("+(", strTemp.TrimStart('+'), ')');
-                                strTemp = objGear.WeaponBonus["damagereplace"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strTemp))
-                                {
-                                    blnDamageReplaced = true;
-                                    strDamage = strTemp;
-                                }
+                                (strDamage, strDamageType, strDamageExtra, blnDamageReplaced) = await ProcessWeaponBonusDamageAsync(objChild.WeaponBonus, objChild, blnSync, strLanguage,
+                                    blnWithTooltip, sbdBonusDamage, sbdDamageTip, strSpace,
+                                    strDamage, strDamageType, strDamageExtra, blnDamageReplaced,
+                                    false, token).ConfigureAwait(false); // Child gear WeaponBonus doesn't process Rating for damage
                             }
                         }
                     }
@@ -4889,15 +5281,21 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            // If the string couldn't be parsed (resulting in NaN which will happen if it is a special string like "Grenade", "Chemical", etc.), return the Weapon's Damage string.
-            if (strReturn.StartsWith("NaN", StringComparison.Ordinal))
-                strReturn = Damage;
+                // If the string couldn't be parsed (resulting in NaN which will happen if it is a special string like "Grenade", "Chemical", etc.), return the Weapon's Damage string.
+                if (strReturn.StartsWith("NaN", StringComparison.Ordinal))
+                    strReturn = Damage;
 
-            // Translate the Damage Code.
-            return blnSync
-                // ReSharper disable once MethodHasAsyncOverload
-                ? ReplaceDamageStrings(strReturn, strLanguage, token)
-                : await ReplaceDamageStringsAsync(strReturn, strLanguage, token).ConfigureAwait(false);
+                // Translate the Damage Code.
+                string strFinalDamage = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? ReplaceDamageStrings(strReturn, strLanguage, token)
+                    : await ReplaceDamageStringsAsync(strReturn, strLanguage, token).ConfigureAwait(false);
+
+                if (blnWithTooltip)
+                    strTooltip = sbdDamageTip.ToString();
+
+                return new ValueTuple<string, string>(strFinalDamage, strTooltip);
+            }
         }
 
         public static string ReplaceDamageStrings(string strInput, string strLanguage,
@@ -6436,11 +6834,16 @@ namespace Chummer.Backend.Equipment
         public Task<string> GetDisplayTotalAPAsync(CancellationToken token = default) => TotalAPAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token);
 
         /// <summary>
+        /// The Weapon's total AP including Ammunition in the program's current language. Returns a tuple with the AP string and tooltip.
+        /// </summary>
+        public Task<ValueTuple<string, string>> GetDisplayTotalAPWithTooltipAsync(CancellationToken token = default) => TotalAPWithTooltipAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token);
+
+        /// <summary>
         /// The Weapon's total AP including Ammunition.
         /// </summary>
         public string TotalAP(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true)
         {
-            return Utils.SafelyRunSynchronously(() => TotalAPCoreAsync(true, objCulture, strLanguage, blnIncludeAmmo));
+            return Utils.SafelyRunSynchronously(() => TotalAPCoreAsync(true, objCulture, strLanguage, blnIncludeAmmo, false)).Item1;
         }
 
         /// <summary>
@@ -6449,31 +6852,85 @@ namespace Chummer.Backend.Equipment
         public Task<string> TotalAPAsync(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true,
             CancellationToken token = default)
         {
-            return TotalAPCoreAsync(false, objCulture, strLanguage, blnIncludeAmmo, token);
+            return TotalAPCoreAsync(false, objCulture, strLanguage, blnIncludeAmmo, false, token).ContinueWith(x => x.Result.Item1, token);
+        }
+
+        /// <summary>
+        /// The Weapon's total AP including Ammunition. Returns a tuple with the AP string and tooltip.
+        /// </summary>
+        public ValueTuple<string, string> TotalAPWithTooltip(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true)
+        {
+            return Utils.SafelyRunSynchronously(() => TotalAPCoreAsync(true, objCulture, strLanguage, blnIncludeAmmo, true));
+        }
+
+        /// <summary>
+        /// The Weapon's total AP including Ammunition. Returns a tuple with the AP string and tooltip.
+        /// </summary>
+        public Task<ValueTuple<string, string>> TotalAPWithTooltipAsync(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true,
+            CancellationToken token = default)
+        {
+            return TotalAPCoreAsync(false, objCulture, strLanguage, blnIncludeAmmo, true, token);
         }
 
         /// <summary>
         /// The Weapon's total AP including Ammunition.
         /// </summary>
-        private async Task<string> TotalAPCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage,
-            bool blnIncludeAmmo = true, CancellationToken token = default)
+        private async Task<ValueTuple<string, string>> TotalAPCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage,
+            bool blnIncludeAmmo = true, bool blnWithTooltip = false, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            string strSpace = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LanguageManager.GetString("String_Space", strLanguage, token: token)
+                : await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             string strAP = AP;
+            string strTooltip = string.Empty;
 
             int intImprove = 0;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBonusAP))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAPTip))
             {
+                // Initialize tooltip with Base AP if requested
+                if (blnWithTooltip)
+                {
+                    string strBaseAP = AP;
+                    if (strBaseAP == "-" || string.IsNullOrEmpty(strBaseAP))
+                        sbdAPTip.Append("Base: 0");
+                    else
+                        sbdAPTip.Append("Base: ").Append(strBaseAP);
+                }
+
                 // First look at any changes caused by the weapon being wireless
                 if (WirelessOn && WirelessWeaponBonus != null)
                 {
-                    // Change the Weapon's Damage Type.
+                    // Change the Weapon's AP value.
                     string strAPReplace = WirelessWeaponBonus["apreplace"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrEmpty(strAPReplace))
+                    {
                         strAP = strAPReplace;
-                    // Adjust the Weapon's Damage.
+                        if (blnWithTooltip)
+                        {
+                            sbdAPTip.Append(Environment.NewLine)
+                                .Append(blnSync
+                                    ? LanguageManager.GetString("String_Wireless", strLanguage, token: token)
+                                    : await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false))
+                                .Append(": AP Replaced with ").Append(strAPReplace);
+                        }
+                    }
+                    // Adjust the Weapon's AP value.
                     string strAPAdd = WirelessWeaponBonus["ap"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
+                    {
                         sbdBonusAP.Append('(', strAPAdd.TrimStart('+'), ')');
+                        if (blnWithTooltip)
+                        {
+                            sbdAPTip.Append(Environment.NewLine)
+                                .Append(blnSync
+                                    ? LanguageManager.GetString("String_Wireless", strLanguage, token: token)
+                                    : await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false))
+                                .Append(": +(").Append(strAPAdd.TrimStart('+')).Append(')');
+                        }
+                    }
                 }
 
                 if (blnSync)
@@ -6495,6 +6952,15 @@ namespace Chummer.Backend.Equipment
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     .CheapReplace("Rating", () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
                                 strAP = strAPReplace;
+                                if (blnWithTooltip)
+                                {
+                                    sbdAPTip.Append(Environment.NewLine)
+                                        .Append(blnSync
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            ? objAccessory.DisplayNameShort(strLanguage)
+                                            : await objAccessory.DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false))
+                                        .Append(": AP Replaced with ").Append(strAPReplace);
+                                }
                             }
                             // Adjust the Weapon's AP value.
                             string strAPAdd = objAccessory.AP;
@@ -6508,6 +6974,15 @@ namespace Chummer.Backend.Equipment
                                     .CheapReplace("Rating",
                                         () => objAccessory.Rating.ToString(GlobalSettings.InvariantCultureInfo));
                                 sbdBonusAP.Append("+(", strAPAdd.TrimStart('+'), ')');
+                                if (blnWithTooltip)
+                                {
+                                    sbdAPTip.Append(Environment.NewLine)
+                                        .Append(blnSync
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            ? objAccessory.DisplayNameShort(strLanguage)
+                                            : await objAccessory.DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false))
+                                        .Append(": +(").Append(strAPAdd.TrimStart('+')).Append(')');
+                                }
                             }
 
                             if (objAccessory.WirelessOn && WirelessOn && objAccessory.WirelessWeaponBonus != null)
@@ -6555,6 +7030,12 @@ namespace Chummer.Backend.Equipment
                                     .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                     .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 strAP = strAPReplace;
+                                if (blnWithTooltip)
+                                {
+                                    sbdAPTip.Append(Environment.NewLine)
+                                        .Append(await objAccessory.DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false))
+                                        .Append(": AP Replaced with ").Append(strAPReplace);
+                                }
                             }
                             // Adjust the Weapon's AP value.
                             string strAPAdd = objAccessory.AP;
@@ -6564,11 +7045,17 @@ namespace Chummer.Backend.Equipment
                                     .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                     .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 sbdBonusAP.Append("+(", strAPAdd.TrimStart('+'), ')');
+                                if (blnWithTooltip)
+                                {
+                                    sbdAPTip.Append(Environment.NewLine)
+                                        .Append(await objAccessory.DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false))
+                                        .Append(": +(").Append(strAPAdd.TrimStart('+')).Append(')');
+                                }
                             }
 
                             if (objAccessory.WirelessOn && WirelessOn && objAccessory.WirelessWeaponBonus != null)
                             {
-                                // Change the Weapon's Damage Type.
+                                // Change the Weapon's AP value.
                                 strAPReplace = objAccessory.WirelessWeaponBonus["apreplace"]?.InnerTextViaPool(token);
                                 if (!string.IsNullOrEmpty(strAPReplace))
                                 {
@@ -6576,8 +7063,15 @@ namespace Chummer.Backend.Equipment
                                         .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                         .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     strAP = strAPReplace;
+                                    if (blnWithTooltip)
+                                    {
+                                        sbdAPTip.Append(Environment.NewLine)
+                                            .Append(await objAccessory.DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false))
+                                            .Append(" (").Append(await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false))
+                                            .Append("): AP Replaced with ").Append(strAPReplace);
+                                    }
                                 }
-                                // Adjust the Weapon's Damage.
+                                // Adjust the Weapon's AP value.
                                 strAPAdd = objAccessory.WirelessWeaponBonus["ap"]?.InnerTextViaPool(token);
                                 if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
                                 {
@@ -6585,6 +7079,13 @@ namespace Chummer.Backend.Equipment
                                         .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                         .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     sbdBonusAP.Append("+(", strAPAdd.TrimStart('+'), ')');
+                                    if (blnWithTooltip)
+                                    {
+                                        sbdAPTip.Append(Environment.NewLine)
+                                            .Append(await objAccessory.DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false))
+                                            .Append(" (").Append(await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false))
+                                            .Append("): +(").Append(strAPAdd.TrimStart('+')).Append(')');
+                                    }
                                 }
                             }
                         }
@@ -6600,69 +7101,14 @@ namespace Chummer.Backend.Equipment
                     {
                         if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
                         {
-                            // Change the Weapon's Damage Type.
-                            string strAPReplace = objGear.FlechetteWeaponBonus["apreplace"]?.InnerTextViaPool(token);
-                            if (!string.IsNullOrEmpty(strAPReplace))
-                            {
-                                strAPReplace = blnSync
-                                    ? strAPReplace
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                    : await strAPReplace
-                                        .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                        .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                strAP = strAPReplace;
-                            }
-                            // Adjust the Weapon's Damage.
-                            string strAPAdd = objGear.FlechetteWeaponBonus["ap"]?.InnerTextViaPool(token);
-                            if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
-                            {
-                                strAPAdd = blnSync
-                                    ? strAPAdd
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                    : await strAPAdd
-                                        .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                        .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                sbdBonusAP.Append("+(", strAPAdd.TrimStart('+'), ')');
-                            }
+                            strAP = await ProcessWeaponBonusAPAsync(objGear.FlechetteWeaponBonus, objGear, blnSync, strLanguage,
+                                blnWithTooltip, sbdBonusAP, sbdAPTip, strSpace, strAP, token).ConfigureAwait(false);
                         }
-                        else if (objGear.WeaponBonus != null)
+                        
+                        if (objGear.WeaponBonus != null)
                         {
-                            // Change the Weapon's Damage Type.
-                            string strAPReplace = objGear.WeaponBonus["apreplace"]?.InnerTextViaPool(token);
-                            if (!string.IsNullOrEmpty(strAPReplace))
-                            {
-                                strAPReplace = blnSync
-                                    ? strAPReplace
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                    : await strAPReplace
-                                        .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                        .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                strAP = strAPReplace;
-                            }
-                            // Adjust the Weapon's Damage.
-                            string strAPAdd = objGear.WeaponBonus["ap"]?.InnerTextViaPool(token);
-                            if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
-                            {
-                                strAPAdd = blnSync
-                                    ? strAPAdd
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                    : await strAPAdd
-                                        .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                        .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                sbdBonusAP.Append("+(", strAPAdd.TrimStart('+'), ')');
-                            }
+                            strAP = await ProcessWeaponBonusAPAsync(objGear.WeaponBonus, objGear, blnSync, strLanguage,
+                                blnWithTooltip, sbdBonusAP, sbdAPTip, strSpace, strAP, token).ConfigureAwait(false);
                         }
 
                         // Do the same for any plugins.
@@ -6674,69 +7120,13 @@ namespace Chummer.Backend.Equipment
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" &&
                                 objChild.FlechetteWeaponBonus != null)
                             {
-                                // Change the Weapon's Damage Type.
-                                string strAPReplace = objChild.FlechetteWeaponBonus["apreplace"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strAPReplace))
-                                {
-                                    strAPReplace = blnSync
-                                        ? strAPReplace
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        : await strAPReplace
-                                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                    strAP = strAPReplace;
-                                }
-                                // Adjust the Weapon's Damage.
-                                string strAPAdd = objChild.FlechetteWeaponBonus["ap"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
-                                {
-                                    strAPAdd = blnSync
-                                        ? strAPAdd
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        : await strAPAdd
-                                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                    sbdBonusAP.Append("+(", strAPAdd.TrimStart('+'), ')');
-                                }
+                                strAP = await ProcessWeaponBonusAPAsync(objChild.FlechetteWeaponBonus, objChild, blnSync, strLanguage,
+                                    blnWithTooltip, sbdBonusAP, sbdAPTip, strSpace, strAP, token).ConfigureAwait(false);
                             }
                             else if (objChild.WeaponBonus != null)
                             {
-                                // Change the Weapon's Damage Type.
-                                string strAPReplace = objChild.WeaponBonus["apreplace"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strAPReplace))
-                                {
-                                    strAPReplace = blnSync
-                                        ? strAPReplace
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        : await strAPReplace
-                                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                    strAP = strAPReplace;
-                                }
-                                // Adjust the Weapon's Damage.
-                                string strAPAdd = objChild.WeaponBonus["ap"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
-                                {
-                                    strAPAdd = blnSync
-                                        ? strAPAdd
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        : await strAPAdd
-                                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                    sbdBonusAP.Append("+(", strAPAdd.TrimStart('+'), ')');
-                                }
+                                strAP = await ProcessWeaponBonusAPAsync(objChild.WeaponBonus, objChild, blnSync, strLanguage,
+                                    blnWithTooltip, sbdBonusAP, sbdAPTip, strSpace, strAP, token).ConfigureAwait(false);
                             }
                         }
                     }
@@ -6791,25 +7181,114 @@ namespace Chummer.Backend.Equipment
                     strAP = "0";
                 if (sbdBonusAP.Length > 0)
                     strAP += sbdBonusAP.ToString();
+
+                // Build tooltip if requested
+                if (blnWithTooltip)
+                {
+                    // Base AP was already added at the start, now add improvement bonuses to tooltip
+                    if (intImprove != 0 && _objCharacter != null)
+                    {
+                        Skill objSkill = blnSync ? Skill : await GetSkillAsync(token).ConfigureAwait(false);
+                        string strSkillDictionaryKey = objSkill != null
+                            ? blnSync
+                                ? objSkill.DictionaryKey
+                                : await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                            : string.Empty;
+                        CharacterSettings objSettings = blnSync ? _objCharacter.Settings : await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
+                        if ((Name == "Unarmed Attack" || strSkillDictionaryKey == "Unarmed Combat") &&
+                            objSettings.UnarmedImprovementsApplyToWeapons)
+                        {
+                            List<Improvement> lstUnarmedImprovements = blnSync
+                                ? ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP, token: token)
+                                : await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedAP, token: token).ConfigureAwait(false);
+                            foreach (Improvement objImprovement in lstUnarmedImprovements)
+                            {
+                                if (objImprovement.Value != 0)
+                                {
+                                    string strSourceDisplayName = blnSync
+                                        ? GetImprovementSourceDisplayName(objImprovement)
+                                        : await GetImprovementSourceDisplayNameAsync(objImprovement, token).ConfigureAwait(false);
+                                    sbdAPTip.Append(Environment.NewLine)
+                                        .Append(" + ")
+                                        .Append(strSourceDisplayName)
+                                        .Append(" (").Append(objImprovement.Value.ToString("+#,0.##;-#,0.##;0.##", objCulture)).Append(')');
+                                }
+                            }
+                        }
+
+                        // WeaponCategoryAP improvements
+                        List<Improvement> lstCategoryImprovements = blnSync
+                            ? ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryAP, token: token)
+                            : await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.WeaponCategoryAP, token: token).ConfigureAwait(false);
+                        foreach (Improvement objImprovement in lstCategoryImprovements)
+                        {
+                            bool blnShouldShow = false;
+                            if (objImprovement.ImprovedName == Category)
+                                blnShouldShow = true;
+                            else if (objSkill != null)
+                            {
+                                string strSkillKey = blnSync ? objSkill.DictionaryKey : await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (objImprovement.ImprovedName == strSkillKey)
+                                    blnShouldShow = true;
+                            }
+                            if (Cyberware && objImprovement.ImprovedName == "Cyberware")
+                                blnShouldShow = true;
+
+                                if (blnShouldShow && objImprovement.Value != 0)
+                                {
+                                    string strSourceDisplayName = blnSync
+                                        ? GetImprovementSourceDisplayName(objImprovement)
+                                        : await GetImprovementSourceDisplayNameAsync(objImprovement, token).ConfigureAwait(false);
+                                    sbdAPTip.Append(Environment.NewLine)
+                                        .Append(" + ")
+                                        .Append(strSourceDisplayName)
+                                        .Append(" (").Append(objImprovement.Value.ToString("+#,0.##;-#,0.##;0.##", objCulture)).Append(')');
+                                }
+                        }
+
+                        // WeaponSpecificAP improvements
+                        List<Improvement> lstSpecificImprovements = blnSync
+                            ? ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.WeaponSpecificAP, InternalId, false, token: token)
+                            : await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.WeaponSpecificAP, InternalId, false, token: token).ConfigureAwait(false);
+                        foreach (Improvement objImprovement in lstSpecificImprovements)
+                        {
+                            if (objImprovement.Value != 0)
+                            {
+                                string strSourceDisplayName = blnSync
+                                    ? GetImprovementSourceDisplayName(objImprovement)
+                                    : await GetImprovementSourceDisplayNameAsync(objImprovement, token).ConfigureAwait(false);
+                                sbdAPTip.Append(Environment.NewLine)
+                                    .Append(" + ")
+                                    .Append(strSourceDisplayName)
+                                    .Append(" (").Append(objImprovement.Value.ToString("+#,0.##;-#,0.##;0.##", objCulture)).Append(')');
+                            }
+                        }
+                    }
+
+                    strTooltip = sbdAPTip.ToString();
+                }
             }
 
             if (strAP.Contains("//"))
             {
+                string strReturnValue;
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                    return strAP.Replace("//", "/");
-                return blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? ReplaceStrings(strAP.Replace("//", "/")
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            .CheapReplace("-half",
-                                () => LanguageManager.GetString("String_APHalf", strLanguage, token: token)),
-                        strLanguage,
-                        token)
-                    : await ReplaceStringsAsync(await strAP.Replace("//", "/")
-                        .CheapReplaceAsync(
-                            "-half",
-                            () => LanguageManager.GetStringAsync("String_APHalf", strLanguage, token: token),
-                            token: token).ConfigureAwait(false), strLanguage, token).ConfigureAwait(false);
+                    strReturnValue = strAP.Replace("//", "/");
+                else
+                    strReturnValue = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? ReplaceStrings(strAP.Replace("//", "/")
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                .CheapReplace("-half",
+                                    () => LanguageManager.GetString("String_APHalf", strLanguage, token: token)),
+                            strLanguage,
+                            token)
+                        : await ReplaceStringsAsync(await strAP.Replace("//", "/")
+                            .CheapReplaceAsync(
+                                "-half",
+                                () => LanguageManager.GetStringAsync("String_APHalf", strLanguage, token: token),
+                                token: token).ConfigureAwait(false), strLanguage, token).ConfigureAwait(false);
+                return (strReturnValue, blnWithTooltip ? strTooltip : string.Empty);
             }
 
             int intAP = 0;
@@ -6819,16 +7298,19 @@ namespace Chummer.Backend.Equipment
                 if (blnIsSuccess)
                     intAP = decAP.StandardRound();
                 // If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
-                else if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                    return strAP;
                 else
-                    // ReSharper disable once MethodHasAsyncOverload
-                    return ReplaceStrings(
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            strAP.CheapReplace(
-                                "-half",
-                                () => LanguageManager.GetString("String_APHalf", strLanguage, token: token)),
-                            strLanguage, token);
+                {
+                    string strReturnValue = strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                        ? strAP
+                        // ReSharper disable once MethodHasAsyncOverload
+                        : ReplaceStrings(
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                strAP.CheapReplace(
+                                    "-half",
+                                    () => LanguageManager.GetString("String_APHalf", strLanguage, token: token)),
+                                strLanguage, token);
+                    return (strReturnValue, blnWithTooltip ? strTooltip : string.Empty);
+                }
             }
             else
             {
@@ -6836,22 +7318,285 @@ namespace Chummer.Backend.Equipment
                 if (blnIsSuccess)
                     intAP = decAP.StandardRound();
                 // If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
-                else if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                    return strAP;
                 else
-                    return await ReplaceStringsAsync(await strAP.CheapReplaceAsync(
-                                    "-half",
-                                    () => LanguageManager.GetStringAsync(
-                                        "String_APHalf", strLanguage, token: token),
-                                    token: token).ConfigureAwait(false), strLanguage, token).ConfigureAwait(false);
+                {
+                    string strReturnValue = strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                        ? strAP
+                        : await ReplaceStringsAsync(await strAP.CheapReplaceAsync(
+                                        "-half",
+                                        () => LanguageManager.GetStringAsync(
+                                            "String_APHalf", strLanguage, token: token),
+                                        token: token).ConfigureAwait(false), strLanguage, token).ConfigureAwait(false);
+                    return (strReturnValue, blnWithTooltip ? strTooltip : string.Empty);
+                }
             }
 
             intAP += intImprove;
+            string strReturnAP;
             if (intAP == 0)
-                return "-";
-            if (intAP > 0)
-                return "+" + intAP.ToString(objCulture);
-            return intAP.ToString(objCulture);
+                strReturnAP = "-";
+            else if (intAP > 0)
+                strReturnAP = "+" + intAP.ToString(objCulture);
+            else
+                strReturnAP = intAP.ToString(objCulture);
+
+            return (strReturnAP, strTooltip);
+        }
+
+        /// <summary>
+        /// Get the display name for an Improvement, looking up Power names if the source is a Power.
+        /// </summary>
+        private string GetImprovementSourceDisplayName(Improvement objImprovement)
+        {
+            if (objImprovement.ImproveSource == Improvement.ImprovementSource.Power)
+            {
+                Power objPower = _objCharacter.Powers.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
+                return objPower?.CurrentDisplayNameShort ?? objImprovement.SourceName;
+            }
+            return objImprovement.SourceName;
+        }
+
+        /// <summary>
+        /// Get the display name for an Improvement, looking up Power names if the source is a Power.
+        /// </summary>
+        private async Task<string> GetImprovementSourceDisplayNameAsync(Improvement objImprovement, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objImprovement.ImproveSource == Improvement.ImprovementSource.Power)
+            {
+                Power objPower = await _objCharacter.Powers.FirstOrDefaultAsync(x => x.InternalId == objImprovement.SourceName, token).ConfigureAwait(false);
+                if (objPower != null)
+                    return await objPower.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+            }
+            return objImprovement.SourceName;
+        }
+
+        /// <summary>
+        /// Append an improvement entry to a tooltip StringBuilder.
+        /// </summary>
+        private void AppendImprovementToTooltip(StringBuilder sbdTooltip, string strSpace, Improvement objImprovement, CultureInfo objCulture)
+        {
+            string strSourceDisplayName = GetImprovementSourceDisplayName(objImprovement);
+            sbdTooltip.Append(Environment.NewLine)
+                .Append(strSpace, '+', strSpace)
+                .Append(strSourceDisplayName)
+                .Append(strSpace).Append('(').Append(objImprovement.Value.ToString("+#,0.##;-#,0.##;0.##", objCulture)).Append(')');
+        }
+
+        /// <summary>
+        /// Append an improvement entry to a tooltip StringBuilder.
+        /// </summary>
+        private async Task AppendImprovementToTooltipAsync(StringBuilder sbdTooltip, string strSpace, Improvement objImprovement, CultureInfo objCulture, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSourceDisplayName = await GetImprovementSourceDisplayNameAsync(objImprovement, token).ConfigureAwait(false);
+            sbdTooltip.Append(Environment.NewLine)
+                .Append(strSpace, '+', strSpace)
+                .Append(strSourceDisplayName)
+                .Append(strSpace).Append('(').Append(objImprovement.Value.ToString("+#,0.##;-#,0.##;0.##", objCulture)).Append(')');
+        }
+
+        /// <summary>
+        /// Process a WeaponBonus node (either FlechetteWeaponBonus or WeaponBonus) for damage calculations.
+        /// Returns a tuple with (strDamage, strDamageType, strDamageExtra, blnDamageReplaced).
+        /// </summary>
+        /// <param name="objWeaponBonus">The WeaponBonus node to process (can be FlechetteWeaponBonus or WeaponBonus)</param>
+        /// <param name="objGear">The Gear object containing the bonus</param>
+        /// <param name="blnSync">Whether to use sync methods</param>
+        /// <param name="strLanguage">Language to use for tooltips</param>
+        /// <param name="blnWithTooltip">Whether to build tooltip</param>
+        /// <param name="sbdBonusDamage">StringBuilder for bonus damage</param>
+        /// <param name="sbdDamageTip">StringBuilder for damage tooltip</param>
+        /// <param name="strSpace">Space string for formatting</param>
+        /// <param name="strDamage">Current damage string (will be modified if damagereplace is found)</param>
+        /// <param name="strDamageType">Current damage type (will be modified if damagetype is found)</param>
+        /// <param name="strDamageExtra">Current damage extra (will be modified if damagetype is found)</param>
+        /// <param name="blnDamageReplaced">Flag indicating if damage was replaced (will be set to true if damagereplace is found)</param>
+        /// <param name="blnProcessRating">Whether to process Rating replacements</param>
+        /// <param name="token">Cancellation token</param>
+        private static async Task<(string strDamage, string strDamageType, string strDamageExtra, bool blnDamageReplaced)> ProcessWeaponBonusDamageAsync(XmlNode objWeaponBonus, Gear objGear, bool blnSync, string strLanguage,
+            bool blnWithTooltip, StringBuilder sbdBonusDamage, StringBuilder sbdDamageTip, string strSpace,
+            string strDamage, string strDamageType, string strDamageExtra, bool blnDamageReplaced,
+            bool blnProcessRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objWeaponBonus == null)
+                return (strDamage, strDamageType, strDamageExtra, blnDamageReplaced);
+
+            // Process damagetype
+            if (objWeaponBonus["damagetype"] != null)
+            {
+                string strNewDamageType = objWeaponBonus["damagetype"].InnerTextViaPool(token);
+                if (blnWithTooltip && !string.IsNullOrEmpty(strNewDamageType))
+                {
+                    sbdDamageTip.Append(Environment.NewLine)
+                        .Append(strSpace, '+', strSpace)
+                        .Append(blnSync
+                            ? objGear.DisplayNameShort(strLanguage)
+                            : await objGear.DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false))
+                        .Append(strSpace)
+                        .Append(blnSync
+                            ? LanguageManager.GetString("String_DamageType", strLanguage, token: token)
+                            : await LanguageManager.GetStringAsync("String_DamageType", strLanguage, token: token).ConfigureAwait(false))
+                        .Append(strSpace, ':', strSpace)
+                        .Append(strNewDamageType);
+                }
+                strDamageType = string.Empty;
+                strDamageExtra = strNewDamageType;
+            }
+
+            // Process damage bonus
+            string strTemp = objWeaponBonus["damage"]?.InnerTextViaPool(token);
+            if (!string.IsNullOrEmpty(strTemp) && strTemp != "0" && strTemp != "+0" && strTemp != "-0")
+            {
+                // Process Rating replacement if needed
+                if (blnProcessRating)
+                {
+                    strTemp = blnSync
+                        ? strTemp
+                            .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                        : await strTemp
+                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                }
+
+                sbdBonusDamage.Append("+(", strTemp.TrimStart('+'), ')');
+                if (blnWithTooltip)
+                {
+                    sbdDamageTip.Append(Environment.NewLine)
+                        .Append(strSpace, '+', strSpace)
+                        .Append(blnSync
+                            ? objGear.DisplayNameShort(strLanguage)
+                            : await objGear.DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false))
+                        .Append(strSpace).Append('(').Append(strTemp.TrimStart('+')).Append(')');
+                }
+            }
+
+            // Process damagereplace
+            strTemp = objWeaponBonus["damagereplace"]?.InnerTextViaPool(token);
+            if (!string.IsNullOrEmpty(strTemp))
+            {
+                // Process Rating replacement if needed
+                if (blnProcessRating)
+                {
+                    strTemp = blnSync
+                        ? strTemp
+                            .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                        : await strTemp
+                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                }
+
+                if (blnWithTooltip)
+                {
+                    sbdDamageTip.Append(Environment.NewLine)
+                        .Append(strSpace, '+', strSpace)
+                        .Append(blnSync
+                            ? objGear.DisplayNameShort(strLanguage)
+                            : await objGear.DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false))
+                        .Append(strSpace)
+                        .Append(blnSync
+                            ? LanguageManager.GetString("String_DamageReplace", strLanguage, token: token)
+                            : await LanguageManager.GetStringAsync("String_DamageReplace", strLanguage, token: token).ConfigureAwait(false))
+                        .Append(strSpace, ':', strSpace)
+                        .Append(strTemp);
+                }
+                blnDamageReplaced = true;
+                strDamage = strTemp;
+            }
+
+            return (strDamage, strDamageType, strDamageExtra, blnDamageReplaced);
+        }
+
+        /// <summary>
+        /// Process a WeaponBonus node (either FlechetteWeaponBonus or WeaponBonus) for AP calculations.
+        /// Returns the updated AP string.
+        /// </summary>
+        private async Task<string> ProcessWeaponBonusAPAsync(XmlNode objWeaponBonus, Gear objGear, bool blnSync, string strLanguage,
+            bool blnWithTooltip, StringBuilder sbdBonusAP, StringBuilder sbdAPTip, string strSpace,
+            string strAP, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objWeaponBonus == null)
+                return strAP;
+
+            // Process apreplace
+            string strAPReplace = objWeaponBonus["apreplace"]?.InnerTextViaPool(token);
+            if (!string.IsNullOrEmpty(strAPReplace))
+            {
+                strAPReplace = blnSync
+                    ? strAPReplace
+                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                    : await strAPReplace
+                        .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                        .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                if (blnWithTooltip)
+                {
+                    sbdAPTip.Append(Environment.NewLine)
+                        .Append(blnSync
+                            ? objGear.DisplayNameShort(strLanguage)
+                            : await objGear.DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false))
+                        .Append(": AP Replaced with ").Append(strAPReplace);
+                }
+                strAP = strAPReplace;
+            }
+
+            // Process ap bonus
+            string strAPAdd = objWeaponBonus["ap"]?.InnerTextViaPool(token);
+            if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
+            {
+                strAPAdd = blnSync
+                    ? strAPAdd
+                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                    : await strAPAdd
+                        .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                        .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                sbdBonusAP.Append("+(", strAPAdd.TrimStart('+'), ')');
+                if (blnWithTooltip)
+                {
+                    sbdAPTip.Append(Environment.NewLine)
+                        .Append(blnSync
+                            ? objGear.DisplayNameShort(strLanguage)
+                            : await objGear.DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false))
+                        .Append(": +(").Append(strAPAdd.TrimStart('+')).Append(')');
+                }
+            }
+
+            return strAP;
+        }
+
+        /// <summary>
+        /// Process a WeaponBonus node (either FlechetteWeaponBonus or WeaponBonus) for accuracy calculations.
+        /// </summary>
+        private void ProcessWeaponBonusAccuracy(XmlNode objWeaponBonus, Gear objGear, StringBuilder sbdBonusAccuracy,
+            ref string strAccuracy)
+        {
+            if (objWeaponBonus == null)
+                return;
+
+            // Process accuracyreplace
+            string strAccuracyReplace = objWeaponBonus["accuracyreplace"]?.InnerTextViaPool();
+            if (!string.IsNullOrEmpty(strAccuracyReplace))
+            {
+                strAccuracyReplace = strAccuracyReplace
+                    .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                    .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                strAccuracy = strAccuracyReplace;
+            }
+
+            // Process accuracy bonus
+            string strAccuracyAdd = objWeaponBonus["accuracy"]?.InnerTextViaPool();
+            if (!string.IsNullOrEmpty(strAccuracyAdd) && strAccuracyAdd != "0" && strAccuracyAdd != "+0" && strAccuracyAdd != "-0")
+            {
+                strAccuracyAdd = strAccuracyAdd
+                    .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                    .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdBonusAccuracy.Append("+(", strAccuracyAdd.TrimStart('+'), ')');
+            }
         }
 
         public ValueTuple<string, string> DisplayTotalRC => TotalRC(GlobalSettings.CultureInfo, GlobalSettings.Language, true);
@@ -7587,45 +8332,11 @@ namespace Chummer.Backend.Equipment
                     {
                         if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
                         {
-                            // Change the Weapon's Damage Type.
-                            string strAccuracyReplace = objGear.FlechetteWeaponBonus["accuracyreplace"]?.InnerTextViaPool();
-                            if (!string.IsNullOrEmpty(strAccuracyReplace))
-                            {
-                                strAccuracyReplace = strAccuracyReplace
-                                    .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                    .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                                strAccuracy = strAccuracyReplace;
-                            }
-                            // Adjust the Weapon's Damage.
-                            string strAccuracyAdd = objGear.FlechetteWeaponBonus["accuracy"]?.InnerTextViaPool();
-                            if (!string.IsNullOrEmpty(strAccuracyAdd) && strAccuracyAdd != "0" && strAccuracyAdd != "+0" && strAccuracyAdd != "-0")
-                            {
-                                strAccuracyAdd = strAccuracyAdd
-                                    .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                    .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                                sbdBonusAccuracy.Append("+(", strAccuracyAdd.TrimStart('+'), ')');
-                            }
+                            ProcessWeaponBonusAccuracy(objGear.FlechetteWeaponBonus, objGear, sbdBonusAccuracy, ref strAccuracy);
                         }
                         else if (objGear.WeaponBonus != null)
                         {
-                            // Change the Weapon's Damage Type.
-                            string strAccuracyReplace = objGear.WeaponBonus["accuracyreplace"]?.InnerTextViaPool();
-                            if (!string.IsNullOrEmpty(strAccuracyReplace))
-                            {
-                                strAccuracyReplace = strAccuracyReplace
-                                    .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                    .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                                strAccuracy = strAccuracyReplace;
-                            }
-                            // Adjust the Weapon's Damage.
-                            string strAccuracyAdd = objGear.WeaponBonus["accuracy"]?.InnerTextViaPool();
-                            if (!string.IsNullOrEmpty(strAccuracyAdd) && strAccuracyAdd != "0" && strAccuracyAdd != "+0" && strAccuracyAdd != "-0")
-                            {
-                                strAccuracyAdd = strAccuracyAdd
-                                    .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                    .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                                sbdBonusAccuracy.Append("+(", strAccuracyAdd.TrimStart('+'), ')');
-                            }
+                            ProcessWeaponBonusAccuracy(objGear.WeaponBonus, objGear, sbdBonusAccuracy, ref strAccuracy);
                         }
 
                         // Do the same for any plugins.
@@ -7634,45 +8345,11 @@ namespace Chummer.Backend.Equipment
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" &&
                                 objChild.FlechetteWeaponBonus != null)
                             {
-                                // Change the Weapon's Damage Type.
-                                string strAccuracyReplace = objChild.FlechetteWeaponBonus["accuracyreplace"]?.InnerTextViaPool();
-                                if (!string.IsNullOrEmpty(strAccuracyReplace))
-                                {
-                                    strAccuracyReplace = strAccuracyReplace
-                                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                                    strAccuracy = strAccuracyReplace;
-                                }
-                                // Adjust the Weapon's Damage.
-                                string strAccuracyAdd = objChild.FlechetteWeaponBonus["accuracy"]?.InnerTextViaPool();
-                                if (!string.IsNullOrEmpty(strAccuracyAdd) && strAccuracyAdd != "0" && strAccuracyAdd != "+0" && strAccuracyAdd != "-0")
-                                {
-                                    strAccuracyAdd = strAccuracyAdd
-                                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                                    sbdBonusAccuracy.Append("+(", strAccuracyAdd.TrimStart('+'), ')');
-                                }
+                                ProcessWeaponBonusAccuracy(objChild.FlechetteWeaponBonus, objChild, sbdBonusAccuracy, ref strAccuracy);
                             }
                             else if (objChild.WeaponBonus != null)
                             {
-                                // Change the Weapon's Damage Type.
-                                string strAccuracyReplace = objChild.WeaponBonus["accuracyreplace"]?.InnerTextViaPool();
-                                if (!string.IsNullOrEmpty(strAccuracyReplace))
-                                {
-                                    strAccuracyReplace = strAccuracyReplace
-                                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                                    strAccuracy = strAccuracyReplace;
-                                }
-                                // Adjust the Weapon's Damage.
-                                string strAccuracyAdd = objChild.WeaponBonus["accuracy"]?.InnerTextViaPool();
-                                if (!string.IsNullOrEmpty(strAccuracyAdd) && strAccuracyAdd != "0" && strAccuracyAdd != "+0" && strAccuracyAdd != "-0")
-                                {
-                                    strAccuracyAdd = strAccuracyAdd
-                                        .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                                    sbdBonusAccuracy.Append("+(", strAccuracyAdd.TrimStart('+'), ')');
-                                }
+                                ProcessWeaponBonusAccuracy(objChild.WeaponBonus, objChild, sbdBonusAccuracy, ref strAccuracy);
                             }
                         }
                     }
@@ -7979,6 +8656,11 @@ namespace Chummer.Backend.Equipment
         public Task<string> GetDisplayAccuracyAsync(CancellationToken token = default) => GetAccuracyAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token);
 
         /// <summary>
+        /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks in the program's current language. Returns a tuple with the accuracy string and tooltip.
+        /// </summary>
+        public Task<ValueTuple<string, string>> GetDisplayAccuracyWithTooltipAsync(CancellationToken token = default) => GetAccuracyWithTooltipAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token);
+
+        /// <summary>
         /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks.
         /// </summary>
         public string GetAccuracy(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true)
@@ -8003,6 +8685,181 @@ namespace Chummer.Backend.Equipment
                     await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                         .ConfigureAwait(false), intTotalAccuracy);
             return intTotalAccuracy.ToString(objCulture);
+        }
+
+        /// <summary>
+        /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks. Returns a tuple with the accuracy string and tooltip.
+        /// </summary>
+        public ValueTuple<string, string> GetAccuracyWithTooltip(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true)
+        {
+            return Utils.SafelyRunSynchronously(() =>
+                GetAccuracyWithTooltipCoreAsync(true, objCulture, strLanguage, blnIncludeAmmo));
+        }
+
+        /// <summary>
+        /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks. Returns a tuple with the accuracy string and tooltip.
+        /// </summary>
+        public Task<ValueTuple<string, string>> GetAccuracyWithTooltipAsync(CultureInfo objCulture, string strLanguage,
+            bool blnIncludeAmmo = true, CancellationToken token = default)
+        {
+            return GetAccuracyWithTooltipCoreAsync(false, objCulture, strLanguage, blnIncludeAmmo, token);
+        }
+
+        /// <summary>
+        /// Core method for calculating accuracy with tooltip. Returns a tuple with the accuracy string and tooltip.
+        /// </summary>
+        private async Task<ValueTuple<string, string>> GetAccuracyWithTooltipCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage,
+            bool blnIncludeAmmo = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LanguageManager.GetString("String_Space", strLanguage, token: token)
+                : await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            string strTooltip = string.Empty;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracyTip))
+            {
+                int intTotalAccuracy = blnSync
+                    ? GetTotalAccuracy(blnIncludeAmmo)
+                    : await GetTotalAccuracyAsync(blnIncludeAmmo, token).ConfigureAwait(false);
+
+                // Build tooltip by examining components
+                if (int.TryParse(Accuracy, out int intBaseAccuracy))
+                {
+                        sbdAccuracyTip.Append(blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? LanguageManager.GetString("Label_Base", strLanguage, token: token)
+                        : await LanguageManager.GetStringAsync("Label_Base", strLanguage, token: token).ConfigureAwait(false))
+                        .Append(strSpace).Append('(').Append(intBaseAccuracy.ToString(objCulture)).Append(')');
+                }
+
+                // Add wireless bonus
+                if (WirelessOn && WirelessWeaponBonus != null)
+                {
+                    string strAccuracyAdd = WirelessWeaponBonus["accuracy"]?.InnerTextViaPool(token);
+                    if (!string.IsNullOrEmpty(strAccuracyAdd) && strAccuracyAdd != "0" && strAccuracyAdd != "+0" && strAccuracyAdd != "-0")
+                    {
+                        sbdAccuracyTip.Append(Environment.NewLine)
+                            .Append(strSpace, '+', strSpace)
+                            .Append(blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString("String_Wireless", strLanguage, token: token)
+                                : await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false))
+                            .Append(strSpace).Append('(').Append(strAccuracyAdd.TrimStart('+')).Append(')');
+                    }
+                }
+
+                // Add accessory bonuses
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                {
+                    if (objAccessory.Equipped)
+                    {
+                        if (!string.IsNullOrEmpty(objAccessory.Accuracy) && objAccessory.Accuracy != "0" && objAccessory.Accuracy != "+0" && objAccessory.Accuracy != "-0")
+                        {
+                            sbdAccuracyTip.Append(Environment.NewLine)
+                                .Append(strSpace, '+', strSpace)
+                                .Append(blnSync
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    ? objAccessory.DisplayName(strLanguage)
+                                    : await objAccessory.DisplayNameAsync(strLanguage, token).ConfigureAwait(false))
+                                .Append(strSpace).Append('(').Append(objAccessory.Accuracy.TrimStart('+')).Append(')');
+                        }
+                        if (WirelessOn && objAccessory.WirelessOn && objAccessory.WirelessWeaponBonus != null)
+                        {
+                            string strAccuracyAdd = objAccessory.WirelessWeaponBonus["accuracy"]?.InnerTextViaPool(token);
+                            if (!string.IsNullOrEmpty(strAccuracyAdd) && strAccuracyAdd != "0" && strAccuracyAdd != "+0" && strAccuracyAdd != "-0")
+                            {
+                                sbdAccuracyTip.Append(Environment.NewLine)
+                                    .Append(strSpace, '+', strSpace);
+                                if (blnSync)
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    sbdAccuracyTip.Append(objAccessory.DisplayName(strLanguage), strSpace,
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        LanguageManager.GetString("String_Wireless", strLanguage, token: token));
+                                }
+                                else
+                                {
+                                    sbdAccuracyTip.Append(await objAccessory.DisplayNameAsync(strLanguage, token).ConfigureAwait(false), strSpace,
+                                        await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token).ConfigureAwait(false));
+                                }
+                                sbdAccuracyTip.Append(strSpace).Append('(').Append(strAccuracyAdd.TrimStart('+')).Append(')');
+                            }
+                        }
+                    }
+                }
+
+                // Add ammo bonuses
+                if (blnIncludeAmmo)
+                {
+                    Gear objGear = AmmoLoaded;
+                    if (objGear != null)
+                    {
+                        if (objGear.WeaponBonus != null)
+                        {
+                            string strAccuracyAdd = objGear.WeaponBonus["accuracy"]?.InnerTextViaPool(token);
+                            if (!string.IsNullOrEmpty(strAccuracyAdd) && strAccuracyAdd != "0" && strAccuracyAdd != "+0" && strAccuracyAdd != "-0")
+                            {
+                                sbdAccuracyTip.Append(Environment.NewLine)
+                                    .Append(strSpace, '+', strSpace)
+                                    .Append(blnSync
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        ? objGear.DisplayNameShort(strLanguage)
+                                        : await objGear.DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false))
+                                    .Append(strSpace).Append('(').Append(strAccuracyAdd.TrimStart('+')).Append(')');
+                            }
+                        }
+                    }
+                }
+
+                // Add improvement bonuses
+                string strNameUpper = Name.ToUpperInvariant();
+                List<Improvement> lstImprovements = blnSync
+                    ? ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.WeaponSkillAccuracy, token: token)
+                    : await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.WeaponSkillAccuracy, token: token).ConfigureAwait(false);
+                foreach (Improvement objImprovement in lstImprovements)
+                {
+                    Skill objSkill = blnSync ? Skill : await GetSkillAsync(token).ConfigureAwait(false);
+                    string strSkillKey = objSkill != null
+                        ? (blnSync ? objSkill.DictionaryKey : await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false))
+                        : string.Empty;
+                    if ((objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strSkillKey) && objImprovement.Value != 0)
+                    {
+                        if (blnSync)
+                            AppendImprovementToTooltip(sbdAccuracyTip, strSpace, objImprovement, objCulture);
+                        else
+                            await AppendImprovementToTooltipAsync(sbdAccuracyTip, strSpace, objImprovement, objCulture, token).ConfigureAwait(false);
+                    }
+                }
+                List<Improvement> lstWeaponAccuracyImprovements = blnSync
+                    ? ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.WeaponAccuracy, token: token)
+                    : await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.WeaponAccuracy, token: token).ConfigureAwait(false);
+                foreach (Improvement objImprovement in lstWeaponAccuracyImprovements)
+                {
+                    string strImprovedName = objImprovement.ImprovedName;
+                    if (strImprovedName.StartsWith("[contains]", StringComparison.Ordinal)
+                        && strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true),
+                            StringComparison.OrdinalIgnoreCase) && objImprovement.Value != 0)
+                    {
+                        if (blnSync)
+                            AppendImprovementToTooltip(sbdAccuracyTip, strSpace, objImprovement, objCulture);
+                        else
+                            await AppendImprovementToTooltipAsync(sbdAccuracyTip, strSpace, objImprovement, objCulture, token).ConfigureAwait(false);
+                    }
+                }
+
+                strTooltip = sbdAccuracyTip.ToString();
+
+                // Format the accuracy string
+                string strAccuracy;
+                if (int.TryParse(Accuracy, out int intAccuracy) && intAccuracy != intTotalAccuracy)
+                    strAccuracy = string.Format(objCulture, "{0}{1}({2})",
+                        intAccuracy, strSpace, intTotalAccuracy);
+                else
+                    strAccuracy = intTotalAccuracy.ToString(objCulture);
+
+                return new ValueTuple<string, string>(strAccuracy, strTooltip);
+            }
         }
 
         /// <summary>
@@ -12608,15 +13465,31 @@ namespace Chummer.Backend.Equipment
                         decQty = objSelectedAmmo.Quantity;
                     }
 
-                    string strId = objSelectedAmmo.InternalId;
-                    string strText = await objSelectedAmmo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                    await treGearView.DoThreadSafeAsync(x =>
+                    // Always copy ammo when loading into weapon to avoid shared reference issues with WeaponBonus
+                    // This ensures the loaded ammo is independent of inventory ammo
+                    Gear objAmmoToLoad = new Gear(_objCharacter);
+                    try
                     {
-                        // Refresh the Gear tree.
-                        TreeNode objSelectedNode = x.FindNode(strId);
-                        if (objSelectedNode != null)
-                            objSelectedNode.Text = strText;
-                    }, token: token).ConfigureAwait(false);
+                        await objAmmoToLoad.CopyAsync(objSelectedAmmo, token).ConfigureAwait(false);
+                        await objAmmoToLoad.SetQuantityAsync(decQty, token).ConfigureAwait(false);
+                        await lstGears.AddAsync(objAmmoToLoad, token).ConfigureAwait(false);
+                        await objSelectedAmmo.SetQuantityAsync(objSelectedAmmo.Quantity - decQty, token).ConfigureAwait(false);
+                        string strId = objSelectedAmmo.InternalId;
+                        string strText = await objSelectedAmmo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                        await treGearView.DoThreadSafeAsync(x =>
+                        {
+                            // Refresh the Gear tree.
+                            TreeNode objSelectedNode = x.FindNode(strId);
+                            if (objSelectedNode != null)
+                                objSelectedNode.Text = strText;
+                        }, token: token).ConfigureAwait(false);
+                        objSelectedAmmo = objAmmoToLoad;
+                    }
+                    catch
+                    {
+                        await objAmmoToLoad.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
                 }
                 else
                 {
