@@ -29,5 +29,11 @@ namespace Chummer
         string CurrentDisplayName { get; }
 
         string CustomName { get; set; }
+
+        /// <summary>
+        /// Whether the XML data allows name override for this item.
+        /// Set during object creation from XML by checking for allowoverride attribute on the name node.
+        /// </summary>
+        bool AllowsNameOverride { get; set; }
     }
 }

@@ -67,6 +67,7 @@ namespace Chummer.Backend.Equipment
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strVehicleName = string.Empty;
+        private bool _blnAllowsNameOverride;
         private int _intAddSlots;
         private int _intDroneModSlots;
         private int _intAddPowertrainModSlots;
@@ -261,6 +262,13 @@ namespace Chummer.Backend.Equipment
 
             _blnSkipEvents = blnForSelectForm;
             objXmlVehicle.TryGetStringFieldQuickly("name", ref _strName);
+            // Check if name override is allowed (check for allowoverride attribute on name node)
+            XmlNode objNameNode = objXmlVehicle["name"];
+            if (objNameNode != null)
+            {
+                string strAllowOverride = objNameNode.Attributes?["allowoverride"]?.InnerText;
+                _blnAllowsNameOverride = !string.IsNullOrEmpty(strAllowOverride) && (strAllowOverride == "True" || strAllowOverride == "true" || strAllowOverride == "1");
+            }
             objXmlVehicle.TryGetStringFieldQuickly("category", ref _strCategory);
             string strTemp = objXmlVehicle["handling"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
@@ -1030,6 +1038,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("vehiclename", _strVehicleName);
+            objWriter.WriteElementString("allowsnameoverride", _blnAllowsNameOverride.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteStartElement("mods");
             _lstVehicleMods.ForEach(x => x.Save(objWriter));
             objWriter.WriteEndElement();
@@ -1260,6 +1269,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetInt32FieldQuickly("physicalcmfilled", ref _intPhysicalCMFilled);
             objNode.TryGetStringFieldQuickly("vehiclename", ref _strVehicleName);
+            objNode.TryGetBoolFieldQuickly("allowsnameoverride", ref _blnAllowsNameOverride);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
 
@@ -1935,6 +1945,7 @@ namespace Chummer.Backend.Equipment
             await objWriter.WriteElementStringAsync("physicalcmfilled", PhysicalCMFilled.ToString(objCulture), token)
                            .ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("vehiclename", CustomName, token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("allowsnameoverride", AllowsNameOverride.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("maneuver", (await GetManeuverAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                            .ConfigureAwait(false);
             await objWriter
@@ -2828,10 +2839,23 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Whether the XML data allows name override for this item.
+        /// </summary>
+        public bool AllowsNameOverride
+        {
+            get => _blnAllowsNameOverride;
+            set => _blnAllowsNameOverride = value;
+        }
+
+        /// <summary>
         /// The name of the object as it should appear on printouts (translated name only).
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
+            // Check if name override is allowed and CustomName is set
+            if (AllowsNameOverride && !string.IsNullOrEmpty(CustomName))
+                return CustomName;
+
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
@@ -2843,6 +2867,10 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
+            // Check if name override is allowed and CustomName is set
+            if (AllowsNameOverride && !string.IsNullOrEmpty(CustomName))
+                return CustomName;
+
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
@@ -2879,7 +2907,8 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = DisplayNameShort(strLanguage);
 
-            if (!string.IsNullOrEmpty(CustomName))
+            // Only append CustomName in parentheses if override is not allowed (for backwards compatibility)
+            if (!AllowsNameOverride && !string.IsNullOrEmpty(CustomName))
             {
                 strReturn += LanguageManager.GetString("String_Space") + "(\"" + CustomName + "\")";
             }
@@ -2894,7 +2923,8 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
 
-            if (!string.IsNullOrEmpty(CustomName))
+            // Only append CustomName in parentheses if override is not allowed (for backwards compatibility)
+            if (!AllowsNameOverride && !string.IsNullOrEmpty(CustomName))
             {
                 strReturn += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(\"" + CustomName + "\")";
             }

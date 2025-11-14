@@ -91,6 +91,7 @@ namespace Chummer.Backend.Equipment
         private string _strCity;
         private string _strDistrict;
         private string _strBorough;
+        private bool _blnAllowsNameOverride;
 
         #region Helper Methods
 
@@ -454,6 +455,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("sourceid", SourceIDString);
                 objWriter.WriteElementString("guid", InternalId);
                 objWriter.WriteElementString("name", _strName);
+                objWriter.WriteElementString("allowsnameoverride", AllowsNameOverride.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("cost", _decCost.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("dice", _intDice.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("lp", _intLP.ToString(GlobalSettings.InvariantCultureInfo));
@@ -553,6 +555,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 objNode.TryGetStringFieldQuickly("name", ref _strName);
+                objNode.TryGetBoolFieldQuickly("allowsnameoverride", ref _blnAllowsNameOverride);
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
                 Lazy<XmlNode> objMyNode = null;
@@ -1037,6 +1040,7 @@ namespace Chummer.Backend.Equipment
                     await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name", CustomName, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("allowsnameoverride", AllowsNameOverride.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("city", await GetCityAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("district", await GetDistrictAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("borough", await GetBoroughAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -1245,6 +1249,16 @@ namespace Chummer.Backend.Equipment
         {
             get => Name;
             set => Name = value;
+        }
+
+        /// <summary>
+        /// Whether the XML data allows name override for this item.
+        /// For lifestyles, this is typically false as they use Name directly.
+        /// </summary>
+        public bool AllowsNameOverride
+        {
+            get => _blnAllowsNameOverride;
+            set => _blnAllowsNameOverride = value;
         }
 
         /// <summary>

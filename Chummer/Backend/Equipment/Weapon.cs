@@ -89,6 +89,7 @@ namespace Chummer.Backend.Equipment
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strWeaponName = string.Empty;
+        private bool _blnAllowsNameOverride;
         private int _intSingleShot = 1;
         private int _intShortBurst = 3;
         private int _intLongBurst = 6;
@@ -490,6 +491,13 @@ namespace Chummer.Backend.Equipment
             _blnSkipEvents = blnForSelectForm;
             _blnEquipped = !blnForSelectForm && blnCreateImprovements;
             objXmlWeapon.TryGetStringFieldQuickly("name", ref _strName);
+            // Check if name override is allowed (check for allowoverride attribute on name node)
+            XmlNode objNameNode = objXmlWeapon["name"];
+            if (objNameNode != null)
+            {
+                string strAllowOverride = objNameNode.Attributes?["allowoverride"]?.InnerText;
+                _blnAllowsNameOverride = !string.IsNullOrEmpty(strAllowOverride) && (strAllowOverride == "True" || strAllowOverride == "true" || strAllowOverride == "1");
+            }
             objXmlWeapon.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlWeapon.TryGetStringFieldQuickly("type", ref _strType);
             objXmlWeapon.TryGetStringFieldQuickly("reach", ref _strReach);
@@ -1176,6 +1184,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("allowaccessory",
                 _blnAllowAccessory.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("weaponname", _strWeaponName);
+            objWriter.WriteElementString("allowsnameoverride", _blnAllowsNameOverride.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("included",
                 _blnIncludedInWeapon.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("equipped", _blnEquipped.ToString(GlobalSettings.InvariantCultureInfo));
@@ -1523,6 +1532,7 @@ namespace Chummer.Backend.Equipment
                 _blnAllowAccessory = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["allowaccessory"]?.InnerTextViaPool(token) != bool.FalseString;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("weaponname", ref _strWeaponName);
+            objNode.TryGetBoolFieldQuickly("allowsnameoverride", ref _blnAllowsNameOverride);
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             if (objNode.TryGetStringFieldQuickly("range", ref _strRange))
             {
@@ -2519,6 +2529,7 @@ namespace Chummer.Backend.Equipment
                         await DisplayPageAsync(strLanguageToPrint, token: token).ConfigureAwait(false), token)
                     .ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("weaponname", CustomName, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("allowsnameoverride", AllowsNameOverride.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("location",
                     Location != null
                         ? await Location.DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false)
@@ -2817,6 +2828,10 @@ namespace Chummer.Backend.Equipment
 
         public string DisplayNameShort(string strLanguage)
         {
+            // Check if name override is allowed and CustomName is set
+            if (AllowsNameOverride && !string.IsNullOrEmpty(CustomName))
+                return CustomName;
+
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
@@ -2825,6 +2840,10 @@ namespace Chummer.Backend.Equipment
 
         public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
+            // Check if name override is allowed and CustomName is set
+            if (AllowsNameOverride && !string.IsNullOrEmpty(CustomName))
+                return CustomName;
+
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
@@ -2859,7 +2878,8 @@ namespace Chummer.Backend.Equipment
                 strReturn += strSpace + "(" + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace +
                              intRating.ToString(objCulture) + ")";
             }
-            if (!string.IsNullOrEmpty(CustomName))
+            // Only append CustomName in parentheses if override is not allowed (for backwards compatibility)
+            if (!AllowsNameOverride && !string.IsNullOrEmpty(CustomName))
                 strReturn += strSpace + "(\"" + CustomName + "\")";
             return strReturn;
         }
@@ -2882,7 +2902,8 @@ namespace Chummer.Backend.Equipment
                              await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token)
                                  .ConfigureAwait(false) + strSpace + intRating.ToString(objCulture) + ")";
             }
-            if (!string.IsNullOrEmpty(CustomName))
+            // Only append CustomName in parentheses if override is not allowed (for backwards compatibility)
+            if (!AllowsNameOverride && !string.IsNullOrEmpty(CustomName))
                 strReturn += strSpace + "(\"" + CustomName + "\")";
             return strReturn;
         }
@@ -2903,6 +2924,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strWeaponName;
             set => _strWeaponName = value;
+        }
+
+        /// <summary>
+        /// Whether the XML data allows name override for this item.
+        /// </summary>
+        public bool AllowsNameOverride
+        {
+            get => _blnAllowsNameOverride;
+            set => _blnAllowsNameOverride = value;
         }
 
         public int Rating

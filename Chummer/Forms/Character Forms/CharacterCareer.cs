@@ -13009,6 +13009,16 @@ namespace Chummer
                     return;
                 }
 
+                // Check if name override is allowed in XML
+                if (!objWeapon.AllowsNameOverride)
+                {
+                    await Program.ShowScrollableMessageBoxAsync(
+                        this, await LanguageManager.GetStringAsync("Message_NameOverrideNotAllowed", token: GenericToken).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon", token: GenericToken).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken).ConfigureAwait(false);
+                    return;
+                }
+
                 string strDescription = await LanguageManager.GetStringAsync("String_WeaponName", token: GenericToken).ConfigureAwait(false);
                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
                            () => new SelectText
@@ -14378,6 +14388,16 @@ namespace Chummer
                     return;
                 }
 
+                // Check if name override is allowed in XML
+                if (!objRename.AllowsNameOverride)
+                {
+                    await Program.ShowScrollableMessageBoxAsync(
+                        this, await LanguageManager.GetStringAsync("Message_NameOverrideNotAllowed", token: GenericToken).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle", token: GenericToken).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken).ConfigureAwait(false);
+                    return;
+                }
+
                 string strDescription
                     = await LanguageManager.GetStringAsync("String_VehicleName", token: GenericToken).ConfigureAwait(false);
                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
@@ -14645,6 +14665,16 @@ namespace Chummer
 
                 if (!(objSelectedNode.Tag is IHasCustomName objRename))
                     return;
+
+                // Check if name override is allowed in XML
+                if (!objRename.AllowsNameOverride)
+                {
+                    await Program.ShowScrollableMessageBoxAsync(
+                        this, await LanguageManager.GetStringAsync("Message_NameOverrideNotAllowed", token: GenericToken).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_SelectArmor", token: GenericToken).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken).ConfigureAwait(false);
+                    return;
+                }
 
                 string strDescription = await LanguageManager.GetStringAsync("String_ArmorName", token: GenericToken).ConfigureAwait(false);
                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(

@@ -61,6 +61,7 @@ namespace Chummer.Backend.Equipment
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strArmorName = string.Empty;
+        private bool _blnAllowsNameOverride;
         private string _strExtra = string.Empty;
         private string _strRatingLabel = "String_Rating";
         private int _intDamage;
@@ -361,6 +362,13 @@ namespace Chummer.Backend.Equipment
             _blnSkipEvents = !blnForSelectForm;
             _blnEquipped = !blnForSelectForm && !blnSkipSelectForms;
             objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName);
+            // Check if name override is allowed (check for allowoverride attribute on name node)
+            XmlNode objNameNode = objXmlArmorNode["name"];
+            if (objNameNode != null)
+            {
+                string strAllowOverride = objNameNode.Attributes?["allowoverride"]?.InnerText;
+                _blnAllowsNameOverride = !string.IsNullOrEmpty(strAllowOverride) && (strAllowOverride == "True" || strAllowOverride == "true" || strAllowOverride == "1");
+            }
             objXmlArmorNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlArmorNode.TryGetStringFieldQuickly("armor", ref _strArmorValue);
             if (objXmlArmorNode.TryGetStringFieldQuickly("armoroverride", ref _strArmorOverrideValue) && _strArmorOverrideValue == "0")
@@ -900,6 +908,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("armorname", _strArmorName);
+            objWriter.WriteElementString("allowsnameoverride", _blnAllowsNameOverride.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("equipped", _blnEquipped.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
@@ -1078,6 +1087,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("armorname", ref _strArmorName);
+            objNode.TryGetBoolFieldQuickly("allowsnameoverride", ref _blnAllowsNameOverride);
             objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("damage", ref _intDamage);
@@ -1368,6 +1378,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("armorname", CustomName, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("allowsnameoverride", AllowsNameOverride.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("equipped", Equipped.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
@@ -3110,6 +3121,10 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayNameShort(string strLanguage, CancellationToken token = default)
         {
+            // Check if name override is allowed and CustomName is set
+            if (AllowsNameOverride && !string.IsNullOrEmpty(CustomName))
+                return CustomName;
+
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
@@ -3121,6 +3136,10 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
+            // Check if name override is allowed and CustomName is set
+            if (AllowsNameOverride && !string.IsNullOrEmpty(CustomName))
+                return CustomName;
+
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
@@ -3135,7 +3154,8 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = DisplayNameShort(strLanguage, token);
             string strSpace = LanguageManager.GetString("String_Space", strLanguage, token: token);
-            if (!string.IsNullOrEmpty(CustomName))
+            // Only append CustomName in parentheses if override is not allowed (for backwards compatibility)
+            if (!AllowsNameOverride && !string.IsNullOrEmpty(CustomName))
                 strReturn += strSpace + "(\"" + CustomName + "\")";
             int intRating = Rating;
             if (intRating > 0)
@@ -3156,7 +3176,8 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(CustomName))
+            // Only append CustomName in parentheses if override is not allowed (for backwards compatibility)
+            if (!AllowsNameOverride && !string.IsNullOrEmpty(CustomName))
                 strReturn += strSpace + "(\"" + CustomName + "\")";
             int intRating = await GetRatingAsync(token).ConfigureAwait(false);
             if (intRating > 0)
@@ -3185,6 +3206,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strArmorName;
             set => _strArmorName = value;
+        }
+
+        /// <summary>
+        /// Whether the XML data allows name override for this item.
+        /// </summary>
+        public bool AllowsNameOverride
+        {
+            get => _blnAllowsNameOverride;
+            set => _blnAllowsNameOverride = value;
         }
 
         private XmlNode _objCachedMyXmlNode;
