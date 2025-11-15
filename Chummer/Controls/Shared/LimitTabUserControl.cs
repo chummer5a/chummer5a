@@ -414,9 +414,12 @@ namespace Chummer.UI.Shared
                                 strName += "+";
                             strName += objImprovement.Value.ToString(GlobalSettings.CultureInfo);
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
+                            {
+                                string strTranslatedCondition = await objImprovement.GetCurrentDisplayConditionAsync(token).ConfigureAwait(false);
                                 strName += ","
                                            + await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                                  .ConfigureAwait(false) + objImprovement.Condition;
+                                                                  .ConfigureAwait(false) + strTranslatedCondition;
+                            }
                             TreeNodeCollection objParentNodeChildren = objParentNode.Nodes;
                             if (!await treLimit.DoThreadSafeFuncAsync(() => objParentNodeChildren.ContainsKey(strName), token).ConfigureAwait(false))
                             {

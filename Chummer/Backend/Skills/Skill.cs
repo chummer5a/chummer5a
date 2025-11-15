@@ -5427,7 +5427,7 @@ namespace Chummer.Backend.Skills
                             lstConditionalImprovements.Select(
                                 x => CharacterObject.GetObjectName(x) + strSpace + "("
                                      + x.Value.ToString(GlobalSettings.CultureInfo) + "," + strSpace
-                                     + x.Condition + ")"), ')');
+                                     + x.CurrentDisplayCondition + ")"), ')');
                     }
 
                     int wound = CharacterObject.WoundModifier;
@@ -5771,7 +5771,8 @@ namespace Chummer.Backend.Skills
                             await CharacterObject.GetObjectNameAsync(source, token: token).ConfigureAwait(false));
                         if (!string.IsNullOrEmpty(source.Condition))
                         {
-                            sbdReturn.Append(strSpace, '(').Append(source.Condition, ')');
+                            string strDisplayCondition = await source.GetCurrentDisplayConditionAsync(token).ConfigureAwait(false);
+                            sbdReturn.Append(strSpace, '(').Append(strDisplayCondition, ')');
                         }
 
                         sbdReturn.Append(strSpace, '(').Append(source.Value.ToString(GlobalSettings.CultureInfo), ')');

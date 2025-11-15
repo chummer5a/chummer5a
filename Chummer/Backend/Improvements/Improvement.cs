@@ -434,6 +434,8 @@ namespace Chummer
         private int _intRating = 1;
         private string _strExclude = string.Empty;
         private string _strCondition = string.Empty;
+        private string _strCachedDisplayCondition = string.Empty;
+        private string _strCachedDisplayConditionLanguage = string.Empty;
         private string _strUniqueName = string.Empty;
         private string _strTarget = string.Empty;
         private ImprovementType _eImprovementType;
@@ -928,9 +930,86 @@ namespace Chummer
                 {
                     if (string.IsNullOrEmpty(strOldValue) || string.IsNullOrEmpty(value))
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                    _strCachedDisplayCondition = string.Empty;
+                    _strCachedDisplayConditionLanguage = string.Empty;
                     this.ProcessRelevantEvents();
                 }
             }
+        }
+
+        /// <summary>
+        /// The condition string as it should be displayed in the current language.
+        /// </summary>
+        public string CurrentDisplayCondition => DisplayCondition(GlobalSettings.Language);
+
+        /// <summary>
+        /// The condition string as it should be displayed in the current language.
+        /// </summary>
+        public Task<string> GetCurrentDisplayConditionAsync(CancellationToken token = default) => DisplayConditionAsync(GlobalSettings.Language, token);
+
+        /// <summary>
+        /// The condition string as it should be displayed in the specified language.
+        /// </summary>
+        public string DisplayCondition(string strLanguage)
+        {
+            if (string.IsNullOrEmpty(_strCondition))
+                return string.Empty;
+            // If we've already cached a value for this, just return it.
+            if (!string.IsNullOrWhiteSpace(_strCachedDisplayCondition) && strLanguage == _strCachedDisplayConditionLanguage)
+            {
+                return _strCachedDisplayCondition;
+            }
+
+            string strReturn;
+            // Check if the condition is a language key (contains underscores) - if so, use GetString directly
+            if (_strCondition.Contains('_'))
+            {
+                strReturn = LanguageManager.GetString(_strCondition, strLanguage, false);
+                if (string.IsNullOrWhiteSpace(strReturn))
+                    strReturn = _strCondition;
+            }
+            else
+            {
+                // Otherwise, treat it as plain English text and use TranslateExtra to translate it
+                strReturn = LanguageManager.TranslateExtra(_strCondition, strLanguage, _objCharacter);
+                if (string.IsNullOrWhiteSpace(strReturn))
+                    strReturn = _strCondition;
+            }
+            _strCachedDisplayConditionLanguage = strLanguage;
+            return _strCachedDisplayCondition = strReturn;
+        }
+
+        /// <summary>
+        /// The condition string as it should be displayed in the specified language.
+        /// </summary>
+        public async Task<string> DisplayConditionAsync(string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(_strCondition))
+                return string.Empty;
+            // If we've already cached a value for this, just return it.
+            if (!string.IsNullOrWhiteSpace(_strCachedDisplayCondition) && strLanguage == _strCachedDisplayConditionLanguage)
+            {
+                return _strCachedDisplayCondition;
+            }
+
+            string strReturn;
+            // Check if the condition is a language key (contains underscores) - if so, use GetStringAsync directly
+            if (_strCondition.Contains('_'))
+            {
+                strReturn = await LanguageManager.GetStringAsync(_strCondition, strLanguage, false, token).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(strReturn))
+                    strReturn = _strCondition;
+            }
+            else
+            {
+                // Otherwise, treat it as plain English text and use TranslateExtraAsync to translate it
+                strReturn = await LanguageManager.TranslateExtraAsync(_strCondition, strLanguage, _objCharacter, token: token).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(strReturn))
+                    strReturn = _strCondition;
+            }
+            _strCachedDisplayConditionLanguage = strLanguage;
+            return _strCachedDisplayCondition = strReturn;
         }
 
         /// <summary>

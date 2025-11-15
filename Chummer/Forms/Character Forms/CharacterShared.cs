@@ -7353,9 +7353,12 @@ namespace Chummer
                                     strName += "+";
                                 strName += objImprovement.Value.ToString(GlobalSettings.CultureInfo);
                                 if (!string.IsNullOrEmpty(objImprovement.Condition))
+                                {
+                                    string strTranslatedCondition = await objImprovement.GetCurrentDisplayConditionAsync(token).ConfigureAwait(false);
                                     strName += "," + await LanguageManager.GetStringAsync("String_Space", token: token)
                                                        .ConfigureAwait(false)
-                                                   + objImprovement.Condition;
+                                                   + strTranslatedCondition;
+                                }
                                 if (objParentNode?.Nodes.ContainsKey(strName) == false)
                                 {
                                     string strNotes = (await objImprovement.GetNotesAsync(token).ConfigureAwait(false)).WordWrap();

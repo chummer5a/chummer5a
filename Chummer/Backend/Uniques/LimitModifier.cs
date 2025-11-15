@@ -317,8 +317,8 @@ namespace Chummer
 
         public string DisplayCondition(string strLanguage)
         {
-            if (strLanguage == GlobalSettings.DefaultLanguage)
-                return Condition;
+            if (string.IsNullOrEmpty(_strCondition))
+                return string.Empty;
             // If we've already cached a value for this, just return it.
             // (Ghetto fix cache culture tag and compare to current?)
             if (!string.IsNullOrWhiteSpace(_strCachedDisplayCondition) && strLanguage == _strCachedDisplayConditionLanguage)
@@ -326,10 +326,22 @@ namespace Chummer
                 return _strCachedDisplayCondition;
             }
 
-            string strCondition = Condition;
-            string strReturn = LanguageManager.TranslateExtra(strCondition, strLanguage, _objCharacter);
-            if (string.IsNullOrWhiteSpace(strReturn))
-                strReturn = strCondition;
+            string strReturn;
+            // Check if the condition is a language key (contains underscores) - if so, use GetString directly
+            if (_strCondition.Contains('_'))
+            {
+                strReturn = LanguageManager.GetString(_strCondition, strLanguage, false);
+                if (string.IsNullOrWhiteSpace(strReturn))
+                    strReturn = _strCondition;
+            }
+            else
+            {
+                // Otherwise, treat it as plain English text and use TranslateExtra to translate it
+                string strCondition = Condition;
+                strReturn = LanguageManager.TranslateExtra(strCondition, strLanguage, _objCharacter);
+                if (string.IsNullOrWhiteSpace(strReturn))
+                    strReturn = strCondition;
+            }
             _strCachedDisplayConditionLanguage = strLanguage;
             return _strCachedDisplayCondition = strReturn;
         }
@@ -337,8 +349,8 @@ namespace Chummer
         public async Task<string> DisplayConditionAsync(string strLanguage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (strLanguage == GlobalSettings.DefaultLanguage)
-                return await GetConditionAsync(token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(_strCondition))
+                return string.Empty;
             // If we've already cached a value for this, just return it.
             // (Ghetto fix cache culture tag and compare to current?)
             if (!string.IsNullOrWhiteSpace(_strCachedDisplayCondition) && strLanguage == _strCachedDisplayConditionLanguage)
@@ -346,10 +358,22 @@ namespace Chummer
                 return _strCachedDisplayCondition;
             }
 
-            string strCondition = await GetConditionAsync(token).ConfigureAwait(false);
-            string strReturn = await LanguageManager.TranslateExtraAsync(strCondition, strLanguage, _objCharacter, token: token).ConfigureAwait(false);
-            if (string.IsNullOrWhiteSpace(strReturn))
-                strReturn = strCondition;
+            string strReturn;
+            // Check if the condition is a language key (contains underscores) - if so, use GetStringAsync directly
+            if (_strCondition.Contains('_'))
+            {
+                strReturn = await LanguageManager.GetStringAsync(_strCondition, strLanguage, false, token).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(strReturn))
+                    strReturn = _strCondition;
+            }
+            else
+            {
+                // Otherwise, treat it as plain English text and use TranslateExtraAsync to translate it
+                string strCondition = await GetConditionAsync(token).ConfigureAwait(false);
+                strReturn = await LanguageManager.TranslateExtraAsync(strCondition, strLanguage, _objCharacter, token: token).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(strReturn))
+                    strReturn = strCondition;
+            }
             _strCachedDisplayConditionLanguage = strLanguage;
             return _strCachedDisplayCondition = strReturn;
         }
