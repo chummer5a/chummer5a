@@ -1,0 +1,338 @@
+name: Nightly Build
+
+on:
+  schedule:
+    # Run daily at 00:00 UTC (midnight)
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+# Prevent multiple nightly builds from running simultaneously
+concurrency:
+  group: nightly-build
+  cancel-in-progress: false # Don't cancel if one is already running, just queue
+
+permissions:
+  contents: write # Needed for creating releases
+  actions: read # Needed for reading workflow runs
+
+jobs:
+  nightly-build:
+    if: github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
+    runs-on: windows-latest
+    timeout-minutes: 60 # Prevent stuck builds
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Need full history for version calculation
+    
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        # .NET SDK needed to build SDK-style .NET Framework 4.8 projects
+        # Any recent SDK version works for building .NET Framework projects
+        dotnet-version: '8.0.x'
+    
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/packages.config', '**/project.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+    
+    - name: Install 7-Zip
+      run: |
+        choco install 7zip -y
+    
+    - name: Get current version from csproj
+      id: get_version
+      shell: pwsh
+      run: |
+        $csprojFile = "Chummer\Chummer.csproj"
+        $content = Get-Content $csprojFile -Raw
+        $regex = [regex]::new('(?<=<AssemblyVersion>)([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)(?=<\/AssemblyVersion>)', [System.Text.RegularExpressions.RegexOptions]::Multiline)
+        $match = $regex.Match($content)
+        if ($match.Success) {
+          $major = $match.Groups[1].Value
+          $minor = $match.Groups[2].Value
+          $build = $match.Groups[3].Value
+          $revision = $match.Groups[4].Value
+          Write-Host "Current version: $major.$minor.$build.$revision"
+          "major=$major" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "minor=$minor" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "milestone=$major.$minor" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        } else {
+          Write-Host "Failed to parse version from csproj"
+          exit 1
+        }
+    
+    - name: Check for duplicate commit (scheduled builds only)
+      id: check_commit
+      shell: pwsh
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Only check for duplicate commits on scheduled builds
+        if ("${{ github.event_name }}" -ne "schedule") {
+          Write-Host "Manual trigger, skipping duplicate commit check"
+          "skip=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          exit 0
+        }
+        
+        $currentCommit = "${{ github.sha }}"
+        Write-Host "Current commit: $currentCommit"
+        
+        $headers = @{
+          "Authorization" = "token $env:GITHUB_TOKEN"
+          "Accept" = "application/vnd.github.v3+json"
+        }
+        
+        # Get the latest release to check its commit
+        $url = "https://api.github.com/repos/${{ github.repository }}/releases?per_page=1"
+        $releases = Invoke-RestMethod -Uri $url -Headers $headers -Method Get
+        
+        if ($releases.Count -gt 0) {
+          $latestRelease = $releases[0]
+          # Check if this is a Nightly release
+          if ($latestRelease.tag_name -match "^Nightly-") {
+            # Get the commit SHA from the release (target_commitish)
+            $releaseCommit = $latestRelease.target_commitish
+            Write-Host "Latest Nightly release commit: $releaseCommit"
+            Write-Host "Current HEAD commit: $currentCommit"
+            
+            if ($releaseCommit -eq $currentCommit) {
+              Write-Host "Current commit matches latest release commit, skipping build"
+              "skip=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+              exit 0
+            }
+          }
+        }
+        
+        Write-Host "Commit is new or different, proceeding with build"
+        "skip=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+    
+    - name: Calculate build number
+      id: calc_build
+      if: steps.check_commit.outputs.skip != 'true'
+      shell: pwsh
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $milestone = "${{ steps.get_version.outputs.milestone }}"
+        Write-Host "Calculating build number for milestone: $milestone"
+        
+        # Get all releases and filter for Nightly releases matching this milestone
+        $headers = @{
+          "Authorization" = "token $env:GITHUB_TOKEN"
+          "Accept" = "application/vnd.github.v3+json"
+        }
+        
+        $buildNumber = 1
+        $page = 1
+        $perPage = 100
+        
+        do {
+          $url = "https://api.github.com/repos/${{ github.repository }}/releases?per_page=$perPage&page=$page"
+          $releases = Invoke-RestMethod -Uri $url -Headers $headers -Method Get
+          
+          if ($releases.Count -eq 0) {
+            break
+          }
+          
+          foreach ($release in $releases) {
+            # Check if this is a Nightly release for the current milestone
+            if ($release.tag_name -match "^Nightly-$milestone\.(\d+)$") {
+              $releaseBuild = [int]$matches[1]
+              if ($releaseBuild -ge $buildNumber) {
+                $buildNumber = $releaseBuild + 1
+              }
+            }
+          }
+          
+          $page++
+        } while ($releases.Count -eq $perPage)
+        
+        Write-Host "Calculated build number: $buildNumber"
+        "build_number=$buildNumber" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+    
+    - name: Update version in project files
+      if: steps.check_commit.outputs.skip != 'true'
+      shell: pwsh
+      run: |
+        $major = "${{ steps.get_version.outputs.major }}"
+        $minor = "${{ steps.get_version.outputs.minor }}"
+        $buildNumber = "${{ steps.calc_build.outputs.build_number }}"
+        $newVersion = "$major.$minor.$buildNumber.0"
+        $nightlyVersion = "Nightly-$major.$minor.$buildNumber"
+        
+        Write-Host "Updating version to: $newVersion"
+        Write-Host "Nightly version tag: $nightlyVersion"
+        "version=$newVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "nightly_tag=$nightlyVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        
+        # Update all .csproj files
+        $csprojFiles = Get-ChildItem -Path . -Filter "*.csproj" -Recurse
+        
+        foreach ($file in $csprojFiles) {
+          Write-Host "Updating $($file.FullName)"
+          $content = Get-Content $file.FullName -Raw
+          
+          # Update AssemblyVersion
+          $content = $content -replace '(<AssemblyVersion>)([^<]+)(<\/AssemblyVersion>)', "`$1$newVersion`$3"
+          
+          # Update FileVersion
+          $content = $content -replace '(<FileVersion>)([^<]+)(<\/FileVersion>)', "`$1$newVersion`$3"
+          
+          # Update InformationalVersion
+          $content = $content -replace '(<InformationalVersion>)([^<]+)(<\/InformationalVersion>)', "`$1$nightlyVersion`$3"
+          
+          # Update ApplicationVersion
+          $content = $content -replace '(<ApplicationVersion>)([^<]+)(<\/ApplicationVersion>)', "`$1$newVersion`$3"
+          
+          # Update VersionPrefix
+          $content = $content -replace '(<VersionPrefix>)([^<]+)(<\/VersionPrefix>)', "`$1$newVersion`$3"
+          
+          Set-Content -Path $file.FullName -Value $content -NoNewline
+        }
+      id: update_version
+    
+    - name: Restore NuGet packages
+      if: steps.check_commit.outputs.skip != 'true'
+      run: dotnet restore Chummer.sln
+    
+    - name: Generate contributors file
+      if: steps.check_commit.outputs.skip != 'true'
+      shell: pwsh
+      run: |
+        $textTransform = "${env:ProgramFiles}\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\TextTransform.exe"
+        if (-not (Test-Path $textTransform)) {
+          $textTransform = "${env:ProgramFiles}\Microsoft Visual Studio\2022\Professional\Common7\IDE\TextTransform.exe"
+        }
+        if (-not (Test-Path $textTransform)) {
+          $textTransform = "${env:ProgramFiles}\Microsoft Visual Studio\2022\Community\Common7\IDE\TextTransform.exe"
+        }
+        if (Test-Path $textTransform) {
+          & $textTransform "Chummer\Properties\contributors.tt"
+        } else {
+          Write-Host "TextTransform.exe not found, skipping contributors file generation"
+        }
+    
+    - name: Build solution
+      if: steps.check_commit.outputs.skip != 'true'
+      run: dotnet build Chummer.sln --configuration Release --no-restore --verbosity minimal
+    
+    - name: Run tests
+      if: steps.check_commit.outputs.skip != 'true'
+      run: dotnet test Chummer.sln --configuration Release --no-build --verbosity minimal --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage"
+      continue-on-error: true
+    
+    - name: Publish test results
+      if: steps.check_commit.outputs.skip != 'true' && always()
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      with:
+        files: '**/*.trx'
+        check_name: 'Test Results'
+        comment_mode: off
+        report_individual_runs: true
+    
+    - name: Create zip archive
+      if: steps.check_commit.outputs.skip != 'true'
+      id: create_zip
+      shell: pwsh
+      run: |
+        $buildOutput = "Chummer\bin\Release"
+        $nightlyVersion = "${{ steps.update_version.outputs.nightly_tag }}"
+        $zipFile = "Chummer.$nightlyVersion.zip"
+        
+        Write-Host "Creating zip file: $zipFile"
+        
+        if (Test-Path $zipFile) {
+          Remove-Item $zipFile
+        }
+        
+        # Use 7-Zip if available, otherwise use PowerShell Compress-Archive
+        $7zipPath = "${env:ProgramFiles}\7-Zip\7z.exe"
+        if (Test-Path $7zipPath) {
+          & $7zipPath a $zipFile "$buildOutput\*" -r
+        } else {
+          Compress-Archive -Path "$buildOutput\*" -DestinationPath $zipFile -Force
+        }
+        
+        Write-Host "Created $zipFile"
+        "zip_file=$zipFile" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+    
+    - name: Upload build artifacts
+      if: steps.check_commit.outputs.skip != 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: nightly-build-${{ steps.update_version.outputs.nightly_tag }}
+        path: ${{ steps.create_zip.outputs.zip_file }}
+        retention-days: 7 # Keep artifacts for 7 days
+    
+    - name: Check if release already exists
+      id: check_release
+      if: steps.check_commit.outputs.skip != 'true'
+      shell: pwsh
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $nightlyTag = "${{ steps.update_version.outputs.nightly_tag }}"
+        Write-Host "Checking if release $nightlyTag already exists"
+        
+        $headers = @{
+          "Authorization" = "token $env:GITHUB_TOKEN"
+          "Accept" = "application/vnd.github.v3+json"
+        }
+        
+        $url = "https://api.github.com/repos/${{ github.repository }}/releases/tags/$nightlyTag"
+        try {
+          $release = Invoke-RestMethod -Uri $url -Headers $headers -Method Get
+          Write-Host "Release $nightlyTag already exists, skipping"
+          "exists=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        } catch {
+          Write-Host "Release $nightlyTag does not exist, will create"
+          "exists=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        }
+    
+    - name: Create GitHub Release
+      if: steps.check_commit.outputs.skip != 'true' && steps.check_release.outputs.exists != 'true'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.update_version.outputs.nightly_tag }}
+        name: Nightly Build ${{ steps.update_version.outputs.nightly_tag }}
+        body: |
+          Automated nightly build
+          
+          Version: ${{ steps.update_version.outputs.version }}
+          Build Number: ${{ steps.calc_build.outputs.build_number }}
+          Commit: ${{ github.sha }}
+        files: ${{ steps.create_zip.outputs.zip_file }}
+        prerelease: true
+        draft: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Notify Discord on failure
+      if: failure() && github.event_name == 'schedule'
+      uses: Ilshidur/action-discord@master
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      with:
+        args: 'Nightly build failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+    
+    - name: Build summary
+      if: always()
+      shell: pwsh
+      run: |
+        $status = if ("${{ job.status }}" -eq "success") { "✅ Succeeded" } else { "❌ Failed" }
+        Write-Host "## Build Summary" >> $env:GITHUB_STEP_SUMMARY
+        Write-Host "- Status: $status" >> $env:GITHUB_STEP_SUMMARY
+        Write-Host "- Version: ${{ steps.update_version.outputs.nightly_tag }}" >> $env:GITHUB_STEP_SUMMARY
+        Write-Host "- Build Number: ${{ steps.calc_build.outputs.build_number }}" >> $env:GITHUB_STEP_SUMMARY
+        Write-Host "- Commit: ${{ github.sha }}" >> $env:GITHUB_STEP_SUMMARY
+        if ("${{ steps.check_commit.outputs.skip }}" -eq "true") {
+          Write-Host "- ⚠️ Build was skipped (duplicate commit)" >> $env:GITHUB_STEP_SUMMARY
+        }
+
