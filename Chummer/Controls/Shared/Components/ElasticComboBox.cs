@@ -40,7 +40,30 @@ namespace Chummer
 
         protected override void OnDataSourceChanged(EventArgs e)
         {
-            base.OnDataSourceChanged(e);
+            // Save the current selected index before the data source changes
+            // The base class will try to restore it, but it might be out of range for the new data source
+            int intPreviousSelectedIndex = SelectedIndex;
+            // Temporarily clear selection to prevent base class from trying to restore an invalid index
+            // We'll restore it after if it's still valid
+            if (intPreviousSelectedIndex >= 0)
+            {
+                SelectedIndex = -1;
+            }
+            try
+            {
+                base.OnDataSourceChanged(e);
+                // After the data source has changed, try to restore the previous selection if it's still valid
+                if (intPreviousSelectedIndex >= 0 && intPreviousSelectedIndex < Items.Count)
+                {
+                    SelectedIndex = intPreviousSelectedIndex;
+                }
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                // If setting the selected index fails, just leave it at -1 (no selection)
+                // This can happen if the Items collection changes between setting the data source and here
+                SelectedIndex = -1;
+            }
             ResizeDropDown();
         }
 
