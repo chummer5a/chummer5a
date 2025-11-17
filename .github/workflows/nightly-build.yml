@@ -172,30 +172,27 @@ jobs:
         "version=$newVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "nightly_tag=$nightlyVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         
-        # Update all .csproj files
-        $csprojFiles = Get-ChildItem -Path . -Filter "*.csproj" -Recurse
+        # Update only the Chummer application .csproj file
+        $csprojFile = "Chummer\Chummer.csproj"
+        Write-Host "Updating $csprojFile"
+        $content = Get-Content $csprojFile -Raw
         
-        foreach ($file in $csprojFiles) {
-          Write-Host "Updating $($file.FullName)"
-          $content = Get-Content $file.FullName -Raw
-          
-          # Update AssemblyVersion
-          $content = $content -replace '(<AssemblyVersion>)([^<]+)(<\/AssemblyVersion>)', "`$1$newVersion`$3"
-          
-          # Update FileVersion
-          $content = $content -replace '(<FileVersion>)([^<]+)(<\/FileVersion>)', "`$1$newVersion`$3"
-          
-          # Update InformationalVersion
-          $content = $content -replace '(<InformationalVersion>)([^<]+)(<\/InformationalVersion>)', "`$1$nightlyVersion`$3"
-          
-          # Update ApplicationVersion
-          $content = $content -replace '(<ApplicationVersion>)([^<]+)(<\/ApplicationVersion>)', "`$1$newVersion`$3"
-          
-          # Update VersionPrefix
-          $content = $content -replace '(<VersionPrefix>)([^<]+)(<\/VersionPrefix>)', "`$1$newVersion`$3"
-          
-          Set-Content -Path $file.FullName -Value $content -NoNewline
-        }
+        # Update AssemblyVersion
+        $content = $content -replace '(<AssemblyVersion>)([^<]+)(<\/AssemblyVersion>)', "`$1$newVersion`$3"
+        
+        # Update FileVersion
+        $content = $content -replace '(<FileVersion>)([^<]+)(<\/FileVersion>)', "`$1$newVersion`$3"
+        
+        # Update InformationalVersion
+        $content = $content -replace '(<InformationalVersion>)([^<]+)(<\/InformationalVersion>)', "`$1$nightlyVersion`$3"
+        
+        # Update ApplicationVersion
+        $content = $content -replace '(<ApplicationVersion>)([^<]+)(<\/ApplicationVersion>)', "`$1$newVersion`$3"
+        
+        # Update VersionPrefix
+        $content = $content -replace '(<VersionPrefix>)([^<]+)(<\/VersionPrefix>)', "`$1$newVersion`$3"
+        
+        Set-Content -Path $csprojFile -Value $content -NoNewline
       id: update_version
     
     - name: Restore NuGet packages
@@ -230,12 +227,12 @@ jobs:
     
     - name: Publish test results
       if: steps.check_commit.outputs.skip != 'true' && always()
-      uses: EnricoMi/publish-unit-test-result-action@v2
+      uses: dorny/test-reporter@v1
       with:
-        files: '**/*.trx'
-        check_name: 'Test Results'
-        comment_mode: off
-        report_individual_runs: true
+        name: Test Results
+        path: '**/*.trx'
+        reporter: dotnet-trx
+        fail-on-error: false
     
     - name: Create zip archive
       if: steps.check_commit.outputs.skip != 'true'
