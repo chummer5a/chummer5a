@@ -172,27 +172,50 @@ jobs:
         "version=$newVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         "nightly_tag=$nightlyVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
         
-        # Update only the Chummer application .csproj file
+        # Update the Chummer application .csproj file
         $csprojFile = "Chummer\Chummer.csproj"
         Write-Host "Updating $csprojFile"
-        $content = Get-Content $csprojFile -Raw
         
-        # Update AssemblyVersion
-        $content = $content -replace '(<AssemblyVersion>)([^<]+)(<\/AssemblyVersion>)', "`$1$newVersion`$3"
+        # Load the XML file
+        [xml]$xml = Get-Content $csprojFile
         
-        # Update FileVersion
-        $content = $content -replace '(<FileVersion>)([^<]+)(<\/FileVersion>)', "`$1$newVersion`$3"
+        # Find all PropertyGroup elements and update version properties
+        $xml.Project.PropertyGroup | ForEach-Object {
+          if ($_.AssemblyVersion) {
+            $_.AssemblyVersion = $newVersion
+            Write-Host "Updated AssemblyVersion to $newVersion"
+          }
+          if ($_.FileVersion) {
+            $_.FileVersion = $newVersion
+            Write-Host "Updated FileVersion to $newVersion"
+          }
+          if ($_.InformationalVersion) {
+            $_.InformationalVersion = $nightlyVersion
+            Write-Host "Updated InformationalVersion to $nightlyVersion"
+          }
+          if ($_.ApplicationVersion) {
+            $_.ApplicationVersion = $newVersion
+            Write-Host "Updated ApplicationVersion to $newVersion"
+          }
+          if ($_.VersionPrefix) {
+            $_.VersionPrefix = $newVersion
+            Write-Host "Updated VersionPrefix to $newVersion"
+          }
+        }
         
-        # Update InformationalVersion
-        $content = $content -replace '(<InformationalVersion>)([^<]+)(<\/InformationalVersion>)', "`$1$nightlyVersion`$3"
+        # Save the XML file with proper formatting
+        $xmlWriterSettings = New-Object System.Xml.XmlWriterSettings
+        $xmlWriterSettings.Indent = $true
+        $xmlWriterSettings.IndentChars = "  "
+        $xmlWriterSettings.NewLineChars = "`r`n"
+        $xmlWriterSettings.NewLineHandling = [System.Xml.NewLineHandling]::Replace
         
-        # Update ApplicationVersion
-        $content = $content -replace '(<ApplicationVersion>)([^<]+)(<\/ApplicationVersion>)', "`$1$newVersion`$3"
-        
-        # Update VersionPrefix
-        $content = $content -replace '(<VersionPrefix>)([^<]+)(<\/VersionPrefix>)', "`$1$newVersion`$3"
-        
-        Set-Content -Path $csprojFile -Value $content -NoNewline
+        $xmlWriter = [System.Xml.XmlWriter]::Create($csprojFile, $xmlWriterSettings)
+        try {
+          $xml.Save($xmlWriter)
+        } finally {
+          $xmlWriter.Close()
+        }
       id: update_version
     
     - name: Restore NuGet packages
