@@ -1281,19 +1281,82 @@ namespace Chummer
                             .DoThreadSafeFuncAsync(x => x.Nodes.Count, token: token)
                             .ConfigureAwait(false))
                     {
-                        List<TreeNode> lstNodes = new List<TreeNode>(intNewCount);
-                        await _dicEnabledCharacterCustomDataDirectorys.ForEachAsync(async kvpKeyAndEnabled =>
+                        // Group by GUID to deduplicate and show only one entry per GUID
+                        Dictionary<string, KeyValuePair<string, bool>> dicDeduplicatedByGuid =
+                            new Dictionary<string, KeyValuePair<string, bool>>(StringComparer.OrdinalIgnoreCase);
+                        await _dicEnabledCharacterCustomDataDirectorys.ForEachAsync(kvpKeyAndEnabled =>
                         {
+                            string strGuid = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(kvpKeyAndEnabled.Key);
+                            if (string.IsNullOrEmpty(strGuid))
+                            {
+                                // For entries without GUID, use the key itself
+                                if (!dicDeduplicatedByGuid.ContainsKey(kvpKeyAndEnabled.Key))
+                                    dicDeduplicatedByGuid.Add(kvpKeyAndEnabled.Key, kvpKeyAndEnabled);
+                            }
+                            else
+                            {
+                                // For entries with GUID, keep only one (the highest version is already selected in CharacterSettings)
+                                if (!dicDeduplicatedByGuid.TryGetValue(strGuid, out KeyValuePair<string, bool> kvpExisting))
+                                {
+                                    dicDeduplicatedByGuid.Add(strGuid, kvpKeyAndEnabled);
+                                }
+                            }
+                        }, token: token).ConfigureAwait(false);
+
+                        List<TreeNode> lstNodes = new List<TreeNode>(dicDeduplicatedByGuid.Count);
+                        foreach (KeyValuePair<string, KeyValuePair<string, bool>> kvpDeduplicated in dicDeduplicatedByGuid)
+                        {
+                            KeyValuePair<string, bool> kvpKeyAndEnabled = kvpDeduplicated.Value;
                             TreeNode objNode = new TreeNode
                             {
                                 Checked = kvpKeyAndEnabled.Value
                             };
-                            CustomDataDirectoryInfo objInfo = GlobalSettings.CustomDataDirectoryInfos.FirstOrDefault(
-                                x => x.CharacterSettingsSaveKey == kvpKeyAndEnabled.Key);
+                            // Use the same logic as RecalculateEnabledCustomDataDirectories to find the actual version being used
+                            string strKey = kvpKeyAndEnabled.Key;
+                            string strId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(
+                                strKey, out ValueVersion objPreferredVersion);
+                            CustomDataDirectoryInfo objInfo = null;
+                            if (string.IsNullOrEmpty(strId))
+                            {
+                                // For entries without GUID, find by name and pick highest version
+                                objInfo = GlobalSettings.CustomDataDirectoryInfos
+                                    .Where(x => x.Name.Equals(strKey, StringComparison.OrdinalIgnoreCase))
+                                    .OrderByDescending(x => x.MyVersion)
+                                    .FirstOrDefault();
+                            }
+                            else
+                            {
+                                // For entries with GUID, use VersionMatchScore to find best matching version
+                                objInfo = GlobalSettings.CustomDataDirectoryInfos
+                                    .Where(x => x.InternalId.Equals(strId, StringComparison.OrdinalIgnoreCase))
+                                    .OrderByDescending(x =>
+                                    {
+                                        int intReturn = int.MaxValue;
+                                        intReturn -= (objPreferredVersion.Build - x.MyVersion.Build).Pow(2) * 16777216;
+                                        intReturn -= (objPreferredVersion.Major - x.MyVersion.Major).Pow(2) * 65536;
+                                        intReturn -= (objPreferredVersion.Minor - x.MyVersion.Minor).Pow(2) * 256;
+                                        intReturn -= (objPreferredVersion.Revision - x.MyVersion.Revision).Pow(2);
+                                        return intReturn;
+                                    })
+                                    .FirstOrDefault();
+                            }
+                            
                             if (objInfo != null)
                             {
                                 objNode.Tag = objInfo;
-                                objNode.Text = await objInfo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                // Always show the actual version being used (from objInfo.MyVersion)
+                                string strDisplayName = await objInfo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+
+                                // Check if we're using a higher version than the minimum specified
+                                if (objPreferredVersion != default(ValueVersion) && objInfo.MyVersion > objPreferredVersion)
+                                {
+                                    // We're using a higher version than the minimum specified, indicate this
+                                    string strUsingVersion = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                                    // The display name already shows the actual version, so we can add a note about the minimum requirement
+                                    strDisplayName += $"{strUsingVersion}(≥{objPreferredVersion})";
+                                }
+
+                                objNode.Text = strDisplayName;
                                 if (objNode.Checked)
                                 {
                                     // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
@@ -1322,14 +1385,37 @@ namespace Chummer
                             }
                             else
                             {
+                                // Try to find any version of this custom data directory by GUID to show a better name
+                                string strGuid = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(kvpKeyAndEnabled.Key);
+                                string strDisplayText = kvpKeyAndEnabled.Key;
+                                if (!string.IsNullOrEmpty(strGuid))
+                                {
+                                    // Look for any version of this GUID in GlobalSettings
+                                    CustomDataDirectoryInfo objAnyVersion = GlobalSettings.CustomDataDirectoryInfos.FirstOrDefault(
+                                        x => x.InternalId.Equals(strGuid, StringComparison.OrdinalIgnoreCase));
+                                    if (objAnyVersion != null)
+                                    {
+                                        // Found a version, show the name with the version from the key
+                                        CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(kvpKeyAndEnabled.Key, out ValueVersion objMinimumVersionFromKey);
+                                        if (objMinimumVersionFromKey != default(ValueVersion))
+                                        {
+                                            strDisplayText = $"{objAnyVersion.Name} ({objMinimumVersionFromKey})";
+                                        }
+                                        else
+                                        {
+                                            strDisplayText = objAnyVersion.Name;
+                                        }
+                                    }
+                                }
+                                
                                 objNode.Tag = kvpKeyAndEnabled.Key;
-                                objNode.Text = kvpKeyAndEnabled.Key;
+                                objNode.Text = strDisplayText;
                                 objNode.ForeColor = objGrayTextColor;
                                 objNode.ToolTipText = strFileNotFound;
                             }
 
                             lstNodes.Add(objNode);
-                        }, token: token).ConfigureAwait(false);
+                        }
 
                         await treCustomDataDirectories.DoThreadSafeAsync(x =>
                         {
@@ -1340,58 +1426,225 @@ namespace Chummer
                     }
                     else
                     {
-                        Color objWindowTextColor = ColorManager.WindowText;
+                        // Group by GUID to deduplicate and show only one entry per GUID
+                        Dictionary<string, KeyValuePair<string, bool>> dicDeduplicatedByGuid =
+                            new Dictionary<string, KeyValuePair<string, bool>>(StringComparer.OrdinalIgnoreCase);
                         for (int i = 0; i < intNewCount; ++i)
                         {
                             KeyValuePair<string, bool> kvpKeyAndEnabled = await _dicEnabledCharacterCustomDataDirectorys
                                 .GetValueAtAsync(i, token).ConfigureAwait(false);
-                            CustomDataDirectoryInfo objInfo = GlobalSettings.CustomDataDirectoryInfos.FirstOrDefault(
-                                x => x.CharacterSettingsSaveKey == kvpKeyAndEnabled.Key);
-                            int i1 = i;
-                            TreeNode objNode = await treCustomDataDirectories
-                                .DoThreadSafeFuncAsync(x =>
-                                {
-                                    TreeNode objReturn = x.Nodes[i1];
-                                    objReturn.Checked = kvpKeyAndEnabled.Value;
-                                    return objReturn;
-                                }, token)
-                                .ConfigureAwait(false);
-                            if (objInfo != null)
+                            string strGuid = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(kvpKeyAndEnabled.Key);
+                            if (string.IsNullOrEmpty(strGuid))
                             {
-                                string strText = await objInfo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                                await treCustomDataDirectories.DoThreadSafeAsync(() =>
+                                // For entries without GUID, use the key itself
+                                if (!dicDeduplicatedByGuid.ContainsKey(kvpKeyAndEnabled.Key))
+                                    dicDeduplicatedByGuid.Add(kvpKeyAndEnabled.Key, kvpKeyAndEnabled);
+                            }
+                            else
+                            {
+                                // For entries with GUID, keep only one (the highest version is already selected in CharacterSettings)
+                                if (!dicDeduplicatedByGuid.TryGetValue(strGuid, out KeyValuePair<string, bool> kvpExisting))
+                                {
+                                    dicDeduplicatedByGuid.Add(strGuid, kvpKeyAndEnabled);
+                                }
+                            }
+                        }
+
+                        // If deduplication resulted in fewer entries, rebuild the tree
+                        int intDeduplicatedCount = dicDeduplicatedByGuid.Count;
+                        int intCurrentNodeCount = await treCustomDataDirectories
+                            .DoThreadSafeFuncAsync(x => x.Nodes.Count, token: token).ConfigureAwait(false);
+                        if (intDeduplicatedCount != intCurrentNodeCount)
+                        {
+                            // Count changed, rebuild the tree
+                            List<TreeNode> lstNodes = new List<TreeNode>(intDeduplicatedCount);
+                            foreach (KeyValuePair<string, KeyValuePair<string, bool>> kvpDeduplicated in dicDeduplicatedByGuid)
+                            {
+                                KeyValuePair<string, bool> kvpKeyAndEnabled = kvpDeduplicated.Value;
+                                TreeNode objNode = new TreeNode
+                                {
+                                    Checked = kvpKeyAndEnabled.Value
+                                };
+                                CustomDataDirectoryInfo objInfoRebuild = GlobalSettings.CustomDataDirectoryInfos.FirstOrDefault(
+                                    x => x.CharacterSettingsSaveKey == kvpKeyAndEnabled.Key);
+                                if (objInfoRebuild != null)
+                                {
+                                    objNode.Tag = objInfoRebuild;
+                                    objNode.Text = await objInfoRebuild.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    if (objNode.Checked)
                                     {
-                                        objNode.Tag = objInfo;
-                                        objNode.Text = strText;
+                                        string missingDirectories = string.Empty;
+                                        if (objInfoRebuild.DependenciesList.Count > 0)
+                                            missingDirectories = await objInfoRebuild
+                                                .CheckDependencyAsync(_objCharacterSettings, token: token)
+                                                .ConfigureAwait(false);
+
+                                        string prohibitedDirectories = string.Empty;
+                                        if (objInfoRebuild.IncompatibilitiesList.Count > 0)
+                                            prohibitedDirectories = await objInfoRebuild
+                                                .CheckIncompatibilityAsync(
+                                                    _objCharacterSettings, token: token)
+                                                .ConfigureAwait(false);
+
+                                        if (!string.IsNullOrEmpty(missingDirectories)
+                                            || !string.IsNullOrEmpty(prohibitedDirectories))
+                                        {
+                                            objNode.ToolTipText
+                                                = await CustomDataDirectoryInfo.BuildIncompatibilityDependencyStringAsync(
+                                                    missingDirectories, prohibitedDirectories, token: token).ConfigureAwait(false);
+                                            objNode.ForeColor = objErrorColor;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    // Try to find any version of this custom data directory by GUID to show a better name
+                                    string strGuid = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(kvpKeyAndEnabled.Key);
+                                    string strDisplayText = kvpKeyAndEnabled.Key;
+                                    if (!string.IsNullOrEmpty(strGuid))
+                                    {
+                                        // Look for any version of this GUID in GlobalSettings
+                                        CustomDataDirectoryInfo objAnyVersion = GlobalSettings.CustomDataDirectoryInfos.FirstOrDefault(
+                                            x => x.InternalId.Equals(strGuid, StringComparison.OrdinalIgnoreCase));
+                                        if (objAnyVersion != null)
+                                        {
+                                            // Found a version, show the name with the version from the key
+                                            CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(kvpKeyAndEnabled.Key, out ValueVersion objMinimumVersionFromKeyRebuild);
+                                            if (objMinimumVersionFromKeyRebuild != default(ValueVersion))
+                                            {
+                                                strDisplayText = $"{objAnyVersion.Name} ({objMinimumVersionFromKeyRebuild})";
+                                            }
+                                            else
+                                            {
+                                                strDisplayText = objAnyVersion.Name;
+                                            }
+                                        }
+                                    }
+                                    
+                                    objNode.Tag = kvpKeyAndEnabled.Key;
+                                    objNode.Text = strDisplayText;
+                                    objNode.ForeColor = objGrayTextColor;
+                                    objNode.ToolTipText = strFileNotFound;
+                                }
+
+                                lstNodes.Add(objNode);
+                            }
+
+                            await treCustomDataDirectories.DoThreadSafeAsync(x =>
+                            {
+                                x.Nodes.Clear();
+                                foreach (TreeNode objNode in lstNodes)
+                                    x.Nodes.Add(objNode);
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+
+                            // Update tree nodes to match deduplicated entries
+                            int intNodeIndex = 0;
+                            Color objWindowTextColor = ColorManager.WindowText;
+                            foreach (KeyValuePair<string, KeyValuePair<string, bool>> kvpDeduplicated in dicDeduplicatedByGuid)
+                            {
+                                KeyValuePair<string, bool> kvpKeyAndEnabled = kvpDeduplicated.Value;
+                                int i1 = intNodeIndex;
+                                TreeNode objNode = await treCustomDataDirectories
+                                    .DoThreadSafeFuncAsync(x =>
+                                    {
+                                        if (i1 >= x.Nodes.Count)
+                                            return null;
+                                        TreeNode objReturn = x.Nodes[i1];
+                                        objReturn.Checked = kvpKeyAndEnabled.Value;
+                                        return objReturn;
                                     }, token)
                                     .ConfigureAwait(false);
-                                if (objNode.Checked)
+                                if (objNode == null)
+                                    break;
+                                
+                                // Use the same logic as RecalculateEnabledCustomDataDirectories to find the actual version being used
+                                string strKey = kvpKeyAndEnabled.Key;
+                                string strId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(
+                                    strKey, out ValueVersion objPreferredVersion);
+                                CustomDataDirectoryInfo objInfo = null;
+                                if (string.IsNullOrEmpty(strId))
                                 {
-                                    // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
-                                    string missingDirectories = string.Empty;
-                                    if (objInfo.DependenciesList.Count > 0)
-                                        missingDirectories = await objInfo
-                                            .CheckDependencyAsync(_objCharacterSettings, token: token)
-                                            .ConfigureAwait(false);
-
-                                    string prohibitedDirectories = string.Empty;
-                                    if (objInfo.IncompatibilitiesList.Count > 0)
-                                        prohibitedDirectories = await objInfo
-                                            .CheckIncompatibilityAsync(
-                                                _objCharacterSettings, token: token)
-                                            .ConfigureAwait(false);
-
-                                    if (!string.IsNullOrEmpty(missingDirectories)
-                                        || !string.IsNullOrEmpty(prohibitedDirectories))
-                                    {
-                                        string strToolTip
-                                            = await CustomDataDirectoryInfo.BuildIncompatibilityDependencyStringAsync(
-                                                missingDirectories, prohibitedDirectories, token: token).ConfigureAwait(false);
-                                        await treCustomDataDirectories.DoThreadSafeAsync(() =>
+                                    // For entries without GUID, find by name and pick highest version
+                                    objInfo = GlobalSettings.CustomDataDirectoryInfos
+                                        .Where(x => x.Name.Equals(strKey, StringComparison.OrdinalIgnoreCase))
+                                        .OrderByDescending(x => x.MyVersion)
+                                        .FirstOrDefault();
+                                }
+                                else
+                                {
+                                    // For entries with GUID, use VersionMatchScore to find best matching version
+                                    objInfo = GlobalSettings.CustomDataDirectoryInfos
+                                        .Where(x => x.InternalId.Equals(strId, StringComparison.OrdinalIgnoreCase))
+                                        .OrderByDescending(x =>
                                         {
-                                            objNode.ToolTipText = strToolTip;
-                                            objNode.ForeColor = objErrorColor;
-                                        }, token: token).ConfigureAwait(false);
+                                            int intReturn = int.MaxValue;
+                                            intReturn -= (objPreferredVersion.Build - x.MyVersion.Build).Pow(2) * 16777216;
+                                            intReturn -= (objPreferredVersion.Major - x.MyVersion.Major).Pow(2) * 65536;
+                                            intReturn -= (objPreferredVersion.Minor - x.MyVersion.Minor).Pow(2) * 256;
+                                            intReturn -= (objPreferredVersion.Revision - x.MyVersion.Revision).Pow(2);
+                                            return intReturn;
+                                        })
+                                        .FirstOrDefault();
+                                }
+                                
+                                if (objInfo != null)
+                                {
+                                    // Always show the actual version being used (from objInfo.MyVersion)
+                                    string strText = await objInfo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    
+                                    // Check if we're using a higher version than the minimum specified
+                                    if (objPreferredVersion != default(ValueVersion) && objInfo.MyVersion > objPreferredVersion)
+                                    {
+                                        // We're using a higher version than the minimum specified, indicate this
+                                        string strUsingVersion = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                                        strText += $"{strUsingVersion}(≥{objPreferredVersion})";
+                                    }
+                                    
+                                    await treCustomDataDirectories.DoThreadSafeAsync(() =>
+                                        {
+                                            objNode.Tag = objInfo;
+                                            objNode.Text = strText;
+                                        }, token)
+                                        .ConfigureAwait(false);
+                                    if (objNode.Checked)
+                                    {
+                                        // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
+                                        string missingDirectories = string.Empty;
+                                        if (objInfo.DependenciesList.Count > 0)
+                                            missingDirectories = await objInfo
+                                                .CheckDependencyAsync(_objCharacterSettings, token: token)
+                                                .ConfigureAwait(false);
+
+                                        string prohibitedDirectories = string.Empty;
+                                        if (objInfo.IncompatibilitiesList.Count > 0)
+                                            prohibitedDirectories = await objInfo
+                                                .CheckIncompatibilityAsync(
+                                                    _objCharacterSettings, token: token)
+                                                .ConfigureAwait(false);
+
+                                        if (!string.IsNullOrEmpty(missingDirectories)
+                                            || !string.IsNullOrEmpty(prohibitedDirectories))
+                                        {
+                                            string strToolTip
+                                                = await CustomDataDirectoryInfo.BuildIncompatibilityDependencyStringAsync(
+                                                    missingDirectories, prohibitedDirectories, token: token).ConfigureAwait(false);
+                                            await treCustomDataDirectories.DoThreadSafeAsync(() =>
+                                            {
+                                                objNode.ToolTipText = strToolTip;
+                                                objNode.ForeColor = objErrorColor;
+                                            }, token: token).ConfigureAwait(false);
+                                        }
+                                        else
+                                        {
+                                            await treCustomDataDirectories.DoThreadSafeAsync(() =>
+                                            {
+                                                objNode.ToolTipText = string.Empty;
+                                                objNode.ForeColor = objWindowTextColor;
+                                            }, token: token).ConfigureAwait(false);
+                                        }
                                     }
                                     else
                                     {
@@ -1401,40 +1654,35 @@ namespace Chummer
                                             objNode.ForeColor = objWindowTextColor;
                                         }, token: token).ConfigureAwait(false);
                                     }
+                                    
+                                    intNodeIndex++;
                                 }
                                 else
                                 {
                                     await treCustomDataDirectories.DoThreadSafeAsync(() =>
                                     {
-                                        objNode.ToolTipText = string.Empty;
-                                        objNode.ForeColor = objWindowTextColor;
+                                        objNode.Tag = kvpKeyAndEnabled.Key;
+                                        objNode.Text = kvpKeyAndEnabled.Key;
+                                        objNode.ForeColor = objGrayTextColor;
+                                        objNode.ToolTipText = strFileNotFound;
                                     }, token: token).ConfigureAwait(false);
+                                    intNodeIndex++;
                                 }
+                            }
+
+                            if (objOldSelected != null)
+                            {
+                                await treCustomDataDirectories.DoThreadSafeAsync(x =>
+                                {
+                                    x.SelectedNode = x.FindNodeByTag(objOldSelected);
+                                    x.ShowNodeToolTips = true;
+                                }, token).ConfigureAwait(false);
                             }
                             else
                             {
-                                await treCustomDataDirectories.DoThreadSafeAsync(() =>
-                                {
-                                    objNode.Tag = kvpKeyAndEnabled.Key;
-                                    objNode.Text = kvpKeyAndEnabled.Key;
-                                    objNode.ForeColor = objGrayTextColor;
-                                    objNode.ToolTipText = strFileNotFound;
-                                }, token: token).ConfigureAwait(false);
+                                await treCustomDataDirectories.DoThreadSafeAsync(x => x.ShowNodeToolTips = true, token)
+                                    .ConfigureAwait(false);
                             }
-                        }
-
-                        if (objOldSelected != null)
-                        {
-                            await treCustomDataDirectories.DoThreadSafeAsync(x =>
-                            {
-                                x.SelectedNode = x.FindNodeByTag(objOldSelected);
-                                x.ShowNodeToolTips = true;
-                            }, token).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            await treCustomDataDirectories.DoThreadSafeAsync(x => x.ShowNodeToolTips = true, token)
-                                .ConfigureAwait(false);
                         }
                     }
                 }
