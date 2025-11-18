@@ -807,13 +807,14 @@ namespace Chummer
                                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                out StringBuilder sbdWeapons))
                                     {
-                                        if (sbdWeapons.Length > 0)
-                                            sbdWeapons.Length -= Environment.NewLine.Length;
                                         await objVehicle.Weapons.ForEachAsync(async objWeapon =>
                                         {
                                             sbdWeapons.AppendLine(await objWeapon.GetCurrentDisplayNameAsync(token)
                                                 .ConfigureAwait(false));
                                         }, token).ConfigureAwait(false);
+
+                                        if (sbdWeapons.Length > 0)
+                                            sbdWeapons.Length -= Environment.NewLine.Length;
 
                                         strWeapons = sbdWeapons.ToString();
                                     }
