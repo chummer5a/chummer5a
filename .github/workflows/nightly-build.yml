@@ -96,7 +96,7 @@ jobs:
         if ($releases.Count -gt 0) {
           $latestRelease = $releases[0]
           # Check if this is a Nightly release
-          if ($latestRelease.tag_name -match "^Nightly-") {
+          if ($latestRelease.tag_name -match "^Nightly-v?") {
             # Get the commit SHA from the release (target_commitish)
             $releaseCommit = $latestRelease.target_commitish
             Write-Host "Latest Nightly release commit: $releaseCommit"
@@ -143,7 +143,7 @@ jobs:
           
           foreach ($release in $releases) {
             # Check if this is a Nightly release for the current milestone
-            if ($release.tag_name -match "^Nightly-$milestone\.(\d+)$") {
+            if ($release.tag_name -match "^Nightly-v?$milestone\.(\d+)$") {
               $releaseBuild = [int]$matches[1]
               if ($releaseBuild -ge $buildNumber) {
                 $buildNumber = $releaseBuild + 1
@@ -165,7 +165,7 @@ jobs:
         $minor = "${{ steps.get_version.outputs.minor }}"
         $buildNumber = "${{ steps.calc_build.outputs.build_number }}"
         $newVersion = "$major.$minor.$buildNumber.0"
-        $nightlyVersion = "Nightly-$major.$minor.$buildNumber"
+        $nightlyVersion = "Nightly-v$major.$minor.$buildNumber"
         
         Write-Host "Updating version to: $newVersion"
         Write-Host "Nightly version tag: $nightlyVersion"
@@ -220,7 +220,7 @@ jobs:
     
     - name: Restore NuGet packages
       if: steps.check_commit.outputs.skip != 'true'
-      run: dotnet restore Chummer.sln
+      run: dotnet restore Chummer.sln --no-warn NU1605 --verbosity quiet
     
     - name: Generate contributors file
       if: steps.check_commit.outputs.skip != 'true'
