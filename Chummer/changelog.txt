@@ -142,6 +142,7 @@ Application Changes:
 - Consolidated weapon category improvement logic into reusable GetWeaponCategoryImprovements() methods
 - Refactored AP and damage calculations to use new consolidated improvement methods
 - Fixed custom books not being exposed to the UI for configuration of PDF parameters. Note that this requires that the custom book be mapped to a CharacterSettings file.
+- Fixed Cyrillic text not working correctly when searching due to case conversion. 
 - Implemented a bonus type (cyberlimbattributebonus) to provide AGI or STR bonuses to cyberware attribute bonuses. Example behaviour:
 
 <!-- Simple values -->
