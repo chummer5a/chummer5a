@@ -731,6 +731,10 @@
       <text>Filter by Essence</text>
     </string>
     <string>
+      <key>Label_FilterByCapacity</key>
+      <text>Filter by Capacity</text>
+    </string>
+    <string>
       <key>Checkbox_UseCurrentEssence</key>
       <text>Current ESS</text>
     </string>

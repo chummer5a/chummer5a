@@ -11670,5 +11670,305 @@ namespace Chummer
         }
 
         #endregion Vehicles Tab
+
+        #region Cyberware Tab Shared Methods
+
+        /// <summary>
+        /// Handles the selection of a modular mount location, including validation and auto-selection when there are exactly 2 options.
+        /// </summary>
+        /// <param name="objModularCyberware">The modular cyberware item to change mount location for.</param>
+        /// <param name="token">Cancellation token.</param>
+        /// <returns>The selected parent ID, or empty string if canceled or no valid mounts.</returns>
+        protected async Task<string> SelectModularMountLocationAsync(Cyberware objModularCyberware, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
+                       Utils.ListItemListPool, out List<ListItem> lstModularMounts))
+            {
+                List<ListItem> lstModularCyberlimbList = await _objCharacter
+                    .ConstructModularCyberlimbListAsync(
+                        objModularCyberware, true, token).ConfigureAwait(false);
+                try
+                {
+                    lstModularMounts.AddRange(lstModularCyberlimbList);
+                }
+                finally
+                {
+                    Utils.ListItemListPool.Return(ref lstModularCyberlimbList);
+                }
+                // Check mount status once and cache it for reuse
+                bool blnIsCurrentlyMounted = await objModularCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false);
+                
+                //Mounted cyberware should always be allowed to be dismounted.
+                //Unmounted cyberware requires that a valid mount be present.
+                if (!blnIsCurrentlyMounted
+                    && (lstModularMounts.Count == 0 || lstModularMounts.TrueForAll(
+                        x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase))))
+                {
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        await LanguageManager.GetStringAsync("Message_NoValidModularMount", token: token)
+                            .ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_NoValidModularMount",
+                                token: token)
+                            .ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                    return string.Empty;
+                }
+
+                // If there are exactly 2 items (one mount + "None"), auto-select based on mount status
+                if (lstModularMounts.Count == 2)
+                {
+                    ListItem objNoneItem = lstModularMounts.FirstOrDefault(x => string.Equals(x.Value?.ToString(), "None", StringComparison.OrdinalIgnoreCase));
+                    ListItem objMountItem = lstModularMounts.FirstOrDefault(x => !string.Equals(x.Value?.ToString(), "None", StringComparison.OrdinalIgnoreCase));
+                    
+                    if (objNoneItem.Value != null && objMountItem.Value != null)
+                    {
+                        // If unmounted, auto-select the mount; if mounted, auto-select "None"
+                        return blnIsCurrentlyMounted ? "None" : objMountItem.Value?.ToString() ?? string.Empty;
+                    }
+                }
+
+                // Show dialog for selection
+                string strDescription = await LanguageManager
+                    .GetStringAsync("MessageTitle_SelectCyberware", token: token)
+                    .ConfigureAwait(false);
+                using (ThreadSafeForm<SelectItem> frmPickMount = await ThreadSafeForm<SelectItem>.GetAsync(
+                           () => new SelectItem(), token).ConfigureAwait(false))
+                {
+                    await frmPickMount.MyForm.DoThreadSafeAsync(x =>
+                    {
+                        x.Description = strDescription;
+                        x.SetGeneralItemsMode(lstModularMounts);
+                    }, token).ConfigureAwait(false);
+
+                    // Make sure the dialogue window was not canceled.
+                    if (await frmPickMount.ShowDialogSafeAsync(this, token).ConfigureAwait(false)
+                        == DialogResult.Cancel)
+                    {
+                        return string.Empty;
+                    }
+
+                    return await frmPickMount.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles the complete flow for changing a modular cyberware mount location, including auto-selection when there are exactly 2 options.
+        /// </summary>
+        /// <param name="objModularCyberware">The modular cyberware item to change mount location for.</param>
+        /// <param name="token">Cancellation token.</param>
+        /// <returns>True if the mount location was changed, false if canceled or no valid mounts.</returns>
+        protected async Task<bool> ChangeModularMountLocationAsync(Cyberware objModularCyberware, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strSelectedParentID = await SelectModularMountLocationAsync(objModularCyberware, token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strSelectedParentID))
+                    return false;
+
+                // Apply the mount change
+                Cyberware objOldParent = await objModularCyberware.GetParentAsync(token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<Cyberware> lstCyberware = await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<Cyberware> lstOldParentChildren = objOldParent != null 
+                    ? await objOldParent.GetChildrenAsync(token).ConfigureAwait(false) 
+                    : null;
+                
+                if (objOldParent != null)
+                    await objModularCyberware.ChangeModularEquipAsync(false, token: token)
+                        .ConfigureAwait(false);
+                if (strSelectedParentID == "None")
+                {
+                    if (objOldParent != null)
+                    {
+                        await lstOldParentChildren.RemoveAsync(objModularCyberware, token)
+                            .ConfigureAwait(false);
+
+                        await lstCyberware.AddAsync(objModularCyberware, token)
+                            .ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    Cyberware objNewParent = await lstCyberware
+                        .DeepFindByIdAsync(strSelectedParentID, token).ConfigureAwait(false);
+                    if (objNewParent != null)
+                    {
+                        if (objOldParent != null)
+                            await lstOldParentChildren.RemoveAsync(objModularCyberware, token)
+                                .ConfigureAwait(false);
+                        else
+                            await lstCyberware.RemoveAsync(objModularCyberware, token)
+                                .ConfigureAwait(false);
+
+                        await (await objNewParent.GetChildrenAsync(token).ConfigureAwait(false)).AddAsync(objModularCyberware, token)
+                            .ConfigureAwait(false);
+
+                        await objModularCyberware.ChangeModularEquipAsync(true, token: token)
+                            .ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        ThreadSafeObservableCollection<Vehicle> lstVehicles
+                            = await _objCharacter.GetVehiclesAsync(token).ConfigureAwait(false);
+                        VehicleMod objNewVehicleModParent
+                            = (await lstVehicles
+                                .FindVehicleModAsync(x => x.InternalId == strSelectedParentID, token)
+                                .ConfigureAwait(false)).Item1;
+                        if (objNewVehicleModParent == null)
+                            (objNewParent, objNewVehicleModParent)
+                                = await lstVehicles.FindVehicleCyberwareAsync(
+                                    x => x.InternalId == strSelectedParentID, token).ConfigureAwait(false);
+                        if (objNewVehicleModParent != null || objNewParent != null)
+                        {
+                            if (objOldParent != null)
+                                await lstOldParentChildren.RemoveAsync(objModularCyberware, token)
+                                    .ConfigureAwait(false);
+                            else
+                                await lstCyberware.RemoveAsync(objModularCyberware, token)
+                                    .ConfigureAwait(false);
+
+                            if (objNewParent != null)
+                                await (await objNewParent.GetChildrenAsync(token).ConfigureAwait(false)).AddAsync(objModularCyberware, token)
+                                    .ConfigureAwait(false);
+                            else
+                                await objNewVehicleModParent.Cyberware.AddAsync(objModularCyberware, token)
+                                    .ConfigureAwait(false);
+                        }
+                        else if (objOldParent != null)
+                        {
+                            await lstOldParentChildren.RemoveAsync(objModularCyberware, token)
+                                .ConfigureAwait(false);
+
+                            await lstCyberware.AddAsync(objModularCyberware, token)
+                                .ConfigureAwait(false);
+                        }
+                    }
+                }
+
+                return true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Handles the complete flow for changing a vehicle modular cyberware mount location, including auto-selection when there are exactly 2 options.
+        /// </summary>
+        /// <param name="objModularCyberware">The modular cyberware item to change mount location for.</param>
+        /// <param name="token">Cancellation token.</param>
+        /// <returns>True if the mount location was changed, false if canceled or no valid mounts.</returns>
+        protected async Task<bool> ChangeVehicleModularMountLocationAsync(Cyberware objModularCyberware, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strSelectedParentID = await SelectModularMountLocationAsync(objModularCyberware, token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strSelectedParentID))
+                    return false;
+
+                // Apply the mount change - vehicle cyberware specific handling
+                ThreadSafeObservableCollection<Vehicle> lstVehicles = await _objCharacter.GetVehiclesAsync(token).ConfigureAwait(false);
+                VehicleMod objOldParentVehicleMod = (await lstVehicles
+                    .FindVehicleCyberwareAsync(x => x.InternalId == objModularCyberware.InternalId, token)
+                    .ConfigureAwait(false)).Item2;
+
+                Cyberware objOldParent = await objModularCyberware.GetParentAsync(token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<Cyberware> lstCyberware = await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<Cyberware> lstOldParentChildren = objOldParent != null 
+                    ? await objOldParent.GetChildrenAsync(token).ConfigureAwait(false) 
+                    : null;
+                
+                if (objOldParent != null)
+                    await objModularCyberware.ChangeModularEquipAsync(false, token: token)
+                        .ConfigureAwait(false);
+                if (strSelectedParentID == "None")
+                {
+                    if (objOldParent != null)
+                        await lstOldParentChildren.RemoveAsync(objModularCyberware, token)
+                            .ConfigureAwait(false);
+                    else
+                        await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware, token)
+                            .ConfigureAwait(false);
+
+                    await lstCyberware.AddAsync(objModularCyberware, token)
+                        .ConfigureAwait(false);
+                }
+                else
+                {
+                    Cyberware objNewParent = await lstCyberware
+                        .DeepFindByIdAsync(strSelectedParentID, token).ConfigureAwait(false);
+                    if (objNewParent != null)
+                    {
+                        if (objOldParent != null)
+                            await lstOldParentChildren.RemoveAsync(objModularCyberware, token)
+                                .ConfigureAwait(false);
+                        else
+                            await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware, token)
+                                .ConfigureAwait(false);
+
+                        await (await objNewParent.GetChildrenAsync(token).ConfigureAwait(false)).AddAsync(objModularCyberware, token)
+                            .ConfigureAwait(false);
+
+                        await objModularCyberware.ChangeModularEquipAsync(true, token: token)
+                            .ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        VehicleMod objNewVehicleModParent
+                            = (await lstVehicles
+                                .FindVehicleModAsync(x => x.InternalId == strSelectedParentID, token)
+                                .ConfigureAwait(false)).Item1;
+                        if (objNewVehicleModParent == null)
+                            (objNewParent, objNewVehicleModParent)
+                                = await lstVehicles.FindVehicleCyberwareAsync(
+                                    x => x.InternalId == strSelectedParentID, token).ConfigureAwait(false);
+                        if (objNewVehicleModParent != null || objNewParent != null)
+                        {
+                            if (objOldParent != null)
+                                await lstOldParentChildren.RemoveAsync(objModularCyberware, token)
+                                    .ConfigureAwait(false);
+                            else
+                                await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware, token)
+                                    .ConfigureAwait(false);
+
+                            if (objNewParent != null)
+                                await (await objNewParent.GetChildrenAsync(token).ConfigureAwait(false)).AddAsync(objModularCyberware, token)
+                                    .ConfigureAwait(false);
+                            else
+                                await objNewVehicleModParent.Cyberware.AddAsync(objModularCyberware, token)
+                                    .ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            if (objOldParent != null)
+                                await lstOldParentChildren.RemoveAsync(objModularCyberware, token)
+                                    .ConfigureAwait(false);
+                            else
+                                await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware, token)
+                                    .ConfigureAwait(false);
+
+                            await lstCyberware.AddAsync(objModularCyberware, token)
+                                .ConfigureAwait(false);
+                        }
+                    }
+                }
+
+                return true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        #endregion Cyberware Tab Shared Methods
     }
 }

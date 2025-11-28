@@ -53,6 +53,7 @@ namespace Chummer
         private decimal _decMaximumCapacity = -1;
         private bool _blnLockGrade;
         private int _intLoading = 1;
+        private bool _blnFilterEssence = true; // Track filter mode: true = essence, false = capacity. Determined automatically based on parent.
 
         private readonly Mode _eMode = Mode.Cyberware;
         private readonly string _strNodeXPath = "cyberwares/cyberware";
@@ -73,6 +74,8 @@ namespace Chummer
         private CancellationTokenSource _objDoRefreshListCancellationTokenSource;
         private readonly CancellationTokenSource _objGenericCancellationTokenSource;
         private readonly CancellationToken _objGenericToken;
+        private readonly Microsoft.VisualStudio.Threading.AsyncLazy<string> _strCachedParentCost;
+        private readonly Microsoft.VisualStudio.Threading.AsyncLazy<string> _strCachedParentGearCost;
 
         private enum Mode
         {
@@ -145,10 +148,16 @@ namespace Chummer
             _setDisallowedGrades = Utils.StringHashSetPool.Get();
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseCyberwareDataNode));
 
+            // Determine filter mode automatically: if installing into a parent, use capacity; otherwise use essence
+            _blnFilterEssence = _objParentObject == null;
+            
             // Prevent Enter key from closing the form when NumericUpDown controls have focus
             nudMinimumEssence.KeyDown += NumericUpDown_KeyDown;
             nudMaximumEssence.KeyDown += NumericUpDown_KeyDown;
             nudExactEssence.KeyDown += NumericUpDown_KeyDown;
+            nudCapacityFilterMinimum.KeyDown += NumericUpDown_KeyDown;
+            nudCapacityFilterMaximum.KeyDown += NumericUpDown_KeyDown;
+            nudCapacityFilterExact.KeyDown += NumericUpDown_KeyDown;
             nudMinimumCost.KeyDown += NumericUpDown_KeyDown;
             nudMaximumCost.KeyDown += NumericUpDown_KeyDown;
             nudExactCost.KeyDown += NumericUpDown_KeyDown;
@@ -279,6 +288,9 @@ namespace Chummer
                     await nudESSDiscount.DoThreadSafeAsync(x => x.Visible = false, token: _objGenericToken).ConfigureAwait(false);
                 }
                 Interlocked.Decrement(ref _intLoading);
+
+                // Initialize filter mode based on whether we have a parent
+                await UpdateFilterModeUI(_objGenericToken).ConfigureAwait(false);
 
                 await RefreshList(_strSelectedCategory, _objGenericToken).ConfigureAwait(false);
             }
@@ -680,6 +692,105 @@ namespace Chummer
             catch (OperationCanceledException)
             {
                 //swallow this
+            }
+        }
+
+        private async Task UpdateFilterModeUI(CancellationToken token = default)
+        {
+            bool blnFilterCapacity = !_blnFilterEssence;
+
+            // Update groupbox text
+            await gpbEssenceFilter.DoThreadSafeAsync(x =>
+            {
+                x.Text = _blnFilterEssence
+                    ? LanguageManager.GetString("Label_FilterByEssence", GlobalSettings.Language)
+                    : LanguageManager.GetString("Label_FilterByCapacity", GlobalSettings.Language);
+            }, token).ConfigureAwait(false);
+
+            // Show/hide essence controls
+            await lblMinimumEssence.DoThreadSafeAsync(x => x.Visible = _blnFilterEssence, token).ConfigureAwait(false);
+            await lblMaximumEssence.DoThreadSafeAsync(x => x.Visible = _blnFilterEssence, token).ConfigureAwait(false);
+            await lblExactEssence.DoThreadSafeAsync(x => x.Visible = _blnFilterEssence, token).ConfigureAwait(false);
+            await nudMinimumEssence.DoThreadSafeAsync(x => x.Visible = _blnFilterEssence, token).ConfigureAwait(false);
+            await nudMaximumEssence.DoThreadSafeAsync(x => x.Visible = _blnFilterEssence, token).ConfigureAwait(false);
+            await nudExactEssence.DoThreadSafeAsync(x => x.Visible = _blnFilterEssence, token).ConfigureAwait(false);
+            await chkUseCurrentEssence.DoThreadSafeAsync(x => x.Visible = _blnFilterEssence, token).ConfigureAwait(false);
+
+            // Show/hide capacity controls
+            await lblCapacityFilterMinimum.DoThreadSafeAsync(x => x.Visible = blnFilterCapacity, token).ConfigureAwait(false);
+            await lblCapacityFilterMaximum.DoThreadSafeAsync(x => x.Visible = blnFilterCapacity, token).ConfigureAwait(false);
+            await lblCapacityFilterExact.DoThreadSafeAsync(x => x.Visible = blnFilterCapacity, token).ConfigureAwait(false);
+            await nudCapacityFilterMinimum.DoThreadSafeAsync(x => x.Visible = blnFilterCapacity, token).ConfigureAwait(false);
+            await nudCapacityFilterMaximum.DoThreadSafeAsync(x => x.Visible = blnFilterCapacity, token).ConfigureAwait(false);
+            await nudCapacityFilterExact.DoThreadSafeAsync(x => x.Visible = blnFilterCapacity, token).ConfigureAwait(false);
+
+            // Refresh the list with the new filter mode
+            await RefreshList(_strSelectedCategory, token).ConfigureAwait(false);
+        }
+
+        private async void CapacityCostFilter(object sender, EventArgs e)
+        {
+            if (_intLoading > 0)
+                return;
+
+            try
+            {
+                _intLoading = 1;
+                await nudCapacityFilterMinimum.DoThreadSafeAsync(x =>
+                {
+                    if (string.IsNullOrWhiteSpace(x.Text))
+                    {
+                        x.Value = 0;
+                    }
+                }, _objGenericToken).ConfigureAwait(false);
+                await nudCapacityFilterMaximum.DoThreadSafeAsync(x =>
+                {
+                    if (string.IsNullOrWhiteSpace(x.Text))
+                    {
+                        x.Value = 0;
+                    }
+                }, _objGenericToken).ConfigureAwait(false);
+                await nudCapacityFilterExact.DoThreadSafeAsync(x =>
+                {
+                    if (string.IsNullOrWhiteSpace(x.Text))
+                    {
+                        x.Value = 0;
+                    }
+                }, _objGenericToken).ConfigureAwait(false);
+
+                decimal decMaximumCapacity = await nudCapacityFilterMaximum.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false);
+                decimal decMinimumCapacity = await nudCapacityFilterMinimum.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false);
+                decimal decExactCapacity = await nudCapacityFilterExact.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false);
+                
+                // If exact capacity is specified, clear range values
+                if (decExactCapacity > 0)
+                {
+                    await nudCapacityFilterMinimum.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+                    await nudCapacityFilterMaximum.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+                }
+                // If range values are specified, clear exact capacity
+                else if (decMinimumCapacity != 0 || decMaximumCapacity != 0)
+                {
+                    await nudCapacityFilterExact.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+                    
+                    // Ensure maximum is not less than minimum
+                    if (decMaximumCapacity < decMinimumCapacity)
+                    {
+                        if (sender == nudCapacityFilterMaximum)
+                            await nudCapacityFilterMinimum.DoThreadSafeAsync(x => x.SetValueSafely(decMaximumCapacity), _objGenericToken).ConfigureAwait(false);
+                        else
+                            await nudCapacityFilterMaximum.DoThreadSafeAsync(x => x.SetValueSafely(decMinimumCapacity), _objGenericToken).ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+            finally
+            {
+                _intLoading = 0;
+                await RefreshList(_strSelectedCategory, _objGenericToken).ConfigureAwait(false);
             }
         }
 
@@ -1603,7 +1714,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strSearch))
                     sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
 
-                // Note: Essence filtering is handled in post-processing due to dynamic expressions like Rating * 0.1 and FixedValues()
+                // Note: Essence and Capacity filtering are handled in post-processing due to dynamic expressions like Rating * 0.1 and FixedValues()
 
                 // Apply cost filtering
                 decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
@@ -1652,6 +1763,18 @@ namespace Chummer
                     decimal decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
                                                        .ConfigureAwait(false);
                     decimal decNuyen = blnFree ? decimal.MaxValue : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
+
+                    // Retrieve filter values once before the loop to avoid repeated UI thread calls
+                    // Use the cached filter mode flag instead of reading from radio buttons
+                    bool blnFilterEssence = _blnFilterEssence;
+                    bool blnFilterCapacity = !_blnFilterEssence;
+                    decimal decMinimumEssence = await nudMinimumEssence.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                    decimal decMaximumEssence = await nudMaximumEssence.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                    decimal decExactEssence = await nudExactEssence.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                    decimal decMinimumCapacity = await nudCapacityFilterMinimum.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                    decimal decMaximumCapacity = await nudCapacityFilterMaximum.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                    decimal decExactCapacity = await nudCapacityFilterExact.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+
                     foreach (XPathNavigator xmlCyberware in xmlIterator)
                     {
                         bool blnIsForceGrade
@@ -1825,58 +1948,123 @@ namespace Chummer
 
 
                         // Apply essence filtering
-                        decimal decMinimumEssence = await nudMinimumEssence.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                        decimal decMaximumEssence = await nudMaximumEssence.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                        decimal decExactEssence = await nudExactEssence.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                        
-                        if (decExactEssence > 0)
+                        if (blnFilterEssence && (decExactEssence > 0 || decMinimumEssence != 0 || decMaximumEssence != 0))
                         {
-                            // Exact essence filtering
                             string strEssenceExpr = xmlCyberware.SelectSingleNodeAndCacheExpression("ess", token: token)?.Value ?? "0";
                             strEssenceExpr = strEssenceExpr.ProcessFixedValuesString(intMinRating);
-                            
+
                             decimal decEssenceCost = 0;
                             if (!string.IsNullOrEmpty(strEssenceExpr) && !decimal.TryParse(strEssenceExpr, out decEssenceCost))
                             {
                                 (decimal decValue, bool blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strEssenceExpr, intMinRating, intMinRating, token).ConfigureAwait(false);
                                 decEssenceCost = blnIsSuccess ? decValue : 0;
                             }
-                            
+
                             // Apply essence discount if applicable
                             if (decEssenceCost > 0 && _decESSMultiplier != 1.0m)
                             {
                                 decEssenceCost *= _decESSMultiplier;
                             }
-                            
-                            // Check if essence cost matches exactly
-                            if (Math.Abs(decEssenceCost - decExactEssence) > 0.001m) // Use small tolerance for floating point comparison
+
+                            if (decExactEssence > 0)
                             {
-                                continue;
+                                // Exact essence filtering
+                                if (Math.Abs(decEssenceCost - decExactEssence) > 0.001m) // Use small tolerance for floating point comparison
+                                {
+                                    continue;
+                                }
+                            }
+                            else if (decMinimumEssence != 0 || decMaximumEssence != 0)
+                            {
+                                // Range essence filtering
+                                if (decEssenceCost < decMinimumEssence || decEssenceCost > decMaximumEssence)
+                                {
+                                    continue;
+                                }
                             }
                         }
-                        else if (decMinimumEssence != 0 || decMaximumEssence != 0)
+
+                        // Apply capacity filtering
+                        if (blnFilterCapacity && (decExactCapacity > 0 || decMinimumCapacity != 0 || decMaximumCapacity != 0))
                         {
-                            // Range essence filtering
-                            string strEssenceExpr = xmlCyberware.SelectSingleNodeAndCacheExpression("ess", token: token)?.Value ?? "0";
-                            strEssenceExpr = strEssenceExpr.ProcessFixedValuesString(intMinRating);
+                            // Get capacity expression
+                            string strCapacityExpr = xmlCyberware.SelectSingleNodeAndCacheExpression("capacity", token: token)?.Value ?? string.Empty;
                             
-                            decimal decEssenceCost = 0;
-                            if (!string.IsNullOrEmpty(strEssenceExpr) && !decimal.TryParse(strEssenceExpr, out decEssenceCost))
+                            // Skip items without capacity when filtering by capacity with values set
+                            if (string.IsNullOrEmpty(strCapacityExpr) || strCapacityExpr == "0")
                             {
-                                (decimal decValue, bool blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strEssenceExpr, intMinRating, intMinRating, token).ConfigureAwait(false);
-                                decEssenceCost = blnIsSuccess ? decValue : 0;
+                                continue; // Skip items without capacity when filtering by capacity with values set
                             }
-                            
-                            // Apply essence discount if applicable
-                            if (decEssenceCost > 0 && _decESSMultiplier != 1.0m)
+
+                            // Handle capacity format: could be "[X]", "X/[Y]", or just "X"
+                            // For items installed into parents, capacity is typically in brackets [X]
+                            string strCapacityToCheck = strCapacityExpr;
+                            int intSlashPos = strCapacityToCheck.IndexOf("/[", StringComparison.Ordinal);
+                            if (intSlashPos != -1)
                             {
-                                decEssenceCost *= _decESSMultiplier;
+                                // Format is "X/[Y]" - use the first part (total capacity) for filtering
+                                strCapacityToCheck = strCapacityToCheck.Substring(0, intSlashPos);
                             }
-                            
-                            // Check if essence cost is within the specified range
-                            if (decEssenceCost < decMinimumEssence || decEssenceCost > decMaximumEssence)
+
+                            // Remove square brackets if present (capacity for plugins is in [X] format)
+                            if (strCapacityToCheck.StartsWith('[') && strCapacityToCheck.EndsWith(']') && strCapacityToCheck.Length > 2)
                             {
+                                strCapacityToCheck = strCapacityToCheck.Substring(1, strCapacityToCheck.Length - 2);
+                            }
+
+                            // Process fixed values (like Rating) - use the minimum rating for capacity calculation
+                            strCapacityToCheck = strCapacityToCheck.ProcessFixedValuesString(intMinRating);
+
+                            decimal decCapacity = 0;
+                            if (strCapacityToCheck == "*")
+                            {
+                                // Infinite capacity - include it in results unless filtering by exact value
+                                if (decExactCapacity > 0)
+                                {
+                                    // If filtering by exact capacity, skip infinite capacity items
+                                    continue;
+                                }
+                                // For range filtering, include infinite capacity items
+                                decCapacity = decimal.MaxValue;
+                            }
+                            else if (!string.IsNullOrEmpty(strCapacityToCheck))
+                            {
+                                // Try to parse as a simple decimal first
+                                if (!decimal.TryParse(strCapacityToCheck, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decCapacity))
+                                {
+                                    // Try to process as XPath expression - use minimum rating for evaluation
+                                    (decimal decValue, bool blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strCapacityToCheck, intMinRating, intMinRating, token).ConfigureAwait(false);
+                                    if (!blnIsSuccess)
+                                    {
+                                        // If we can't parse it, skip this item
+                                        continue;
+                                    }
+                                    decCapacity = decValue;
+                                }
+                            }
+                            else
+                            {
+                                // Empty capacity string after processing - skip this item
                                 continue;
+                            }
+
+                            // Apply filtering based on the calculated capacity
+                            if (decExactCapacity > 0)
+                            {
+                                // Exact capacity filtering
+                                if (Math.Abs(decCapacity - decExactCapacity) > 0.001m) // Use small tolerance for floating point comparison
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                // Range capacity filtering
+                                // Match the essence filtering logic: exclude items outside the range
+                                if (decCapacity < decMinimumCapacity || decCapacity > decMaximumCapacity)
+                                {
+                                    continue;
+                                }
                             }
                         }
 
@@ -1888,45 +2076,55 @@ namespace Chummer
                                                   ?? xmlCyberware.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                                   ?? strId));
                     }
-                }
 
-                if (blnDoUIUpdate)
+                    if (blnDoUIUpdate)
+                    {
+                        lstCyberwares.Sort(CompareListItems.CompareNames);
+                        if (intOverLimit > 0)
+                        {
+                            // Add after sort so that it's always at the end
+                            lstCyberwares.Add(new ListItem(string.Empty,
+                                                           string.Format(GlobalSettings.CultureInfo,
+                                                                         await LanguageManager.GetStringAsync(
+                                                                                 "String_RestrictedItemsHiddenEssence",
+                                                                                 token: token)
+                                                                             .ConfigureAwait(false),
+                                                                         intOverLimit)));
+                        }
+
+                        string strOldSelected = await lstCyberware
+                                                      .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
+                                                      .ConfigureAwait(false);
+                        Interlocked.Increment(ref _intLoading);
+                        try
+                        {
+                            await lstCyberware.PopulateWithListItemsAsync(lstCyberwares, token: token).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            Interlocked.Decrement(ref _intLoading);
+                        }
+                        await lstCyberware.DoThreadSafeAsync(x =>
+                        {
+                            if (!string.IsNullOrEmpty(strOldSelected))
+                                x.SelectedValue = strOldSelected;
+                            else
+                                x.SelectedIndex = -1;
+                        }, token: token).ConfigureAwait(false);
+                    }
+
+                    return lstCyberwares?.Count > 0;
+                }
+                else
                 {
-                    lstCyberwares.Sort(CompareListItems.CompareNames);
-                    if (intOverLimit > 0)
+                    // No items in iterator
+                    if (blnDoUIUpdate)
                     {
-                        // Add after sort so that it's always at the end
-                        lstCyberwares.Add(new ListItem(string.Empty,
-                                                       string.Format(GlobalSettings.CultureInfo,
-                                                                     await LanguageManager.GetStringAsync(
-                                                                             "String_RestrictedItemsHiddenEssence",
-                                                                             token: token)
-                                                                         .ConfigureAwait(false),
-                                                                     intOverLimit)));
+                        await lstCyberware.PopulateWithListItemAsync(ListItem.Blank, token: token)
+                                          .ConfigureAwait(false);
                     }
-
-                    string strOldSelected = await lstCyberware
-                                                  .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
-                                                  .ConfigureAwait(false);
-                    Interlocked.Increment(ref _intLoading);
-                    try
-                    {
-                        await lstCyberware.PopulateWithListItemsAsync(lstCyberwares, token: token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        Interlocked.Decrement(ref _intLoading);
-                    }
-                    await lstCyberware.DoThreadSafeAsync(x =>
-                    {
-                        if (!string.IsNullOrEmpty(strOldSelected))
-                            x.SelectedValue = strOldSelected;
-                        else
-                            x.SelectedIndex = -1;
-                    }, token: token).ConfigureAwait(false);
+                    return false;
                 }
-
-                return lstCyberwares?.Count > 0;
             }
             finally
             {
@@ -2252,9 +2450,6 @@ namespace Chummer
                 //swallow this
             }
         }
-
-        private readonly Microsoft.VisualStudio.Threading.AsyncLazy<string> _strCachedParentCost;
-        private readonly Microsoft.VisualStudio.Threading.AsyncLazy<string> _strCachedParentGearCost;
 
         private async Task<ValueTuple<decimal, bool>> ProcessInvariantXPathExpression(XPathNavigator xmlCyberware, string strExpression, int intMinRating, int intRating, CancellationToken token = default)
         {

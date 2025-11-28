@@ -478,6 +478,7 @@ Changed/New Strings:
 - Checkbox_UseCurrentEssence
 - Checkbox_UseCurrentNuyen
 - String_RestrictedItemsHiddenMount
+- Label_FilterByCapacity
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage

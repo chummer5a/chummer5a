@@ -850,6 +850,8 @@ namespace Chummer
             this.lblVehicleCategoryLabel = new System.Windows.Forms.Label();
             this.lblVehicleRatingLabel = new System.Windows.Forms.Label();
             this.lblVehicleGearQtyLabel = new System.Windows.Forms.Label();
+            this.lblVehicleCapacity = new System.Windows.Forms.Label();
+            this.lblVehicleCapacityLabel = new System.Windows.Forms.Label();
             this.nudVehicleRating = new Chummer.NumericUpDownEx();
             this.cmdVehicleCyberwareChangeMount = new System.Windows.Forms.Button();
             this.flpVehiclesCommonCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
@@ -12059,6 +12061,8 @@ namespace Chummer
             this.tlpVehiclesCommon.Controls.Add(this.nudVehicleRating, 1, 2);
             this.tlpVehiclesCommon.Controls.Add(this.cmdVehicleCyberwareChangeMount, 2, 3);
             this.tlpVehiclesCommon.Controls.Add(this.flpVehiclesCommonCheckBoxes, 2, 4);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleCapacityLabel, 2, 5);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleCapacity, 3, 5);
             this.tlpVehiclesCommon.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpVehiclesCommon.Location = new System.Drawing.Point(3, 16);
             this.tlpVehiclesCommon.Name = "tlpVehiclesCommon";
@@ -12165,6 +12169,31 @@ namespace Chummer
             this.lblVehicleSlotsLabel.Size = new System.Drawing.Size(33, 13);
             this.lblVehicleSlotsLabel.TabIndex = 57;
             this.lblVehicleSlotsLabel.Tag = "Label_Slots";
+            // 
+            // lblVehicleCapacityLabel
+            // 
+            this.lblVehicleCapacityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleCapacityLabel.AutoSize = true;
+            this.lblVehicleCapacityLabel.Location = new System.Drawing.Point(312, 81);
+            this.lblVehicleCapacityLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleCapacityLabel.Name = "lblVehicleCapacityLabel";
+            this.lblVehicleCapacityLabel.Size = new System.Drawing.Size(53, 13);
+            this.lblVehicleCapacityLabel.TabIndex = 61;
+            this.lblVehicleCapacityLabel.Tag = "Label_Capacity";
+            this.lblVehicleCapacityLabel.Text = "Capacity:";
+            this.lblVehicleCapacityLabel.Visible = false;
+            // 
+            // lblVehicleCapacity
+            // 
+            this.lblVehicleCapacity.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblVehicleCapacity.AutoSize = true;
+            this.lblVehicleCapacity.Location = new System.Drawing.Point(371, 81);
+            this.lblVehicleCapacity.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleCapacity.Name = "lblVehicleCapacity";
+            this.lblVehicleCapacity.Size = new System.Drawing.Size(58, 13);
+            this.lblVehicleCapacity.TabIndex = 62;
+            this.lblVehicleCapacity.Text = "[Capacity]";
+            this.lblVehicleCapacity.Visible = false;
             this.lblVehicleSlotsLabel.Text = "Slots:";
             this.lblVehicleSlotsLabel.Visible = false;
             // 
@@ -17079,6 +17108,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblVehicleCategoryLabel;
         private System.Windows.Forms.Label lblVehicleRatingLabel;
         private System.Windows.Forms.Label lblVehicleGearQtyLabel;
+        private System.Windows.Forms.Label lblVehicleCapacity;
+        private System.Windows.Forms.Label lblVehicleCapacityLabel;
         private Chummer.NumericUpDownEx nudVehicleRating;
         private System.Windows.Forms.Button cmdVehicleCyberwareChangeMount;
         private System.Windows.Forms.FlowLayoutPanel flpVehiclesCommonCheckBoxes;
