@@ -1947,6 +1947,10 @@
       <text>&amp;Notes</text>
     </string>
     <string>
+      <key>Menu_ReloadFromSource</key>
+      <text>&amp;Reload from Source XML</text>
+    </string>
+    <string>
       <key>Menu_Gear</key>
       <text>&amp;Gear</text>
     </string>

@@ -31,6 +31,36 @@ using NLog;
 
 namespace Chummer
 {
+    /// <summary>
+    /// Strategy for merging values from source XML when loading saved character files.
+    /// </summary>
+    public enum XmlMergeStrategy
+    {
+        /// <summary>
+        /// Only use fallback if the field is missing from the saved node (default behavior).
+        /// Preserves user customizations and existing values.
+        /// </summary>
+        MissingOnly = 0,
+        
+        /// <summary>
+        /// Always prefer source XML values over saved values.
+        /// Useful when XML defaults have changed and should be applied.
+        /// </summary>
+        PreferSource = 1,
+        
+        /// <summary>
+        /// Only update if the saved value matches a known old default value.
+        /// Requires providing the old default value to compare against.
+        /// </summary>
+        UpdateIfMatchesOldDefault = 2,
+        
+        /// <summary>
+        /// Only update if the character file version is older than a specified threshold.
+        /// Requires providing a version threshold to compare against.
+        /// </summary>
+        UpdateIfVersionOlder = 3
+    }
+
     internal static class XmlNodeExtensions
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -317,6 +347,56 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Like <see cref="TryGetStringFieldQuickly(XmlNode, string, ref string)" />, but with an optional fallback to source XML node.
+        /// This allows loading new properties from source XML when they're missing from saved character files.
+        /// </summary>
+        public static bool TryGetStringFieldQuickly(this XmlNode node, string field, ref string read, XPathNavigator objFallbackNode)
+        {
+            if (node.TryGetStringFieldQuickly(field, ref read))
+                return true;
+            return objFallbackNode?.TryGetStringFieldQuickly(field, ref read) == true;
+        }
+
+        /// <summary>
+        /// Like <see cref="TryGetStringFieldQuickly(XmlNode, string, ref string, XPathNavigator)" />, but with configurable merge strategy.
+        /// </summary>
+        public static bool TryGetStringFieldQuickly(this XmlNode node, string field, ref string read, XPathNavigator objFallbackNode, XmlMergeStrategy strategy)
+        {
+            bool blnFoundInSaved = node.TryGetStringFieldQuickly(field, ref read);
+            bool blnShouldUseSource = false;
+
+            switch (strategy)
+            {
+                case XmlMergeStrategy.MissingOnly:
+                    if (!blnFoundInSaved)
+                        blnShouldUseSource = true;
+                    break;
+
+                case XmlMergeStrategy.PreferSource:
+                    blnShouldUseSource = objFallbackNode != null;
+                    break;
+
+                default:
+                    // For other strategies, fall back to MissingOnly behavior
+                    if (!blnFoundInSaved)
+                        blnShouldUseSource = true;
+                    break;
+            }
+
+            if (blnShouldUseSource && objFallbackNode != null)
+            {
+                string strSourceValue = read; // Preserve current value as default
+                if (objFallbackNode.TryGetStringFieldQuickly(field, ref strSourceValue))
+                {
+                    read = strSourceValue;
+                    return true;
+                }
+            }
+
+            return blnFoundInSaved;
+        }
+
+        /// <summary>
         /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for strings, only with as little overhead as possible.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -349,6 +429,80 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Like <see cref="TryGetInt32FieldQuickly(XmlNode, string, ref int, IFormatProvider)" />, but with an optional fallback to source XML node.
+        /// This allows loading new properties from source XML when they're missing from saved character files.
+        /// </summary>
+        public static bool TryGetInt32FieldQuickly(this XmlNode node, string field, ref int read, XPathNavigator objFallbackNode, IFormatProvider objCulture = null)
+        {
+            if (node.TryGetInt32FieldQuickly(field, ref read, objCulture))
+                return true;
+            return objFallbackNode?.TryGetInt32FieldQuickly(field, ref read, objCulture) == true;
+        }
+
+        /// <summary>
+        /// Like <see cref="TryGetInt32FieldQuickly(XmlNode, string, ref int, XPathNavigator, IFormatProvider)" />, but with configurable merge strategy.
+        /// This allows handling cases where XML values have changed between versions.
+        /// </summary>
+        /// <param name="node">The saved node to read from first</param>
+        /// <param name="field">The field name to read</param>
+        /// <param name="read">The variable to store the result in</param>
+        /// <param name="objFallbackNode">The source XML node to fall back to</param>
+        /// <param name="strategy">The merge strategy to use</param>
+        /// <param name="objCulture">Culture for parsing numbers</param>
+        /// <param name="intOldDefault">For UpdateIfMatchesOldDefault strategy: the old default value to compare against</param>
+        /// <param name="verThreshold">For UpdateIfVersionOlder strategy: the version threshold to compare against</param>
+        /// <param name="verCharacterVersion">For UpdateIfVersionOlder strategy: the character file version</param>
+        public static bool TryGetInt32FieldQuickly(this XmlNode node, string field, ref int read, XPathNavigator objFallbackNode, 
+            XmlMergeStrategy strategy, IFormatProvider objCulture = null, int? intOldDefault = null, 
+            ValueVersion? verThreshold = null, ValueVersion? verCharacterVersion = null)
+        {
+            bool blnFoundInSaved = node.TryGetInt32FieldQuickly(field, ref read, objCulture);
+            bool blnShouldUseSource = false;
+
+            switch (strategy)
+            {
+                case XmlMergeStrategy.MissingOnly:
+                    // Only use source if not found in saved node
+                    if (!blnFoundInSaved)
+                        blnShouldUseSource = true;
+                    break;
+
+                case XmlMergeStrategy.PreferSource:
+                    // Always prefer source XML
+                    blnShouldUseSource = objFallbackNode != null;
+                    break;
+
+                case XmlMergeStrategy.UpdateIfMatchesOldDefault:
+                    // Only update if found in saved node AND matches old default
+                    if (blnFoundInSaved && intOldDefault.HasValue && read == intOldDefault.Value)
+                        blnShouldUseSource = true;
+                    else if (!blnFoundInSaved)
+                        blnShouldUseSource = true; // Still fallback if missing
+                    break;
+
+                case XmlMergeStrategy.UpdateIfVersionOlder:
+                    // Only update if character version is older than threshold
+                    if (verThreshold.HasValue && verCharacterVersion.HasValue && verCharacterVersion.Value < verThreshold.Value)
+                        blnShouldUseSource = true;
+                    else if (!blnFoundInSaved)
+                        blnShouldUseSource = true; // Still fallback if missing
+                    break;
+            }
+
+            if (blnShouldUseSource && objFallbackNode != null)
+            {
+                int intSourceValue = read; // Preserve current value as default
+                if (objFallbackNode.TryGetInt32FieldQuickly(field, ref intSourceValue, objCulture))
+                {
+                    read = intSourceValue;
+                    return true;
+                }
+            }
+
+            return blnFoundInSaved;
+        }
+
+        /// <summary>
         /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for bools, but taking advantage of <see cref="bool.TryParse(string, out bool)"/>... boo, no TryParse interface! :(
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -361,6 +515,78 @@ namespace Chummer
                 return false;
             read = blnTmp;
             return true;
+        }
+
+        /// <summary>
+        /// Like <see cref="TryGetBoolFieldQuickly(XmlNode, string, ref bool)" />, but with an optional fallback to source XML node.
+        /// This allows loading new properties from source XML when they're missing from saved character files.
+        /// </summary>
+        public static bool TryGetBoolFieldQuickly(this XmlNode node, string field, ref bool read, XPathNavigator objFallbackNode)
+        {
+            if (node.TryGetBoolFieldQuickly(field, ref read))
+                return true;
+            return objFallbackNode?.TryGetBoolFieldQuickly(field, ref read) == true;
+        }
+
+        /// <summary>
+        /// Like <see cref="TryGetBoolFieldQuickly(XmlNode, string, ref bool, XPathNavigator)" />, but with configurable merge strategy.
+        /// This allows handling cases where XML values have changed between versions.
+        /// </summary>
+        /// <param name="node">The saved node to read from first</param>
+        /// <param name="field">The field name to read</param>
+        /// <param name="read">The variable to store the result in</param>
+        /// <param name="objFallbackNode">The source XML node to fall back to</param>
+        /// <param name="strategy">The merge strategy to use</param>
+        /// <param name="blnOldDefault">For UpdateIfMatchesOldDefault strategy: the old default value to compare against</param>
+        /// <param name="verThreshold">For UpdateIfVersionOlder strategy: the version threshold to compare against</param>
+        /// <param name="verCharacterVersion">For UpdateIfVersionOlder strategy: the character file version</param>
+        public static bool TryGetBoolFieldQuickly(this XmlNode node, string field, ref bool read, XPathNavigator objFallbackNode,
+            XmlMergeStrategy strategy, bool? blnOldDefault = null, ValueVersion? verThreshold = null, ValueVersion? verCharacterVersion = null)
+        {
+            bool blnFoundInSaved = node.TryGetBoolFieldQuickly(field, ref read);
+            bool blnShouldUseSource = false;
+
+            switch (strategy)
+            {
+                case XmlMergeStrategy.MissingOnly:
+                    // Only use source if not found in saved node
+                    if (!blnFoundInSaved)
+                        blnShouldUseSource = true;
+                    break;
+
+                case XmlMergeStrategy.PreferSource:
+                    // Always prefer source XML
+                    blnShouldUseSource = objFallbackNode != null;
+                    break;
+
+                case XmlMergeStrategy.UpdateIfMatchesOldDefault:
+                    // Only update if found in saved node AND matches old default
+                    if (blnFoundInSaved && blnOldDefault.HasValue && read == blnOldDefault.Value)
+                        blnShouldUseSource = true;
+                    else if (!blnFoundInSaved)
+                        blnShouldUseSource = true; // Still fallback if missing
+                    break;
+
+                case XmlMergeStrategy.UpdateIfVersionOlder:
+                    // Only update if character version is older than threshold
+                    if (verThreshold.HasValue && verCharacterVersion.HasValue && verCharacterVersion.Value < verThreshold.Value)
+                        blnShouldUseSource = true;
+                    else if (!blnFoundInSaved)
+                        blnShouldUseSource = true; // Still fallback if missing
+                    break;
+            }
+
+            if (blnShouldUseSource && objFallbackNode != null)
+            {
+                bool blnSourceValue = read; // Preserve current value as default
+                if (objFallbackNode.TryGetBoolFieldQuickly(field, ref blnSourceValue))
+                {
+                    read = blnSourceValue;
+                    return true;
+                }
+            }
+
+            return blnFoundInSaved;
         }
 
         /// <summary>
@@ -378,6 +604,56 @@ namespace Chummer
                 return false;
             read = decTmp;
             return true;
+        }
+
+        /// <summary>
+        /// Like <see cref="TryGetDecFieldQuickly(XmlNode, string, ref decimal, IFormatProvider)" />, but with an optional fallback to source XML node.
+        /// This allows loading new properties from source XML when they're missing from saved character files.
+        /// </summary>
+        public static bool TryGetDecFieldQuickly(this XmlNode node, string field, ref decimal read, XPathNavigator objFallbackNode, IFormatProvider objCulture = null)
+        {
+            if (node.TryGetDecFieldQuickly(field, ref read, objCulture))
+                return true;
+            return objFallbackNode?.TryGetDecFieldQuickly(field, ref read, objCulture) == true;
+        }
+
+        /// <summary>
+        /// Like <see cref="TryGetDecFieldQuickly(XmlNode, string, ref decimal, XPathNavigator, IFormatProvider)" />, but with configurable merge strategy.
+        /// </summary>
+        public static bool TryGetDecFieldQuickly(this XmlNode node, string field, ref decimal read, XPathNavigator objFallbackNode, XmlMergeStrategy strategy, IFormatProvider objCulture = null)
+        {
+            bool blnFoundInSaved = node.TryGetDecFieldQuickly(field, ref read, objCulture);
+            bool blnShouldUseSource = false;
+
+            switch (strategy)
+            {
+                case XmlMergeStrategy.MissingOnly:
+                    if (!blnFoundInSaved)
+                        blnShouldUseSource = true;
+                    break;
+
+                case XmlMergeStrategy.PreferSource:
+                    blnShouldUseSource = objFallbackNode != null;
+                    break;
+
+                default:
+                    // For other strategies, fall back to MissingOnly behavior
+                    if (!blnFoundInSaved)
+                        blnShouldUseSource = true;
+                    break;
+            }
+
+            if (blnShouldUseSource && objFallbackNode != null)
+            {
+                decimal decSourceValue = read; // Preserve current value as default
+                if (objFallbackNode.TryGetDecFieldQuickly(field, ref decSourceValue, objCulture))
+                {
+                    read = decSourceValue;
+                    return true;
+                }
+            }
+
+            return blnFoundInSaved;
         }
 
         /// <summary>

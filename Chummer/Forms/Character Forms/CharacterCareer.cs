@@ -11167,6 +11167,28 @@ namespace Chummer
             }
         }
 
+        private async void tsVehicleModReloadFromSource_Click(object sender, EventArgs e)
+        {
+            if (treVehicles.SelectedNode?.Tag is VehicleMod objMod)
+            {
+                try
+                {
+                    await objMod.ReloadFromSourceAsync(XmlMergeStrategy.PreferSource, GenericToken).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
+                    await RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
+                        cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear,
+                        cmsWeaponMount, cmsVehicleCyberware, cmsVehicleCyberwareGear, token: GenericToken).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Log.Warn(ex);
+                    await Program.ShowScrollableMessageBoxAsync(
+                        await LanguageManager.GetStringAsync("Message_Error", token: GenericToken).ConfigureAwait(false),
+                        ex.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error, token: GenericToken).ConfigureAwait(false);
+                }
+            }
+        }
+
         private async void tsVehicleAddMod_Click(object sender, EventArgs e)
         {
             try

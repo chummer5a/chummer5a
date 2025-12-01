@@ -472,9 +472,10 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Are we loading a copy of an existing Vehicle Mod?</param>
-        public void Load(XmlNode objNode, bool blnCopy = false)
+        /// <param name="objMergeStrategy">Strategy for merging properties from source XML. Defaults to MissingOnly.</param>
+        public void Load(XmlNode objNode, bool blnCopy = false, XmlMergeStrategy objMergeStrategy = XmlMergeStrategy.MissingOnly)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy, objMergeStrategy));
         }
 
         /// <summary>
@@ -482,13 +483,46 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Are we loading a copy of an existing Vehicle Mod?</param>
+        /// <param name="objMergeStrategy">Strategy for merging properties from source XML. Defaults to MissingOnly.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public Task LoadAsync(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
+        public Task LoadAsync(XmlNode objNode, bool blnCopy = false, XmlMergeStrategy objMergeStrategy = XmlMergeStrategy.MissingOnly, CancellationToken token = default)
         {
-            return LoadCoreAsync(false, objNode, blnCopy, token);
+            return LoadCoreAsync(false, objNode, blnCopy, objMergeStrategy, token);
         }
 
-        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, bool blnCopy, CancellationToken token = default)
+        /// <summary>
+        /// Reload properties from the source XML file, using the specified merge strategy.
+        /// This is useful when XML data has been updated and you want to refresh the mod's properties.
+        /// Creates a minimal saved node representation and reloads with the specified strategy.
+        /// </summary>
+        /// <param name="objMergeStrategy">Strategy for merging properties from source XML. Defaults to PreferSource.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task ReloadFromSourceAsync(XmlMergeStrategy objMergeStrategy = XmlMergeStrategy.PreferSource, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Create a minimal XML node with just the essential saved data (guid, sourceid, name)
+            // This allows LoadCoreAsync to reload properties from source XML using the specified strategy
+            XmlDocument objDoc = new XmlDocument { XmlResolver = null };
+            XmlElement objSavedNode = objDoc.CreateElement("mod");
+            objSavedNode.AppendChild(objDoc.CreateElement("guid")).InnerText = InternalId;
+            objSavedNode.AppendChild(objDoc.CreateElement("sourceid")).InnerText = SourceIDString;
+            objSavedNode.AppendChild(objDoc.CreateElement("name")).InnerText = Name;
+            
+            // Reload with the specified merge strategy
+            await LoadCoreAsync(false, objSavedNode, false, objMergeStrategy, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Reload properties from the source XML file, using the specified merge strategy.
+        /// This is useful when XML data has been updated and you want to refresh the mod's properties.
+        /// </summary>
+        /// <param name="objMergeStrategy">Strategy for merging properties from source XML. Defaults to PreferSource.</param>
+        public void ReloadFromSource(XmlMergeStrategy objMergeStrategy = XmlMergeStrategy.PreferSource)
+        {
+            Utils.SafelyRunSynchronously(() => ReloadFromSourceAsync(objMergeStrategy));
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, bool blnCopy, XmlMergeStrategy objMergeStrategy = XmlMergeStrategy.MissingOnly, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (objNode == null)
@@ -511,50 +545,54 @@ namespace Chummer.Backend.Equipment
             {
                 (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
-            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
-            objNode.TryGetStringFieldQuickly("limit", ref _strLimit);
-            objNode.TryGetStringFieldQuickly("slots", ref _strSlots);
-            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
-            objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
-            objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
-            objNode.TryGetStringFieldQuickly("capacity", ref _strCapacity);
-            objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
-            objNode.TryGetStringFieldQuickly("page", ref _strPage);
-            objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
-            objNode.TryGetInt32FieldQuickly("conditionmonitor", ref _intConditionMonitor);
-            objNode.TryGetStringFieldQuickly("cost", ref _strCost);
-            objNode.TryGetStringFieldQuickly("source", ref _strSource);
-            objNode.TryGetBoolFieldQuickly("included", ref _blnIncludeInVehicle);
-            objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
+            // Get source XML node for fallback if properties are missing from saved node
+            // This ensures new properties added to XML files are picked up when loading old character files
+            // Evaluate once and reuse (objMyNode/objMyNodeAsync are already set up above)
+            XPathNavigator objSourceNode = blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
+            
+            // Load all properties with fallback to source XML using the specified merge strategy
+            objNode.TryGetStringFieldQuickly("category", ref _strCategory, objSourceNode, objMergeStrategy);
+            objNode.TryGetStringFieldQuickly("limit", ref _strLimit, objSourceNode, objMergeStrategy);
+            objNode.TryGetStringFieldQuickly("slots", ref _strSlots, objSourceNode, objMergeStrategy);
+            objNode.TryGetInt32FieldQuickly("rating", ref _intRating, objSourceNode, objMergeStrategy);
+            objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating, objSourceNode, objMergeStrategy);
+            objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel, objSourceNode, objMergeStrategy);
+            objNode.TryGetStringFieldQuickly("capacity", ref _strCapacity, objSourceNode, objMergeStrategy);
+            objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories, objSourceNode, objMergeStrategy);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage, objSourceNode, objMergeStrategy);
+            objNode.TryGetStringFieldQuickly("avail", ref _strAvail, objSourceNode, objMergeStrategy);
+            objNode.TryGetStringFieldQuickly("cost", ref _strCost, objSourceNode, objMergeStrategy);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource, objSourceNode, objMergeStrategy);
+            objNode.TryGetBoolFieldQuickly("included", ref _blnIncludeInVehicle, objSourceNode, objMergeStrategy);
+            objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped, objSourceNode, objMergeStrategy);
             if (!_blnEquipped)
             {
-                objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
+                objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped, objSourceNode, objMergeStrategy);
             }
-            objNode.TryGetDecFieldQuickly("ammobonuspercent", ref _decAmmoBonusPercent);
-            objNode.TryGetDecFieldQuickly("ammobonus", ref _decAmmoBonus);
-            objNode.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
-            objNode.TryGetStringFieldQuickly("subsystems", ref _strSubsystems);
-            objNode.TryGetBoolFieldQuickly("useownattributesforweapon", ref _blnUseOwnAttributesForWeapon);
+            objNode.TryGetDecFieldQuickly("ammobonuspercent", ref _decAmmoBonusPercent, objSourceNode, objMergeStrategy);
+            objNode.TryGetDecFieldQuickly("ammobonus", ref _decAmmoBonus, objSourceNode, objMergeStrategy);
+            objNode.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace, objSourceNode, objMergeStrategy);
+            objNode.TryGetStringFieldQuickly("subsystems", ref _strSubsystems, objSourceNode, objMergeStrategy);
+            objNode.TryGetInt32FieldQuickly("conditionmonitor", ref _intConditionMonitor, objSourceNode, objMergeStrategy);
+            objNode.TryGetBoolFieldQuickly("useownattributesforweapon", ref _blnUseOwnAttributesForWeapon, objSourceNode, objMergeStrategy);
             // Legacy Shims
             if (Name.StartsWith("Gecko Tips (Bod", StringComparison.Ordinal))
             {
                 Name = "Gecko Tips";
-                XPathNavigator objNewNode = blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
-                if (objNewNode != null)
+                if (objSourceNode != null)
                 {
-                    objNewNode.TryGetStringFieldQuickly("cost", ref _strCost);
-                    objNewNode.TryGetStringFieldQuickly("slots", ref _strSlots);
+                    objSourceNode.TryGetStringFieldQuickly("cost", ref _strCost);
+                    objSourceNode.TryGetStringFieldQuickly("slots", ref _strSlots);
                 }
             }
             if (Name.StartsWith("Gliding System (Bod", StringComparison.Ordinal))
             {
                 Name = "Gliding System";
-                XPathNavigator objNewNode = blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
-                if (objNewNode != null)
+                if (objSourceNode != null)
                 {
-                    objNewNode.TryGetStringFieldQuickly("cost", ref _strCost);
-                    objNewNode.TryGetStringFieldQuickly("slots", ref _strSlots);
-                    objNewNode.TryGetStringFieldQuickly("avail", ref _strAvail);
+                    objSourceNode.TryGetStringFieldQuickly("cost", ref _strCost);
+                    objSourceNode.TryGetStringFieldQuickly("slots", ref _strSlots);
+                    objSourceNode.TryGetStringFieldQuickly("avail", ref _strAvail);
                 }
             }
 

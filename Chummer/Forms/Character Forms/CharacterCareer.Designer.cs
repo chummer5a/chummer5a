@@ -206,6 +206,7 @@ namespace Chummer
             this.tsVehicleSensorAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsVehicleName = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsVehicleNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleModReloadFromSource = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmdVehicleAmmoExpense = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmsVehicleAmmoSingleShot = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsVehicleAmmoShortBurst = new Chummer.DpiFriendlyToolStripMenuItem();
@@ -3175,7 +3176,8 @@ namespace Chummer
             this.tsVehicleAddCyberware,
             this.tsVehicleAddSensor,
             this.tsVehicleName,
-            this.tsVehicleNotes});
+            this.tsVehicleNotes,
+            this.tsVehicleModReloadFromSource});
             this.cmsVehicle.Name = "cmsVehicle";
             this.cmsVehicle.Size = new System.Drawing.Size(193, 158);
             // 
@@ -3363,6 +3365,14 @@ namespace Chummer
             this.tsVehicleNotes.Tag = "Menu_Notes";
             this.tsVehicleNotes.Text = "&Notes";
             this.tsVehicleNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
+            // 
+            // tsVehicleModReloadFromSource
+            // 
+            this.tsVehicleModReloadFromSource.Name = "tsVehicleModReloadFromSource";
+            this.tsVehicleModReloadFromSource.Size = new System.Drawing.Size(192, 22);
+            this.tsVehicleModReloadFromSource.Tag = "Menu_ReloadFromSource";
+            this.tsVehicleModReloadFromSource.Text = "&Reload from Source XML";
+            this.tsVehicleModReloadFromSource.Click += new System.EventHandler(this.tsVehicleModReloadFromSource_Click);
             // 
             // cmdVehicleAmmoExpense
             // 
@@ -24369,6 +24379,7 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsVehicleSensorAddAsPlugin;
         private DpiFriendlyToolStripMenuItem tsVehicleName;
         private DpiFriendlyToolStripMenuItem tsVehicleNotes;
+        private DpiFriendlyToolStripMenuItem tsVehicleModReloadFromSource;
         private DpiFriendlyToolStripMenuItem tsGearAddAsPlugin;
         private DpiFriendlyToolStripMenuItem tsGearName;
         private DpiFriendlyToolStripMenuItem tsGearNotes;
