@@ -71,6 +71,7 @@ namespace Chummer.Backend.Equipment
         private string _strWeaponMountCategories = string.Empty;
         private bool _blnDiscountCost;
         private bool _blnDowngrade;
+        private bool _blnUseOwnAttributesForWeapon;
         private string _strCapacity = string.Empty;
 
         private XmlNode _objCachedMyXmlNode;
@@ -206,6 +207,7 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("limit", ref _strLimit);
             objXmlMod.TryGetStringFieldQuickly("slots", ref _strSlots);
             _blnDowngrade = objXmlMod?["downgrade"] != null;
+            objXmlMod.TryGetBoolFieldQuickly("useownattributesforweapon", ref _blnUseOwnAttributesForWeapon);
             if (!objXmlMod.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlMod.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
@@ -459,6 +461,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("useownattributesforweapon", _blnUseOwnAttributesForWeapon.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteEndElement();
@@ -531,6 +534,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("ammobonus", ref _decAmmoBonus);
             objNode.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
             objNode.TryGetStringFieldQuickly("subsystems", ref _strSubsystems);
+            objNode.TryGetBoolFieldQuickly("useownattributesforweapon", ref _blnUseOwnAttributesForWeapon);
             // Legacy Shims
             if (Name.StartsWith("Gecko Tips (Bod", StringComparison.Ordinal))
             {
@@ -1526,6 +1530,11 @@ namespace Chummer.Backend.Equipment
         /// Whether the Vehicle Mod is a downgrade for drone attributes
         /// </summary>
         public bool Downgrade => _blnDowngrade;
+
+        /// <summary>
+        /// Returns true if this Vehicle Mod should use its own attributes instead of the vehicle's Pilot Rating for Agility-based tests (R5, p125)
+        /// </summary>
+        public bool UseOwnAttributesForWeapon => _blnUseOwnAttributesForWeapon;
 
         /// <summary>
         /// Bonus/Penalty to the parent vehicle that this mod provides.

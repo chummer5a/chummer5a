@@ -13124,6 +13124,7 @@
       <slots>1</slots>
       <capacity>15</capacity>
       <conditionmonitor>1</conditionmonitor>
+      <useownattributesforweapon>True</useownattributesforweapon>
       <optionaldrone />
       <required>
         <vehicledetails>

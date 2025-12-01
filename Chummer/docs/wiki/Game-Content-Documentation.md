@@ -11,6 +11,7 @@ This section contains documentation about Shadowrun game content and how it's im
 - **[Gear](Gear)** - Equipment, weapons, and general gear
 - **[Spells](Spells)** - Magic spells and traditions
 - **[Metatypes](Metatypes)** - Character races and metatypes
+- **[Vehicles](Vehicles)** - Vehicles, drones, and vehicle modifications
 
 ### Advanced Content
 - **[Books](Books)** - Source books and references

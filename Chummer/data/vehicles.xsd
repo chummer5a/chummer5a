@@ -299,6 +299,7 @@
         <xs:element name="conditionmonitor" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="downgrade" minOccurs="0" maxOccurs="1" />
         <xs:element name="firewall" type="xs:integer" minOccurs="0" maxOccurs="1" />
+        <xs:element name="useownattributesforweapon" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="limit" type="xs:string" minOccurs="0" maxOccurs="1" />

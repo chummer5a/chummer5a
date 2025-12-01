@@ -9052,7 +9052,30 @@ namespace Chummer.Backend.Equipment
 
                     if (ParentVehicle != null)
                     {
+                        // If weapon is in a drone arm and the test would normally be Agility-based,
+                        // use the arm's Agility instead of the drone's Pilot Rating (R5, p125)
                         intDicePool = ParentVehicle.Pilot;
+                        if (!string.IsNullOrEmpty(ParentID))
+                        {
+                            Skill objSkill = Skill;
+                            if (objSkill?.Attribute == "AGI")
+                            {
+                                Cyberware objAttributeSource = _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID, out VehicleMod objVehicleMod);
+                                if (objVehicleMod?.UseOwnAttributesForWeapon == true && objAttributeSource != null)
+                                {
+                                    while (objAttributeSource != null
+                                           && objAttributeSource.GetAttributeTotalValue("AGI") == 0)
+                                    {
+                                        objAttributeSource = objAttributeSource.Parent;
+                                    }
+
+                                    if (objAttributeSource != null)
+                                    {
+                                        intDicePool = objAttributeSource.GetAttributeTotalValue("AGI");
+                                    }
+                                }
+                            }
+                        }
                         if (objAutosoft == null)
                         {
                             objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(
@@ -9436,7 +9459,30 @@ namespace Chummer.Backend.Equipment
                     }
                     if (ParentVehicle != null)
                     {
+                        // If weapon is in a drone arm and the test would normally be Agility-based,
+                        // use the arm's Agility instead of the drone's Pilot Rating (R5, p125)
                         intDicePool = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
+                        if (!string.IsNullOrEmpty(ParentID))
+                        {
+                            Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+                            if (objSkill != null && await objSkill.GetAttributeAsync(token).ConfigureAwait(false) == "AGI")
+                            {
+                                (Cyberware objAttributeSource, VehicleMod objVehicleMod) = await _objCharacter.Vehicles.FindVehicleCyberwareAsync(x => x.InternalId == ParentID, token).ConfigureAwait(false);
+                                if (objVehicleMod?.UseOwnAttributesForWeapon == true && objAttributeSource != null)
+                                {
+                                    while (objAttributeSource != null
+                                           && await objAttributeSource.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false) == 0)
+                                    {
+                                        objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
+                                    }
+
+                                    if (objAttributeSource != null)
+                                    {
+                                        intDicePool = await objAttributeSource.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false);
+                                    }
+                                }
+                            }
+                        }
                         if (objAutosoft == null)
                         {
                             objAutosoft = await ParentVehicle.GearChildren.DeepFirstOrDefaultAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false),
