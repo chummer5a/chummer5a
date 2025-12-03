@@ -7335,6 +7335,14 @@
       <text>Select a Talent</text>
     </string>
     <string>
+      <key>Message_Metatype_NoTalentChoices</key>
+      <text>No valid Talent choices are available for the selected Metatype and Talent priority combination. This is likely due to customdata restrictions that disallow all available talent options. Please select a different Metatype or Talent priority, or review your customdata settings.</text>
+    </string>
+    <string>
+      <key>MessageTitle_Metatype_NoTalentChoices</key>
+      <text>No Talent Choices Available</text>
+    </string>
+    <string>
       <key>Message_Metatype_SelectSkill</key>
       <text>You must select a Skill/Skill Group before continuing.</text>
     </string>

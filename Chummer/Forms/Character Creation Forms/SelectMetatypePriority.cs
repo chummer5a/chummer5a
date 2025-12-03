@@ -606,8 +606,19 @@ namespace Chummer
                 await cboSkill3.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                 await lblMetatypeSkillSelection.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                 string strPriorityTable = (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetPriorityTableAsync(token).ConfigureAwait(false)).CleanXPath();
-                string strSelectedTalents = await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
-                                                            .ConfigureAwait(false);
+                string strSelectedTalents = await cboTalents.DoThreadSafeFuncAsync(x =>
+                {
+                    try
+                    {
+                        if (x.Items.Count > 0 && x.SelectedIndex >= 0)
+                            return x.SelectedValue?.ToString();
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        // CurrencyManager is out of sync with Items collection, likely due to DataSource changes
+                    }
+                    return null;
+                }, token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strSelectedTalents))
                 {
                     XPathNavigator xmlTalentNode = null;
@@ -1340,6 +1351,34 @@ namespace Chummer
                     }
                 }
 
+                // Check if there are any valid talent choices available
+                int intTalentCount = await cboTalents.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false);
+                string strSelectedTalentValue = await cboTalents.DoThreadSafeFuncAsync(x =>
+                {
+                    try
+                    {
+                        if (x.Items.Count > 0 && x.SelectedIndex >= 0)
+                            return x.SelectedValue?.ToString();
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        // CurrencyManager is out of sync with Items collection, likely due to DataSource changes
+                    }
+                    return null;
+                }, token).ConfigureAwait(false);
+                // If count is 0 or if the selected value is empty (error message item), show error
+                if (intTalentCount == 0 || string.IsNullOrEmpty(strSelectedTalentValue))
+                {
+                    await Program.ShowScrollableMessageBoxAsync(
+                        this,
+                        await LanguageManager.GetStringAsync("Message_Metatype_NoTalentChoices", token: token)
+                            .ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_Metatype_NoTalentChoices", token: token)
+                            .ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning, token: token).ConfigureAwait(false);
+                    return;
+                }
+
                 if (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == -1)
                 {
                     await Program.ShowScrollableMessageBoxAsync(
@@ -1607,7 +1646,19 @@ namespace Chummer
                         await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token)
                             .ConfigureAwait(false), token).ConfigureAwait(false);
                     await _objCharacter.SetTalentPriorityAsync(
-                        await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token)
+                        await cboTalents.DoThreadSafeFuncAsync(x =>
+                        {
+                            try
+                            {
+                                if (x.Items.Count > 0 && x.SelectedIndex >= 0)
+                                    return x.SelectedValue?.ToString() ?? string.Empty;
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                // CurrencyManager is out of sync with Items collection, likely due to DataSource changes
+                            }
+                            return string.Empty;
+                        }, token)
                             .ConfigureAwait(false), token).ConfigureAwait(false);
                     await _objCharacter.PriorityBonusSkillList.ClearAsync(token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strSkill1))
@@ -2560,7 +2611,24 @@ namespace Chummer
                     }
                     else
                     {
-                        await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                        // Only enable OK button if there are valid talent choices (not just the error message)
+                        bool blnHasValidChoice = await cboTalents.DoThreadSafeFuncAsync(x =>
+                        {
+                            try
+                            {
+                                if (x.Items.Count > 0 && x.SelectedIndex >= 0)
+                                {
+                                    string strValue = x.SelectedValue?.ToString();
+                                    return !string.IsNullOrEmpty(strValue);
+                                }
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                // CurrencyManager is out of sync with Items collection
+                            }
+                            return false;
+                        }, token).ConfigureAwait(false);
+                        await cmdOK.DoThreadSafeAsync(x => x.Enabled = blnHasValidChoice, token).ConfigureAwait(false);
                     }
 
                     string strMin = objXmlMetavariant.SelectSingleNodeAndCacheExpression("bodmin", token)?.Value
@@ -2672,7 +2740,19 @@ namespace Chummer
                         {
                             XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode(
                                 "talents/talent[value = "
-                                + (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + "]");
+                                + (await cboTalents.DoThreadSafeFuncAsync(x =>
+                                {
+                                    try
+                                    {
+                                        if (x.Items.Count > 0 && x.SelectedIndex >= 0)
+                                            return x.SelectedValue?.ToString();
+                                    }
+                                    catch (IndexOutOfRangeException)
+                                    {
+                                        // CurrencyManager is out of sync with Items collection, likely due to DataSource changes
+                                    }
+                                    return null;
+                                }, token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + "]");
                             if (objXmlTalentsNode != null
                                 && int.TryParse(
                                     objXmlTalentsNode.SelectSingleNodeAndCacheExpression("specialattribpoints", token)?.Value, out int intTemp))
@@ -2744,7 +2824,24 @@ namespace Chummer
                 }
                 else if (objXmlMetatype != null)
                 {
-                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                    // Only enable OK button if there are valid talent choices (not just the error message)
+                    bool blnHasValidChoice = await cboTalents.DoThreadSafeFuncAsync(x =>
+                    {
+                        try
+                        {
+                            if (x.Items.Count > 0 && x.SelectedIndex >= 0)
+                            {
+                                string strValue = x.SelectedValue?.ToString();
+                                return !string.IsNullOrEmpty(strValue);
+                            }
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+                            // CurrencyManager is out of sync with Items collection
+                        }
+                        return false;
+                    }, token).ConfigureAwait(false);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = blnHasValidChoice, token).ConfigureAwait(false);
                     string strMin = objXmlMetatype.SelectSingleNodeAndCacheExpression("bodmin", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strMax = objXmlMetatype.SelectSingleNodeAndCacheExpression("bodmax", token)?.Value
@@ -2913,7 +3010,19 @@ namespace Chummer
                         {
                             XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode(
                                 "talents/talent[value = "
-                                + (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + "]");
+                                + (await cboTalents.DoThreadSafeFuncAsync(x =>
+                                {
+                                    try
+                                    {
+                                        if (x.Items.Count > 0 && x.SelectedIndex >= 0)
+                                            return x.SelectedValue?.ToString();
+                                    }
+                                    catch (IndexOutOfRangeException)
+                                    {
+                                        // CurrencyManager is out of sync with Items collection, likely due to DataSource changes
+                                    }
+                                    return null;
+                                }, token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + "]");
                             if (objXmlTalentsNode != null
                                 && int.TryParse(
                                     objXmlTalentsNode.SelectSingleNodeAndCacheExpression(
@@ -2950,7 +3059,19 @@ namespace Chummer
                         {
                             XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode(
                                 "talents/talent[value = "
-                                + (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + "]");
+                                + (await cboTalents.DoThreadSafeFuncAsync(x =>
+                                {
+                                    try
+                                    {
+                                        if (x.Items.Count > 0 && x.SelectedIndex >= 0)
+                                            return x.SelectedValue?.ToString();
+                                    }
+                                    catch (IndexOutOfRangeException)
+                                    {
+                                        // CurrencyManager is out of sync with Items collection, likely due to DataSource changes
+                                    }
+                                    return null;
+                                }, token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + "]");
                             if (objXmlTalentsNode != null
                                 && int.TryParse(
                                     objXmlTalentsNode.SelectSingleNodeAndCacheExpression("specialattribpoints", token)
@@ -3172,10 +3293,28 @@ namespace Chummer
                     }
 
                     lstTalent.Sort(CompareListItems.CompareNames);
+                    // If there are no valid talent choices, add an error message item
+                    if (lstTalent.Count == 0)
+                    {
+                        lstTalent.Add(new ListItem(
+                            string.Empty,
+                            await LanguageManager.GetStringAsync("Message_Metatype_NoTalentChoices", token: token).ConfigureAwait(false)));
+                    }
                     int intOldSelectedIndex = await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false);
                     int intOldDataSourceSize = await cboTalents.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false);
                     await cboTalents.PopulateWithListItemsAsync(lstTalent, token).ConfigureAwait(false);
-                    if (intOldDataSourceSize == await cboTalents.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false))
+                    int intNewTalentCount = await cboTalents.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false);
+                    // If we added an error message item, select it and disable the combo box
+                    bool blnIsErrorMessage = intNewTalentCount == 1 && lstTalent.Count == 1 && string.IsNullOrEmpty(lstTalent[0].Value?.ToString());
+                    if (blnIsErrorMessage)
+                    {
+                        await cboTalents.DoThreadSafeAsync(x =>
+                        {
+                            x.SelectedIndex = 0;
+                            x.Enabled = false;
+                        }, token).ConfigureAwait(false);
+                    }
+                    else if (intOldDataSourceSize == intNewTalentCount)
                     {
                         Interlocked.Increment(ref _intLoading);
                         try
@@ -3189,7 +3328,12 @@ namespace Chummer
                         }
                     }
 
-                    await cboTalents.DoThreadSafeAsync(x => x.Enabled = x.Items.Count > 1, token).ConfigureAwait(false);
+                    if (!blnIsErrorMessage)
+                    {
+                        await cboTalents.DoThreadSafeAsync(x => x.Enabled = x.Items.Count > 1, token).ConfigureAwait(false);
+                    }
+                    // Disable OK button if there are no valid talent choices (error message item doesn't count)
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = !blnIsErrorMessage && intNewTalentCount > 0, token).ConfigureAwait(false);
                 }
             }
         }
