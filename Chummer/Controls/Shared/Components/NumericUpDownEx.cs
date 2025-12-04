@@ -508,13 +508,16 @@ namespace Chummer
         private int _intValue;
         private int _intMinimum;
         private int _intMaximum;
-        private readonly object _objIntValueLock = new object();
+        // Locks to ensure cached int values and decimal values are always in sync
+        private readonly object _objValueLock = new object();
+        private readonly object _objMinimumLock = new object();
+        private readonly object _objMaximumLock = new object();
 
         protected override void OnValueChanged(EventArgs e)
         {
             using (CursorWait.New(this))
             {
-                lock (_objIntValueLock) // Lock ensures synchronicity
+                lock (_objValueLock)
                     _intValue = Math.Min(Math.Max(Value, int.MinValue), int.MaxValue).ToInt32();
                 base.OnValueChanged(e);
             }
@@ -530,15 +533,40 @@ namespace Chummer
         {
             get
             {
-                lock (_objIntValueLock) // Lock ensures synchronicity
+                lock (_objValueLock)
                     return _intValue;
             }
             set
             {
                 // Ensure value is within bounds before setting
                 // Use cached integer values to avoid overflow when Maximum/Minimum are outside Int32 range
-                int intAdjustedValue = Math.Max(Math.Min(value, _intMaximum), _intMinimum);
-                Value = intAdjustedValue;
+                int intAdjustedValue = Math.Max(Math.Min(value, MaximumAsInt), MinimumAsInt);
+                Value = value;
+            }
+        }
+
+        /// <summary>
+        /// Current value of the spinbox. Defined separately
+        /// </summary>
+        public new decimal Value
+        {
+            get
+            {
+                lock (_objValueLock)
+                    return base.Value;
+            }
+            set
+            {
+                lock (_objValueLock)
+                {
+                    decimal decMaximum = Maximum;
+                    if (value > decMaximum)
+                        value = decMaximum;
+                    decimal decMinimum = Minimum;
+                    if (value < decMinimum)
+                        value = decMinimum;
+                    base.Value = value;
+                }
             }
         }
 
@@ -550,7 +578,11 @@ namespace Chummer
         [Browsable(false)]
         public int MinimumAsInt
         {
-            get => _intMinimum;
+            get
+            {
+                lock (_objMinimumLock)
+                    return _intMinimum;
+            }
             set => Minimum = value;
         }
 
@@ -559,13 +591,20 @@ namespace Chummer
         /// </summary>
         public new decimal Minimum
         {
-            get => base.Minimum;
+            get
+            {
+                lock (_objMinimumLock)
+                    return base.Minimum;
+            }
             set
             {
-                if (value == base.Minimum)
-                    return;
-                _intMinimum = Math.Min(Math.Max(value, int.MinValue), int.MaxValue).ToInt32();
-                base.Minimum = value;
+                lock (_objMinimumLock)
+                {
+                    if (value == base.Minimum)
+                        return;
+                    _intMinimum = Math.Min(Math.Max(value, int.MinValue), int.MaxValue).ToInt32();
+                    base.Minimum = value;
+                }
             }
         }
 
@@ -577,7 +616,11 @@ namespace Chummer
         [Browsable(false)]
         public int MaximumAsInt
         {
-            get => _intMaximum;
+            get
+            {
+                lock (_objMaximumLock)
+                    return _intMaximum;
+            }
             set => Maximum = value;
         }
 
@@ -586,13 +629,20 @@ namespace Chummer
         /// </summary>
         public new decimal Maximum
         {
-            get => base.Maximum;
+            get
+            {
+                lock (_objMaximumLock)
+                    return base.Maximum;
+            }
             set
             {
-                if (value == base.Maximum)
-                    return;
-                _intMaximum = Math.Min(Math.Max(value, int.MinValue), int.MaxValue).ToInt32();
-                base.Maximum = value;
+                lock (_objMaximumLock)
+                {
+                    if (value == base.Maximum)
+                        return;
+                    _intMaximum = Math.Min(Math.Max(value, int.MinValue), int.MaxValue).ToInt32();
+                    base.Maximum = value;
+                }
             }
         }
 
@@ -690,87 +740,5 @@ namespace Chummer
 
         #endregion UpDownButtons visibility management
 
-        #region Safe Value Setting Methods
-        #region Integer input
-        /// <summary>
-        /// Safely sets the value, ensuring it stays within the minimum and maximum bounds.
-        /// </summary>
-        /// <param name="value">The value to set</param>
-        public void SetValueSafely(int value)
-        {
-            int intAdjustedValue = Math.Max(Math.Min(value, (int)Maximum), (int)Minimum);
-            Value = intAdjustedValue;
-        }
-
-        /// <summary>
-        /// Safely sets the value with a known maximum, ensuring it stays within the minimum and maximum bounds.
-        /// </summary>
-        /// <param name="value">The value to set</param>
-        /// <param name="maximum">The maximum value to enforce</param>
-        public void SetValueSafely(int value, int maximum)
-        {
-            int intAdjustedValue = Math.Max(Math.Min(value, maximum), (int)Minimum);
-            Value = intAdjustedValue;
-        }
-
-        /// <summary>
-        /// Safely adjusts the value by a given amount, ensuring it stays within the minimum and maximum bounds.
-        /// </summary>
-        /// <param name="adjustment">The amount to adjust the value by (can be negative)</param>
-        public void AdjustValueSafely(int adjustment)
-        {
-            decimal newValue = Math.Max(Value - adjustment, 0);
-            if (newValue > Maximum)
-            {
-                newValue = Maximum;
-            }
-            if (newValue < Minimum)
-            {
-                newValue = Minimum;
-            }
-            Value = newValue;
-        }
-        #endregion
-        #region Decimal input
-        /// <summary>
-        /// Safely sets the value, ensuring it stays within the minimum and maximum bounds.
-        /// </summary>
-        /// <param name="value">The value to set</param>
-        public void SetValueSafely(decimal value)
-        {
-            decimal decAdjustedValue = Math.Max(Math.Min(value, Maximum), Minimum);
-            Value = decAdjustedValue;
-        }
-
-        /// <summary>
-        /// Safely sets the value with a known maximum, ensuring it stays within the minimum and maximum bounds.
-        /// </summary>
-        /// <param name="value">The value to set</param>
-        /// <param name="maximum">The maximum value to enforce</param>
-        public void SetValueSafely(decimal value, decimal maximum)
-        {
-            decimal decAdjustedValue = Math.Max(Math.Min(value, maximum), Minimum);
-            Value = decAdjustedValue;
-        }
-
-        /// <summary>
-        /// Safely adjusts the value by a given amount, ensuring it stays within the minimum and maximum bounds.
-        /// </summary>
-        /// <param name="adjustment">The amount to adjust the value by (can be negative)</param>
-        public void AdjustValueSafely(decimal adjustment)
-        {
-            decimal newValue = Math.Max(Value - adjustment, 0);
-            if (newValue > Maximum)
-            {
-                newValue = Maximum;
-            }
-            if (newValue < Minimum)
-            {
-                newValue = Minimum;
-            }
-            Value = newValue;
-        }
-        #endregion
-        #endregion Safe Value Setting Methods
     }
 }

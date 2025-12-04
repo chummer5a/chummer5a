@@ -777,9 +777,9 @@ namespace Chummer
                     if (decMaximumCapacity < decMinimumCapacity)
                     {
                         if (sender == nudCapacityFilterMaximum)
-                            await nudCapacityFilterMinimum.DoThreadSafeAsync(x => x.SetValueSafely(decMaximumCapacity), _objGenericToken).ConfigureAwait(false);
+                            await nudCapacityFilterMinimum.DoThreadSafeAsync(x => x.Value = decMaximumCapacity, _objGenericToken).ConfigureAwait(false);
                         else
-                            await nudCapacityFilterMaximum.DoThreadSafeAsync(x => x.SetValueSafely(decMinimumCapacity), _objGenericToken).ConfigureAwait(false);
+                            await nudCapacityFilterMaximum.DoThreadSafeAsync(x => x.Value = decMinimumCapacity, _objGenericToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -864,9 +864,9 @@ namespace Chummer
                     if (decMaximumEssence < decMinimumEssence)
                     {
                         if (sender == nudMaximumEssence)
-                            await nudMinimumEssence.DoThreadSafeAsync(x => x.SetValueSafely(decMaximumEssence), _objGenericToken).ConfigureAwait(false);
+                            await nudMinimumEssence.DoThreadSafeAsync(x => x.Value = decMaximumEssence, _objGenericToken).ConfigureAwait(false);
                         else
-                            await nudMaximumEssence.DoThreadSafeAsync(x => x.SetValueSafely(decMinimumEssence), _objGenericToken).ConfigureAwait(false);
+                            await nudMaximumEssence.DoThreadSafeAsync(x => x.Value = decMinimumEssence, _objGenericToken).ConfigureAwait(false);
                     }
                 }
 
@@ -889,9 +889,9 @@ namespace Chummer
                     if (decMaximumCost < decMinimumCost)
                     {
                         if (sender == nudMaximumCost)
-                            await nudMinimumCost.DoThreadSafeAsync(x => x.SetValueSafely(decMaximumCost), _objGenericToken).ConfigureAwait(false);
+                            await nudMinimumCost.DoThreadSafeAsync(x => x.Value = decMaximumCost, _objGenericToken).ConfigureAwait(false);
                         else
-                            await nudMaximumCost.DoThreadSafeAsync(x => x.SetValueSafely(decMinimumCost), _objGenericToken).ConfigureAwait(false);
+                            await nudMaximumCost.DoThreadSafeAsync(x => x.Value = decMinimumCost, _objGenericToken).ConfigureAwait(false);
                     }
                 }
 
@@ -1055,7 +1055,7 @@ namespace Chummer
                     decimal decCurrentEssence = await _objCharacter.EssenceAsync(token: _objGenericToken).ConfigureAwait(false);
                     await nudMaximumEssence.DoThreadSafeAsync(x => 
                     {
-                        x.SetValueSafely((int)decCurrentEssence);
+                        x.Value = decCurrentEssence;
                         x.Enabled = false;
                     }, _objGenericToken).ConfigureAwait(false);
                 }
@@ -1082,7 +1082,7 @@ namespace Chummer
                     decimal decCurrentNuyen = await _objCharacter.GetAvailableNuyenAsync(token: _objGenericToken).ConfigureAwait(false);
                     await nudMaximumCost.DoThreadSafeAsync(x => 
                     {
-                        x.SetValueSafely((int)decCurrentNuyen);
+                        x.Value = decCurrentNuyen;
                         x.Enabled = false;
                     }, _objGenericToken).ConfigureAwait(false);
                 }
