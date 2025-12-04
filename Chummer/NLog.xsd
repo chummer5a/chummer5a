@@ -3139,7 +3139,7 @@
         </xs:attribute>
         <xs:attribute name="formatMessage" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to perform layout calculation.</xs:documentation>
+            <xs:documentation>Indicates whether to render P:NLog.Targets.TargetWithLayout.Layout for LogEvent</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
