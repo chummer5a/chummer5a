@@ -211,6 +211,20 @@ namespace Chummer
                         await chkPrototypeTranshuman.DoThreadSafeAsync(x => x.Visible = false, token: _objGenericToken).ConfigureAwait(false);
                 }
 
+                CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false);
+                await nudMinimumEssence.RegisterOneWayAsyncDataBindingAsync((x, y) => x.DecimalPlaces = y, objSettings,
+                    nameof(CharacterSettings.EssenceDecimals), x => x.GetEssenceDecimalsAsync(_objGenericToken), _objGenericToken).ConfigureAwait(false);
+                await nudMaximumEssence.RegisterOneWayAsyncDataBindingAsync((x, y) => x.DecimalPlaces = y, objSettings,
+                    nameof(CharacterSettings.EssenceDecimals), x => x.GetEssenceDecimalsAsync(_objGenericToken), _objGenericToken).ConfigureAwait(false);
+                await nudExactEssence.RegisterOneWayAsyncDataBindingAsync((x, y) => x.DecimalPlaces = y, objSettings,
+                    nameof(CharacterSettings.EssenceDecimals), x => x.GetEssenceDecimalsAsync(_objGenericToken), _objGenericToken).ConfigureAwait(false);
+                await nudMinimumCost.RegisterOneWayAsyncDataBindingAsync((x, y) => x.DecimalPlaces = y, objSettings,
+                    nameof(CharacterSettings.MaxNuyenDecimals), x => x.GetMaxNuyenDecimalsAsync(_objGenericToken), _objGenericToken).ConfigureAwait(false);
+                await nudMaximumCost.RegisterOneWayAsyncDataBindingAsync((x, y) => x.DecimalPlaces = y, objSettings,
+                    nameof(CharacterSettings.MaxNuyenDecimals), x => x.GetMaxNuyenDecimalsAsync(_objGenericToken), _objGenericToken).ConfigureAwait(false);
+                await nudExactCost.RegisterOneWayAsyncDataBindingAsync((x, y) => x.DecimalPlaces = y, objSettings,
+                    nameof(CharacterSettings.MaxNuyenDecimals), x => x.GetMaxNuyenDecimalsAsync(_objGenericToken), _objGenericToken).ConfigureAwait(false);
+
                 if (!string.IsNullOrEmpty(DefaultSearchText))
                 {
                     await txtSearch.DoThreadSafeAsync(x =>
@@ -697,15 +711,13 @@ namespace Chummer
 
         private async Task UpdateFilterModeUI(CancellationToken token = default)
         {
-            bool blnFilterCapacity = !_blnFilterEssence;
+            token.ThrowIfCancellationRequested();
 
             // Update groupbox text
-            await gpbEssenceFilter.DoThreadSafeAsync(x =>
-            {
-                x.Text = _blnFilterEssence
-                    ? LanguageManager.GetString("Label_FilterByEssence", GlobalSettings.Language)
-                    : LanguageManager.GetString("Label_FilterByCapacity", GlobalSettings.Language);
-            }, token).ConfigureAwait(false);
+            string strEssenceFilterText = await LanguageManager.GetStringAsync(_blnFilterEssence
+                    ? "Label_FilterByEssence"
+                    : "Label_FilterByCapacity", token: token).ConfigureAwait(false);
+            await gpbEssenceFilter.DoThreadSafeAsync(x => x.Text = strEssenceFilterText, token).ConfigureAwait(false);
 
             // Show/hide essence controls
             await lblMinimumEssence.DoThreadSafeAsync(x => x.Visible = _blnFilterEssence, token).ConfigureAwait(false);
@@ -717,6 +729,7 @@ namespace Chummer
             await chkUseCurrentEssence.DoThreadSafeAsync(x => x.Visible = _blnFilterEssence, token).ConfigureAwait(false);
 
             // Show/hide capacity controls
+            bool blnFilterCapacity = !_blnFilterEssence;
             await lblCapacityFilterMinimum.DoThreadSafeAsync(x => x.Visible = blnFilterCapacity, token).ConfigureAwait(false);
             await lblCapacityFilterMaximum.DoThreadSafeAsync(x => x.Visible = blnFilterCapacity, token).ConfigureAwait(false);
             await lblCapacityFilterExact.DoThreadSafeAsync(x => x.Visible = blnFilterCapacity, token).ConfigureAwait(false);
@@ -730,12 +743,11 @@ namespace Chummer
 
         private async void CapacityCostFilter(object sender, EventArgs e)
         {
-            if (_intLoading > 0)
+            if (Interlocked.CompareExchange(ref _intLoading, 1, 0) > 0)
                 return;
 
             try
             {
-                _intLoading = 1;
                 await nudCapacityFilterMinimum.DoThreadSafeAsync(x =>
                 {
                     if (string.IsNullOrWhiteSpace(x.Text))
@@ -796,12 +808,11 @@ namespace Chummer
 
         private async void EssenceCostFilter(object sender, EventArgs e)
         {
-            if (_intLoading > 0)
+            if (Interlocked.CompareExchange(ref _intLoading, 1, 0) > 0)
                 return;
 
             try
             {
-                _intLoading = 1;
                 await nudMinimumEssence.DoThreadSafeAsync(x =>
                 {
                     if (string.IsNullOrWhiteSpace(x.Text))
@@ -854,6 +865,7 @@ namespace Chummer
                 {
                     await nudMinimumEssence.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
                     await nudMaximumEssence.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+                    await chkUseCurrentEssence.DoThreadSafeAsync(x => x.Checked = false, _objGenericToken).ConfigureAwait(false);
                 }
                 // If range values are specified, clear exact essence
                 else if (decMinimumEssence > 0 || decMaximumEssence > 0)
@@ -879,6 +891,7 @@ namespace Chummer
                 {
                     await nudMinimumCost.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
                     await nudMaximumCost.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+                    await chkUseCurrentNuyen.DoThreadSafeAsync(x => x.Checked = false, _objGenericToken).ConfigureAwait(false);
                 }
                 // If range values are specified, clear exact cost
                 else if (decMinimumCost > 0 || decMaximumCost > 0)
@@ -1714,23 +1727,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strSearch))
                     sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
 
-                // Note: Essence and Capacity filtering are handled in post-processing due to dynamic expressions like Rating * 0.1 and FixedValues()
-
-                // Apply cost filtering
-                decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                
-                if (decExactCost > 0)
-                {
-                    // Exact cost filtering
-                    sbdFilter.Append(" and (cost = ", decExactCost.ToString(GlobalSettings.InvariantCultureInfo), ')');
-                }
-                else if (decMinimumCost != 0 || decMaximumCost != 0)
-                {
-                    // Range cost filtering
-                    sbdFilter.Append(" and ", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"));
-                }
+                // Note: Essence, Nuyen, and Capacity filtering are handled in post-processing due to dynamic expressions like Rating * 0.1 and FixedValues()
 
                 if (sbdFilter.Length > 0)
                     strFilter = sbdFilter.Insert(0, '[').Append(']').ToString();
@@ -1758,22 +1755,24 @@ namespace Chummer
                     bool blnHideOverAvailLimit = await chkHideOverAvailLimit
                                                        .DoThreadSafeFuncAsync(x => x.Checked, token: token)
                                                        .ConfigureAwait(false);
-                    bool blnFree = await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token: token)
-                                                .ConfigureAwait(false);
-                    decimal decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
-                                                       .ConfigureAwait(false);
-                    decimal decNuyen = blnFree ? decimal.MaxValue : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
-
                     // Retrieve filter values once before the loop to avoid repeated UI thread calls
                     // Use the cached filter mode flag instead of reading from radio buttons
                     bool blnFilterEssence = _blnFilterEssence;
                     bool blnFilterCapacity = !_blnFilterEssence;
-                    decimal decMinimumEssence = await nudMinimumEssence.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                    decimal decMaximumEssence = await nudMaximumEssence.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                    decimal decExactEssence = await nudExactEssence.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                    decimal decMinimumCapacity = await nudCapacityFilterMinimum.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                    decimal decMaximumCapacity = await nudCapacityFilterMaximum.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                    decimal decExactCapacity = await nudCapacityFilterExact.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                    decimal decMinimumEssence = blnFilterEssence ? await nudMinimumEssence.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) : 0;
+                    decimal decMaximumEssence = blnFilterEssence ? await nudMaximumEssence.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) : 0;
+                    decimal decExactEssence = blnFilterEssence ? await nudExactEssence.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) : 0;
+                    decimal decMinimumCapacity = blnFilterCapacity ? await nudCapacityFilterMinimum.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) : 0;
+                    decimal decMaximumCapacity = blnFilterCapacity ? await nudCapacityFilterMaximum.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) : 0;
+                    decimal decExactCapacity = blnFilterCapacity ? await nudCapacityFilterExact.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) : 0;
+                    bool blnFree = await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token: token)
+                                                .ConfigureAwait(false);
+                    decimal decMarkup = blnFree ? 0 : await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
+                                                       .ConfigureAwait(false) / 100.0m;
+                    decimal decMinimumCost = blnFree ? 0 : await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                    decimal decMaximumCost = blnFree ? 0 : await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                    decimal decExactCost = blnFree ? 0 : await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                    bool blnBlackMarket = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
 
                     foreach (XPathNavigator xmlCyberware in xmlIterator)
                     {
@@ -1945,7 +1944,69 @@ namespace Chummer
                             continue;
                         }
 
+                        // Apply cost filtering
+                        if (!blnFree && (decExactCost > 0 || decMinimumCost != 0 || decMaximumCost != 0))
+                        {
+                            string strCost = xmlCyberware.SelectSingleNodeAndCacheExpression("cost", token: token)?.Value.ProcessFixedValuesString(intMinRating) ?? "0";
 
+                            decimal decCost = 0;
+                            if (!string.IsNullOrEmpty(strCost))
+                            {
+                                bool blnIsGeneware = xmlCyberware.SelectSingleNodeAndCacheExpression("isgeneware", token) != null && xmlCyberware.SelectSingleNodeAndCacheExpression("isgeneware", token)?.Value != bool.FalseString;
+
+                                // Place the Genetech cost multiplier in a variable that can be safely modified.
+                                decimal decGenetechCostModifier = 1;
+                                // Genetech cost modifier only applies to Genetech.
+                                if (blnIsGeneware)
+                                    decGenetechCostModifier = GenetechCostMultiplier;
+
+                                if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decCost))
+                                {
+                                    bool blnIsSuccess;
+                                    (decCost, blnIsSuccess)
+                                        = await ProcessInvariantXPathExpression(xmlCyberware, strCost, intMinRating, intMinRating, token).ConfigureAwait(false);
+                                    if (blnIsSuccess)
+                                    {
+                                        decCost *= _decCostMultiplier * decGenetechCostModifier;
+
+                                        if (blnBlackMarket)
+                                        {
+                                            decCost *= 0.9m;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    decCost *= _decCostMultiplier * decGenetechCostModifier;
+
+                                    if (blnBlackMarket)
+                                    {
+                                        decCost *= 0.9m;
+                                    }
+                                }
+                            }
+
+                            // Apply essence discount if applicable
+                            if (decCost != 0 && decMarkup != 0)
+                            {
+                                decCost *= 1.0m + decMarkup;
+                            }
+
+                            if (decExactCost > 0)
+                            {
+                                // Exact essence filtering (use larger epsilon because of potential fuzziness around markups)
+                                if (Math.Abs(decCost - decExactCost) > DecimalExtensions.DoubleEpsilon)
+                                {
+                                    continue;
+                                }
+                            }
+                            // Range cost filtering
+                            else if ((decMinimumCost != 0 || decMaximumCost != 0)
+                                     && (decCost < decMinimumCost || decCost > decMaximumCost))
+                            {
+                                continue;
+                            }
+                        }
 
                         // Apply essence filtering
                         if (blnFilterEssence && (decExactEssence > 0 || decMinimumEssence != 0 || decMaximumEssence != 0))
@@ -1968,19 +2029,17 @@ namespace Chummer
 
                             if (decExactEssence > 0)
                             {
-                                // Exact essence filtering
-                                if (Math.Abs(decEssenceCost - decExactEssence) > 0.001m) // Use small tolerance for floating point comparison
+                                // Exact essence filtering (use epsilon in case of non-visible Essence rounding in the character's settings)
+                                if (Math.Abs(decEssenceCost - decExactEssence) > DecimalExtensions.Epsilon)
                                 {
                                     continue;
                                 }
                             }
-                            else if (decMinimumEssence != 0 || decMaximumEssence != 0)
+                            // Range essence filtering
+                            else if ((decMinimumEssence != 0 || decMaximumEssence != 0)
+                                        && (decEssenceCost < decMinimumEssence || decEssenceCost > decMaximumEssence))
                             {
-                                // Range essence filtering
-                                if (decEssenceCost < decMinimumEssence || decEssenceCost > decMaximumEssence)
-                                {
-                                    continue;
-                                }
+                                continue;
                             }
                         }
 
