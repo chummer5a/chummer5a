@@ -2208,7 +2208,7 @@ namespace Chummer
                             return null;
                         objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
                         strSkillKey =
-                            RelevantImprovements(o => o.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell)
+                            RelevantImprovements(o => o.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell, true)
                                 .FirstOrDefault()?.Target ?? strSkillKey;
                         if (Alchemical)
                         {
@@ -2250,7 +2250,7 @@ namespace Chummer
                         return null;
                     objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
                     strSkillKey =
-                        (await RelevantImprovementsAsync(o => o.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell, token: token).ConfigureAwait(false))
+                        (await RelevantImprovementsAsync(o => o.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell, true, token: token).ConfigureAwait(false))
                             .FirstOrDefault()?.Target ?? strSkillKey;
                     if (Alchemical)
                     {

@@ -622,8 +622,6 @@ namespace Chummer
                 // Use EnterReadLockWithMatchingParentLockAsync to avoid parent lock acquisition issues
                 objLocker = await objHasLock.LockObject.EnterReadLockWithMatchingParentLockAsync(token).ConfigureAwait(false);
             }
-            else
-                objHasLock = null;
             try
             {
                 token.ThrowIfCancellationRequested();
