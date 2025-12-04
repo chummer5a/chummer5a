@@ -1407,7 +1407,7 @@ namespace Chummer
                 }
             }
 
-            return null;
+            return string.Empty;
         }
 
         private void PopulateCustomDataDirectoryListBox()
