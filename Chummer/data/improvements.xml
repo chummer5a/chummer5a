@@ -871,6 +871,26 @@
       <page>Adds a free Complex Form to the character. Any Complex Form can be added, even ones for which the character would not be normally eligible.</page>
     </improvement>
     <improvement>
+      <name>Add Spirit</name>
+      <id>addspirit</id>
+      <internal>addspirit</internal>
+      <fields>
+        <field xml="traditions.xml" xpath="/chummer/spirits/spirit">SelectXPath</field>
+      </fields>
+      <xml forced="True"><![CDATA[<spirit>{select}</spirit>]]></xml>
+      <page>Adds a spirit type to the available spirits a character can summon. The selection is filtered from the spirits defined in traditions.xml using an xpath filter.</page>
+    </improvement>
+    <improvement>
+      <name>Add Sprite</name>
+      <id>addsprite</id>
+      <internal>addsprite</internal>
+      <fields>
+        <field xml="streams.xml" xpath="/chummer/spirits/spirit">SelectXPath</field>
+      </fields>
+      <xml forced="True"><![CDATA[<spirit>{select}</spirit>]]></xml>
+      <page>Adds a sprite type to the available sprites a character can compile. The selection is filtered from the sprites defined in streams.xml using an xpath filter.</page>
+    </improvement>
+    <improvement>
       <name>Surprise</name>
       <id>surprise</id>
       <internal>surprise</internal>

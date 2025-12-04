@@ -706,6 +706,67 @@ namespace Chummer
                         }
                     }
                     break;
+                case "SelectXPath":
+                {
+                    // Get the current improvement type and find the SelectXPath field node
+                    string strSelectedType = cboImprovemetType.SelectedValue?.ToString() ?? string.Empty;
+                    if (string.IsNullOrEmpty(strSelectedType))
+                    {
+                        await Program.ShowScrollableMessageBoxAsync(this,
+                            await LanguageManager.GetStringAsync("Message_Improvement_SelectXPath_Configuration", token: default).ConfigureAwait(false) ?? "SelectXPath field requires xml and xpath attributes.",
+                            await LanguageManager.GetStringAsync("MessageTitle_Improvement_SelectXPath_Configuration", token: default).ConfigureAwait(false) ?? "Configuration Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
+                        break;
+                    }
+
+                    XPathNavigator xmlImprovementNode = _objImprovementsDocumentImprovementsNode.TryGetNodeByNameOrId("improvement", strSelectedType, blnIdIsGuid: false);
+                    XPathNavigator xmlSelectXPathField = xmlImprovementNode?.SelectSingleNodeAndCacheExpression("fields/field[. = 'SelectXPath']");
+                    
+                    string strSelectXPathXml = xmlSelectXPathField?.SelectSingleNodeAndCacheExpression("@xml")?.Value ?? string.Empty;
+                    string strSelectXPathExpression = xmlSelectXPathField?.SelectSingleNodeAndCacheExpression("@xpath")?.Value ?? string.Empty;
+
+                    if (string.IsNullOrEmpty(strSelectXPathXml) || string.IsNullOrEmpty(strSelectXPathExpression))
+                    {
+                        await Program.ShowScrollableMessageBoxAsync(this,
+                            await LanguageManager.GetStringAsync("Message_Improvement_SelectXPath_Configuration", token: default).ConfigureAwait(false) ?? "SelectXPath field requires xml and xpath attributes.",
+                            await LanguageManager.GetStringAsync("MessageTitle_Improvement_SelectXPath_Configuration", token: default).ConfigureAwait(false) ?? "Configuration Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
+                        break;
+                    }
+
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
+                               out List<ListItem> lstItems))
+                    {
+                        // Load items from the specified XML file using the xpath expression
+                        foreach (XPathNavigator xmlItem in (await _objCharacter.LoadDataXPathAsync(strSelectXPathXml).ConfigureAwait(false))
+                                                                  .SelectAndCacheExpression(strSelectXPathExpression))
+                        {
+                            string strName = xmlItem.SelectSingleNodeAndCacheExpression("name")?.Value;
+                            if (!string.IsNullOrEmpty(strName))
+                                lstItems.Add(new ListItem(
+                                    strName,
+                                    xmlItem.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                    ?? strName));
+                        }
+
+                        string strDescription = await LanguageManager.GetStringAsync("Title_SelectItem").ConfigureAwait(false);
+                        using (ThreadSafeForm<SelectItem> selectItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()).ConfigureAwait(false))
+                        {
+                            await selectItem.MyForm.DoThreadSafeAsync(x => x.Description = strDescription).ConfigureAwait(false);
+                            selectItem.MyForm.SetDropdownItemsMode(lstItems);
+
+                            if (await selectItem.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.OK)
+                            {
+                                string strSelect = await selectItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedName).ConfigureAwait(false);
+                                await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect).ConfigureAwait(false);
+                                string strTranslateSelection = await TranslateField(_strSelect, strSelect).ConfigureAwait(false);
+                                await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection).ConfigureAwait(false);
+                            }
+                        }
+                    }
+
+                    break;
+                }
             }
         }
 
