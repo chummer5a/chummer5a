@@ -3603,29 +3603,29 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         }
 
         // Check for Weapon Category DV modifiers.
-        public async Task weaponcategorydv(XmlNode bonusNode, CancellationToken token = default)
+        public Task weaponcategorydv(XmlNode bonusNode, CancellationToken token = default)
         {
-            await CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryDV, token).ConfigureAwait(false);
+            return CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryDV, token);
         }
 
-        public async Task weaponcategorydice(XmlNode bonusNode, CancellationToken token = default)
+        public Task weaponcategorydice(XmlNode bonusNode, CancellationToken token = default)
         {
-            await CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryDice, token).ConfigureAwait(false);
+            return CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryDice, token);
         }
 
-        public async Task weaponcategoryap(XmlNode bonusNode, CancellationToken token = default)
+        public Task weaponcategoryap(XmlNode bonusNode, CancellationToken token = default)
         {
-            await CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryAP, token).ConfigureAwait(false);
+            return CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryAP, token);
         }
 
-        public async Task weaponcategoryaccuracy(XmlNode bonusNode, CancellationToken token = default)
+        public Task weaponcategoryaccuracy(XmlNode bonusNode, CancellationToken token = default)
         {
-            await CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryAccuracy, token).ConfigureAwait(false);
+            return CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryAccuracy, token);
         }
 
-        public async Task weaponcategoryreach(XmlNode bonusNode, CancellationToken token = default)
+        public Task weaponcategoryreach(XmlNode bonusNode, CancellationToken token = default)
         {
-            await CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryReach, token).ConfigureAwait(false);
+            return CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryReach, token);
         }
 
         /// <summary>
@@ -3721,29 +3721,29 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                 improvementType, _strUnique, decValue, token: token).ConfigureAwait(false);
         }
 
-        public async Task weaponspecificdice(XmlNode bonusNode, CancellationToken token = default)
+        public Task weaponspecificdice(XmlNode bonusNode, CancellationToken token = default)
         {
-            await CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificDice, token).ConfigureAwait(false);
+            return CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificDice, token);
         }
 
-        public async Task weaponspecificdv(XmlNode bonusNode, CancellationToken token = default)
+        public Task weaponspecificdv(XmlNode bonusNode, CancellationToken token = default)
         {
-            await CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificDV, token).ConfigureAwait(false);
+            return CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificDV, token);
         }
 
-        public async Task weaponspecificap(XmlNode bonusNode, CancellationToken token = default)
+        public Task weaponspecificap(XmlNode bonusNode, CancellationToken token = default)
         {
-            await CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificAP, token).ConfigureAwait(false);
+            return CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificAP, token);
         }
 
-        public async Task weaponspecificaccuracy(XmlNode bonusNode, CancellationToken token = default)
+        public Task weaponspecificaccuracy(XmlNode bonusNode, CancellationToken token = default)
         {
-            await CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificAccuracy, token).ConfigureAwait(false);
+            return CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificAccuracy, token);
         }
 
-        public async Task weaponspecificrange(XmlNode bonusNode, CancellationToken token = default)
+        public Task weaponspecificrange(XmlNode bonusNode, CancellationToken token = default)
         {
-            await CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificRange, token).ConfigureAwait(false);
+            return CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificRange, token);
         }
 
         /// <summary>

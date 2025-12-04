@@ -53,7 +53,7 @@ namespace Chummer
         private decimal _decMaximumCapacity = -1;
         private bool _blnLockGrade;
         private int _intLoading = 1;
-        private bool _blnFilterEssence = true; // Track filter mode: true = essence, false = capacity. Determined automatically based on parent.
+        private readonly bool _blnFilterEssence = true; // Track filter mode: true = essence, false = capacity. Determined automatically based on parent.
 
         private readonly Mode _eMode = Mode.Cyberware;
         private readonly string _strNodeXPath = "cyberwares/cyberware";
