@@ -541,7 +541,7 @@ namespace Chummer
                 // Ensure value is within bounds before setting
                 // Use cached integer values to avoid overflow when Maximum/Minimum are outside Int32 range
                 int intAdjustedValue = Math.Max(Math.Min(value, MaximumAsInt), MinimumAsInt);
-                Value = value;
+                Value = intAdjustedValue;
             }
         }
 
