@@ -215,13 +215,13 @@ namespace Chummer
             unchecked
             {
                 uint result = 0;
-                Parallel.ForEach(lstItems, () => 0, (i, state, local) =>
+                Parallel.ForEach(lstItems, () => (uint)0, (i, state, local) =>
                     {
                         if (token.IsCancellationRequested)
                             state.Stop();
-                        return state.IsStopped ? 0 : i.GetHashCode();
+                        return state.IsStopped ? local : local + (uint)i.GetHashCode();
                     },
-                    localResult => result += (uint)localResult);
+                    localResult => InterlockedExtensions.Add(ref result, localResult));
                 token.ThrowIfCancellationRequested();
                 return (int)(19u + result * 31u);
             }

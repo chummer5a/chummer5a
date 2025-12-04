@@ -213,79 +213,24 @@ namespace Chummer
                     = XmlManager.LoadXPath("settings.xml", token: token).SelectAndCacheExpression("/chummer/settings/setting", token)
                     .Cast<XPathNavigator>();
                 Parallel.ForEach(xmlSettingsIterator,
-                    () => new CharacterSettings(),
-                    (xmlBuiltInSetting, state, objNewCharacterSettings) =>
+                    (xmlBuiltInSetting, state) =>
                     {
                         if (token.IsCancellationRequested)
                             state.Stop();
-                        if (state.ShouldExitCurrentIteration)
+                        if (!state.ShouldExitCurrentIteration)
                         {
-                            objNewCharacterSettings.Dispose();
-                            return null;
-                        }
-                        try
-                        {
-                            if (!objNewCharacterSettings.Load(xmlBuiltInSetting, token)
-                                || (objNewCharacterSettings.BuildMethodIsLifeModule
-                                    && !GlobalSettings.LifeModuleEnabled))
-                            {
-                                objNewCharacterSettings.Dispose();
-                                return null;
-                            }
-                            return objNewCharacterSettings;
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            state.Stop();
-                            objNewCharacterSettings.Dispose();
-                            throw;
-                        }
-                        catch
-                        {
-                            objNewCharacterSettings.Dispose();
-                            throw;
-                        }
-                    },
-                    objNewCharacterSettings =>
-                    {
-                        if (objNewCharacterSettings?.IsDisposed == false
-                            && !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
-                                objNewCharacterSettings))
-                            objNewCharacterSettings.Dispose();
-                    });
-            }, token);
-            if (Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 1, 0) != 0)
-                return;
-
-            string strSettingsPath = Utils.GetSettingsFolderPath;
-            if (Directory.Exists(strSettingsPath))
-            {
-                Utils.RunWithoutThreadLock(() =>
-                {
-                    Parallel.ForEach(Directory.EnumerateFiles(strSettingsPath, "*.xml"),
-                        () => new CharacterSettings(),
-                        (strSettingsFilePath, state, objNewCharacterSettings) =>
-                        {
-                            if (token.IsCancellationRequested)
-                                state.Stop();
-                            if (state.ShouldExitCurrentIteration)
-                            {
-                                objNewCharacterSettings.Dispose();
-                                return null;
-                            }
-
+                            CharacterSettings objNewCharacterSettings = new CharacterSettings();
                             try
                             {
-                                string strSettingName = Path.GetFileName(strSettingsFilePath);
-                                if (!objNewCharacterSettings.Load(strSettingName, false, false, token)
+                                if (!objNewCharacterSettings.Load(xmlBuiltInSetting, token)
                                     || (objNewCharacterSettings.BuildMethodIsLifeModule
-                                        && !GlobalSettings.LifeModuleEnabled))
+                                        && !GlobalSettings.LifeModuleEnabled)
+                                    || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
+                                        objNewCharacterSettings))
                                 {
                                     objNewCharacterSettings.Dispose();
-                                    return null;
                                 }
 
-                                return objNewCharacterSettings;
                             }
                             catch (OperationCanceledException)
                             {
@@ -298,13 +243,49 @@ namespace Chummer
                                 objNewCharacterSettings.Dispose();
                                 throw;
                             }
-                        },
-                        objNewCharacterSettings =>
+                        }
+                    });
+            }, token);
+            if (Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 1, 0) != 0)
+                return;
+
+            string strSettingsPath = Utils.GetSettingsFolderPath;
+            if (Directory.Exists(strSettingsPath))
+            {
+                Utils.RunWithoutThreadLock(() =>
+                {
+                    Parallel.ForEach(Directory.EnumerateFiles(strSettingsPath, "*.xml"),
+                        (strSettingsFilePath, state) =>
                         {
-                            if (objNewCharacterSettings?.IsDisposed == false
-                                && !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
-                                    objNewCharacterSettings))
-                                objNewCharacterSettings.Dispose();
+                            if (token.IsCancellationRequested)
+                                state.Stop();
+                            if (!state.ShouldExitCurrentIteration)
+                            {
+                                CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                                try
+                                {
+                                    string strSettingName = Path.GetFileName(strSettingsFilePath);
+                                    if (!objNewCharacterSettings.Load(strSettingName, false, false, token)
+                                        || (objNewCharacterSettings.BuildMethodIsLifeModule
+                                            && !GlobalSettings.LifeModuleEnabled)
+                                        || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
+                                            objNewCharacterSettings))
+                                    {
+                                        objNewCharacterSettings.Dispose();
+                                    }
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    state.Stop();
+                                    objNewCharacterSettings.Dispose();
+                                    throw;
+                                }
+                                catch
+                                {
+                                    objNewCharacterSettings.Dispose();
+                                    throw;
+                                }
+                            }
                         });
                 }, token);
             }

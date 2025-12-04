@@ -73,12 +73,12 @@ namespace Chummer
             unchecked
             {
                 uint result = 0;
-                Parallel.For(0, lstItems.Count, () => 0, (i, state, local) =>
+                Parallel.For(0, lstItems.Count, () => (uint)0, (i, state, local) =>
                 {
                     if (token.IsCancellationRequested)
                         state.Stop();
-                    return state.IsStopped ? 0 : lstItems.ElementAtBetter(i).GetHashCode();
-                }, localResult => result += (uint)localResult);
+                    return state.IsStopped ? local : local + (uint)lstItems.ElementAtBetter(i).GetHashCode();
+                }, localResult => InterlockedExtensions.Add(ref result, localResult));
                 token.ThrowIfCancellationRequested();
                 return (int)(19 + result * 31);
             }

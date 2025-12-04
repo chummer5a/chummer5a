@@ -1828,11 +1828,11 @@ namespace Chummer
                                     Parallel.ForEach(lstToSearch, () => string.Empty, (objXPathPair, objState, x) =>
                                     {
                                         if (objState.ShouldExitCurrentIteration)
-                                            return string.Empty;
+                                            return x;
                                         if (innerToken.IsCancellationRequested)
                                         {
                                             objState.Stop();
-                                            return string.Empty;
+                                            return x;
                                         }
 
                                         XPathNavigator xmlDocument;
@@ -1846,15 +1846,15 @@ namespace Chummer
                                         catch (OperationCanceledException)
                                         {
                                             objState.Stop();
-                                            return string.Empty;
+                                            return x;
                                         }
 
                                         if (objState.ShouldExitCurrentIteration)
-                                            return string.Empty;
+                                            return x;
                                         if (innerToken.IsCancellationRequested)
                                         {
                                             objState.Stop();
-                                            return string.Empty;
+                                            return x;
                                         }
 
                                         try
@@ -1863,11 +1863,11 @@ namespace Chummer
                                                          objXPathPair.Item2))
                                             {
                                                 if (objState.ShouldExitCurrentIteration)
-                                                    return string.Empty;
+                                                    return x;
                                                 if (innerToken.IsCancellationRequested)
                                                 {
                                                     objState.Stop();
-                                                    return string.Empty;
+                                                    return x;
                                                 }
 
                                                 if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
@@ -1882,10 +1882,10 @@ namespace Chummer
                                         catch (OperationCanceledException)
                                         {
                                             objState.Stop();
-                                            return string.Empty;
+                                            return x;
                                         }
 
-                                        return string.Empty;
+                                        return x;
                                     }, strFound =>
                                     {
                                         if (innerToken.IsCancellationRequested)
@@ -2332,11 +2332,11 @@ namespace Chummer
                         Parallel.ForEach(lstToSearch, () => string.Empty, (objXPathPair, objState, x) =>
                         {
                             if (objState.ShouldExitCurrentIteration)
-                                return string.Empty;
+                                return x;
                             if (innerToken.IsCancellationRequested)
                             {
                                 objState.Stop();
-                                return string.Empty;
+                                return x;
                             }
 
                             XPathNavigator xmlDocument;
@@ -2350,15 +2350,15 @@ namespace Chummer
                             catch (OperationCanceledException)
                             {
                                 objState.Stop();
-                                return string.Empty;
+                                return x;
                             }
 
                             if (objState.ShouldExitCurrentIteration)
-                                return string.Empty;
+                                return x;
                             if (innerToken.IsCancellationRequested)
                             {
                                 objState.Stop();
-                                return string.Empty;
+                                return x;
                             }
 
                             try
@@ -2366,11 +2366,11 @@ namespace Chummer
                                 foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
                                 {
                                     if (objState.ShouldExitCurrentIteration)
-                                        return string.Empty;
+                                        return x;
                                     if (innerToken.IsCancellationRequested)
                                     {
                                         objState.Stop();
-                                        return string.Empty;
+                                        return x;
                                     }
 
                                     if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
@@ -2385,10 +2385,10 @@ namespace Chummer
                             catch (OperationCanceledException)
                             {
                                 objState.Stop();
-                                return string.Empty;
+                                return x;
                             }
 
-                            return string.Empty;
+                            return x;
                         }, strFound =>
                         {
                             if (innerToken.IsCancellationRequested)
