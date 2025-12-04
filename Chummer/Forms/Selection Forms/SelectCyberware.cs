@@ -2015,7 +2015,7 @@ namespace Chummer
                             strEssenceExpr = strEssenceExpr.ProcessFixedValuesString(intMinRating);
 
                             decimal decEssenceCost = 0;
-                            if (!string.IsNullOrEmpty(strEssenceExpr) && !decimal.TryParse(strEssenceExpr, out decEssenceCost))
+                            if (!string.IsNullOrEmpty(strEssenceExpr) && strEssenceExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decEssenceCost))
                             {
                                 (decimal decValue, bool blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strEssenceExpr, intMinRating, intMinRating, token).ConfigureAwait(false);
                                 decEssenceCost = blnIsSuccess ? decValue : 0;
@@ -2089,7 +2089,7 @@ namespace Chummer
                             else if (!string.IsNullOrEmpty(strCapacityToCheck))
                             {
                                 // Try to parse as a simple decimal first
-                                if (!decimal.TryParse(strCapacityToCheck, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decCapacity))
+                                if (strCapacityToCheck.DoesNeedXPathProcessingToBeConvertedToNumber(out decCapacity))
                                 {
                                     // Try to process as XPath expression - use minimum rating for evaluation
                                     (decimal decValue, bool blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strCapacityToCheck, intMinRating, intMinRating, token).ConfigureAwait(false);
@@ -2111,7 +2111,7 @@ namespace Chummer
                             if (decExactCapacity > 0)
                             {
                                 // Exact capacity filtering
-                                if (Math.Abs(decCapacity - decExactCapacity) > 0.001m) // Use small tolerance for floating point comparison
+                                if (Math.Abs(decCapacity - decExactCapacity) > DecimalExtensions.Epsilon)
                                 {
                                     continue;
                                 }
