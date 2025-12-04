@@ -90,8 +90,8 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodPairBonus;
         private XmlNode _nodWirelessBonus;
         private XmlNode _nodWirelessPairBonus;
-        private HashSet<string> _lstIncludeInPairBonus = Utils.StringHashSetPool.Get();
-        private HashSet<string> _lstIncludeInWirelessPairBonus = Utils.StringHashSetPool.Get();
+        private HashSet<string> _lstIncludeInPairBonus;
+        private HashSet<string> _lstIncludeInWirelessPairBonus;
         private bool _blnWirelessOn = true;
         private XmlNode _nodAllowGear;
         private Improvement.ImprovementSource _eImprovementSource = Improvement.ImprovementSource.Cyberware;
@@ -206,10 +206,28 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             LockObject = objCharacter.LockObject;
-            _lstChildren = new TaggedObservableCollection<Cyberware>(LockObject);
-            _lstChildren.AddTaggedCollectionChanged(this, CyberwareChildrenOnCollectionChanged);
-            _lstGear = new TaggedObservableCollection<Gear>(LockObject);
-            _lstGear.AddTaggedCollectionChanged(this, GearChildrenOnCollectionChanged);
+            _lstIncludeInPairBonus = Utils.StringHashSetPool.Get();
+            try
+            {
+                _lstIncludeInWirelessPairBonus = Utils.StringHashSetPool.Get();
+                try
+                {
+                    _lstChildren = new TaggedObservableCollection<Cyberware>(LockObject);
+                    _lstChildren.AddTaggedCollectionChanged(this, CyberwareChildrenOnCollectionChanged);
+                    _lstGear = new TaggedObservableCollection<Gear>(LockObject);
+                    _lstGear.AddTaggedCollectionChanged(this, GearChildrenOnCollectionChanged);
+                }
+                catch
+                {
+                    Utils.StringHashSetPool.Return(ref _lstIncludeInWirelessPairBonus);
+                    throw;
+                }
+            }
+            catch
+            {
+                Utils.StringHashSetPool.Return(ref _lstIncludeInPairBonus);
+                throw;
+            }
         }
 
         private async Task CyberwareChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)

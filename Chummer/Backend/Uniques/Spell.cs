@@ -81,6 +81,7 @@ namespace Chummer
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             LockObject = objCharacter.LockObject;
+            _setDescriptors = Utils.StringHashSetPool.Get();
         }
 
         /// <summary>
@@ -2477,7 +2478,7 @@ namespace Chummer
 
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
-        private HashSet<string> _setDescriptors = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setDescriptors;
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {

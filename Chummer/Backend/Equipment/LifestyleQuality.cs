@@ -65,7 +65,7 @@ namespace Chummer.Backend.Equipment
         private int _intSecurityMaximum;
         private int _intComfortsMaximum;
         private int _intComforts;
-        private HashSet<string> _setAllowedFreeLifestyles = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setAllowedFreeLifestyles;
         private readonly Character _objCharacter;
         private bool _blnFree;
         private bool _blnIsFreeGrid;
@@ -126,6 +126,7 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             LockObject = objCharacter.LockObject;
+            _setAllowedFreeLifestyles = Utils.StringHashSetPool.Get();
         }
 
         /// <summary>

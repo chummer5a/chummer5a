@@ -41,11 +41,12 @@ namespace Chummer.UI.Table
         private int _intPrefWidth;
         private Func<T, CancellationToken, Task<object>> _funcExtractor;
         private Func<T, T, CancellationToken, Task<int>> _itemSorter;
-        private HashSet<string> _setDependencies = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setDependencies;
 
         public TableColumn(Func<TableCell> cellFactory)
         {
             _cellFactory = cellFactory ?? throw new ArgumentNullException(nameof(cellFactory));
+            _setDependencies = Utils.StringHashSetPool.Get();
         }
 
         protected virtual void Dispose(bool disposing)

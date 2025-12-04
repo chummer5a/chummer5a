@@ -156,8 +156,8 @@ namespace Chummer
         private int _intMaxKnowledgeSkillRatingCreate = 6;
         private int _intMaxSkillRating = 12;
         private int _intMaxKnowledgeSkillRating = 12;
-        private HashSet<string> _setBannedWareGrades = Utils.StringHashSetPool.Get();
-        private HashSet<string> _setRedlinerExcludes = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBannedWareGrades;
+        private HashSet<string> _setRedlinerExcludes;
 
         // Initiative variables
         private int _intMinInitiativeDice = 1;
@@ -269,7 +269,7 @@ namespace Chummer
         private readonly List<string> _lstEnabledCustomDataDirectoryPaths = new List<string>();
 
         // Sourcebook list.
-        private HashSet<string> _setBooks = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBooks;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -625,13 +625,40 @@ namespace Chummer
         public CharacterSettings(CharacterSettings objOther = null, bool blnCopySourceId = true, string strOverrideFileName = "")
         {
             _dicCustomDataDirectoryKeys = new LockingTypedOrderedDictionary<string, bool>(LockObject);
-            _setBannedWareGrades.Add("Betaware");
-            _setBannedWareGrades.Add("Deltaware");
-            _setBannedWareGrades.Add("Gammaware");
-            _setRedlinerExcludes.Add("skull");
-            _setRedlinerExcludes.Add("torso");
-            if (objOther != null)
-                CopyValues(objOther, blnCopySourceId, strOverrideFileName);
+            _setBooks = Utils.StringHashSetPool.Get();
+            try
+            {
+                _setBannedWareGrades = Utils.StringHashSetPool.Get();
+                try
+                {
+                    _setBannedWareGrades.Add("Betaware");
+                    _setBannedWareGrades.Add("Deltaware");
+                    _setBannedWareGrades.Add("Gammaware");
+                    _setRedlinerExcludes = Utils.StringHashSetPool.Get();
+                    try
+                    {
+                        _setRedlinerExcludes.Add("skull");
+                        _setRedlinerExcludes.Add("torso");
+                        if (objOther != null)
+                            CopyValues(objOther, blnCopySourceId, strOverrideFileName);
+                    }
+                    catch
+                    {
+                        Utils.StringHashSetPool.Return(ref _setRedlinerExcludes);
+                        throw;
+                    }
+                }
+                catch
+                {
+                    Utils.StringHashSetPool.Return(ref _setBannedWareGrades);
+                    throw;
+                }
+            }
+            catch
+            {
+                Utils.StringHashSetPool.Return(ref _setBooks);
+                throw;
+            }
         }
 
         public void CopyValues(CharacterSettings objOther, bool blnCopySourceId = true, string strOverrideFileName = "", CancellationToken token = default)

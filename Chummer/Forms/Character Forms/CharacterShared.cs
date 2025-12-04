@@ -119,8 +119,17 @@ namespace Chummer
             _tmrCharacterUpdateRequestTimer.Elapsed += CharacterUpdateRequestTimerOnElapsed;
             _tmrCharacterUpdateRequestTimer.Start();
             _tmrAutosaveRequestTimer.Elapsed += AutosaveRequestTimerOnElapsed;
-            AutosaveStopwatch.Start();
-            _tmrAutosaveRequestTimer.Start();
+            _stpAutosaveStopwatch = Utils.StopwatchPool.Get();
+            try
+            {
+                _stpAutosaveStopwatch.Start();
+                _tmrAutosaveRequestTimer.Start();
+            }
+            catch
+            {
+                Utils.StopwatchPool.Return(ref _stpAutosaveStopwatch);
+                throw;
+            }
         }
 
         private async void AutosaveRequestTimerOnElapsed(object sender, ElapsedEventArgs e)
@@ -11083,7 +11092,7 @@ namespace Chummer
         public IEnumerable<Character> CharacterObjects => _objCharacter?.Yield() ?? Enumerable.Empty<Character>();
 
         private CharacterSettings _objCachedSettings;
-        private Stopwatch _stpAutosaveStopwatch = Utils.StopwatchPool.Get();
+        private Stopwatch _stpAutosaveStopwatch;
 
         protected CharacterSettings CharacterObjectSettings => _objCachedSettings ?? (_objCachedSettings = CharacterObject?.Settings);
 
