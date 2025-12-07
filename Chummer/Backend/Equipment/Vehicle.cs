@@ -626,7 +626,7 @@ namespace Chummer.Backend.Equipment
                                                                     intSubSystemRating, _lstWeapons, _objCharacter.Vehicles,
                                                                     false, true,
                                                                     objXmlSubsystemNode["forced"]?.InnerTextViaPool(token) ?? string.Empty,
-                                                                    token: token);
+                                                                    objParent: null, objParentVehicle: this, token: token);
                                                             else
                                                                 await objSubsystem.CreateAsync(objXmlSubsystem,
                                                                     new Grade(_objCharacter,
@@ -635,7 +635,7 @@ namespace Chummer.Backend.Equipment
                                                                     intSubSystemRating, _lstWeapons, _objCharacter.Vehicles,
                                                                     false, true,
                                                                     objXmlSubsystemNode["forced"]?.InnerTextViaPool(token) ?? string.Empty,
-                                                                    token: token).ConfigureAwait(false);
+                                                                    objParent: null, objParentVehicle: this, token: token).ConfigureAwait(false);
                                                             objSubsystem.ParentID = InternalId;
                                                             objSubsystem.Cost = "0";
                                                             if (blnSync)

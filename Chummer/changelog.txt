@@ -146,6 +146,7 @@ Application Changes:
 - Added functionality for the Drone Arm from Rigger 5 to use its own Agility for weapon skill tests rather than Pilot when using the DogBrain mode. This is controlled using the useownattributesforweapon element. Due to this, existing characters with the Drone Arm will need to remove and re-add the Drone Arm to have it function correctly, or manually edit the chum5 file.
 - Fixed a crash caused by using customdata amends to the priority table that would leave a metatype with no valid Talent choice at a given priority level.
 - Added addspirit and addsprite as custom improvement types to add spirits and sprites to a character via the custom improvement system in career mode.
+- Fixed crash caused by creating a vehicle that has a built-in cyberware subsystem attached to a vehicle mod that adds a weapon.
 - Implemented a bonus type (cyberlimbattributebonus) to provide AGI or STR bonuses to cyberware attribute bonuses. Example behaviour:
 
 <!-- Simple values -->
@@ -247,6 +248,7 @@ Data Changes:
 - Refactored life modules that grant SINs to use the new qualitylevel improvement type. Existing characters with life modules that grant SINs will need to reapply their improvements to see any changes and may find it preferable to remove and re-add the modules.
 - Fixed the additional optional powers for infected from Dark Terrors not having the correct filters.
 - Refactored Critical Strike to use updated structure. Should not affect existing characters.
+- Fixed incorrect cyberware names for the Aztechnology Cuanmiztli A.
 
 Fixes implemented by BM123499
 
