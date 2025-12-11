@@ -183,11 +183,9 @@ namespace Chummer
                 {
                     return LoadStandardFromFile(strFileName, blnSafe, token);
                 }
-                catch (IOException)
+                catch (IOException) when (i < intTimeout - Utils.DefaultSleepDuration)
                 {
                     // swallow this unless we are at the emergency release stage
-                    if (i >= intTimeout - Utils.DefaultSleepDuration)
-                        throw;
                 }
 
                 Utils.SafeSleep(token);
@@ -213,11 +211,9 @@ namespace Chummer
                 {
                     return await LoadStandardFromFileAsync(strFileName, blnSafe, token).ConfigureAwait(false);
                 }
-                catch (IOException)
+                catch (IOException) when (i < intTimeout - Utils.DefaultSleepDuration)
                 {
                     // swallow this unless we are at the emergency release stage
-                    if (i >= intTimeout - Utils.DefaultSleepDuration)
-                        throw;
                 }
 
                 await Utils.SafeSleepAsync(token).ConfigureAwait(false);
@@ -242,11 +238,9 @@ namespace Chummer
                 {
                     return LoadStandardFromLzmaCompressedFile(strFileName, blnSafe, token);
                 }
-                catch (IOException)
+                catch (IOException) when (i < intTimeout - Utils.DefaultSleepDuration)
                 {
                     // swallow this unless we are at the emergency release stage
-                    if (i >= intTimeout - Utils.DefaultSleepDuration)
-                        throw;
                 }
 
                 Utils.SafeSleep(token);
@@ -272,11 +266,9 @@ namespace Chummer
                 {
                     return await LoadStandardFromLzmaCompressedFileAsync(strFileName, blnSafe, token).ConfigureAwait(false);
                 }
-                catch (IOException)
+                catch (IOException) when (i < intTimeout - Utils.DefaultSleepDuration)
                 {
                     // swallow this unless we are at the emergency release stage
-                    if (i >= intTimeout - Utils.DefaultSleepDuration)
-                        throw;
                 }
 
                 await Utils.SafeSleepAsync(token).ConfigureAwait(false);

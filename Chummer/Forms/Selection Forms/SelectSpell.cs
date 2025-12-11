@@ -834,10 +834,7 @@ namespace Chummer
                     x.Enabled = FreeOnly;
                 }, token: token).ConfigureAwait(false);
                 blnBarehandedAdept = false;
-                await chkLimited.DoThreadSafeAsync(x =>
-                {
-                    x.Enabled = true;
-                }, token: token).ConfigureAwait(false);
+                await chkLimited.DoThreadSafeAsync(x => x.Enabled = true, token: token).ConfigureAwait(false);
             }
 
             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))

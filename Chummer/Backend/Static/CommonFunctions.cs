@@ -359,7 +359,7 @@ namespace Chummer
                     objReturn = x;
                     blnIsSuccess = false;
                 }
-                
+
                 return new ValueTuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
             });
         }

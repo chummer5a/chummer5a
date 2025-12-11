@@ -1180,14 +1180,8 @@ namespace Chummer
 
                     try
                     {
-                        await ParallelExtensions.ForAsync(0, intFavoritesCount, async i =>
-                        {
-                            lstFavoritesNodes[i] = await CacheCharacter(lstFavorites[i], token: token).ConfigureAwait(false);
-                        }, token).ConfigureAwait(false);
-                        await ParallelExtensions.ForAsync(0, intRecentsCount, async i =>
-                        {
-                            lstRecentsNodes[i] = await CacheCharacter(lstRecents[i], token: token).ConfigureAwait(false);
-                        }, token).ConfigureAwait(false);
+                        await ParallelExtensions.ForAsync(0, intFavoritesCount, async i => lstFavoritesNodes[i] = await CacheCharacter(lstFavorites[i], token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForAsync(0, intRecentsCount, async i => lstRecentsNodes[i] = await CacheCharacter(lstRecents[i], token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -1806,33 +1800,23 @@ namespace Chummer
                                 await lblCareerKarma.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                                 string strPlayerName = await objCache.GetPlayerNameAsync(token).ConfigureAwait(false);
                                 await lblPlayerName.DoThreadSafeAsync(x =>
-                                {
-                                    x.Text = string.IsNullOrEmpty(strPlayerName) ? strUnknown : strPlayerName;
-                                }, token).ConfigureAwait(false);
+                                x.Text = string.IsNullOrEmpty(strPlayerName) ? strUnknown : strPlayerName, token).ConfigureAwait(false);
                                 string strCharacterName = await objCache.GetCharacterNameAsync(token).ConfigureAwait(false);
                                 await lblCharacterName.DoThreadSafeAsync(x =>
-                                {
-                                    x.Text = string.IsNullOrEmpty(strCharacterName) ? strUnknown : strCharacterName;
-                                }, token).ConfigureAwait(false);
+                                x.Text = string.IsNullOrEmpty(strCharacterName) ? strUnknown : strCharacterName, token).ConfigureAwait(false);
                                 string strCharacterAlias = await objCache.GetCharacterAliasAsync(token).ConfigureAwait(false);
                                 await lblCharacterAlias.DoThreadSafeAsync(x =>
-                                {
-                                    x.Text = string.IsNullOrEmpty(strCharacterAlias) ? strUnknown : strCharacterAlias;
-                                }, token).ConfigureAwait(false);
+                                x.Text = string.IsNullOrEmpty(strCharacterAlias) ? strUnknown : strCharacterAlias, token).ConfigureAwait(false);
                                 string strEssence = await objCache.GetEssenceAsync(token).ConfigureAwait(false);
                                 await lblEssence.DoThreadSafeAsync(x =>
-                                {
-                                    x.Text = string.IsNullOrEmpty(strEssence) ? strUnknown : strEssence;
-                                }, token).ConfigureAwait(false);
+                                x.Text = string.IsNullOrEmpty(strEssence) ? strUnknown : strEssence, token).ConfigureAwait(false);
                                 string strText2 = await objCache.GetFileNameAsync(token).ConfigureAwait(false);
                                 if (string.IsNullOrEmpty(strText2))
                                     strText2 = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false);
                                 await lblFilePath.DoThreadSafeAsync(x => x.Text = strText2, token).ConfigureAwait(false);
                                 string strSettingsFile = await objCache.GetSettingsFileAsync(token).ConfigureAwait(false);
                                 await lblSettings.DoThreadSafeAsync(x =>
-                                {
-                                    x.Text = string.IsNullOrEmpty(strSettingsFile) ? strUnknown : strSettingsFile;
-                                }, token).ConfigureAwait(false);
+                                x.Text = string.IsNullOrEmpty(strSettingsFile) ? strUnknown : strSettingsFile, token).ConfigureAwait(false);
                                 await lblFilePath.SetToolTipTextAsync(
                                     await (await objCache.GetFilePathAsync(token).ConfigureAwait(false))
                                         .CheapReplaceAsync(Utils.GetStartupPath, () => "<" + Application.ProductName + ">", token: token).ConfigureAwait(false),

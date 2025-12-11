@@ -3996,7 +3996,7 @@ namespace Chummer.Backend.Skills
                     return false;
                 }
 
-                if (RequiresFlyMovement)
+                if (await GetRequiresFlyMovementAsync(token).ConfigureAwait(false))
                 {
                     // Check if there's an improvement that enables this skill despite movement requirements
                     if ((await ImprovementManager
@@ -4023,7 +4023,7 @@ namespace Chummer.Backend.Skills
                     }
                 }
 
-                if (RequiresSwimMovement)
+                if (await GetRequiresSwimMovementAsync(token).ConfigureAwait(false))
                 {
                     // Check if there's an improvement that enables this skill despite movement requirements
                     if ((await ImprovementManager
@@ -4051,7 +4051,7 @@ namespace Chummer.Backend.Skills
                     }
                 }
 
-                if (RequiresGroundMovement)
+                if (await GetRequiresGroundMovementAsync(token).ConfigureAwait(false))
                 {
                     string strMovementString
                         = await CharacterObject

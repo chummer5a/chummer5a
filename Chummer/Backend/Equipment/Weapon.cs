@@ -6285,7 +6285,7 @@ namespace Chummer.Backend.Equipment
                         ? strMount
                         : LanguageManager.GetString("String_Mount" + strMount), '/');
                 }
-                sbdMounts.Length -= 1; // Trim off the last slash
+                --sbdMounts.Length; // Trim off the last slash
                 return sbdMounts.ToString();
             }
         }
@@ -6306,7 +6306,7 @@ namespace Chummer.Backend.Equipment
                         : await LanguageManager.GetStringAsync("String_Mount" + strMount, token: token).ConfigureAwait(false), '/');
                 }
                 token.ThrowIfCancellationRequested();
-                sbdMounts.Length -= 1; // Trim off the last slash
+                --sbdMounts.Length; // Trim off the last slash
                 return sbdMounts.ToString();
             }
         }
@@ -12983,12 +12983,13 @@ namespace Chummer.Backend.Equipment
                         objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty,
                             token: innerToken);
 
-                    objChild.GearChildren.AddTaggedBeforeClearCollectionChanged(treWeapons,
+                    TaggedObservableCollection<Gear> lstGearChildren = objChild.GearChildren;
+                    lstGearChildren.AddTaggedBeforeClearCollectionChanged(treWeapons,
                         FuncWeaponAccessoryGearBeforeClearToAdd);
-                    objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, FuncWeaponAccessoryGearToAdd);
+                    lstGearChildren.AddTaggedCollectionChanged(treWeapons, FuncWeaponAccessoryGearToAdd);
                     if (funcMakeDirty != null)
-                        objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, funcMakeDirty);
-                    foreach (Gear objGear in objChild.GearChildren)
+                        lstGearChildren.AddTaggedCollectionChanged(treWeapons, funcMakeDirty);
+                    foreach (Gear objGear in lstGearChildren)
                         objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear, null, funcMakeDirty);
                 }
             }
@@ -13004,9 +13005,10 @@ namespace Chummer.Backend.Equipment
                 }
                 foreach (WeaponAccessory objChild in WeaponAccessories)
                 {
-                    objChild.GearChildren.RemoveTaggedAsyncBeforeClearCollectionChanged(treWeapons);
-                    objChild.GearChildren.RemoveTaggedAsyncCollectionChanged(treWeapons);
-                    foreach (Gear objGear in objChild.GearChildren)
+                    TaggedObservableCollection<Gear> lstGearChildren = objChild.GearChildren;
+                    lstGearChildren.RemoveTaggedAsyncBeforeClearCollectionChanged(treWeapons);
+                    lstGearChildren.RemoveTaggedAsyncCollectionChanged(treWeapons);
+                    foreach (Gear objGear in lstGearChildren)
                         objGear.SetupChildrenGearsCollectionChanged(false, treWeapons);
                 }
             }
@@ -13058,12 +13060,13 @@ namespace Chummer.Backend.Equipment
                         objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty,
                             token: innerToken);
 
-                    objChild.GearChildren.AddTaggedBeforeClearCollectionChanged(treWeapons,
+                    TaggedObservableCollection<Gear> lstGearChildren = objChild.GearChildren;
+                    lstGearChildren.AddTaggedBeforeClearCollectionChanged(treWeapons,
                         FuncWeaponAccessoryGearBeforeClearToAdd);
-                    objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, FuncWeaponAccessoryGearToAdd);
+                    lstGearChildren.AddTaggedCollectionChanged(treWeapons, FuncWeaponAccessoryGearToAdd);
                     if (funcMakeDirty != null)
-                        objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, funcMakeDirty);
-                    await objChild.GearChildren.ForEachWithSideEffectsAsync(
+                        lstGearChildren.AddTaggedCollectionChanged(treWeapons, funcMakeDirty);
+                    await lstGearChildren.ForEachWithSideEffectsAsync(
                         objGear => objGear.SetupChildrenGearsCollectionChangedAsync(true, treWeapons,
                             cmsWeaponAccessoryGear, null, funcMakeDirty, token),
                         token).ConfigureAwait(false);
@@ -13080,9 +13083,10 @@ namespace Chummer.Backend.Equipment
                     token).ConfigureAwait(false);
                 await WeaponAccessories.ForEachWithSideEffectsAsync(async objChild =>
                 {
-                    await objChild.GearChildren.RemoveTaggedAsyncBeforeClearCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
-                    await objChild.GearChildren.RemoveTaggedAsyncCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
-                    await objChild.GearChildren.ForEachWithSideEffectsAsync(
+                    TaggedObservableCollection<Gear> lstGearChildren = objChild.GearChildren;
+                    await lstGearChildren.RemoveTaggedAsyncBeforeClearCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
+                    await lstGearChildren.RemoveTaggedAsyncCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
+                    await lstGearChildren.ForEachWithSideEffectsAsync(
                         objGear => objGear.SetupChildrenGearsCollectionChangedAsync(false, treWeapons, token: token),
                         token).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);

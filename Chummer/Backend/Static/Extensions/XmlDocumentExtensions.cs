@@ -186,11 +186,9 @@ namespace Chummer
                     blnSuccess = true;
                     break;
                 }
-                catch (IOException)
+                catch (IOException) when (i < intTimeout - Utils.DefaultSleepDuration)
                 {
                     // swallow this unless we are at the emergency release stage
-                    if (i >= intTimeout - Utils.DefaultSleepDuration)
-                        throw;
                 }
 
                 Utils.SafeSleep(token);
@@ -221,11 +219,9 @@ namespace Chummer
                     blnSuccess = true;
                     break;
                 }
-                catch (IOException)
+                catch (IOException) when (i < intTimeout - Utils.DefaultSleepDuration)
                 {
                     // swallow this unless we are at the emergency release stage
-                    if (i >= intTimeout - Utils.DefaultSleepDuration)
-                        throw;
                 }
 
                 await Utils.SafeSleepAsync(token).ConfigureAwait(false);
@@ -256,11 +252,9 @@ namespace Chummer
                     blnSuccess = true;
                     break;
                 }
-                catch (IOException)
+                catch (IOException) when (i < intTimeout - Utils.DefaultSleepDuration)
                 {
                     // swallow this unless we are at the emergency release stage
-                    if (i >= intTimeout - Utils.DefaultSleepDuration)
-                        throw;
                 }
 
                 Utils.SafeSleep(token);
@@ -291,11 +285,9 @@ namespace Chummer
                     blnSuccess = true;
                     break;
                 }
-                catch (IOException)
+                catch (IOException) when (i < intTimeout - Utils.DefaultSleepDuration)
                 {
                     // swallow this unless we are at the emergency release stage
-                    if (i >= intTimeout - Utils.DefaultSleepDuration)
-                        throw;
                 }
 
                 await Utils.SafeSleepAsync(token).ConfigureAwait(false);

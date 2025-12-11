@@ -530,9 +530,7 @@ namespace Chummer
             if (firstChild.NextSibling == null)
             {
                 XmlNodeType nodeType = firstChild.NodeType;
-                if ((nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace) && !string.IsNullOrEmpty(firstChild.Value))
-                    return false;
-                return true;
+                return !((nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace) && !string.IsNullOrEmpty(firstChild.Value));
             }
 
             return CheckChildren(xmlNode);

@@ -439,7 +439,7 @@ namespace Chummer
                             {
                                 if (blnOldIsLongYear && !_blnIsLongYear && _intWeek == 53)
                                 {
-                                    _intWeek -= 1;
+                                    --_intWeek;
                                     if (blnOldIsLeapYear != _blnIsLeapYear)
                                         this.OnMultiplePropertyChanged(nameof(Year), nameof(IsLongYear), nameof(IsLeapYear), nameof(Week));
                                     else
@@ -517,7 +517,7 @@ namespace Chummer
                         {
                             if (blnOldIsLongYear && !_blnIsLongYear && _intWeek == 53)
                             {
-                                _intWeek -= 1;
+                                --_intWeek;
                                 if (blnOldIsLeapYear != _blnIsLeapYear)
                                     this.OnMultiplePropertyChanged(nameof(Year), nameof(IsLongYear), nameof(IsLeapYear), nameof(Week));
                                 else

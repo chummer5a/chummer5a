@@ -721,7 +721,7 @@ namespace Chummer
 
                     XPathNavigator xmlImprovementNode = _objImprovementsDocumentImprovementsNode.TryGetNodeByNameOrId("improvement", strSelectedType, blnIdIsGuid: false);
                     XPathNavigator xmlSelectXPathField = xmlImprovementNode?.SelectSingleNodeAndCacheExpression("fields/field[. = 'SelectXPath']");
-                    
+                        
                     string strSelectXPathXml = xmlSelectXPathField?.SelectSingleNodeAndCacheExpression("@xml")?.Value ?? string.Empty;
                     string strSelectXPathExpression = xmlSelectXPathField?.SelectSingleNodeAndCacheExpression("@xpath")?.Value ?? string.Empty;
 

@@ -3339,30 +3339,21 @@ namespace Chummer
                     else
                     {
                         List<Weapon> lstWeapons = new List<Weapon>(2 * await (await objCharacter.GetWeaponsAsync(token)).GetCountAsync(token).ConfigureAwait(false));
-                        foreach (Weapon objWeapon in await (await objCharacter.GetWeaponsAsync(token)
+                        lstWeapons.AddRange(await (await objCharacter.GetWeaponsAsync(token)
                                      .ConfigureAwait(false)).GetAllDescendantsAsync(
-                                     x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
-                        {
-                            lstWeapons.Add(objWeapon);
-                        }
+                                     x => x.UnderbarrelWeapons, token).ConfigureAwait(false));
 
                         await (await objCharacter.GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(async objVehicle =>
                         {
-                            foreach (Weapon objWeapon in await objVehicle.Weapons
+                            lstWeapons.AddRange(await objVehicle.Weapons
                                             .GetAllDescendantsAsync(x => x.UnderbarrelWeapons, token)
-                                            .ConfigureAwait(false))
-                            {
-                                lstWeapons.Add(objWeapon);
-                            }
+                                            .ConfigureAwait(false));
 
                             await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
                             {
-                                foreach (Weapon objWeapon in await objMount.Weapons.GetAllDescendantsAsync(
-                                                x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
-                                {
-                                    lstWeapons.Add(objWeapon);
-                                }
-                            }, token).ConfigureAwait(false);
+                                lstWeapons.AddRange(await objMount.Weapons.GetAllDescendantsAsync(
+                                                x => x.UnderbarrelWeapons, token).ConfigureAwait(false));
+                            }).ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
                         foreach (Weapon objWeapon in lstWeapons)
                             intMods += await objWeapon.WeaponAccessories.CountAsync(x => x.SpecialModification, token).ConfigureAwait(false);

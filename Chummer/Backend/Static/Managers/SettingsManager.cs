@@ -358,7 +358,7 @@ namespace Chummer
             if (Directory.Exists(strSettingsPath))
             {
                 await ParallelExtensions.ForEachAsync(Directory.EnumerateFiles(strSettingsPath, "*.xml"), LoadSettingsFromFile, token).ConfigureAwait(false);
-                
+
                 async Task LoadSettingsFromFile(string strSettingsFilePath)
                 {
                     token.ThrowIfCancellationRequested();

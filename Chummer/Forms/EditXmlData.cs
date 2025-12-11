@@ -758,11 +758,11 @@ namespace Chummer
                     }
 
                     blnReturn = blnReturn || baseGroups.Count > 0;
-                    foreach (KeyValuePair<string, XmlNode> kvp in baseGroups)
+                    foreach (XmlNode xmlLoopNode in baseGroups.Values)
                     {
-                        string strChildPath = GetNodePath(kvp.Value, strNodePath);
+                        string strChildPath = GetNodePath(xmlLoopNode, strNodePath);
                         sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Removed", token: token).ConfigureAwait(false), strChildPath).AppendLine();
-                        sbdOutput.AppendLine("  ", await FormatXmlNode(kvp.Value, token).ConfigureAwait(false));
+                        sbdOutput.AppendLine("  ", await FormatXmlNode(xmlLoopNode, token).ConfigureAwait(false));
                     }
                 }
             }

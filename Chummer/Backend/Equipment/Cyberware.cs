@@ -10240,7 +10240,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (decimal.TryParse(objChild.Weight.TrimStart('*'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decPluginWeight))
                         {
-                            decPluginWeight -= 1;
+                            --decPluginWeight;
                             decPluginWeight *= decWeight;
                             decReturn += decPluginWeight;
                         }

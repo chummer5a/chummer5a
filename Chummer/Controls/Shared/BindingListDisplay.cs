@@ -630,10 +630,7 @@ namespace Chummer.Controls.Shared
                             await objLoopControl.CleanupAsync(token).ConfigureAwait(false);
                         }
                         _lstContentList.Clear();
-                        await Contents.ForEachWithSideEffectsAsync(async objLoopTType =>
-                        {
-                            _lstContentList.Add(await ControlWithMetaData.GetNewAsync(objLoopTType, this, false, token).ConfigureAwait(false));
-                        }, token).ConfigureAwait(false);
+                        await Contents.ForEachWithSideEffectsAsync(async objLoopTType => _lstContentList.Add(await ControlWithMetaData.GetNewAsync(objLoopTType, this, false, token).ConfigureAwait(false)), token).ConfigureAwait(false);
                         Control[] aobjControls = _lstContentList.Select(y => y.Control).ToArray();
                         await pnlDisplay.DoThreadSafeAsync(x => x.Controls.AddRange(aobjControls), token).ConfigureAwait(false);
                     }
