@@ -67,7 +67,8 @@ namespace Chummer
                                 if (sbdExclude.Length > 0)
                                 {
                                     sbdExclude.Length -= 5;
-                                    strExclude = sbdExclude.Insert(0, '(').Append(") and ").ToString();
+                                    // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                                    strExclude = string.Concat("(", sbdExclude.Append(") and ").ToString());
                                 }
                             }
                             if (_objXmlDocument.SelectSingleNode(

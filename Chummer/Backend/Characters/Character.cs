@@ -16455,7 +16455,8 @@ namespace Chummer
                     if (sbdFilter.Length != 0)
                     {
                         sbdFilter.Length -= 5;
-                        strXPath = sbdFilter.Insert(0, "/chummer/grades/grade[(").Append(")]").ToString();
+                        // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                        strXPath = string.Concat("/chummer/grades/grade[(", sbdFilter.Append(")]").ToString());
                     }
                     else
                         strXPath = "/chummer/grades/grade";
@@ -16533,7 +16534,8 @@ namespace Chummer
                     if (sbdFilter.Length != 0)
                     {
                         sbdFilter.Length -= 5;
-                        strXPath = sbdFilter.Insert(0, "/chummer/grades/grade[(").Append(")]").ToString();
+                        // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                        strXPath = string.Concat("/chummer/grades/grade[(", sbdFilter.Append(")]").ToString());
                     }
                     else
                         strXPath = "/chummer/grades/grade";
@@ -16608,7 +16610,8 @@ namespace Chummer
                     if (sbdFilter.Length != 0)
                     {
                         sbdFilter.Length -= 5;
-                        strXPath = sbdFilter.Insert(0, "/chummer/grades/grade[(").Append(")]").ToString();
+                        // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                        strXPath = string.Concat("/chummer/grades/grade[(", sbdFilter.Append(")]").ToString());
                     }
                     else
                         strXPath = "/chummer/grades/grade";

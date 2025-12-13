@@ -1818,7 +1818,8 @@ namespace Chummer
                                                     }
 
                                                     string strFilter = sbdFilter.Length > 0
-                                                        ? sbdFilter.Insert(0, ") and (").ToString()
+                                                        // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                                                        ? string.Concat(") and (", sbdFilter.ToString())
                                                         : string.Empty;
                                                     foreach (XPathNavigator xmlSkill in (blnSync
                                                                  ? objCharacter

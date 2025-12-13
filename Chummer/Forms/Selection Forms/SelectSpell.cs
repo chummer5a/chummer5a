@@ -350,7 +350,8 @@ namespace Chummer
                         }
 
                         if (sbdFilter.Length > 0)
-                            strFilter = sbdFilter.Insert(0, '[').Append(']').ToString();
+                            // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                            strFilter = string.Concat("[", sbdFilter.Append(']').ToString());
                     }
 
                     foreach (XPathNavigator objXmlSpell in _xmlBaseSpellDataNode.Select("spells/spell" + strFilter))
@@ -916,7 +917,7 @@ namespace Chummer
 
                     if (blnBarehandedAdept && !blnForce)
                     {
-                        sbdDv.Insert(0, "2*(", ')');
+                        sbdDv.Insert(0, "2*(").Append(')');
                     }
 
                     await _objCharacter.ProcessAttributesInXPathAsync(sbdDv, token: token).ConfigureAwait(false);

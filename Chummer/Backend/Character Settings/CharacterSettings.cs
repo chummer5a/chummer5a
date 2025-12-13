@@ -4918,10 +4918,11 @@ namespace Chummer
                                     ValueVersion objExistingVersion = default;
                                     foreach (KeyValuePair<string, bool> kvpExisting in lstMatchingEntries)
                                     {
-                                        CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(kvpExisting.Key, out ValueVersion objExistingVersionFromKey);
+                                        string strKey = kvpExisting.Key;
+                                        CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strKey, out ValueVersion objExistingVersionFromKey);
                                         if (strExistingKey == null || objExistingVersionFromKey > objExistingVersion)
                                         {
-                                            strExistingKey = kvpExisting.Key;
+                                            strExistingKey = strKey;
                                             objExistingVersion = objExistingVersionFromKey;
                                         }
                                     }
@@ -5006,10 +5007,11 @@ namespace Chummer
                                         ValueVersion objExistingVersion = default;
                                         foreach (KeyValuePair<string, bool> kvpExisting in lstMatchingEntries)
                                         {
-                                            CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(kvpExisting.Key, out ValueVersion objExistingVersionFromKey);
+                                            string strKey = kvpExisting.Key;
+                                            CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strKey, out ValueVersion objExistingVersionFromKey);
                                             if (strExistingKey == null || objExistingVersionFromKey > objExistingVersion)
                                             {
-                                                strExistingKey = kvpExisting.Key;
+                                                strExistingKey = strKey;
                                                 objExistingVersion = objExistingVersionFromKey;
                                             }
                                         }
@@ -6435,7 +6437,8 @@ namespace Chummer
                 }
 
                 if (sbdPath.Length > 0)
-                    return sbdPath.Insert(0, '(').Append(')').ToString();
+                    // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                    return string.Concat("(", sbdPath.Append(')').ToString());
             }
 
             // We have only the opening parentheses; return an empty string
@@ -6490,7 +6493,8 @@ namespace Chummer
                 }
 
                 if (sbdPath.Length > 0)
-                    return sbdPath.Insert(0, '(').Append(')').ToString();
+                    // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                    return string.Concat("(", sbdPath.Append(')').ToString());
             }
 
             // We have only the opening parentheses; return an empty string

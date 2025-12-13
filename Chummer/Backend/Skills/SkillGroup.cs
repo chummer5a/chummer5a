@@ -2122,12 +2122,12 @@ namespace Chummer.Backend.Skills
                 {
                     if (!await GetIsDisabledAsync(token).ConfigureAwait(false) && SkillList.Count != 0)
                     {
-                        if (await _objCharacter.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false))
-                        {
-                            if ((await _objCharacterSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
+                        if (await _objCharacter.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false)
+                            && ((await _objCharacterSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
                                  && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
-                                || !await _objCharacterSettings.GetUsePointsOnBrokenGroupsAsync(token).ConfigureAwait(false))
-                                setProperties.Add(nameof(BaseUnbroken));
+                                || !await _objCharacterSettings.GetUsePointsOnBrokenGroupsAsync(token).ConfigureAwait(false)))
+                        {
+                            setProperties.Add(nameof(BaseUnbroken));
                         }
 
                         setProperties.Add(nameof(KarmaUnbroken));

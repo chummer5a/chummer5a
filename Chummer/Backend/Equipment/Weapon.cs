@@ -5242,11 +5242,24 @@ namespace Chummer.Backend.Equipment
                                             {
                                                 sbdThisAmmo.Append(strModifyAmmoCapacity, ')');
                                                 int intAddParenthesesCount = strModifyAmmoCapacity.Count(x => x == ')')
-                                                                             - strModifyAmmoCapacity.Count(x => x == '(');
-                                                for (int i = 0; i < intAddParenthesesCount + 1; ++i)
-                                                    sbdThisAmmo.Insert(0, '(');
-                                                for (int i = 0; i < -intAddParenthesesCount; ++i)
-                                                    sbdThisAmmo.Append(')');
+                                                                             - strModifyAmmoCapacity.Count(x => x == '(') + 1;
+                                                if (intAddParenthesesCount > 0)
+                                                {
+                                                    char[] achrTemp = ArrayPool<char>.Shared.Rent(intAddParenthesesCount);
+                                                    try
+                                                    {
+                                                        // Repeated StringBuilder.Insert can hammer the GC, so this is to allow us to call it just once
+                                                        for (int i = 0; i < intAddParenthesesCount; ++i)
+                                                            achrTemp[i] = '(';
+                                                        sbdThisAmmo.Insert(0, achrTemp, 0, intAddParenthesesCount);
+                                                    }
+                                                    finally
+                                                    {
+                                                        ArrayPool<char>.Shared.Return(achrTemp);
+                                                    }
+                                                }
+                                                else if (intAddParenthesesCount < 0)
+                                                    sbdThisAmmo.Append(')', -intAddParenthesesCount);
                                             }
                                         }
                                     }
@@ -5270,11 +5283,24 @@ namespace Chummer.Backend.Equipment
                                         {
                                             sbdThisAmmo.Append(strModifyAmmoCapacity, ')');
                                             int intAddParenthesesCount = strModifyAmmoCapacity.Count(x => x == ')')
-                                                                         - strModifyAmmoCapacity.Count(x => x == '(');
-                                            for (int i = 0; i < intAddParenthesesCount + 1; ++i)
-                                                sbdThisAmmo.Insert(0, '(');
-                                            for (int i = 0; i < -intAddParenthesesCount; ++i)
-                                                sbdThisAmmo.Append(')');
+                                                                         - strModifyAmmoCapacity.Count(x => x == '(') + 1;
+                                            if (intAddParenthesesCount > 0)
+                                            {
+                                                char[] achrTemp = ArrayPool<char>.Shared.Rent(intAddParenthesesCount);
+                                                try
+                                                {
+                                                    // Repeated StringBuilder.Insert can hammer the GC, so this is to allow us to call it just once
+                                                    for (int i = 0; i < intAddParenthesesCount + 1; ++i)
+                                                        achrTemp[i] = '(';
+                                                    sbdThisAmmo.Insert(0, achrTemp, 0, intAddParenthesesCount);
+                                                }
+                                                finally
+                                                {
+                                                    ArrayPool<char>.Shared.Return(achrTemp);
+                                                }
+                                            }
+                                            else if (intAddParenthesesCount < 0)
+                                                sbdThisAmmo.Append(')', -intAddParenthesesCount);
                                         }
                                     }
                                 }, token);
@@ -7678,7 +7704,8 @@ namespace Chummer.Backend.Equipment
                     }
 
                     if (sbdBonusAccuracy.Length != 0)
-                        strAccuracy = sbdBonusAccuracy.Insert(0, '(', strAccuracy, ')').ToString();
+                        // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                        strAccuracy = string.Concat("(", strAccuracy, ")", sbdBonusAccuracy.ToString());
                 }
             }
 
@@ -7932,7 +7959,8 @@ namespace Chummer.Backend.Equipment
                     }
 
                     if (sbdBonusAccuracy.Length != 0)
-                        strAccuracy = sbdBonusAccuracy.Insert(0, '(', strAccuracy, ')').ToString();
+                        // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                        strAccuracy = string.Concat("(", strAccuracy, ")", sbdBonusAccuracy.ToString());
                 }
             }
 

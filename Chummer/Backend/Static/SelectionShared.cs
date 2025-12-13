@@ -3353,7 +3353,7 @@ namespace Chummer
                             {
                                 lstWeapons.AddRange(await objMount.Weapons.GetAllDescendantsAsync(
                                                 x => x.UnderbarrelWeapons, token).ConfigureAwait(false));
-                            }).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
                         foreach (Weapon objWeapon in lstWeapons)
                             intMods += await objWeapon.WeaponAccessories.CountAsync(x => x.SpecialModification, token).ConfigureAwait(false);

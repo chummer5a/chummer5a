@@ -1511,7 +1511,7 @@ namespace Chummer
 
                             if (BarehandedAdept && !blnForce)
                             {
-                                sbdReturn.Insert(0, "2*(", ')');
+                                sbdReturn.Insert(0, "2*(").Append(')');
                             }
 
                             _objCharacter.ProcessAttributesInXPath(sbdReturn);
@@ -1617,7 +1617,7 @@ namespace Chummer
 
                         if (BarehandedAdept && !blnForce)
                         {
-                            sbdReturn.Insert(0, "2*(", ')');
+                            sbdReturn.Insert(0, "2*(").Append(')');
                         }
 
                         await _objCharacter.ProcessAttributesInXPathAsync(sbdReturn, token: token).ConfigureAwait(false);

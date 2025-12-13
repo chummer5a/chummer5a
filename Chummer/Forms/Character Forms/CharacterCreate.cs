@@ -21926,9 +21926,10 @@ namespace Chummer
 
                 if (!blnValid && sbdMessage.Length > 0)
                 {
-                    sbdMessage.Insert(0, await LanguageManager.GetStringAsync("Message_InvalidBeginning", token: token)
-                                                       .ConfigureAwait(false));
-                    await Program.ShowScrollableMessageBoxAsync(this, sbdMessage.ToString(),
+                    // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                    string strMessage = string.Concat(await LanguageManager.GetStringAsync("Message_InvalidBeginning", token: token)
+                                                       .ConfigureAwait(false), sbdMessage.ToString());
+                    await Program.ShowScrollableMessageBoxAsync(this, strMessage,
                         await LanguageManager
                             .GetStringAsync("MessageTitle_Invalid", token: token)
                             .ConfigureAwait(false),

@@ -1139,7 +1139,8 @@ namespace Chummer
                                 sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearchText));
 
                             if (sbdFilter.Length > 0)
-                                strFilter = sbdFilter.Insert(0, '[').Append(']').ToString();
+                                // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                                strFilter = string.Concat("[", sbdFilter.Append(']').ToString());
                         }
 
                         foreach (XPathNavigator xmlMetatype in _xmlBaseMetatypeDataNode.Select(

@@ -2606,7 +2606,8 @@ namespace Chummer.Backend.Attributes
                                 _objCharacter.Cyberware.ForEach(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace));
                             }
 
-                            return _strCachedToolTip = sbdModifier.Insert(0, CurrentDisplayAbbrev, strSpace, "(", Value.ToString(GlobalSettings.CultureInfo), ")").ToString();
+                            // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                            return _strCachedToolTip = StringExtensions.ConcatFast(CurrentDisplayAbbrev, strSpace, "(", Value.ToString(GlobalSettings.CultureInfo), ")", sbdModifier.ToString());
                         }
                     }
                 }
@@ -2835,7 +2836,8 @@ namespace Chummer.Backend.Attributes
                             await _objCharacter.Cyberware.ForEachAsync(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace), token: token).ConfigureAwait(false);
                         }
 
-                        return _strCachedToolTip = sbdModifier.Insert(0, await GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false), strSpace, "(", (await GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ")").ToString();
+                        // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                        return _strCachedToolTip = StringExtensions.ConcatFast(await GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false), strSpace, "(", (await GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ")", sbdModifier.ToString());
                     }
                 }
             }
