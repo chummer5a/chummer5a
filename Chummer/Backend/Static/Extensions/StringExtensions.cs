@@ -86,6 +86,99 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Version of <see cref="string.Concat(string, string)"/> for chars that is faster because it does not require converting the chars to strings before concatenation.
+        /// </summary>
+        public static unsafe string ConcatFast(char chr0, char chr1)
+        {
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            char* achrNewChars = stackalloc char[2];
+            achrNewChars[0] = chr0;
+            achrNewChars[1] = chr1;
+            return new string(achrNewChars, 0, 2);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string, string, string)"/> for chars that is faster because it does not require converting the chars to strings before concatenation.
+        /// </summary>
+        public static unsafe string ConcatFast(char chr0, char chr1, char chr2)
+        {
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            char* achrNewChars = stackalloc char[3];
+            achrNewChars[0] = chr0;
+            achrNewChars[1] = chr1;
+            achrNewChars[2] = chr2;
+            return new string(achrNewChars, 0, 3);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string, string, string, string)"/> for chars that is faster because it does not require converting the chars to strings before concatenation.
+        /// </summary>
+        public static unsafe string ConcatFast(char chr0, char chr1, char chr2, char chr3)
+        {
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            char* achrNewChars = stackalloc char[4];
+            achrNewChars[0] = chr0;
+            achrNewChars[1] = chr1;
+            achrNewChars[2] = chr2;
+            achrNewChars[3] = chr3;
+            return new string(achrNewChars, 0, 4);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string, string)"/> for chars that is potentially faster because it does not require converting the chars to strings before concatenation.
+        /// </summary>
+        public static string ConcatFast(string str0, char chr1)
+        {
+            int intLoopLength = str0?.Length ?? 0;
+            if (intLoopLength == 0)
+                return chr1.ToString();
+            int intNewLength = intLoopLength + 1;
+            if (intNewLength > Utils.MaxStackLimit16BitTypes)
+            {
+                return string.Concat(str0, chr1.ToString());
+            }
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intNewLength];
+                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                fixed (char* src = str0)
+                {
+                    Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intNewLength * sizeof(char), intLoopLength * sizeof(char));
+                }
+                achrNewChars[intLoopLength] = chr1;
+                return new string(achrNewChars, 0, intNewLength);
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string, string)"/> for chars that is potentially faster because it does not require converting the chars to strings before concatenation.
+        /// </summary>
+        public static string ConcatFast(char chr0, string str1)
+        {
+            int intLoopLength = str1?.Length ?? 0;
+            if (intLoopLength == 0)
+                return chr0.ToString();
+            int intNewLength = intLoopLength + 1;
+            if (intNewLength > Utils.MaxStackLimit16BitTypes)
+            {
+                return string.Concat(chr0.ToString(), str1);
+            }
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intNewLength];
+                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                achrNewChars[0] = chr0;
+                fixed (char* src = str1)
+                {
+                    Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + 1), intNewLength * sizeof(char), intLoopLength * sizeof(char));
+                }
+                return new string(achrNewChars, 0, intNewLength);
+            }
+        }
+
+        /// <summary>
         /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string ConcatFast(params string[] lstStrings)
@@ -5679,6 +5772,7 @@ namespace Chummer
 
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
+                sbdReturn.EnsureCapacity(inputRtf.Length);
                 for (; objMatch.Success; objMatch = objMatch.NextMatch())
                 {
                     token.ThrowIfCancellationRequested();

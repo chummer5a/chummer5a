@@ -6514,6 +6514,7 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdBookXPath))
                 {
+                    sbdBookXPath.EnsureCapacity(_setBooks.Count * 16 - 2);
                     sbdBookXPath.Append('(');
                     foreach (string strBook in _setBooks)
                     {
@@ -6547,6 +6548,7 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdBookXPath))
                 {
+                    sbdBookXPath.EnsureCapacity(_setBooks.Count * 16 - 2);
                     sbdBookXPath.Append('(');
                     foreach (string strBook in _setBooks)
                     {
