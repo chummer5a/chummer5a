@@ -397,6 +397,9 @@ namespace Chummer
                                                                      "/chummer/metatypes/metatype", token: token))
                 {
                     string strName = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value;
+                    // Skip metatype entries that don't have a valid name to prevent null Value in ListItem
+                    if (string.IsNullOrEmpty(strName))
+                        continue;
                     string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                                 ?? strName;
                     lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
@@ -410,6 +413,7 @@ namespace Chummer
                             string strMetavariantName
                                 = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                   ?? string.Empty;
+                            // Skip metavariant entries that don't have a valid name
                             if (!string.IsNullOrEmpty(strMetavariantName) &&
                                 (lstMetatypes.Count == 0 || lstMetatypes.TrueForAll(
                                     x => !strMetavariantName.Equals(x.Value?.ToString(),
@@ -431,9 +435,9 @@ namespace Chummer
 
         private async Task DoDataBindings(CancellationToken token = default)
         {
-            string strMetatype = await _objContact.GetMetatypeAsync(token).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(strMetatype))
-                await cboMetatype.DoThreadSafeAsync(x => x.SelectedValue = strMetatype, token: token).ConfigureAwait(false);
+            string strMetatypeValue = await _objContact.GetMetatypeValueForComboBoxAsync(token).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(strMetatypeValue))
+                await cboMetatype.DoThreadSafeAsync(x => x.SelectedValue = strMetatypeValue, token: token).ConfigureAwait(false);
             if (await cboMetatype.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
             {
                 string strText = await _objContact.GetDisplayMetatypeAsync(token).ConfigureAwait(false);

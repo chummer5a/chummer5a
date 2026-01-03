@@ -1484,6 +1484,36 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Returns the metatype value that should be used for ComboBox matching.
+        /// For linked characters with metavariants, returns the metavariant name.
+        /// Otherwise, returns the base metatype name.
+        /// </summary>
+        public async Task<string> GetMetatypeValueForComboBoxAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                {
+                    string strMetavariant = await objLinkedCharacter.GetMetavariantAsync(token).ConfigureAwait(false);
+                    // If there's a metavariant, return it (as that's how it's stored in the ComboBox)
+                    if (!string.IsNullOrEmpty(strMetavariant))
+                        return strMetavariant;
+                    // Otherwise, return the base metatype
+                    return await objLinkedCharacter.GetMetatypeAsync(token).ConfigureAwait(false);
+                }
+
+                return _strMetatype;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string DisplayGenderMethod(string strLanguage)
         {
             string strGender = Gender;
