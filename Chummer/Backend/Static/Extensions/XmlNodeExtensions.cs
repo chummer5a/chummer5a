@@ -530,7 +530,10 @@ namespace Chummer
             if (firstChild.NextSibling == null)
             {
                 XmlNodeType nodeType = firstChild.NodeType;
-                return !((nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace) && !string.IsNullOrEmpty(firstChild.Value));
+                if (nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace)
+                    return string.IsNullOrWhiteSpace(firstChild.Value);
+                // For Element nodes or other types, recursively check if they have content
+                return CheckChildren(xmlNode);
             }
 
             return CheckChildren(xmlNode);
@@ -541,8 +544,8 @@ namespace Chummer
                 {
                     if (xmlNodeInner.FirstChild == null)
                     {
-                        XmlNodeType nodeType = firstChild.NodeType;
-                        if ((nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace) && !string.IsNullOrEmpty(firstChild.Value))
+                        XmlNodeType nodeType = xmlNodeInner.NodeType;
+                        if ((nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace) && !string.IsNullOrWhiteSpace(xmlNodeInner.Value))
                             return false;
                     }
                     else if (!CheckChildren(xmlNodeInner))

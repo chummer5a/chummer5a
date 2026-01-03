@@ -35,6 +35,9 @@
     <AssemblyAttribute Include="System.Runtime.InteropServices.Guid">
       <_Parameter1>28a46ea3-4e45-4842-b8ae-313afde61173</_Parameter1>
     </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Chummer.Tests</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
   <PropertyGroup>
     <StartupObject>Chummer.Program</StartupObject>
