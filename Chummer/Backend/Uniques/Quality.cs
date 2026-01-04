@@ -652,9 +652,10 @@ namespace Chummer
                 objNode.TryGetStringFieldQuickly("source", ref _strSource);
                 objNode.TryGetStringFieldQuickly("page", ref _strPage);
                 objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
-                _nodBonus = objNode["bonus"];
-                _nodFirstLevelBonus = objNode["firstlevelbonus"] ?? (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["firstlevelbonus"];
-                _nodNaturalWeaponsNode = objNode["naturalweapons"] ?? (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["naturalweapons"];
+                XmlNode objSourceNode = blnSync ? objMyNode?.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
+                objNode.TryGetNodeWithSourceFallback("bonus", ref _nodBonus, objSourceNode);
+                objNode.TryGetNodeWithSourceFallback("firstlevelbonus", ref _nodFirstLevelBonus, objSourceNode);
+                objNode.TryGetNodeWithSourceFallback("naturalweapons", ref _nodNaturalWeaponsNode, objSourceNode);
                 _nodDiscounts = objNode.SelectSingleNodeAndCacheExpressionAsNavigator("costdiscount", token);
                 objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
                 objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);

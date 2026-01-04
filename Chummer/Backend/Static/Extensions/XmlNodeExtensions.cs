@@ -518,6 +518,121 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Attempts to get a node from the saved data, falling back to the source XML node if the saved node is null or empty.
+        /// This is useful for legacy shims when loading saved data that may have empty elements that should be restored from source definitions.
+        /// Like <see cref="TryGetStringFieldQuickly" /> for nodes, with source fallback support.
+        /// </summary>
+        /// <param name="objSavedNode">The XML node from saved data (e.g., character file)</param>
+        /// <param name="strFieldName">The name of the field/node to retrieve</param>
+        /// <param name="read">The variable to save the read node to. Will be set to the node from saved data if it exists and is not empty, otherwise the node from source data, or null if neither exists.</param>
+        /// <param name="objSourceNode">The XML node from source data (e.g., gear definition). Can be null.</param>
+        /// <returns>True if a node was found (either from saved or source data), false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetNodeWithSourceFallback(this XmlNode objSavedNode, string strFieldName, ref XmlNode read, XmlNode objSourceNode)
+        {
+            XmlNode objNode = objSavedNode?[strFieldName];
+            if (!objNode.IsNullOrInnerTextIsEmpty())
+            {
+                read = objNode;
+                return true;
+            }
+            read = objSourceNode?[strFieldName];
+            return read != null;
+        }
+
+        /// <summary>
+        /// Attempts to get an element from the saved data, falling back to the source XML node if the saved node is null or empty.
+        /// Overload for <see cref="TryGetNodeWithSourceFallback(XmlNode, string, ref XmlNode, XmlNode)" /> that works with XmlElement fields.
+        /// </summary>
+        /// <param name="objSavedNode">The XML node from saved data (e.g., character file)</param>
+        /// <param name="strFieldName">The name of the field/node to retrieve</param>
+        /// <param name="read">The variable to save the read element to. Will be set to the element from saved data if it exists and is not empty, otherwise the element from source data, or null if neither exists.</param>
+        /// <param name="objSourceNode">The XML node from source data (e.g., gear definition). Can be null.</param>
+        /// <returns>True if an element was found (either from saved or source data), false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetNodeWithSourceFallback(this XmlNode objSavedNode, string strFieldName, ref XmlElement read, XmlNode objSourceNode)
+        {
+            XmlElement objElement = objSavedNode?[strFieldName] as XmlElement;
+            if (objElement != null && !objElement.IsNullOrInnerTextIsEmpty())
+            {
+                read = objElement;
+                return true;
+            }
+            read = objSourceNode?[strFieldName] as XmlElement;
+            return read != null;
+        }
+
+        /// <summary>
+        /// Attempts to get a node from the saved data, falling back to the source XPathNavigator if the saved node is null or empty.
+        /// This is useful for legacy shims when loading saved data that may have empty elements that should be restored from source definitions.
+        /// Like <see cref="TryGetStringFieldQuickly" /> for nodes, with source fallback support.
+        /// This overload accepts XPathNavigator for the source to avoid the performance cost of calling GetNode().
+        /// </summary>
+        /// <param name="objSavedNode">The XML node from saved data (e.g., character file)</param>
+        /// <param name="strFieldName">The name of the field/node to retrieve</param>
+        /// <param name="read">The variable to save the read node to. Will be set to the node from saved data if it exists and is not empty, otherwise converted from the source XPathNavigator, or null if neither exists.</param>
+        /// <param name="objSourceNavigator">The XPathNavigator from source data (e.g., gear definition). Can be null.</param>
+        /// <returns>True if a node was found (either from saved or source data), false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetNodeWithSourceFallback(this XmlNode objSavedNode, string strFieldName, ref XmlNode read, XPathNavigator objSourceNavigator)
+        {
+            XmlNode objNode = objSavedNode?[strFieldName];
+            if (!objNode.IsNullOrInnerTextIsEmpty())
+            {
+                read = objNode;
+                return true;
+            }
+            if (objSourceNavigator != null)
+            {
+                XPathNavigator objSourceNode = objSourceNavigator.SelectSingleNode(strFieldName);
+                if (objSourceNode != null && !objSourceNode.IsNullOrInnerTextIsEmpty())
+                {
+                    // Convert XPathNavigator to XmlNode using the saved node's document
+                    XmlDocument objDocument = objSavedNode?.OwnerDocument ?? new XmlDocument();
+                    read = objSourceNode.ToXmlNode(objDocument);
+                    return true;
+                }
+            }
+            read = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Attempts to get an element from the saved data, falling back to the source XPathNavigator if the saved element is null or empty.
+        /// Overload for <see cref="TryGetNodeWithSourceFallback(XmlNode, string, ref XmlNode, XPathNavigator)" /> that works with XmlElement fields.
+        /// This overload accepts XPathNavigator for the source to avoid the performance cost of calling GetNode().
+        /// </summary>
+        /// <param name="objSavedNode">The XML node from saved data (e.g., character file)</param>
+        /// <param name="strFieldName">The name of the field/element to retrieve</param>
+        /// <param name="read">The variable to save the read element to. Will be set to the element from saved data if it exists and is not empty, otherwise converted from the source XPathNavigator, or null if neither exists.</param>
+        /// <param name="objSourceNavigator">The XPathNavigator from source data (e.g., gear definition). Can be null.</param>
+        /// <returns>True if an element was found (either from saved or source data), false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetNodeWithSourceFallback(this XmlNode objSavedNode, string strFieldName, ref XmlElement read, XPathNavigator objSourceNavigator)
+        {
+            XmlElement objElement = objSavedNode?[strFieldName] as XmlElement;
+            if (objElement != null && !objElement.IsNullOrInnerTextIsEmpty())
+            {
+                read = objElement;
+                return true;
+            }
+            if (objSourceNavigator != null)
+            {
+                XPathNavigator objSourceNode = objSourceNavigator.SelectSingleNode(strFieldName);
+                if (objSourceNode != null && !objSourceNode.IsNullOrInnerTextIsEmpty())
+                {
+                    // Convert XPathNavigator to XmlNode using the saved node's document
+                    XmlDocument objDocument = objSavedNode?.OwnerDocument ?? new XmlDocument();
+                    XmlNode objConvertedNode = objSourceNode.ToXmlNode(objDocument);
+                    read = objConvertedNode as XmlElement;
+                    return read != null;
+                }
+            }
+            read = null;
+            return false;
+        }
+
+        /// <summary>
         /// Syntactic sugar for an equivalent of calling <see cref="string.IsNullOrEmpty(string)"/> on <see cref="XmlNode.InnerText"/> with a null check, but without needing any sort of heap allocations.
         /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
         /// </summary>

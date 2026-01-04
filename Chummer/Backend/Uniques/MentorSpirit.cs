@@ -634,7 +634,8 @@ namespace Chummer
                 }
 
                 objNode.TryGetBoolFieldQuickly("mentormask", ref _blnMentorMask);
-                _nodBonus = objNode["bonus"];
+                XPathNavigator objSourceNavigator = blnSync ? objMyNode?.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
+                objNode.TryGetNodeWithSourceFallback("bonus", ref _nodBonus, objSourceNavigator);
                 _nodChoice1 = objNode["choice1"];
                 _nodChoice2 = objNode["choice2"];
 

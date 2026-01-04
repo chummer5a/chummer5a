@@ -765,16 +765,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("ammobonus", ref _strAmmoBonus);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
-            _nodWirelessBonus = objNode["wirelessbonus"];
-            _nodWirelessWeaponBonus = objNode["wirelessweaponbonus"];
-            // Legacy sweep
-            if (_objCharacter.LastSavedVersion < new ValueVersion(5, 225, 933))
-            {
-                if (_nodWirelessBonus == null)
-                    _nodWirelessBonus = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["wirelessbonus"];
-                if (_nodWirelessWeaponBonus == null)
-                    _nodWirelessWeaponBonus = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["wirelessweaponbonus"];
-            }
+            XmlNode objSourceNode = blnSync ? objMyNode?.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
+            objNode.TryGetNodeWithSourceFallback("wirelessbonus", ref _nodWirelessBonus, objSourceNode);
+            objNode.TryGetNodeWithSourceFallback("wirelessweaponbonus", ref _nodWirelessWeaponBonus, objSourceNode);
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
             if (blnCopy)

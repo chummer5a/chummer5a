@@ -579,7 +579,8 @@ namespace Chummer.Backend.Uniques
                     }
                 }
 
-                _nodBonus = xmlNode["bonus"];
+                XPathNavigator objSourceNavigator = blnSync ? objMyNode?.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
+                xmlNode.TryGetNodeWithSourceFallback("bonus", ref _nodBonus, objSourceNavigator);
             }
             finally
             {

@@ -2564,12 +2564,13 @@ namespace Chummer.Backend.Equipment
                         SourceType == Improvement.ImprovementSource.Bioware)
                         objNode.TryGetBoolFieldQuickly("prototypetranshuman", ref _blnPrototypeTranshuman);
 
-                    _nodBonus = objNode["bonus"] ?? (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["bonus"];
-                    _nodPairBonus = objNode["pairbonus"] ?? (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["pairbonus"];
+                    XmlNode objSourceNode = blnSync ? objMyNode?.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
+                    objNode.TryGetNodeWithSourceFallback("bonus", ref _nodBonus, objSourceNode);
+                    objNode.TryGetNodeWithSourceFallback("pairbonus", ref _nodPairBonus, objSourceNode);
                     XmlElement xmlPairIncludeNode = objNode["pairinclude"];
                     if (xmlPairIncludeNode == null)
                     {
-                        xmlPairIncludeNode = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["pairinclude"];
+                        xmlPairIncludeNode = objSourceNode?["pairinclude"];
                         _lstIncludeInPairBonus.Add(Name);
                     }
 
@@ -2585,8 +2586,8 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    _nodWirelessBonus = objNode["wirelessbonus"] ?? (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["wirelessbonus"];
-                    _nodWirelessPairBonus = objNode["wirelesspairbonus"] ?? (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["wirelesspairbonus"];
+                    objNode.TryGetNodeWithSourceFallback("wirelessbonus", ref _nodWirelessBonus, objSourceNode);
+                    objNode.TryGetNodeWithSourceFallback("wirelesspairbonus", ref _nodWirelessPairBonus, objSourceNode);
                     xmlPairIncludeNode = objNode["wirelesspairinclude"];
                     if (xmlPairIncludeNode == null)
                     {

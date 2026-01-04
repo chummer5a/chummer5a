@@ -1836,13 +1836,9 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            _nodWirelessBonus = objNode["wirelessbonus"];
-            _nodWirelessWeaponBonus = objNode["wirelessweaponbonus"];
-            // Legacy sweep
-            if (_objCharacter.LastSavedVersion < new ValueVersion(5, 225, 933) && _nodWirelessWeaponBonus == null)
-            {
-                _nodWirelessWeaponBonus = (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?["wirelessweaponbonus"];
-            }
+            XmlNode objSourceNode = blnSync ? objMyNode?.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
+            objNode.TryGetNodeWithSourceFallback("wirelessbonus", ref _nodWirelessBonus, objSourceNode);
+            objNode.TryGetNodeWithSourceFallback("wirelessweaponbonus", ref _nodWirelessWeaponBonus, objSourceNode);
             objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn);
 
             //#1544 Ammunition not loading or available.

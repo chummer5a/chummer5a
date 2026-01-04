@@ -336,7 +336,8 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("paidwithkarma", ref _blnPaidWithKarma);
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
 
-            _nodBonus = objNode["bonus"];
+            XPathNavigator objSourceNavigator = blnSync ? this.GetNodeXPath(token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false);
+            objNode.TryGetNodeWithSourceFallback("bonus", ref _nodBonus, objSourceNavigator);
             if (objNode["improvementsource"] != null)
                 SourceType = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerTextViaPool(token));
 

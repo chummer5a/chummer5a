@@ -741,6 +741,50 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for an equivalent of calling <see cref="string.IsNullOrWhiteSpace(string)"/> on <see cref="XPathNavigator.InnerXml"/> with a null check.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNullOrInnerTextIsEmpty(this XPathNavigator xmlNode)
+        {
+            if (xmlNode == null)
+                return true;
+            
+            // For element nodes, check if they have any meaningful content
+            if (xmlNode.NodeType == XPathNodeType.Element)
+            {
+                if (!xmlNode.MoveToFirstChild())
+                    return true;
+                
+                do
+                {
+                    XPathNodeType nodeType = xmlNode.NodeType;
+                    if (nodeType == XPathNodeType.Text || nodeType == XPathNodeType.SignificantWhitespace || nodeType == XPathNodeType.Whitespace)
+                    {
+                        if (!string.IsNullOrWhiteSpace(xmlNode.Value))
+                        {
+                            xmlNode.MoveToParent();
+                            return false;
+                        }
+                    }
+                    else if (nodeType == XPathNodeType.Element)
+                    {
+                        // If there's a child element, the node is not empty
+                        xmlNode.MoveToParent();
+                        return false;
+                    }
+                }
+                while (xmlNode.MoveToNext());
+                
+                xmlNode.MoveToParent();
+                return true;
+            }
+            
+            // For other node types, check if value is empty
+            return string.IsNullOrWhiteSpace(xmlNode.Value);
+        }
+
+        /// <summary>
         /// Copy of <see cref="XPathNavigator.OuterXml"/>, but going through <see cref="Utils.StringBuilderPool"/> instead creating a new one via heap allocation
         /// </summary>
         public static string OuterXmlViaPool(this XPathNavigator xmlNode, CancellationToken token = default)
