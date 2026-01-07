@@ -2421,15 +2421,23 @@ namespace Chummer
 
                         string strPrimaryArm = await CharacterObject.GetPrimaryArmAsync(token).ConfigureAwait(false);
 
-                        await cboPrimaryArm.PopulateWithListItemsAsync(lstPrimaryArm, token)
-                            .ConfigureAwait(false);
-                        await cboPrimaryArm.DoThreadSafeAsync(x =>
+                        IsRefreshing = true;
+                        try
                         {
-                            if (!string.IsNullOrEmpty(strPrimaryArm))
-                                x.SelectedValue = strPrimaryArm;
-                            if (x.SelectedIndex == -1)
-                                x.SelectedIndex = 0;
-                        }, token).ConfigureAwait(false);
+                            await cboPrimaryArm.PopulateWithListItemsAsync(lstPrimaryArm, token)
+                                .ConfigureAwait(false);
+                            await cboPrimaryArm.DoThreadSafeAsync(x =>
+                            {
+                                if (!string.IsNullOrEmpty(strPrimaryArm))
+                                    x.SelectedValue = strPrimaryArm;
+                                if (x.SelectedIndex == -1)
+                                    x.SelectedIndex = 0;
+                            }, token).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
                     }
                 }
 

@@ -3101,15 +3101,23 @@ namespace Chummer
 
                         string strPrimaryArm = await CharacterObject.GetPrimaryArmAsync(token).ConfigureAwait(false);
 
-                        await cboPrimaryArm.PopulateWithListItemsAsync(lstPrimaryArm, token)
-                            .ConfigureAwait(false);
-                        await cboPrimaryArm.DoThreadSafeAsync(x =>
+                        IsRefreshing = true;
+                        try
                         {
-                            if (!string.IsNullOrEmpty(strPrimaryArm))
-                                x.SelectedValue = strPrimaryArm;
-                            if (x.SelectedIndex == -1)
-                                x.SelectedIndex = 0;
-                        }, token).ConfigureAwait(false);
+                            await cboPrimaryArm.PopulateWithListItemsAsync(lstPrimaryArm, token)
+                                .ConfigureAwait(false);
+                            await cboPrimaryArm.DoThreadSafeAsync(x =>
+                            {
+                                if (!string.IsNullOrEmpty(strPrimaryArm))
+                                    x.SelectedValue = strPrimaryArm;
+                                if (x.SelectedIndex == -1)
+                                    x.SelectedIndex = 0;
+                            }, token).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
                     }
                 }
 
@@ -22061,16 +22069,25 @@ namespace Chummer
                                     }
 
                                     token.ThrowIfCancellationRequested();
-                                    await cboWeaponAmmo.PopulateWithListItemsAsync(lstAmmo, token)
-                                                       .ConfigureAwait(false);
-                                    await cboWeaponAmmo.DoThreadSafeAsync(x =>
+                                    // Use IsRefreshing to prevent SelectedIndexChanged event handler from running during repopulation.
+                                    IsRefreshing = true;
+                                    try
                                     {
-                                        x.SelectedValue
-                                            = objWeapon.ActiveAmmoSlot.ToString(GlobalSettings.InvariantCultureInfo);
-                                        if (x.SelectedIndex == -1)
-                                            x.SelectedIndex = 0;
-                                        x.Enabled = lstAmmo.Count > 1;
-                                    }, token).ConfigureAwait(false);
+                                        await cboWeaponAmmo.PopulateWithListItemsAsync(lstAmmo, token)
+                                                           .ConfigureAwait(false);
+                                        await cboWeaponAmmo.DoThreadSafeAsync(x =>
+                                        {
+                                            x.SelectedValue
+                                                = objWeapon.ActiveAmmoSlot.ToString(GlobalSettings.InvariantCultureInfo);
+                                            if (x.SelectedIndex == -1)
+                                                x.SelectedIndex = 0;
+                                            x.Enabled = lstAmmo.Count > 1;
+                                        }, token).ConfigureAwait(false);
+                                    }
+                                    finally
+                                    {
+                                        IsRefreshing = false;
+                                    }
                                 }
                             }
                             else
@@ -23136,16 +23153,25 @@ namespace Chummer
                                         await LanguageManager.GetStringAsync("String_Firewall", token: token)
                                                              .ConfigureAwait(false)));
                                 token.ThrowIfCancellationRequested();
-                                await cboArmorOverclocker.PopulateWithListItemsAsync(lstOverclocker, token)
-                                                         .ConfigureAwait(false);
-                                string strOverclocked = await objHasMatrixAttributes.GetOverclockedAsync(token).ConfigureAwait(false);
-                                await cboArmorOverclocker.DoThreadSafeAsync(x =>
+                                // Use IsRefreshing to prevent SelectedIndexChanged event handler from running during repopulation.
+                                IsRefreshing = true;
+                                try
                                 {
-                                    if (!string.IsNullOrEmpty(strOverclocked))
-                                        x.SelectedValue = strOverclocked;
-                                    if (x.SelectedIndex == -1)
-                                        x.SelectedIndex = 0;
-                                }, token).ConfigureAwait(false);
+                                    await cboArmorOverclocker.PopulateWithListItemsAsync(lstOverclocker, token)
+                                                             .ConfigureAwait(false);
+                                    string strOverclocked = await objHasMatrixAttributes.GetOverclockedAsync(token).ConfigureAwait(false);
+                                    await cboArmorOverclocker.DoThreadSafeAsync(x =>
+                                    {
+                                        if (!string.IsNullOrEmpty(strOverclocked))
+                                            x.SelectedValue = strOverclocked;
+                                        if (x.SelectedIndex == -1)
+                                            x.SelectedIndex = 0;
+                                    }, token).ConfigureAwait(false);
+                                }
+                                finally
+                                {
+                                    IsRefreshing = false;
+                                }
                             }
 
                             token.ThrowIfCancellationRequested();
@@ -23483,16 +23509,25 @@ namespace Chummer
                                         await LanguageManager.GetStringAsync("String_Firewall", token: token)
                                                              .ConfigureAwait(false)));
 
-                                await cboGearOverclocker.PopulateWithListItemsAsync(lstOverclocker, token)
-                                                        .ConfigureAwait(false);
-                                string strOverclocked = await objGear.GetOverclockedAsync(token).ConfigureAwait(false);
-                                await cboGearOverclocker.DoThreadSafeAsync(x =>
+                                // Use IsRefreshing to prevent SelectedIndexChanged event handler from running during repopulation.
+                                IsRefreshing = true;
+                                try
                                 {
-                                    if (!string.IsNullOrEmpty(strOverclocked))
-                                        x.SelectedValue = strOverclocked;
-                                    if (x.SelectedIndex == -1)
-                                        x.SelectedIndex = 0;
-                                }, token).ConfigureAwait(false);
+                                    await cboGearOverclocker.PopulateWithListItemsAsync(lstOverclocker, token)
+                                                            .ConfigureAwait(false);
+                                    string strOverclocked = await objGear.GetOverclockedAsync(token).ConfigureAwait(false);
+                                    await cboGearOverclocker.DoThreadSafeAsync(x =>
+                                    {
+                                        if (!string.IsNullOrEmpty(strOverclocked))
+                                            x.SelectedValue = strOverclocked;
+                                        if (x.SelectedIndex == -1)
+                                            x.SelectedIndex = 0;
+                                    }, token).ConfigureAwait(false);
+                                }
+                                finally
+                                {
+                                    IsRefreshing = false;
+                                }
                             }
 
                             await cboGearOverclocker.DoThreadSafeAsync(x => x.Visible = true, token)
@@ -25822,16 +25857,25 @@ namespace Chummer
                                     }
 
                                     token.ThrowIfCancellationRequested();
-                                    await cboVehicleWeaponAmmo.PopulateWithListItemsAsync(lstAmmo, token)
-                                                              .ConfigureAwait(false);
-                                    await cboVehicleWeaponAmmo.DoThreadSafeAsync(x =>
+                                    // Use IsRefreshing to prevent SelectedIndexChanged event handler from running during repopulation.
+                                    IsRefreshing = true;
+                                    try
                                     {
-                                        x.SelectedValue
-                                            = objWeapon.ActiveAmmoSlot.ToString(GlobalSettings.InvariantCultureInfo);
-                                        if (x.SelectedIndex == -1)
-                                            x.SelectedIndex = 0;
-                                        x.Enabled = lstAmmo.Count > 1;
-                                    }, token).ConfigureAwait(false);
+                                        await cboVehicleWeaponAmmo.PopulateWithListItemsAsync(lstAmmo, token)
+                                                                  .ConfigureAwait(false);
+                                        await cboVehicleWeaponAmmo.DoThreadSafeAsync(x =>
+                                        {
+                                            x.SelectedValue
+                                                = objWeapon.ActiveAmmoSlot.ToString(GlobalSettings.InvariantCultureInfo);
+                                            if (x.SelectedIndex == -1)
+                                                x.SelectedIndex = 0;
+                                            x.Enabled = lstAmmo.Count > 1;
+                                        }, token).ConfigureAwait(false);
+                                    }
+                                    finally
+                                    {
+                                        IsRefreshing = false;
+                                    }
                                 }
                             }
                             else
