@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- Character sheet with fancy blocks for the modularity - now with more room for knowledge skills-->
-<!-- Created by AngelForest, modified by nonsequtur -->
+<!-- Character sheet with fancy blocks for the modularity-->
+<!-- Created by AngelForest -->
 <!-- Prototype by Adam Schmidt -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
   <xsl:include href="xt.PreserveHtml.xslt" />
