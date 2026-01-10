@@ -2642,7 +2642,7 @@
   </xsl:template>
 
   <xsl:template name="print_location">
-    <strong style="padding-left:1em; background-color: #D4C3D8; width: 100%;">
+    <strong style="padding-left:1em; width: 100%;">
       <xsl:choose>
         <xsl:when test="location=''"><xsl:value-of select="$lang.SelectedGear" /></xsl:when>
         <xsl:otherwise><xsl:value-of select="location" /></xsl:otherwise>
