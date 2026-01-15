@@ -891,14 +891,14 @@
     <xsl:param name="quality_type" />
     <xsl:param name="quality_count" />
 
-    <xsl:variable name="quality_upper" select="number(1 + $quality_count*(ceiling((count(qualities/quality[qualitytype_english=$quality_type])) div 2)))" />
-    <xsl:variable name="quality_lower" select="number(($quality_count - 1)*(ceiling((count(qualities/quality[qualitytype_english=$quality_type])) div 2))-1)" />
+    <xsl:variable name="quality_upper" select="number($quality_count*(ceiling((count(qualities/quality[qualitytype_english=$quality_type])))))" />
+    <xsl:variable name="quality_lower" select="number(($quality_count - 1)*(ceiling((count(qualities/quality[qualitytype_english=$quality_type])))))" />
   
     <ul style="margin-left:0px;">
       <xsl:for-each select="qualities/quality[qualitytype_english=$quality_type]">
         <xsl:sort select="qualitysource='Metatype'" order='descending' />
         <xsl:sort select="name" />
-       <xsl:if test="(position() &lt; $quality_upper)=true() and (position() &lt; $quality_lower)=false() and $quality_count != 0">
+       <xsl:if test="(position()*2 &lt; $quality_upper+1)=true() and (position()*2 &lt; $quality_lower+1)=false() and $quality_count != 0">
         <li>
           <xsl:if test="qualitysource='Metatype'">
             <xsl:attribute name="style">color:grey;</xsl:attribute>
