@@ -703,8 +703,11 @@
       <xsl:sort select="name" />
 
       <xsl:if test="(position() &lt; $skills_half_count)=true() and (position() &lt; $skills_third_count)=false()">
-        <xsl:if test="position()=1 or position()=$skills_third_count">
+        <xsl:if test="position()=1 or (position()=$skills_third_count and skillcategory != preceding-sibling::skill[1]/skillcategory)">
           <tr><td colspan="3"><strong style="padding-left:2em"><u><xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills" /></u></strong></td></tr>
+        </xsl:if>
+        <xsl:if test="position()=$skills_third_count and (skillcategory != preceding-sibling::skill[1]/skillcategory) = false">
+          <tr><td colspan="3"><strong style="padding-left:2em">→ <u><i><xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills" /></i></u></strong></td></tr>
         </xsl:if>
         <xsl:if test="skillcategory != preceding-sibling::skill[1]/skillcategory and (position()=1 or position()=$skills_third_count)=false()">
           <tr><td colspan="3" style="padding-top:10px;"><strong style="padding-left:2em"><u><xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills" /></u></strong></td></tr>
@@ -796,8 +799,11 @@
       <xsl:sort select="name" />
 
       <xsl:if test="(position() &lt; $skills_half_count)=true() and (position() &lt; $skills_third_count)=false()">
-        <xsl:if test="position()=1 or position()=$skills_third_count">
+        <xsl:if test="position()=1 or (position()=$skills_third_count and skillcategory != preceding-sibling::skill[1]/skillcategory)">
           <tr><td colspan="3"><strong style="padding-left:2em"><u><xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills" /></u></strong></td></tr>
+        </xsl:if>
+        <xsl:if test="position()=$skills_third_count and (skillcategory != preceding-sibling::skill[1]/skillcategory) = false">
+          <tr><td colspan="3"><strong style="padding-left:2em">→ <u><i><xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills" /></i></u></strong></td></tr>
         </xsl:if>
         <xsl:if test="skillcategory != preceding-sibling::skill[1]/skillcategory and (position()=1 or position()=$skills_third_count)=false()">
           <tr><td colspan="3" style="padding-top:10px;"><strong style="padding-left:2em"><u><xsl:value-of select="skillcategory" /><xsl:text> </xsl:text><xsl:value-of select="$lang.Skills" /></u></strong></td></tr>
@@ -1052,8 +1058,8 @@
      </table></td>
       <td><table class="stats armory">
         <xsl:if test="count(msxsl:node-set($sorted_ammunition)/*) &gt; 0">
-        <tr><td colspan="8"><div class="bigheader">[<xsl:value-of select="$lang.RangedWeapons" />]</div></td></tr>
-          <tr><td colspan="8"><hr /></td></tr>
+        <tr><td colspan="8"><div class="bigheader">[<xsl:value-of select="$lang.Ammo" />]</div></td></tr>
+
 
           <xsl:for-each select="msxsl:node-set($sorted_ammunition)/*">
 
@@ -1380,8 +1386,8 @@
         </tr>
       <tr>
         <td></td>
-        <td><strong><xsl:value-of select="$lang.Total" /></strong></td>
-        <td style="text-align: right"><strong><xsl:value-of select="armor" /></strong></td>
+        <td></td>
+        <td style="text-align: right"><strong><xsl:value-of select="$lang.Total" />: <xsl:value-of select="armor" /></strong></td>
       </tr>
     </table>
   </xsl:template>
