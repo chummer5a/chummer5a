@@ -7343,6 +7343,18 @@
       <text>No Talent Choices Available</text>
     </string>
     <string>
+      <key>Message_NoGradesAvailable</key>
+      <text>No grades are available for the selected item.</text>
+    </string>
+    <string>
+      <key>MessageTitle_NoGradesAvailable</key>
+      <text>No Grades Available</text>
+    </string>
+    <string>
+      <key>String_NoGradesAvailable</key>
+      <text>No grades available</text>
+    </string>
+    <string>
       <key>Message_Metatype_SelectSkill</key>
       <text>You must select a Skill/Skill Group before continuing.</text>
     </string>

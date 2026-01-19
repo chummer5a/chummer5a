@@ -355,6 +355,33 @@ namespace Chummer
             }
         }
 
+        private async Task<bool> UpdateGradeMultipliersAsync(string strSelectedGrade, CancellationToken token = default)
+        {
+            XPathNavigator xmlGrade = null;
+            if (!string.IsNullOrEmpty(strSelectedGrade) && strSelectedGrade != "__NO_GRADES_AVAILABLE__")
+            {
+                xmlGrade = _xmlBaseCyberwareDataNode.TryGetNodeByNameOrId("grades/grade", strSelectedGrade);
+            }
+
+            // Update the Essence and Cost multipliers based on the Grade that has been selected.
+            if (xmlGrade != null)
+            {
+                decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("cost", token: _objGenericToken)?.Value,
+                    NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCostMultiplier);
+                decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("ess", token: _objGenericToken)?.Value,
+                    NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decESSMultiplier);
+                _intAvailModifier
+                    = xmlGrade.SelectSingleNodeAndCacheExpression("avail", token)
+                    ?.ValueAsInt ?? 0;
+                return true;
+            }
+
+            _decCostMultiplier = 1.0m;
+            _decESSMultiplier = 1.0m;
+            _intAvailModifier = 0;
+            return false;
+        }
+
         private async Task ProcessGradeChanged(CancellationToken token = default)
         {
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
@@ -370,7 +397,7 @@ namespace Chummer
                 if (Interlocked.CompareExchange(ref _intLoading, 1, 0) > 0)
                     return;
                 token = objJoinedCancellationTokenSource.Token;
-                XPathNavigator xmlGrade = null;
+                bool blnUpdated = false;
                 try
                 {
                     // Retrieve the information for the selected Grade.
@@ -380,25 +407,9 @@ namespace Chummer
                     if (await cboGrade.DoThreadSafeFuncAsync(x => x.Enabled, token: token).ConfigureAwait(false)
                         && strSelectedGrade != null)
                         _strOldSelectedGrade = strSelectedGrade;
-                    if (!string.IsNullOrEmpty(strSelectedGrade))
-                    {
-                        xmlGrade =
-                            _xmlBaseCyberwareDataNode.TryGetNodeByNameOrId("grades/grade", strSelectedGrade);
-                    }
-
-                    // Update the Essence and Cost multipliers based on the Grade that has been selected.
-                    if (xmlGrade != null)
-                    {
-                        decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("cost", token: _objGenericToken)?.Value,
-                            NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCostMultiplier);
-                        decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("ess", token: _objGenericToken)?.Value,
-                            NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decESSMultiplier);
-                        _intAvailModifier
-                            = xmlGrade.SelectSingleNodeAndCacheExpression("avail", token)
-                            ?.ValueAsInt ?? 0;
-
+                    blnUpdated = await UpdateGradeMultipliersAsync(strSelectedGrade, token).ConfigureAwait(false);
+                    if (blnUpdated)
                         await PopulateCategories(token).ConfigureAwait(false);
-                    }
                 }
                 catch (OperationCanceledException)
                 {
@@ -411,7 +422,7 @@ namespace Chummer
                 }
                 try
                 {
-                    if (xmlGrade != null)
+                    if (blnUpdated)
                     {
                         await RefreshList(_strSelectedCategory, token).ConfigureAwait(false);
                         await DoRefreshSelectedCyberware(token).ConfigureAwait(false);
@@ -570,6 +581,12 @@ namespace Chummer
                         }
                         await PopulateGrades(setDisallowedGrades, false, strForceGrade,
                                              await chkHideBannedGrades.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+
+                        string strSelectedGrade = !string.IsNullOrEmpty(strForceGrade)
+                            ? strForceGrade
+                            : await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
+                                .ConfigureAwait(false);
+                        await UpdateGradeMultipliersAsync(strSelectedGrade, token).ConfigureAwait(false);
 
                         // If the piece has a Rating value, enable the Rating control, otherwise, disable it and set its value to 0.
                         XPathNavigator xmlRatingNode = xmlCyberware.SelectSingleNodeAndCacheExpression("rating", token);
@@ -2215,6 +2232,15 @@ namespace Chummer
             string strSelectedId = await lstCyberware.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
+            string strSelectedGradeId = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
+            if (string.Equals(strSelectedGradeId, "__NO_GRADES_AVAILABLE__", StringComparison.OrdinalIgnoreCase))
+            {
+                await Program.ShowScrollableMessageBoxAsync(this,
+                    await LanguageManager.GetStringAsync("Message_NoGradesAvailable", token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_NoGradesAvailable", token: token).ConfigureAwait(false),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                return;
+            }
             if ((await cboGrade.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false)).StartsWith('*'))
             {
                 await Program.ShowScrollableMessageBoxAsync(this,
@@ -2330,11 +2356,18 @@ namespace Chummer
                 {
                     bool blnSkipCheck = !string.IsNullOrEmpty(strForceGrade) && strForceGrade == _strNoneGradeId;
                     HashSet<string> setBannedWareGrades = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetBannedWareGradesAsync(token).ConfigureAwait(false);
+                    bool blnForceGradeSelection = !string.IsNullOrEmpty(strForceGrade);
                     foreach (Grade objWareGrade in _lstGrades)
                     {
+                        if (blnForceGradeSelection
+                            && !string.Equals(objWareGrade.SourceIDString, strForceGrade,
+                                              StringComparison.OrdinalIgnoreCase))
+                        {
+                            continue;
+                        }
                         if (!blnSkipCheck && objWareGrade.SourceIDString == _strNoneGradeId)
                             continue;
-                        if (string.IsNullOrEmpty(strForceGrade))
+                        if (!blnForceGradeSelection)
                         {
                             if (_setDisallowedGrades.Contains(objWareGrade.Name)) continue;
                             if (objWareGrade.Name.ContainsAny((await ImprovementManager
@@ -2373,7 +2406,9 @@ namespace Chummer
                             }
                         }
 
-                        if (!await (await objWareGrade.GetNodeXPathAsync(token: token).ConfigureAwait(false)).RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
+                        if (!blnForceGradeSelection
+                            && !await (await objWareGrade.GetNodeXPathAsync(token: token).ConfigureAwait(false))
+                                .RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                         {
                             continue;
                         }
@@ -2391,6 +2426,12 @@ namespace Chummer
                         {
                             lstGrade.Add(new ListItem(objWareGrade.SourceIDString, strGradeDisplayName));
                         }
+                    }
+
+                    if (lstGrade.Count == 0)
+                    {
+                        string strNoGradesAvailable = await LanguageManager.GetStringAsync("String_NoGradesAvailable", token: token).ConfigureAwait(false);
+                        lstGrade.Add(new ListItem("__NO_GRADES_AVAILABLE__", strNoGradesAvailable));
                     }
 
                     string strOldSelected = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
@@ -2412,6 +2453,9 @@ namespace Chummer
                             Interlocked.Decrement(ref _intLoading);
                         }
 
+                        bool blnNoGradesAvailable = lstGrade.Count == 1
+                                                    && string.Equals(lstGrade[0].Value.ToString(), "__NO_GRADES_AVAILABLE__",
+                                                        StringComparison.OrdinalIgnoreCase);
                         await cboGrade.DoThreadSafeAsync(x =>
                         {
                             if (!string.IsNullOrEmpty(strForceGrade))
@@ -2420,6 +2464,8 @@ namespace Chummer
                                 x.SelectedValue = strOldSelected;
                             if (x.SelectedIndex == -1 && lstGrade.Count > 0)
                                 x.SelectedIndex = 0;
+                            if (blnNoGradesAvailable)
+                                x.Enabled = false;
                         }, token: token).ConfigureAwait(false);
                     }
                     finally

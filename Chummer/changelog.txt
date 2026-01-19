@@ -249,6 +249,8 @@ Data Changes:
 - Fixed the additional optional powers for infected from Dark Terrors not having the correct filters.
 - Refactored Critical Strike to use updated structure. Should not affect existing characters.
 - Fixed incorrect cyberware names for the Aztechnology Cuanmiztli A.
+- Fixed an issue with SelectCyberware not updating grades correctly when switching between an item that uses ForceGrade and one that doesn't. 
+- Added safety check for if all cyberware grades are unavailable for a piece of cyberware in the SelectCyberware form.
 
 Fixes implemented by BM123499
 
@@ -486,6 +488,9 @@ Changed/New Strings:
 - Label_FilterByCapacity
 - Message_Metatype_NoTalentChoices
 - MessageTitle_Metatype_NoTalentChoices
+- Message_NoGradesAvailable
+- MessageTitle_NoGradesAvailable
+- String_NoGradesAvailable
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage
 - Label_Options_Carryover
