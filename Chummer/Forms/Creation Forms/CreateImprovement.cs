@@ -40,6 +40,10 @@ namespace Chummer
         private readonly XPathNavigator _objImprovementsDocumentImprovementsNode;
         private string _strSelect = string.Empty;
         private readonly string _strCustomGroup;
+        private readonly string _strAugLabelText;
+        private string _strSelectXPathXml = string.Empty;
+        private string _strSelectXPathExpression = string.Empty;
+        private bool _blnPopulatingSelectValue;
 
         public Character CharacterObject => _objCharacter;
 
@@ -53,6 +57,7 @@ namespace Chummer
             this.TranslateWinForm();
             this.UpdateParentForToolTipControls();
             _strCustomGroup = strCustomGroup;
+            _strAugLabelText = lblAug.Text;
             _objImprovementsDocumentImprovementsNode = objCharacter.LoadDataXPath("improvements.xml").SelectSingleNode("/chummer/improvements");
         }
 
@@ -144,9 +149,9 @@ namespace Chummer
             Close();
         }
 
-        private void cboImprovemetType_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboImprovemetType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            XPathNavigator objFetchNode = _objImprovementsDocumentImprovementsNode.TryGetNodeByNameOrId("improvement", cboImprovemetType.SelectedValue.ToString(), blnIdIsGuid: false);
+            string strSelectedId = cboImprovemetType.SelectedValue?.ToString();
 
             lblVal.Visible = false;
             lblMin.Visible = false;
@@ -160,6 +165,11 @@ namespace Chummer
             chkApplyToRating.Checked = false;
             chkFree.Visible = false;
             chkFree.Checked = false;
+            lblAug.Text = _strAugLabelText;
+            cboSelectValue.Visible = false;
+            cboSelectValue.DataSource = null;
+            _strSelectXPathXml = string.Empty;
+            _strSelectXPathExpression = string.Empty;
 
             lblSelect.Visible = false;
             txtSelect.Visible = false;
@@ -169,6 +179,10 @@ namespace Chummer
             cmdChangeSelection.Visible = false;
             _strSelect = string.Empty;
 
+            if (string.IsNullOrEmpty(strSelectedId))
+                return;
+
+            XPathNavigator objFetchNode = _objImprovementsDocumentImprovementsNode.TryGetNodeByNameOrId("improvement", strSelectedId, blnIdIsGuid: false);
             if (objFetchNode == null)
                 return;
             foreach (XPathNavigator objNode in objFetchNode.Select("fields/field"))
@@ -195,6 +209,12 @@ namespace Chummer
                         nudAug.Visible = true;
                         break;
 
+                    case "percent":
+                        lblAug.Visible = true;
+                        nudAug.Visible = true;
+                        lblAug.Text = "Percent:";
+                        break;
+
                     case "applytorating":
                         chkApplyToRating.Visible = true;
                         break;
@@ -207,9 +227,18 @@ namespace Chummer
                         if (objNode.Value.StartsWith("Select", StringComparison.OrdinalIgnoreCase))
                         {
                             lblSelect.Visible = true;
-                            txtTranslateSelection.Visible = true;
-                            cmdChangeSelection.Visible = true;
                             _strSelect = objNode.Value;
+                            if (_strSelect == "SelectXPath")
+                            {
+                                _strSelectXPathXml = objNode.SelectSingleNodeAndCacheExpression("@xml")?.Value ?? string.Empty;
+                                _strSelectXPathExpression = objNode.SelectSingleNodeAndCacheExpression("@xpath")?.Value ?? string.Empty;
+                                cboSelectValue.Visible = true;
+                            }
+                            else
+                            {
+                                txtTranslateSelection.Visible = true;
+                                cmdChangeSelection.Visible = true;
+                            }
                         }
                         break;
                 }
@@ -218,6 +247,10 @@ namespace Chummer
             // Display the help information.
             txtHelp.Text = objFetchNode.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objFetchNode.SelectSingleNodeAndCacheExpression("page")?.Value;
             chkIgnoreLimits.Visible = _strSelect == "SelectAdeptPower";
+            if (cboSelectValue.Visible)
+            {
+                await PopulateSelectValueComboAsync(_strSelectXPathXml, _strSelectXPathExpression).ConfigureAwait(false);
+            }
         }
 
         private async void cmdChangeSelection_Click(object sender, EventArgs e)
@@ -786,6 +819,11 @@ namespace Chummer
                 await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_SelectItem", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SelectItem", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                 return;
             }
+            if (await cboSelectValue.DoThreadSafeFuncAsync(x => x.Visible, token: token).ConfigureAwait(false) && await cboSelectValue.DoThreadSafeFuncAsync(x => x.SelectedIndex < 0, token: token).ConfigureAwait(false))
+            {
+                await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_SelectItem", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SelectItem", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                return;
+            }
 
             string strName = await txtName.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             // Make sure a value has been provided for the name.
@@ -849,6 +887,11 @@ namespace Chummer
                                                                    GlobalSettings.InvariantCultureInfo), token: token),
                                                            token: token)
                                         .CheapReplaceAsync("{aug}",
+                                                           () => nudAug.DoThreadSafeFuncAsync(
+                                                               x => x.Value.ToString(
+                                                                   GlobalSettings.InvariantCultureInfo), token: token),
+                                                           token: token)
+                                        .CheapReplaceAsync("{percent}",
                                                            () => nudAug.DoThreadSafeFuncAsync(
                                                                x => x.Value.ToString(
                                                                    GlobalSettings.InvariantCultureInfo), token: token),
@@ -1042,6 +1085,50 @@ namespace Chummer
         }
 
         #endregion Methods
+
+        private async Task PopulateSelectValueComboAsync(string strXmlFile, string strXPathExpression)
+        {
+            if (string.IsNullOrEmpty(strXmlFile) || string.IsNullOrEmpty(strXPathExpression))
+                return;
+
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
+            {
+                foreach (XPathNavigator xmlItem in (await _objCharacter.LoadDataXPathAsync(strXmlFile).ConfigureAwait(false))
+                                                       .SelectAndCacheExpression(strXPathExpression))
+                {
+                    string strName = xmlItem.SelectSingleNodeAndCacheExpression("name")?.Value;
+                    if (string.IsNullOrEmpty(strName))
+                        strName = xmlItem.Value;
+                    if (!string.IsNullOrEmpty(strName))
+                        lstItems.Add(new ListItem(
+                            strName,
+                            xmlItem.SelectSingleNodeAndCacheExpression("translate")?.Value
+                            ?? strName));
+                }
+
+                lstItems.Sort(CompareListItems.CompareNames);
+                _blnPopulatingSelectValue = true;
+                await cboSelectValue.PopulateWithListItemsAsync(lstItems).ConfigureAwait(false);
+                await cboSelectValue.DoThreadSafeAsync(x => x.SelectedIndex = -1).ConfigureAwait(false);
+                _blnPopulatingSelectValue = false;
+            }
+
+            string strCurrent = await txtSelect.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(strCurrent))
+                await cboSelectValue.DoThreadSafeAsync(x => x.SelectedValue = strCurrent).ConfigureAwait(false);
+        }
+
+        private void cboSelectValue_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_blnPopulatingSelectValue || !cboSelectValue.Visible)
+                return;
+
+            string strSelected = cboSelectValue.SelectedValue?.ToString() ?? string.Empty;
+            if (string.IsNullOrEmpty(strSelected))
+                return;
+
+            txtSelect.Text = strSelected;
+        }
 
         #region Properties
 

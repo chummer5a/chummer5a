@@ -50,6 +50,7 @@ namespace Chummer
             this.chkFree = new Chummer.ColorableCheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.txtTranslateSelection = new System.Windows.Forms.TextBox();
+            this.cboSelectValue = new Chummer.ElasticComboBox();
             this.flpSelectValue = new System.Windows.Forms.FlowLayoutPanel();
             this.chkIgnoreLimits = new Chummer.ColorableCheckBox();
             this.txtHelp = new System.Windows.Forms.TextBox();
@@ -354,6 +355,7 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.lblVal, 0, 3);
             this.tlpMain.Controls.Add(this.txtSelect, 1, 7);
             this.tlpMain.Controls.Add(this.txtTranslateSelection, 1, 2);
+            this.tlpMain.Controls.Add(this.cboSelectValue, 1, 2);
             this.tlpMain.Controls.Add(this.flpSelectValue, 3, 2);
             this.tlpMain.Controls.Add(this.txtHelp, 4, 0);
             this.tlpMain.Controls.Add(this.tlpButtons, 3, 8);
@@ -386,6 +388,19 @@ namespace Chummer
             this.txtTranslateSelection.Size = new System.Drawing.Size(185, 20);
             this.txtTranslateSelection.TabIndex = 21;
             this.txtTranslateSelection.Visible = false;
+            // 
+            // cboSelectValue
+            // 
+            this.cboSelectValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpMain.SetColumnSpan(this.cboSelectValue, 2);
+            this.cboSelectValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSelectValue.FormattingEnabled = true;
+            this.cboSelectValue.Location = new System.Drawing.Point(107, 56);
+            this.cboSelectValue.Name = "cboSelectValue";
+            this.cboSelectValue.Size = new System.Drawing.Size(185, 21);
+            this.cboSelectValue.TabIndex = 25;
+            this.cboSelectValue.Visible = false;
+            this.cboSelectValue.SelectedIndexChanged += new System.EventHandler(this.cboSelectValue_SelectedIndexChanged);
             // 
             // flpSelectValue
             // 
@@ -506,6 +521,7 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkFree;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.TextBox txtTranslateSelection;
+        private ElasticComboBox cboSelectValue;
         private System.Windows.Forms.FlowLayoutPanel flpSelectValue;
         private Chummer.ColorableCheckBox chkIgnoreLimits;
         private System.Windows.Forms.TextBox txtHelp;
