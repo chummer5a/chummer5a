@@ -2879,7 +2879,7 @@ namespace Chummer
                 }
 
                 // Add the Unarmed Attack Weapon to the character.
-                if (Weapons.All(x => x.Name != "Unarmed Attack", token))
+                if (Weapons.All(x => !x.IsUnarmedAttack, token))
                 {
                     XmlNode objXmlWeapon = LoadData("weapons.xml", token: token)
                         .SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
@@ -3663,7 +3663,7 @@ namespace Chummer
                 }
 
                 // Add the Unarmed Attack Weapon to the character.
-                if (await Weapons.AllAsync(x => x.Name != "Unarmed Attack", token).ConfigureAwait(false))
+                if (await Weapons.AllAsync(x => !x.IsUnarmedAttack, token).ConfigureAwait(false))
                 {
                     XmlNode objXmlWeapon = (await LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false))
                         .SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
@@ -10658,7 +10658,7 @@ namespace Chummer
                                 bool blnFoundUnarmed = false;
                                 foreach (Weapon objWeapon in _lstWeapons)
                                 {
-                                    if (objWeapon.Name == "Unarmed Attack")
+                                    if (objWeapon.IsUnarmedAttack)
                                     {
                                         blnFoundUnarmed = true;
                                         break;
@@ -54143,7 +54143,7 @@ namespace Chummer
                                 bool blnFoundUnarmed = false;
                                 foreach (Weapon objWeapon in _lstWeapons)
                                 {
-                                    if (objWeapon.Name == "Unarmed Attack")
+                                    if (objWeapon.IsUnarmedAttack)
                                     {
                                         blnFoundUnarmed = true;
                                         break;

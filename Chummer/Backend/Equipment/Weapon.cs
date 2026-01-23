@@ -157,6 +157,10 @@ namespace Chummer.Backend.Equipment
         private bool _blnAllowLongBurst = true;
         private bool _blnAllowFullBurst = true;
         private bool _blnAllowSuppressive = true;
+        private readonly HashSet<string> _setTags = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        private const string TagUnarmedAttack = "unarmed-attack";
+        private const string TagNaturalWeapon = "natural-weapon";
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -732,6 +736,7 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetStringFieldQuickly("spec", ref _strSpec);
             objXmlWeapon.TryGetStringFieldQuickly("spec2", ref _strSpec2);
             objXmlWeapon.TryGetBoolFieldQuickly("allowaccessory", ref _blnAllowAccessory);
+            InitializeWeaponTags(objXmlWeapon);
 
             // If the Weapon comes with an Underbarrel Weapon, add it.
             if (blnCreateChildren)
@@ -1116,6 +1121,15 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("type", _strType);
             objWriter.WriteElementString("spec", _strSpec);
             objWriter.WriteElementString("spec2", _strSpec2);
+            if (_setTags.Count > 0)
+            {
+                objWriter.WriteStartElement("tags");
+                foreach (string strTag in _setTags.OrderBy(x => x, StringComparer.OrdinalIgnoreCase))
+                {
+                    objWriter.WriteElementString("tag", strTag);
+                }
+                objWriter.WriteEndElement();
+            }
             objWriter.WriteElementString("reach", _strReach);
             objWriter.WriteElementString("damage", _strDamage);
             objWriter.WriteElementString("ap", _strAP);
@@ -1461,6 +1475,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("type", ref _strType);
             objNode.TryGetStringFieldQuickly("spec", ref _strSpec);
             objNode.TryGetStringFieldQuickly("spec2", ref _strSpec2);
+            InitializeWeaponTags(objNode);
             objNode.TryGetStringFieldQuickly("reach", ref _strReach);
             objNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
             objNode.TryGetStringFieldQuickly("damage", ref _strDamage);
@@ -1550,7 +1565,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("useskillspec", ref _strUseSkillSpec);
             objNode.TryGetDecFieldQuickly("rangemultiply", ref _decRangeMultiplier);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInWeapon);
-            if (Name == "Unarmed Attack")
+            if (IsUnarmedAttack)
                 _blnIncludedInWeapon = true; // Unarmed Attack can never be removed
             objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
             if (!_blnEquipped)
@@ -4021,6 +4036,35 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Tags that describe this weapon.
+        /// </summary>
+        public IReadOnlyCollection<string> Tags => _setTags;
+
+        /// <summary>
+        /// Whether this weapon is the base Unarmed Attack entry.
+        /// </summary>
+        public bool IsUnarmedAttack => HasTag(TagUnarmedAttack);
+
+        /// <summary>
+        /// Whether this weapon is a Natural Weapon.
+        /// </summary>
+        public bool IsNaturalWeapon => HasTag(TagNaturalWeapon);
+
+        public void AddTag(string tag)
+        {
+            if (string.IsNullOrWhiteSpace(tag))
+                return;
+            _setTags.Add(tag.Trim());
+        }
+
+        public bool HasTag(string tag)
+        {
+            if (string.IsNullOrWhiteSpace(tag))
+                return false;
+            return _setTags.Contains(tag);
+        }
+
+        /// <summary>
         /// Whether the Underbarrel Weapon is installed.
         /// </summary>
         public bool Equipped
@@ -4564,21 +4608,18 @@ namespace Chummer.Backend.Equipment
 
                     // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
                     // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
-                    if (Name == "Unarmed Attack")
+                    if (IsUnarmedAttack)
                     {
                         if (strDamageType == "S" && ImprovementManager
                                 .GetCachedImprovementListForValueOf(
                                     _objCharacter, Improvement.ImprovementType.UnarmedDVPhysical, token: token)
                                 .Count > 0)
                             strDamageType = "P";
-                        decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV,
-                            token: token);
                     }
 
                     // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
                     string strUseSkill = Skill?.DictionaryKey ?? string.Empty;
-                    if (strUseSkill == "Unarmed Combat"
-                             && _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
+                    if (ShouldApplyUnarmedImprovements(strUseSkill, _objCharacter.Settings.UnarmedImprovementsApplyToWeapons))
                     {
                         decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV,
                             token: token);
@@ -4591,7 +4632,7 @@ namespace Chummer.Backend.Equipment
 
                     // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
                     // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
-                    if (Name == "Unarmed Attack")
+                    if (IsUnarmedAttack)
                     {
                         if (strDamageType == "S" && (await ImprovementManager
                                 .GetCachedImprovementListForValueOfAsync(
@@ -4599,9 +4640,6 @@ namespace Chummer.Backend.Equipment
                                 .ConfigureAwait(false))
                             .Count > 0)
                             strDamageType = "P";
-                        decImprove += await ImprovementManager
-                            .ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedDV, token: token)
-                            .ConfigureAwait(false);
                     }
 
                     // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
@@ -4609,8 +4647,7 @@ namespace Chummer.Backend.Equipment
                     string strUseSkill = objSkill != null
                         ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
                         : string.Empty;
-                    if (strUseSkill == "Unarmed Combat"
-                             && _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
+                    if (ShouldApplyUnarmedImprovements(strUseSkill, _objCharacter.Settings.UnarmedImprovementsApplyToWeapons))
                     {
                         decImprove += await ImprovementManager
                             .ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedDV, token: token)
@@ -6772,8 +6809,7 @@ namespace Chummer.Backend.Equipment
                             ? objSkill.DictionaryKey
                             : await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
                         : string.Empty;
-                    if (Name == "Unarmed Attack" || strSkillDictionaryKey == "Unarmed Combat" &&
-                        _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
+                    if (ShouldApplyUnarmedImprovements(strSkillDictionaryKey, _objCharacter.Settings.UnarmedImprovementsApplyToWeapons))
                     {
                         // Add any UnarmedAP bonus for the Unarmed Attack item.
                         intImprove += (blnSync
@@ -7385,15 +7421,13 @@ namespace Chummer.Backend.Equipment
                         strImprovedName: Name, blnIncludeNonImproved: true);
                     
                     // Include WeaponCategoryReach Improvements.
-                    string strCategory = Category;
-                    if (strCategory == "Unarmed")
-                        strCategory = "Unarmed Combat";
+                    string strCategory = GetCategoryForWeaponImprovements();
                     decReach += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryReach,
                         strImprovedName: strCategory);
                 }
 
-                if (Name == "Unarmed Attack" || Skill?.DictionaryKey == "Unarmed Combat" &&
-                    _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
+                string strSkillDictionaryKey = Skill?.DictionaryKey ?? string.Empty;
+                if (ShouldApplyUnarmedImprovements(strSkillDictionaryKey, _objCharacter.Settings.UnarmedImprovementsApplyToWeapons))
                 {
                     decReach += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedReach);
                 }
@@ -7402,14 +7436,65 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        private string GetCategoryForWeaponImprovements()
+        {
+            if (IsNaturalWeapon)
+                return "Unarmed Combat";
+            string strCategory = Category;
+            if (strCategory == "Unarmed")
+                strCategory = "Unarmed Combat";
+            return strCategory;
+        }
+
+        private bool ShouldApplyUnarmedImprovements(string strSkillDictionaryKey, bool blnUnarmedImprovementsApplyToWeapons)
+        {
+            if (IsUnarmedAttack)
+                return true;
+            if (!blnUnarmedImprovementsApplyToWeapons)
+                return false;
+            if (IsNaturalWeapon)
+                return true;
+            return strSkillDictionaryKey == "Unarmed Combat";
+        }
+
+        private void InitializeWeaponTags(XmlNode objNode)
+        {
+            _setTags.Clear();
+            XmlNode xmlTags = objNode["tags"];
+            if (xmlTags != null)
+            {
+                using (XmlNodeList xmlTagNodes = xmlTags.SelectNodes("tag"))
+                {
+                    if (xmlTagNodes != null)
+                    {
+                        foreach (XmlNode xmlTag in xmlTagNodes)
+                        {
+                            string strTag = xmlTag.InnerTextViaPoolTrimmed();
+                            if (!string.IsNullOrWhiteSpace(strTag))
+                                _setTags.Add(strTag);
+                        }
+                    }
+                }
+            }
+
+            if (IsNaturalWeaponSpec())
+                AddTag(TagNaturalWeapon);
+            if (string.Equals(_strName, "Unarmed Attack", StringComparison.Ordinal))
+                AddTag(TagUnarmedAttack);
+        }
+
+        private bool IsNaturalWeaponSpec()
+        {
+            return string.Equals(_strSpec, "Natural Weapons", StringComparison.OrdinalIgnoreCase)
+                   || string.Equals(_strSpec2, "Natural Weapons", StringComparison.OrdinalIgnoreCase);
+        }
+
         /// <summary>
         /// Calculate weapon category improvements for this weapon.
         /// </summary>
         private decimal GetWeaponCategoryImprovements(Improvement.ImprovementType improvementType)
         {
-            string strCategory = Category;
-            if (strCategory == "Unarmed")
-                strCategory = "Unarmed Combat";
+            string strCategory = GetCategoryForWeaponImprovements();
             
             decimal decImprove = ImprovementManager.ValueOf(_objCharacter, improvementType, strImprovedName: strCategory);
             
@@ -7431,9 +7516,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         private async Task<decimal> GetWeaponCategoryImprovementsAsync(Improvement.ImprovementType improvementType, CancellationToken token = default)
         {
-            string strCategory = Category;
-            if (strCategory == "Unarmed")
-                strCategory = "Unarmed Combat";
+            string strCategory = GetCategoryForWeaponImprovements();
             
             decimal decImprove = await ImprovementManager.ValueOfAsync(_objCharacter, improvementType, 
                 strImprovedName: strCategory, token: token).ConfigureAwait(false);
@@ -7469,9 +7552,7 @@ namespace Chummer.Backend.Equipment
                     strImprovedName: Name, blnIncludeNonImproved: true, token: token).ConfigureAwait(false);
                 
                 // Include WeaponCategoryReach Improvements.
-                string strCategory = Category;
-                if (strCategory == "Unarmed")
-                    strCategory = "Unarmed Combat";
+                string strCategory = GetCategoryForWeaponImprovements();
                 decReach += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.WeaponCategoryReach,
                     strImprovedName: strCategory, token: token).ConfigureAwait(false);
             }
@@ -7482,7 +7563,7 @@ namespace Chummer.Backend.Equipment
                 string strSkillDictionaryKey = objSkill != null
                     ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
                     : string.Empty;
-                if (Name == "Unarmed Attack" || strSkillDictionaryKey == "Unarmed Combat")
+                if (ShouldApplyUnarmedImprovements(strSkillDictionaryKey, true))
                 {
                     decReach += await ImprovementManager
                         .ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedReach, token: token)

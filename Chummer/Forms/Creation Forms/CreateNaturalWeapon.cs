@@ -176,6 +176,7 @@ namespace Chummer
                     _objWeapon.UseSkill = await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
                     _objWeapon.Source = objPower.SelectSingleNodeAndCacheExpression("source", token: token)?.Value ?? "SR5";
                     _objWeapon.Page = objPower.SelectSingleNodeAndCacheExpression("page", token: token)?.Value ?? "0";
+                    _objWeapon.AddTag("natural-weapon");
                     await _objWeapon.CreateClipsAsync(token).ConfigureAwait(false);
                 }
                 catch

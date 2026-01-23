@@ -5337,7 +5337,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strExclude) && objWeapon.RangeType == strExclude)
                             continue;
-                        if (!blnIncludeUnarmed && objWeapon.Name == "Unarmed Attack")
+                        if (!blnIncludeUnarmed && objWeapon.IsUnarmedAttack)
                             continue;
                         if (!string.IsNullOrEmpty(strWeaponDetails)
                             && objWeapon.GetNodeXPath()?.SelectSingleNode("self::node()[" + strWeaponDetails + "]") == null)

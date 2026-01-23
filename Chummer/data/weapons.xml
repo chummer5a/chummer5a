@@ -7090,6 +7090,9 @@
       <page>132</page>
       <allowaccessory>False</allowaccessory>
       <hide />
+      <tags>
+        <tag>unarmed-attack</tag>
+      </tags>
     </weapon>
     <weapon>
       <id>ae58f859-37ee-4fac-befa-365acd3c7da7</id>
@@ -7805,6 +7808,9 @@
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
+      <tags>
+        <tag>natural-weapon</tag>
+      </tags>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
@@ -7827,6 +7833,9 @@
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
+      <tags>
+        <tag>natural-weapon</tag>
+      </tags>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
@@ -7849,6 +7858,9 @@
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
+      <tags>
+        <tag>natural-weapon</tag>
+      </tags>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
@@ -7871,6 +7883,9 @@
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
+      <tags>
+        <tag>natural-weapon</tag>
+      </tags>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
@@ -7893,6 +7908,9 @@
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
+      <tags>
+        <tag>natural-weapon</tag>
+      </tags>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
@@ -7915,6 +7933,9 @@
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
+      <tags>
+        <tag>natural-weapon</tag>
+      </tags>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
@@ -7937,6 +7958,9 @@
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
+      <tags>
+        <tag>natural-weapon</tag>
+      </tags>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
@@ -7959,6 +7983,9 @@
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
+      <tags>
+        <tag>natural-weapon</tag>
+      </tags>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
@@ -7981,6 +8008,9 @@
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
+      <tags>
+        <tag>natural-weapon</tag>
+      </tags>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
@@ -8003,6 +8033,9 @@
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
+      <tags>
+        <tag>natural-weapon</tag>
+      </tags>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>

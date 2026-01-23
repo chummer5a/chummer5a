@@ -763,7 +763,7 @@ namespace Chummer
                             {
                                 // Don't attempt to export Cyberware and Gear Weapons since those are handled by those object types. The default Unarmed Attack Weapon should also not be exported.
                                 if (objWeapon.Category != "Cyberware" && objWeapon.Category != "Gear"
-                                                                      && objWeapon.Name != "Unarmed Attack")
+                                                                      && !objWeapon.IsUnarmedAttack)
                                 {
                                     // <weapon>
                                     await objWriter.WriteStartElementAsync("weapon").ConfigureAwait(false);
