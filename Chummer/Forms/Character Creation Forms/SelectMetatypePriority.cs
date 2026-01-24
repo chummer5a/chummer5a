@@ -117,7 +117,7 @@ namespace Chummer
                 _lstPriorities = new List<string>(5);
                 foreach (char c in strPriorityArray)
                 {
-                    _lstPriorities.Add(c.ToString());
+                    _lstPriorities.Add(char.ToUpperInvariant(c).ToString());
                 }
             }
             else
@@ -128,6 +128,70 @@ namespace Chummer
             foreach (string strPriority in _lstPriorities)
                 if (!_dicSumtoTenValues.ContainsKey(strPriority))
                     _dicSumtoTenValues.Add(strPriority, 0);
+        }
+
+        private async Task<string> GetSelectedPriorityAsync(ComboBox comboBox, CancellationToken token)
+        {
+            object objSelected = await comboBox.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false);
+            if (objSelected != null)
+                return objSelected.ToString();
+            await comboBox.DoThreadSafeAsync(x =>
+            {
+                if (x.Items.Count > 0)
+                    x.SelectedIndex = 0;
+            }, token).ConfigureAwait(false);
+            objSelected = await comboBox.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false);
+            return objSelected?.ToString() ?? string.Empty;
+        }
+
+        private async Task<(string Heritage, string Attributes, string Talent, string Skills, string Resources)>
+            GetPrioritySelectionsAsync(CancellationToken token)
+        {
+            string heritage = await GetSelectedPriorityAsync(cboHeritage, token).ConfigureAwait(false);
+            string attributes = await GetSelectedPriorityAsync(cboAttributes, token).ConfigureAwait(false);
+            string talent = await GetSelectedPriorityAsync(cboTalent, token).ConfigureAwait(false);
+            string skills = await GetSelectedPriorityAsync(cboSkills, token).ConfigureAwait(false);
+            string resources = await GetSelectedPriorityAsync(cboResources, token).ConfigureAwait(false);
+            return (heritage, attributes, talent, skills, resources);
+        }
+
+        private int GetSumToTenValue(string priority)
+        {
+            if (string.IsNullOrEmpty(priority))
+                return 0;
+            return _dicSumtoTenValues.TryGetValue(priority, out int value) ? value : 0;
+        }
+
+        private List<string> GetMissingPriorities(IEnumerable<string> selectedPriorities)
+        {
+            Dictionary<string, int> counts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            foreach (string priority in _lstPriorities)
+            {
+                if (counts.TryGetValue(priority, out int count))
+                    counts[priority] = count + 1;
+                else
+                    counts[priority] = 1;
+            }
+
+            foreach (string selected in selectedPriorities)
+            {
+                if (string.IsNullOrEmpty(selected))
+                    continue;
+                if (counts.TryGetValue(selected, out int count) && count > 0)
+                    counts[selected] = count - 1;
+            }
+
+            List<string> missing = new List<string>();
+            foreach (string priority in _lstPriorities)
+            {
+                if (counts.TryGetValue(priority, out int count) && count > 0)
+                {
+                    missing.Add(priority);
+                    counts[priority] = count - 1;
+                }
+            }
+
+            return missing;
         }
 
         private async void SelectMetatypePriority_Load(object sender, EventArgs e)
@@ -222,6 +286,20 @@ namespace Chummer
                             }
                         }
 
+                        async Task SetPrioritySelectionAsync(ComboBox comboBox, string priority, CancellationToken token)
+                        {
+                            await comboBox.DoThreadSafeAsync(x =>
+                            {
+                                int intIndex = -1;
+                                if (!string.IsNullOrEmpty(priority))
+                                    intIndex = x.FindString(priority[0].ToString(GlobalSettings.InvariantCultureInfo));
+                                if (intIndex < 0 && x.Items.Count > 0)
+                                    intIndex = 0;
+                                if (intIndex >= 0)
+                                    x.SelectedIndex = intIndex;
+                            }, token).ConfigureAwait(false);
+                        }
+
                         // Set Priority defaults.
                         string strAttributesPriority = await _objCharacter.GetAttributesPriorityAsync(_objGenericToken).ConfigureAwait(false);
                         string strMetatypePriority = await _objCharacter.GetMetatypePriorityAsync(_objGenericToken).ConfigureAwait(false);
@@ -237,40 +315,20 @@ namespace Chummer
                             || !string.IsNullOrEmpty(strTalentPriority))
                         {
                             //Attributes
-                            if (!string.IsNullOrEmpty(strAttributesPriority))
-                                await cboAttributes.DoThreadSafeAsync(x => x.SelectedIndex =
-                                    x.FindString(strAttributesPriority[0].ToString(GlobalSettings.InvariantCultureInfo)), _objGenericToken)
-                                                       .ConfigureAwait(false);
-                            else
-                                await cboAttributes.DoThreadSafeAsync(x => x.SelectedIndex = 0, token: _objGenericToken).ConfigureAwait(false);
+                            await SetPrioritySelectionAsync(cboAttributes, strAttributesPriority, _objGenericToken)
+                                .ConfigureAwait(false);
                             //Heritage (Metatype)
-                            if (!string.IsNullOrEmpty(strMetatypePriority))
-                                await cboHeritage.DoThreadSafeAsync(x => x.SelectedIndex =
-                                    x.FindString(strMetatypePriority[0].ToString(GlobalSettings.InvariantCultureInfo)), _objGenericToken)
-                                                       .ConfigureAwait(false);
-                            else
-                                await cboHeritage.DoThreadSafeAsync(x => x.SelectedIndex = 0, token: _objGenericToken).ConfigureAwait(false);
+                            await SetPrioritySelectionAsync(cboHeritage, strMetatypePriority, _objGenericToken)
+                                .ConfigureAwait(false);
                             //Resources
-                            if (!string.IsNullOrEmpty(strResourcesPriority))
-                                await cboResources.DoThreadSafeAsync(x => x.SelectedIndex =
-                                    x.FindString(strResourcesPriority[0].ToString(GlobalSettings.InvariantCultureInfo)), _objGenericToken)
-                                                       .ConfigureAwait(false);
-                            else
-                                await cboResources.DoThreadSafeAsync(x => x.SelectedIndex = 0, token: _objGenericToken).ConfigureAwait(false);
+                            await SetPrioritySelectionAsync(cboResources, strResourcesPriority, _objGenericToken)
+                                .ConfigureAwait(false);
                             //Skills
-                            if (!string.IsNullOrEmpty(strSkillsPriority))
-                                await cboSkills.DoThreadSafeAsync(x => x.SelectedIndex =
-                                    x.FindString(strSkillsPriority[0].ToString(GlobalSettings.InvariantCultureInfo)), _objGenericToken)
-                                                       .ConfigureAwait(false);
-                            else
-                                await cboSkills.DoThreadSafeAsync(x => x.SelectedIndex = 0, token: _objGenericToken).ConfigureAwait(false);
+                            await SetPrioritySelectionAsync(cboSkills, strSkillsPriority, _objGenericToken)
+                                .ConfigureAwait(false);
                             //Magical/Resonance Talent
-                            if (!string.IsNullOrEmpty(strSpecialPriority))
-                                await cboTalent.DoThreadSafeAsync(x => x.SelectedIndex =
-                                    x.FindString(strSpecialPriority[0].ToString(GlobalSettings.InvariantCultureInfo)), _objGenericToken)
-                                                       .ConfigureAwait(false);
-                            else
-                                await cboTalent.DoThreadSafeAsync(x => x.SelectedIndex = 0, token: _objGenericToken).ConfigureAwait(false);
+                            await SetPrioritySelectionAsync(cboTalent, strSpecialPriority, _objGenericToken)
+                                .ConfigureAwait(false);
 
                             await LoadMetatypes(_objGenericToken).ConfigureAwait(false);
                             await PopulateMetatypes(_objGenericToken).ConfigureAwait(false);
@@ -1630,21 +1688,17 @@ namespace Chummer
                     // Load the Priority information.
 
                     // Set the character priority selections
-                    await _objCharacter.SetMetatypePriorityAsync(
-                        await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token)
-                            .ConfigureAwait(false), token).ConfigureAwait(false);
-                    await _objCharacter.SetAttributesPriorityAsync(
-                        await cboAttributes.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token)
-                            .ConfigureAwait(false), token).ConfigureAwait(false);
-                    await _objCharacter.SetSpecialPriorityAsync(
-                        await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token)
-                            .ConfigureAwait(false), token).ConfigureAwait(false);
-                    await _objCharacter.SetSkillsPriorityAsync(
-                        await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token)
-                            .ConfigureAwait(false), token).ConfigureAwait(false);
-                    await _objCharacter.SetResourcesPriorityAsync(
-                        await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token)
-                            .ConfigureAwait(false), token).ConfigureAwait(false);
+                    var prioritySelections = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
+                    await _objCharacter.SetMetatypePriorityAsync(prioritySelections.Heritage, token)
+                        .ConfigureAwait(false);
+                    await _objCharacter.SetAttributesPriorityAsync(prioritySelections.Attributes, token)
+                        .ConfigureAwait(false);
+                    await _objCharacter.SetSpecialPriorityAsync(prioritySelections.Talent, token)
+                        .ConfigureAwait(false);
+                    await _objCharacter.SetSkillsPriorityAsync(prioritySelections.Skills, token)
+                        .ConfigureAwait(false);
+                    await _objCharacter.SetResourcesPriorityAsync(prioritySelections.Resources, token)
+                        .ConfigureAwait(false);
                     await _objCharacter.SetTalentPriorityAsync(
                         await cboTalents.DoThreadSafeFuncAsync(x =>
                         {
@@ -2438,76 +2492,86 @@ namespace Chummer
             using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
             {
                 token = objJoinedCancellationTokenSource.Token;
-                List<string> lstCurrentPriorities = new List<string>(_lstPriorities);
-                string strHeritageSelected = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
-                string strAttributesSelected = await cboAttributes.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
-                string strTalentSelected = await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
-                string strSkillsSelected = await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
-                string strResourcesSelected = await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
-
-                // Discover which priority rating is not currently assigned
-                lstCurrentPriorities.Remove(strHeritageSelected);
-                lstCurrentPriorities.Remove(strAttributesSelected);
-                lstCurrentPriorities.Remove(strTalentSelected);
-                lstCurrentPriorities.Remove(strSkillsSelected);
-                lstCurrentPriorities.Remove(strResourcesSelected);
-                if (lstCurrentPriorities.Count == 0)
+                var prioritySelections = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(prioritySelections.Heritage)
+                    || string.IsNullOrEmpty(prioritySelections.Attributes)
+                    || string.IsNullOrEmpty(prioritySelections.Talent)
+                    || string.IsNullOrEmpty(prioritySelections.Skills)
+                    || string.IsNullOrEmpty(prioritySelections.Resources))
                     return;
-                string strComboBoxSelected = (await comboBox.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false)).ToString();
 
-                string strMissing = lstCurrentPriorities[0];
+                List<string> lstMissingPriorities = GetMissingPriorities(new[]
+                {
+                    prioritySelections.Heritage,
+                    prioritySelections.Attributes,
+                    prioritySelections.Talent,
+                    prioritySelections.Skills,
+                    prioritySelections.Resources
+                });
+                if (lstMissingPriorities.Count == 0)
+                    return;
+                string strComboBoxSelected = await GetSelectedPriorityAsync(comboBox, token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strComboBoxSelected))
+                    return;
+
+                string strMissing = lstMissingPriorities[0];
 
                 // Find the combo with the same value as this one and change it to the missing value.
                 //_blnInitializing = true;
                 string strMyName = await comboBox.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false);
-                if (strHeritageSelected == strComboBoxSelected && strMyName != await cboHeritage.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                if (prioritySelections.Heritage == strComboBoxSelected && strMyName != await cboHeritage.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
                     await cboHeritage.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
-                else if (strAttributesSelected == strComboBoxSelected && strMyName != await cboAttributes.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                else if (prioritySelections.Attributes == strComboBoxSelected && strMyName != await cboAttributes.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
                     await cboAttributes.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
-                else if (strTalentSelected == strComboBoxSelected && strMyName != await cboTalent.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                else if (prioritySelections.Talent == strComboBoxSelected && strMyName != await cboTalent.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
                     await cboTalent.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
-                else if (strSkillsSelected == strComboBoxSelected && strMyName != await cboSkills.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                else if (prioritySelections.Skills == strComboBoxSelected && strMyName != await cboSkills.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
                     await cboSkills.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
-                else if (strResourcesSelected == strComboBoxSelected && strMyName != await cboResources.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                else if (prioritySelections.Resources == strComboBoxSelected && strMyName != await cboResources.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
                     await cboResources.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
 
-                if (lstCurrentPriorities.Count <= 1)
+                if (lstMissingPriorities.Count <= 1)
                     return;
-                do
+                for (int i = 0; i < 4; i++)
                 {
-                    lstCurrentPriorities.Clear();
-                    lstCurrentPriorities.AddRange(_lstPriorities);
-                    strHeritageSelected = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
-                    strAttributesSelected = await cboAttributes.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
-                    strTalentSelected = await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
-                    strSkillsSelected = await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
-                    strResourcesSelected = await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
-
-                    // Discover which priority rating is not currently assigned
-                    lstCurrentPriorities.Remove(strHeritageSelected);
-                    lstCurrentPriorities.Remove(strAttributesSelected);
-                    lstCurrentPriorities.Remove(strTalentSelected);
-                    lstCurrentPriorities.Remove(strSkillsSelected);
-                    lstCurrentPriorities.Remove(strResourcesSelected);
-                    if (lstCurrentPriorities.Count == 0) // Just in case
+                    prioritySelections = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(prioritySelections.Heritage)
+                        || string.IsNullOrEmpty(prioritySelections.Attributes)
+                        || string.IsNullOrEmpty(prioritySelections.Talent)
+                        || string.IsNullOrEmpty(prioritySelections.Skills)
+                        || string.IsNullOrEmpty(prioritySelections.Resources))
                         return;
 
-                    string strLoopMissing = lstCurrentPriorities[0];
+                    lstMissingPriorities = GetMissingPriorities(new[]
+                    {
+                        prioritySelections.Heritage,
+                        prioritySelections.Attributes,
+                        prioritySelections.Talent,
+                        prioritySelections.Skills,
+                        prioritySelections.Resources
+                    });
+                    if (lstMissingPriorities.Count <= 1)
+                        return;
+
+                    string strLoopMissing = lstMissingPriorities[0];
+                    strComboBoxSelected = await GetSelectedPriorityAsync(comboBox, token).ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(strComboBoxSelected))
+                        return;
 
                     // Find the combo with the same value as this one and change it to the missing value.
                     //_blnInitializing = true;
                     strMyName = await comboBox.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false);
-                    if (strHeritageSelected == strComboBoxSelected && strMyName != await cboHeritage.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                    if (prioritySelections.Heritage == strComboBoxSelected && strMyName != await cboHeritage.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
                         await cboHeritage.DoThreadSafeAsync(x => x.SelectedValue = strLoopMissing, token).ConfigureAwait(false);
-                    else if (strAttributesSelected == strComboBoxSelected && strMyName != await cboAttributes.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                    else if (prioritySelections.Attributes == strComboBoxSelected && strMyName != await cboAttributes.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
                         await cboAttributes.DoThreadSafeAsync(x => x.SelectedValue = strLoopMissing, token).ConfigureAwait(false);
-                    else if (strTalentSelected == strComboBoxSelected && strMyName != await cboTalent.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                    else if (prioritySelections.Talent == strComboBoxSelected && strMyName != await cboTalent.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
                         await cboTalent.DoThreadSafeAsync(x => x.SelectedValue = strLoopMissing, token).ConfigureAwait(false);
-                    else if (strSkillsSelected == strComboBoxSelected && strMyName != await cboSkills.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                    else if (prioritySelections.Skills == strComboBoxSelected && strMyName != await cboSkills.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
                         await cboSkills.DoThreadSafeAsync(x => x.SelectedValue = strLoopMissing, token).ConfigureAwait(false);
-                    else if (strResourcesSelected == strComboBoxSelected && strMyName != await cboResources.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                    else if (prioritySelections.Resources == strComboBoxSelected && strMyName != await cboResources.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
                         await cboResources.DoThreadSafeAsync(x => x.SelectedValue = strLoopMissing, token).ConfigureAwait(false);
-                } while (lstCurrentPriorities.Count > 1);
+                }
             }
         }
 
@@ -2528,11 +2592,12 @@ namespace Chummer
                 using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
                 {
                     token = objJoinedCancellationTokenSource.Token;
-                    intReturn = _dicSumtoTenValues[await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
-                    intReturn += _dicSumtoTenValues[await cboAttributes.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
-                    intReturn += _dicSumtoTenValues[await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
-                    intReturn += _dicSumtoTenValues[await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
-                    intReturn += _dicSumtoTenValues[await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
+                    var prioritySelections = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
+                    intReturn = GetSumToTenValue(prioritySelections.Heritage)
+                                + GetSumToTenValue(prioritySelections.Attributes)
+                                + GetSumToTenValue(prioritySelections.Talent)
+                                + GetSumToTenValue(prioritySelections.Skills)
+                                + GetSumToTenValue(prioritySelections.Resources);
 
                     string strText = intReturn.ToString(GlobalSettings.CultureInfo) + "/"
                                                                 + (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetSumtoTenAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
@@ -2541,11 +2606,12 @@ namespace Chummer
             }
             else
             {
-                intReturn = _dicSumtoTenValues[await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
-                intReturn += _dicSumtoTenValues[await cboAttributes.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
-                intReturn += _dicSumtoTenValues[await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
-                intReturn += _dicSumtoTenValues[await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
-                intReturn += _dicSumtoTenValues[await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
+                var prioritySelections = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
+                intReturn = GetSumToTenValue(prioritySelections.Heritage)
+                            + GetSumToTenValue(prioritySelections.Attributes)
+                            + GetSumToTenValue(prioritySelections.Talent)
+                            + GetSumToTenValue(prioritySelections.Skills)
+                            + GetSumToTenValue(prioritySelections.Resources);
             }
             return intReturn;
         }
