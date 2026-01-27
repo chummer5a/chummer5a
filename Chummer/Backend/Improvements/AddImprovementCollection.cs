@@ -3813,12 +3813,20 @@ namespace Chummer
             {
                 string strTemp = bonusNode["val"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strTemp))
-                    CreateImprovement(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.WalkMultiplier, _strUnique,
-                        ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating));
+                {
+                    decimal decValue = ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating);
+                    if (decValue != 0.0m)
+                        CreateImprovement(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.WalkMultiplier, _strUnique,
+                            decValue);
+                }
                 strTemp = bonusNode["percent"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strTemp))
-                    CreateImprovement(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.WalkMultiplierPercent, _strUnique,
-                        ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating));
+                {
+                    decimal decValue = ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating);
+                    if (decValue != 0.0m)
+                        CreateImprovement(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.WalkMultiplierPercent, _strUnique,
+                            decValue);
+                }
             }
         }
 
@@ -3832,12 +3840,20 @@ namespace Chummer
             {
                 string strTemp = bonusNode["val"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strTemp))
-                    CreateImprovement(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.RunMultiplier, _strUnique,
-                        ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating));
+                {
+                    decimal decValue = ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating);
+                    if (decValue != 0.0m)
+                        CreateImprovement(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.RunMultiplier, _strUnique,
+                            decValue);
+                }
                 strTemp = bonusNode["percent"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strTemp))
-                    CreateImprovement(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.RunMultiplierPercent, _strUnique,
-                        ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating));
+                {
+                    decimal decValue = ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating);
+                    if (decValue != 0.0m)
+                        CreateImprovement(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.RunMultiplierPercent, _strUnique,
+                            decValue);
+                }
             }
         }
 
@@ -3851,12 +3867,20 @@ namespace Chummer
             {
                 string strTemp = bonusNode["val"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strTemp))
-                    CreateImprovement(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.SprintBonus, _strUnique,
-                        ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating));
+                {
+                    decimal decValue = ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating);
+                    if (decValue != 0.0m)
+                        CreateImprovement(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.SprintBonus, _strUnique,
+                            decValue);
+                }
                 strTemp = bonusNode["percent"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strTemp))
-                    CreateImprovement(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.SprintBonusPercent, _strUnique,
-                        ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating));
+                {
+                    decimal decValue = ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating);
+                    if (decValue != 0.0m)
+                        CreateImprovement(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.SprintBonusPercent, _strUnique,
+                            decValue);
+                }
             }
         }
 

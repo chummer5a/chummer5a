@@ -3995,12 +3995,20 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 string strTemp = bonusNode["val"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strTemp))
-                    await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.WalkMultiplier, _strUnique,
-                        await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                {
+                    decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
+                    if (decValue != 0.0m)
+                        await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.WalkMultiplier, _strUnique,
+                            decValue, token: token).ConfigureAwait(false);
+                }
                 strTemp = bonusNode["percent"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strTemp))
-                    await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.WalkMultiplierPercent, _strUnique,
-                        await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                {
+                    decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
+                    if (decValue != 0.0m)
+                        await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.WalkMultiplierPercent, _strUnique,
+                            decValue, token: token).ConfigureAwait(false);
+                }
             }
         }
 
@@ -4015,12 +4023,20 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 string strTemp = bonusNode["val"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strTemp))
-                    await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.RunMultiplier, _strUnique,
-                        await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                {
+                    decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
+                    if (decValue != 0.0m)
+                        await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.RunMultiplier, _strUnique,
+                            decValue, token: token).ConfigureAwait(false);
+                }
                 strTemp = bonusNode["percent"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strTemp))
-                    await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.RunMultiplierPercent, _strUnique,
-                        await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                {
+                    decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
+                    if (decValue != 0.0m)
+                        await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.RunMultiplierPercent, _strUnique,
+                            decValue, token: token).ConfigureAwait(false);
+                }
             }
         }
 
@@ -4035,12 +4051,20 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 string strTemp = bonusNode["val"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strTemp))
-                    await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.SprintBonus, _strUnique,
-                        await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                {
+                    decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
+                    if (decValue != 0.0m)
+                        await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.SprintBonus, _strUnique,
+                            decValue, token: token).ConfigureAwait(false);
+                }
                 strTemp = bonusNode["percent"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strTemp))
-                    await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.SprintBonusPercent, _strUnique,
-                        await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                {
+                    decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
+                    if (decValue != 0.0m)
+                        await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.SprintBonusPercent, _strUnique,
+                            decValue, token: token).ConfigureAwait(false);
+                }
             }
         }
 
