@@ -4627,12 +4627,6 @@ namespace Chummer.Backend.Skills
             }
             private set
             {
-                using (LockObject.EnterReadLock())
-                {
-                    if (_guidInternalId == value)
-                        return;
-                }
-
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_guidInternalId == value)
