@@ -888,7 +888,7 @@ namespace Chummer.Backend.Skills
             try
             {
                 if (xmlSkillNode.TryGetField("guid", Guid.TryParse, out guiTemp))
-                    objLoadingSkill.Id = guiTemp;
+                    await objLoadingSkill.SetIdAsync(guiTemp, token).ConfigureAwait(false);
 
                 if (!xmlSkillNode.TryGetMultiLineStringFieldQuickly("altnotes", ref objLoadingSkill._strNotes))
                     xmlSkillNode.TryGetMultiLineStringFieldQuickly("notes", ref objLoadingSkill._strNotes);
@@ -4627,6 +4627,12 @@ namespace Chummer.Backend.Skills
             }
             private set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_guidInternalId == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_guidInternalId == value)
@@ -4637,6 +4643,59 @@ namespace Chummer.Backend.Skills
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        public async Task<Guid> GetIdAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _guidInternalId;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        private async Task SetIdAsync(Guid value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_guidInternalId == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_guidInternalId == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _guidInternalId = value;
+                    await OnPropertyChangedAsync(nameof(Id), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4652,6 +4711,12 @@ namespace Chummer.Backend.Skills
         public void CopyInternalId(Skill objOtherSkill)
         {
             Id = objOtherSkill.Id;
+        }
+
+        public async Task CopyInternalIdAsync(Skill objOtherSkill, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            await SetIdAsync(await objOtherSkill.GetIdAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
         public Guid SourceID => SkillId;

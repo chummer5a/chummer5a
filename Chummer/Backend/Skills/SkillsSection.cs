@@ -4108,7 +4108,7 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                objExistingSkill.CopyInternalId(objNewSkill);
+                await objExistingSkill.CopyInternalIdAsync(objNewSkill, token).ConfigureAwait(false);
                 int intExistingBasePoints = await objExistingSkill.GetBasePointsAsync(token).ConfigureAwait(false);
                 int intNewBasePoints = await objNewSkill.GetBasePointsAsync(token).ConfigureAwait(false);
                 if (intExistingBasePoints < intNewBasePoints)
