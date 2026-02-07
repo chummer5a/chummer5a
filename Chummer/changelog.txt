@@ -147,6 +147,7 @@ Application Changes:
 - Fixed a crash caused by using customdata amends to the priority table that would leave a metatype with no valid Talent choice at a given priority level.
 - Added addspirit and addsprite as custom improvement types to add spirits and sprites to a character via the custom improvement system in career mode.
 - Fixed crash caused by creating a vehicle that has a built-in cyberware subsystem attached to a vehicle mod that adds a weapon.
+- Implemented a fix for interaction between Reflex Recorders and Reflex Recorder Optimization when the Reflex Recorder is a subsystem.
 - Implemented a bonus type (cyberlimbattributebonus) to provide AGI or STR bonuses to cyberware attribute bonuses. Example behaviour:
 
 <!-- Simple values -->
