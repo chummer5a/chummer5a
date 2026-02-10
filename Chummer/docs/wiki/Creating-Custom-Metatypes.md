@@ -133,38 +133,79 @@ Here's a valid example of a custom metatype:
 - Follow the existing structure and formatting
 - Validate the XML syntax
 
-### 4. Test Your Metatype
-- Build and run Chummer5a
-- Create a new character
+### 4. Add to the Priority Table (if you use Priority-based character creation)
+If you want your metatype to appear in the Priority table, you must also amend `priorities.xml`. This is done with an Amend file because you are changing existing Priority rows rather than replacing the whole file.
+
+**What you are editing in `priorities.xml`**
+- Each Priority row lives under `<priorities><priority>`.
+- Metatype choices for that row are under `<metatypes><metatype>`.
+- The `name` must match the metatype name from `metatypes.xml`.
+- The `value` is the Special Attribute points granted at that priority.
+- The `karma` is the Karma cost for that metatype. This may be a negative value to provide karma, 0 for no additional cost, or a positive value to have the metatype cost karma.
+
+**Create an Amend file**
+- File name: `amend_priorities.xml`
+- Location: your custom data folder (see the Custom Data Files guide)
+- For nodes with children, recursion is the default behavior; include the parent nodes leading to what you want to change so the amend system can follow that path.
+
+**Example: Add a custom metatype to the “A - Any metatype” row**
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+  <priorities>
+    <priority xpathfilter="name='A - Any metatype'">
+      <metatypes>
+        <metatype amendoperation="addnode">
+          <name>Custom Metatype</name>
+          <value>7</value>
+          <karma>0</karma>
+          <metavariants>
+            <metavariant>
+              <name>Custom Variant</name>
+              <value>7</value>
+              <karma>5</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+      </metatypes>
+    </priority>
+  </priorities>
+</chummer>
+```
+
+**Example: Add a custom metavariant to an existing metatype**
+This keeps the base metatype (like Human) and adds a new metavariant option under it in the Priority table:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+  <priorities>
+    <priority xpathfilter="name='A - Any metatype'">
+      <metatypes>
+        <metatype xpathfilter="name='Human'">
+          <metavariants>
+            <metavariant amendoperation="addnode">
+              <name>Custom Human Variant</name>
+              <value>9</value>
+              <karma>5</karma>
+            </metavariant>
+          </metavariants>
+        </metatype>
+      </metatypes>
+    </priority>
+  </priorities>
+</chummer>
+```
+
+If you skip this step, your metatype can still be used in Karma-based creation, but it will not show up in the Priority table.
+
+### 5. Test Your Metatype
+- Create a new character using a settings file that includes your custom data file
 - Verify your metatype appears in the list
 - Test character creation with your metatype
 - Verify all attributes and abilities work correctly
 
-## Best Practices
-
-### Attribute Balance
-- Keep base attributes reasonable (typically 2-4)
-- Consider the impact on character creation
-- Balance against existing metatypes
-- Test with different character concepts
-
-### Naming Conventions
-- Use clear, descriptive names
-- Follow existing naming patterns
-- Avoid special characters or symbols
-- Keep names concise but informative
-
-### Documentation
-- Include source information
-- Add notes for special abilities
-- Document any restrictions or requirements
-- Keep track of changes and updates
-
-### Testing
-- Test with various character builds
-- Verify attribute calculations
-- Check special abilities
-- Ensure compatibility with other systems
 
 ## Common Issues
 
