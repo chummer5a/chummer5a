@@ -24,7 +24,7 @@
   <books>
     <book>
       <id>b74dc441-1a83-46c7-86d1-561e9d7ce8cc</id>
-      <name>Hazard Pay</name>
+      <name>4e Hazard Pay</name>
       <code>HP</code>
       <matches>
         <match>
@@ -36,7 +36,7 @@
     </book>
     <book>
       <id>844d6798-7958-4725-94f9-e8f49af9346e</id>
-      <name>Parazoology</name>
+      <name>4e Parazoology</name>
       <code>PZ</code>
       <matches>
         <match>
@@ -48,7 +48,7 @@
     </book>
     <book>
       <id>73ac4671-68cf-4e82-a214-d628bfa4c791</id>
-      <name>Running Wild</name>
+      <name>4e Running Wild</name>
       <code>RW</code>
       <matches>
         <match>
@@ -60,7 +60,7 @@
     </book>
     <book>
       <id>b72a01c2-c51b-49d8-905a-56b6a60b3349</id>
-      <name>Shadowrun 4th Edition</name>
+      <name>4e Shadowrun 4th Edition</name>
       <code>SR4</code>
       <matches>
         <match>
@@ -72,7 +72,7 @@
     </book>
     <book>
       <id>7a1ced57-0312-442f-b889-ff88ff61b27b</id>
-      <name>Street Magic</name>
+      <name>4e Street Magic</name>
       <code>SM</code>
       <matches>
         <match>
@@ -84,7 +84,7 @@
     </book>
     <book>
       <id>8e4c2173-0e73-4e1b-98d0-ec81c76fe070</id>
-      <name>Unwired</name>
+      <name>4eUnwired</name>
       <code>UN</code>
       <matches>
         <match>
@@ -108,7 +108,7 @@
     </book>
     <book>
       <id>6b2003da-6ed5-46be-9bd7-d1481826cb35</id>
-      <name>SOX</name>
+      <name>4e SOX</name>
       <code>SOX</code>
     </book>
   </books>
