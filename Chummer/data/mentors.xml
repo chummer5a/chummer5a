@@ -379,7 +379,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice summoning spirits of water</name>
+          <name>Magician: +2 dice summoning Spirits of Water</name>
           <bonus>
             <specificskill>
               <name>Summoning</name>
@@ -527,7 +527,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice for summoning spirits of air</name>
+          <name>Magician: +2 dice for summoning Spirits of Air</name>
           <bonus>
             <specificskill>
               <name>Summoning</name>
@@ -876,7 +876,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice for Summoning or Binding plague spirits</name>
+          <name>Magician: +2 dice for Summoning or Binding Plague Spirits</name>
           <bonus>
             <specificskill>
               <name>Summoning</name>
@@ -1043,7 +1043,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice for Counterspelling and disenchanting</name>
+          <name>Magician: +2 dice for Counterspelling and Disenchanting</name>
           <bonus>
             <specificskill>
               <name>Counterspelling</name>
@@ -1130,7 +1130,7 @@
           </bonus>
         </choice>
         <choice>
-          <name>Adept: Free motion sense</name>
+          <name>Adept: Free Motion Sense</name>
           <bonus>
             <specificpower>
               <name>Motion Sense</name>
@@ -1155,7 +1155,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice for spells, preparations, and rituals of the manipulation type.</name>
+          <name>Magician: +2 dice for Spells, Preparations, and Rituals of the Manipulation type.</name>
           <bonus>
             <spellcategory>
               <name>Manipulation</name>
@@ -1189,7 +1189,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +1 to all Manipulation and Illusion spell tests, preparations, and rituals.</name>
+          <name>Magician: +1 to all Manipulation and Illusion spell tests, Preparations, and Rituals.</name>
           <bonus>
             <spellcategory>
               <name>Manipulation</name>
@@ -1291,7 +1291,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice for summoning spirits of fire.</name>
+          <name>Magician: +2 dice for summoning Spirits of Fire.</name>
           <bonus>
             <specificskill>
               <name>Summoning</name>
@@ -1548,7 +1548,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice for spells, preparations, and spell rituals in the Manipulation category.</name>
+          <name>Magician: +2 dice for Spells, Preparations, and Spell Rituals in the Manipulation category.</name>
           <bonus>
             <spellcategory>
               <name>Manipulation</name>
@@ -1651,7 +1651,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice to Combat spells, preparations, and rituals</name>
+          <name>Magician: +2 dice to Combat Spells, Preparations, and Rituals</name>
           <bonus>
             <spellcategory>
               <name>Combat</name>
@@ -1706,7 +1706,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice to Detection spells, preparations, and rituals.</name>
+          <name>Magician: +2 dice to Detection Spells, Preparations, and Rituals.</name>
           <bonus>
             <spellcategory>
               <name>Detection</name>
@@ -1938,7 +1938,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifier when casting Combat spells, preparations, and rituals.</name>
+          <name>Magician: +2 dice pool modifier when casting Combat Spells, Preparations, and Rituals.</name>
           <bonus>
             <spellcategory>
               <name>Combat</name>
@@ -2129,7 +2129,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice for Illusion and transformation-focused Manipulation spells, preparations, and spell rituals.</name>
+          <name>Magician: +2 dice for Illusion and transformation-focused Manipulation Spells, Preparations, and Spell Rituals.</name>
           <bonus>
             <spellcategory>
               <name>Manipulation</name>
@@ -2164,7 +2164,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool bonus when summoning plant spirits.</name>
+          <name>Magician: +2 dice pool bonus when summoning Plant Spirits.</name>
           <bonus>
             <specificskill>
               <name>Summoning</name>
@@ -2174,7 +2174,7 @@
           </bonus>
         </choice>
         <choice>
-          <name>Magician: +2 dice pool bonus when summoning air spirits.</name>
+          <name>Magician: +2 dice pool bonus when summoning Air Spirits.</name>
           <bonus>
             <specificskill>
               <name>Summoning</name>
@@ -2223,7 +2223,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 to summoning earth spirits.</name>
+          <name>Magician: +2 to summoning Earth Spirits.</name>
           <bonus>
             <specificskill>
               <name>Summoning</name>
@@ -2252,7 +2252,7 @@
       <disadvantage>Treat any background count due to pollution or twisted element as twice the actual rating.</disadvantage>
       <choices>
         <choice>
-          <name>Magician: +2 for health spells, preparations, and spell rituals.</name>
+          <name>Magician: +2 for health Spells, Preparations, and Spell Rituals.</name>
           <bonus>
             <spellcategory>
               <name>Health</name>
@@ -2285,7 +2285,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Manipulation Spells, Preparations, and Rituals</name>
           <bonus>
             <spellcategory>
               <name>Manipulation</name>
@@ -2331,7 +2331,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +1 dice pool modifier when casting Combat spells, preparations, and rituals.</name>
+          <name>Magician: +1 dice pool modifier when casting Combat Spells, Preparations, and Rituals.</name>
           <bonus>
             <spellcategory>
               <name>Combat</name>
@@ -2369,7 +2369,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +1 dice pool modifier when casting Health spells, preparations, and rituals</name>
+          <name>Magician: +1 dice pool modifier when casting Health Spells, Preparations, and Rituals</name>
           <bonus>
             <spellcategory>
               <name>Health</name>
@@ -2407,7 +2407,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifier when casting Illusion spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Illusion Spells, Preparations, and Rituals</name>
           <bonus>
             <spellcategory>
               <name>Illusion</name>
@@ -2416,7 +2416,7 @@
           </bonus>
         </choice>
         <choice>
-          <name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Manipulation Spells, Preparations, and Rituals</name>
           <bonus>
             <spellcategory>
               <name>Manipulation</name>
@@ -2470,7 +2470,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifier when casting Detection spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Detection Spells, Preparations, and Rituals</name>
           <bonus>
             <spellcategory>
               <name>Detection</name>
@@ -2504,7 +2504,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifier when casting Illusion spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Illusion Spells, Preparations, and Rituals</name>
           <bonus>
             <spellcategory>
               <name>Illusion</name>
@@ -2538,7 +2538,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice summoning spirits of water or earth (The type of spirit for which this bonus applies changes every 6 hours).</name>
+          <name>Magician: +2 dice summoning Spirits of Water or Earth (The type of spirit for which this bonus applies changes every 6 hours).</name>
           <bonus>
             <specificskill>
               <name>Summoning</name>
@@ -2582,7 +2582,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Manipulation Spells, Preparations, and Rituals</name>
           <bonus>
             <spellcategory>
               <name>Manipulation</name>
@@ -2628,7 +2628,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifier when casting Detection spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Detection Spells, Preparations, and Rituals</name>
           <bonus>
             <spellcategory>
               <name>Detection</name>
@@ -2672,7 +2672,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice summoning spirits of water.</name>
+          <name>Magician: +2 dice summoning Spirits of Water.</name>
           <bonus>
             <specificskill>
               <name>Summoning</name>
@@ -2682,7 +2682,7 @@
           </bonus>
         </choice>
         <choice>
-          <name>Magician: +2 dice pool modifier when casting Illusion spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Illusion Spells, Preparations, and Rituals</name>
           <bonus>
             <spellcategory>
               <name>Illusion</name>
@@ -2715,7 +2715,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Manipulation Spells, Preparations, and Rituals</name>
           <bonus>
             <spellcategory>
               <name>Manipulation</name>
@@ -2756,7 +2756,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice summoning spirits of earth.</name>
+          <name>Magician: +2 dice summoning Spirits of Earth.</name>
           <bonus>
             <specificskill>
               <name>Summoning</name>
