@@ -19,7 +19,6 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-
   <mentors>
     <mentor>
       <id>136a3dc5-d9c4-45ad-bc24-705f54692590</id>
@@ -234,7 +233,7 @@
           </bonus>
         </choice>
         <choice set="2">
-          <name>Magician: +2 dice for Manipulation spells</name>
+          <name>Magician: +2 dice for Spells, Preparations, and Spell Rituals in the Manipulation category.</name>
           <bonus>
             <spellcategory>
               <name>Manipulation</name>
