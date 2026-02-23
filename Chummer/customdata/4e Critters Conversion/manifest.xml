@@ -28,7 +28,7 @@
     </authors>
     <descriptions>
       <description>
-        <text>This ruleset is currently not functional. It presently exists as a backup file for the unused 4e critters previously stored in critters.xml. Inside of an amends file, they exist with the intent that going forward, a larger project can be done to try and convert their stats to be usable if someone wishes to enable them via amends.</text>
+        <text>This ruleset is mostly functional. It contains the old 4e critters that were taken out of critters.xml 3 years ago, and updated to function in the current version of Chummer following the 5e conversion rules to update skills and Complex Forms. You may find some oddities or things that are broken. Some powers may not be working or showing up correctly. If you find a problem and would like it fixed, please contact Teksura on the Chummer Discord.</text>
         <lang>en-us</lang>
       </description>
     </descriptions>
