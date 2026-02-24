@@ -148,8 +148,8 @@ Application Changes:
 - Added addspirit and addsprite as custom improvement types to add spirits and sprites to a character via the custom improvement system in career mode.
 - Fixed crash caused by creating a vehicle that has a built-in cyberware subsystem attached to a vehicle mod that adds a weapon.
 - Implemented a fix for interaction between Reflex Recorders and Reflex Recorder Optimization when the Reflex Recorder is a subsystem.
+- Updated the skilllevel, knowledgeskilllevel and skillgrouplevel improvement types to support using the selectskill element to allow choosing from a group of skills rather than being direct named skills only. 
 - Implemented a bonus type (cyberlimbattributebonus) to provide AGI or STR bonuses to cyberware attribute bonuses. Example behaviour:
-
 <!-- Simple values -->
 <cyberlimbattributebonus>
     <name>STR</name>

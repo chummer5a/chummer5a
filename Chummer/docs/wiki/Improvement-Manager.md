@@ -410,6 +410,27 @@ Contents
 -   [Limitations](#Limitations_54)
 -   [Example](#Example_54)
 
+[skilllevel](#skilllevel)
+
+-   [Attributes](#Attributes_54b)
+-   [Elements](#Elements_54b)
+-   [Limitations](#Limitations_54b)
+-   [Example](#Example_54b)
+
+[knowledgeskilllevel](#knowledgeskilllevel)
+
+-   [Attributes](#Attributes_54c)
+-   [Elements](#Elements_54c)
+-   [Limitations](#Limitations_54c)
+-   [Example](#Example_54c)
+
+[skillgrouplevel](#skillgrouplevel)
+
+-   [Attributes](#Attributes_54d)
+-   [Elements](#Elements_54d)
+-   [Limitations](#Limitations_54d)
+-   [Example](#Example_54d)
+
 [selectspell](#selectspell)
 
 -   [Attributes](#Attributes_55)
@@ -2411,6 +2432,149 @@ The following improves all of the Active Skills belonging to a Skill Group of th
 <selectskillgroup>
 <bonus>1</bonus>
 </selectskillgroup>
+</bonus>
+```
+
+### skilllevel
+
+Grants free ranks in an Active Skill. Used by qualities, life modules, and similar sources. The skill can be specified by a fixed name or by prompting the user to select a skill (using the same selection options as [selectskill](#selectskill)).
+
+##### Attributes
+
+None.
+
+##### Elements
+
+**name** The Active Skill that will receive the free ranks. If present, this skill is used and no selection dialog is shown.
+
+**val** The number of free ranks to grant. Defaults to 1 if omitted.
+
+**selectskill** When present (and **name** is not), the user is prompted to choose an Active Skill from a list. The same attributes and child elements as the standalone [selectskill](#selectskill) improvement are supported (e.g. **skillcategory**, **limittoskill**, **skillcategories**, **excludecategory**, **knowledgeskills**, etc.). Only active skills are valid for skilllevel; if the user selects a knowledge skill, the improvement is aborted.
+
+Either **name** or **selectskill** must be specified.
+
+##### Limitations
+
+None.
+
+##### Example
+
+The following example grants 1 free rank in the Etiquette skill (fixed name).
+
+```XML
+<bonus>
+  <skilllevel>
+    <name>Etiquette</name>
+  </skilllevel>
+</bonus>
+```
+
+The following example grants 1 free rank in a Combat Active skill of the user's choice.
+
+```XML
+<bonus>
+  <skilllevel>
+    <val>1</val>
+    <selectskill skillcategory="Combat Active" />
+  </skilllevel>
+</bonus>
+```
+
+The following example grants 2 free ranks in a skill from the Acting or Influence group chosen by the user.
+
+```XML
+<bonus>
+  <skilllevel>
+    <val>2</val>
+    <selectskill skillgroup="Acting,Influence" />
+  </skilllevel>
+</bonus>
+```
+
+### knowledgeskilllevel
+
+Grants free knowledge skill points. Either adds to the character's pool of free knowledge skill points (when **selectskill** is not present) or grants free ranks to a specific knowledge skill chosen by the user (when **selectskill** is present).
+
+##### Attributes
+
+None.
+
+##### Elements
+
+**val** The number of free points or ranks. Defaults to 1 if omitted. When **selectskill** is used, this is the number of free ranks granted to the selected knowledge skill.
+
+**selectskill** When present, the user is prompted to choose a knowledge skill (the selection is limited to knowledge skills). The selected skill receives the number of free ranks given by **val**. The same attributes and child elements as the standalone [selectskill](#selectskill) are supported; **knowledgeskills** should be true (or omitted when the node is used under knowledgeskilllevel). When **selectskill** is not present, **val** adds to the character's general free knowledge skill point pool instead.
+
+##### Limitations
+
+None.
+
+##### Example
+
+The following example adds 2 points to the character's free knowledge skill point pool.
+
+```XML
+<bonus>
+  <knowledgeskilllevel>
+    <val>2</val>
+  </knowledgeskilllevel>
+</bonus>
+```
+
+The following example grants 1 free rank in a knowledge skill of the user's choice from the Academic category.
+
+```XML
+<bonus>
+  <knowledgeskilllevel>
+    <val>1</val>
+    <selectskill knowledgeskills="true" skillcategory="Academic" />
+  </knowledgeskilllevel>
+</bonus>
+```
+
+### skillgrouplevel
+
+Grants free ranks in a skill group. The group can be specified by a fixed name or by prompting the user to select a skill group.
+
+##### Attributes
+
+None.
+
+##### Elements
+
+**name** The skill group that will receive the free ranks. If present, this group is used and no selection dialog is shown.
+
+**val** The number of free ranks to grant. Defaults to 1 if omitted.
+
+**selectskillgroup** When present (and **name** is not), the user is prompted to choose a skill group. The same attributes as the standalone [selectskillgroup](#selectskillgroup) improvement are supported (e.g. **excludecategory**).
+
+Either **name** or **selectskillgroup** must be specified.
+
+##### Limitations
+
+None.
+
+##### Example
+
+The following example grants 1 free rank in the Electronics skill group (fixed name).
+
+```XML
+<bonus>
+  <skillgrouplevel>
+    <name>Electronics</name>
+    <val>1</val>
+  </skillgrouplevel>
+</bonus>
+```
+
+The following example grants 1 free rank in a skill group chosen by the user.
+
+```XML
+<bonus>
+  <skillgrouplevel>
+    <val>1</val>
+    <selectskillgroup />
+  </skillgrouplevel>
 </bonus>
 ```
 

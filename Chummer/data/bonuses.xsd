@@ -616,6 +616,37 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="knowledgeskilllevel" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="selectskill" minOccurs="0" maxOccurs="1">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="max" type="xs:string" minOccurs="0" maxOccurs="1" />
+                  <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
+                  <xs:element name="skillcategories" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+                <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+                <xs:attribute name="excludeskill" type="xs:string" use="optional" />
+                <xs:attribute name="knowledgeskills" type="xs:string" use="optional" />
+                <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
+                <xs:attribute name="limittoskill" type="xs:string" use="optional" />
+                <xs:attribute name="minimumrating" type="xs:string" use="optional" />
+                <xs:attribute name="maximumrating" type="xs:string" use="optional" />
+                <xs:attribute name="skillcategory" type="xs:string" use="optional" />
+                <xs:attribute name="skillgroup" type="xs:string" use="optional" />
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="lifestylecost" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:simpleContent>
@@ -1158,8 +1189,17 @@
       <xs:element name="skillgrouplevel" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="name" minOccurs="0" maxOccurs="1" />
-            <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="val" type="xs:integer" minOccurs="0" maxOccurs="1" />
+            <xs:element name="selectskillgroup" minOccurs="0" maxOccurs="1">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="bonus" type="xs:string" minOccurs="0" maxOccurs="1" />
+                  <xs:element name="applytorating" type="xs:string" minOccurs="0" maxOccurs="1" />
+                </xs:sequence>
+                <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+              </xs:complexType>
+            </xs:element>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1201,6 +1241,40 @@
             <xs:element name="exclude" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="applytorating" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="skilllevel" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="val" type="xs:integer" minOccurs="0" maxOccurs="1" />
+            <xs:element name="selectskill" minOccurs="0" maxOccurs="1">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="max" type="xs:string" minOccurs="0" maxOccurs="1" />
+                  <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
+                  <xs:element name="disablespecializationeffects" type="xs:string" minOccurs="0" maxOccurs="1" />
+                  <xs:element name="applytorating" type="xs:string" minOccurs="0" maxOccurs="1" />
+                  <xs:element name="skillcategories" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+                <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+                <xs:attribute name="excludeskill" type="xs:string" use="optional" />
+                <xs:attribute name="knowledgeskills" type="xs:string" use="optional" />
+                <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
+                <xs:attribute name="limittoskill" type="xs:string" use="optional" />
+                <xs:attribute name="minimumrating" type="xs:string" use="optional" />
+                <xs:attribute name="maximumrating" type="xs:string" use="optional" />
+                <xs:attribute name="skillcategory" type="xs:string" use="optional" />
+                <xs:attribute name="skillgroup" type="xs:string" use="optional" />
+              </xs:complexType>
+            </xs:element>
           </xs:sequence>
         </xs:complexType>
       </xs:element>

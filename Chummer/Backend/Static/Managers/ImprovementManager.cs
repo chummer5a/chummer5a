@@ -1537,6 +1537,16 @@ namespace Chummer
             return decValue;
         }
 
+        /// <summary>
+        /// Shows a skill selection dialog and returns the selected skill name.
+        /// </summary>
+        /// <param name="xmlBonusNode">XML node (e.g. a selectskill element) defining filters: skillcategory, limittoskill, skillcategories, excludecategory, knowledgeskills, etc.</param>
+        /// <param name="objCharacter">Character whose skills are listed.</param>
+        /// <param name="intRating">Rating used when resolving expressions in the bonus node (e.g. minimumrating, maximumrating).</param>
+        /// <param name="strFriendlyName">Friendly name shown in the dialog (e.g. quality or item name).</param>
+        /// <param name="blnIsKnowledgeSkill">If true, only knowledge skills are offered; if false, only active skills. Can be overridden by knowledgeskills attribute on the node.</param>
+        /// <param name="token">Cancellation token.</param>
+        /// <returns>A tuple of (selected skill name, whether the knowledge-skill picker was used). Throws AbortedException if the user cancels.</returns>
         public static ValueTuple<string, bool> DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating,
             string strFriendlyName, bool blnIsKnowledgeSkill = false, CancellationToken token = default)
         {
@@ -1545,6 +1555,16 @@ namespace Chummer
                 blnIsKnowledgeSkill, token), token);
         }
 
+        /// <summary>
+        /// Shows a skill selection dialog and returns the selected skill name (async).
+        /// </summary>
+        /// <param name="xmlBonusNode">XML node (e.g. a selectskill element) defining filters: skillcategory, limittoskill, skillcategories, excludecategory, knowledgeskills, etc.</param>
+        /// <param name="objCharacter">Character whose skills are listed.</param>
+        /// <param name="intRating">Rating used when resolving expressions in the bonus node (e.g. minimumrating, maximumrating).</param>
+        /// <param name="strFriendlyName">Friendly name shown in the dialog (e.g. quality or item name).</param>
+        /// <param name="blnIsKnowledgeSkill">If true, only knowledge skills are offered; if false, only active skills. Can be overridden by knowledgeskills attribute on the node.</param>
+        /// <param name="token">Cancellation token.</param>
+        /// <returns>A task that yields (selected skill name, whether the knowledge-skill picker was used). Throws AbortedException if the user cancels.</returns>
         public static Task<ValueTuple<string, bool>> DoSelectSkillAsync(XmlNode xmlBonusNode, Character objCharacter, int intRating,
             string strFriendlyName, bool blnIsKnowledgeSkill = false, CancellationToken token = default)
         {
@@ -2182,6 +2202,79 @@ namespace Chummer
             }
 
             return new ValueTuple<string, bool>(strSelectedSkill, blnIsKnowledgeSkill);
+        }
+
+        public static string DoSelectSkillGroup(XmlNode xmlBonusNode, Character objCharacter, string strFriendlyName,
+            CancellationToken token = default)
+        {
+            return Utils.SafelyRunSynchronously(() => DoSelectSkillGroupCoreAsync(false, xmlBonusNode, objCharacter,
+                strFriendlyName, token), token);
+        }
+
+        public static Task<string> DoSelectSkillGroupAsync(XmlNode xmlBonusNode, Character objCharacter,
+            string strFriendlyName, CancellationToken token = default)
+        {
+            return DoSelectSkillGroupCoreAsync(false, xmlBonusNode, objCharacter, strFriendlyName, token);
+        }
+
+        private static async Task<string> DoSelectSkillGroupCoreAsync(bool blnSync, XmlNode xmlBonusNode,
+            Character objCharacter, string strFriendlyName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (xmlBonusNode == null)
+                throw new ArgumentNullException(nameof(xmlBonusNode));
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
+            string strExclude = xmlBonusNode.Attributes?["excludecategory"]?.InnerTextViaPool(token) ?? string.Empty;
+            string strDescription = !string.IsNullOrEmpty(strFriendlyName)
+                ? (blnSync
+                    ? string.Format(GlobalSettings.CultureInfo,
+                        LanguageManager.GetString("String_Improvement_SelectSkillGroupName", token: token),
+                        strFriendlyName)
+                    : string.Format(GlobalSettings.CultureInfo,
+                        await LanguageManager.GetStringAsync("String_Improvement_SelectSkillGroupName", token: token).ConfigureAwait(false),
+                        strFriendlyName))
+                : (blnSync
+                    ? LanguageManager.GetString("String_Improvement_SelectSkillGroup", token: token)
+                    : await LanguageManager.GetStringAsync("String_Improvement_SelectSkillGroup", token: token).ConfigureAwait(false));
+            using (ThreadSafeForm<SelectSkillGroup> frmPickSkillGroup = blnSync
+                       ? ThreadSafeForm<SelectSkillGroup>.Get(() => new SelectSkillGroup(objCharacter) { Description = strDescription })
+                       : await ThreadSafeForm<SelectSkillGroup>.GetAsync(() => new SelectSkillGroup(objCharacter), token).ConfigureAwait(false))
+            {
+                if (!blnSync)
+                    await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
+                string strForcedValue = GetForcedValue(objCharacter);
+                if (!string.IsNullOrEmpty(strForcedValue))
+                {
+                    if (blnSync)
+                        frmPickSkillGroup.MyForm.DoThreadSafe(x =>
+                        {
+                            x.OnlyGroup = strForcedValue;
+                            x.Opacity = 0;
+                        });
+                    else
+                        await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x =>
+                        {
+                            x.OnlyGroup = strForcedValue;
+                            x.Opacity = 0;
+                        }, token).ConfigureAwait(false);
+                }
+                if (!string.IsNullOrEmpty(strExclude))
+                {
+                    if (blnSync)
+                        frmPickSkillGroup.MyForm.DoThreadSafe(x => x.ExcludeCategory = strExclude);
+                    else
+                        await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x => x.ExcludeCategory = strExclude, token).ConfigureAwait(false);
+                }
+                if ((blnSync
+                        ? frmPickSkillGroup.ShowDialogSafe(objCharacter, token)
+                        : await frmPickSkillGroup.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false)) ==
+                    DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+                return frmPickSkillGroup.MyForm.SelectedSkillGroup;
+            }
         }
 
         #endregion Helper Methods

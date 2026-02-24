@@ -2402,6 +2402,12 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 await CreateImprovementAsync(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, intValue, token: token).ConfigureAwait(false);
             }
+            else if (bonusNode["selectskill"] != null)
+            {
+                strSkill = (await ImprovementManager.DoSelectSkillAsync(bonusNode["selectskill"], _objCharacter, _intRating, _strFriendlyName, token: token).ConfigureAwait(false)).Item1;
+                SelectedValue = strSkill;
+                await CreateImprovementAsync(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, intValue, token: token).ConfigureAwait(false);
+            }
             else
             {
                 Log.Error(new object[] { "skilllevel", bonusNode.OuterXmlViaPool(token) });
@@ -2541,11 +2547,17 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            //Theoretically life modules, right now we just give out free points and let people sort it out themselves.
-            //Going to be fun to do the real way, from a computer science perspective, but i don't feel like using 2 weeks on that now
-
             decimal decVal = bonusNode["val"] != null ? await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"].InnerTextViaPool(token), _intRating, token).ConfigureAwait(false) : 1;
-            await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeKnowledgeSkills, _strUnique, decVal, token: token).ConfigureAwait(false);
+            if (bonusNode["selectskill"] != null)
+            {
+                string strSkill = (await ImprovementManager.DoSelectSkillAsync(bonusNode["selectskill"], _objCharacter, _intRating, _strFriendlyName, true, token).ConfigureAwait(false)).Item1;
+                SelectedValue = strSkill;
+                await CreateImprovementAsync(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, (int)decVal.StandardRound(), token: token).ConfigureAwait(false);
+            }
+            else
+            {
+                await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeKnowledgeSkills, _strUnique, decVal, token: token).ConfigureAwait(false);
+            }
         }
 
         public async Task knowledgeskillpoints(XmlNode bonusNode, CancellationToken token = default)
@@ -2564,9 +2576,16 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                 throw new ArgumentNullException(nameof(bonusNode));
             string strSkillGroup = string.Empty;
             int value = 1;
-            if (bonusNode.TryGetStringFieldQuickly("name", ref strSkillGroup) &&
-                bonusNode.TryGetInt32FieldQuickly("val", ref value))
+            bonusNode.TryGetInt32FieldQuickly("val", ref value);
+            if (bonusNode.TryGetStringFieldQuickly("name", ref strSkillGroup))
             {
+                await CreateImprovementAsync(strSkillGroup, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.SkillGroupLevel, _strUnique, value, token: token).ConfigureAwait(false);
+            }
+            else if (bonusNode["selectskillgroup"] != null)
+            {
+                strSkillGroup = await ImprovementManager.DoSelectSkillGroupAsync(bonusNode["selectskillgroup"], _objCharacter, _strFriendlyName, token).ConfigureAwait(false);
+                SelectedValue = strSkillGroup;
                 await CreateImprovementAsync(strSkillGroup, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.SkillGroupLevel, _strUnique, value, token: token).ConfigureAwait(false);
             }

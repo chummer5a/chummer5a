@@ -119,6 +119,94 @@ namespace Chummer
                                                     strLocation, blnIgnoreLimit, token);
         }
 
+        private readonly struct SpellCountTotals
+        {
+            public SpellCountTotals(int intSpellCount, int intRitualCount, int intAlchemicalCount)
+            {
+                SpellCount = intSpellCount;
+                RitualCount = intRitualCount;
+                AlchemicalCount = intAlchemicalCount;
+            }
+
+            public int SpellCount { get; }
+            public int RitualCount { get; }
+            public int AlchemicalCount { get; }
+            public int TotalCount => SpellCount + RitualCount + AlchemicalCount;
+        }
+
+        private static async Task<SpellCountTotals> GetSpellCountsAsync(Character objCharacter, CancellationToken token = default)
+        {
+            if (objCharacter == null)
+                return default;
+
+            int intSpellCount = 0;
+            int intRitualCount = 0;
+            int intAlchemicalCount = 0;
+
+            await objCharacter.Spells.ForEachAsync(objSpell =>
+            {
+                if (objSpell.Alchemical)
+                {
+                    intAlchemicalCount++;
+                }
+                else if (objSpell.Category == "Rituals")
+                {
+                    intRitualCount++;
+                }
+                else
+                {
+                    intSpellCount++;
+                }
+            }, token).ConfigureAwait(false);
+
+            return new SpellCountTotals(intSpellCount, intRitualCount, intAlchemicalCount);
+        }
+
+        private static async Task<int> GetSpellLimitAsync(Character objCharacter, CancellationToken token = default)
+        {
+            if (objCharacter == null)
+                return 0;
+
+            int intMag = await (await objCharacter.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
+                               .GetTotalValueAsync(token).ConfigureAwait(false);
+            int intLimitMod = (int)(await ImprovementManager.ValueOfAsync(objCharacter, Improvement.ImprovementType.SpellLimit, token: token)
+                                                      .ConfigureAwait(false));
+            return intMag * 2 + intLimitMod;
+        }
+
+        public static async Task<bool> IsSpellLimitReachedAsync(Character objCharacter, CancellationToken token = default)
+        {
+            if (objCharacter == null)
+                return false;
+            if (await objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
+                return false;
+            if (await objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                return false;
+
+            SpellCountTotals objTotals = await GetSpellCountsAsync(objCharacter, token).ConfigureAwait(false);
+            int intSpellLimit = await GetSpellLimitAsync(objCharacter, token).ConfigureAwait(false);
+            return objTotals.TotalCount >= intSpellLimit;
+        }
+
+        public static async Task<bool> IsSpellLimitReachedAsync(Character objCharacter, string strCategory, bool blnIsAlchemical, CancellationToken token = default)
+        {
+            if (objCharacter == null)
+                return false;
+            if (await objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
+                return false;
+            if (await objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                return false;
+
+            SpellCountTotals objTotals = await GetSpellCountsAsync(objCharacter, token).ConfigureAwait(false);
+            int intSpellLimit = await GetSpellLimitAsync(objCharacter, token).ConfigureAwait(false);
+
+            if (blnIsAlchemical)
+                return objTotals.AlchemicalCount >= intSpellLimit;
+            if (string.Equals(strCategory, "Rituals", StringComparison.Ordinal))
+                return objTotals.RitualCount >= intSpellLimit;
+            return objTotals.SpellCount >= intSpellLimit;
+        }
+
         private static async Task<bool> RequirementsMetCoreAsync(this XPathNavigator xmlNode, bool blnSync,
                                                                  Character objCharacter, object objParent = null,
                                                                  string strLocalName = "", string strIgnoreQuality = "",
