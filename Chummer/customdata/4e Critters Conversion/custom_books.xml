@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema books.xsd">
+
+  <books>
+    <book>
+      <id>b74dc441-1a83-46c7-86d1-561e9d7ce8cc</id>
+      <name>4e Hazard Pay</name>
+      <code>HP</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Sometimes you have to leave home. Home is nice, home</text>
+          <page>3</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>844d6798-7958-4725-94f9-e8f49af9346e</id>
+      <name>4e Parazoology</name>
+      <code>PZ</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Like everything else in the Sixth World,</text>
+          <page>3</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>73ac4671-68cf-4e82-a214-d628bfa4c791</id>
+      <name>4e Running Wild</name>
+      <code>RW</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Permit me to begin at the end. Permit me to begin with you,</text>
+          <page>7</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>b72a01c2-c51b-49d8-905a-56b6a60b3349</id>
+      <name>4e Shadowrun 4th Edition</name>
+      <code>SR4</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>2072. Handbasket still in motion.</text>
+          <page>15</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>7a1ced57-0312-442f-b889-ff88ff61b27b</id>
+      <name>4e Street Magic</name>
+      <code>SM</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>compelling entertainment, the downside is that the people</text>
+          <page>9</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>8e4c2173-0e73-4e1b-98d0-ec81c76fe070</id>
+      <name>4e Unwired</name>
+      <code>UN</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>AR transmissions are so easy to eavesdrop on, employees in the</text>
+          <page>9</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>d50b150b-451e-4e05-b31b-e54857323532</id>
+      <name>4e Runner's Companion</name>
+      <code>RC</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>encouraged to keep their players’ characters’ capabilities and roles</text>
+          <page>9</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>6b2003da-6ed5-46be-9bd7-d1481826cb35</id>
+      <name>4e SOX</name>
+      <code>SOX</code>
+    </book>
+  </books>
+</chummer>
