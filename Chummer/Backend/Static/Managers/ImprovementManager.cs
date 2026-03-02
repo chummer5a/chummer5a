@@ -2207,17 +2207,58 @@ namespace Chummer
         public static string DoSelectSkillGroup(XmlNode xmlBonusNode, Character objCharacter, string strFriendlyName,
             CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => DoSelectSkillGroupCoreAsync(true, xmlBonusNode, objCharacter,
-                strFriendlyName, token), token);
+            return DoSelectSkillGroupCore(xmlBonusNode, objCharacter, strFriendlyName, token);
         }
 
         public static Task<string> DoSelectSkillGroupAsync(XmlNode xmlBonusNode, Character objCharacter,
             string strFriendlyName, CancellationToken token = default)
         {
-            return DoSelectSkillGroupCoreAsync(false, xmlBonusNode, objCharacter, strFriendlyName, token);
+            return DoSelectSkillGroupCoreAsync(xmlBonusNode, objCharacter, strFriendlyName, token);
         }
 
-        private static async Task<string> DoSelectSkillGroupCoreAsync(bool blnSync, XmlNode xmlBonusNode,
+        private static string DoSelectSkillGroupCore(XmlNode xmlBonusNode, Character objCharacter,
+            string strFriendlyName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (xmlBonusNode == null)
+                throw new ArgumentNullException(nameof(xmlBonusNode));
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
+
+            string strExclude = xmlBonusNode.Attributes?["excludecategory"]?.InnerTextViaPool(token) ?? string.Empty;
+            string strDescription = !string.IsNullOrEmpty(strFriendlyName)
+                ? string.Format(GlobalSettings.CultureInfo,
+                    LanguageManager.GetString("String_Improvement_SelectSkillGroupName", token: token),
+                    strFriendlyName)
+                : LanguageManager.GetString("String_Improvement_SelectSkillGroup", token: token);
+
+            using (ThreadSafeForm<SelectSkillGroup> frmPickSkillGroup =
+                   ThreadSafeForm<SelectSkillGroup>.Get(() => new SelectSkillGroup(objCharacter)
+                   {
+                       Description = strDescription
+                   }))
+            {
+                string strForcedValue = GetForcedValue(objCharacter);
+                if (!string.IsNullOrEmpty(strForcedValue))
+                {
+                    frmPickSkillGroup.MyForm.DoThreadSafe(x =>
+                    {
+                        x.OnlyGroup = strForcedValue;
+                        x.Opacity = 0;
+                    });
+                }
+
+                if (!string.IsNullOrEmpty(strExclude))
+                    frmPickSkillGroup.MyForm.DoThreadSafe(x => x.ExcludeCategory = strExclude);
+
+                if (frmPickSkillGroup.ShowDialogSafe(objCharacter, token) == DialogResult.Cancel)
+                    throw new AbortedException();
+
+                return frmPickSkillGroup.MyForm.SelectedSkillGroup;
+            }
+        }
+
+        private static async Task<string> DoSelectSkillGroupCoreAsync(XmlNode xmlBonusNode,
             Character objCharacter, string strFriendlyName, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -2225,54 +2266,45 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(xmlBonusNode));
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
+
             string strExclude = xmlBonusNode.Attributes?["excludecategory"]?.InnerTextViaPool(token) ?? string.Empty;
             string strDescription = !string.IsNullOrEmpty(strFriendlyName)
-                ? (blnSync
-                    ? string.Format(GlobalSettings.CultureInfo,
-                        LanguageManager.GetString("String_Improvement_SelectSkillGroupName", token: token),
-                        strFriendlyName)
-                    : string.Format(GlobalSettings.CultureInfo,
-                        await LanguageManager.GetStringAsync("String_Improvement_SelectSkillGroupName", token: token).ConfigureAwait(false),
-                        strFriendlyName))
-                : (blnSync
-                    ? LanguageManager.GetString("String_Improvement_SelectSkillGroup", token: token)
-                    : await LanguageManager.GetStringAsync("String_Improvement_SelectSkillGroup", token: token).ConfigureAwait(false));
-            using (ThreadSafeForm<SelectSkillGroup> frmPickSkillGroup = blnSync
-                       ? ThreadSafeForm<SelectSkillGroup>.Get(() => new SelectSkillGroup(objCharacter) { Description = strDescription })
-                       : await ThreadSafeForm<SelectSkillGroup>.GetAsync(() => new SelectSkillGroup(objCharacter), token).ConfigureAwait(false))
+                ? string.Format(GlobalSettings.CultureInfo,
+                    await LanguageManager.GetStringAsync("String_Improvement_SelectSkillGroupName", token: token)
+                        .ConfigureAwait(false),
+                    strFriendlyName)
+                : await LanguageManager.GetStringAsync("String_Improvement_SelectSkillGroup", token: token)
+                    .ConfigureAwait(false);
+
+            using (ThreadSafeForm<SelectSkillGroup> frmPickSkillGroup =
+                   await ThreadSafeForm<SelectSkillGroup>.GetAsync(() => new SelectSkillGroup(objCharacter), token)
+                       .ConfigureAwait(false))
             {
-                if (!blnSync)
-                    await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
+                await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token)
+                    .ConfigureAwait(false);
+
                 string strForcedValue = GetForcedValue(objCharacter);
                 if (!string.IsNullOrEmpty(strForcedValue))
                 {
-                    if (blnSync)
-                        frmPickSkillGroup.MyForm.DoThreadSafe(x =>
-                        {
-                            x.OnlyGroup = strForcedValue;
-                            x.Opacity = 0;
-                        });
-                    else
-                        await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x =>
-                        {
-                            x.OnlyGroup = strForcedValue;
-                            x.Opacity = 0;
-                        }, token).ConfigureAwait(false);
+                    await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x =>
+                    {
+                        x.OnlyGroup = strForcedValue;
+                        x.Opacity = 0;
+                    }, token).ConfigureAwait(false);
                 }
+
                 if (!string.IsNullOrEmpty(strExclude))
                 {
-                    if (blnSync)
-                        frmPickSkillGroup.MyForm.DoThreadSafe(x => x.ExcludeCategory = strExclude);
-                    else
-                        await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x => x.ExcludeCategory = strExclude, token).ConfigureAwait(false);
+                    await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x => x.ExcludeCategory = strExclude, token)
+                        .ConfigureAwait(false);
                 }
-                if ((blnSync
-                        ? frmPickSkillGroup.ShowDialogSafe(objCharacter, token)
-                        : await frmPickSkillGroup.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false)) ==
-                    DialogResult.Cancel)
+
+                if (await frmPickSkillGroup.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false)
+                    == DialogResult.Cancel)
                 {
                     throw new AbortedException();
                 }
+
                 return frmPickSkillGroup.MyForm.SelectedSkillGroup;
             }
         }
