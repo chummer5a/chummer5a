@@ -1550,9 +1550,17 @@ namespace Chummer
         public static ValueTuple<string, bool> DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating,
             string strFriendlyName, bool blnIsKnowledgeSkill = false, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => DoSelectSkillCoreAsync(true, xmlBonusNode, objCharacter,
+            return DoSelectSkillCore(xmlBonusNode, objCharacter,
                 intRating, strFriendlyName,
-                blnIsKnowledgeSkill, token), token);
+                blnIsKnowledgeSkill, token);
+        }
+
+        private static ValueTuple<string, bool> DoSelectSkillCore(XmlNode xmlBonusNode, Character objCharacter,
+            int intRating, string strFriendlyName, bool blnIsKnowledgeSkill = false,
+            CancellationToken token = default)
+        {
+            return Utils.SafelyRunSynchronously(() => DoSelectSkillCoreCommonAsync(true, xmlBonusNode, objCharacter,
+                intRating, strFriendlyName, blnIsKnowledgeSkill, token), token);
         }
 
         /// <summary>
@@ -1568,11 +1576,18 @@ namespace Chummer
         public static Task<ValueTuple<string, bool>> DoSelectSkillAsync(XmlNode xmlBonusNode, Character objCharacter, int intRating,
             string strFriendlyName, bool blnIsKnowledgeSkill = false, CancellationToken token = default)
         {
-            return DoSelectSkillCoreAsync(false, xmlBonusNode, objCharacter, intRating, strFriendlyName,
+            return DoSelectSkillCoreAsync(xmlBonusNode, objCharacter, intRating, strFriendlyName,
                 blnIsKnowledgeSkill, token);
         }
 
-        private static async Task<ValueTuple<string, bool>> DoSelectSkillCoreAsync(bool blnSync, XmlNode xmlBonusNode, Character objCharacter, int intRating,
+        private static Task<ValueTuple<string, bool>> DoSelectSkillCoreAsync(XmlNode xmlBonusNode, Character objCharacter, int intRating,
+                                           string strFriendlyName, bool blnIsKnowledgeSkill, CancellationToken token = default)
+        {
+            return DoSelectSkillCoreCommonAsync(false, xmlBonusNode, objCharacter, intRating, strFriendlyName,
+                blnIsKnowledgeSkill, token);
+        }
+
+        private static async Task<ValueTuple<string, bool>> DoSelectSkillCoreCommonAsync(bool blnSync, XmlNode xmlBonusNode, Character objCharacter, int intRating,
                                            string strFriendlyName, bool blnIsKnowledgeSkill, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
