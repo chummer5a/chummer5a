@@ -1555,6 +1555,9 @@ namespace Chummer
                 blnIsKnowledgeSkill, token);
         }
 
+        /// <summary>
+        /// Synchronous core entry point for skill selection.
+        /// </summary>
         private static ValueTuple<string, bool> DoSelectSkillCore(XmlNode xmlBonusNode, Character objCharacter,
             int intRating, string strFriendlyName, bool blnIsKnowledgeSkill = false,
             CancellationToken token = default)
@@ -1580,6 +1583,9 @@ namespace Chummer
                 blnIsKnowledgeSkill, token);
         }
 
+        /// <summary>
+        /// Asynchronous core entry point for skill selection.
+        /// </summary>
         private static Task<ValueTuple<string, bool>> DoSelectSkillCoreAsync(XmlNode xmlBonusNode, Character objCharacter, int intRating,
                                            string strFriendlyName, bool blnIsKnowledgeSkill, CancellationToken token = default)
         {
@@ -2231,6 +2237,9 @@ namespace Chummer
             return DoSelectSkillGroupCoreAsync(xmlBonusNode, objCharacter, strFriendlyName, token);
         }
 
+        /// <summary>
+        /// Synchronous core entry point for skill-group selection.
+        /// </summary>
         private static string DoSelectSkillGroupCore(XmlNode xmlBonusNode, Character objCharacter,
             string strFriendlyName, CancellationToken token = default)
         {
@@ -2273,6 +2282,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Asynchronous core entry point for skill-group selection.
+        /// </summary>
         private static async Task<string> DoSelectSkillGroupCoreAsync(XmlNode xmlBonusNode,
             Character objCharacter, string strFriendlyName, CancellationToken token = default)
         {
