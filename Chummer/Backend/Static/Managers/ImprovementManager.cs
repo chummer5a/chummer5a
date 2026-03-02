@@ -1550,7 +1550,7 @@ namespace Chummer
         public static ValueTuple<string, bool> DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating,
             string strFriendlyName, bool blnIsKnowledgeSkill = false, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => DoSelectSkillCoreAsync(false, xmlBonusNode, objCharacter,
+            return Utils.SafelyRunSynchronously(() => DoSelectSkillCoreAsync(true, xmlBonusNode, objCharacter,
                 intRating, strFriendlyName,
                 blnIsKnowledgeSkill, token), token);
         }
@@ -2207,7 +2207,7 @@ namespace Chummer
         public static string DoSelectSkillGroup(XmlNode xmlBonusNode, Character objCharacter, string strFriendlyName,
             CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => DoSelectSkillGroupCoreAsync(false, xmlBonusNode, objCharacter,
+            return Utils.SafelyRunSynchronously(() => DoSelectSkillGroupCoreAsync(true, xmlBonusNode, objCharacter,
                 strFriendlyName, token), token);
         }
 
